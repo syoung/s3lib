@@ -1,0 +1,72 @@
+{
+   "number" : "3",
+   "provenance" : "",
+   "apps" : [
+      {
+         "parameters" : [],
+         "ordinal" : 1,
+         "name" : "MarkDuplicates"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "I=${sample}_N_fxmt_flt.bam",
+               "param" : "subCommand"
+            },
+            {
+               "argument" : "O=",
+               "ordinal" : 2,
+               "value" : "${sample}_N_rmdup.bam",
+               "param" : "O"
+            },
+            {
+               "argument" : "M=",
+               "ordinal" : 3,
+               "value" : "${sample}_N_dup_report.txt",
+               "param" : "M"
+            },
+            {
+               "argument" : "PROGRAM_RECORD_ID=",
+               "ordinal" : 4,
+               "value" : "null",
+               "param" : "PROGRAM_RECORD_ID"
+            },
+            {
+               "argument" : "VALIDATION_STRINGENCY=",
+               "ordinal" : 5,
+               "value" : "SILENT",
+               "param" : "VALIDATION_STRINGENCY"
+            },
+            {
+               "argument" : "REMOVE_DUPLICATES=",
+               "ordinal" : 6,
+               "value" : "true",
+               "param" : "REMOVE_DUPLICATES"
+            }
+         ],
+         "ordinal" : 2,
+         "location" : "/work/node/stephane/depot/picard-tools/picard-tools-1.103/MarkDuplicates.jar",
+         "name" : "markDuplicates"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "$cur_dir/${sample}_N_fxmt_flt.ba*",
+               "param" : "subCommand"
+            },
+            {
+               "ordinal" : "2",
+               "value" : "$cur_dir/${sample}_N_dup_report.txt",
+               "param" : "parameter.2"
+            }
+         ],
+         "ordinal" : 3,
+         "location" : "rm",
+         "name" : "cleanDuplicates"
+      }
+   ],
+   "name" : "MarkDuplicates"
+}
+

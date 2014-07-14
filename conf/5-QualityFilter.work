@@ -1,0 +1,72 @@
+{
+   "number" : "5",
+   "provenance" : "",
+   "apps" : [
+      {
+         "parameters" : [],
+         "ordinal" : 1,
+         "name" : "QualityFilter"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "filter",
+               "param" : "subCommand"
+            },
+            {
+               "argument" : "-mapQuality",
+               "ordinal" : 2,
+               "value" : "\">=60\"",
+               "param" : "mapQuality"
+            },
+            {
+               "argument" : "-in",
+               "ordinal" : 3,
+               "value" : "${sample}_N_rmdup_grp.bam",
+               "param" : "in"
+            },
+            {
+               "argument" : "-out",
+               "ordinal" : 4,
+               "value" : "${sample}_N_rmdup_grp_rmlq.bam",
+               "param" : "out"
+            }
+         ],
+         "ordinal" : 2,
+         "location" : "/work/node/stephane/depot/bin/bamtools",
+         "name" : "qualityFilter"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "index",
+               "param" : "subCommand"
+            },
+            {
+               "ordinal" : "2",
+               "value" : "${sample}_N_rmdup_grp_rmlq.bam",
+               "param" : "parameter.2"
+            }
+         ],
+         "ordinal" : 3,
+         "location" : "samtools",
+         "name" : "indexBam"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "$cur_dir/${sample}_N_rmdup_grp.ba*",
+               "param" : "subCommand"
+            }
+         ],
+         "ordinal" : 4,
+         "location" : "rm",
+         "name" : "cleanBam"
+      }
+   ],
+   "name" : "QualityFilter"
+}
+

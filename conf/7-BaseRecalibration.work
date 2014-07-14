@@ -1,0 +1,99 @@
+{
+   "number" : "7",
+   "provenance" : "",
+   "apps" : [
+      {
+         "parameters" : [],
+         "ordinal" : 1,
+         "name" : "BaseRecalibration"
+      },
+      {
+         "parameters" : [
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "BaseRecalibrator",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "${sample}_N_realigned.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "$ref",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 4,
+               "value" : "${sample}_N_recal_data.grp",
+               "param" : "o"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 5,
+               "value" : "$phase_indels",
+               "param" : "knownSites"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 6,
+               "value" : "$dbsnp",
+               "param" : "knownSites"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 7,
+               "value" : "$stand_indels",
+               "param" : "knownSites"
+            }
+         ],
+         "ordinal" : 2,
+         "location" : "/work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar",
+         "name" : "recalibrateBase"
+      },
+      {
+         "parameters" : [
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "PrintReads",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "${sample}_N_realigned.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "$ref",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 4,
+               "value" : "${sample}_N_realigned_recal.bam",
+               "param" : "o"
+            },
+            {
+               "argument" : "-BQSR",
+               "ordinal" : 5,
+               "value" : "${sample}_N_recal_data.grp",
+               "param" : "BQSR"
+            }
+         ],
+         "ordinal" : 3,
+         "location" : "/work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar",
+         "name" : "printReads"
+      }
+   ],
+   "name" : "BaseRecalibration"
+}
+

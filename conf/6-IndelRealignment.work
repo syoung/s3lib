@@ -1,0 +1,116 @@
+{
+   "number" : "6",
+   "provenance" : "",
+   "apps" : [
+      {
+         "parameters" : [],
+         "ordinal" : 1,
+         "name" : "IndelRealignment"
+      },
+      {
+         "parameters" : [
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "RealignerTargetCreator",
+               "param" : "T"
+            },
+            {
+               "argument" : "-nt",
+               "ordinal" : 2,
+               "value" : "2",
+               "param" : "nt"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 3,
+               "value" : "${sample}_N_rmdup_grp_rmlq.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 4,
+               "value" : "$ref",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 5,
+               "value" : "${sample}_N_forRealign.intervals",
+               "param" : "o"
+            }
+         ],
+         "ordinal" : 2,
+         "location" : "/work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar",
+         "name" : "realignTarget"
+      },
+      {
+         "parameters" : [
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "IndelRealigner",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "${sample}_N_rmdup_grp_rmlq.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "$ref",
+               "param" : "R"
+            },
+            {
+               "argument" : "-targetIntervals",
+               "ordinal" : 4,
+               "value" : "${sample}_N_forRealign.intervals",
+               "param" : "targetIntervals"
+            },
+            {
+               "argument" : "--out",
+               "ordinal" : 5,
+               "value" : "${sample}_N_realigned.bam",
+               "param" : "out"
+            },
+            {
+               "argument" : "-LOD",
+               "ordinal" : 6,
+               "value" : "0.4",
+               "param" : "LOD"
+            },
+            {
+               "argument" : "-compress",
+               "ordinal" : 7,
+               "value" : "5",
+               "param" : "compress"
+            }
+         ],
+         "ordinal" : 3,
+         "location" : "/work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar",
+         "name" : "realign"
+      },
+      {
+         "parameters" : [
+            {
+               "ordinal" : 1,
+               "value" : "$cur_dir/${sample}_N_rmdup_grp_rmlq.ba*",
+               "param" : "subCommand"
+            },
+            {
+               "ordinal" : "2",
+               "value" : "$cur_dir/${sample}_N_forRealign.intervals",
+               "param" : "parameter.2"
+            }
+         ],
+         "ordinal" : 4,
+         "location" : "rm",
+         "name" : "cleanRealign"
+      }
+   ],
+   "name" : "IndelRealignment"
+}
+
