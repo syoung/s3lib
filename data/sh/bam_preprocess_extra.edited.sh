@@ -1,92 +1,72 @@
 #! /bin/bash
-tcsh -c "source /work/node/stephane/depot/setpath.tcsh"
-cd /work/node/milanesej/ovarian
-
-sample="$1_exome"
-ref=$2
-normal=$3
-tumor=$4
-cur_dir=`pwd`
-java=/work/node/stephane/depot/java/jre1.7.0_11/bin/java
-
-#Assign ref file and sort bam.
-if [[ $ref == *HG19* ]]
-then
-	mkdir ${sample}_tmp
-        ref=/work/knode05/milanesej/metastasis/OV/varscan/Homo_sapiens_assembly19.fasta
-	dbsnp=/work/knode05/milanesej/metastasis/OV/varscan/dbsnp_138.b37.vcf
-	stand_indels=/work/knode05/milanesej/metastasis/OV/varscan/Mills_and_1000G_gold_standard.indels.b37.vcf
-	phase_indels=/work/knode05/milanesej/metastasis/OV/varscan/1000G_phase1.indels.b37.vcf
-fi
-
 
 #### FixMates
 
 # 1 sort
-samtools sort $normal $cur_dir/${sample}_N_sorted
+samtools sort /data/download/<SAMPLE>/<FILENAME> /data/download/<SAMPLE>/<FILESTUB>_sorted
 
 # 2 fixMate
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/FixMateInformation.jar I=${sample}_N_sorted.bam O=${sample}_N_fxmt.bam SO=coordinate CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/FixMateInformation.jar I=/data/download/<SAMPLE>/<FILESTUB>_sorted.bam O=/data/download/<SAMPLE>/<FILESTUB>_fxmt.bam SO=coordinate CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
 
 # 3 cleanSort
-rm $cur_dir/${sample}_N_sorted.bam
+rm /data/download/<SAMPLE>/<FILESTUB>_sorted.bam
 
 
 #### FilterReads
 
 # 4 filterReads
-/work/node/stephane/depot/bin/bamtools filter -isMapped true -isPaired true -isProperPair true -in ${sample}_N_fxmt.bam -out ${sample}_N_fxmt_flt.bam
+/work/node/stephane/depot/bin/bamtools filter -isMapped true -isPaired true -isProperPair true -in /data/download/<SAMPLE>/<FILESTUB>_fxmt.bam -out /data/download/<SAMPLE>/<FILESTUB>_fxmt_flt.bam
 
 # 5 indexBam
-samtools index ${sample}_N_fxmt_flt.bam
+samtools index /data/download/<SAMPLE>/<FILESTUB>_fxmt_flt.bam
 
 # 6 cleanBam
-rm $cur_dir/${sample}_N_fxmt.ba*
+rm /data/download/<SAMPLE>/<FILESTUB>_fxmt.ba*
 
 #### MarkDuplicates
 
 # 7 markDuplicates
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/MarkDuplicates.jar I=${sample}_N_fxmt_flt.bam O=${sample}_N_rmdup.bam M=${sample}_N_dup_report.txt PROGRAM_RECORD_ID=null VALIDATION_STRINGENCY=SILENT REMOVE_DUPLICATES=true
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/MarkDuplicates.jar I=/data/download/<SAMPLE>/<FILESTUB>_fxmt_flt.bam O=/data/download/<SAMPLE>/<FILESTUB>_rmdup.bam M=/data/download/<SAMPLE>/<FILESTUB>_dup_report.txt PROGRAM_RECORD_ID=null VALIDATION_STRINGENCY=SILENT REMOVE_DUPLICATES=true
 
 # 8 cleanDuplicates
-rm $cur_dir/${sample}_N_fxmt_flt.ba* $cur_dir/${sample}_N_dup_report.txt
+rm /data/download/<SAMPLE>/<FILESTUB>_fxmt_flt.ba* /data/download/<SAMPLE>/<FILESTUB>_dup_report.txt
 
 #### AddReadGroups
 
 # 9 addReadGroups
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/AddOrReplaceReadGroups.jar RGPL=Illumina RGLB=BWA RGPU=GRP1 RGSM=GP1 I=${sample}_N_rmdup.bam O=${sample}_N_rmdup_grp.bam SO=coordinate CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/node/stephane/depot/picard-tools/picard-tools-1.103/AddOrReplaceReadGroups.jar RGPL=Illumina RGLB=BWA RGPU=GRP1 RGSM=GP1 I=/data/download/<SAMPLE>/<FILESTUB>_rmdup.bam O=/data/download/<SAMPLE>/<FILESTUB>_rmdup_grp.bam SO=coordinate CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
 
 # 10 cleanReadGroups
-rm $cur_dir/${sample}_N_rmdup.ba*
+rm /data/download/<SAMPLE>/<FILESTUB>_rmdup.ba*
 
 
 #### QualityFilter
 
 # 11 qualityFilter
-/work/node/stephane/depot/bin/bamtools filter -mapQuality ">=60" -in ${sample}_N_rmdup_grp.bam -out ${sample}_N_rmdup_grp_rmlq.bam
+/work/node/stephane/depot/bin/bamtools filter -mapQuality ">=60" -in /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp.bam -out /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp_rmlq.bam
 
 # 12 indexBam
-samtools index ${sample}_N_rmdup_grp_rmlq.bam
+samtools index /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp_rmlq.bam
 
 # 13 cleanBam
-rm $cur_dir/${sample}_N_rmdup_grp.ba*
+rm /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp.ba*
 
 #### IndelRealignment
 
 # 14 realignTarget
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T RealignerTargetCreator -nt 2 -I ${sample}_N_rmdup_grp_rmlq.bam -R $ref -o ${sample}_N_forRealign.intervals
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T RealignerTargetCreator -nt 2 -I /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp_rmlq.bam -R /data/reference/Homo_sapiens_assembly19.fasta -o /data/download/<SAMPLE>/<FILESTUB>_forRealign.intervals
 
 # 15 realign
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T IndelRealigner -I ${sample}_N_rmdup_grp_rmlq.bam -R $ref -targetIntervals ${sample}_N_forRealign.intervals --out ${sample}_N_realigned.bam -LOD 0.4 -compress 5
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T IndelRealigner -I /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp_rmlq.bam -R /data/reference/Homo_sapiens_assembly19.fasta -targetIntervals /data/download/<SAMPLE>/<FILESTUB>_forRealign.intervals --out /data/download/<SAMPLE>/<FILESTUB>_realigned.bam -LOD 0.4 -compress 5
 
 # 16 cleanRealign
-rm $cur_dir/${sample}_N_rmdup_grp_rmlq.ba* $cur_dir/${sample}_N_forRealign.intervals
+rm /data/download/<SAMPLE>/<FILESTUB>_rmdup_grp_rmlq.ba* /data/download/<SAMPLE>/<FILESTUB>_forRealign.intervals
 
 #### BaseRecalibration
 
 # 17 recalibrateBase
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T BaseRecalibrator -I ${sample}_N_realigned.bam -R $ref -o ${sample}_N_recal_data.grp -knownSites $phase_indels -knownSites $dbsnp -knownSites $stand_indels
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T BaseRecalibrator -I /data/download/<SAMPLE>/<FILESTUB>_realigned.bam -R /data/reference/Homo_sapiens_assembly19.fasta -o /data/download/<SAMPLE>/<FILESTUB>_recal_data.grp -knownSites /data/reference/varscan/1000G_phase1.indels.b37.vcf -knownSites /data/reference/varscan/dbsnp_138.b37.vcf -knownSites /data/reference/varscan/Mills_and_1000G_gold_standard.indels.b37.vcf
 
 # 18 printReads
-$java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T PrintReads -I ${sample}_N_realigned.bam -R $ref -o ${sample}_N_realigned_recal.bam -BQSR ${sample}_N_recal_data.grp
+/agua/apps/java/1.7.0_51/bin/java -Xmx3000m -Djava.io.tmpdir=${sample}_tmp -jar /work/knode05/milanesej/GenomeAnalysisTK-2.8-1/GenomeAnalysisTK.jar -T PrintReads -I /data/download/<SAMPLE>/<FILESTUB>_realigned.bam -R /data/reference/Homo_sapiens_assembly19.fasta -o /data/download/<SAMPLE>/<FILESTUB>_realigned_recal.bam -BQSR /data/download/<SAMPLE>/<FILESTUB>_recal_data.grp
 
