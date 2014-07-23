@@ -1,13 +1,11 @@
 {
-   "number" : "1",
-   "provenance" : "",
+   "number" : 1,
+   "name" : "FixMates",
    "apps" : [
       {
-         "parameters" : [],
          "ordinal" : 1,
-         "name" : "FixMates"
-      },
-      {
+         "location" : "samtools",
+         "name" : "sort",
          "parameters" : [
             {
                "ordinal" : 1,
@@ -21,63 +19,66 @@
             },
             {
                "ordinal" : "3",
-               "value" : "$cur_dir/${sample}_N_sorted",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_sorted",
                "param" : "parameter.3"
             }
-         ],
-         "ordinal" : 2,
-         "location" : "samtools",
-         "name" : "sort"
+         ]
       },
       {
+         "name" : "fixMate",
+         "ordinal" : 2,
+         "location" : "/agua/apps/picard/1.103/FixMateInformation.jar",
          "parameters" : [
             {
                "ordinal" : 1,
-               "value" : "I=${sample}_N_sorted.bam",
+			   "argument"	:	"I=",
+               "value" : "<SAMPLE>_N_sorted.bam",
                "param" : "subCommand"
             },
             {
-               "argument" : "O=",
                "ordinal" : 2,
-               "value" : "${sample}_N_fxmt.bam",
+               "argument" : "O=",
+               "value" : "<SAMPLE>_N_fxmt.bam",
                "param" : "O"
             },
             {
-               "argument" : "SO=",
                "ordinal" : 3,
+               "argument" : "SO=",
                "value" : "coordinate",
                "param" : "SO"
             },
             {
-               "argument" : "CREATE_INDEX=",
                "ordinal" : 4,
+               "argument" : "CREATE_INDEX=",
                "value" : "true",
                "param" : "CREATE_INDEX"
             },
             {
-               "argument" : "VALIDATION_STRINGENCY=",
                "ordinal" : 5,
+               "argument" : "VALIDATION_STRINGENCY=",
                "value" : "SILENT",
                "param" : "VALIDATION_STRINGENCY"
             }
-         ],
-         "ordinal" : 3,
-         "location" : "/work/node/stephane/depot/picard-tools/picard-tools-1.103/FixMateInformation.jar",
-         "name" : "fixMate"
+         ]
       },
       {
+         "ordinal" : 3,
+         "name" : "cleanSort",
+		 "installdir":	"/usr/bin",
+         "location" : "rm",
          "parameters" : [
             {
                "ordinal" : 1,
-               "value" : "$cur_dir/${sample}_N_sorted.bam",
-               "param" : "subCommand"
+               "param" : "options",
+               "value" : "-fr"
+            },
+            {
+               "ordinal" : 2,
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_sorted.bam",
+               "param" : "file"
             }
-         ],
-         "ordinal" : 4,
-         "location" : "rm",
-         "name" : "cleanSort"
+         ]
       }
-   ],
-   "name" : "FixMates"
+   ]
 }
 
