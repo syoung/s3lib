@@ -1,0 +1,122 @@
+README
+
+Introduction
+============
+
+This package contains the configuration files and executables of the National Research Council of Canada's ovarian cancer analysis pipeline. The pipeline is similar to the Broad GATK Best Practices pipeline and consists of the following steps:
+
+1) Fix mates
+
+2) Filter reads to remove low quality reads
+
+3) Mark duplicates to remove multi-cloned reads
+
+4) Add read groups 
+
+5) Filter reads based on quality
+
+6) Recalibrate indels
+
+7) Recalibrate bases
+
+
+Installation
+===========
+
+DEPENDENCIES
+
+Supported Perl versions (may also work on other versions):
+
+   v5.10.1
+   v5.14.2
+
+Required Perl modules:
+
+   namespace::autoclean
+   MooseX::Declare
+   PadWalker
+   
+Additional required packages (version):
+
+   Agua (0.8.0-beta.1+build.53+)
+   Samtools (0.1.19+)
+   Bamtools (v2.3.0)
+   
+
+INSTALL
+
+Automated install
+-----------------
+
+Use Agua's deploy tool to install the package and its dependencies.
+
+
+Update the biorepository for the latest information on package installation:
+
+sudo su
+/agua/bin/install/deploy.pl --mode biorepo
+
+Install the dependencies:
+
+/agua/bin/install/deploy.pl --mode install --package samtools --version 0.1.19
+/agua/bin/install/deploy.pl --mode install --package bamtools --version v2.3.0
+
+Install the latest source code of the NRC pipeline to /agua/apps/nrc/VERSION, and load all workflow and data files into Agua's database:
+
+/agua/bin/install/deploy.pl --mode install --package nrc --version max
+
+
+Manual install
+--------------
+
+To install and run the workflow using the command line follow the instructions below.
+
+1. Download the package
+
+cd /agua/apps/
+git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
+
+2. Load the workflows
+
+export VERSION=0.0.1
+
+cd /agua/apps/cu/$VERSION/conf
+/agua/bin/cli/flow.pl NRC.proj delete --username syoung
+/agua/bin/cli/flow.pl NRC.proj save --username syoung
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-Load.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-Run.work --username syoung --log 4
+
+cd /agua/apps/cu/$VERSION/conf/Load
+/agua/bin/cli/flow.pl Load.proj delete --username syoung
+/agua/bin/cli/flow.pl Load.proj save --username syoung
+/agua/bin/cli/flow.pl Load.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
+
+cd /agua/apps/cu/$VERSION/conf/Run
+/agua/bin/cli/flow.pl Run.proj delete --username syoung
+/agua/bin/cli/flow.pl Run.proj save --username syoung
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 2-FilterReads.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
+
+3. Load the sample data
+
+cd /agua/apps/nrc/$VERSION/conf/Load
+/agua/bin/cli/flow.pl Load.proj runWorkflow --workflow LoadSamples --username syoung --log 4
+
+
+4. Run the pipeline
+
+Run the whole project:
+
+cd /agua/apps/nrc/$VERSION/conf/Run
+/agua/bin/cli/flow.pl Run.proj runProject --username syoung --scheduler sge --log 4
+
+Run individual workflows:
+
+cd /agua/apps/nrc/$VERSION/conf/Run
+/agua/bin/cli/flow.pl Run.proj runWorkflow --workflow FixMates --username syoung --scheduler sge --log 4
+
