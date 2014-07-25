@@ -1,18 +1,20 @@
 {
-   "number" : "4",
-   "provenance" : "",
-   "apps" : [
+   "project"		: 	"NRC",
+   "number" 		: 	4,
+   "name" 			: 	"AddReadGroups",
+   "apps" 			: 	[
       {
-         "parameters" : [],
-         "ordinal" : 1,
-         "name" : "AddReadGroups"
-      },
-      {
+         "number" 		: 	1,
+         "name" 		: 	"addReadGroups",
+		 "installdir"	:	"/agua/apps/picard/1.103",
+         "location" 	: 	"AddOrReplaceReadGroups.jar",
+	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
          "parameters" : [
             {
-               "ordinal" : 1,
-               "value" : "RGPL=Illumina",
-               "param" : "subCommand"
+               "argument"	: 	"RGPL=",
+               "ordinal" 	: 	1,
+			   "value"		:	"Illumina",
+               "param" 		: 	"subCommand"
             },
             {
                "argument" : "RGLB=",
@@ -63,23 +65,25 @@
                "param" : "VALIDATION_STRINGENCY"
             }
          ],
-         "ordinal" : 2,
-         "location" : "/work/node/stephane/depot/picard-tools/picard-tools-1.103/AddOrReplaceReadGroups.jar",
-         "name" : "addReadGroups"
       },
       {
-         "parameters" : [
+         "number" 		: 	2,
+         "installdir" 	: 	"/bin",
+         "location" 	: 	"rm",
+         "name" 		: 	"cleanReadGroups",
+         "parameters" 	: 	[
             {
                "ordinal" : 1,
+               "value" : "-fr",
+               "param" : "options"
+            },
+            {
+               "ordinal" : 2,
                "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_rmdup.ba*",
-               "param" : "subCommand"
+               "param" : "file"
             }
          ],
-         "ordinal" : 3,
-         "location" : "rm",
-         "name" : "cleanReadGroups"
       }
-   ],
-   "name" : "AddReadGroups"
+   ]
 }
 

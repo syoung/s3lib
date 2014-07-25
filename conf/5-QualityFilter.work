@@ -1,14 +1,14 @@
 {
-   "number" : "5",
-   "provenance" : "",
-   "apps" : [
+   "project"		: 	"NRC",
+   "number" 		: 	5,
+   "name" 			: 	"QualityFilter",
+   "apps" 			: 	[
       {
-         "parameters" : [],
-         "ordinal" : 1,
-         "name" : "QualityFilter"
-      },
-      {
-         "parameters" : [
+         "number" 		: 	1,
+         "installdir" 	: 	"/agua/apps/bamtools/v2.3.0",
+         "location" 	: 	"bamtools",
+         "name" 		: 	"qualityFilter",
+		 "parameters" 	: 	[
             {
                "ordinal" : 1,
                "value" : "filter",
@@ -32,12 +32,13 @@
                "value" : "<SAMPLE>_N_rmdup_grp_rmlq.bam",
                "param" : "out"
             }
-         ],
-         "ordinal" : 2,
-         "location" : "/work/node/stephane/depot/bin/bamtools",
-         "name" : "qualityFilter"
+         ]
       },
       {
+         "number" 		: 	2,
+         "installdir" 	: 	"/agua/apps/samtools/0.1.19",
+         "location" 	: 	"samtools",
+         "name" 		: 	"indexBam",
          "parameters" : [
             {
                "ordinal" : 1,
@@ -49,24 +50,27 @@
                "value" : "<SAMPLE>_N_rmdup_grp_rmlq.bam",
                "param" : "parameter.2"
             }
-         ],
-         "ordinal" : 3,
-         "location" : "samtools",
-         "name" : "indexBam"
+         ]
       },
       {
+         "number" 		: 	3,
+         "name" 		: 	"cleanBam",
+		 "installdir"	:	"/bin",
+         "location" 	: 	"rm",
+		 "type"			:	"delete",
          "parameters" : [
             {
                "ordinal" : 1,
+               "value" : "-fr",
+               "param" : "options"
+            },
+            {
+               "ordinal" : 2,
                "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_rmdup_grp.ba*",
-               "param" : "subCommand"
+               "param" : "file"
             }
          ],
-         "ordinal" : 4,
-         "location" : "rm",
-         "name" : "cleanBam"
       }
-   ],
-   "name" : "QualityFilter"
+   ]
 }
 

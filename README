@@ -80,45 +80,38 @@ git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
 
 export VERSION=0.0.1
 
-cd /agua/apps/cu/$VERSION/conf
+cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj delete --username syoung
 /agua/bin/cli/flow.pl NRC.proj save --username syoung
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-Load.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-Run.work --username syoung --log 4
-
-cd /agua/apps/cu/$VERSION/conf/Load
-/agua/bin/cli/flow.pl Load.proj delete --username syoung
-/agua/bin/cli/flow.pl Load.proj save --username syoung
-/agua/bin/cli/flow.pl Load.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
-
-cd /agua/apps/cu/$VERSION/conf/Run
-/agua/bin/cli/flow.pl Run.proj delete --username syoung
-/agua/bin/cli/flow.pl Run.proj save --username syoung
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 2-FilterReads.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
-/agua/bin/cli/flow.pl Run.proj saveWorkflow --wkfile 8-Varscan.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-FilterReads.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 8-Varscan.work --username syoung --log 4
 
 
 3. Load the sample data
 
-cd /agua/apps/nrc/$VERSION/conf/Load
+cd /agua/apps/nrc/conf/Load
 /agua/bin/cli/flow.pl Load.proj runWorkflow --workflow LoadSamples --username syoung --log 4
 
 
-4. Run the pipeline
+4. Run
 
-Run the whole project:
+Run the pipeline:
 
-cd /agua/apps/nrc/$VERSION/conf/Run
-/agua/bin/cli/flow.pl Run.proj runProject --username syoung --scheduler sge --log 4
+cd /agua/apps/nrc/conf
+/agua/bin/cli/flow.pl NRC.proj runProject --username syoung --scheduler sge --log 4
 
-Run individual workflows:
+Run a workflow:
 
-cd /agua/apps/nrc/$VERSION/conf/Run
-/agua/bin/cli/flow.pl Run.proj runWorkflow --workflow FixMates --username syoung --scheduler sge --log 4
+cd /agua/apps/nrc/conf
+/agua/bin/cli/flow.pl NRC.proj runWorkflow --workflow FixMates --username syoung samplestring "sample:SRR645665" --log 4
 
+Run a stage:
+
+cd /agua/apps/nrc/conf
+/agua/bin/cli/flow.pl NRC.proj runStage --workflow FixMates --username syoung --samplestring "sample:SRR645665" --log 4 --stagenumber 2

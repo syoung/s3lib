@@ -1,12 +1,14 @@
 {
-   "number" : "2",
-   "provenance" : "",
-   "apps" : [
+   "project"		: 	"NRC",
+   "number" 		: 	2,
+   "name" 			: 	"FilterReads",
+   "apps" 			: 	[
       {
-         "ordinal" 		: 	1,
+         "number" 		: 	1,
          "name" 		: 	"filterReads",
          "installdir" 	: 	"/agua/apps/bamtools/v2.3.0",
          "location" 	: 	"bin/bamtools",
+         "type" 		: 	"converter",
          "parameters" 	: 	[
             {
                "ordinal" : 1,
@@ -34,22 +36,23 @@
             {
                "ordinal" : 5,
                "argument" : "-in",
-               "value" : "<SAMPLE>_N_fxmt.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt.bam",
                "param" : "in"
             },
             {
                "ordinal" : 6,
                "argument" : "-out",
-               "value" : "<SAMPLE>_N_fxmt_flt.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
                "param" : "out"
             }
          ]
       },
       {
-         "ordinal" 		: 	2,
+         "number" 		: 	2,
          "name" 		: 	"indexBam",
          "installdir" 	: 	"/agua/apps/samtools/0.1.19",
          "location" 	: 	"samtools",
+         "type" 		: 	"converter",
          "parameters" 	: 	[
             {
                "ordinal"	: 	1,
@@ -58,25 +61,25 @@
             },
             {
                "ordinal" 	: 	2,
-               "value" 		: 	"<SAMPLE>_N_fxmt_flt.bam",
+               "value" 		: 	"/data/nrc/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
                "param" 		: 	"bamfile"
             }
          ]
       },
       {
-         "ordinal" 		: 	3,
+         "number" 		: 	3,
 		 "installdir"	:	"/bin",
          "location" 	: 	"rm",
          "name" 		: 	"cleanBam",
+         "type" 		: 	"deleter",
          "parameters" 	:	[
             {
                "ordinal": 	1,
-               "value" 	: 	"/data/nrc/<SAMPLE>/<SAMPLE>_N_fxmt.ba*",
+               "value" 	: 	"/data/nrc/<SAMPLE>/<SAMPLE>.fxmt.ba*",
                "param" 	: 	"subCommand"
             }
          ]
       }
-   ],
-   "name" : "FilterReads"
+   ]
 }
 

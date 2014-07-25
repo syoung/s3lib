@@ -1,12 +1,15 @@
 {
-   "number" : 1,
-   "name" : "FixMates",
-   "apps" : [
+   "project"		: 	"NRC",
+   "number" 		: 	1,
+   "name" 			: 	"FixMates",
+   "apps" 			: 	[
       {
-         "ordinal" : 1,
-         "location" : "samtools",
-         "name" : "sort",
-         "parameters" : [
+         "number" 		: 	1,
+         "installdir" 	: 	"/agua/apps/samtools/0.1.19",
+         "location" 	: 	"samtools",
+         "name" 		: 	"sort",
+         "type" 		: 	"converter",
+         "parameters" 	: 	[
             {
                "ordinal" : 1,
                "value" : "sort",
@@ -14,31 +17,34 @@
             },
             {
                "ordinal" : "2",
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.sam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.bam",
                "param" : "inputfile"
             },
             {
                "ordinal" : "3",
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.sorted.sam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.sorted",
                "param" : "sortedfile"
             }
          ]
       },
       {
-         "name" : "fixMate",
-         "ordinal" : 2,
-         "location" : "/agua/apps/picard/1.103/FixMateInformation.jar",
+         "name" 		: 	"fixMate",
+         "number" 		: 	2,
+         "type" 		: 	"converter",
+	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
+         "installdir" 	: 	"/agua/apps/picard/1.103",
+         "location" 	: 	"FixMateInformation.jar",
          "parameters" : [
             {
                "ordinal" : 1,
 			   "argument"	:	"I=",
-               "value" : "<SAMPLE>_N_sorted.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.sorted.bam",
                "param" : "subCommand"
             },
             {
                "ordinal" : 2,
                "argument" : "O=",
-               "value" : "<SAMPLE>_N_fxmt.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt.bam",
                "param" : "O"
             },
             {
@@ -62,10 +68,11 @@
          ]
       },
       {
-         "ordinal" : 3,
+         "number" : 3,
          "name" : "cleanSort",
-		 "installdir":	"/usr/bin",
+		 "installdir":	"/bin",
          "location" : "rm",
+         "type" : "deleter",
          "parameters" : [
             {
                "ordinal" : 1,
@@ -74,7 +81,7 @@
             },
             {
                "ordinal" : 2,
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_sorted.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.sorted.bam",
                "param" : "file"
             }
          ]

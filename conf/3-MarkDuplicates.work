@@ -1,29 +1,31 @@
 {
-   "number" : "3",
-   "provenance" : "",
-   "apps" : [
+   "project"		: 	"NRC",
+   "number" 		: 	3,
+   "name" 			: 	"MarkDuplicates",
+   "apps" 			: 	[
       {
-         "parameters" : [],
-         "ordinal" : 1,
-         "name" : "MarkDuplicates"
-      },
-      {
-         "parameters" : [
+         "number" 		: 	1,
+		 "installdir"	:	"/agua/apps/picard/1.103",
+         "location" 	: 	"MarkDuplicates.jar",
+	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
+         "name" 		: 	"markDuplicates",
+         "type" 		: 	"duplicates",
+         "parameters" 	: 	[
             {
                "ordinal" : 1,
-               "value" : "I=<SAMPLE>_N_fxmt_flt.bam",
+               "value" : "I=<SAMPLE>.fxmt_flt.bam",
                "param" : "subCommand"
             },
             {
                "argument" : "O=",
                "ordinal" : 2,
-               "value" : "<SAMPLE>_N_rmdup.bam",
+               "value" : "<SAMPLE>.rmdup.bam",
                "param" : "O"
             },
             {
                "argument" : "M=",
                "ordinal" : 3,
-               "value" : "<SAMPLE>_N_dup_report.txt",
+               "value" : "<SAMPLE>.dup_report.txt",
                "param" : "M"
             },
             {
@@ -44,29 +46,32 @@
                "value" : "true",
                "param" : "REMOVE_DUPLICATES"
             }
-         ],
-         "ordinal" : 2,
-         "location" : "/work/node/stephane/depot/picard-tools/picard-tools-1.103/MarkDuplicates.jar",
-         "name" : "markDuplicates"
+         ]
       },
       {
+         "number" 		: 	2,
+         "installdir" 	: 	"/bin",
+         "location" 	: 	"rm",
+         "name" 		: 	"cleanDuplicates",
+         "type" 		: 	"deleter",
          "parameters" : [
             {
                "ordinal" : 1,
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_fxmt_flt.ba*",
-               "param" : "subCommand"
+               "value" : "-fr",
+               "param" : "options"
             },
             {
-               "ordinal" : "2",
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_dup_report.txt",
-               "param" : "parameter.2"
+               "ordinal" : 2,
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt_flt.ba*",
+               "param" : "file1"
+            },
+            {
+               "ordinal" : 3,
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.dup_report.txt",
+               "param" : "file2"
             }
          ],
-         "ordinal" : 3,
-         "location" : "rm",
-         "name" : "cleanDuplicates"
       }
-   ],
-   "name" : "MarkDuplicates"
+   ]
 }
 
