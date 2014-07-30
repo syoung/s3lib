@@ -1,0 +1,53 @@
+{
+   "project": "NRC",
+   "name"   : "LoadSRA",
+   "number" : 1,
+   "description" : "Load 10 Short Read Archive (SRA) bladder cancer tumour and normal whole exome samples",
+   "notes" : "Uses flow.pl to run project",
+   "apps" : [
+      {
+         "name" 		: 	"flow",
+         "number"		: 	1,
+         "type" 		: 	"cli",
+         "package" 		: 	"agua",
+		 "submit"		:	1,
+         "installdir" 	: 	"/agua",
+         "location" 	: 	"bin/cli/flow.pl",
+         "description" 	: 	"Create, run and monitor workflows on the command line",
+         "linkurl" 		: 	"http://www.github.com/agua/agua",
+         "parameters"	: 	[
+            {
+               "ordinal" 		: 	1,
+               "param" 			: 	"projectfile",
+               "category" 		: 	"file",
+               "description" 	: 	"JSON project file",
+	           "value" 			: 	"/agua/apps/nrc/conf/Load/Load.proj"
+            },
+            {
+               "ordinal" 		: 	2,
+               "param" 			: 	"subcommand",
+               "category" 		: 	"subcommand",
+               "description" 	: 	"Use subcommand to access flow's different functionalities",
+	           "value" 			: 	"runProject"
+            },
+            {
+               "ordinal" 		: 	3,
+               "param" 			: 	"username",
+               "argument" 		: 	"--username",
+               "category" 		: 	"username",
+               "description" 	: 	"Name of user running workflow",
+	           "value" 			: 	"syoung"
+            }
+			,
+			{
+               "ordinal" 		: 	4,
+               "param" 			: 	"log",
+               "argument" 		: 	"--log",
+               "category" 		: 	"log",
+               "description" 	: 	"Log level (1-5)",
+	           "value" 			: 	4
+            }
+         ]
+      }
+   ]
+}

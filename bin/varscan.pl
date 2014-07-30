@@ -6,9 +6,23 @@
 
 PURPOSE
 
-    Align a BAM file against a reference genome using bwa_mem.pl
-	with default PanCancer project alignment workflow parameters
+    1. Use samtools and varscan to make variant calls with SRA or TCGA data
+	
+	2. Requires cancer sample UUID input by user
+	
+	3. Will automatically find matching normal sample UUID
 
+	4. Both cancer and normal sample files must be present in inputdir:
+	
+		inputdir/CANCERUUID/CANCERUUID.bam
+		
+		inputdir/NORMALUUID/NORMALUUID.bam
+		
+
+	5. Print VCF to output directory:
+	
+		outputdir/CANCERUUID.vcf
+	
 USAGE
 
 ./bwa.pl <--uuid String> \
@@ -18,7 +32,7 @@ USAGE
 	<--reference String> \
 	[--batchsize Integer] \
 	[--workdir String] \
-	[--version String ] \
+	[--options String ] \
 
 uuid   		:   UUID of the sample
 inputdir	: 	Directory containing input lane BAM files
@@ -27,7 +41,7 @@ filename	:	Name of the input BAM file (NB: name only, not full path to file)
 reference	:	Stub location of BWA-format reference indexes (e.g., /data/genome.fa.gz)
 batchsize	:	Max number of input files to align at once
 workdir  	:	Directory for temporary files
-version     :   Version of PCAP-Core package containing bwa_mem.pl
+options     :   Version of PCAP-Core package containing bwa_mem.pl
 
 EXAMPLE
 
@@ -56,18 +70,14 @@ use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
 use Conf::Yaml;
-use CU::App::Bwa;
+use NRC::App::Varscan;
 
 #### GET OPTIONS
 my $uuid		=	undef;
 my $inputdir	=	undef;
 my $outputdir	=	undef;
-my $filename	=	undef;
 my $reference	=	undef;
-
-my $batchsize	=	undef;
-my $workdir 	= 	"/mnt";
-my $version		=	undef;
+my $options		=	undef;
 
 my $log			=	2;
 my $printlog	=	4;
@@ -76,12 +86,8 @@ GetOptions (
     'uuid=s'     	=> \$uuid,
     'inputdir=s'    => \$inputdir,
     'outputdir=s'   => \$outputdir,
-    'filename=s'    => \$filename,
     'reference=s'   => \$reference,
-
-    'batchsize=s'   => \$batchsize,
-    'workdir=s'   	=> \$workdir,
-    'version=s'   	=> \$version,
+    'options=s'   	=> \$options,
 
     'log=i'     	=> \$log,
     'printlog=i'    => \$printlog,
@@ -101,13 +107,13 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object	=	CU::App::Bwa->new({
+my $object	=	NRC::App::Varscan->new({
 	conf		=>	$conf,
     log     	=>  $log,
     printlog    =>  $printlog,
     logfile     =>  $logfile	
 });
 
-$object->align($uuid, $inputdir, $filename, $outputdir, $reference, $workdir, $version, $batchsize);
+$object->align($uuid, $inputdir, $outputdir, $reference, $options);
 
 

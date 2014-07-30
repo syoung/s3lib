@@ -9,6 +9,7 @@
 		 "installdir"	:	"/agua/apps/picard/1.103",
          "location" 	: 	"AddOrReplaceReadGroups.jar",
 	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
+         "type" 		: 	"readgroups",
          "parameters" : [
             {
                "argument"	: 	"RGPL=",
@@ -37,13 +38,13 @@
             {
                "argument" : "I=",
                "ordinal" : 5,
-               "value" : "<SAMPLE>_N_rmdup.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.rmdup.bam",
                "param" : "I"
             },
             {
                "argument" : "O=",
                "ordinal" : 6,
-               "value" : "<SAMPLE>_N_rmdup_grp.bam",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.rmdup_grp.bam",
                "param" : "O"
             },
             {
@@ -64,13 +65,14 @@
                "value" : "SILENT",
                "param" : "VALIDATION_STRINGENCY"
             }
-         ],
+         ]
       },
       {
          "number" 		: 	2,
          "installdir" 	: 	"/bin",
          "location" 	: 	"rm",
          "name" 		: 	"cleanReadGroups",
+         "type" 		: 	"delete",
          "parameters" 	: 	[
             {
                "ordinal" : 1,
@@ -79,10 +81,10 @@
             },
             {
                "ordinal" : 2,
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_N_rmdup.ba*",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.rmdup.ba*",
                "param" : "file"
             }
-         ],
+         ]
       }
    ]
 }

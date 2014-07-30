@@ -19,6 +19,8 @@ This package contains the configuration files and executables of the National Re
 
 7) Recalibrate bases
 
+8) Run Varscan
+
 
 Installation
 ===========
@@ -78,25 +80,46 @@ git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
 
 2. Load the workflows
 
-export VERSION=0.0.1
+#### LOAD NRC
 
-cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj delete --username syoung
 /agua/bin/cli/flow.pl NRC.proj save --username syoung
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-FilterReads.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
-/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 8-Varscan.work --username syoung --log 4
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-LoadSRA.work --username syoung
+/agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-RunSRA.work --username syoung
+
+
+#### LOAD SRA DATA
+
+#export VERSION=0.0.11
+cd /agua/apps/nrc/conf/LoadSRA
+/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples
+
+
+
+#### LOAD SRA WORKFLOW
+cd /agua/apps/nrc/conf
+/agua/bin/cli/flow.pl RunSRA.proj delete --username syoung
+/agua/bin/cli/flow.pl RunSRA.proj save --username syoung
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 2-FilterReads.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 8-Varscan.work --username syoung --log 4
 
 
 3. Load the sample data
 
-cd /agua/apps/nrc/conf/Load
-/agua/bin/cli/flow.pl Load.proj runWorkflow --workflow LoadSamples --username syoung --log 4
+Load Sample Data
+================
+
+1. Load sample data
+
+cd /agua/apps/nrc/conf/sra/LoadSRA
+/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung
+
 
 
 4. Run
