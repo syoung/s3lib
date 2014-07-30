@@ -82,7 +82,6 @@ git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
 2. Load the workflows
 
 #### LOAD NRC
-
 cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj delete --username syoung
 /agua/bin/cli/flow.pl NRC.proj save --username syoung
@@ -90,13 +89,13 @@ cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-RunSRA.work --username syoung
 
 
-#### LOAD LoadSRA PROJECT
+#### LOAD LoadSRA CONFIGURATION
 cd /agua/apps/nrc/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl LoadSRA.proj save --username syoung
 /agua/bin/cli/flow.pl LoadSRA.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
 
-#### LOAD RunSRA PROJECT
+#### LOAD RunSRA CONFIGURATION
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl RunSRA.proj save --username syoung
@@ -105,42 +104,29 @@ cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 3-MarkDuplicates.work --username syoung --log 4
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 4-AddReadGroups.work --username syoung --log 4
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 5-QualityFilter.work --username syoung --log 4
-/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 6-IndelRecalibration.work --username syoung --log 4
+/agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 6-IndelRealignment.work --username syoung --log 4
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 7-BaseRecalibration.work --username syoung --log 4
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 8-Varscan.work --username syoung --log 4
 
 
+
 3. Load the sample data
 
-Load Sample Data
-================
-
-1. Load sample data
-
-cd /agua/apps/nrc/conf/sra/LoadSRA
+cd /agua/apps/nrc/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung
 
-#### LOAD SRA DATA
-
-#export VERSION=0.0.11
-cd /agua/apps/nrc/conf/LoadSRA
-/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples
 
 
+4. Run the pipeline
 
-
-
-4. Run
-
-Run the pipeline:
 
 cd /agua/apps/nrc/conf
-/agua/bin/cli/flow.pl NRC.proj runProject --username syoung --scheduler sge --log 4
+/agua/bin/cli/flow.pl NRC.proj runProject --username syoung --log 4
 
 Run a workflow:
 
-cd /agua/apps/nrc/conf
-/agua/bin/cli/flow.pl NRC.proj runWorkflow --workflow FixMates --username syoung samplestring "sample:SRR645665" --log 4
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --samplestring "sample:SRR645665" --log 4
 
 Run a stage:
 
