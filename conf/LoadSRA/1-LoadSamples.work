@@ -3,7 +3,7 @@
    "name"   : "LoadSamples",
    "number" : 1,
    "description" : "Load a list of sample ids",
-   "notes" : "List of CGHub bladder cancer tumor and normal sample UUIDs",
+   "notes" : "List of SRA bladder cancer tumor and normal samples",
    "apps" : [
       {"name" : "loadSamples",
          "number": 1,
@@ -11,9 +11,8 @@
          "package" : "agua",
          "installdir" : "/agua",
          "location" : "bin/sample/loadSamples.pl",
-         "version" : "0.0.11",
          "description" : "Load a list of sample ids",
-         "linkurl" : "http://www.github.com/annaisystems/cu",
+         "linkurl" : "http://www.github.com/annaisystems/nrc",
          "parameters" : [
             {
                "param" 			: 	"username",
@@ -41,162 +40,14 @@
                "argument" : "--sqlfile",
                "category" : "sqlfile",
                "description" : "Location of sqlfile containing 'create table' command",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/sql/srasample.sql"
+	           "value" : "/agua/apps/nrc/data/sra/sql/srasample.sql"
             },
             {
                "param" : "tsvfile",
                "argument" : "--tsvfile",
                "category" : "tsvfile",
                "description" : "Location of tsvfile containing sample data",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/tsv/srasample.tsv"
-            }
-         ]
-      }
-	  ,
-      {"name" : "loadCluster",
-         "number": 2,
-         "type" : "loader",
-         "package" : "agua",
-         "installdir" : "/agua",
-         "version" : "0.0.11",
-         "location" : "bin/scripts/loadTable.pl",
-         "description" : "Load a TSV file into a table",
-         "linkurl" : "http://www.github.com/annaisystems/cu",
-         "parameters" : [
-            {
-               "param" : "tsvfile",
-               "appnumber" : 1,
-               "argument" : "--tsvfile",
-               "category" : "file",
-               "description" : "Location of TSV file containing required fields",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/tsv/cluster.tsv"
-            },
-            {
-               "param" : "table",
-               "appnumber" : 1,
-               "argument" : "--table",
-               "category" : "table",
-               "description" : "Name of table",
-	           "value" : "cluster"
-            },
-            {
-               "param" : "db",
-               "appnumber" : 1,
-               "argument" : "--db",
-               "category" : "database",
-               "description" : "Name of database",
-	           "value" : "agua"
-            }
-         ]
-      }
-	  ,
-      {"name" : "loadInstanceType",
-         "number": 3,
-         "type" : "loader",
-         "package" : "agua",
-         "installdir" : "/agua",
-         "version" : "0.0.11",
-         "location" : "bin/scripts/loadTable.pl",
-         "description" : "Load a TSV file into a table",
-         "linkurl" : "http://www.github.com/annaisystems/cu",
-         "parameters" : [
-            {
-               "param" : "tsvfile",
-               "appnumber" : 1,
-               "argument" : "--tsvfile",
-               "category" : "file",
-               "description" : "Location of TSV file containing required fields",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/tsv/instancetype.tsv"
-            },
-            {
-               "param" : "table",
-               "appnumber" : 1,
-               "argument" : "--table",
-               "category" : "table",
-               "description" : "Name of table",
-	           "value" : "instancetype"
-            },
-            {
-               "param" : "db",
-               "appnumber" : 1,
-               "argument" : "--db",
-               "category" : "database",
-               "description" : "Name of database",
-	           "value" : "agua"
-            }
-         ]
-      }
-	  ,
-      {"name" : "loadClusterWorkflow",
-         "number": 4,
-         "type" : "loader",
-         "package" : "agua",
-         "installdir" : "/agua",
-         "version" : "0.0.11",
-         "location" : "bin/scripts/loadTable.pl",
-         "description" : "Load a TSV file into a table",
-         "linkurl" : "http://www.github.com/annaisystems/cu",
-         "parameters" : [
-            {
-               "param" : "tsvfile",
-               "appnumber" : 1,
-               "argument" : "--tsvfile",
-               "category" : "file",
-               "description" : "Location of TSV file containing required fields",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/tsv/clusterworkflow.tsv"
-            },
-            {
-               "param" : "table",
-               "appnumber" : 1,
-               "argument" : "--table",
-               "category" : "table",
-               "description" : "Name of table",
-	           "value" : "clusterworkflow"
-            },
-            {
-               "param" : "db",
-               "appnumber" : 1,
-               "argument" : "--db",
-               "category" : "database",
-               "description" : "Name of database",
-	           "value" : "agua"
-            }
-         ]
-      }
-	  ,
-      {"name" : "loadClusterVars",
-         "number": 5,
-         "type" : "loader",
-         "package" : "agua",
-         "installdir" : "/agua",
-         "version" : "0.0.11",
-         "location" : "bin/scripts/loadTable.pl",
-         "description" : "Load a TSV file into a table",
-         "linkurl" : "http://www.github.com/annaisystems/cu",
-         "parameters" : [
-            {
-               "param" : "tsvfile",
-               "appnumber" : 1,
-               "argument" : "--tsvfile",
-               "category" : "file",
-               "description" : "Location of TSV file containing required fields",
-	           "value" : "/agua/apps/cu/<VERSION>/data/sra/tsv/clustervars.tsv"
-            },
-            {
-               "param" : "table",
-               "appnumber" : 1,
-               "argument" : "--table",
-               "category" : "table",
-               "description" : "Name of table",
-	           "value" : "clustervars"
-            },
-            {
-               "param" : "db",
-               "appnumber" : 1,
-               "argument" : "--db",
-               "category" : "database",
-               "description" : "Name of database",
-	           "value" : "agua"
+	           "value" : "/agua/apps/nrc/data/sra/tsv/srasample.tsv"
             }
          ]
       }

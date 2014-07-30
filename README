@@ -78,26 +78,26 @@ To install and run the workflow using the command line follow the instructions b
 cd /agua/apps/
 git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
 
+
 2. Load the workflows
 
 #### LOAD NRC
 
+cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj delete --username syoung
 /agua/bin/cli/flow.pl NRC.proj save --username syoung
 /agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-LoadSRA.work --username syoung
 /agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 2-RunSRA.work --username syoung
 
 
-#### LOAD SRA DATA
-
-#export VERSION=0.0.11
+#### LOAD LoadSRA PROJECT
 cd /agua/apps/nrc/conf/LoadSRA
-/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples
+/agua/bin/cli/flow.pl LoadSRA.proj delete --username syoung
+/agua/bin/cli/flow.pl LoadSRA.proj save --username syoung
+/agua/bin/cli/flow.pl LoadSRA.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
 
-
-
-#### LOAD SRA WORKFLOW
-cd /agua/apps/nrc/conf
+#### LOAD RunSRA PROJECT
+cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl RunSRA.proj save --username syoung
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
@@ -119,6 +119,14 @@ Load Sample Data
 
 cd /agua/apps/nrc/conf/sra/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung
+
+#### LOAD SRA DATA
+
+#export VERSION=0.0.11
+cd /agua/apps/nrc/conf/LoadSRA
+/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples
+
+
 
 
 
