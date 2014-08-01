@@ -75,9 +75,11 @@ use NRC::App::Varscan;
 #### GET OPTIONS
 my $uuid		=	undef;
 my $inputdir	=	undef;
+my $suffix		=	undef;
 my $outputdir	=	undef;
 my $reference	=	undef;
 my $options		=	undef;
+my $samtools	=	undef;
 
 my $log			=	2;
 my $printlog	=	4;
@@ -85,9 +87,11 @@ my $printlog	=	4;
 GetOptions (
     'uuid=s'     	=> \$uuid,
     'inputdir=s'    => \$inputdir,
+    'suffix=s'    	=> \$suffix,
     'outputdir=s'   => \$outputdir,
     'reference=s'   => \$reference,
     'options=s'   	=> \$options,
+    'samtools=s'   => \$samtools,
 
     'log=i'     	=> \$log,
     'printlog=i'    => \$printlog,
@@ -114,6 +118,6 @@ my $object	=	NRC::App::Varscan->new({
     logfile     =>  $logfile	
 });
 
-$object->align($uuid, $inputdir, $outputdir, $reference, $options);
+$object->align($uuid, $inputdir, $suffix, $outputdir, $reference, $options, $samtools);
 
 

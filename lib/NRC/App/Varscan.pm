@@ -25,9 +25,10 @@ has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"v1.0.4" );
 has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setConf" );
 
 
-method align ($uuid, $inputdir, $outputdir, $reference, $options) {
+method align ($uuid, $inputdir, $suffix, $outputdir, $reference, $options, $samtools) {
 	$self->logDebug("uuid", $uuid);
 	$self->logDebug("inputdir", $inputdir);
+	$self->logDebug("suffix", $suffix);
 	$self->logDebug("outputdir", $outputdir);
 	$self->logDebug("reference", $reference);
 	
@@ -39,7 +40,7 @@ method align ($uuid, $inputdir, $outputdir, $reference, $options) {
 	#### GET SAMTOOLS
 	$installdir	=	$self->getInstallDir("samtools");
 	$self->logDebug("installdir", $installdir);
-	my $samtools	=	 "$installdir/bin/samtools";
+	$samtools	=	 "$installdir/samtools" if not defined $samtools;
 	
 	#### GET JAVA
 	$installdir	=	$self->getInstallDir("java");
@@ -48,36 +49,34 @@ method align ($uuid, $inputdir, $outputdir, $reference, $options) {
 	
 	#### QUIT IF NORMAL
 	return if $self->isNormal($uuid);
-	
+
+	#### QUIT IF NOT LAST UUID FOR THIS SAMPLE
+	return if not $self->isLastUuid($uuid);
+
 	#### SET TUMOUR FILE
-	my $tumourfile	=	"$inputdir/$uuid/$uuid.bam";
+	my $tumourfile	=	"$inputdir/$uuid/$uuid.$suffix.bam";
+	$self->logDebug("tumourfile", $tumourfile);
+	
+	#### SANITY CHECK
 	print "Tumour file not found\n" and exit(1) if not -f $tumourfile;
 	
-	#### GET NORMAL MATE
-	my $normalfile		=	undef;
-	if ( not defined $normalfile ) {
-		my $mate		=	$self->getMate($uuid);
-		$self->logDebug("mate", $mate);
-		my $mateuuid	=	$mate->{sample};
-		$self->logDebug("mateuuid", $mateuuid);
+	#### GET NORMAL UUID
+	my $normaluuid		=	$self->getNormalUuid($uuid);
+	print "Normal UUID not defined\n" and exit(1) if not defined $normaluuid;
 
-		$normalfile	=	"$inputdir/$mateuuid/$mateuuid.bam";
-	}
+	#### QUIT IF NORMAL FILE NOT FOUND
+	my $normalfile	=	"$inputdir/$normaluuid/$normaluuid.$suffix.bam";
 	$self->logDebug("normalfile", $normalfile);
-	print "Normal file not defined\n" and exit(1) if not defined $normalfile;
 	print "Normal file not found\n" and exit(1) if not -f $normalfile;
 	
 	#### CREATE OUTPUTDIR
 	`mkdir -p $outputdir` if not -d $outputdir;
-	
-#Run samtools/varscan
-#samtools mpileup -f $ref $cur_dir/$normal $cur_dir/$tumor | java -jar /work/knode05/milanesej/varscan/VarScan.v2.3.5.jar somatic --output-snp $cur_dir/${sample} --output-indel $cur_dir/${sample}_indel --mpileup 1 --min-coverage 30 --min-var-freq 0.08 --strand-filter 1 --output-vcf 1
-
-#/agua/apps/java/1.7.0_51/bin/java -jar /agua/apps/varscan/2.3.5/varscan.jar  somatic --output-snp /data/nrc/SRR645388/SRR645388.snp.vcf --output-indel /data/nrc/SRR645388/SRR645388.indel.vcf --mpileup 1 --output-vcf 1 --min-var-freq 0.08 --strand-filter 1
 
 	#### SET OUTPUT FILES
-	my $outputsnp	=	"$outputdir/$uuid.snp.vcf";
-	my $outputindel	=	"$outputdir/$uuid.indel.vcf";	
+	my $outputsnp	=	"$uuid.snp";
+	my $outputindel	=	"$uuid.indel";
+	#`mkdir -p $outputsnp` if not -d $outputsnp;
+	#`mkdir -p $outputindel` if not -d $outputindel;
 
 	my $command	=	qq{$samtools mpileup \\
 -f $reference \\
@@ -91,13 +90,46 @@ $varscan somatic \\
 $options
 };
 	$self->logDebug("command", $command);
-
-$self->logDebug("DEBUG EXIT") and exit;
 	
 	`$command`;
 }
 
-method getMate ($uuid) {
+method getNormalUuid ($uuid) {
+	$self->logDebug("uuid", $uuid);
+	
+	#### TABLE	
+	my $table	=	"tcgasample";
+	$table		=	"srasample" if $uuid	=~	/^SRR/;
+	$self->logDebug("table", $table);
+
+	#### SET DATABASE HANDLE
+	$self->setDbh();
+	
+	#### GET SAMPLE HASH
+	my $samplehash	=	$self->getSampleHash($table, $uuid);
+	$self->logDebug("samplehash", $samplehash);
+
+	my $samplename	=	$samplehash->{samplename};
+	$self->logDebug("samplename", $samplename);
+	my $normalname	=	$samplename;
+	$normalname		=~	s/Cancer/Normal/;
+	$self->logDebug("normalname", $normalname);
+	
+	my $samples		=	$self->getSamplesBySampleName($table, $normalname);
+	$self->logDebug("samples", $samples);
+	print "No normal samples for uuid: $uuid\n" and exit if not defined $samples;
+
+	$self->logDebug("samples:");
+	foreach my $sample ( @$samples ) {
+		print "$sample->{sample}\n";
+	}
+	my $lastuuid	=	$$samples[scalar(@$samples) - 1]->{sample};
+	$self->logDebug("lastuuid", $lastuuid);
+
+	return $lastuuid;
+}
+
+method isLastUuid ($uuid) {
 	$self->logDebug("uuid", $uuid);
 	
 	#### TABLE	
@@ -124,13 +156,11 @@ method getMate ($uuid) {
 	foreach my $sample ( @$samples ) {
 		print "$sample->{sample}\n";
 	}
-	my $firstuuid	=	$$samples[0]->{sample};
-	$self->logDebug("firstuuid", $firstuuid);
+	my $lastuuid	=	$$samples[scalar(@$samples) - 1]->{sample};
+	$self->logDebug("lastuuid", $lastuuid);
 
-	
-$self->logDebug("DEBUG EXIT") and exit;
-
-	
+	return 0 if $uuid ne $lastuuid;
+	return 1;
 }
 
 method isNormal ($uuid) {
@@ -149,13 +179,14 @@ method isNormal ($uuid) {
 	$self->logDebug("samplehash", $samplehash);
 	
 	return 0;
-	return 1;
+	#return 1;
 }
 
 
 method getSampleHash ($table, $sample) {
 	my $query		=	qq{SELECT * FROM $table
 WHERE sample='$sample'};
+	$self->logDebug("query", $query);
 	my $samplehash	=	$self->db()->queryhash($query);
 	$self->logDebug("samplehash", $samplehash);
 	
@@ -167,6 +198,7 @@ method getSamplesBySampleName ($table, $samplename) {
 	my $query		=	qq{SELECT * FROM $table
 WHERE samplename='$samplename'
 ORDER BY sample};
+	$self->logDebug("query", $query);
 
 	my $samplehash	=	$self->db()->queryhasharray($query);
 	$self->logDebug("samplehash", $samplehash);
