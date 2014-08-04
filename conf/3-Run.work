@@ -1,8 +1,8 @@
 {
    "project": "NRC",
-   "name"   : "LoadSRA",
-   "number" : 1,
-   "description" : "Load 10 Short Read Archive (SRA) bladder cancer tumour and normal whole exome samples",
+   "name"   : "RunSRA",
+   "number" : 3,
+   "description" : "Run the National Research Center's analysis pipeline on Short Read Archive (SRA) bladder cancer tumour and normal samples",
    "notes" : "Uses flow.pl to run project",
    "apps" : [
       {
@@ -21,7 +21,7 @@
                "param" 			: 	"projectfile",
                "category" 		: 	"file",
                "description" 	: 	"JSON project file",
-	           "value" 			: 	"/agua/apps/nrc/conf/LoadSRA/LoadSRA.proj"
+	           "value" 			: 	"/agua/apps/cu/0.0.11/conf/sra/RunSRA/RunSRA.proj"
             },
             {
                "ordinal" 		: 	2,
@@ -37,10 +37,17 @@
                "category" 		: 	"username",
                "description" 	: 	"Name of user running workflow",
 	           "value" 			: 	"syoung"
-            }
-			,
+            },
 			{
                "ordinal" 		: 	4,
+               "param" 			: 	"samplestring",
+               "argument" 		: 	"--samplestring",
+               "category" 		: 	"samplestring",
+               "description" 	: 	"Bar-separated key:value pairs",
+	           "value" 			: 	"\"sample:<SAMPLE>|biosample:<BIOSAMPLE>|assay:<ASSAY>|samplename:<SAMPLENAME>|srasample:<SRASAMPLE>|libraryname:<LIBRARYNAME>\""
+            },
+			{
+               "ordinal" 		: 	5,
                "param" 			: 	"log",
                "argument" 		: 	"--log",
                "category" 		: 	"log",
