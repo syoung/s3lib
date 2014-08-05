@@ -117,15 +117,65 @@ cd /agua/apps/nrc/conf/LoadSRA
 
 4. Run the pipeline
 
+# Load data, download sequences and run analysis
 cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj runProject --username syoung --log 4
 
-Run a workflow:
+# Run each project in succession
+cd /agua/apps/nrc/conf/LoadSRA
+/agua/bin/cli/flow.pl LoadSRA.proj runProject --username syoung --log 4
+
+cd /agua/apps/nrc/conf/DownloadSRA
+/agua/bin/cli/flow.pl DownloadSRA.proj runProject --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runProject --username syoung --log 4
+
+# Run each workflow in succession
+
+# LOAD SAMPLE DATA
+cd /agua/apps/nrc/conf/LoadSRA
+/agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung --log 4
+
+# DOWNLOAD SAMPLE FILES
+cd /agua/apps/nrc/conf/DownloadSRA
+/agua/bin/cli/flow.pl DownloadSRA.proj runWorkflow --workflow Aspera --username syoung --log 4
+
+cd /agua/apps/nrc/conf/DownloadSRA
+/agua/bin/cli/flow.pl DownloadSRA.proj runWorkflow --workflow SraToBam --username syoung --log 4
+
+# RUN ANALYSIS
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FixMates --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FilterReads --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow MarkDuplicates --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow QualityFilter --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow IndelRealignment --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow BaseRecalibration --username syoung --log 4
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --log 4
+
+
+Miscellaneous commands
+----------------------
+
+Run a workflow for a single sample:
 
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --samplestring "sample:SRR645665" --log 4
 
-Run a stage:
+Run a stage for a single sample:
 
 cd /agua/apps/nrc/conf
 /agua/bin/cli/flow.pl NRC.proj runStage --workflow FixMates --username syoung --samplestring "sample:SRR645665" --log 4 --stagenumber 2
