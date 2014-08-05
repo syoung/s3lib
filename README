@@ -95,6 +95,13 @@ cd /agua/apps/nrc/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj save --username syoung
 /agua/bin/cli/flow.pl LoadSRA.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
 
+#### LOAD DownloadSRA CONFIGURATION
+cd /agua/apps/nrc/conf/sra/DownloadSRA
+/agua/bin/cli/flow.pl DownloadSRA.proj delete --username syoung
+/agua/bin/cli/flow.pl DownloadSRA.proj save --username syoung
+/agua/bin/cli/flow.pl DownloadSRA.proj saveWorkflow --wkfile 1-Aspera.work --username syoung
+/agua/bin/cli/flow.pl DownloadSRA.proj saveWorkflow --wkfile 2-SraToBam.work --username syoung
+
 #### LOAD RunSRA CONFIGURATION
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj delete --username syoung
