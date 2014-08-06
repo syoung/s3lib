@@ -151,25 +151,36 @@ cd /agua/apps/nrc/conf/DownloadSRA
 cd /agua/apps/nrc/conf/DownloadSRA
 /agua/bin/cli/flow.pl DownloadSRA.proj runWorkflow --workflow SraToBam --username syoung --log 4
 
-# RUN ANALYSIS
+# RUN ANALYSIS WORKFLOW-BY-WORKFLOW
+# 1. FixMates
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FixMates --username syoung --log 4
 
+# 2. FilterReads
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FilterReads --username syoung --log 4
 
+# 3. MarkDuplicates
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow MarkDuplicates --username syoung --log 4
 
+# 4. AddReadGroups
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow AddReadGroups --username syoung --log 4
+
+# 5. QualityFilter
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow QualityFilter --username syoung --log 4
 
+# 6. Indel Realignment
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow IndelRealignment --username syoung --log 4
 
+# 7. BaseRecalibration
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow BaseRecalibration --username syoung --log 4
 
+# 8. Varscan
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --log 4
 
@@ -177,12 +188,17 @@ cd /agua/apps/nrc/conf/RunSRA
 Miscellaneous commands
 ----------------------
 
-Run a workflow for a single sample:
+# RUN ANALYSIS FOR A SINGLE SAMPLE
+
+Run the whole Varscan workflow for a single sample:
 
 cd /agua/apps/nrc/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --samplestring "sample:SRR645665" --log 4
 
-Run a stage for a single sample:
 
-cd /agua/apps/nrc/conf
-/agua/bin/cli/flow.pl NRC.proj runStage --workflow FixMates --username syoung --samplestring "sample:SRR645665" --log 4 --stagenumber 2
+# RUN ANALYSIS STAGE-BY-STAGE
+
+Run the second stage of the FixMates workflow for a single sample:
+
+cd /agua/apps/nrc/conf/RunSRA
+/agua/bin/cli/flow.pl RunSRA.proj runStage --workflow FixMates --username syoung --samplestring "sample:SRR645665" --log 4 --stagenumber 2
