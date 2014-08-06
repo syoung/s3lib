@@ -1,0 +1,48 @@
+{
+   "project"		:	"RunSRA",
+   "name"   		: 	"HaplotypeCaller",
+   "number" 		: 	9,   
+   "description" 	: 	"Call variants with HaplotypeCaller",
+   "apps" 			: 	[
+      {
+         "name" 		: 	"HaplotypeCaller",
+         "number"		: 	1,
+         "package" 		: 	"cu",
+         "name" 		: 	"GenomeAnalysisTK",
+		 "installdir"	:	"/agua/apps/gatk/3.2",
+         "location" 	: 	"GenomeAnalysisTK.jar",
+	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
+         "type" 		: 	"HaplotypeCaller",         
+         "version" 		: 	"3.2-2",
+         "description" 	: 	"Run HaplotypeCaller variant caller on aligned, indexed RG'ed BAM files",
+         "parameters" 	: 	[
+            {
+               "ordinal": 1,
+               "param" : "type",
+               "argument" : "-T",
+               "description" : "type of analysis",
+               "value" : "HaplotypeCaller"
+            },
+            {
+               "ordinal": 3,
+               "param" : "inputdir",
+               "argument" : "-I",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.bam"
+            },
+            {
+               "ordinal": 4,
+               "param" : "outputdir",
+               "argument" : "-O",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.vcf"
+            },
+            {
+               "ordinal": 2,
+               "param" : "reference",
+               "argument" : "-R",
+               "description" : "Location of reference genome fasta file, indexed",
+               "value" : "/data/reference/genome.fa"
+            }
+         ]
+      }
+   ]
+}
