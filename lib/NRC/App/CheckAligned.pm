@@ -24,14 +24,12 @@ has 'options'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"-l200m" );
 # Objects
 has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setConf" );
 
-method checkAligned ($uuid, $inputdir, $inputfile, $reference, $outputfile) {
+method checkAligned ($uuid, $inputfile, $outputfile) {
 	$self->logDebug("uuid", $uuid);
-	$self->logDebug("inputdir", $inputdir);
 	$self->logDebug("inputfile", $inputfile);
-	$self->logDebug("reference", $reference);
 	$self->logDebug("outputfile", $outputfile);
 	
-	my $validated	=	$self->fileValidated($inputfile);
+	my $validated	=	$self->bamIsAligned($inputfile);
 	if ( $validated ) {
 			my $basedir	=	$self->conf()->getKey("agua:INSTALLDIR", undef);
 			$self->logDebug("basedir", $basedir);
@@ -66,7 +64,7 @@ method checkAligned ($uuid, $inputdir, $inputfile, $reference, $outputfile) {
 }
 
 
-method fileValidated ($inputfile) {
+method bamIsAligned ($inputfile) {
 	$self->logDebug("inputfile", $inputfile);
 
 	#### GET EXECUTABLES
