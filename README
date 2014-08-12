@@ -22,6 +22,43 @@ This package contains the configuration files and executables of the National Re
 8) Run Varscan
 
 
+Aligned versus unaligned input files
+------------------------------------
+
+
+
+1. Download file
+
+2. Conditional check:
+
+   Aligned: run broadbp
+   
+   Otherwise: run cu, then broadbp
+	
+Conditional:
+
+   1. Conditional script that holds the options, and takes the return from a file or stdout
+   
+   2. Test wrapper that tests whether bam file is aligned
+   
+      returns a 1 for aligned, 0 otherwise
+	
+All-in-one-wrapper:
+
+   1. Test
+   
+   2. Then if aligned, run broadbp
+   
+      1. runproject broadbp (do broad best practices pipeline)
+           
+   3. Otherwise, run cu then broadbp
+
+   1. runproject cu (clean dups, filter reads, align, merge) --> aligned/sorted bam file
+   
+   2. runproject broadbp (do broad best practices pipeline)
+   
+   
+
 Installation
 ===========
 
