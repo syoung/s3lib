@@ -41,8 +41,14 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 				my $installdir	=	$self->getInstallDir($project);
 				$self->logDebug("installdir", $installdir);
 				my $packagename	=	uc($project);
-				my $command	=	qq{cd $installdir/conf && $flow $packagename.proj runProject --samplestring "sample:$uuid" --log 4};
-				$self->logDebug("command", $command);
+				if ($project eq "cu") {
+					my $command	=	qq{cd $installdir/conf/sra/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
+					$self->logDebug("command", $command);
+				}
+				if ($project eq "broadbp") {
+					my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
+					$self->logDebug("command", $command);
+				}
 				
 			}
 	
@@ -56,7 +62,7 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 			my $installdir	=	$self->getInstallDir($project);
 			$self->logDebug("installdir", $installdir);
 			my $packagename	=	uc($project);
-			my $command	=	qq{cd $installdir/conf && $flow $packagename.proj runProject --samplestring "sample:$uuid" --log 4};
+			my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
 			$self->logDebug("command", $command);
 			
 		}
@@ -74,7 +80,7 @@ method bamIsAligned ($inputfile) {
 	my $samtools	=	"$installdir/samtools";
 	# E.G.: /agua/apps/samtools/0.1.19/samtools
 
-	my $command = "$samtools view $inputfile | head -n 100 $output";
+	my $command = "$samtools view $inputfile | head -n 100";
 	$self->logDebug("command", $command);
 	my $output	=	`$command`;
 	#$self->logDebug("output", $output);			
@@ -88,7 +94,7 @@ method bamIsAligned ($inputfile) {
 		
 		if ( $$tabs[2] eq '*' ) {
 			$count++;
-			if ($count > 50) {
+			if ($count > 90) {
 				return 1;
 			}
 		}
