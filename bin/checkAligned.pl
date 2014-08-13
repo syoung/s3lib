@@ -47,7 +47,7 @@ GetOptions (
     'log=i'     	=> \$log,
     'printlog=i'    => \$printlog,
     'help'          => \$help
-)
+);
 
 #### SET CONF
 my $configfile		=	"$installdir/conf/config.yaml";
@@ -60,7 +60,7 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object = CU::App::CheckAligned->new({
+my $object = NRC::App::CheckAligned->new({
    keyfile    	=>  $keyfile,
    conf		=>	$conf,
    log     	=>  $log,

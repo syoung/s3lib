@@ -18,7 +18,7 @@ has 'sleep'			=> 	( isa => 'Str|Undef', is => 'rw', default	=>	10 );
 # Strings
 has 'keyfile'		=> 	( isa => 'Str|Undef', is => 'rw', required	=>	1 );
 has 'uuid'			=> 	( isa => 'Str|Undef', is => 'rw', required 	=> 	0 );
-has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"3.3.3.81344" );
+has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"" );
 has 'options'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"-l200m" );
 
 # Objects
@@ -30,6 +30,7 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 	$self->logDebug("outputfile", $outputfile);
 	
 	my $validated	=	$self->bamIsAligned($inputfile);
+	$self->logDebug("validated",$validated);
 	if ( $validated ) {
 			my $basedir	=	$self->conf()->getKey("agua:INSTALLDIR", undef);
 			$self->logDebug("basedir", $basedir);
@@ -44,11 +45,12 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 				$self->logDebug("command", $command);
 				
 			}
-		
-			
-		$self->logDebug("DEBUG EXIT") and exit;
+	
 	}
 	else {
+		my $basedir	=	$self->conf()->getKey("agua:INSTALLDIR", undef);
+		$self->logDebug("basedir", $basedir);
+		my $flow	=	"$basedir/bin/cli/flow.pl";
 		my $projects	=	[ "broadbp" ];
 		foreach my $project ( @$projects ) {
 			my $installdir	=	$self->getInstallDir($project);
@@ -72,22 +74,27 @@ method bamIsAligned ($inputfile) {
 	my $samtools	=	"$installdir/samtools";
 	# E.G.: /agua/apps/samtools/0.1.19/samtools
 
-	my $command = "$samtools view $inputfile | head -n 100 $outputfile";
+	my $command = "$samtools view $inputfile | head -n 100 $output";
 	$self->logDebug("command", $command);
 	my $output	=	`$command`;
-	$self->logDebug("output", $output);			
+	#$self->logDebug("output", $output);			
 
 	my $lines;
+	my $count = 0
 	@$lines		=	split "\n", $output;
 	foreach my $line ( @$lines ) {
 		my $tabs;
-		@$tabs		=	split "\t", $line; 
-		if ( $$tabs[2] == '*' ) {
-			return 0;
+		@$tabs		=	split " ", $line;
+		
+		if ( $$tabs[2] eq '*' ) {
+			$count++;
+			if ($count > 50) {
+				return 1;
+			}
 		}
 	}
 	
-	return;	
+	return 0;	
 }
 
 
