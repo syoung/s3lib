@@ -42,11 +42,11 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 				$self->logDebug("installdir", $installdir);
 				my $packagename	=	uc($project);
 				if ($project eq "cu") {
-					my $command	=	qq{cd $installdir/conf/sra/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
+					my $command	=	qq{cd $installdir/conf/sra/RunSRA && $flow RunSRA.proj runProject --username syoung --samplestring "sample:$uuid" --log 4};
 					$self->logDebug("command", $command);
 				}
 				if ($project eq "broadbp") {
-					my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
+					my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject --username syoung --samplestring "sample:$uuid" --log 4};
 					$self->logDebug("command", $command);
 				}
 				
@@ -62,7 +62,7 @@ method checkAligned ($uuid, $inputfile, $outputfile) {
 			my $installdir	=	$self->getInstallDir($project);
 			$self->logDebug("installdir", $installdir);
 			my $packagename	=	uc($project);
-			my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject --samplestring "sample:$uuid" --log 4};
+			my $command	=	qq{cd $installdir/conf/RunSRA && $flow RunSRA.proj runProject  --username syoung --samplestring "sample:$uuid" --log 4};
 			$self->logDebug("command", $command);
 			
 		}
