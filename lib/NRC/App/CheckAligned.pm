@@ -86,7 +86,7 @@ method bamIsAligned ($inputfile) {
 	#$self->logDebug("output", $output);			
 
 	my $lines;
-	my $count = 0
+	my $count = 0;
 	@$lines		=	split "\n", $output;
 	foreach my $line ( @$lines ) {
 		my $tabs;
