@@ -6,63 +6,27 @@
       {
          "number" 		: 	1,
          "name" 		: 	"filterReads",
-         "installdir" 	: 	"/agua/apps/bamtools/v2.3.0",
-         "location" 	: 	"bin/bamtools",
+         "installdir" 	: 	"/agua/apps/broadbp",
+         "location" 	: 	"bin/filterReads.pl",
          "type" 		: 	"converter",
          "parameters" 	: 	[
             {
                "ordinal" : 1,
-               "value" : "filter",
-               "param" : "subCommand"
+               "argument" : "--uuid",
+               "value" : "<SAMPLE>",
+               "param" : "uuid"
             },
             {
                "ordinal" : 2,
-               "argument" : "-isMapped",
-               "value" : "false",
-               "param" : "isMapped"
+               "argument" : "--in",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt.bam",
+               "param" : "inputfile"
             },
             {
                "ordinal" : 3,
-               "argument" : "-isPaired",
-               "value" : "false",
-               "param" : "isPaired"
-            },
-            {
-               "ordinal" : 4,
-               "argument" : "-isProperPair",
-               "value" : "false",
-               "param" : "isProperPair"
-            },
-            {
-               "ordinal" : 5,
-               "argument" : "-in",
-               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt.bam",
-               "param" : "in"
-            },
-            {
-               "ordinal" : 6,
-               "argument" : "-out",
+               "argument" : "--out",
                "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
-               "param" : "out"
-            }
-         ]
-      },
-      {
-         "number" 		: 	2,
-         "name" 		: 	"indexBam",
-         "installdir" 	: 	"/agua/apps/samtools/0.1.19",
-         "location" 	: 	"samtools",
-         "type" 		: 	"converter",
-         "parameters" 	: 	[
-            {
-               "ordinal"	: 	1,
-               "value" 		: 	"index",
-               "param" 		: 	"subCommand"
-            },
-            {
-               "ordinal" 	: 	2,
-               "value" 		: 	"/data/nrc/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
-               "param" 		: 	"bamfile"
+               "param" : "outputfile"
             }
          ]
       }
