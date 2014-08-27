@@ -1,0 +1,6 @@
+java -jar GenomeAnalysisTK.jar -R resources/Homo_sapiens_assembly18.fasta -T UnifiedGenotyper -I sample1.bam [-I sample2.bam ...] --dbsnp dbSNP.vcf -o snps.raw.vcf -stand_call_conf [50.0] -stand_emit_conf 10.0 -dcov [50 for 4x, 200 for >30x WGS or Whole exome] [-L targets.interval_list]
+
+
+java -jar GenomeAnalysisTK.jar -R /data/reference/genome.fa -T UnifiedGenotyper -I /data/nrc/SRR645668.sorted.bam -I /data/nrc/SRR645386.sorted.bam --dbsnp  /agua/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf -o snps.raw.vcf -stand_call_conf 50.0 -stand_emit_conf 10.0 -dcov 50 -L /data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed
+
+java -jar /agua/apps/gatk/3.2/GenomeAnalysisTK.jar -R /data/reference/genome.fa -T UnifiedGenotyper -I /data/nrc/SRR645668/SRR645668.rmdup_grp.bam -I /data/nrc/SRR645386/SRR645386.rmdup_grp.bam  --fix_misencoded_quality_scores --dbsnp  /agua/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf -o snps.raw.vcf -stand_call_conf 50.0 -stand_emit_conf 10.0  -L /data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed

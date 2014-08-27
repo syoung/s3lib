@@ -1,0 +1,78 @@
+{
+   "project"		:	"RunSRA",
+   "name"   		: 	"UnifiedGenotyper",
+   "number" 		: 	9,   
+   "description" 	: 	"A variant caller which unifies the approaches of several disparate caller",
+   "apps" 			: 	[
+      {
+         "name" 		: 	"UnifiedGenotyper",
+         "number"		: 	1,
+         "package" 		: 	"broadbp",
+         "name" 		: 	"GenomeAnalysisTK",
+		 "installdir"	:	"/agua/apps/gatk/3.2",
+         "location" 	: 	"GenomeAnalysisTK.jar",
+	     "executor"		:	"/agua/apps/java/1.7.0_51/bin/java -jar",
+         "type" 		: 	"UnifiedGenotyper",         
+         "version" 		: 	"3.2-2",
+         "description" 	: 	"multiple-sample, technology-aware SNP and indel caller",
+         "parameters" 	: 	[
+            {
+               "ordinal": 1,
+               "param" : "type",
+               "argument" : "-T",
+               "description" : "type of analysis",
+               "value" : "UnifiedGenotyper"
+            },
+	    {
+               "ordinal": 2,
+               "param" : "reference",
+               "argument" : "-R",
+               "description" : "Location of reference genome fasta file, indexed",
+               "value" : "/data/reference/genome.fa"
+            },
+            {
+               "ordinal": 3,
+               "param" : "-uuid",
+               "argument" : "-uuid",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>.realigned_recal.bam"
+            },
+            {
+               "ordinal": 4,
+               "param" : "--fix_misencoded_quality_scores",
+               "argument" : "--fix_misencoded_quality_scores",
+               "value" : ""
+            },
+			{
+               "ordinal": 5,
+               "param" : "-dbsnp",
+               "argument" : "-dbsnp",
+               "value" : "/agua/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf"
+            },
+            {
+               "ordinal": 6,
+               "param" : "-outputfile",
+               "argument" : "-outputfile",
+               "value" : "/data/nrc/<SAMPLE>/<SAMPLE>_UG.vcf"
+            },
+			{
+               "ordinal": 7,
+               "param" : "-stand_call_conf",
+               "argument" : "-stand_call_conf",
+               "value" : "50.0"
+            },
+			{
+               "ordinal": 9,
+               "param" : "-stand_emit_conf",
+               "argument" : "-stand_emit_conf",
+               "value" : "10.0"
+            },
+			{
+               "ordinal": 10,
+               "param" : "target",
+               "argument" : "-L",
+               "value" : "/data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed"
+            }
+         ]
+      }
+   ]
+}
