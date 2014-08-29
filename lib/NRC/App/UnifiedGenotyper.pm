@@ -34,10 +34,17 @@ has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setCon
 has 'db'			=> ( isa => 'Agua::DBase::MySQL', is => 'rw', required => 0 );
 
 has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"3.2" );
-method unifiedGenotyper ($type, $reference, $uuid, $dbsnp, $outputfile, $targe, $version) {
+method unifiedGenotyper ($type, $reference, $uuid, $inputdir, $suffix,$dbsnp, $outputfile, $target, $version) {
 	$self->logDebug("uuid", $uuid);
 	$self->logDebug("outputfile", $outputfile);
+	$self->logDebug("reference", $reference);
+	$self->logDebug("suffix", $suffix);
+	$self->logDebug("dbsnp", $dbsnp);
+	$self->logDebug("outputfile", $outputfile);
+	$self->logDebug("target", $target);
 
+	$self->logDebug("version",$version);
+	
 	$version	=	$self->version() if not defined $version;
 	$self->logDebug("FINAL version", $version);
 	
@@ -45,25 +52,28 @@ method unifiedGenotyper ($type, $reference, $uuid, $dbsnp, $outputfile, $targe, 
 	
 	my $installdir	=	$self->getInstallDir("gatk");
 	my $executable	=	"$installdir/GenomeAnalysisTK.jar";
+	
+	my $java_installdir	=	$self->getInstallDir("java");
+	my $java_executor	=	"$java_installdir -jar";
 			
 	$self->logDebug("package", $package);
 	#my $installdir	=	$package->{$version}->{INSTALLDIR};
 	$self->logDebug("installdir", $installdir);
-	##$installdir		=~	s/\/[^\/]+$//;
+	#$installdir		=~	s/\/[^\/]+$//;
 	#my $executable	=	"$installdir/GenomeAnalaysisTK.jar";
 
 	#### GET FIRST SAMPLE IF MULTIPLE SAMPLES
-	my $inputfiles	=	$self->getSampleFiles($uuid) ;
+	my $inputfiles	=	$self->getSampleFiles($uuid, $inputdir, $suffix ) ;
 	$self->logDebug("inputfiles", $inputfiles);
-	print "inputfiles not defined\n" and exit if not defined $inputfiles;
+	#print "inputfiles not defined\n" and exit if not defined $inputfiles;
 	
 	#### CREATE OUTPUT DIR
 	`mkdir -p $outputfile` if not -d $outputfile;
 	
 	#### RUN
-	my $command		= qq{$executable -T $type -R $reference \\\n};
+	my $command		= qq{$java_executor $executable -T $type -R $reference \\\n};
 	foreach my $inputfile ( @$inputfiles ) {
-		$command 	.=	qq{I=$inputfile \\\n};
+		$command 	.=	qq{-I $inputfile \\};
 	}
 	$command		.=	qq{
 --fix_misencoded_quality_scores \\
@@ -71,10 +81,9 @@ method unifiedGenotyper ($type, $reference, $uuid, $dbsnp, $outputfile, $targe, 
 -o $outputfile \\ 
 -stand_call_conf 50.0 \\
 -stand_emit_conf 10.0 \\
+-L $target \\
 };
-# \\
-#tmpfile=$workdir/tmp_  \\
-#> $outputfile/$filename
+
 
 	$self->logDebug("command", $command);
 
@@ -83,8 +92,10 @@ method unifiedGenotyper ($type, $reference, $uuid, $dbsnp, $outputfile, $targe, 
 }
 
 
-method getSampleFiles ($uuid) {
+method getSampleFiles ($uuid, $inputdir, $suffix ) {
 	$self->logDebug("uuid", $uuid);
+	$self->logDebug("inputdir",$inputdir);
+	$self->logDebug("suffix", $suffix);
 
 	my $table	=	"srasample";
 	$self->logDebug("table", $table);
@@ -106,17 +117,18 @@ method getSampleFiles ($uuid) {
 	foreach my $sample ( @$samples ) {
 		print "$sample->{sample}\n";
 	}
+	
 	my $firstuuid	=	$$samples[0]->{sample};
 	$self->logDebug("firstuuid", $firstuuid);
 	
 	return if $uuid ne $firstuuid;
 	
 	my $samplefiles	=	[];
-	my ($basedir)	=	$uuid	=~ /^(.+)\/[^\/]+$/;
+	my ($basedir)	=	$inputdir	=~ /^(.+)\/[^\/]+$/;
 	foreach my $sample ( @$samples ) {
 		$self->logDebug("sample", $sample);
 		my $id	=	$sample->{sample};
-		push @$samplefiles, "$basedir/$id/$id-1.bam";
+		push @$samplefiles, "$inputdir/$id/$id.$suffix";
 	}
 
 	return $samplefiles;

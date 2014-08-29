@@ -59,9 +59,12 @@ my $printlog	=	4;
 GetOptions (
     'uuid=s'     	=> \$uuid,
     'inputdir=s'   	=> \$inputdir,
-    'outputdir=s'	=> \$outputdir,
+	'suffix=s'   	=> \$suffix,
+    'outputfile=s'	=> \$outputfile,
     'dbsnp=s'	=> \$dbsnp,
     'target=s'   	=> \$target,
+	'reference=s'   	=> \$reference,
+	'type=s'   	=> \$type,
     'version=s'   	=> \$version,
 
     'log=i'     	=> \$log,
@@ -89,5 +92,5 @@ my $object	=	NRC::App::UnifiedGenotyper->new({
     logfile     =>  $logfile	
 });
 
-$object->unifiedGenotyper($type, $reference, $uuid, $dbsnp, $outputfile, $target, $version);
+$object->unifiedGenotyper($type, $reference, $uuid, $inputdir, $suffix ,$dbsnp, $outputfile, $target, $version);
 
