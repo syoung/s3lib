@@ -34,13 +34,13 @@ has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setCon
 has 'db'			=> ( isa => 'Agua::DBase::MySQL', is => 'rw', required => 0 );
 
 has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"3.2" );
-method unifiedGenotyper ($type, $reference, $uuid, $inputdir, $suffix,$dbsnp, $outputfile, $target, $version) {
+method unifiedGenotyper ($analysis_type, $reference_genome, $uuid, $inputdir, $suffix,$dbsnp, $outputdir, $target, $version) {
 	$self->logDebug("uuid", $uuid);
-	$self->logDebug("outputfile", $outputfile);
-	$self->logDebug("reference", $reference);
+	$self->logDebug("outputdir", $outputdir);
+	$self->logDebug("reference_genome", $reference_genome);
 	$self->logDebug("suffix", $suffix);
 	$self->logDebug("dbsnp", $dbsnp);
-	$self->logDebug("outputfile", $outputfile);
+	$self->logDebug("outputdir", $outputdir);
 	$self->logDebug("target", $target);
 
 	$self->logDebug("version",$version);
@@ -54,11 +54,11 @@ method unifiedGenotyper ($type, $reference, $uuid, $inputdir, $suffix,$dbsnp, $o
 	my $executable	=	"$installdir/GenomeAnalysisTK.jar";
 	
 	my $java_installdir	=	$self->getInstallDir("java");
-	my $java_executor	=	"$java_installdir -jar";
+	my $java_executor	=	"java -jar";
 			
 	$self->logDebug("package", $package);
 	#my $installdir	=	$package->{$version}->{INSTALLDIR};
-	$self->logDebug("installdir", $installdir);
+	$self->logDebug("installdir"/java, $installdir);
 	#$installdir		=~	s/\/[^\/]+$//;
 	#my $executable	=	"$installdir/GenomeAnalaysisTK.jar";
 
@@ -68,17 +68,17 @@ method unifiedGenotyper ($type, $reference, $uuid, $inputdir, $suffix,$dbsnp, $o
 	#print "inputfiles not defined\n" and exit if not defined $inputfiles;
 	
 	#### CREATE OUTPUT DIR
-	`mkdir -p $outputfile` if not -d $outputfile;
+	`mkdir -p $outputdir` if not -d $outputdir;
 	
 	#### RUN
-	my $command		= qq{$java_executor $executable -T $type -R $reference \\\n};
+	my $command		= qq{$java_executor $executable -T $analysis_type -R $reference_genome \\\n};
 	foreach my $inputfile ( @$inputfiles ) {
 		$command 	.=	qq{-I $inputfile \\};
 	}
 	$command		.=	qq{
 --fix_misencoded_quality_scores \\
 --dbsnp $dbsnp \\
--o $outputfile \\ 
+-o $outputdir/$uuid.UG.vcf \\
 -stand_call_conf 50.0 \\
 -stand_emit_conf 10.0 \\
 -L $target \\

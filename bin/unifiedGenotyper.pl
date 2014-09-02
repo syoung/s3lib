@@ -48,8 +48,8 @@ use Conf::Yaml;
 
 #### GET OPTIONS
 my $uuid		=	undef;
-my $type	=	type;
-my $reference	=	reference;
+my $analysis_type	=	analysis_type;
+my $reference_genome	=	reference_genome;
 my $filename	=	undef;
 my $workdir		=	"/mnt";
 my $version		=	undef;
@@ -60,11 +60,11 @@ GetOptions (
     'uuid=s'     	=> \$uuid,
     'inputdir=s'   	=> \$inputdir,
 	'suffix=s'   	=> \$suffix,
-    'outputfile=s'	=> \$outputfile,
+    'outputdir=s'	=> \$outputdir,
     'dbsnp=s'	=> \$dbsnp,
     'target=s'   	=> \$target,
-	'reference=s'   	=> \$reference,
-	'type=s'   	=> \$type,
+	'reference_genome=s'   	=> \$reference_genome,
+	'analysis_type=s'   	=> \$analysis_type,
     'version=s'   	=> \$version,
 
     'log=i'     	=> \$log,
@@ -92,5 +92,5 @@ my $object	=	NRC::App::UnifiedGenotyper->new({
     logfile     =>  $logfile	
 });
 
-$object->unifiedGenotyper($type, $reference, $uuid, $inputdir, $suffix ,$dbsnp, $outputfile, $target, $version);
+$object->unifiedGenotyper($analysis_type, $reference_genome, $uuid, $inputdir, $suffix ,$dbsnp, $outputdir, $target, $version);
 
