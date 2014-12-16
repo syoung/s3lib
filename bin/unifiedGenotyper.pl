@@ -4,11 +4,11 @@
 
 =head2	UnifiedGenotyper
 
-PURPOSE
+=head2	PURPOSE
 
-    UnifiedGenotyper calls variant from one or multiple bam files
+ UnifiedGenotyper calls variant from one or multiple bam files
 
-USAGE
+=head2 USAGE
 
 ./UnifiedGenotyper.pl <--uuid String> \
 	<--inputdir String> \
@@ -35,21 +35,21 @@ use Getopt::Long;
 #### INTERNAL PACKAGES
 my $installdir;
 BEGIN {
-	$installdir	=	$ENV{'installdir'} || "/agua";
+	$installdir	=	$ENV{'installdir'} || "/a";
     unshift(@INC, "$installdir/lib");
 }
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
-use NRC::App::UnifiedGenotyper;
+use UnifiedGenotyper;
 use Conf::Yaml;
 
 
 #### GET OPTIONS
 my $uuid		=	undef;
-my $analysis_type	=	analysis_type;
-my $reference_genome	=	reference_genome;
+my $analysis	=	analysis;
+my $reference	=	reference;
 my $filename	=	undef;
 my $workdir		=	"/mnt";
 my $version		=	undef;
@@ -58,13 +58,13 @@ my $printlog	=	4;
 
 GetOptions (
     'uuid=s'     	=> \$uuid,
+	'analysis=s'   	=> \$analysis,
+	'reference=s'   => \$reference,
     'inputdir=s'   	=> \$inputdir,
 	'suffix=s'   	=> \$suffix,
     'outputdir=s'	=> \$outputdir,
-    'dbsnp=s'	=> \$dbsnp,
+    'dbsnp=s'		=> \$dbsnp,
     'target=s'   	=> \$target,
-	'reference_genome=s'   	=> \$reference_genome,
-	'analysis_type=s'   	=> \$analysis_type,
     'version=s'   	=> \$version,
 
     'log=i'     	=> \$log,
@@ -92,5 +92,5 @@ my $object	=	NRC::App::UnifiedGenotyper->new({
     logfile     =>  $logfile	
 });
 
-$object->unifiedGenotyper($analysis_type, $reference_genome, $uuid, $inputdir, $suffix ,$dbsnp, $outputdir, $target, $version);
+$object->unifiedGenotyper($uuid, $analysis, $reference, $inputdir, $suffix ,$dbsnp, $outputdir, $target, $version);
 

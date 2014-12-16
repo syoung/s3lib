@@ -1,0 +1,53 @@
+{
+   "project"		: 	"RunSRA",
+   "number" 		: 	3,
+   "name" 			: 	"MarkDuplicates",
+   "apps" 			: 	[
+      {
+         "number" 		: 	1,
+		 "installdir"	:	"/a/apps/picard/1.103",
+         "location" 	: 	"MarkDuplicates.jar",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+         "name" 		: 	"markDuplicates",
+         "type" 		: 	"duplicates",
+         "parameters" 	: 	[
+            {
+               "ordinal" : 1,
+               "value" : "I=/data/sra/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
+               "param" : "subCommand"
+            },
+            {
+               "argument" : "O=",
+               "ordinal" : 2,
+               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.rmdup.bam",
+               "param" : "O"
+            },
+            {
+               "argument" : "M=",
+               "ordinal" : 3,
+               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.dup_report.txt",
+               "param" : "M"
+            },
+            {
+               "argument" : "PROGRAM_RECORD_ID=",
+               "ordinal" : 4,
+               "value" : "null",
+               "param" : "PROGRAM_RECORD_ID"
+            },
+            {
+               "argument" : "VALIDATION_STRINGENCY=",
+               "ordinal" : 5,
+               "value" : "SILENT",
+               "param" : "VALIDATION_STRINGENCY"
+            },
+            {
+               "argument" : "REMOVE_DUPLICATES=",
+               "ordinal" : 6,
+               "value" : "true",
+               "param" : "REMOVE_DUPLICATES"
+            }
+         ]
+      }
+   ]
+}
+

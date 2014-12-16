@@ -25,7 +25,7 @@ use lib "$Bin/../../../../../lib";	#### PACKAGE MODULES
 use lib "$Bin/../../../lib";		#### TEST MODULES
 BEGIN
 {
-    my $installdir = $ENV{'installdir'} || "/agua";
+    my $installdir = $ENV{'installdir'} || "/a";
     unshift(@INC, "$installdir/lib");
 }
 
@@ -39,7 +39,7 @@ BEGIN {
 require_ok('Test::PanCancer::QC');
 
 #### SET CONF FILE
-my $installdir  =   $ENV{'installdir'} || "/agua";
+my $installdir  =   $ENV{'installdir'} || "/a";
 my $urlprefix  =   $ENV{'urlprefix'} || "agua";
 
 #### GET OPTIONS

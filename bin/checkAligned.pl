@@ -17,7 +17,7 @@ use Getopt::Long;
 #### INTERNAL PACKAGES
 my $installdir;
 BEGIN {
-	$installdir	=	$ENV{'installdir'} || "/agua";
+	$installdir	=	$ENV{'installdir'} || "/a";
     unshift(@INC, "$installdir/lib");
 }
 use FindBin qw($Bin);

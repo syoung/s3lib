@@ -26,7 +26,7 @@ use lib "$Bin/../../../lib";		#### TEST MODULES
 use lib "$Bin/../../../../lib";		#### TEST MODULES
 BEGIN
 {
-    my $installdir = $ENV{'installdir'} || "/agua";
+    my $installdir = $ENV{'installdir'} || "/a";
     unshift(@INC, "$installdir/lib");
     unshift(@INC, "$installdir/apps/broadbp/t/lib");
     unshift(@INC, "$installdir/apps/broadbp/lib");
@@ -42,7 +42,7 @@ BEGIN {
 require_ok('Test::NRC::App::FilterReads');
 
 #### SET CONF FILE
-my $installdir  =   $ENV{'installdir'} || "/agua";
+my $installdir  =   $ENV{'installdir'} || "/a";
 my $urlprefix  	=   $ENV{'urlprefix'} || "agua";
 
 #### GET OPTIONS

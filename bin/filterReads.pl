@@ -17,24 +17,23 @@ use Getopt::Long;
 #### INTERNAL PACKAGES
 my $installdir;
 BEGIN {
-	$installdir	=	$ENV{'installdir'} || "/agua";
+	$installdir	=	$ENV{'installdir'} || "/a";
     unshift(@INC, "$installdir/lib");
 }
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
-use NRC::App::FilterReads;
+use FilterReads;
 use Conf::Yaml;
 
-my $log			=	4;
+my $log			=	2;
 my $printlog	=	4;
 
 my $uuid 	= 	undef;
 my $inputfile	=	undef;
 my $outputfile  =       undef;
-
-
+my $help;
 
 
 GetOptions (
@@ -50,6 +49,7 @@ GetOptions (
 );
 
 #### SET CONF
+my $logfile			=	"$installdir/log/$$.log";
 my $configfile		=	"$installdir/conf/config.yaml";
 my $conf = Conf::Yaml->new(
     memory      =>  0,
@@ -60,8 +60,7 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object = NRC::App::FilterReads->new({
-   keyfile    	=>  $keyfile,
+my $object = FilterReads->new({
    conf		=>	$conf,
    log     	=>  $log,
    printlog    =>  $printlog,

@@ -100,7 +100,7 @@ Install the dependencies:
 /agua/bin/install/deploy.pl --mode install --package samtools --version 0.1.19
 /agua/bin/install/deploy.pl --mode install --package bamtools --version v2.3.0
 
-Install the latest source code of the NRC pipeline to /agua/apps/nrc/VERSION, and load all workflow and data files into Agua's database:
+Install the latest source code of the NRC pipeline to /agua/apps/broadbp/VERSION, and load all workflow and data files into Agua's database:
 
 /agua/bin/install/deploy.pl --mode install --package nrc --version max
 
@@ -119,7 +119,7 @@ git clone https://stuartpyoung@bitbucket.org/annaisystems/cu.git
 2. Load the workflows
 
 #### LOAD NRC
-cd /agua/apps/nrc/conf
+cd /agua/apps/broadbp/conf
 /agua/bin/cli/flow.pl NRC.proj delete --username syoung
 /agua/bin/cli/flow.pl NRC.proj save --username syoung
 /agua/bin/cli/flow.pl NRC.proj saveWorkflow --wkfile 1-LoadSRA.work --username syoung
@@ -127,20 +127,20 @@ cd /agua/apps/nrc/conf
 
 
 #### LOAD LoadSRA CONFIGURATION
-cd /agua/apps/nrc/conf/LoadSRA
+cd /agua/apps/broadbp/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl LoadSRA.proj save --username syoung
 /agua/bin/cli/flow.pl LoadSRA.proj saveWorkflow --wkfile 1-LoadSamples.work --username syoung --log 4
 
 #### LOAD DownloadSRA CONFIGURATION
-cd /agua/apps/nrc/conf/DownloadSRA
+cd /agua/apps/broadbp/conf/DownloadSRA
 /agua/bin/cli/flow.pl DownloadSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl DownloadSRA.proj save --username syoung
 /agua/bin/cli/flow.pl DownloadSRA.proj saveWorkflow --wkfile 1-Aspera.work --username syoung
 /agua/bin/cli/flow.pl DownloadSRA.proj saveWorkflow --wkfile 2-SraToBam.work --username syoung
 
 #### LOAD RunSRA CONFIGURATION
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj delete --username syoung
 /agua/bin/cli/flow.pl RunSRA.proj save --username syoung
 /agua/bin/cli/flow.pl RunSRA.proj saveWorkflow --wkfile 1-FixMates.work --username syoung --log 4
@@ -155,70 +155,70 @@ cd /agua/apps/nrc/conf/RunSRA
 
 3. Load the sample data
 
-cd /agua/apps/nrc/conf/LoadSRA
+cd /agua/apps/broadbp/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung
 
 
 4. Run the pipeline
 
 # Load data, download sequences and run analysis
-cd /agua/apps/nrc/conf
+cd /agua/apps/broadbp/conf
 /agua/bin/cli/flow.pl NRC.proj runProject --username syoung --log 4
 
 # Run each project in succession
-cd /agua/apps/nrc/conf/LoadSRA
+cd /agua/apps/broadbp/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj runProject --username syoung --log 4
 
-cd /agua/apps/nrc/conf/DownloadSRA
+cd /agua/apps/broadbp/conf/DownloadSRA
 /agua/bin/cli/flow.pl DownloadSRA.proj runProject --username syoung --log 4
 
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runProject --username syoung --log 4
 
 # Run each workflow in succession
 
 # LOAD SAMPLE DATA
-cd /agua/apps/nrc/conf/LoadSRA
+cd /agua/apps/broadbp/conf/LoadSRA
 /agua/bin/cli/flow.pl LoadSRA.proj runWorkflow --workflow LoadSamples --username syoung --log 4
 
 # DOWNLOAD SAMPLE FILES
-cd /agua/apps/nrc/conf/DownloadSRA
+cd /agua/apps/broadbp/conf/DownloadSRA
 /agua/bin/cli/flow.pl DownloadSRA.proj runWorkflow --workflow Aspera --username syoung --log 4
 
-cd /agua/apps/nrc/conf/DownloadSRA
+cd /agua/apps/broadbp/conf/DownloadSRA
 /agua/bin/cli/flow.pl DownloadSRA.proj runWorkflow --workflow SraToBam --username syoung --log 4
 
 # RUN ANALYSIS WORKFLOW-BY-WORKFLOW
-# 1. FixMates
-cd /agua/apps/nrc/conf/RunSRA
+# 1. FixMates
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FixMates --username syoung --log 4
 
 # 2. FilterReads
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow FilterReads --username syoung --log 4
 
 # 3. MarkDuplicates
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow MarkDuplicates --username syoung --log 4
 
 # 4. AddReadGroups
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow AddReadGroups --username syoung --log 4
 
 # 5. QualityFilter
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow QualityFilter --username syoung --log 4
 
 # 6. Indel Realignment
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow IndelRealignment --username syoung --log 4
 
 # 7. BaseRecalibration
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow BaseRecalibration --username syoung --log 4
 
 # 8. Varscan
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --log 4
 
 
@@ -229,7 +229,7 @@ Miscellaneous commands
 
 Run the whole Varscan workflow for a single sample:
 
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runWorkflow --workflow Varscan --username syoung --samplestring "sample:SRR645665" --log 4
 
 
@@ -237,5 +237,5 @@ cd /agua/apps/nrc/conf/RunSRA
 
 Run the second stage of the FixMates workflow for a single sample:
 
-cd /agua/apps/nrc/conf/RunSRA
+cd /agua/apps/broadbp/conf/RunSRA
 /agua/bin/cli/flow.pl RunSRA.proj runStage --workflow FixMates --username syoung --samplestring "sample:SRR645665" --log 4 --stagenumber 2
