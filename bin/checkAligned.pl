@@ -24,7 +24,7 @@ use FindBin qw($Bin);
 use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
-use NRC::App::CheckAligned;
+use CheckAligned;
 use Conf::Yaml;
 
 my $log			=	4;
@@ -60,7 +60,7 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object = NRC::App::CheckAligned->new({
+my $object = CheckAligned->new({
    keyfile    	=>  $keyfile,
    conf		=>	$conf,
    log     	=>  $log,

@@ -6,7 +6,7 @@ APPLICATION 	test.t
 
 PURPOSE
 
-	Test NRC::App::FilterReads module
+	Test FilterReads module
 	
 NOTES
 
@@ -37,9 +37,9 @@ my $outputsdir = "$Bin/outputs";
 `mkdir -p $outputsdir` if not -d $outputsdir;
 
 BEGIN {
-	use_ok('Test::NRC::App::FilterReads');
+	use_ok('Test::FilterReads');
 }
-require_ok('Test::NRC::App::FilterReads');
+require_ok('Test::FilterReads');
 
 #### SET CONF FILE
 my $installdir  =   $ENV{'installdir'} || "/a";
@@ -58,12 +58,12 @@ GetOptions (
 ) or die "No options specified. Try '--help'\n";
 usage() if defined $help;
 
-my $object = new Test::NRC::App::FilterReads(
+my $object = new Test::FilterReads(
     logfile     =>  $logfile,
 	log     =>  $log,
 	printlog    =>  $printlog
 );
-isa_ok($object, "Test::NRC::App::FilterReads", "object");
+isa_ok($object, "Test::FilterReads", "object");
 
 #### TESTS
 #$object->testFilterReads();

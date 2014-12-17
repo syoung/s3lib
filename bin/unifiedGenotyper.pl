@@ -23,7 +23,7 @@ version		:	Version of PCAP-core containing biobambam's bamUnifiedGenotyper
 
 EXAMPLE
 
-java -jar /agua/apps/gatk/3.2/GenomeAnalysisTK.jar -R /data/reference/genome.fa -T UnifiedGenotyper -I /data/nrc/SRR645668/SRR645668.rmdup_grp.bam -I /data/nrc/SRR645386/SRR645386.rmdup_grp.bam  --fix_misencoded_quality_scores --dbsnp  /agua/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf -o snps.raw.vcf -stand_call_conf 50.0 -stand_emit_conf 10.0  -L /data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed
+java -jar /agua/apps/gatk/3.2/GenomeAnalysisTK.jar -R /data/reference/hg19/hg19.fa -T UnifiedGenotyper -I /data/nrc/SRR645668/SRR645668.rmdup_grp.bam -I /data/nrc/SRR645386/SRR645386.rmdup_grp.bam  --fix_misencoded_quality_scores --dbsnp  /agua/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf -o snps.raw.vcf -stand_call_conf 50.0 -stand_emit_conf 10.0  -L /data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed
 
 
 =cut
@@ -85,7 +85,7 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object	=	NRC::App::UnifiedGenotyper->new({
+my $object	=	UnifiedGenotyper->new({
 	conf		=>	$conf,
     log     	=>  $log,
     printlog    =>  $printlog,

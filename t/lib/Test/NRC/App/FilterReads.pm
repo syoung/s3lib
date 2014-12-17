@@ -3,7 +3,7 @@ use MooseX::Declare;
 use strict;
 use warnings;
 
-class Test::NRC::App::FilterReads extends NRC::App::FilterReads with Logger {
+class Test::FilterReads extends FilterReads with Logger {
 
 use FindBin qw($Bin);
 use Test::More;

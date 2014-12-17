@@ -3,7 +3,7 @@ use MooseX::Declare;
 use strict;
 use warnings;
 
-class NRC::App::CheckAligned extends NRC::Main {
+class CheckAligned extends NRC::Main {
 
 #####////}}}}}
 

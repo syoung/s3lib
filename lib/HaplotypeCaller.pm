@@ -3,7 +3,7 @@ use MooseX::Declare;
 use strict;
 use warnings;
 
-class UnifiedGenotyper extends Common {
+class HaplotypeCaller extends Common {
 
 #####////}}}}}
 
@@ -64,18 +64,31 @@ method unifiedGenotyper ($analysistype, $reference, $uuid, $inputdir, $suffix, $
 		$command 	.=	qq{-I $inputfile \\};
 	}
 	$command		.=	qq{
---fix_misencoded_quality_scores \\
---dbsnp $dbsnp \\
--o $outputdir/$uuid.UG.vcf \\
--stand_call_conf 50.0 \\
--stand_emit_conf 10.0 \\
--L $target \\
+
+	
+	  java
+     -jar GenomeAnalysisTK.jar
+     -T HaplotypeCaller
+     -R reference/human_g1k_v37.fasta
+     -I sample1.bam [-I sample2.bam ...] \
+     [--dbsnp dbSNP.vcf] \
+     [-stand_call_conf 30] \
+     [-stand_emit_conf 10] \
+     [-L targets.interval_list] \
+     -o output.raw.snps.indels.vcf
+
+#--fix_misencoded_quality_scores \\
+#--dbsnp $dbsnp \\
+#-o $outputdir/$uuid.UG.vcf \\
+#-stand_call_conf 50.0 \\
+#-stand_emit_conf 10.0 \\
+#-L $target \\
 };
 
 
 	$self->logDebug("command", $command);
 
-	print "UnifiedGenotyper    command: $command\n";
+	print "HaplotypeCaller    command: $command\n";
 	`$command`;
 }
 

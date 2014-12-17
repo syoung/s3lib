@@ -1,12 +1,12 @@
 {
    "project"		: 	"RunSRA",
-   "number" 		: 	7,
-   "name" 			: 	"BaseRecalibration",
+   "number" 		: 	8,
+   "name" 			: 	"Varscan",
    "apps" 			: 	[
       {
          "number" 		: 	1,
-		 "name" 		: 	"BaseRecalibration",
-		 "type"			:	"baserecalibrator",
+		 "name" 		: 	"HaplotypeCaller",
+		 "type"			:	"variant",
 	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
 		 "installdir"	:	"/a/apps/gatk/3.2",
          "location" 	: 	"GenomeAnalysisTK.jar",
@@ -32,7 +32,7 @@
             {
                "argument" : "-o",
                "ordinal" : 4,
-               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.recal_data.grp",
+               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.haplotypecaller.vcf",
                "param" : "o"
             },
             {
@@ -54,48 +54,7 @@
                "param" : "knownSites"
             }
          ]
-      },
-      {
-         "number" 		: 	2,
-         "name" 		: 	"printReads",
-	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
-		 "installdir"	:	"/a/apps/gatk/3.2",
-         "location" 	: 	"GenomeAnalysisTK.jar",
-		 "type"			:	"printreads",
-         "parameters" 	: 	[
-            {
-               "argument" : "-T",
-               "ordinal" : 1,
-               "value" : "PrintReads",
-               "param" : "T"
-            },
-            {
-               "argument" : "-I",
-               "ordinal" : 2,
-               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.realigned.bam",
-               "param" : "I"
-            },
-            {
-               "argument" : "-R",
-               "ordinal" : 3,
-               "value" : "/data/reference/hg19/hg19.fa",
-               "param" : "R"
-            },
-            {
-               "argument" : "-o",
-               "ordinal" : 4,
-               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.realigned_recal.bam",
-               "param" : "o"
-            },
-            {
-               "argument" : "-BQSR",
-               "ordinal" : 5,
-               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.recal_data.grp",
-               "param" : "BQSR"
-            }
-         ]
       }
    ]
 }
-
 

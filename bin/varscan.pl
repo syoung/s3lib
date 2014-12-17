@@ -70,7 +70,7 @@ use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
 use Conf::Yaml;
-use NRC::App::Varscan;
+use Varscan;
 
 #### GET OPTIONS
 my $uuid		=	undef;
@@ -111,7 +111,7 @@ my $conf = Conf::Yaml->new(
     logfile     =>  $logfile
 );
 
-my $object	=	NRC::App::Varscan->new({
+my $object	=	Varscan->new({
 	conf		=>	$conf,
     log     	=>  $log,
     printlog    =>  $printlog,

@@ -3,7 +3,7 @@ use MooseX::Declare;
 use strict;
 use warnings;
 
-class NRC::App::Varscan extends NRC::Main with Agua::Common::Database {
+class Varscan extends NRC::Main with Agua::Common::Database {
 
 #####////}}}}}
 
