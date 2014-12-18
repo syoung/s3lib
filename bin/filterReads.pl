@@ -27,21 +27,20 @@ use lib "$Bin/../lib";
 use FilterReads;
 use Conf::Yaml;
 
-my $log			=	2;
+my $log			=	4;
 my $printlog	=	4;
 
-my $uuid 	= 	undef;
+my $uuid 		= 	undef;
 my $inputfile	=	undef;
-my $outputfile  =       undef;
+my $outputfile  =	undef;
+my $paired		=	undef;
 my $help;
 
-
 GetOptions (
-		
-    'uuid=s'  => \$uuid,
-    'inputfile=s'  => \$inputfile,
+    'uuid=s'  		=> \$uuid,
+    'inputfile=s'  	=> \$inputfile,
     'outputfile=s'  => \$outputfile,
-
+    'paired'  		=> \$paired,
 
     'log=i'     	=> \$log,
     'printlog=i'    => \$printlog,
@@ -68,5 +67,5 @@ my $object = FilterReads->new({
 });
 
 
-$object->filterReads($uuid, $inputfile,$outputfile);
+$object->filterReads($uuid, $inputfile, $outputfile, $paired);
 
