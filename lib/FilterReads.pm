@@ -34,14 +34,16 @@ method filterReads ($uuid, $inputfile, $outputfile, $paired) {
 
 	#### GET TOOLS
 	my $bam_installdir	=	$self->getInstallDir("bamtools");
-	my $bamtools	=	"$bam_installdir/bin/bamtools";
+	my $bamtools		=	"$bam_installdir/bin/bamtools";
 	
 	if ( $paired ) {
+		$self->logDebug("DOING paired filter");
 		my $command	=	qq{$bamtools filter -isMapped true -isPaired true -isProperPair true -in $inputfile -out $outputfile};
 		$self->logDebug("command", $command);
 		`$command`;
 	}
 	else {
+		$self->logDebug("DOING unpaired filter");
 		my $command	=	qq{$bamtools filter -isMapped true -in $inputfile -out $outputfile};
 		$self->logDebug("command", $command);
 		`$command`;

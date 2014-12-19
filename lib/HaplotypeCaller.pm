@@ -30,7 +30,7 @@ has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"3.2" );
 has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setConf" );
 has 'db'			=> ( isa => 'Agua::DBase::MySQL', is => 'rw', required => 0 );
 
-method unifiedGenotyper ($analysistype, $reference, $uuid, $inputdir, $suffix, $dbsnp, $outputdir, $target, $version) {
+method callVariants($analysistype, $reference, $uuid, $inputdir, $suffix, $dbsnp, $outputdir, $target, $version) {
 	$self->logDebug("uuid", $uuid);
 	$self->logDebug("outputdir", $outputdir);
 	$self->logDebug("reference", $reference);

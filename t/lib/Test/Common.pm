@@ -3,7 +3,7 @@ use MooseX::Declare;
 use strict;
 use warnings;
 
-class Test::PanCancer::Main extends PanCancer::Main {
+class Test::Common extends Common {
 
 use FindBin qw($Bin);
 use Test::More;
@@ -32,6 +32,14 @@ method testLatestVersion {
 	}	
 }
 
+method diff($actualfile, $expectedfile) {	
+	my $command = "diff -wB $actualfile $expectedfile";
+	$self->logDebug("command", $command);
+	my $diff = `$command`;
+
+	return 1 if $diff eq '';
+	return 0;
+}
 
 method fileLines ($file) {
 	$self->logNote("file", $file);

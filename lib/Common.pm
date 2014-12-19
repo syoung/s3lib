@@ -156,6 +156,33 @@ method getFilesByRegex ($directory, $regex) {
 	return $files;
 }
 
+method getDirs ($directory) {
+	$self->logDebug("directory", $directory);
+	
+	opendir(DIR, $directory) or $self->logError("Can't open directory: $directory") and exit;
+	my $dirs;
+	@$dirs = readdir(DIR);
+	closedir(DIR) or die "Can't close directory: $directory";
+	
+	for ( my $i = 0; $i < @$dirs; $i++ ) {
+		if ( $$dirs[$i] =~ /^\.+$/ ) {
+			splice @$dirs, $i, 1;
+			$i--;
+		}
+	}
+	
+	for ( my $i = 0; $i < @$dirs; $i++ ) {
+		last if scalar(@$dirs) == 0 or $dirs == [];
+		my $filepath = "$directory/$$dirs[$i]";
+		if ( not -d $filepath ) {
+			splice @$dirs, $i, 1;
+			$i--;
+		}
+	}
+	
+	return $dirs;	
+}
+
 
 method getFiles ($directory) {
 	$self->logDebug("directory", $directory);

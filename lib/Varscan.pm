@@ -73,8 +73,8 @@ method align ($uuid, $inputdir, $suffix, $outputdir, $reference, $options, $samt
 	`mkdir -p $outputdir` if not -d $outputdir;
 
 	#### SET OUTPUT FILES
-	my $outputsnp	=	"$uuid.snp";
-	my $outputindel	=	"$uuid.indel";
+	my $outputsnp	=	"$uuid.snp.varscan";
+	my $outputindel	=	"$uuid.indel.varscan";
 	#`mkdir -p $outputsnp` if not -d $outputsnp;
 	#`mkdir -p $outputindel` if not -d $outputindel;
 

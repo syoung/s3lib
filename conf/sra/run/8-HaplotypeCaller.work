@@ -14,7 +14,7 @@
             {
                "argument" : "-T",
                "ordinal" : 1,
-               "value" : "BaseRecalibrator",
+               "value" : "HaplotypeCaller",
                "param" : "T"
             },
             {
@@ -32,26 +32,38 @@
             {
                "argument" : "-o",
                "ordinal" : 4,
-               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.haplotypecaller.vcf",
-               "param" : "o"
+               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.haplotypecaller.snps.indels.vcf",
+               "param" : "output"
             },
             {
-               "argument" : "-knownSites",
+               "argument" : "-L",
                "ordinal" : 5,
-               "value" : "/data/reference/gatk/1000G_phase1.indels.hg19.vcf",
-               "param" : "knownSites"
+               "value" : "/data/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals",
+               "param" : "intervalFile"
             },
             {
-               "argument" : "-knownSites",
+               "argument" : "--dbsnp",
                "ordinal" : 6,
                "value" : "/data/reference/gatk/dbsnp_138.hg19.vcf",
-               "param" : "knownSites"
+               "param" : "dbsnp"
             },
             {
-               "argument" : "-knownSites",
+               "argument" : "-stand_call_conf",
                "ordinal" : 7,
-               "value" : "/data/reference/gatk/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf",
-               "param" : "knownSites"
+               "value" : 30,
+               "param" : "standCallConf"
+            },
+            {
+               "argument" : "-stand_emit_conf",
+               "ordinal" : 8,
+               "value" : 10,
+               "param" : "standEmitConf"
+            },
+            {
+               "argument" : "-nct",
+               "ordinal" : 9,
+               "value" : 4,
+               "param" : "cpus"
             }
          ]
       }
