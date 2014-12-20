@@ -27,9 +27,9 @@ use lib "$Bin/../lib";
 
 #### INTERNAL PACKAGES
 use Usage;
-use Conf::Yaml;
 
-my $log			=	4;
+my $logfile		=	"/tmp/usage.$$.log";
+my $log			=	2;
 my $printlog	=	4;
 my $directory	=	undef;
 my $outputfile  =	undef;
@@ -44,14 +44,13 @@ GetOptions (
 );
 
 my $object = Usage->new({
-   conf		=>	$conf,
-   log     	=>  $log,
-   printlog    =>  $printlog,
-   logfile     =>  $logfile
+   log     		=>  $log,
+   printlog    	=>  $printlog,
+   logfile     	=>  $logfile
 });
 
 
-$object->filterReads($uuid, $directory, $outputfile, $paired);
+$object->report($directory, $outputfile);
 
 print "Printed outputfile:\n\n$outputfile\n\n";
 
