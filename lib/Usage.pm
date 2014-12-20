@@ -11,18 +11,6 @@ class Usage extends Common {
 
 use FindBin qw($Bin);
 
-# Integers
-has 'sleep'			=> 	( isa => 'Str|Undef', is => 'rw', default	=>	10 );
-
-# Strings
-#has 'keyfile'		=> 	( isa => 'Str|Undef', is => 'rw', required	=>	1 );
-has 'uuid'			=> 	( isa => 'Str|Undef', is => 'rw', required 	=> 	0 );
-has 'version'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"" );
-has 'options'		=> 	( isa => 'Str|Undef', is => 'rw', default	=>	"-l200m" );
-
-# Objects
-has 'conf'			=> ( isa => 'Conf::Yaml', is => 'rw', lazy => 1, builder => "setConf" );
-
 method report ($directory, $outputfile) {
 	#$self->logDebug("directory", $directory);
 	#$self->logDebug("outputfile", $outputfile);
