@@ -1,0 +1,101 @@
+{
+   "project"		: 	"Freeze1-SSD",
+   "number" 		: 	7,
+   "name" 			: 	"BaseRecalibration",
+   "apps" 			: 	[
+      {
+         "number" 		: 	1,
+		 "name" 		: 	"BaseRecalibration",
+		 "type"			:	"baserecalibrator",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+		 "installdir"	:	"/a/apps/gatk/3.2",
+         "location" 	: 	"GenomeAnalysisTK.jar",
+		 "parameters" 	:	[
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "BaseRecalibrator",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "/data/reference/gatk/ucsc.hg19.fasta",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 4,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.recal_data.grp",
+               "param" : "o"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 5,
+               "value" : "/data/reference/gatk/1000G_phase1.indels.hg19.vcf",
+               "param" : "knownSites"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 6,
+               "value" : "/data/reference/gatk/dbsnp_138.hg19.vcf",
+               "param" : "knownSites"
+            },
+            {
+               "argument" : "-knownSites",
+               "ordinal" : 7,
+               "value" : "/data/reference/gatk/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf",
+               "param" : "knownSites"
+            }
+         ]
+      },
+      {
+         "number" 		: 	2,
+         "name" 		: 	"printReads",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+		 "installdir"	:	"/a/apps/gatk/3.2",
+         "location" 	: 	"GenomeAnalysisTK.jar",
+		 "type"			:	"printreads",
+         "parameters" 	: 	[
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "PrintReads",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "/data/reference/gatk/ucsc.hg19.fasta",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 4,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned_recal.bam",
+               "param" : "o"
+            },
+            {
+               "argument" : "-BQSR",
+               "ordinal" : 5,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.recal_data.grp",
+               "param" : "BQSR"
+            }
+         ]
+      }
+   ]
+}
+
+

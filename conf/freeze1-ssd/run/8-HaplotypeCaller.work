@@ -1,0 +1,72 @@
+{
+   "project"		: 	"Freeze1-SSD",
+   "number" 		: 	8,
+   "name" 			: 	"HaplotypeCaller",
+   "apps" 			: 	[
+      {
+         "number" 		: 	1,
+		 "name" 		: 	"HaplotypeCaller",
+		 "type"			:	"variant",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+		 "installdir"	:	"/a/apps/gatk/3.2",
+         "location" 	: 	"GenomeAnalysisTK.jar",
+		 "parameters" 	:	[
+            {
+               "argument" : "-T",
+               "ordinal" : 1,
+               "value" : "HaplotypeCaller",
+               "param" : "T"
+            },
+            {
+               "argument" : "-I",
+               "ordinal" : 2,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "-R",
+               "ordinal" : 3,
+               "value" : "/data/reference/gatk/ucsc.hg19.fasta",
+               "param" : "R"
+            },
+            {
+               "argument" : "-o",
+               "ordinal" : 4,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.haplotypecaller.snps.indels.vcf",
+               "param" : "output"
+            },
+            {
+               "argument" : "-L",
+               "ordinal" : 5,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals",
+               "param" : "intervalFile"
+            },
+            {
+               "argument" : "--dbsnp",
+               "ordinal" : 6,
+               "value" : "/data/reference/gatk/dbsnp_138.hg19.vcf",
+               "param" : "dbsnp"
+            },
+            {
+               "argument" : "-stand_call_conf",
+               "ordinal" : 7,
+               "value" : 30,
+               "param" : "standCallConf"
+            },
+            {
+               "argument" : "-stand_emit_conf",
+               "ordinal" : 8,
+               "value" : 10,
+               "param" : "standEmitConf"
+            },
+            {
+               "argument" : "-nct",
+               "ordinal" : 9,
+               "value" : 4,
+               "param" : "cpus"
+            }
+         ]
+      }
+   ]
+}
+

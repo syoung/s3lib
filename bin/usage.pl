@@ -50,6 +50,9 @@ my $object = Usage->new({
 });
 
 
+print "Source directory not defined (--directory option)\n" and exit if not defined $directory;
+print "Target outputfile not defined (--outputfilie option)\n" and exit if not defined $outputfile;
+
 $object->report($directory, $outputfile);
 
 print "Printed outputfile:\n\n$outputfile\n\n";

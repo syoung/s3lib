@@ -1,0 +1,71 @@
+{
+   "project"		:	"Freeze1-SSD",
+   "name"   		: 	"UnifiedGenotyper",
+   "number" 		: 	9,   
+   "description" 	: 	"A variant caller which unifies the approaches of several disparate caller",
+   "apps" 			: 	[
+      {
+         "name" 		: 	"UnifiedGenotyper",
+         "number"		: 	1,
+         "package" 		: 	"broadbp",
+         "name" 		: 	"GenomeAnalysisTK",
+         "installdir" 	: 	"/a/apps/broadbp",
+	     "location"		:	"bin/unifiedGenotyper.pl",
+         "type" 		: 	"UnifiedGenotyper",         
+         "version" 		: 	"3.2-2",
+         "description" 	: 	"multiple-sample, technology-aware SNP and indel caller",
+         "parameters" 	: 	[
+            {
+               "ordinal": 1,
+               "param" : "analysis_type",
+               "argument" : "-analysis_type",
+               "description" : "type of analysis",
+               "value" : "UnifiedGenotyper"
+            },
+	    {
+               "ordinal": 2,
+               "param" : "reference_genome",
+               "argument" : "-reference_genome",
+               "description" : "Location of reference genome fasta file, indexed",
+               "value" : "/data/reference/gatk/ucsc.hg19.fasta"
+            },
+            {
+               "ordinal": 3,
+               "param" : "-uuid",
+               "argument" : "-uuid",
+               "value" : "<SAMPLE>"
+            },
+			{
+               "ordinal": 4,
+               "param" : "-inputdir",
+               "argument" : "-inputdir",
+               "value" : "/mergedvol/sra"
+            },
+			{
+               "ordinal": 5,
+               "param" : "-suffix",
+               "argument" : "-suffix",
+               "value" : "realigned_recal.bam"
+            },
+			{
+               "ordinal": 6,
+               "param" : "-dbsnp",
+               "argument" : "-dbsnp",
+               "value" : "/a/apps/gatk/3.2/ftp.broadinstitute.org/bundle/2.5/b37/dbsnp_137.b37.vcf"
+            },
+            {
+               "ordinal": 7,
+               "param" : "-outputdir",
+               "argument" : "-outputdir",
+               "value" : "/mergedvol/sra/<SAMPLE>"
+            },
+			{
+               "ordinal": 8,
+               "param" : "target",
+               "argument" : "-target",
+               "value" : "/data/reference/target/SeqCap_EZ_Exome_v2-tiled.bed"
+            }
+         ]
+      }
+   ]
+}

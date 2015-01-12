@@ -1,0 +1,39 @@
+{
+   "project"		:	"DownloadSRA",
+   "name"   		: 	"SraToBam",
+   "number"	 		:	2,   
+   "description" 	: 	"Convert SRA to BAM",
+   "notes" 			: 	"Uses biobambam's fastqtobam",
+   "apps" : [
+      {
+         "name" : "sraToBam",
+         "number": 1,
+         "type" : "converter",
+         "package" : "cu",
+         "installdir" : "/a/apps/cu/0.0.11",
+         "location" : "bin/sratobam.pl",
+         "description" : "Convert an SRA file to a BAM file",
+         "linkurl" : "http://www.github.com/annaisystems/cu",
+         "parameters" : [
+            {
+               "param" 			: 	"reference",
+               "argument" 		: 	"--reference",
+               "description" 	: 	"Reference sequence file location",
+               "value" 			: 	"/data/reference/gatk/ucsc.hg19.fasta"
+            },
+            {
+               "param" 			: 	"inputfile",
+               "argument" 		: 	"--inputfile",
+               "description" 	: 	"Input SRA file location",
+               "value" 			: 	"/mergedvol/sra/<SAMPLE>/<SAMPLE>.sra"
+            },
+            {
+               "param" 			: 	"outputfile",
+               "argument" 		: 	"--outputfile",
+               "description" 	: 	"Output BAM file location",
+               "value" 			: 	"/mergedvol/sra/<SAMPLE>/<SAMPLE>.bam"
+            }
+         ]
+      }
+   ]
+}

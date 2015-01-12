@@ -12,15 +12,18 @@ class Usage extends Common {
 use FindBin qw($Bin);
 
 method report ($directory, $outputfile) {
-	#$self->logDebug("directory", $directory);
-	#$self->logDebug("outputfile", $outputfile);
+	$self->logDebug("directory", $directory);
+	$self->logDebug("outputfile", $outputfile);
 	my $usage	=	$self->getUsage($directory);
-	#$self->logDebug("usage", $usage);
+	$self->logDebug("usage", $usage);
 	$usage		=~	s/==>\s+.+?([^\/]+)\/stdout\/(\d+)-([^\-]+).+?<==\n/$1\t$2\t$3\t/msg;
 	$usage		=~	s/\S+\s+\S+\s+(\S+)elapsed\s+(\S+)CPU\s+.+?\s+(\d+)max.+?\n/$1\t$2\t$3/msg;
 	$usage		=~	s/\.\d+//msg;
-	#$self->logDebug("PARSED usage", $usage);
-	
+	$self->logDebug("PARSED usage", $usage);
+
+$self->logDebug("DEBUG EXIT") and exit;
+
+
 	my @lines	=	split "\n", $usage;
 	foreach my $line ( @lines ) {
 		my @elements = split "\t", $line;

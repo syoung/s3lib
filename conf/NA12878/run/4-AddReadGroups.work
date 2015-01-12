@@ -1,0 +1,72 @@
+{
+   "project"		: 	"Freeze1-SSD",
+   "number" 		: 	4,
+   "name" 			: 	"AddReadGroups",
+   "apps" 			: 	[
+      {
+         "number" 		: 	1,
+         "name" 		: 	"addReadGroups",
+		 "installdir"	:	"/a/apps/picard/1.103",
+         "location" 	: 	"AddOrReplaceReadGroups.jar",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+         "type" 		: 	"readgroups",
+         "parameters" : [
+            {
+               "argument"	: 	"RGPL=",
+               "ordinal" 	: 	1,
+			   "value"		:	"Illumina",
+               "param" 		: 	"subCommand"
+            },
+            {
+               "argument" : "RGLB=",
+               "ordinal" : 2,
+               "value" : "BWA",
+               "param" : "RGLB"
+            },
+            {
+               "argument" : "RGPU=",
+               "ordinal" : 3,
+               "value" : "GRP1",
+               "param" : "RGPU"
+            },
+            {
+               "argument" : "RGSM=",
+               "ordinal" : 4,
+               "value" : "GP1",
+               "param" : "RGSM"
+            },
+            {
+               "argument" : "I=",
+               "ordinal" : 5,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup.bam",
+               "param" : "I"
+            },
+            {
+               "argument" : "O=",
+               "ordinal" : 6,
+               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp.bam",
+               "param" : "O"
+            },
+            {
+               "argument" : "SO=",
+               "ordinal" : 7,
+               "value" : "coordinate",
+               "param" : "SO"
+            },
+            {
+               "argument" : "CREATE_INDEX=",
+               "ordinal" : 8,
+               "value" : "true",
+               "param" : "CREATE_INDEX"
+            },
+            {
+               "argument" : "VALIDATION_STRINGENCY=",
+               "ordinal" : 9,
+               "value" : "SILENT",
+               "param" : "VALIDATION_STRINGENCY"
+            }
+         ]
+      }
+   ]
+}
+
