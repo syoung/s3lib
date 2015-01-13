@@ -1,0 +1,77 @@
+{
+   "project"		: 	"NA12878-chr20",
+   "number" 		: 	1,
+   "name" 			: 	"FixMates",
+   "apps" 			: 	[
+      {
+         "number" 		: 	1,
+         "installdir" 	: 	"/a/apps/samtools/0.1.19",
+         "location" 	: 	"samtools",
+         "name" 		: 	"sort",
+         "type" 		: 	"converter",
+         "parameters" 	: 	[
+            {
+               "ordinal" : 1,
+               "value" : "sort",
+               "param" : "subCommand"
+            },
+            {
+               "ordinal" : "2",
+               "argument" : "-@",
+               "value" : "4",
+               "param" : "threads"
+            },
+            {
+               "ordinal" : "3",
+               "value" : "/data/bam/<SAMPLE>/<SAMPLE>.bam",
+               "param" : "inputfile"
+            },
+            {
+               "ordinal" : "4",
+               "value" : "/data/bam/<SAMPLE>/<SAMPLE>.sorted",
+               "param" : "sortedfile"
+            }
+         ]
+      },
+      {
+         "name" 		: 	"fixMate",
+         "number" 		: 	2,
+         "type" 		: 	"converter",
+	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
+         "installdir" 	: 	"/a/apps/picard/1.103",
+         "location" 	: 	"FixMateInformation.jar",
+         "parameters" : [
+            {
+               "ordinal" : 1,
+			   "argument"	:	"I=",
+               "value" : "/data/bam/<SAMPLE>/<SAMPLE>.sorted.bam",
+               "param" : "subCommand"
+            },
+            {
+               "ordinal" : 2,
+               "argument" : "O=",
+               "value" : "/data/bam/<SAMPLE>/<SAMPLE>.fxmt.bam",
+               "param" : "O"
+            },
+            {
+               "ordinal" : 3,
+               "argument" : "SO=",
+               "value" : "coordinate",
+               "param" : "SO"
+            },
+            {
+               "ordinal" : 4,
+               "argument" : "CREATE_INDEX=",
+               "value" : "true",
+               "param" : "CREATE_INDEX"
+            },
+            {
+               "ordinal" : 5,
+               "argument" : "VALIDATION_STRINGENCY=",
+               "value" : "SILENT",
+               "param" : "VALIDATION_STRINGENCY"
+            }
+         ]
+      }
+   ]
+}
