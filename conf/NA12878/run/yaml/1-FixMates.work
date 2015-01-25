@@ -1,0 +1,61 @@
+---
+apps:
+  -
+    installdir: /a/apps/samtools/0.1.19
+    location: samtools
+    name: sort
+    number: 1
+    parameters:
+      -
+        ordinal: 1
+        param: subCommand
+        value: sort
+      -
+        argument: -@
+        ordinal: '2'
+        param: threads
+        value: '4'
+      -
+        ordinal: '3'
+        param: inputfile
+        value: /data/bam/<SAMPLE>/<SAMPLE>.bam
+      -
+        ordinal: '4'
+        param: sortedfile
+        value: /data/bam/<SAMPLE>/<SAMPLE>.sorted
+    type: converter
+  -
+    executor: '/a/apps/java/1.7.0_51/bin/java -jar'
+    installdir: /a/apps/picard/1.103
+    location: FixMateInformation.jar
+    name: fixMate
+    number: 2
+    parameters:
+      -
+        argument: I=
+        ordinal: 1
+        param: subCommand
+        value: /data/bam/<SAMPLE>/<SAMPLE>.sorted.bam
+      -
+        argument: O=
+        ordinal: 2
+        param: O
+        value: /data/bam/<SAMPLE>/<SAMPLE>.fxmt.bam
+      -
+        argument: SO=
+        ordinal: 3
+        param: SO
+        value: coordinate
+      -
+        argument: CREATE_INDEX=
+        ordinal: 4
+        param: CREATE_INDEX
+        value: 'true'
+      -
+        argument: VALIDATION_STRINGENCY=
+        ordinal: 5
+        param: VALIDATION_STRINGENCY
+        value: SILENT
+    type: converter
+number: 1
+project: NA12878
