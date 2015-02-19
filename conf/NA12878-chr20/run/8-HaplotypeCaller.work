@@ -1,72 +1,57 @@
-{
-   "project"		: 	"NA12878-chr20",
-   "number" 		: 	8,
-   "name" 			: 	"HaplotypeCaller",
-   "apps" 			: 	[
-      {
-         "number" 		: 	1,
-		 "name" 		: 	"HaplotypeCaller",
-		 "type"			:	"variant",
-	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
-		 "installdir"	:	"/a/apps/gatk/3.2",
-         "location" 	: 	"GenomeAnalysisTK.jar",
-		 "parameters" 	:	[
-            {
-               "argument" : "-T",
-               "ordinal" : 1,
-               "value" : "HaplotypeCaller",
-               "param" : "T"
-            },
-            {
-               "argument" : "-I",
-               "ordinal" : 2,
-               "value" : "/data/output/<SAMPLE>/<SAMPLE>.realigned.bam",
-               "param" : "I"
-            },
-            {
-               "argument" : "-R",
-               "ordinal" : 3,
-               "value" : "/data/reference/gatk/ucsc.hg19.fasta",
-               "param" : "R"
-            },
-            {
-               "argument" : "-o",
-               "ordinal" : 4,
-               "value" : "/data/output/<SAMPLE>/<SAMPLE>.haplotypecaller.snps.indels.vcf",
-               "param" : "output"
-            },
-            {
-               "argument" : "-L",
-               "ordinal" : 5,
-               "value" : "/data/output/<SAMPLE>/<SAMPLE>.forRealign.intervals",
-               "param" : "intervalFile"
-            },
-            {
-               "argument" : "--dbsnp",
-               "ordinal" : 6,
-               "value" : "/data/reference/gatk/dbsnp_138.hg19.vcf",
-               "param" : "dbsnp"
-            },
-            {
-               "argument" : "-stand_call_conf",
-               "ordinal" : 7,
-               "value" : 30,
-               "param" : "standCallConf"
-            },
-            {
-               "argument" : "-stand_emit_conf",
-               "ordinal" : 8,
-               "value" : 10,
-               "param" : "standEmitConf"
-            },
-            {
-               "argument" : "-nct",
-               "ordinal" : 9,
-               "value" : 8,
-               "param" : "cpus"
-            }
-         ]
-      }
-   ]
-}
-
+---
+apps:
+  -
+    executor: '/a/apps/java/1.7.0_51/bin/java -jar'
+    installdir: /a/apps/gatk/3.2
+    location: GenomeAnalysisTK.jar
+    name: HaplotypeCaller
+    number: 1
+    parameters:
+      -
+        argument: -T
+        ordinal: 1
+        param: T
+        value: HaplotypeCaller
+      -
+        argument: -I
+        ordinal: 2
+        param: I
+        value: /data/output/<SAMPLE>/<SAMPLE>.realigned.bam
+      -
+        argument: -R
+        ordinal: 3
+        param: R
+        value: /data/reference/gatk/ucsc.hg19.fasta
+      -
+        argument: -o
+        ordinal: 4
+        param: output
+        value: /data/output/<SAMPLE>/<SAMPLE>.haplotypecaller.snps.indels.vcf
+      -
+        argument: -L
+        ordinal: 5
+        param: intervalFile
+        value: /data/output/<SAMPLE>/<SAMPLE>.forRealign.intervals
+      -
+        argument: --dbsnp
+        ordinal: 6
+        param: dbsnp
+        value: /data/reference/gatk/dbsnp_138.hg19.vcf
+      -
+        argument: -stand_call_conf
+        ordinal: 7
+        param: standCallConf
+        value: 30
+      -
+        argument: -stand_emit_conf
+        ordinal: 8
+        param: standEmitConf
+        value: 10
+      -
+        argument: -nct
+        ordinal: 9
+        param: cpus
+        value: 8
+    type: variant
+number: 8
+project: NA12878-chr20

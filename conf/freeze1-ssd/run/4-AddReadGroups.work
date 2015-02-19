@@ -1,72 +1,57 @@
-{
-   "project"		: 	"Freeze1-SSD",
-   "number" 		: 	4,
-   "name" 			: 	"AddReadGroups",
-   "apps" 			: 	[
-      {
-         "number" 		: 	1,
-         "name" 		: 	"addReadGroups",
-		 "installdir"	:	"/a/apps/picard/1.103",
-         "location" 	: 	"AddOrReplaceReadGroups.jar",
-	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
-         "type" 		: 	"readgroups",
-         "parameters" : [
-            {
-               "argument"	: 	"RGPL=",
-               "ordinal" 	: 	1,
-			   "value"		:	"Illumina",
-               "param" 		: 	"subCommand"
-            },
-            {
-               "argument" : "RGLB=",
-               "ordinal" : 2,
-               "value" : "BWA",
-               "param" : "RGLB"
-            },
-            {
-               "argument" : "RGPU=",
-               "ordinal" : 3,
-               "value" : "GRP1",
-               "param" : "RGPU"
-            },
-            {
-               "argument" : "RGSM=",
-               "ordinal" : 4,
-               "value" : "GP1",
-               "param" : "RGSM"
-            },
-            {
-               "argument" : "I=",
-               "ordinal" : 5,
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup.bam",
-               "param" : "I"
-            },
-            {
-               "argument" : "O=",
-               "ordinal" : 6,
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp.bam",
-               "param" : "O"
-            },
-            {
-               "argument" : "SO=",
-               "ordinal" : 7,
-               "value" : "coordinate",
-               "param" : "SO"
-            },
-            {
-               "argument" : "CREATE_INDEX=",
-               "ordinal" : 8,
-               "value" : "true",
-               "param" : "CREATE_INDEX"
-            },
-            {
-               "argument" : "VALIDATION_STRINGENCY=",
-               "ordinal" : 9,
-               "value" : "SILENT",
-               "param" : "VALIDATION_STRINGENCY"
-            }
-         ]
-      }
-   ]
-}
-
+---
+apps:
+  -
+    executor: '/a/apps/java/1.7.0_51/bin/java -jar'
+    installdir: /a/apps/picard/1.103
+    location: AddOrReplaceReadGroups.jar
+    name: addReadGroups
+    number: 1
+    parameters:
+      -
+        argument: RGPL=
+        ordinal: 1
+        param: subCommand
+        value: Illumina
+      -
+        argument: RGLB=
+        ordinal: 2
+        param: RGLB
+        value: BWA
+      -
+        argument: RGPU=
+        ordinal: 3
+        param: RGPU
+        value: GRP1
+      -
+        argument: RGSM=
+        ordinal: 4
+        param: RGSM
+        value: GP1
+      -
+        argument: I=
+        ordinal: 5
+        param: I
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup.bam
+      -
+        argument: O=
+        ordinal: 6
+        param: O
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp.bam
+      -
+        argument: SO=
+        ordinal: 7
+        param: SO
+        value: coordinate
+      -
+        argument: CREATE_INDEX=
+        ordinal: 8
+        param: CREATE_INDEX
+        value: 'true'
+      -
+        argument: VALIDATION_STRINGENCY=
+        ordinal: 9
+        param: VALIDATION_STRINGENCY
+        value: SILENT
+    type: readgroups
+number: 4
+project: Freeze1-SSD

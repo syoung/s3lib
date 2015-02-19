@@ -1,59 +1,45 @@
-{
-   "project"		: 	"NA12878-chr20",
-   "number" 		: 	5,
-   "name" 			: 	"QualityFilter",
-   "apps" 			: 	[
-      {
-         "number" 		: 	1,
-         "installdir" 	: 	"/a/apps/bamtools/v2.3.0",
-         "location" 	: 	"bin/bamtools",
-         "name" 		: 	"qualityFilter",
-         "type" 		: 	"qualityfilter",
-		 "parameters" 	: 	[
-			   {
-				  "ordinal" : 1,
-				  "value" : "filter",
-				  "param" : "subCommand"
-			   },
-			   {
-				  "argument" : "-mapQuality",
-				  "ordinal" : 2,
-				  "value" : "\">=60\"",
-				  "param" : "mapQuality"
-			   },
-			   {
-				  "argument" : "-in",
-				  "ordinal" : 3,
-				  "value" : "/data/output/<SAMPLE>/<SAMPLE>.rmdup_grp.bam",
-				  "param" : "in"
-			   },
-			   {
-				  "argument" : "-out",
-				  "ordinal" : 4,
-				  "value" : "/data/output/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam",
-				  "param" : "out"
-			   }
-			]
-		 },
-		 {
-			"number" 		: 	2,
-			"installdir" 	: 	"/a/apps/samtools/0.1.19",
-			"location" 		: 	"samtools",
-			"name" 			: 	"indexBam",
-            "type" 			: 	"indexer",
-			"parameters" : [
-			   {
-				  "ordinal" : 	1,
-				  "value" 	: "index",
-				  "param" 	: "subCommand"
-			   },
-			   {
-				  "ordinal" : 	2,
-				  "value" 	: 	"/data/output/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam",
-				  "param" 	: 	"inputfile"
-			   }
-			]
-		 }
-   ]
-}
-
+---
+apps:
+  -
+    installdir: /a/apps/bamtools/v2.3.0
+    location: bin/bamtools
+    name: qualityFilter
+    number: 1
+    parameters:
+      -
+        ordinal: 1
+        param: subCommand
+        value: filter
+      -
+        argument: -mapQuality
+        ordinal: 2
+        param: mapQuality
+        value: '">=60"'
+      -
+        argument: -in
+        ordinal: 3
+        param: in
+        value: /data/output/<SAMPLE>/<SAMPLE>.rmdup_grp.bam
+      -
+        argument: -out
+        ordinal: 4
+        param: out
+        value: /data/output/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam
+    type: qualityfilter
+  -
+    installdir: /a/apps/samtools/0.1.19
+    location: samtools
+    name: indexBam
+    number: 2
+    parameters:
+      -
+        ordinal: 1
+        param: subCommand
+        value: index
+      -
+        ordinal: 2
+        param: inputfile
+        value: /data/output/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam
+    type: indexer
+number: 5
+project: NA12878-chr20

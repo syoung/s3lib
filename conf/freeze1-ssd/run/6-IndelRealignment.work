@@ -1,100 +1,80 @@
-{
-   "project"		: 	"Freeze1-SSD",
-   "number" 		: 	6,
-   "name" 			: 	"IndelRealignment",
-   "apps" 			: 	[
-      {
-         "number" 		: 	1,
-		 "installdir"	:	"/a/apps/gatk/3.2",
-         "location" 	: 	"GenomeAnalysisTK.jar",
-	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
-		 "type"			:	"realigner",
-         "name" 		:	"realignTarget",
-         "parameters" : [
-            {
-               "argument" 	: 	"-T",
-               "ordinal" 	: 	1,
-               "value" 		: 	"RealignerTargetCreator",
-               "param" 		: 	"T"
-            },
-            {
-               "argument" 	: 	"-nt",
-               "ordinal" 	: 	2,
-               "value" 		: 	"4",
-               "param" 		: 	"nt"
-            },
-            {
-               "argument" 	: 	"-I",
-               "ordinal" 	: 	3,
-               "value" 		: 	"/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam",
-               "param" 		: 	"I"
-            },
-            {
-               "argument" 	: 	"-R",
-               "ordinal" 	: 	4,
-               "value" 		: 	"/data/reference/gatk/ucsc.hg19.fasta",
-               "param" 		: 	"R"
-            },
-            {
-               "argument" 	: 	"-o",
-               "ordinal" 	: 	5,
-               "value" 		: 	"/mergedvol/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals",
-               "param" 		: 	"o"
-            }
-         ]
-      },
-      {
-         "number" 		: 	2,
-		 "installdir"	:	"/a/apps/gatk/3.2",
-         "location" 	: 	"GenomeAnalysisTK.jar",
-	     "executor"		:	"/a/apps/java/1.7.0_51/bin/java -jar",
-         "name" 		: 	"realign",
-         "type" 		: 	"realigner",
-         "parameters" : [
-            {
-               "argument" : "-T",
-               "ordinal" : 1,
-               "value" : "IndelRealigner",
-               "param" : "T"
-            },
-            {
-               "argument" : "-I",
-               "ordinal" : 2,
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam",
-               "param" : "I"
-            },
-            {
-               "argument" 	: "-R",
-               "ordinal" 	: 3,
-               "value" 		: "/data/reference/gatk/ucsc.hg19.fasta",
-               "param" 		: "R"
-            },
-            {
-               "argument" : "-targetIntervals",
-               "ordinal" : 4,
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals",
-               "param" : "targetIntervals"
-            },
-            {
-               "argument" : "--out",
-               "ordinal" : 5,
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned.bam",
-               "param" : "out"
-            },
-            {
-               "argument" : "-LOD",
-               "ordinal" : 6,
-               "value" : "0.4",
-               "param" : "LOD"
-            },
-            {
-               "argument" : "-compress",
-               "ordinal" : 7,
-               "value" : "5",
-               "param" : "compress"
-            }
-         ]
-      }
-   ]
-}
-
+---
+apps:
+  -
+    executor: '/a/apps/java/1.7.0_51/bin/java -jar'
+    installdir: /a/apps/gatk/3.2
+    location: GenomeAnalysisTK.jar
+    name: realignTarget
+    number: 1
+    parameters:
+      -
+        argument: -T
+        ordinal: 1
+        param: T
+        value: RealignerTargetCreator
+      -
+        argument: -nt
+        ordinal: 2
+        param: nt
+        value: '4'
+      -
+        argument: -I
+        ordinal: 3
+        param: I
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam
+      -
+        argument: -R
+        ordinal: 4
+        param: R
+        value: /data/reference/gatk/ucsc.hg19.fasta
+      -
+        argument: -o
+        ordinal: 5
+        param: o
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals
+    type: realigner
+  -
+    executor: '/a/apps/java/1.7.0_51/bin/java -jar'
+    installdir: /a/apps/gatk/3.2
+    location: GenomeAnalysisTK.jar
+    name: realign
+    number: 2
+    parameters:
+      -
+        argument: -T
+        ordinal: 1
+        param: T
+        value: IndelRealigner
+      -
+        argument: -I
+        ordinal: 2
+        param: I
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.rmdup_grp_rmlq.bam
+      -
+        argument: -R
+        ordinal: 3
+        param: R
+        value: /data/reference/gatk/ucsc.hg19.fasta
+      -
+        argument: -targetIntervals
+        ordinal: 4
+        param: targetIntervals
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.forRealign.intervals
+      -
+        argument: --out
+        ordinal: 5
+        param: out
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.realigned.bam
+      -
+        argument: -LOD
+        ordinal: 6
+        param: LOD
+        value: '0.4'
+      -
+        argument: -compress
+        ordinal: 7
+        param: compress
+        value: '5'
+    type: realigner
+number: 6
+project: Freeze1-SSD

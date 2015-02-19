@@ -1,60 +1,45 @@
-{
-   "project"		: 	"Freeze1-SSD",
-   "number" 		: 	2,
-   "name" 			: 	"FilterReads",
-   "apps" 			: 	[
-      {
-         "number" 		: 	1,
-         "name" 		: 	"filterReads",
-         "installdir" 	: 	"/a/apps/broadbp",
-         "location" 	: 	"bin/filterReads.pl",
-         "type" 		: 	"converter",
-         "parameters" 	: 	[
-            {
-               "ordinal" : 1,
-               "argument" : "--uuid",
-               "value" : "<SAMPLE>",
-               "param" : "uuid"
-            },
-            {
-               "ordinal" : 2,
-               "argument" : "--in",
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt.bam",
-               "param" : "inputfile"
-            },
-            {
-               "ordinal" : 3,
-               "argument" : "--out",
-               "value" : "/mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
-               "param" : "outputfile"
-            },
-            {
-               "ordinal" : 4,
-               "param" : "paired",
-               "value" : "--paired"
-            }
-         ]
-      }
-      ,
-      {
-         "number" 		: 	2,
-         "installdir" 	: 	"/a/apps/samtools/0.1.19",
-         "location" 		: 	"samtools",
-         "name" 			: 	"indexBam",
-         "type" 			: 	"indexer",
-         "parameters" : [
-            {
-               "ordinal" : 	1,
-               "value" 	: "index",
-               "param" 	: "subCommand"
-            },
-            {
-               "ordinal" : 	2,
-               "value" 	: 	"/mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt_flt.bam",
-               "param" 	: 	"inputfile"
-            }
-         ]
-      }
-   ]
-}
-
+---
+apps:
+  -
+    installdir: /a/apps/broadbp
+    location: bin/filterReads.pl
+    name: filterReads
+    number: 1
+    parameters:
+      -
+        argument: --uuid
+        ordinal: 1
+        param: uuid
+        value: <SAMPLE>
+      -
+        argument: --in
+        ordinal: 2
+        param: inputfile
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt.bam
+      -
+        argument: --out
+        ordinal: 3
+        param: outputfile
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt_flt.bam
+      -
+        ordinal: 4
+        param: paired
+        value: --paired
+    type: converter
+  -
+    installdir: /a/apps/samtools/0.1.19
+    location: samtools
+    name: indexBam
+    number: 2
+    parameters:
+      -
+        ordinal: 1
+        param: subCommand
+        value: index
+      -
+        ordinal: 2
+        param: inputfile
+        value: /mergedvol/sra/<SAMPLE>/<SAMPLE>.fxmt_flt.bam
+    type: indexer
+number: 2
+project: Freeze1-SSD
