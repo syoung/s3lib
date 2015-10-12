@@ -1,0 +1,1293 @@
+Notes-apps-pbs.txt
+
+
+</entry>
+
+
+
+<entry [Fri Apr  2 11:59:11 EDT 2010] HOW TO RUN AN ARRAY JOB - USE PBS_TASKNUM (N.B.: NOT PBS_ARRAYID)>
+
+
+
+qsub -t4 job_script
+
+
+/nethome/syoung/base/pipeline/pbs/array
+
+rm -fr array.sh;
+emacs array.sh;
+#!/bin/sh
+
+#PBS -j oe
+
+echo
+echo PBS_JOBID: $PBS_JOBID
+echo PBS_TASKNUM: $PBS_TASKNUM
+echo
+
+echo PBS: qsub is running on $PBS_O_HOST
+echo PBS: originating queue is $PBS_O_QUEUE
+echo PBS: executing queue is $PBS_QUEUE
+echo PBS: working directory is $PBS_O_WORKDIR
+echo PBS: execution mode is $PBS_ENVIRONMENT
+echo PBS: job identifier is $PBS_JOBID
+echo PBS: job name is $PBS_JOBNAME
+echo PBS: node file is $PBS_NODEFILE
+echo PBS: current home directory is $PBS_O_HOME
+echo PBS: PATH = $PBS_O_PATH
+
+SERVER=$PBS_O_HOST
+echo server is $SERVER
+echo workdir is $WORKDIR
+
+
+STDOUTFILE=/nethome/syoung/base/pipeline/pbs/array/out.array
+
+echo 'PBS_JOBID: ' $PBS_JOBID
+
+echo 'stdoutfile: ' $STDOUTFILE.$PBS_TASKNUM
+
+echo 'Starting ' | cat > $STDOUTFILE.$PBS_TASKNUM
+
+for i in 1 2 3 4 5
+do
+    echo "Welcome $i times for array job: " $PBS_TASKNUM | cat >> $STDOUTFILE.$PBS_TASKNUM
+    echo "Sleeping now " | cat >> $STDOUTFILE.$PBS_TASKNUM
+    sleep 5;
+done
+
+
+printenv
+
+##### END OF SCRIPT
+
+
+
+
+
+HOSTNAME=c21
+SHELL=/bin/bash
+HISTSIZE=1000
+CLICOLOR=1
+PBS_JOBNAME=array.sh
+PBS_ENVIRONMENT=PBS_BATCH
+PBS_O_WORKDIR=/nethome/syoung/base/pipeline/pbs/array
+USER=syoung
+PBS_TASKNUM=1
+LS_COLORS=
+PBS_O_HOME=/nethome/syoung
+XCATROOT=/opt/xcat
+PBS_MOMPORT=15003
+XCATPREFIX=/opt/xcat
+PBS_O_QUEUE=default
+PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syou\
+ng/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/external.prog\
+rams/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/bioinfo/apps/ngs/bin/nextgen\
+:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:\
+/usr/kerberos/bin:/bin:/usr/bin:/opt/xcat/bin:/opt/xcat/sbin:/opt/xcat/x86_64/bin:/opt/xcat/x8\
+6_64/sbin
+PBS_O_LOGNAME=syoung
+MAIL=/var/spool/mail/syoung
+PBS_O_LANG=en_US.UTF-8
+PBS_JOBCOOKIE=988E095FBB60CD2885A59DB5F06F6295
+XARCH=x86_64
+PWD=/home/syoung
+INPUTRC=/etc/inputrc
+SGE_EXECD_PORT=702
+LANG=en_US.UTF-8
+PBS_NODENUM=0
+SGE_QMASTER_PORT=701
+SGE_ROOT=/common/sge
+PBS_O_SHELL=/bin/bash
+PBS_SERVER=u01
+PBS_JOBID=249780.kronos.ccs.miami.edu
+ENVIRONMENT=BATCH
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+HOME=/nethome/syoung
+SHLVL=2
+PBS_O_HOST=u01
+PBS_VNODENUM=0
+LOGNAME=syoung
+PBS_QUEUE=default
+PBS_O_MAIL=/var/spool/mail/syoung
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+PBS_NODEFILE=/var/spool/torque/aux//249780.kronos.ccs.miami.edu
+G_BROKEN_FILENAMES=1
+PBS_O_PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/hom\
+e/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/externa\
+l.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/bioinfo/apps/ngs/bin/n\
+extgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ng\
+s/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/opt/xcat/bin:/opt/xcat/sbin:/opt/xcat/x8\
+6_64/bin:/opt/xcat/x86_64/sbin
+_=/usr/bin/printenv
+
+
+Epilogue Args:
+Job ID: 249780.kronos.ccs.miami.edu
+User ID: syoung
+Group ID: bioinfo
+Job Name: array.sh
+Session ID: 26018
+Resource List:
+Resources Used: cput=00:00:00,mem=2544kb,vmem=190612kb,walltime=00:00:15
+Queue Name: default
+Account String:
+
+
+
+</entry>
+
+
+
+<entry [Fri Apr  2 11:59:11 EDT 2010] HOW TO CONFIGURE A SUBMISSION HOST>
+
+
+
+
+1.3.2.3 Configuring Job Submission Hosts
+
+Using RCmd Authentication
+
+When jobs can be submitted from several different hosts, these hosts should be trusted via the R* commands (such as rsh and rcp). This can be enabled by adding the hosts to the /etc/hosts.equiv file of the machine executing the pbs_server daemon or using other R* command authorization methods. The exact specification can vary from OS to OS (see the man page for ruserok to find out how your OS validates remote users). In most cases, configuring this file is as simple as adding a line to your /etc/hosts.equiv file, as in the following:
+/etc/hosts.equiv:
+
+#[+ | -] [hostname] [username]
+mynode.myorganization.com
+.....
+
+Please note that when a hostname is specified, it must be the fully qualified domain name (FQDN) of the host. Job submission can be further secured using the server or queue acl_hosts and acl_host_enabled parameters.
+
+Using the submit_hosts Server Parameter
+
+Trusted submit host access may be directly specified without using RCmd authentication by setting the server submit_hosts parameter via qmgr as in the following example:
+
+> qmgr -c 'set server submit_hosts = login1'
+> qmgr -c 'set server submit_hosts += login2'
+> qmgr -c 'set server submit_hosts += login3'
+
+Note 	Use of submit_hosts is potentially subject to DNS spoofing and should not be used outside of controlled and trusted environments.
+
+Allowing Job Submission from Compute Hosts
+
+If preferred, all compute nodes can be enabled as job submit hosts without setting .rhosts or hosts.equiv by setting the allow_node_submit parameter to true.
+
+</entry>
+
+
+
+<entry [Tue Mar 16 14:06:45 EDT 2010] TEST gsmall CPUTIME>
+
+
+
+
+cd /nethome/syoung/base/pipeline/pbs/gsmall
+
+rm -fr gsmall.sh
+
+emacs gsmall.sh
+
+#!/bin/sh -f
+
+#PBS -N test-gsmall
+
+#    #PBS -o stdout_file
+#    #PBS -e stderr_file
+
+#PBS -j oe
+#PBS -q gsmall
+
+##PBS -l     cput=6:00:00
+##PBS -l walltime=6:00:00
+#   #PBS -l mem=512mb
+#  #PBS -m abe
+#  #PBS -m ae
+##PBS -M user_email_address
+
+#          Declare the time after which the job is eligible for execution.
+#          If you wish the job to be immediately eligible for execution,
+#          comment out this directive.  If you wish to run at some time in 
+#          future, the date-time argument format is
+#                      [DD]hhmm
+#          If the day DD is not specified, it will default to today if the
+#          time hhmm is in the future, otherwise, it defaults to tomorrow.
+#          If the day DD is specified as in the future, it defaults to the
+#          current month, otherwise, it defaults to next month.
+
+# #PBS -a 2215  
+
+
+#          Specify the priority for the job.  The priority argument must be
+#          an integer between -1024 and +1023 inclusive.  The default is 0.
+#  #PBS -p 0
+#          Specify the number of nodes requested and the
+#          number of processors per node. 
+
+#PBS -l nodes=1:ppn=1
+
+#          Define the interval at which the job will be checkpointed,
+#          if checkpointing is desired, in terms of an integer number
+#          of minutes of CPU time.
+
+#  #PBS -c c=2
+
+
+echo ------------------------------------------------------
+echo -n 'Job is running on node '; cat $PBS_NODEFILE
+echo ------------------------------------------------------
+echo PBS: qsub is running on $PBS_O_HOST
+echo PBS: originating queue is $PBS_O_QUEUE
+echo PBS: executing queue is $PBS_QUEUE
+echo PBS: working directory is $PBS_O_WORKDIR
+echo PBS: execution mode is $PBS_ENVIRONMENT
+echo PBS: job identifier is $PBS_JOBID
+echo PBS: job name is $PBS_JOBNAME
+echo PBS: node file is $PBS_NODEFILE
+echo PBS: current home directory is $PBS_O_HOME
+echo PBS: PATH = $PBS_O_PATH
+
+SERVER=$PBS_O_HOST
+echo server is $SERVER
+echo workdir is $WORKDIR
+echo ------------------------------------------------------
+echo -n 'Job is running on node '; cat $PBS_NODEFILE
+echo ------------------------------------------------------
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 11:41:02 EST 2010] USE qpeek TO VIEW STDOUT AND STDERR>
+
+
+
+
+cat /root/torque-2.2.1/contrib/README.qpeek
+
+    #  README.qpeek
+    #  contributed by Troy Baer - Ohio Supercomputing Center
+    #  updated Mar 31, 2004
+    
+    qpeek allows a user to view the output files of a job which is still running.
+    Options allow display of the start, end or full file, allowing 'tailing',
+    and allow viewing of error files.
+    
+    qpeek requires perl.
+    
+    see http://www.osc.edu/~troy/pbs/qpeek for latest release
+    
+    For suggestions and bug fixes contact troy@osc.edu
+
+
+
+[syoung@ngsdev pbs]$ locate qpeek
+/root/torque-2.2.1/contrib/README.qpeek
+/root/torque-2.2.1/contrib/qpeek
+[syoung@ngsdev pbs]$ /root/torque-2.2.1/contrib/qpeek 240599
+n27: host unknown
+Trying krb4 rsh...
+n27: host unknown
+trying normal rsh (/usr/bin/rsh)
+n27: Unknown host
+[syoung@ngsdev pbs]$ 
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 10:41:02 EST 2010] USE qpeek TO VIEW STDOUT AND STDERR>
+
+
+
+
+Sample PBS script for serial job
+
+For most applications, you should only need to change items indicated in red. Items shown in amber may also warrant your attention. 
+
+#!/bin/sh -f
+
+###############################################################
+#                                                             #
+#    Bourne shell script for submitting a serial job to the   #
+#    PBS queue using the qsub command.                        #
+#                                                             #
+###############################################################
+
+#     Remarks: A line beginning with # is a comment.
+#	       A line beginning with #PBS is a PBS directive.
+#              PBS directives must come first; any directives
+#                 after the first executable statement are ignored.
+#
+   
+##########################
+#                        #
+#   The PBS directives   #
+#                        #
+##########################dat
+
+#          Set the name of the job (up to 15 characters, 
+#          no blank spaces, start with alphanumeric character)
+
+#PBS -N JobName
+
+#          By default, the standard output and error streams are sent
+#          to files in the current working directory with names:
+#              job_name.osequence_number  <-  output stream
+#              job_name.esequence_number  <-  error stream
+#          where job_name is the name of the job and sequence_number 
+#          is the job number assigned when the job is submitted.
+#          Use the directives below to change the files to which the
+#          standard output and error streams are sent.
+
+#    #PBS -o stdout_file
+#    #PBS -e stderr_file
+
+#          The directive below directs that the standard output and
+#          error streams are to be merged, intermixed, as standard
+#          output. 
+
+#PBS -j oe
+
+#          Specify the maximum cpu and wall clock time. The wall
+#          clock time should take possible queue waiting time into
+#          account.  Format:   hhhh:mm:ss   hours:minutes:seconds
+#          Be sure to specify a reasonable value here.
+#          If the job does not finish by the time reached,
+#          the job is terminated.
+
+#PBS -l     cput=6:00:00
+#PBS -l walltime=6:00:00
+
+#          Specify the queue.  The CMU cluster currently has three queues:
+#          "green", "blue", and "red".  Jobs submitted to these queues
+#          will run in cpu-dedicated mode; if all cpu's assigned to the
+#          queue are occupied with a job, then new jobs are queued and will
+#          not run until a cpu is freed up.  You should take this waiting
+#          time into account when setting "walltime". 
+
+#PBS -q green
+
+#          Specify the maximum amount of physical memory required.
+#          kb for kilobytes, mb for megabytes, gb for gigabytes.
+#          Take some care in setting this value.  Setting it too large
+#          can result in your job waiting in the queue for sufficient
+#          resources to become available.
+
+#PBS -l mem=512mb
+
+#          PBS can send informative email messages to you about the
+#          status of your job.  Specify a string which consists of
+#          either the single character "n" (no mail), or one or more
+#          of the characters "a" (send mail when job is aborted),
+#          "b" (send mail when job begins), and "e" (send mail when
+#          job terminates).  The default is "a" if not specified.
+#          You should also specify the email address to which the
+#          message should be send via the -M option.
+
+#  #PBS -m abe
+#  #PBS -m ae
+
+#PBS -M user_email_address
+
+#          Declare the time after which the job is eligible for execution.
+#          If you wish the job to be immediately eligible for execution,
+#          comment out this directive.  If you wish to run at some time in 
+#          future, the date-time argument format is
+#                      [DD]hhmm
+#          If the day DD is not specified, it will default to today if the
+#          time hhmm is in the future, otherwise, it defaults to tomorrow.
+#          If the day DD is specified as in the future, it defaults to the
+#          current month, otherwise, it defaults to next month.
+
+# #PBS -a 2215  commented out
+
+#          Specify the priority for the job.  The priority argument must be
+#          an integer between -1024 and +1023 inclusive.  The default is 0.
+
+#  #PBS -p 0
+
+#          Specify the number of nodes requested and the
+#          number of processors per node. 
+
+#PBS -l nodes=1:ppn=1
+
+#          Define the interval at which the job will be checkpointed,
+#          if checkpointing is desired, in terms of an integer number
+#          of minutes of CPU time.
+
+#  #PBS -c c=2
+
+##########################################
+#                                        #
+#   Output some useful job information.  #
+#                                        #
+##########################################
+
+echo ------------------------------------------------------
+echo -n 'Job is running on node '; cat $PBS_NODEFILE
+echo ------------------------------------------------------
+echo PBS: qsub is running on $PBS_O_HOST
+echo PBS: originating queue is $PBS_O_QUEUE
+echo PBS: executing queue is $PBS_QUEUE
+echo PBS: working directory is $PBS_O_WORKDIR
+echo PBS: execution mode is $PBS_ENVIRONMENT
+echo PBS: job identifier is $PBS_JOBID
+echo PBS: job name is $PBS_JOBNAME
+echo PBS: node file is $PBS_NODEFILE
+echo PBS: current home directory is $PBS_O_HOME
+echo PBS: PATH = $PBS_O_PATH
+echo ------------------------------------------------------
+
+##############################################################
+#                                                            #
+#   The prologue script automatically makes a directory      #
+#   on the local disks for you.  The name of this directory  #
+#   depends on the job id, but you need only refer to it     #
+#   using ${WORKDIR}.                                        #
+#                                                            #
+##############################################################
+
+SERVER=$PBS_O_HOST
+WORKDIR=/scratch/PBS_$PBS_JOBID
+SCP=/usr/bin/scp
+SSH=/usr/bin/ssh
+
+######################################################################
+#                                                                    #
+#   To minimize communications traffic, it is best for your job      #
+#   to work with files on the local disk of the compute node.        #
+#   Hence, one needs to transfer files from your permanent home      #
+#   directory tree to the directory ${WORKDIR} automatically         #
+#   created by PBS on the local disk before program execution,       #
+#   and to transfer any important output files from the local        #
+#   disk back to the permanent home directory tree after program     #
+#   execution is completed.                                          #
+#                                                                    #
+#   There are essentially two ways to achieve this: (1) to use the   #
+#   PBS stagein and stageout utilities, or (2) to manually copy the  #
+#   files by commands in this script.  The stagein and stageout      #
+#   features of OpenPBS are somewhat awkward, especially since       #
+#   wildcards and macros in the file lists cannot be used.  This     #
+#   method also has some timing issues.  Hence, we ask you to use    #
+#   the second method, and to use secure copy (scp) to do the file   #
+#   transfers to avoid NSF bottlenecks.                              #
+#                                                                    #
+######################################################################
+
+#####################################################
+#                                                   #
+#    Specify the permanent directory(ies) on the    #
+#    server host.  Note that when the job begins    #
+#    execution, the current working directory at    #
+#    the time the qsub command was issued becomes   #
+#    the current working directory of the job.      #
+#                                                   #
+#####################################################
+
+
+PERMDIR=${HOME}/work
+
+SERVPERMDIR=${PBS_O_HOST}:${PERMDIR}
+
+echo server is $SERVER
+echo workdir is $WORKDIR
+echo permdir is $PERMDIR
+echo servpermdir is $SERVPERMDIR
+echo ------------------------------------------------------
+echo -n 'Job is running on node '; cat $PBS_NODEFILE
+echo ------------------------------------------------------
+echo ' '
+echo ' '
+
+###############################################################
+#                                                             #
+#    Transfer files from server to local disk.                #
+#                                                             #
+###############################################################
+
+stagein()
+{
+ echo ' '
+ echo Transferring files from server to compute node
+ echo Writing files in node directory  ${WORKDIR}
+ cd ${WORKDIR}
+
+ ${SCP} ${SERVPERMDIR}/input_file .
+ ${SCP} ${SERVPERMDIR}/program_executable .
+
+ echo Files in node work directory are as follows:
+ ls -l
+}
+
+############################################################
+#                                                          #
+#    Execute the run.  Do not run in the background.       #
+#                                                          #
+############################################################
+
+runprogram()
+{
+ program_executable < input_file > output_file
+}
+
+###########################################################
+#                                                         #
+#   Copy necessary files back to permanent directory.     #
+#                                                         #
+###########################################################
+
+stageout()
+{
+ echo ' '
+ echo Transferring files from compute nodes to server
+ echo Writing files in permanent directory  ${PERMDIR}
+ cd ${WORKDIR}
+
+ ${SCP} output_file  ${SERVPERMDIR}
+
+ echo Final files in permanent data directory:
+ ${SSH} ${SERVER} "cd ${PERMDIR}; ls -l"
+ }
+
+#####################################################################
+#                                                                   #
+#  The "qdel" command is used to kill a running job.  It first      #
+#  sends a SIGTERM signal, then after a delay (specified by the     #
+#  "kill_delay" queue attribute (set to 60 seconds), unless         #
+#  overridden by the -W option of "qdel"), it sends a SIGKILL       #
+#  signal which eradicates the job.  During the time between the    #
+#  SIGTERM and SIGKILL signals, the "cleanup" function below is     #
+#  run. You should include in this function commands to copy files  #
+#  from the local disk back to your home directory.  Note: if you   #
+#  need to transfer very large files which make take longer than    #
+#  60 seconds, be sure to use the -W option of qdel.                #
+#                                                                   #
+#####################################################################
+
+early()
+{
+ echo ' '
+ echo ' ############ WARNING:  EARLY TERMINATION #############'
+ echo ' '
+ }
+
+trap 'early; stageout' 2 9 15
+
+
+##################################################
+#                                                #
+#   Staging in, running the job, and staging out #
+#   were specified above as functions.  Now      #
+#   call these functions to perform the actual   #
+#   file transfers and program execution.        #
+#                                                #
+##################################################
+
+stagein
+runprogram
+stageout 
+
+###############################################################
+#                                                             #
+#   The epilogue script automatically deletes the directory   #
+#   created on the local disk (including all files contained  #
+#   therein.                                                  #
+#                                                             #
+###############################################################
+
+exit
+
+
++++++++++</entry>
+
+
+
+<entry [Thu Feb 11 04:12:25 EST 2010] GET JOB OUTPUT IN REAL TIME>
+
+
+
+
+TEST REAL TIME
+
+rm -fr /nethome/syoung/base/pipeline/cluster/realtime/realloop.sh
+emacs /nethome/syoung/base/pipeline/cluster/realtime/realloop.sh
+
+#!/bin/sh
+
+#PBS -k oe
+
+STDOUTFILE=/nethome/syoung/base/pipeline/realtime/realloop.out"
+echo "stdoutfile: " $STDOUTFILE
+
+echo "Starting " > $STDOUTFILE
+
+for i in 1 2 3 4 5
+do
+
+echo "Welcome $i times" 
+echo "Sleeping now " >> $STDOUTFILE
+
+done
+
+
+
+Checking standard output of PBS jobs in real time
+https://docs.loni.org/wiki/Checking_standard_output_of_PBS_jobs_in_real_time
+
+Currently, PBS is configured so that the standard output/error of their jobs are redirected to temporary files and copied back to the final destination after their jobs finish. Hence, users can only access the standard output after their jobs finish. However, PBS does provide another method for users to check standard output/error in real time, i.e.
+
+qsub -k oe pbs_script 
+
+The "-k oe" option at the qsub command line specifies that standard output or standard error streams will be retained on the execution host. The stream will be placed in the home directory of the user under whose user id the job executed. The file name will be the default file name given by: where is the name specified for the job, and is the sequence number component of the job identifier. For example, if a user submits a job to Queenbee with job name "test" and job id '1223', then the standard output/error will be test.o1223/test.e1223 in the user's home directory. This allows users to check their stdout/stderr while their jobs are running.
+
+
+
+PBS Specifying Files and Directories
+
+2.2.1 Default Behavior
+2.2.2 Job Environment Variables
+2.2.3 Redirecting Output/Error Data
+2.2.4 Staging Input and Output Files
+2.2.5 Interactive Jobs
+2.2.6 Specifying Working Directory
+2.2.7 TORQUE Configuration Options
+
+
+2.2.1 Default Behavior
+
+The batch job submitted by a user will execute from within a specific directory. It will create both output and error files containing info written to stdout and stderr respectively. The directory in which the job executes will be the same as the directory from which the qsub command was executed.
+
+
+2.2.2 Job Environment Variables
+
+When a job is submitted, aspects of the calling environment are saved. When the job is actually executed, this environment may be restored (see the v and V qsub options)
+Variable	Description
+PBS_O_HOST	the name of the host where the qsub command was run
+PBS_JOBID	the job identifier assigned to the job by the batch system
+PBS_JOBNAME	the job name supplied by the user.
+PBS_O_WORKDIR	the absolute path of the current working directory of the qsub command
+See the qsub manpage for full list of available variables.
+
+Example
+
+torquejob.cmd
+#!/bin/bash
+
+echo "starting $PBS_JOBNAME" > /tmp/output.$PBS_JOBID
+
+
+2.2.3 Redirecting Output/Error Data
+
+By default, job output data will be placed in the file <SUBMITDIR>/<JOBNAME>.o<SEQUENCENUMBER> and job error data will be placed in the file <SUBMITDIR>/<JOBNAME>.e<SEQUENCENUMBER> These files will be populated and available to the user once the job completes.
+This behavior can be changed by specifying the '-o' or '-e' arguments on the command line or within the command script as in the following example:
+
+torquejob.cmd
+#!/bin/bash
+
+#PBS -e /tmp/error.$PBS_O_JOBID
+#PBS -o /tmp/output.$PBS_O_JOBID
+...
+	If desired, the output and error streams can be joined by specifying the '-j' option.
+
+	By default, output and error file information will be removed from the compute hosts when the job is complete. If desired, these files can be retained by specifying the '-k' option.
+
+See the qsub manpage for more information on the '-o', '-e', '-j' and '-k' options.
+
+2.2.4 Staging Input and Output Files
+
+If an input file is required by the job which is not by default available on the compute nodes, then the file can be staged in within the script or the script can request that the batch system copy the file on behalf of the user. If the latter approach is desired, the stagein option should be specified.
+If one or more output files are produced by the job and must be staged to an accessible location, then the script can explicitly copy this data or can request the the batch system copy the file on behalf of the user. If the latter approach is desired, the stageout option should be specified. 
+
+
+torquejob.cmd
+#!/bin/bash
+
+#PBS -W stagein=dataset13442 
+#PBS -W stageout=/localscratch/data1.$PBS_O_JOBID
+#PBS -W stageout=/localscratch/data2.$PBS_O_JOBID
+...
+See the qsub manpage for more details.
+
+2.2.5 Interactive Jobs
+
+A job run with the interactive option will run normally, but stdout and stderr will be connected directly to the users terminal. This also allows stdin from the user to be sent directly to the application.
+qsub -I
+> qsub -I /tmp/script
+
+See the interactive option in the qsub manpage for more details.
+
+2.2.6 Specifying Working Directory
+
+The -d qsub option is used to define the working directory path to be used for the job. If the -d option is not specified, the default working directory is the home directory. This option sets the environment variable PBS_O_INITDIR and launches the job from the specified directory.
+
+torquejob.cmd:
+#!/bin/bash
+
+#PBS -d /tmp/working_dir 
+...
+2.2.7 TORQUE Configuration Options
+
+2.2.7.1 Disabling Spooling - Allowing Users to Watch Output/Error Data in Real-time
+
+Spooling can be disabled by using the qsub '-k' option. With this option, job output and error streams can be sent directly to a file in the job's working directory bypassing the intermediate spooling step. This is useful if the job is submitted from within a parallel filesystem or if the output is small and the user would like to view it in real-time. If the output is large and the remote working directory is not available via a high performance network, excessive use of this option may result in reduced cluster performance.
+Example
+
+qsub
+> qsub -l nodes=1,walltime=1:00:00 -k oe file.cmd
+Disabling Spooling at a Global Level
+
+When the --disable-spool configure option is used, TORQUE will create the output and error files directly in $HOME/.pbs_spool if it exists, or in $HOME if it does not exist. By default, TORQUE will spool files in $TORQUEHOME/spool and copy them to the users home directory when the job completes.
+
+	If desired for disk space or performance reasons, the default TORQUE spool directory can be changed by making $TORQUEHOME/spool a symbolic link to the desired target directory.
+
+2.2.7.2 Creating Per-Job Temporary Directories
+
+The tmpdir mom config option sets the directory basename for a per-job temporary directory. Before the job is launched, MOM will append the jobid to the tmpdir base-name and create the directory. After the job completes and exits, MOM will recursively delete that temporary directory. The env variable TMPDIR will be set for all pro/epilog scripts, the job script, and TM tasks. 
+
+Directory creation and removal is done as the job owner and group, so the owner must have write permission to create the directory. If the directory already exists and is owned by the job owner, it will not be deleted after the job. If the directory already exists and is NOT owned by the job owner, the job start will be rejected.
+
+mom_priv/config:
+$tmpdir /localscratch
+
+
+
+
++++++++++</entry>
+
+
+
+<entry [Thu Feb 11 04:12:25 EST 2010] MOAB_JOBID ON CLUSTER AND PBS OPTIONS SUMMARY>
+
+
+
+
+OKAY - PBS_JOBID WORKS!!!
+
+emacs pbsjob.sh
+
+#!/bin/sh
+
+#PBS -j oe
+
+sleep 2;
+echo "PBS_JOBID: $PBS_JOBID"
+/usr/local/bin/qstat -f $PBS_JOBID &> qstat-$PBS_JOBID.txt;
+/usr/local/bin/checkjob $PBS_JOBID &> checkjob-$PBS_JOBID.txt;
+echo "Completed"
+
+
+USED IT TO GET  qstat -f OUTPUT:
+
+
+rm -fr regex.sh
+emacs regex.sh
+
+#!/bin/sh
+
+#PBS -j oe
+
+sleep 1;
+
+echo "PBS_JOBID: $PBS_JOBID"
+perl -e 'my $number = $ENV{'PBS_JOBID'}; $number =~ s/\D+$//; print "number: $number\n"; `/usr/local/bin/qstat -f $number &> /nethome/syoung/base/pipeline/tophat/bixby/qstat-$number.txt`'
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/bixby/qstat-$PBS_JOBID.txt;
+
+perl -e 'my $number = $ENV{'PBS_JOBID'}; $number =~ s/\D+$//; print "number: $number\n"; `/usr/local/bin/checkjob $number &> /nethome/syoung/base/pipeline/tophat/bixby/checkjob-$number.txt`'
+
+echo "Completed"
+
+
+
+
+
+####emacs testpbs.sh
+####
+#####!/bin/sh
+####
+####sleep 2;
+####echo "PBS_ID: $PBS_ID"
+####/usr/local/bin/qstat -f $PBS_ID &> qstat-$PBS_ID.txt;
+####/usr/local/bin/checkjob $PBS_ID &> checkjob-$PBS_ID.txt;
+####echo "Completed"
+####
+####
+####emacs testmoab.sh
+####
+#####!/bin/sh
+####
+#####PBS -j oe
+####
+####sleep 2;
+####echo "MOAB_ID: $MOAB_JOBID"
+####/usr/local/bin/qstat -f $MOAB_JOBID &> qstat-$MOAB_JOBID.txt;
+####/usr/local/bin/checkjob $MOAB_JOBID &> checkjob-$MOAB_JOBID.txt;
+####echo "Completed"
+####
+
+
+####emacs job.sh
+####
+#####!/bin/sh
+####
+#####PBS -j oe
+####
+####sleep 2;
+####echo "JOBID: $JOBID"
+####/usr/local/bin/qstat -f $JOBID &> qstat-$JOBID.txt;
+####/usr/local/bin/checkjob $JOBID &> checkjob-$JOBID.txt;
+####echo "Completed"
+
+
+emacs printenv.sh
+
+#!/bin/sh
+
+#PBS -j oe
+
+sleep 2;
+echo "printenv"
+printenv
+echo "Completed"
+
+
+    printenv
+    HOSTNAME=c26
+    SHELL=/bin/bash
+    HISTSIZE=1000
+    CLICOLOR=1
+    PBS_JOBNAME=STDIN
+    PBS_ENVIRONMENT=PBS_BATCH
+    PBS_O_WORKDIR=/home/syoung/base/pipeline/tophat/bixby
+    USER=syoung
+    PBS_TASKNUM=1
+    LS_COLORS=
+    PBS_O_HOME=/nethome/syoung
+    PBS_MOMPORT=15003
+    PBS_O_QUEUE=default
+    PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/bin:/usr/bin
+    PBS_O_LOGNAME=syoung
+    MAIL=/var/spool/mail/syoung
+    PBS_JOBCOOKIE=7EFAB9F9046B208F9D6DF5273614E35B
+    PWD=/home/syoung
+    INPUTRC=/etc/inputrc
+    SGE_EXECD_PORT=702
+    LANG=en_US.UTF-8
+    PBS_NODENUM=0
+    SGE_QMASTER_PORT=701
+    SGE_ROOT=/common/sge
+    PBS_O_SHELL=/bin/bash
+    PBS_SERVER=kronos.ccs.miami.edu
+    PBS_JOBID=229482.kronos.ccs.miami.edu
+    ENVIRONMENT=BATCH
+    SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+    HOME=/nethome/syoung
+    SHLVL=2
+    PBS_O_HOST=kronos.ccs.miami.edu
+    PBS_VNODENUM=0
+    LOGNAME=syoung
+    PBS_QUEUE=default
+    LESSOPEN=|/usr/bin/lesspipe.sh %s
+    PBS_NODEFILE=/var/spool/torque/aux//229482.kronos.ccs.miami.edu
+    G_BROKEN_FILENAMES=1
+    PBS_O_PATH=/sbin:/usr/sbin:/bin:/usr/bin
+    _=/usr/bin/printenv
+    Completed
+    Epilogue Args:
+    Job ID: 229482.kronos.ccs.miami.edu
+    User ID: syoung
+    Group ID: bioinfo
+    Job Name: STDIN
+    Session ID: 26748
+    Resource List: nodes=1
+    Resources Used: cput=00:00:00,mem=0kb,vmem=0kb,walltime=00:00:03
+    Queue Name: default
+    Account String: 
+
+
+
+$PBS_NODEFILE is the location of a file that contains a list of the nodes allocated for this job.
+
+
+#PBS specifies an option to Torque. There are many listed below, but more can be found in the man page for qsub.
+#PBS -r n                       # The job is not rerunnable.
+#PBS -r y                       # The job is rerunnable
+#PBS -q testq                   # The queue to submit to    
+#PBS -N testjob                 # The name of the job
+#PBS -o testjob.out             # The file to print the output to
+#PBS -e testjob.err             # The file to print the error to
+
+# Mail Directives
+#PBS -m abe                     # The points durring the execution to send an email
+#PBS -M me@colorado.edu         # Who to Mail to
+
+## SYSTEM RESOURCES
+#PBS -l walltime=01:00:00       # Specify the walltime
+#PBS -l pmem=100mb              # Memory Allocation for the Job
+#PBS -l nodes=4                 # Number of nodes to Allocate
+#PBS -l nodes=4:ppn=3           # Number of nodes and the number processors per node
+
+
+
+
+
+
++++++++++</entry>
+
+
+
+<entry [Thu Aug 13 00:54:58 EDT 2009] USE Mail::Folder TO PARSE JOB TERMINATION MESSAGES>
+
+
+
+INSTEAD OF 'resource usage summary':
+https://wiki.jlab.org/cc/external/wiki/index.php/Scientific_Computing
+
+
+
+1. CREATE A TEST DIRECTORY
+
+mkdir /nethome/syoung/base/pipeline/mail
+cd /nethome/syoung/base/pipeline/mail
+
+
+
+2. INSTALL Mail::Folder IN bin/comparison FOR TESTING:
+
+cd /nethome/syoung/base/pipeline/mail
+
+wget http://search.cpan.org/CPAN/authors/id/K/KJ/KJOHNSON/MailFolder-0.07.tar.gz
+cd MailFolder-0.07
+cp -r Mail ../..
+
+
+
+3. GET THE MAIL FILE:
+
+cd /nethome/syoung/base/pipeline/mail
+echo $MAIL
+
+    /var/spool/mail/syoung
+
+
+
+4. TEST MAIL SEND AND RECEIVE
+
+    [root@ngsdev mail]# mail syoung@ngsdev.ccs.miami.edu
+    Subject: Test3
+    Cc: 
+    Null message body; hope that's ok
+
+    [root@ngsdev mail]# mail
+    Mail version 8.1 6/6/93.  Type ? for help.
+    "/var/spool/mail/syoung": 2 messages 2 new
+    >N  1 syoung@ngsdev.ccs.mi  Wed Aug 12 23:55  16/683   "Test1"
+     N  2 root@ngsdev.ccs.miam  Thu Aug 13 02:29  14/660   "Test3"
+    & 2
+    Message 2:
+    From root@ngsdev.ccs.miami.edu  Thu Aug 13 02:29:25 2009
+    Date: Thu, 13 Aug 2009 02:29:25 -0400
+    From: root <root@ngsdev.ccs.miami.edu>
+    To: syoung@ngsdev.ccs.miami.edu
+    Subject: Test3
+
+
+4. CREATE MAIL BOX READER 
+
+cd /nethome/syoung/base/pipeline/mail
+rm -fr mailman.pl
+emacs mailman.pl
+#!/usr/bin/perl -w
+
+use Mail::Folder::Mbox;
+use Data::Dumper;
+
+my $folder = new Mail::Folder('mbox',"/var/spool/mail/syoung");
+
+print "folder:\n";
+print Dumper $folder;
+
+print "getting first message...\n";
+my $message = $folder->get_message(1);
+
+print "message:\n";
+print Dumper $message;
+
+#### $message now contains a Mail::Internet object instance. With this object
+instance you can use all of the methods we just discussed. If you need just
+the header of the same message:
+
+my $header = $folder->get_header(1);
+
+print "header:\n";
+#print Dumper $header;f
+print join("\n",sort $header->tags);
+
+#### END
+
+
+
+
+RUNNING perl mailman.pl GIVES THIS ERROR:
+
+
+defined(@array) is deprecated at Mail/Folder/Mbox.pm line 782.
+        (Maybe you should just omit the defined()?)
+folder:
+$VAR1 = bless( {
+                 'Options' => {
+                                'DotLock' => 1
+                              },
+                 'Current' => 0,
+                 'Type' => 'mbox',
+                 'MBOX_WorkingDir' => '/tmp/mbox.1.18670',
+                 'Creator' => 18670,
+                 'Readonly' => 0,
+                 'Name' => '/var/spool/mail/syoung',
+                 'Messages' => {}
+               }, 'Mail::Folder::Mbox' );
+getting first message...
+message doesn't exist at mailman.pl line 12
+        (in cleanup) yeep! can't read /tmp/mbox.1.18670 disappeared: No such file or directory
+ at mailman.pl line 0
+
+
+
+
+BUT AFTER RUNNING mutt AND CREATING /nethome/syoung/Mail I GET A DIFFERENT OUTPUT (EVEN AFTER REMOVING THE Mail DIRECTORY):
+
+
+
+
+
+The new() constructor takes the mailbox format type and the filename to parse. It returns a folder object instance through which we can query, add, remove, and modify messages. To retrieve the sixth message in this folder:
+
+
+$message = $folder->get_message(6);
+$message now contains a Mail::Internet object instance. With this object instance you can use all of the methods we just discussed. If you need just the header of the same message:
+$header = $folder->get_header(6);
+
+
+    ***
+    The $header object holds the headers of that message and offers us several handy methods to get at this data. For instance, to print a sorted list of the header names (which the module calls "tags") appearing in the message, we could add this to the end of the previous code:
+    print join("\n",sort $header->tags);
+    ***
+
+
+http://www.oreillynet.com/pub/a/oreilly/perl/news/perladmin_0700.html
+Dissecting a Whole Mailbox
+
+Taking this subject to the next level, where we slice and dice entire mailboxes, is straightforward. If our mail is stored in "classical Unix mbox" format or qmail (another Message Transfer Agent (MTA) à la sendmail) format, we can use Mail:: Folder by Kevin Johnson. Many common non-Unix mail agents like Eudora store their mail in classical Unix mbox format as well, so this module can be useful on multiple platforms.
+
+The drill is very similar to the examples we've seen before:
+
+use Mail::Folder::Mbox; # for classic Unix mbox format
+
+my $folder = new Mail::Folder('mbox',"filename");
+
+
+The new() constructor takes the mailbox format type and the filename to parse. It returns a folder object instance through which we can query, add, remove, and modify messages. To retrieve the sixth message in this folder:
+
+
+$message = $folder->get_message(6);
+$message now contains a Mail::Internet object instance. With this object instance you can use all of the methods we just discussed. If you need just the header of the same message:
+$header = $folder->get_header(6);
+
+
+No surprises here; a reference to a Mail::Header object instance is returned. See the Mail::Folder documentation for the other available methods.
+So now that you know how to slice and dice mailboxes and mail folders, what can you do with this newfound skill? In Perl for System Administration, we continue the discussion of dealing with email from Perl with two extended examples that are too long to print here: unsolicited commercial email (spam) analysis and support email augmentation. But these are just two possible places this skill can take you. I suspect you've already thought of several ways Perl programs that read your mail for you could be useful. Enjoy.
+
+
+
+
+
+
+
+
+
++++++++++</entry>
+
+
+
+<entry [Wed Aug 12 20:04:42 EDT 2009] PBS COMMANDS, INCLUDING -N (JOB NAME) AND -k (SPOOL OUTPUT IN REALTIME)>
+
+
+
+Common PBS Environment Variables
+
+PBS Environment Variable	Description
+$PBS_O_WORKDIR	The absolute path from which the job was originally submitted from.
+$PBS_JOBID	The job identifier assigned to the job by the batch system. The job identifier will typically be nnn.k2 where nnn is a positive non-zero integer.
+$PBS_JOBNAME	The job name supplied by the user.
+$PBS_QUEUE	The name of the queue from which the job is executed.
+$TMPDIR	A job's default working directory is $HOME. That is frequently undesirable because of space limitations and lower I/O performance. Going to $TMPDIR (=/work/$PBS_JOBID), which is created at a job's start and deleted at its end, affords a large disk area and, typically, better I/O performance. You must explicitly save any files you need before job completion. Preferably, in batch jobs you should save such files on local disk areas, such as /scratch/$USER or $HOME. File transfers in a batch job involving the tape archive or a remote host should be strongly avoided because of the possible long delays they can cause.
+
+SPECIFY JOB NAME:
+
+#PBS -N  somename (or on the command line -N somename) 
+
+or -N somename IN qsub COMMAND
+
+
+
+MAKE ERROR/OUTPUT FILES SPOOL IN REALTIME IN WORKING DIR:
+
+#PBS -k oe
+
+or -k oe IN qsub COMMAND
+
+E.G.:
+
+qsub -q psmall -M syoung@med.miami.edu -N l1s1 -m abe testemail.sh
+
+    70636.kronos.ccs.miami.edu
+    [syoung@kronos test]$ qstat
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    70636.kronos              l1s1             syoung                 0 Q psmall         
+
+
+
+Job Submission:
+
+There are options in the shell script that can be used to customize your job.
+A Basic script.
+>cat test.sh
+        #!/bin/bash
+        #PBS -N testjob
+
+        cat $PBS_NODEFILE
+        sleep 30
+
+$PBS_NODEFILE is the location of a file that contains a list of the nodes allocated for this job.
+
+#PBS specifies an option to Torque. There are many listed below, but more can be found in the man page for qsub.
+#PBS -r n                       # The job is not rerunnable.
+#PBS -r y                       # The job is rerunnable
+#PBS -q testq                   # The queue to submit to    
+#PBS -N testjob                 # The name of the job
+#PBS -o testjob.out             # The file to print the output to
+#PBS -e testjob.err             # The file to print the error to
+
+# Mail Directives
+#PBS -m abe                     # The points durring the execution to send an email
+#PBS -M me@colorado.edu         # Who to Mail to
+
+#PBS -l walltime=01:00:00       # Specify the walltime
+#PBS -l pmem=100mb              # Memory Allocation for the Job
+#PBS -l nodes=4                 # Number of nodes to Allocate
+
+#PBS -l nodes=4:ppn=3           # Number of nodes and the number processors per node
+You can use any of the above options in the script to customize your job. If all of the above options are used, the job will be named testjob and be put into the testq. It will only run for 1 hour and mail me@colorado.edu at the beginning and end of the job.  It will use 4 nodes with 3 processors per node, with a total of 12 processors and 100 mb of memory.
+
+Check the status of a job:
+
+Torque and Maui allow you to check the status of jobs and the queue status.
+In Torque:
+
+Qstat has many options for checking a job status. The basic way is running the command with out any options which is showed above. Again the man pages are the best resources for information.
+Other options include: -n, -f, -Q, -B, -u, -q
+
+The -n option will show which nodes are running which jobs.
+>qstat -n
+        server.colorado.edu:
+                                                                         Req'd  Req'd   Elap
+        Job ID               Username Queue    Jobname          SessID NDS   TSK Memory Time  S Time
+        -------------------- -------- -------- ---------------- ------ ----- --- ------ ----- - -----
+        78.server.colorado     user     workq    STDIN              4811   --   --    --    --  R   --
+           node34/0
+        79.server.colorado     user     workq    STDIN              4830   --   --    --    --  R   --
+           node34/1
+        80.server.colorado     user     workq    STDIN              3867   --   --    --    --  R   --
+           node33/0
+        81.server.colorado     user     workq    STDIN              4821   --   --    --    --  R   --
+           node32/0
+        82.server.colorado     user     workq    STDIN              4840   --   --    --    --  R   --
+           node32/1
+        83.server.colorado     user     workq    STDIN              4859   --   --    --    --  R   --
+           node32/2
+
+The -f option will show the full details for a specified job.
+>qstat -f 78
+Job Id: 84.server.colorado.edu
+    Job_Name = STDIN
+    Job_Owner = username@server.colorado.edu
+    resources_used.cput = 00:00:00
+    resources_used.mem = 1704kb
+    resources_used.vmem = 8028kb
+    resources_used.walltime = 00:00:01
+    job_state = R
+    queue = workq
+    server = server.colorado.edu
+    Checkpoint = u
+    ctime = Fri Apr 24 16:21:51 2009
+    Error_Path = server.colorado.edu:/tmp/STDIN.e84
+    exec_host = node34/0
+    Hold_Types = n
+    Join_Path = n
+    Keep_Files = n
+    Mail_Points = a
+    mtime = Fri Apr 24 16:21:53 2009
+    Output_Path = server.colorado.edu:/tmp/STDIN.o84
+    Priority = 0
+    qtime = Fri Apr 24 16:21:51 2009
+    Rerunable = True
+    Resource_List.neednodes = node34
+    session_id = 4877
+    substate = 42
+    Variable_List = PBS_O_HOME=/tmp,PBS_O_LOGNAME=username,
+        PBS_O_PATH= /usr/local/bin:/usr/bin
+        PBS_O_SHELL=/bin/tcsh,PBS_SERVER=server.colorado.edu,
+        PBS_O_HOST=server.colorado.edu,PBS_O_WORKDIR=/tmp/
+        PBS_O_QUEUE=workq
+    euser = username
+    egroup = server
+    hashname = 84.server.colorado.edu
+    queue_rank = 83
+    queue_type = E
+    etime = Fri Apr 24 16:21:51 2009
+    start_time = Fri Apr 24 16:21:53 2009
+    start_count = 1
+
+        
+The -u option will show all jobs owned the specified user.
+
+The -Q option will show the queue information. If a specific queue is specified it will only show the information from that queue.
+
+>qstat -Q
+        Queue              Max   Tot   Ena   Str   Que   Run   Hld   Wat   Trn   Ext T         
+        ----------------   ---   ---   ---   ---   ---   ---   ---   ---   ---   --- -         
+        testing               0     0   yes   yes     0     0     0     0     0     0 E         
+        normal              8     1   yes   yes     0     1     0     0     0     0 E         
+        short                 0     0   yes   yes     0     0     0     0     0     0 E         
+        long                  0     3   yes   yes     0     3     0     0     0     0 E         
+        special              0     0   yes   yes     0     0     0     0     0     0 E
+
+In Maui:
+
+If maui is installed on your system, you will have access to another set of tools. One of these is showq. showq is a tool like qstat. It will show the queue information.
+>showq
+        ACTIVE JOBS--------------------
+        JOBNAME            USERNAME      STATE  PROC   REMAINING            STARTTIME
+
+        624                   user1    Running     4    21:00:01  Fri Apr 24 13:34:17
+        621                   user2    Running     2 95:21:19:49  Mon Apr 20 13:54:06
+        622                   user2    Running     2 95:21:23:06  Mon Apr 20 13:57:23
+        623                   user2    Running     2 96:04:13:37  Mon Apr 20 20:47:54
+
+             4 Active Jobs      10 of   20 Processors Active (50.00%)
+                                 5 of    7 Nodes Active      (71.43%)
+
+        IDLE JOBS----------------------
+        JOBNAME            USERNAME      STATE  PROC     WCLIMIT            QUEUETIME
+        0 Idle Jobs
+
+        BLOCKED JOBS----------------
+        JOBNAME            USERNAME      STATE  PROC     WCLIMIT            QUEUETIME
+        Total Jobs: 4   Active Jobs: 4   Idle Jobs: 0   Blocked Jobs: 0
+        
+        

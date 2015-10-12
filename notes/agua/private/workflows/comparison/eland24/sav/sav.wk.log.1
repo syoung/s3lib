@@ -1,0 +1,273 @@
+[workflow sav]
+2011-01-25 12:24:30
+
+
+Workflow:
+name           sav
+owner          anonymous
+started        2011-01-25 12:00:12
+stopped        2011-01-25 12:00:12
+duration       0 hrs 0 mins 0 secs
+locked         0
+	
+  Application:
+  name           snptosav
+  owner          anonymous
+  ordinal        1
+  status         unknown
+  started        2011-01-25 12:00:12
+  stopped        2011-01-25 12:00:12
+  duration       0 hrs 0 mins 0 secs
+  locked         1
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    dbsnp          snp130
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-sav.out
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative
+    queue          small
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/sav-%REPLICATE%.out
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/snp130
+    walltime       24
+
+	
+  Application:
+  name           filtersav
+  owner          anonymous
+  ordinal        2
+  locked         0
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Filter out dbSNP and non-dbSNP SNPs
+
+    Parameters:
+    executable     /nethome/syoung/0.5/bin/apps/snp/filterSav.pl
+    inputfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit-%REPLICATE%.sav
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-splitsav.out
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/splitsav-%REPLICATE%.out
+
+	
+  Application:
+  name           vendbsnp
+  owner          anonymous
+  ordinal        3
+  locked         0
+  type           snp
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+  description    Do Venn analysis of dbSNP SNPs with increasing read depth
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    loop           distributed
+    looplabel      eland-savvenn
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out
+    maxjobs        1000
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav
+    querylabel     eland-%REPLICATE%-dbsnp
+    queue          small
+    replicates     1-33
+    suffix         sav
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-dbsnp.sav
+    targetlabel    eland-33-dbsnp
+    walltime       24
+
+	
+  Application:
+  name           vennnondbsnp
+  owner          anonymous
+  ordinal        4
+  locked         0
+  type           snp
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+  description    Do Venn analysis of non-dbSNP SNPs with increasing read depth
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    loop           distributed
+    looplabel      eland-savvenn
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out
+    maxjobs        1000
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-non-dbsnp.sav
+    querylabel     eland-%REPLICATE%-non-dbsnp
+    queue          small
+    replicates     1-33
+    suffix         sav
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-non-dbsnp.sav
+    targetlabel    eland-33-non-dbsnp
+    walltime       24
+
+
+
+[app 2 filtersav]
+2011-01-25 12:24:30
+
+  Application:
+  name           filtersav
+  owner          anonymous
+  ordinal        2
+  locked         0
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Filter out dbSNP and non-dbSNP SNPs
+
+    Parameters:
+    executable     /nethome/syoung/0.5/bin/apps/snp/filterSav.pl
+    inputfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit-%REPLICATE%.sav
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-splitsav.out
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/splitsav-%REPLICATE%.out
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/filterSav.pl \
+ --inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit-%REPLICATE%.sav \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/splitsav-%REPLICATE%.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-splitsav.out 
+
+
+Output:
+
+
+
+[app 3 vendbsnp]
+2011-01-25 12:24:30
+
+  Application:
+  name           vendbsnp
+  owner          anonymous
+  ordinal        3
+  locked         0
+  type           snp
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+  description    Do Venn analysis of dbSNP SNPs with increasing read depth
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    loop           distributed
+    looplabel      eland-savvenn
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out
+    maxjobs        1000
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav
+    querylabel     eland-%REPLICATE%-dbsnp
+    queue          small
+    replicates     1-33
+    suffix         sav
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-dbsnp.sav
+    targetlabel    eland-33-dbsnp
+    walltime       24
+
+Command:
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+ --outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland \
+ --replicates 1-33 \
+ --loop distributed \
+ --looplabel eland-savvenn \
+ --executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+ --queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+ --targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-dbsnp.sav \
+ --querylabel eland-%REPLICATE%-dbsnp \
+ --targetlabel eland-33-dbsnp \
+ --suffix sav \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland \
+ --maxjobs 1000 \
+ --queue small \
+ --cluster LSF \
+ --walltime 24 \
+ --cpus 1 \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out 
+
+
+Output:
+
+
+
+[app 4 vennnondbsnp]
+2011-01-25 12:24:30
+
+  Application:
+  name           vennnondbsnp
+  owner          anonymous
+  ordinal        4
+  locked         0
+  type           snp
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+  description    Do Venn analysis of non-dbSNP SNPs with increasing read depth
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    loop           distributed
+    looplabel      eland-savvenn
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out
+    maxjobs        1000
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-non-dbsnp.sav
+    querylabel     eland-%REPLICATE%-non-dbsnp
+    queue          small
+    replicates     1-33
+    suffix         sav
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-non-dbsnp.sav
+    targetlabel    eland-33-non-dbsnp
+    walltime       24
+
+Command:
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+ --outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland \
+ --replicates 1-33 \
+ --loop distributed \
+ --looplabel eland-savvenn \
+ --executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+ --queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-non-dbsnp.sav \
+ --targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-non-dbsnp.sav \
+ --querylabel eland-%REPLICATE%-non-dbsnp \
+ --targetlabel eland-33-non-dbsnp \
+ --suffix sav \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland \
+ --maxjobs 1000 \
+ --queue small \
+ --cluster LSF \
+ --walltime 24 \
+ --cpus 1 \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/eland/savvenn.out 
+
+
+Output:
+
+
+
+
+Completed workflow sav

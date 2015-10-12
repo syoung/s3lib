@@ -1,0 +1,538 @@
+Notes-hardware-cluster.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+mshow
+
+
+
+Secure VPN Connection terminated locally by the Client.
+Reason 412: The remote peer is no longer responding.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+++++++++</entry>
+
+
+
+<entry [Tues Dec 8 13:45:26 EDT 2008] ERROR TRYING ACCESS VIA VPN FROM WINDOWS TO GEMS>
+
+
+
+
+
+Hi Mike,
+
+Thanks for your message a few weeks ago. I’m not able to VPN into gems (129.171.101.102) despite several tries both from Mac and Windows XP but no luck connecting. Is the user access info in the email I received still valid?
+
+Cheers,
+
+Stuart
+
+
+
+
+VPN Client
+
+Secure VPN Connection terminated locally by the Client.
+Reason412: The remote peer is no longer responding.
+
+
+TightVNC info
+
+Failed to connect to server (129.171.101.102)
+
+
+
+
+
+
+
+
+
+
+
+
+++++++++</entry>
+
+
+
+<entry [Tues Dec 8 13:45:26 EDT 2008] VPN ACCESS TO GEMS>
+
+
+
+
+rcf@rsmas.miami.edu [rcf@rsmas.miami.edu]
+Sent: 	Wednesday, February 03, 2010 3:15 PM
+To: 	
+Young, Stuart
+Attachments: 	
+
+ 
+Hi Stuart Young-
+
+Remote Access to University of Miami networks has been granted by using a software "virtual private network" (VPN) client.  This software client uses a Group username and password as well as a personal username and password as part of its login process. 
+
+The contents of this message are personalized for you and should not be shared with anyone other than yourself.  You are responsible for the use of your login credentials.
+
+The VPN client can be downloaded from:
+http://www.rsmas.miami.edu/support/rcf/vpn/
+
+There are several versions of the client software available depending on the operating system of the computer that you will be using.  Each client is available in a folder at this site.
+
+Instructions on installing and configuring the client for windows is at:
+http://www.rsmas.miami.edu/support/rcf/vpn/windows/VPNWin2k.htm
+
+Instructions on installing and configuring the client for Macs (OS X) are
+at:
+http://www.rsmas.miami.edu/support/rcf/vpn/VPNMacOSX/OSX-GUI.htm
+
+
+Your Group name is:
+RSMAS
+Your Group password is:
+RSMAS
+
+Your user name is:
+syoung
+Your user password is
+4appcluster
+
+
+++++++++</entry>
+
+
+
+<entry [Tues Dec 8 13:45:26 EDT 2008] NEW USER ON GEMS>
+
+
+
+
+ssh xx@129.171.101.240
+
+WIPED AFTER INSTALL OF OSX XSERVE 
+
+
+++++++++</entry>
+
+
+
+<entry [Tues Dec 8 13:45:26 EDT 2008] RECOVER HD1 AFTER WON'T BOOT>
+
+
+
+
+1. COULD NOT RESTORE ('File unavailable'-TYPE ERROR) IN DISK UTILITY
+
+    WITH FRESH DISC (TAKEN FROM EXECUTION HOST 5).
+
+2. BOOT TO SINGLE USER WITH FRESH DISC.
+
+    CAN'T fsck BECAUSE GET 'BAD MAGIC NUMBER' ERROR.
+
+    CLEAN DISC WITH newfs:
+    
+    newfs /dev/disk1s3
+    
+    OK
+    
+    fsck -fy /dev/disk1s3
+    
+    OK
+
+3. BOOT WITH STARTUP DISC AND USE 'DISK UTILITY' TO RESTORE AGAIN FROM IMAGE TO HD1
+
+
+    CAN'T MOUNT /dev/disk1s3 SO USE REPARI
+    
+    GET 'invalid node structure' AND 'missing directory record id' ERRORS
+
+    
+
+
+++++++++</entry>
+
+
+
+<entry [Sat May  3 17:45:26 EDT 2008] SPLIT AND MERGE DISC IMAGE FILES>
+
+
+
+1. INSTALL split ON gems
+========================
+
+DOWNLOAD LATEST VERSION FROM 
+
+http://cvsweb.netbsd.org/bsdweb.cgi/src/usr.bin/split/split.c
+
+ADD THIS AMONG INCLUDES TO COMPILE ON OSX:
+#include <sys/stat.h>
+
+COMPILE: 
+
+dlc-genomics:~/FUNNYBASE/dev/osx/split young$ cc -Os -o split split.c
+
+PERMISSIONS:
+
+sudo cp split /usr/bin/split
+sudo chown root:wheel /usr/bin/split
+
+TEST:
+
+split -b 10 input.txt out
+
+
+2. SPLIT gemshd3 DISC IMAGE
+
+split -b 3000m gemshd1.080501.dmg gemshd1.080501.part.
+
+split -b 4000m gemshd3.080501.dmg gemshd3.080501.part.
+
+
+
+NOTES
+=====
+
+I think you are seeing a different problem then you think. When you used cat, and got a bunch of crap on the screen, with a bunch of beeping, it seems that the output of cat had gone to the screen, instead of being captured into a file with the > or >> operators. So I will focus on that part especially.
+
+Split works just fine on both text, and binary (even compressed) files. An example is worth a thousand words of man page (that don't have examples). Here I have temp.tar.gz, a 34MB gziped tar file containing 19 mp3 files (I know, mp3 files are already compressed, so the gzip is a waste of time, but this is just an example, and the mp3 files conveniently were in a directory about the right size).
+
+
+alain:/tmp/split$ split -b 10m temp.tar.gz temp.tar.gz_part_
+alain:/tmp/split$ cat temp.tar.gz_part_aa temp.tar.gz_part_ab temp.tar.gz_part_ac temp.tar.gz_part_ad >reassembled
+alain:/tmp/split$ diff -s reassembled temp.tar.gz
+Files reassembled and temp.tar.gz are identical
+
+
+The cat command can be broken into parts (this is useful if each part is on a separate disk, like one each on CDs). Take note that the first time, a single > is used to make sure that the data from this first part overwrites the destination file (if it already exists), but that each time after that, a double > is used to append to the destination file.
+
+cat temp.tar.gz_part_aa > reassembled
+cat temp.tar.gz_part_ab >> reassembled
+cat temp.tar.gz_part_ac >> reassembled
+cat temp.tar.gz_part_ad >> reassembled
+
+
+Also, one should not depend on the * wild card to return the files in the correct order, so "cat temp.tar.gz_part_a* > reassembled" is potentially dangerous. Instead, try: cat `echo temp.tar.gz_part_a* | sort` > reassembled
+
+
+
+++++++++</entry>
+
+
+
+<entry [Fri May  2 03:04:45 EDT 2008] ZEROED-OUT node001 AND COPIED OVER common FROM gemshd3 (WITHOUT data OR pipeline) AND REPLACED gemshd3 WITH IT>
+
+
+
+
+gems:/Volumes/gemshd3/common local$ ll /Volumes/gems3/common/
+total 0
+drwxr-xr-x    19 www    admin   646B May  2 02:10 .
+drwxr-xr-x     4 local  local   238B May  2 00:41 ..
+drwxr-xr-x    16 root   admin   544B Jul 10  2007 apps
+drwxr-xr-x   479 www    admin    15K Apr 30 20:42 bin
+drwxr-xr-x     3 www    admin   102B Sep 28  2005 dsh
+drwxr-xr-x    13 www    admin   442B Jul 21  2006 etc
+drwxr-xr-x   148 www    admin     4K Nov 27  2006 include
+drwxr-xr-x     7 www    admin   238B Jul 21  2006 info
+drwxr-xr-x     9 www    admin   306B Jul 21  2006 inquiry
+drwxrwxrwx    35 www    admin     1K Jan 14 03:03 iprscan
+drwxr-xr-x   154 www    admin     5K Nov 27  2006 lib
+drwxr-xr-x     4 root   admin   136B Feb  7  2007 libraries
+drwxr-xr-x     6 508    www     204B Oct 17  2007 myEST
+drwxr-xr-x     9 www    admin   306B Jan  9  2007 node
+drwxr-xr-x     5 www    admin   170B Jul 21  2006 sbin
+drwxrwxrwx     7 www    admin   238B Sep 27  2007 scratch
+drwxr-xr-x    21 sge    admin   714B Jul 25  2006 sge
+drwxr-xr-x    13 www    admin   442B Jul 21  2006 share
+drwxr-xr-x    26 www    admin   884B Sep 28  2005 wisecfg
+
+
+2. RENAMED DRIVES
+
+sudo diskutil rename /dev/disk3s3 gemshd3.old
+sudo diskutil rename /dev/disk2s3 gemshd3
+
+BEFORE:
+
+gems:~ local$ df -a
+Filesystem                Size   Used  Avail Capacity  Mounted on
+/dev/disk1s3               77G    56G    21G    73%    /
+devfs                     101K   101K     0B   100%    /dev
+fdesc                     1.0K   1.0K     0B   100%    /dev
+<volfs>                   512K   512K     0B   100%    /.vol
+/dev/disk2s3               77G    28G    48G    37%    /Volumes/gems3
+/dev/disk0s3               77G    39G    38G    51%    /Volumes/gemshd2
+automount -nsl [394]        0B     0B     0B   100%    /Network
+automount -fstab [399]      0B     0B     0B   100%    /automount/Servers
+automount -static [399]     0B     0B     0B   100%    /automount/static
+/dev/disk3s3               77G    34G    43G    44%    /Volumes/gemshd3
+
+AFTER:
+
+Filesystem                Size   Used  Avail Capacity  Mounted on
+/dev/disk1s3               77G    56G    21G    73%    /
+devfs                     101K   101K     0B   100%    /dev
+fdesc                     1.0K   1.0K     0B   100%    /dev
+<volfs>                   512K   512K     0B   100%    /.vol
+/dev/disk2s3               77G    28G    48G    37%    /Volumes/gemshd3
+/dev/disk0s3               77G    39G    38G    51%    /Volumes/gemshd2
+automount -nsl [394]        0B     0B     0B   100%    /Network
+automount -fstab [399]      0B     0B     0B   100%    /automount/Servers
+automount -static [399]     0B     0B     0B   100%    /automount/static
+/dev/disk3s3               77G    34G    43G    44%    /Volumes/gemshd3.old
+
+
+
+
+
+++++</entry>
+
+
+
+<entry [Fri May  2 01:26:38 EDT 2008] INVENTORY OF gemshd1 BEFORE MAKING IMAGE OF DISC>
+
+
+
+MAIN SPACE-HOGS:
+
+ 27G    /private/var/mysql
+ 11G    /Volumes/gemshd1/Users/local/FUNNYBASE/sequences
+7.3G    /common.old
+-----
+45.3G
+
+
+
+gems:/Volumes/gemshd1 local$ df -a
+Filesystem                Size   Used  Avail Capacity  Mounted on
+/dev/disk0s3               77G    55G    21G    73%    /
+devfs                     101K   101K     0B   100%    /dev
+fdesc                     1.0K   1.0K     0B   100%    /dev
+<volfs>                   512K   512K     0B   100%    /.vol
+/dev/disk2s3               77G    38G    38G    50%    /Volumes/gemshd2
+/dev/disk1s3               77G    37G    40G    48%    /Volumes/gemshd3
+automount -nsl [399]        0B     0B     0B   100%    /Network
+automount -fstab [408]      0B     0B     0B   100%    /automount/Servers
+automount -static [408]     0B     0B     0B   100%    /automount/static
+/dev/disk3s3               77G   1.3G    75G     2%    /Volumes/gems3
+gems:/Volumes/gemshd1 local$ ls
+Applications   Groups         System         bin            cores          log.0000000001 opt            tmp
+Desktop DB     Library        Users          collection     dev            mach           private        usr
+Desktop DF     Network        Volumes        common         etc            mach.sym       sbin           var
+Developer      Shared Items   automount      common.old     formatdb.log   mach_kernel    scratch
+gems:/Volumes/gemshd1 local$ sudo du -hs *
+787M    Applications
+8.0K    Desktop DB
+4.0K    Desktop DF
+1013M   Developer
+  0B    Groups
+2.4G    Library
+2.0K    Network
+112K    Shared Items
+1.5G    System
+ 14G    Users
+ 74G    Volumes
+1.5K    automount
+3.5M    bin
+520K    collection
+4.0K    common
+7.3G    common.old
+  0B    cores
+2.0K    dev
+4.0K    etc
+4.0K    formatdb.log
+4.0K    log.0000000001
+4.0K    mach
+592K    mach.sym
+4.2M    mach_kernel
+ 21M    opt
+ 27G    private
+2.1M    sbin
+  0B    scratch
+4.0K    tmp
+791M    usr
+4.0K    var
+
+gems:/private/var local$ sudo du -hs *
+Password:
+4.0K    amavis
+  0B    at
+  0B    audit
+ 36K    backups
+2.1M    clamav
+  0B    cron
+363M    db
+  0B    empty
+ 19M    imap
+8.0K    jabber
+  0B    launchd
+ 12M    lib
+ 12M    log
+  0B    mail
+ 24K    mailman
+  0B    msgs
+ 27G    mysql
+ 40K    named
+ 24K    named.bkp
+  0B    netboot
+254M    root
+128K    run
+  0B    rwho
+  0B    samba
+912K    servermgrd
+676K    spool
+  0B    swupd
+180K    tmp
+  0B    virusmails
+131M    vm
+  0B    xgrid
+ 16K    yp
+
+
+gems:/Volumes/gemshd1 local$ cd Users
+gems:/Volumes/gemshd1/Users local$ sudo du -hs *
+Password:
+  0B    Shared
+ 14G    local
+ 26M    root
+1.7M    vanwye
+ 80K    www
+4.0K    young
+gems:/Volumes/gemshd1/Users local$ cd local
+gems:/Volumes/gemshd1/Users/local local$ ll
+total 552
+drwxr-xr-x   29 local  local    986B Apr 30 23:48 .
+drwxrwxr-t   10 root   admin    340B Jul 28  2006 ..
+-rw-r--r--    1 local  local      3B Jul 21  2006 .CFUserTextEncoding
+-rw-r--r--    1 local  local     12K Apr 30 17:20 .DS_Store
+drwx------   14 local  local    476B Apr 29 02:58 .Trash
+-rw-------    1 local  local      9K May  1 19:30 .bash_history
+-rw-------    1 local  local      5K Jul 25  2006 .bash_history.bkp1
+-rw-r--r--    1 local  local      9K Apr 30 23:48 .bash_profile
+-rw-r--r--    1 local  local      9K Apr 29 19:30 .bash_profile~
+drwxr-xr-x    5 root   local    170B Jul 25  2006 .cpan
+drwxr-xr-x    3 local  local    102B Jul 21  2006 .emacs.d
+-rw-------    1 local  local      1K May  1 17:53 .mysql_history
+-rw-r--r--    1 local  local    127B Jul 25  2006 .ncbirc
+drwx------    9 local  local    306B Apr 29 19:23 .ssh
+-rw-r-----    1 local  local    129K Jul 25  2006 .systemlog
+-rw-------    1 local  local      4K Jul 28  2006 .viminfo
+-rw-r--r--    1 local  local    396B Jul 25  2006 .who.log
+-rw-r--r--    1 local  local    396B Jul 25  2006 .wholog
+drwxr-xr-x    5 root   local    170B Jul 25  2006 DS
+drwx------    8 local  local    272B Apr 30 17:52 Desktop
+drwxr-xr-x    3 local  local    102B Apr 30 18:08 Documents
+drwxr-xr-x   14 local  local    476B Apr 29 03:04 FUNNYBASE
+drwx------   29 local  local    986B Jul 27  2006 Library
+drwxr-xr-x   10 local  local    340B Jul 27  2006 apps
+-rw-r--r--    1 local  local      8K Jul 25  2006 certInstaller-2.tar
+drwxr-xr-x    9 local  local    306B Apr 29 02:59 inquiry_update
+-rw-r--r--    1 local  local     40K Jul 25  2006 inquiry_update.tar
+-rw-------    1 local  local    729B Jul 28  2006 mbox
+-rw-r--r--    1 local  local    922B Jul 25  2006 name.conf.bkp
+gems:/Volumes/gemshd1/Users/local local$ cd FUNNYBASE/
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ cd ,,   
+-bash: cd: ,,: No such file or directory
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ cd ,,
+-bash: cd: ,,: No such file or directory
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ cd ..'
+> cd .. 
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ cd .. 
+gems:/Volumes/gemshd1/Users/local local$ sudo du -hs *
+ 12K    DS
+ 18M    Desktop
+  0B    Documents
+^Z
+[1]+  Stopped                 sudo du -hs *
+gems:/Volumes/gemshd1/Users/local local$ cd FUNNYBASE/
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ sudo du -hs *
+ 18M    NOTES
+  0B    archive
+126M    bin
+ 25M    bin.old
+8.0K    conf
+  0B    databases
+728K    dev
+3.0M    lib
+548K    lib.old
+105M    pipeline
+ 11G    sequences
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE local$ cd sequences/
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE/sequences local$ ll
+total 16
+drwxr-xr-x     9 local  local  306B Jul 27  2006 .
+drwxr-xr-x    14 local  local  476B Apr 29 03:04 ..
+-rw-r--r--     1 local  local    6K Jul 27  2006 .DS_Store
+drwxr-xr-x    33 local  local    1K Jul 13  2006 201_Library
+drwxr-xr-x   184 local  local    6K Jul 13  2006 501_Library
+drwxr-xr-x     7 local  local  238B Jul 14  2006 MAV
+drwxr-xr-x    28 local  local  952B Jul 14  2006 Omm
+drwxr-xr-x    12 local  local  408B Jul 14  2006 Why
+drwxr-xr-x    16 local  local  544B Jul 14  2006 ftp_Backup072605
+gems:/Volumes/gemshd1/Users/local/FUNNYBASE/sequences local$ sudo du -hs *
+907M    201_Library
+5.1G    501_Library
+ 71M    MAV
+618M    Omm
+302M    Why
+3.9G    ftp_Backup072605
+
+
+
+
+
+
+++++</entry>
+
+
+
+<entry [Sat Jan 19 00:35:32 EST 2008] node013 PROBLEM WITH SSH RSA HOST KEY DURING dsh -a COMMAND>
+
+
+
+EDITED 
+
+
+                                @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node013.cluster.private:        @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+node013.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node013.cluster.private:        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+node013.cluster.private:        Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+node013.cluster.private:        It is also possible that the RSA host key has just been changed.
+node013.cluster.private:        The fingerprint for the RSA key sent by the remote host is
+node013.cluster.private:        71:4a:c4:fd:f3:11:8f:91:ad:e7:30:aa:17:01:d3:45.
+node013.cluster.private:        Please contact your system administrator.
+node013.cluster.private:        Add correct host key in /private/var/root/.ssh/known_hosts to get rid of this message.
+node013.cluster.private:        Offending key in /private/var/root/.ssh/known_hosts:14
+node013.cluster.private:        Password authentication is disabled to avoid man-in-the-middle attacks.
+node013.cluster.private:        Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+executing 'cp /common/mysql/data/pfalagam/iprscanset.MYD /private/var/mysql/pfalagam/iprscanset.MYD'
+
+
+
+

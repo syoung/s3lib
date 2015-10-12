@@ -1,0 +1,486 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ CREATE karenia4
++-+-+-+-+-+-+-+-+
+
+1. CREATE DATABASE AND TABLES
+=============================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./create_database.pl -d karenia3
+
+
+2. DO reads AND screenedreads TABLES
+====================================
+
+GET READS FOR ALL COLLECTION SEQUENCES CONTAINING THE WORD 'protein'
+IN THEIR ANNOTATION (~2,200 READS):
+
+cd /Users/young/FUNNYBASE/bin/cap3
+./karenia4reads.pl
+./karenia4screenedreads.pl
+
+3. CREATE READS .FASTA FILE AND .QUAL FILE FOR ASSEMBLY
+=======================================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readssingletsqualfile.pl -d karenia4
+
+8. DO cap3 ASSEMBLY
+===================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./assemblypipeline.pl -s 5 -d karenia4
+
+9. LOAD SINGLETS AND CONTIGS INTO assemblyreads AND assemblysequences
+=====================================================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./assemblyreadsassemblysequences.pl -d karenia4
+
+
+10. DO COLLECTION SEQUENCES
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./collectionsequences.pl -d karenia4
+
+
+11. BLAST AGAINST DATABASES
+===========================
+
+ON genomics:
+
+1. DO BLAST
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+sudo ./collectionarrayblast.pl -d karenia4 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6,swissprot,refseq-human,refseq-mouse,refseq-dog,refseq-rat
+
+NB: REDID blast2tsv.pl TO IGNORE HITS WITH NO DEFINITION LINE (CHECK LATER THE CAUSE OF THIS...)
+
+2. LOAD BLAST .TSV FILES INTO collectionblast
+
+sudo ./collectionblastloaddata.pl -d karenia3 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6,swissprot,refseq-human,refseq-mouse,refseq-dog,refseq-rat
+
+12. DO COLLECTION SEQUENCES ANNOTATION
+======================================
+
+./collectionsequencesannotation.pl -d karenia3
+
+
+12. DO HTML DIVS
+================
+
+POPULATE collectionsequencesdiv TABLE
+
+1. RUN collectionsequencesdiv.pl
+
+./collectionsequencesdiv.pl -d karenia3
+
+2. RUN collectionsequencesblastdiv.pl
+
+./collectionsequencesblastdiv.pl -d karenia3
+
+13. DO SNP PREDICTION AND ANNOTATION
+====================================
+
+NB: SEEMS TO REQUIRE THAT phd_dir IS NOT LINKED (I.E., AN ACTUAL DIRECTORY)
+
+1. PREDICT SNPs WITH polyphred
+
+./assemblypipeline.pl -d karenia3 -s 6
+
+2. CONDENSE .poly FILE INTO .stats FILE
+
+./SNPassemblysequences.pl -d karenia3
+
+3. UPDATE snp_stats FIELD OF stats TABLE
+
+./SNPstats.pl -d karenia3
+
+
+14. DO QUALITY DISTRIBUTION GRAPHS
+==================================
+
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s contig
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s both
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s contig
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s both
+./sequencequalitybargraph.pl -d karenia3 -a both -s contig
+./sequencequalitybargraph.pl -d karenia3 -a both -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a both -s both
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 10 12:49:08 EDT 2007] REDID sandbox13 QUALITY CUTOFF>
+
+
+
+1. FIXED XMLHTTPREQUEST ERROR (DUE TO 'this' REFERRING TO THE NEWLY-INTRODUCED
+NAMESPACE OBJECT)
+
+2. FIXED PARTIAL-DOWNLOAD PROBLEM (NOT ALL SEQUENCES APPEAR IN DOWNLOADS)
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 10 12:46:58 EDT 2007] pSMART SEQUENCES FROM TIM>
+
+
+
+ADDED THE FOLLOWING SEQUENCES FROM TIM TO THE 'vector.seq' FILE IN THE 'pipeline'
+DIRECTORY:
+
+
+From : 	Tim McLean <tmclean@rsmas.miami.edu>
+Sent : 	Tuesday, April 10, 2007 4:27 PM
+To : 	"stuart young" <youngstuart@hotmail.com>
+Subject : 	pSS101 aka pSMART sequences
+	
+	
+Go to previous message	|	Go to next message	|	Delete	|	Inbox
+Attachment :  	LucigenpSMARTseq.doc (< 0.01 MB), LucigenpSMARTseq.doc (0.02 MB), verifiedpSMARTseq.doc (< 0.01 MB), verifiedpSMARTseq.doc (0.02 MB)
+
+Stuart,
+
+Here are two files with the sequence as furnished from the company, Lucigen, and the sequence that I determined from sequencing. 
+
+>pSmart-Lucigen
+CCCGTGAAGGTGAGCCAGTGAGTTGATTGCAGTCCAGTTACGCTAGTGACCCCGGTTGATAATCAGAAAAGCCCCAAAAACAGGAAGATTGTATAAGCAAATATTTAAATTGTAAGCGTTAATATTTTGTTAAAATTCGCGTTAAATTTTTGTTAAATCAGCTCATTTTTTAACCAATAGGCCGAAATCGGCAAAATCCCTTATAAATCAAAAGAATAGACCGAGATAGGGTTGAGTGTTGTTCCAGTTTGGAACAAGAGTCCACTATTAAAGAACGTGGACTCCAACGTCAAAGGGCGAAAAACCGTCTATCAGGGCGATGGCCCACTACGTGAACCATCACCCTAATCAAGTTTTTTGGGGTCGAGGTGCCGTAAAGCACTAAATCGGAACCCTAAAGGGAGCCCCCGATTTAGAGCTTGACGGGGAAAGCCGGCGAACGTGGCGAGAAAGGAAGGGAAGAAAGCGAAAGGAGCGGGCGCTAGGGCGCTGGCAAGTGTAGCGGTCACGCTGCGCGTAACCACCACACCCGCCGCGCTTAATGCGCCGCTACAGGGCGCGTCACTAAATTAATACGACTCACTATAAGGGGTGTGGAATTGTGAGCGGATAACAATTTCACACAAATATTTGTGGAATTGTGAGCGGATAACAATTTCACACAGGAAACAGCCATGGGCATGCGTCGACGAATTCGGATCCGCGGCCGCAAGCTGACTACGAGGATACACTGACCATTTAAATCATACCTGACCTCCATAGCAGAAAGTCAAAAGCCTCCGACCGGAGGCTTTTGACTTGATCGGCACGTAAGAGGTTCCAACTTTCACCATAATGAAATAAGATCACTACCGGGCGTATTTTTTGAGTTATCGAGATTTTCAGGAGCTAAGGAAGCTAAAATGAGCCATATTCAACGGGAAACGTCTTGCTCGAGGCCGCGATTAAATTCCAACATGGATGCTGATTTATATGGGTATAAATGGGCTCGCGATAATGTCGGGCAATCAGGTGCGACAATCTATCGATTGTATGGGAAGCCCGATGCGCCAGAGTTGTTTCTGAAACATGGCAAAGGTAGCGTTGCCAATGATGTTACAGATGAGATGGTCAGGCTAAACTGGCTGACGGAATTTATGCCTCTTCCGACCATCAAGCATTTTATCCGTACTCCTGATGATGCATGGTTACTCACCACTGCGATCCCAGGGAAAACAGCATTCCAGGTATTAGAAGAATATCCTGATTCAGGTGAAAATATTGTTGATGCGCTGGCAGTGTTCCTGCGCCGGTTGCATTCGATTCCTGTTTGTAATTGTCCTTTTAACGGCGATCGCGTATTTCGTCTCGCTCAGGCGCAATCACGAATGAATAACGGTTTGGTTGGTGCGAGTGATTTTGATGACGAGCGTAATGGCTGGCCTGTTGAACAAGTCTGGAAAGAAATGCATAAACTTTTGCCATTCTCACCGGATTCAGTCGTCACTCATGGTGATTTCTCACTTGATAACCTTATTTTTGACGAGGGGAAATTAATAGGTTGTATTGATGTTGGACGAGTCGGAATCGCAGACCGATACCAGGATCTTGCCATCCTATGGAACTGCCTCGGTGAGTTTTCTCCTTCATTACAGAAACGGCTTTTTCAAAAATATGGTATTGATAATCCTGATATGAATAAATTGCAGTTTCACTTGATGCTCGATGAGTTTTTCTAATGAGGGCCCAAATGTAATCACCTGGCTCACCTTCGGGTGGGCCTTTCTGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGATGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTCGGAAAAAGAGTTGGTAGCTCTTGATCCGGCAAACAAACCACCGCTGGTAGCGGTGGTTTTTTTGTTTGCAAGCAGCAGATTACGCGCAGAAAAAAAGGATCTCAAGAAGATCCTTTGATTTTCTACCGAAGAAAGGCCCA
+
+>pSmart-verified
+CCCGTGAAGGTGAGCCAGTGAGTTGATTGCAGTCCAGTTACGCTAGTGACCCCGGTTGATAATCAGAAAAGCCCCAAAAACAGGAAGATTGTATAAGCAAATATTTAAATTGTAAGCGTTAATATTTTGTTAAAATTCGCGTTAAATTTTTGTTAAATCAGCTCATTTTTTAACCAATAGGCCGAAATCGGCAAAATCCCTTATAAATCAAAAGAATAGACCGAGATAGGGTTGAGTGTTGTTCCAGTTTGGAACAAGAGTCCACTATTAAAGAACGTGGACTCCAACGTCAAAGGGCGAAAAACCGTCTATCAGGGCGATGGCCCACTACGTGAACCATCACCCTAATCAAGTTTTTTGGGGTCGAGGTGCCGTAAAGCACTAAATCGGAACCCTAAAGGGAGCCCCCGATTTAGAGCTTGACGGGGAAAGCCGGCGAACGTGGCGAGAAAGGAAGGGAAGAAAGCGAAAGGAGCGGGCGCTAGGGCGCTGGCAAGTGTAGCGGTCACGCTGCGCGTAACCACCACACCCGCCGCGCTTAATGCGCCGCTACAGGGCGCGTCACTAAATTAATACGACTCACTATAAGGGGTGTGGAATTGTGAGCGGATAACAATTTCACACAAATATTTGTGGAATTGTGAGCGGATAACAATTTCACACAGGAAACAGCCATGGGCATGCGTCGACGAATTCACGGATCCGCGGCCGCAAGCTTCTCGAGGATATCACTGACCATTTAAATCATACCTGACCTCCATAGCAGAAAGTCAAAAGCCTCCGACCGGAGGCTTTTGACTTGATCGGCACGTAAGAGGTTCCAACTTTCACCATAATGAAATAAGATCACTACCGGGCGTATTTTTTGAGTTATCGAGATTTTCAGGAGCTAAGGAAGCTAAAATGAGCCATATTCAACGGGAAACGTCTTGCTCGAGGCCGCGATTAAATTCCAACATGGATGCTGATTTATATGGGTATAAATGGGCTCGCGATAATGTCGGGCAATCAGGTGCGACAATCTATCGATTGTATGGGAAGCCCGATGCGCCAGAGTTGTTTCTGAAACATGGCAAAGGTAGCGTTGCCAATGATGTTACAGATGAGATGGTCAGGCTAAACTGGCTGACGGAATTTATGCCTCTTCCGACCATCAAGCATTTTATCCGTACTCCTGATGATGCATGGTTACTCACCACTGCGATCCCAGGGAAAACAGCATTCCAGGTATTAGAAGAATATCCTGATTCAGGTGAAAATATTGTTGATGCGCTGGCAGTGTTCCTGCGCCGGTTGCATTCGATTCCTGTTTGTAATTGTCCTTTTAACGGCGATCGCGTATTTCGTCTCGCTCAGGCGCAATCACGAATGAATAACGGTTTGGTTGGTGCGAGTGATTTTGATGACGAGCGTAATGGCTGGCCTGTTGAACAAGTCTGGAAAGAAATGCATAAACTTTTGCCATTCTCACCGGATTCAGTCGTCACTCATGGTGATTTCTCACTTGATAACCTTATTTTTGACGAGGGGAAATTAATAGGTTGTATTGATGTTGGACGAGTCGGAATCGCAGACCGATACCAGGATCTTGCCATCCTATGGAACTGCCTCGGTGAGTTTTCTCCTTCATTACAGAAACGGCTTTTTCAAAAATATGGTATTGATAATCCTGATATGAATAAATTGCAGTTTCACTTGATGCTCGATGAGTTTTTCTAATGAGGGCCCAAATGTAATCACCTGGCTCACCTTCGGGTGGGCCTTTCTGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGATGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTCGGAAAAAGAGTTGGTAGCTCTTGATCCGGCAAACAAACCACCGCTGGTAGCGGTGGTTTTTTTGTTTGCAAGCAGCAGATTACGCGCAGAAAAAAAGGATCTCAAGAAGATCCTTTGATTTTCTACCGAAGAAAGGCCCA
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+NAME
+
+     cap3 - Sequence Assembly Program
+
+
+
+SYNOPSIS
+
+     cap3 File_of_reads [options]
+
+
+
+DESCRIPTION
+
+  Introduction
+     We have made the following improvements to the CAP  sequence
+     assembly program.
+
+     1. Use of forward-reverse constraints  to  correct  assembly
+     errors and link contigs.
+
+     2. Use of base  quality  values  in  alignment  of  sequence
+     reads.
+
+     3. Automatic clipping of 5' and 3' poor regions of reads.
+
+     4. Generation of assembly results in  ace  file  format  for
+     Consed.
+
+     5. CAP3 can be used in GAP4 of the Staden package.
+
+     The improved program  is  named  CAP3.   These  improvements
+     allow  CAP3  to  take  longer sequences of higher errors and
+     produce more accurate consensus sequences.
+
+     Use of constraints in layout generation
+
+     A forward-reverse constraint is often produced by sequencing
+     both  ends  of  a  subclone.   A  forward-reverse constraint
+     specifies that the two  reads  should  be  on  the  opposite
+     strands of the DNA molecule within a specified range of dis-
+     tance.
+
+     CAP3 makes use of a large  number  of  forward-reverse  con-
+     straints  to locate and correct errors in layout of sequence
+     reads.  This capability  allows  CAP3  to  address  assembly
+     errors due to repeats.
+
+     CAP3 also uses constraints to link contigs  separated  by  a
+     gap.   This  feature provides useful information to sequence
+     finishers.
+
+     The algorithm used in CAP3 is  designed  to  tolerate  wrong
+     constraints,  which  are  due  to  errors in naming and lane
+     tracking.
+
+     Use of quality values in alignment
+
+     CAP3 makes use of base quality  values  in  constructing  an
+     alignment  of  sequence  reads  and  generating  a consensus
+     sequence for each contig.
+
+     This allows the program to use both base quality values  and
+     the  depth of coverage at a position to improve the accuracy
+     in generating a consensus base at the position.
+
+     The alignment method in CAP3 is very tolerable of  reads  of
+     high sequencing errors.
+
+     Automatic clipping of 5' and 3' poor regions
+
+     CAP3 clips 5' and 3' poor regions of  reads  and  uses  only
+     good  regions of reads in assembly. Thus there is no need to
+     perform clipping in advance. Note that vector  sequences  in
+     reads must be masked before using CAP3.
+
+  Input to CAP3
+     CAP3 takes as input a file of sequence reads in  FASTA  for-
+     mat.   If  the  names  of  reads  contain  a dot ('.'), CAP3
+     requres that the names of reads sequenced from the same sub-
+     clone  contain the same substring up to the first dot.  CAP3
+     takes two optional files: a file of quality values in  FASTA
+     format and a file of forward-reverse constraints.
+
+     The file of quality values must be named "xyz.qual", and the
+     file of forward-reverse constraints must be named "xyz.con",
+     where "xyz" is the name of the sequence file.  CAP3 uses the
+     same format of a quality file as Phrap.
+
+     Each line of the  constraint  file  specifies  one  forward-
+     reverse constraint of the form:
+
+     ReadA   ReadB    MinDistance    MaxDistance
+
+     where ReadA and ReadB are names of two  reads,  and  MinDis-
+     tance  and  MaxDistance  are  distances  (integers)  in base
+     pairs.  The constraint is  satisfied  if  ReadA  in  forward
+     orientation  occurs  in  a  contig  before  ReadB in reverse
+     orientation, or ReadB in forward  orientation  occurs  in  a
+     contig  before  ReadA in reverse orientation, and their dis-
+     tance is between MinDistance and  MaxDistance.   CAP3  works
+     better if a lot more constraints are used.
+
+     We have a separate program named  "formcon"  to  generate  a
+     constraint  file  from the sequence file.  The program takes
+     an input file of fragments in FASTA format and two  integers
+     (minimum  distance and maximum distance in bp).  The minimum
+     distance and maximum distances specify a lower and  a  upper
+     limit  on  the subclone length, respectively.  It produces a
+     file of forward-reverse constraints for CAP3.  It is assumed
+     that  a pair of forward and reverse reads must contain a dot
+     in their names and a pair of forward and reverse reads  have
+     a  common name up to the first dot.  Because CAP3 uses reads
+     whose ends are clipped, instead of  raw  reads,  to  measure
+     their distance, the distance seen by CAP3 could be different
+     from the insert size by 1000 to 1500 bp. For example, if the
+     insert  size  is 2000 to 3000 bp,  we recommend that you use
+     500 for the minimum distance and 4000 for the  maximum  dis-
+     tance.   The  results  are  in  the file with name ending in
+     ".con".
+
+  Output from CAP3
+     Assembly results in CAP format go to the standard output and
+     need  to  be directed to a file. Note that clipped 5' and 3'
+     sequences of reads are not shown in CAP3 format output.
+
+     CAP3 also produces  assembly  results  in  ace  file  format
+     (".ace").   This  allows CAP3 output to be viewed in Consed.
+     Note that clipped 5' and 3' sequences of reads are shown  in
+     ace format output.
+
+     CAP3 saves consensus sequences in file ".contigs" and  their
+     quality  values in file ".contigs.qual".  Reads that are not
+     used in assembly are put in  file  ".singlets".   Additional
+     information about assembly is given in file ".info".
+
+     The CAP3 program reports whether each constraint  is  satis-
+     fied  or  not.  The  report is in file ".results".  A sample
+     report file is given here:
+
+     CPBKY55.F   CPBKY55.R    500   6000    3210  satisfied
+     CPBKY92.F   CPBKY92.R    500   6000    497   unsatisfied  in
+     distance
+     CPBKY28.F   CPBKY28.R    500   6000     unsatisfied
+     CPBKY56.F   CPBKY56.R    500   6000      10th  link  between
+     CPBKI23.F+ and CPBKT37.R-
+     CPBKY70.F   CPBKY70.R    500   6000     4th overlap  between
+     CPBKM47.F+ and CPBKN28.R-
+
+     The first four columns are simply taken from the  constraint
+     file.   Line  1  indicates that the constraint is satisfied,
+     where the actual distance between the two reads is given  on
+     the  fifth  column.  Line 2 indicates that the constraint is
+     not satisfied in distance, that is, the two reads  in  oppo-
+     site  orientation  occur  in the same contig, but their dis-
+     tance (given on the fifth column) is out of the given range.
+     Line 3 indicates that the constraint is not satisfied.  Line
+     4 indicates that this constraint is a 10th  one  that  links
+     two  contigs, where the 3' read of one contig is "CPBKI23.F"
+     in plus  orientation  and  the  5'  read  of  the  other  is
+     "CPBKT37.R"  in  minus orientation. The information suggests
+     that the two contigs should go together in the  gap  closure
+     phase.   Line  5 indicates that the constraint is a 4th con-
+     straint  supporting  an  overlap   between   CPBKM47.F   and
+     CPBKN28.R.   The  overlap  is not implemented in the current
+     the assembly.
+
+     CAP3 takes 20 to 60 minutes to assemble a cosmid or BAC data
+     set on a Sun Ultra1 workstation.
+     
+OPTIONS
+
+     A detailed documentation on CAP3 usage.
+
+     Usage: cap3 File_of_reads [options]
+
+     File_of_reads is a file of DNA reads in FASTA format
+
+     If the file of reads is named 'xyz', then the file of  qual-
+     ity  values  must  be named 'xyz.qual', and the file of con-
+     straints named 'xyz.con'.
+
+     Options (default values):
+
+       -a  N  specify band expansion size N > 10 (20)
+       -b  N  specify base quality cutoff for differences N >  15
+     (20)
+       -c  N  specify base quality cutoff for clipping N > 5 (10)
+       -d  N  specify max qscore sum at differences N > 100 (250)
+       -e  N  specify extra number of differences N > 10 (20)
+       -g  N  specify gap penalty factor N > 0 (6)
+       -m  N  specify match score factor N > 0 (2)
+       -n  N  specify mismatch score factor N < 0 (-5)
+       -o  N  specify overlap length cutoff > 20 (30)
+       -p  N  specify overlap percent identity cutoff N > 65 (75)
+       -s  N  specify overlap similarity score  cutoff  N  >  100
+     (500)
+       -u  N  specify min number of constraints for correction  N
+     > 0 (4)
+       -v  N  specify min number of constraints for linking N > 0
+     (2)
+       -x  N  specify prefix string for output file names (cap)
+
+     If no quality file is given, then a default quality value of
+     10 is used for each base.
+
+     The following sections explain the parameters of CAP3.
+
+     Clipping of poor regions
+
+     CAP3 computes clipping positions of  each  read  using  both
+     base quality values and similarity information. The user can
+     influence the clipping process by giving a different quality
+     value  cutoff  with  the "-c" option. Using a larger quality
+     value could cause more regions to be trimmed.
+
+     Band of diagonals
+
+     The program determines a minimum band of  diagonals  for  an
+     overlapping  alignment  between two sequence reads. The band
+     is expanded by a number of bases specified by the user  with
+     option "-a".
+
+     Quality difference score of an overlap
+
+     Overlaps between reads are evaluated by five measures.   The
+     first  measure is based on base quality.  If an overlap con-
+     tains lots of differences at bases of high quality, then the
+     overlap  is removed. Specifically, let b be the base quality
+     cutoff value and let d be the maximum difference score.  The
+     values  for the two parameters can be set using the "-b" and
+     "-d" options. If the overlap contains a difference at  bases
+     of  quality  values q1 and q2, then the score at the differ-
+     ence is max(0, min(q1, q2) - b). The difference score of  an
+     overlap  is the sum of scores at each difference.  For exam-
+     ple, an overlap contains two differences, one  at  bases  of
+     quality  values  15 and 30 and the other at bases of quality
+     values 40 and 50. With b = 20, the difference score  of  the
+     overlap  is 0 + 20 = 20. If the difference score of an over-
+     lap exceeds d, then the overlap is removed. With b = 20,  an
+     overlap with 15 differences at bases of quality values 40 or
+     higher has a difference score of at least 300 and is removed
+     if d = 250.
+
+     Number of differences in an overlap
+
+     The second measure looks at the number of differences in  an
+     overlap.   If  the  number  of  differences in an overlap is
+     higher than expected, than the overlap is removed.   Let  an
+     integer  e be the maximum number of extra differences.  Con-
+     sider an overlap between reads f  and  g.   Let  d1  be  the
+     estimated  number  of  sequencing errors for the region of f
+     involved in the overlap and let r2 be that for the region of
+     g  involved  in  the  overlap.   If  the  observed number of
+     differences in the overlap is greater than r1 + r2 + e, then
+     the  overlap  is removed.  The value for the parameter e can
+     be changed using the "-e" option.  The  expected  number  of
+     differences  in  the  overlap  is  about  r1 + r2.  Giving a
+     smaller value to e causes more overlaps to be removed.
+
+     Similarity score of an overlap
+
+     The third measure is based on overlap similarity score.  The
+     similarity  score  of  an  overlapping  alignment is defined
+     using base quality values. Let m be the match score  factor,
+     let  n  be  the  mismatch score factor, and let g be the gap
+     penalty factor.  Values for these parameters can be set with
+     the "-m", "-n", and "-g" options.  A match at bases of qual-
+     ity values q1 and q2 is given a score of m * min(q1,q2).   A
+     mismatch  at  bases  of  quality values q1 and q2 is given a
+     score of n * min(q1,q2).  A base of quality value  q1  in  a
+     gap  is  given  a  score of -g * min(q1,q2), where q2 is the
+     quality value of the base in the other sequence right before
+     the  gap.  The  score  of a gap is the sum of scores of each
+     base in the gap minus a gap  open  penalty.  The  similarity
+     score  of  an  overlapping alignment is the sum of scores of
+     each match, each mismatch, and each gap.  With  m  =  2,  an
+     overlap  that  consists  of  25  matches at bases of quality
+     value 10 has a score of 500. If the similarity score  of  an
+     overlap  is less than the overlap similarity score cutoff s,
+     then the overlap is removed.
+
+     Minimum length and percent identity of an overlap
+
+     The fourth requirement for an overlap is that the length  in
+     bp  of  the overlap is no less than the value of the minimum
+     overlap length cutoff parameter.  The value for this parame-
+     ter can be changed with the "-o" option.  The fifth require-
+     ment for an overlap is that  the  percent  identity  of  the
+     overlap is no less than the minimum percent identity cutoff.
+     The value for this parameter can be changed  with  the  "-p"
+     option.  A value of 75 for p means 0.75 or 75%.
+
+     Forward-reverse constraints
+
+     Corrections to an assembly are  made  using  forward-reverse
+     constraints.  Let an integer u be the minimum number of con-
+     straints for correction.  Consider  an  alternative  overlap
+     between  two  reads  f and g.  Assume that f is in contig C1
+     and that g is in contig C2.  If the  number  of  unsatisfied
+     constraints  that  support  the  overlap  between f and g is
+     greater than the value of the u parameter plus the number of
+     satisfied constraints that support the current joins involv-
+     ing f and g, then the current joins involving f  and  g  are
+     disconnected and the overlap between f and g is implemented.
+     The value for this parameter can be changed  with  the  "-u"
+     option.
+
+     Contigs that are linked by forward-reverse  constraints  are
+     reported.  The minimum number of constraints for reporting a
+     link between two contigs is specified with the "-v" option.
+
+     Output file names
+
+     The names of all output files contain a substring "cap".   A
+     different  substring  can be specified with the "-x" option.
+     This feature was suggested by Harley Gorrell.
+
+
+    

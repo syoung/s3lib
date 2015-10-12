@@ -1,0 +1,182 @@
+Notes-apps-vcake.txt
+
+</entry>
+
+
+
+<entry [Mon Jul  7 16:58:00 EDT 2008] INSTALL AND RUN vcake>
+
+
+
+
+1. FIX LINE READING BY CHANGING
+
+chomp;
+
+TO
+
+$_ =~ s/\s+$//;
+
+IN
+
+sub readSeq
+sub readBin
+
+
+2. CHANGE LINE ENDS TO UNIX FORMAT
+
+3. COPY VCAKE_1.0.pl SCRIPT TO apps/vcake DIRECTORY 
+
+
+
+
+
+
+
+
+Introduction to VCAKE v 1.0
+
+Josie Reinhardt
+UNC Chapel Hill
+Dept. of Biology
+jreinhar@email.unc.edu
+
+VCAKE (Verified Consensus Assembly by K-mer Extension) is an assembly program designed to assemble 
+very short reads into longer contigs. It was inspired by Rene Warren's SSAKE.  The purpose of the program 
+is to assemble previously unsequenced genomes with data obtained using the Solexa sequencing technology 
+(Illumina, Inc), which provides reads ~32 bp in length with a fairly high error rate (~2-5%).  VCAKE can 
+also be used to extend longer sequencing data/contigs using these short reads. 
+
+Contents:
+I) Running VCAKE - to get you started running VCAKE on sample and real data
+II) Options - Basic options you should know
+III) Understanding VCAKE - Technical requirements, how VCAKE works
+
+I) Running VCAKE
+
+VCAKE is a PERL script.  This means it can be run from any command terminal that has PERL installed.
+For information on running or installing PERL please see www.perl.org.  The input for VCAKE is one
+or more multi-fasta files, of which one must be short reads (< 50 nucleotides or so).  The output is
+a multi-fasta file containing your extended contigs.  Future versions will include complied, and hopefully
+parallelized, executables.
+
+1) Go to the directory where you put VCAKE. 
+
+2) For assembly of an example, simulated dataset, download the test dataset
+(Herpesvirus_3.60kb.reads.fa) to the directory where you put VCAKE:
+$ perl VCAKE_0.5.pl -b Herpesvirus_3.60kb.reads.fa -f Herpesvirus_3.60kb.reads.fa -s contigs -k 30 -n 19 -m 17 -v 100 -o 70 -t 4
+
+After the program completes, you should find the output file Herpesvirus_3.60kb.reads.fa.contigs.  You can
+compare this to the reference file Herpesvirus_3.60kb.reference.fa which is a 60kb long section of
+Human Herpes Virus 3 (accesion# NC_001348).
+
+3a) For assembly of your own data type the following:
+$ perl VCAKE_0.5.pl -b solexareads.fa -f solexareads.fa -s contigs.fa -k readlength
+
+Where
+-b, -f "solexareads.fa" is your Solexa reads file,
+-s "contigs.fa" is the suffix that will be put onto your output multi-fa (eg solexareads.fa.contigs.fa),
+-k "readlength" is the length of your Solexa reads (you may enter a value shorter than the read's actual
+length - VCAKE will simply truncate the read after that position).
+
+3b) For consensus extension of previous sequence data (known ORFs, gappy shotgun/454 assemblies, etc):
+$ perl VCAKE_0.5.pl -b sequences.fa -f solexareads.fa -s extended.contigs.fa -k readlength
+
+here the options are the same except
+-b "sequences.fa" is the sequence multi fasta you are trying to extend rather than the Solexa reads fasta
+
+3c) A few other examples you may want to try:
+
+...A more liberal assembly:
+$ perl VCAKE_0.5.pl -b solexareads.fa -f solexareads.fa -s contigs.fa -k 32 -n 17 -m 15 -v 8
+
+...A more conservative assembly:
+$ perl VCAKE_0.5.pl -b solexareads.fa -f solexareads.fa -s contigs.fa -k 28 -n 20 -m 18 -v 3
+
+...If you know your sequence is free of any repeated elements over ~25 bp:
+$ perl VCAKE_0.5.pl -b solexareads.fa -f solexareads.fa -s contigs.fa -k 30 -n 20 -m 18 -v 100
+
+...If you want the program to run faster by outputting only contigs > 100 bp:
+$ perl VCAKE_0.5.pl -b solexareads.fa -f solexareads.fa -s contigs.fa -k 30 -n 20 -m 18 -t 0 -o 100
+
+--------------------
+
+II) VCAKE options:
+
+From the directory where you put VCAKE, type:
+
+$ perl VCAKE_0.5.pl
+
+and you should see the following options:
+
+Usage: VCAKE_0.5.pl
+-s <string> suffix (contigs will be output to 'file.contigs.suffix')
+-b <file.fasta> backbone to seed contigs
+-c <number> ratio of most represented base required for extension (default=0.6)
+-e <number> minimum overlap allowed for assembling k-mers with a single error (optional, default=inf => no errors allowed, reccomended: e = 22 or more)
+-f <file.fasta> unassembled reads
+-k <number> length of reads in -f file (required)
+-n <number> standard minimum overlap for getting coverage seqs (default = 18)
+-t <number> number of reads before tripping to the liberal overlap requirement (default=5)
+-m <number> minimum overlap allowed for assembling k-mers if the liberal overlap trip is reached (default = 16)>
+-o <number> minimum contig size to print to .contig file - speeds up assembly (optional, default=0)
+-q <number> quit after a set number of contigs (optional, default=never)
+-v <number> maximum number of disagreements with the majority base call allowed before termination (prevents extension through repeat elements) (default=3)
+-x <number> maximum number of duplicated reads accepted (avoids assembling repeated elements) (default=infinite, recc -> 10-20x expected coverage)
+-l <log file> (optional) at /Users/josiereinhardt/Desktop/AssemblyProjects/ProgramsAndScripts/Fermenter/VCAKE_0.5.pl line 51.
+
+1) Required options:
+-b, -f, -s, -k
+These options must be provided or VCAKE will not run. See usage in section I.
+
+2) Options you may want to change:
+
+-c (0 - 1, default 0.6).  A lower value will allow longer, but more error prone extension.  A higher
+value will do the opposite.
+-n: (0-inf default 18, recc 15-25) A lower value may allow longer, but more error prone extension.
+High values are best but require a high level of coverage to succeed.
+-v (0 to inf, default 3).  A higher value will allow longer contig extension, but at the risk of erroneous
+extension through repetitive sequence.  
+
+For a more detailed explanation of each option please refer to the main README.txt document
+
+--------------------
+
+III) Understanding VCAKE:
+
+Before using VCAKE you may want to understand a few things about how it works so you can properly
+adjust it to your own needs.  
+
+Technical requirements:
+VCAKE is very memory intensive.  This is because it holds all Solexa sequencing data in memory and
+then refers to these reads to create contigs.  The amount of memory needed is directly proportional to
+the size of your short-read dataset.  Assume about 4 gigs of memory for 3 quality lanes of Optically
+filtered Solexa data (~200 million nucleotides).  VCAKE also will take many hours or even days to run
+depending on the size of your dataset and the speed of your processor. 
+
+Extension:
+VCAKE works by extending one base at a time using a majority rule.  This means it searches the
+Solexa reads for sequences that overlap the end of the contig you are extending, and looks at the
+next base suggested by each read.  VCAKE then counts up the number of votes for each base, does a
+series of tests and verifications on that number, and if it passes each of these, it extends the
+contig by that base.  The process is repeated until termination. 
+
+VCAKE begins extension using either a provided set of "backbone" sequences, or the solexa reads
+themselves (the -b option).  This functionality allows the user to very easily combine short read sequence
+data with longer sequencing technologies, or to do a simple "de novo" assembly from short reads.  Once
+a given contig has terminated, the next read from the -b fasta file is used to begin a new contig. 
+
+Termination:
+VCAKE will terminate extension of a contig for any of the following reasons:
+1) There are no reads with sufficient overlap that can be used to extend to the next base.
+2) No base has enough "votes" to break the majority threshold.
+3) There is a "verified disagreement" - meaning, two bases have many votes.  This is unlikely to
+    occur by chance and is probably due to exit from a repetitive sequence region. 
+
+For a more detailed explanation of VCAKE please see the README.txt document
+
+
+
+
+
+

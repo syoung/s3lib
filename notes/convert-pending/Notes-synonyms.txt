@@ -1,0 +1,112 @@
+Notes-synonyms.txt
+
+</entry>
+
+
+
+<entry [Tue Jun 12 16:19:59 EDT 2007] GET SWISSPROT SYNONYMS:>
+
+
+
+http://www.expasy.org/cgi-bin/lists?annbioch.txt
+
+SAVED IN: NOTES/synonyms
+
+Description: UniProtKB/Swiss-Prot annotation: how biochemical information
+             is assigned to sequence entries
+Name:        ANNBIOCH.TXT
+Release:     51.1 of 14-Nov-2006
+
+
+DOWNLOADED SWISSPROT FLAT FILE FROM U.S. FTP MIRROR ftp://us.expasy.org/databases/swiss-prot/release_compressed:
+
+ftp://us.expasy.org/databases/swiss-prot/release_compressed/uniprot_sprot.dat.gz
+
+
+192771 KB  	11/14/06  	3:00:00 PM
+
+NB: ALSO AVAILABLE AT EBI:
+
+http://www.ebi.uniprot.org/database/download.shtml
+
+
+PARSED FLAT FILE AT 'ID' AND THEN 'GN' LINE TO GET SYNONYMS:
+
+ID   AMPA_ECO57              Reviewed;         503 AA.
+...
+GN   Name=pepA; Synonyms=carP, xerB; OrderedLocusNames=Z5872, ECs5237;
+
+
+
+synonymsswissprot.pl -i /Users/young/FUNNYBASE/NOTES/annotation/synonyms/uniprot_sprot.dat
+
+
+</entry>
+
+
+
+<entry [Mon Jan  8 12:50:54 EST 2007] GO MAPPINGS>
+
+
+
+http://www.geneontology.org/external2go/
+
+Parent Directory                             -   
+[   ] cog2go                  08-Jul-2005 01:10  7.2K  
+[TXT] ec2go                   12-Dec-2006 04:10  258K  
+[   ] egad2go                 08-Jul-2005 01:10  3.7K  
+[   ] genprotec2go            08-Jul-2005 03:10   26K  
+[   ] hamap2go                12-Dec-2006 04:10  166K  
+[   ] interpro2go             12-Dec-2006 04:10  1.6M  
+[   ] metacyc2go              02-Jan-2007 20:40  336K  
+[TXT] mips2go                 10-Jan-2006 08:40  109K  
+[   ] multifun2go             20-Dec-2005 07:10   51K  
+[   ] pfam2go                 12-Dec-2006 04:10  554K  
+[   ] prints2go               12-Dec-2006 04:10  309K  
+[   ] prodom2go               12-Dec-2006 04:10  124K  
+[   ] prosite2go              12-Dec-2006 04:10  256K  
+[   ] reactome2go             02-Jan-2007 20:40  172K  
+[   ] rfam2go                 08-May-2006 07:38   28K  
+[   ] smart2go                12-Dec-2006 04:10   56K  
+[   ] spkw2go                 12-Dec-2006 04:10   51K  
+[   ] tigr2go                 08-Jul-2005 03:10   22K  
+[TXT] tigrfams2go             07-Dec-2006 13:10  486K  
+[   ] um-bbd_enzymeid2go      24-May-2006 07:07   37K  
+[   ] um-bbd_pathwayid2go     02-Jan-2007 20:40  9.0K  
+
+
+GenBank-to-SwissProt MAPPING DOWNLOADED TO ~/FUNNYBASE/dev/annotation/GO
+
+Mapping between swissprot,refseq and locuslink ids:
+
+ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/human.xrefs.gz.
+
+
+
+"The Gene Ontology Annotation (GOA) Project: Implementation of GO in SWISS-PROT, TrEMBL, and InterPro". Published online before print March 12, 2003
+Evelyn Camon1,3,4, Michele Magrane1,3, Daniel Barrell1, David Binns1, Wolfgang Fleischmann1, Paul Kersey1, Nicola Mulder1, Tom Oinn1, John Maslen1, Anthony Cox2 and Rolf Apweiler1 
+
+Automatic GO Annotation of SWISS-PROT, TrEMBL, and InterPro
+The first phase of the GOA project involved the large-scale assignment of GO terms to SWISS-PROT and TrEMBL entries using electronic methods. This strategy was based on the use of existing properties of the entries including the presence of keywords and Enzyme Commission (EC) numbers. Mapping of InterPro entries to GO also allowed further associations of GO terms to entries to be made, based on the presence of InterPro cross-references in SWISS-PROT and TrEMBL. "Mapping" is used here to refer to the linking of various classification systems to GO terms, while the word "association" refers to a connection between a database object (which may represent a gene, transcript, or protein) and a GO term that describes the gene product. The electronic mappings described in detail below were used to generate associations in SWISS-PROT and TrEMBL.
+
+Mapping SWISS-PROT Keywords to GO
+SWISS-PROT and TrEMBL entries contain keywords that serve as a subject reference for each sequence and assist in the retrieval of specific categories of data from the database. Currently, SWISS-PROT maintains a controlled list of ~840 keywords, each with a definition to clarify its biological meaning and intended usage. This list is available at http://www.expasy.org/cgi-bin/keywlist.pl and is updated on a regular basis. Seventy-four percent of SWISS-PROT keywords have been manually mapped to a high-level GO term. Keywords that were not mapped include those that have multiple usages, have no equivalent GO term, or are beyond the scope of the GO project, such as keywords describing domains.
+
+To enable data transfer, an index file containing the SWISS-PROT keyword to GO mappings (spkw2go) is shared on the GO home page (http://www.geneontology.org/external2go/spkw2go). This is frequently updated with the latest version, helping users to keep track of changes for local use. During these updates, more specific GO mappings may be added and obsolete GO terms and SWISS-PROT keywords removed.
+
+During manual annotation of a SWISS-PROT entry, curators assign keywords based on literature and sequence analysis checks. Keywords are also added to TrEMBL entries during automatic annotation of the TrEMBL database (Apweiler 2001Go). This procedure utilizes a novel system of standardized transfer of annotation from well-characterized proteins in SWISS-PROT to unannotated TrEMBL entries (Fleischmann et al. 1999Go). Consequently, the accuracy of the association of GO terms to SWISS-PROT and TrEMBL entries based on the keywords in the entries is assured by the annotation quality standards already existing in SWISS-PROT. To associate GO terms to SWISS-PROT and TrEMBL entries, the spkw2go mapping is combined with a mapping of protein accession numbers to SWISS-PROT keywords. In-house annotation tools and browsers are updated automatically as the new data is loaded.
+
+The application of SWISS-PROT keywords in the electronic assignment of GO terms to gene products continues to be a large-scale success. As of November 2002, spkw2go has been used to generate over 1,023,969 GO associations with 376,845 SWISS-PROT and TrEMBL entries (see http://www.ebi.ac.uk/GOA/SPTR_release.html). It has also been used successfully by a number of external databases such as the Mouse Genome Database (MGD) (Hill et al. 2001Go).
+
+Mapping of EC Numbers to GO
+A second electronic strategy takes advantage of an existing mapping (ec2go) of GO terms from the molecular function ontology to the nomenclature of the EC as contained in the ENZYME database (Bairoch 2000Go). EC numbers are consistently annotated in SWISS-PROT and TrEMBL enzyme entries as part of the description line. To associate GO terms to the SWISS-PROT and TrEMBL data, the ec2go mapping available from the GO home page was updated and combined with a mapping of protein accession numbers to EC numbers. This strategy was very successful, generating 164,205 GO associations in 72,496 SWISS-PROT and TrEMBL proteins.
+
+Mapping of the InterPro Resource to GO
+InterPro is an integrated documentation resource for protein families, domains, and sites that combines the complementary efforts of the PROSITE (Falquet et al. 2002Go), PRINTS (Attwood et al. 2002Go), Pfam (Bateman et al. 2002Go), ProDom (Corpet et al. 2000Go), SMART (Letunic et al. 2002Go), and TIGRFAMs (Haft et al. 2001Go) databases. Individual signatures from the member databases, which describe the same protein family or domain, are grouped together into a single InterPro entry. Each entry provides comprehensive annotation describing a set of related proteins, some of which may have identical molecular functions, be involved in the same processes, and perform their function in the same cellular locations. Furthermore, each entry also contains a match list of the SWISS-PROT and TrEMBL proteins that hit the signatures in that entry. Mapping InterPro entries to GO terms thus provides an automatic means of assigning GO terms to the protein sequences that form the match table of a particular InterPro entry. An additional advantage is that multifunctional proteins can be mapped to multiple GO terms through associations with more than one InterPro entry.
+
+The assignment of GO terms to InterPro entries was performed manually by inspecting all available information. In each case, the abstracts and the annotation of proteins within the match lists were read and an appropriate GO term was mapped if it applied to the whole protein. Some entries could be mapped to very deep level (specific) GO terms, while entries describing wider families or common domains could only be mapped to higher level terms or could not be mapped at all. The associated GO term therefore applies to all proteins with true hits to all signatures in the InterPro entry. As of November 2002, the electronic application of these InterPro mappings has led to 1,333,215 GO associations with 442,293 SWISS-PROT and TrEMBL proteins. The integrity of the InterPro to GO mappings is maintained by running regular sanity checks on the data. These checks include searching for mappings from secondary or deleted InterPro accession numbers and mappings to obsolete or nonexistent GO terms. The reports are manually verified and corrected.
+
+For each associated term, the name of the term and GO accession number is given, and these are available in InterPro entries directly from the database at http://www.ebi.ac.uk/interpro/ (Fig. 1). A file listing InterPro entries and their corresponding GO terms is also available from the EBI FTP site at ftp://ftp.ebi.ac.uk/pub/databases/interpro/interpro2go and, on the GO home page at http://www.geneontology.org/interpro2go. InterPro includes a sequence search facility that allows users to search a sequence against the database and to retrieve all InterPro matches for that sequence. As well as an SRS-based version, there is also a stand-alone Perl-based package available for local installation that returns GO terms as part of the results.
+
+
+

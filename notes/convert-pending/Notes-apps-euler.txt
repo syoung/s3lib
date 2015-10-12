@@ -1,0 +1,731 @@
+Notes-apps-euler.txt
+
+</entry>
+
+
+
+<entry [Mon Jul  7 15:21:34 EDT 2008] RUNNING euler>
+
+
+
+**** NB: NEED TO SET ENVIRONMENT VARIABLES TO ___RUN___ EULER... ***
+
+You will need to set the following variables, both to install and run euler-sr. You'll be reminded if any are not set since the makefile will issue a warning then quit.
+EUSRC 	The full path to the euler-sr directory. You can probably type cd mcsrc; 'setenv MCSRC `pwd`.
+MACHTYPE 	The identity of your system's architecture. This will generally be set by the OS, but just in case right now the only valid values are x86_64, i686 powerpc
+CC 	Your g++ compiler. If it is in your path this is usually just "g++"
+LD_LIBRARY_PATH 	You should include $(MCSRC)/lib/$(MACHTYPE) as part of the library path.
+PERL5LIB 	You should include the path to fwg_scripts in PERL5LIB. This is probably ${MCSRC}/fwg_scripts
+
+Once all of these are set, simply unpack the source, and type make. All executables are stored in the $(MACHTYPE) subdirectories of each source directory.
+
+
+
+
+EULER-SR Readme (cont.)
+
+More detailed instructions:
+http://euler-assembler.ucsd.edu
+
+Assembling genomes.
+
+454
+===
+
+If you are building 454 sequences, or a hybrid of 454 and Sanger,
+use the script CorrectAndAssemble.pl, with a vertex size of 25.  All
+the reads should be in one file.  In this case, we'll call it 'reads.fasta'.
+
+>CorrectAndAssemble.pl  reads.fasta -vertexSize 25
+
+
+SOLEXA
+======
+
+If you are assembling Illumina reads, use the driver script tuned to
+Illumina.  Since Illumina reads are all the same length, we have an
+additional step that takes advantage of this, assuming the read length
+is longer than 30 bases.  You can invoke this step by specifying the
+read length on the command line with the -readLength option.  In the
+example below, 'L' should be replaced by the length of the reads in 'reads.fasta'.
+Note it is not necessary that each read length be the same.
+
+
+>AssembleIllumina.pl reads.fasta work -vertexSize 25 -readLength L
+
+WHERE
+    reads.fasta is the input file
+    work is the working directory
+
+
+#### SET LD_LIBRARY_PATH, OTHERWISE GET ERROR NOT FINDING libcommon.so
+export LD_LIBRARY_PATH=/store/home/syoung/base/apps/euler-sr/lib/x86_64
+echo $LD_LIBRARY_PATH
+cd /home/syoung/base/pipeline/ecoli-euler/data
+
+#### RAN euler BUT DID NOT COMPLETE
+
+    - Ran tuple creation, graph creation, edge trimming but failed at graph printing stage.
+
+    - NO OUTPUT FILE IN assembly/Simple DIRECTORY.
+
+
+/store/home/syoung/base/apps/euler-sr/assembly/AssembleIllumina.pl ecoli_in.solexa.fasta assembly -vertexSize 25 -readLength 34 &> out.euler
+
+>>>...
+printing the graph to assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.graph and assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+/store/home/syoung/base/apps/euler-sr/assembly/x86_64/printContigs assembly/Simple/ecoli_in.solexa.fasta.fixed.simple
+mv assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.contig ecoli_in.solexa.fasta.contig
+...<<<
+
+
+FILE PRESENT: ecoli_in.solexa.fasta.fixed.simple.intv
+FILE NOT PRESENT: ecoli_in.solexa.fasta.fixed.simple (INPUT FILE FOR printContigs)
+
+ll assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+-rw-r--r-- 1 myuser users 211M Jul  7 20:29 assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+
+$ /store/home/myuser/base/apps/euler-sr/assembly/x86_64/printContigs
+usage: graphBase
+prints the contigs out to graphBase.contig
+
+$ ll assembly/Simple/ecoli_in.solexa.fasta.fixed.simple
+ls: assembly/Simple/ecoli_in.solexa.fasta.fixed.simple: No such file or directory
+
+
+
+Tues 8th July , 2008. MESSAGE TO EULER FORUM:
+
+NO *.fixed.simple INPUT FILE PRODUCED FOR printContigs
+
+I ran euler-sr on a sample of E. coli Illumina/Solexa data but it failed at the graph printing stage (after apparently completing the earlier stages - tuple creation, graph creation, edge trimming).
+
+System
+
+Linux Redhat OS
+RAM 8GB
+8 CPUs (Intel)
+
+Run command 
+
+<path_to_euler>/euler-sr/assembly/AssembleIllumina.pl ecoli_in.solexa.fasta assembly -vertexSize 25 -readLength 34 &> out.euler
+
+Error message
+
+<trim>
+...
+printing the graph to assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.graph and assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+<path_to_euler>/euler-sr/assembly/x86_64/printContigs assembly/Simple/ecoli_in.solexa.fasta.fixed.simple
+mv assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.contig ecoli_in.solexa.fasta.contig
+...
+</trim>
+
+On further examination, I found that the  *.fixed.simple file was missing.
+
+FILE PRESENT: ecoli_in.solexa.fasta.fixed.simple.intv
+FILE NOT PRESENT: ecoli_in.solexa.fasta.fixed.simple (INPUT FILE FOR printContigs)
+
+ll assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+-rw-r--r-- 1 myuser users 211M Jul  7 20:29 assembly/Simple/ecoli_in.solexa.fasta.fixed.simple.intv
+
+$ ll assembly/Simple/ecoli_in.solexa.fasta.fixed.simple
+ls: assembly/Simple/ecoli_in.solexa.fasta.fixed.simple: No such file or directory
+
+
+THE FILE IS NEEDED BY printContigs:
+
+$ /store/home/myuser/base/apps/euler-sr/assembly/x86_64/printContigs
+usage: graphBase
+prints the contigs out to graphBase.contig
+
+
+Any ideas what it could be?
+Thanks.
+
+
+
+
+
+
+RAN WITH euler.pl
+=================
+
+
+cd ~/base/bin/euler
+./euler.pl -d /home/syoung/pipeline/ecoli-euler/data -i ecoli_in.solexa.fasta -o assembly
+
+
+
+
+
+
+
+
+SOLEXA v2
+=========
+
+Now there is the option to try out some experimental code when running
+assemblies on Illumina reads.  Simply add the '-tryBeta' flag at the
+command line.
+
+
+>AssembleIllumina.pl reads.fasta work -vertexSize 25 -tryBeta
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Jul  7 15:15:24 EDT 2008] INSTALL euler>
+
+
+
+EULER-SR Readme.   More detailed instructions are on the webpage at
+http://euler-assembler.ucsd.edu.
+
+Steps for installing EULER-SR
+
+1. Unzip euler-sr.tgz (most likely already done if you are reading this).
+
+tar zxvf euler-sr.tgz
+
+2. Configure proper environment variables.  You will need these to
+both install and run euler-sr. This is described in-depth on the
+webpage, but an example for Ubuntu, tcsh, x86_64 architecture follows:
+
+cd euler-sr
+setenv EUSRC  `pwd`
+setenv MACHTYPE x86_64
+setenv LD_LIBRARY_PATH ${EUSRC}/lib/${MACHTYPE}
+setenv PERL5LIB ${EUSRC}/fwg_scripts
+setenv CC g++
+
+IN BASH:
+
+cd euler-sr
+export EUSRC=`pwd`
+export MACHTYPE=x86_64
+export LD_LIBRARY_PATH=${EUSRC}/lib/${MACHTYPE}
+export PERL5LIB=${EUSRC}/fwg_scripts
+export CC=g++
+
+echo $LD_LIBRARY_PATH
+/store/home/syoung/base/apps/euler-sr/lib/x86_64
+
+
+Chances are, the only difference you'll have is to change x86_64 to
+i686 if you are running on an older machine.
+
+(
+FROM WEBSITE:
+    You will need to set the following variables, both to install and run euler-sr.
+    You'll be reminded if any are not set since the makefile will issue a warning then quit.
+    
+    EUSRC 	The full path to the euler-sr directory. You can probably type cd mcsrc; 'setenv MCSRC `pwd`.
+    MACHTYPE 	The identity of your system's architecture. This will generally be set by the OS, but just in case right now the only valid values are x86_64, i686 powerpc
+    CC 	Your g++ compiler. If it is in your path this is usually just "g++"
+    LD_LIBRARY_PATH 	You should include $(MCSRC)/lib/$(MACHTYPE) as part of the library path.
+    PERL5LIB 	You should include the path to fwg_scripts in PERL5LIB. This is probably ${MCSRC}/fwg_scripts 
+)
+
+3. Build euler-sr.  If all environment variables are set, this is a
+straightforward make.
+
+make
+
+
+[syoung@solexa01 euler-sr]$ ll
+
+    drwxr-xr-x 9 syoung users 4.0K Jul  7 15:23 .
+    drwxr-xr-x 5 syoung users 4.0K Jul  7 15:12 ..
+    drwxr-xr-x 3 syoung users 4.0K Jul  7 15:20 assembly
+    drwxr-xr-x 2 syoung users 4.0K Jun 25 16:24 assembly_utils
+    -rw-r--r-- 1 syoung users 3.4K Jun 25 16:24 common.mak
+    -rwxr-xr-x 1 syoung users 1.3K Jun 25 16:24 CreateExecBuildCommands.pl
+    drwxr-xr-x 3 syoung users  12K Jul  7 15:23 euler
+    drwxr-xr-x 2 syoung users 4.0K Jun 25 16:24 fwg_scripts
+    drwxr-xr-x 9 syoung users 4.0K Jul  7 15:21 lib
+    -rw-r--r-- 1 syoung users 1.6K Jun 25 16:24 LICENSE
+    -rw-r--r-- 1 syoung users 1.8K Jun 25 16:24 Makefile
+    -rw-r--r-- 1 syoung users  806 Jun 25 16:24 make.rules
+    -rwxr-xr-x 1 syoung users  13K Jun 25 16:24 mkdep.pl
+    -rwxr-xr-x 1 syoung users 2.1K Jun 25 16:24 mkfiles.pl
+    -rw-r--r-- 1 syoung users 2.0K Jun 25 16:24 README.eulersr
+    drwxr-xr-x 3 syoung users 4.0K Jul  7 15:23 sequtils
+    drwxr-xr-x 3 syoung users 4.0K Jul  7 15:23 x86_64
+
+
+</entry>
+
+
+
+<entry [Tue Jul  2 15:45:48 EDT 2008] Download Euler-SR AND USAGE>
+
+
+
+DOWNLOAD 
+http://euler-assembler.ucsd.edu/portal/distrib/link_UDpPnVXTdcXG3iSEjHi4/euler-sr.tgz
+
+USAGE
+http://euler-assembler.ucsd.edu/portal/?q=node/78
+
+Assembling Illumina reads
+
+1. Convert FASTQ to FASTA files (if they are fastq), and trim low quality sequences:
+
+eusrc/assembly/x86_64/qualityTrimmer -fastq reads.fastq -outFasta reads.unfiltered.fasta -minQual -span 4
+
+2. Remove the poly-A or poly-C reads that are created when the signal is flooded:
+eusrc/assembly_utils/FilterReads.pl reads.unfiltered.fasta eusrc/assembly/matetable.rules reads.fasta
+
+the file 'matetable.rules' contains regular expressions for deciding which technology produces which read, since the filtering changes per technology. The fasta title should match the regular expression provided in the matetable.rules file.
+
+3. Assemble your sequences.
+eusrc/assembly/AssembleIllumina.pl reads.fasta working_dir -vertexSize 25
+
+If you're feeling lucky, you can run the latest and greatest but not necessarily most stable code here with:
+eusrc/assembly/AssembleIllumina.pl reads.fasta working_dir -vertexSize 25 -tryBeta
+
+
+Error correction with EULER-SR
+
+If you want to use EULER-SR to correct reads, but (unfortunately) another program to assemble them, that's ok.
+
+There are a few simple steps to error correction. I use two different programs, one for 454 and Sanger reads, and the other only for Illumina. I'll show below where you have to use a different command.
+
+1. Do quality filtering of your data if you have quality values. See the page on quality filtering to do this.
+
+Assuming your filtered reads are reads.fasta:
+
+2. Compute the k-mer frequency
+
+>${eusrc}/assembly/x86_64/integralCountSpectrum reads.fasta 20 reads.spect -printCount -binary
+
+2. Sort the frequency list so that it may be searched. Also take the time to remove very low frequency k-mers.
+
+>${EUSRC}/assembly/x86_64/sortIntegralTupleList reads.spect -printCount
+
+(this last option is necessary)
+
+3. Compute the count where k-mers are equally likely to be errors or correct. This tells you what to use as the 'minMult' option.
+
+>${EUSRC}/assembly/x86_64/estErrorDist reads.spect -binSpect
+
+You should set the minMult option (below) to something a little less than this, to include as many true positive k-mers as possible.
+
+3. Run Error correction, for 454 the best command is:
+
+${EUSRC}/assembly/x86_64/fixErrorsISAP reads.fasta reads.spect 20 reads.fixed -discardFile reads.discards -minMult 8 -maxScore 6 -startScore 2 -stepScore 2 -maxTrim 2 -edgeLimit 4
+
+for Illumina:
+
+${EUSRC}/assembly/x86_64/fixErrorsIVoting reads.fasta reads.spect 20 reads.fixed -discardFile reads.discards -minMult 8 -minVotes 2 -maxTrim 3
+
+
+
+
+Description of the output
+
+base.edge 	The sequence of every edge in the de Bruijn, or condensed de
+Bruijn graph. The set of edges in the graph correspond to the
+assembly of both the forward and reverse strands. Each edge has a
+dual edge that is its reverse complement.
+base.contig 	One of every pair of dual edges in the de Bruijn graph. This is
+half the number of edges in the .edge
+file minus the number of palindromic edges.
+base.graph 	An adjacency list representation of the de Bruijn graph. This is
+currently retained for compatibility with previous versions of
+euler_et and euler_db.
+base.bgraph 	
+
+The branching de Bruijn graph (condensed graph) is stored two separate
+lists, an edge and a vertex list. Each value in the vertex list
+stores the indices of the edges that are incident (either in or out
+edges) to that vertex. Each value in the edge list stores the source
+and dest vertex, and the length of the edge. The actual sequence of
+the edge is stored separately since some programs perform graph
+operations that only require topology.
+
+The .bgraph file is a slightly more descriptive version of the
+branching de Bruijn graph. A graph with M vertices and N edges is
+stored as M lines that describe edges that are adjacent to
+vertices, then N lines describing each edge as follows:
+
+
+Number_of_vertices M
+index1 	uvid1 	inG 	inA 	inC 	inT 	outG 	outA 	outC 	outT
+...
+indexM 	uvidM 	inG 	inA 	inC 	inT 	outG 	outA 	outC 	outT
+Number_of_edges N
+source 	dest 	mult 	uEID1 	balanced_edge_index 	length
+source 	dest 	mult 	uEIDN 	balanced_edge_index 	length
+
+This is designed to be a human readable representation of the de
+Bruijn graph. Each vertex has a maximum in and out degree of 4. The
+values inG etc. specify the indices of
+edges that are incident to the vertex. Each vertex has 4 possible
+in-edges corresponding to edges that contain 'g', 'a', 'c', and 't' at
+the position k-1 from the end of an edge, where k is the vertex size.
+The sentinal -1 is used to show that there is no incident edge
+containng the corresponding nucleotide at position n-k-1 (where n is
+the length of the edge).
+base.report 	Some commands store a log of their command line options to this
+file.
+base.intv 	A description of how reads map to edges in the de Bruijn graph.
+The unit of description of the map is an interval, a tuple
+describes the read that maps to an edge, where the intervals starts
+on both the read and the edge, and the length of the interval.
+This file is in the format:
+
+EDGE N Length L Multip K
+
+INTV read_index read_pos interval_length edge_start
+
+...
+
+N is the index of the edge (in order of the file base .edge file)
+
+L is the length of the edge.
+
+K is the number of reads that map to an edge.
+
+read_index is the index of the read in the file base.
+
+read_pos is the first position in the read that maps
+to the edge (in this interval, a read may map to an edge many
+times).
+interval_length is the length of the read interval on
+the edge.
+edge_start is the starting position of the read
+interval on an edge.
+
+base.path 	The path of edges that every read takes. This file may be
+reconstructed by tracing read intervals through the graph, but that
+takes time, and so this stores the result of tracing all read
+intervals through the graph.
+base.ovp 	This is a temporary file output by edgesToOverlapList to easily
+search for subsequences of the edges.
+base.v 	The list of vertices in the de Bruijn graph. Right now these
+are stored as a list of positions in reads, however this may change
+to save space.
+base.sv 	The same list of vertices, except sorted for easy lookup.
+
+
+
+
+
+Running assemblies
+
+
+
+Running EULER-SR.
+
+   1. Fix errors in reads.
+   2. Build the condensed de Bruijn graph.
+   3. Remove spurious edges using graph simplification.
+   4. Resolve repeats in the graph using equivalent transformation.
+
+For error correction, several programs both with many options exist,
+and the correct program and set of options depends on your data.
+Fortunately, they have been wrapped into driver scripts that in
+addition to controlling some of the options, can split the error
+correction problem down across multiple processors, using the Sun Grid
+Engine submission system if it exists.
+
+Reads must be stored in just one file. For now assume that file is
+called reads.fasta . For assembling
+unpaired data, no additional files are necessary.
+
+
+
+
+Two programs exist for correcting errors: fixErrorsSAP (fix
+errors Spectral Alignment Problem), and
+fixErrorsVoting. The first uses a DP method described in [cite
+Chaisson 05] for fixing errors. It is highly accurate for fixing long
+reads with errors that have insertions and deletions. The drawback is
+that it requires a short section of a read to be error free, and the
+read should not end in an error (reads that have errors biased towards
+the ends of reads will be difficult to fix). The latter program,
+fixErrorsVoting can fix reads that do not have a section that is
+error-free, but cannot fix insertions and deletions. It is also quite
+a bit more slow. Currently we use fixErrorsSAP to fix errors in 454
+reads, and fixErrorsVoting to fix errors in Illumina reads.
+
+The easiest way to run error correction is to use a driver program:
+
+>FixErrorsSerialParam.pl reads.fasta `pwd`/work `pwd`/result -itMult 10 -prog sap
+
+This will compute the tuple-spectrum, and then run fixErrorsSAP on
+reads.fasta. Because several intermediate output files are generated,
+the script requries the full path to a working directory to output
+these files, and the full path to store the result. This is
+convenient when working on a grid that has scratch space on each
+compute node, and the result needs to be copied to a separate root
+directory.
+
+The script is set up to fix errors serially so that
+error correction may be ran on the same set of reads with different
+parameters, first fixing high coverage regions and ending on lower
+coverage regions by specifiying multiple multiplicity values using the
+-itMult option.
+
+Here is a more complicated example:
+
+>FixErrorsSerialParam.pl reads.fasta `pwd`/work `pwd/result -itMult 12\
+-itMult 10 -itMult 6 -prog sap -nProc 4 -smp
+
+This runs fixErrorsSAP on reads.fasta ,
+first fixing reads with a spectrum counting all words with freqency 12
+as correct. Reads that were unfixable using a minMult parameter of 12
+are fixed with 10, and then 6. The options -nproc 4 -smp split error
+correction across 4 processors on a symetric multiprocessor system,
+such as a multi-core computer. one could parallize this with the
+-grid -nJobs 10 set of options, however this requires a system that is
+running the Sun Grid Engine.
+
+If you are uncertain what minimum frequency to use, the
+program estErrorDist will guess the
+parameters the Gaussian distribution of frequency that the correct
+k-mers follow, and the parameters for the exponential distribution
+that the erroneous k-mers follow.
+
+The program estErrorDist requires a spectrum, so you can run this in the following way:
+
+>countSpectrum reads.fasta reads.fasta.spect -tupleSize 20
+>estErrorDist reads.fasta.spect
+
+If you want more information, such as a histogram of tuple frequencies, or to watch the convergence of the EM method, use the -verbose option.
+
+
+It's easy to run error correction step by step as well, for example:
+
+>countSpectrum reads.fasta reads.fasta.spect -tupleSize 20
+>sortTupleList reads.fasta.spect reads.fasta.spect.sorted
+>fixErrorsSAP reads.fasa reads.fasta.spect.sorted 20 reads.fasta.fixed -minMult 6 -maxScore 5 -maxTrim 3 -discardFile reads.fasta.discards
+
+
+
+
+Both the SAP and Voting error correction methods follow roughly the same command line interface:
+
+fixErrors{SAP,voting} readsFile spectrumFile vertexSize fixedReadsFile -minMult M
+
+
+readsFile: 	The input reads.
+spectrumFile: 	A list of (tuple, multiplicity) pairs sorted by tuple.
+vertexSize: 	The size of the tuple in the spectrum file.
+fixedReadsFile: 	The outputFile for reads.
+-minMult M 	The minimum frequency of a tuple to consider correct. While this is an optional parameter, it is a good idea to configure this according to the coverage of your project. There are programs to help you guess a good value for minMult.
+
+
+
+Simplifying the de Bruijn graph
+
+
+
+SimplifyingTheDeBruijnGraph.html
+After constructing the de Bruijn graph, any extra errors that remained
+in reads after error correction create extra edges in the de Bruijn
+graph. Graph correction operations clean this up.
+
+The most simple way to perform an entire assembly is with the script AssembleAndCorrect.pl
+
+${MCSRC}/assembly/AssembleAndCorrect.pl reads.fasta -vertexSize V
+
+This script wraps the assembly post-processing steps:
+
+   1. Graph correction.
+   2. Joining sources and sinks.
+   3. Graph simplification using reads.
+   4. Graph simplification using mate-pairs.
+
+To correct (simplify) the graph, you run:
+
+>simplifyGraph reas.fasta reads.fasta.simple -vertexSize V -minEdgeLength E -removeSimpleBulges B -removeLowCoverage
+>joinsas reas.fasta.simple L reads.fasta.simple.j -vertexSize V
+>ReorderAndLink.pl reads.fasta.simple.j reads.fasta
+>euler_et -s reads.fasta.simple.j.r -x V -o reads.fasta.simple.j.r.et.dot
+
+The graph correction defined in [Chaisson 08] are implemented in the
+program simplifyGraph . Errors at the
+ends of reads create short source and sink edges in the graph, and are
+removed by the parameter minEdgeLength.
+As a rule of thumb, this length should be less than the length of a
+read. Errors in the middles of reads create bulges, and may be
+removed with the parameter removeSimpleBulges
+. This should be at least 2 * vertexSize + 1. Errors that
+make fake chimeric reads create paths in the grath that not many reads
+follow, usually just one. When the
+removeLowCoverage option is used, reads that create paths that
+appear an unexpectedly low number of times are removed. If all reads
+on an edge have been removed, the edge is removed as well.
+
+Often this is enough to remove nearly all erroneous edges in a graph.
+When the genome is complicated and contains a large number of
+high-identity repeats, assembly may benefit from graph simplification
+instead of just correction. The removeBulges
+option will replace complicated networks of cycles with a
+topology that represents replacing a repeat with the consensus
+sequence.
+
+The process of creating the de Bruijn graph splits edges where the
+read overlap is more than vertexSize
+nucleotides apart. We repair overlaps with the program joinsas that joins source and sink edges whose
+sequences have unambiguous overlaps.
+
+Finally, in order to run the programs euler_et
+, and euler_db the format of the
+graph needs to be changed a bit to be compatible. This may be done
+with the script ReorderAndLink.pl .
+
+
+
+
+Quality filtering
+
+We only use quality files to trim bad reads, and not during assembly. To filter quality, use the program qualityTrimmer
+
+If you have a quality file:
+
+${EUSRC}/assembly/x86_64/qualityTrimmer -fastA reads.fasta -qual reads.qual -outFasta reads.trimmed.fasta -minQual 10 -span 4
+
+This truncates reads after the average quality drops below 10 for 4 nucleotides.
+
+If you have a fastq file, you do not need to specify a quality file, but the command changes:
+${EUSRC}/assembly/x86_64/qualityTrimmer -fastQ reads.fastQ -outFasta reads.fasta -minQual 10 -span 4
+
+
+Transforming the de Bruijn graph
+
+
+After correcting errors in the de Bruijn graph, you may resolve
+repeats using euler_et and euler_db.
+
+euler_et bases the names of all input
+files as suffixes of the original reads file, and so if the graph file
+name after simplification is
+base.simple.{bgraph,graph,edge,...}, there needs to be a link to the
+original reads file named base.simple. The script ReorderAndLink.pl creates the appropriately
+linked files.
+
+To run euler_et:
+
+>euler_et -s base.fasta -x V -o base.fasta.et.dot
+
+You specify the source file with the -s
+option, the vertex size with the -x
+option, and the resulting graph viz file with the -o option. This graphviz file is only for
+visualization purposes.
+
+If you are running euler_et without mate-pair information, the
+assembly quality may be improved by performing an X-cut and tandem
+repeat removal (straightening).
+
+>euler_et -s base.fasta -x V -o base.fasta.et.dot -X -S
+
+If you have paired end reads, you can further transform the graph
+using euler_db. Information for read-pairing is encoded in the fasta
+names for each read, so you may need to re-format your data
+accordingly.
+
+First, you will need a file called name.rul
+that describes the clones that are used. The following is an
+example (and should just be copied and modified)
+
+/* Names are: Library_Plate_well.primer
+primer library plate length range */
+Single reads: s ALL ALL
+Double-barreled reads: a b ALL ALL 550 650
+Double-barreled reads: c d ALL ALL 1900 2300
+Double-barreled reads: e f ALL ALL 9100 11100
+
+The format of a read name is
+name_library_plate.ext
+
+Name may be any series of letters and numbers without '_'. Library
+and plate should be integers. When 'ALL'
+is specified for library or plate, the library and plate are ignored,
+otherwise reads from only that library or plate are used. Finally the
+length range is the expected range of length from the end of the
+forward read to the beginning of the mate. The extension 'ext'
+specifices which clone a read is.
+
+Thus a sample set of unpaired and paired sequences in a FASTA file is
+as follows:
+
+>sim_1_3.s
+TGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGCTTCTGAACTG
+>sim_1_4.s
+TAAAAAAAGAGTGTCTGATAGCAGCTTCTGAACTGGTTACCTGCCGTGAG
+>sim_1_5.a
+TGATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAAATTTTA
+>sim_1_6.b
+GAACCCCGGCTGGGCGGCGGCGAGTCCCGTCAAAAGTTCGGCAAAAATAC
+
+Finally, you need a mates file that
+describes the pairing of reads. Each line of this file is of the
+format:
+
+
+name_library_plate i j m
+
+
+In this case, name_library_plate is a paired or unpaired read, i and j are the
+indices of two reads in the reads file, and
+m is the number of the double-barreled rule in the file
+'name.rul' that applies to those reads. This information is redundant
+with the extension, and will likely be changed in a subsequent
+revision.
+
+An example of this file is as follows:
+
+sim_1_5 5 6 0
+sim_1_7 7 8 0
+sim_1_9 9 10 0
+sim_1_15 15 16 0
+sim_1_17 17 18 0
+sim_1_19 19 20 2
+
+
+using amos package with EULER-SR output
+Posted July 15th, 2008 by tjahns
+in
+
+    * Questions
+
+Hi,
+
+I'm contemplating using the amos validator to get an impression of the quality of euler-sr output. But I don't see any obvious way to convert the euler-sr output to an amos bank or get the mapping of reads to the generated contig to write a converter.
+
+I'm sort of stuck because if said mapping is not available I don't think I can construct a amos-bank.
+
+Thanks for any pointers I might have missed.
+Embarassingly Simple Question ›
+
+    * Add new comment
+
+Comments
+The current distribution now
+On July 24th, 2008 mchaisso says:
+
+The current distribution now has the cmpAssemblies program included. You can see shuffled assemblies with:
+
+cmpAssemblies ref.fasta assembly.contigs -onlyBad
+
+(without the -onlyBad option, you will get a map of all contigs back to the reference)
+I'm not sure what the output
+On July 16th, 2008 mchaisso says:
+
+I'm not sure what the output is required for AMOS validation. I have a simple program that I use to find misassemblies that I'll include in the source distribution that may be ran using:
+cmpAssemblies genome.fasta assembly.fasta
+
+and concise output mode:
+cmpAssemblies genome.fasta assembly.fasta -onlyBad
+
+this does the mapping for you, and prints the coordinates of contigs that are gapped or shuffled around (the gap must be greater than some small value, 10 or so).
+
+Otherwise, I'm more busy than normal now and probably can't write anything to help the amos comparison, most likely until the end the month.
+-MARK

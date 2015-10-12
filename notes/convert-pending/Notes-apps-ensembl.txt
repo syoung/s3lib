@@ -1,0 +1,335 @@
+Notes-apps-ensembl.txt
+
+
+</entry>
+
+
+
+<entry [Tue Mar 30 21:48:21 EDT 2010] INSTALL ENSEMBL>
+
+
+
+
+Installing the Ensembl, BioPerl, and BioMart modules
+http://uswest.ensembl.org/info/docs/webcode/install/ensembl-code.html
+
+
+
+
+
+PAGE 1
+======
+
+
+print "\n";Building an Ensembl Mirror
+
+The build instructions are split into three sections:
+
+How to install other applications required by Ensembl: CVS, Perl, MySQL, Apache 2, Dotter
+How to install the Ensembl and BioMart software
+How to install the Ensembl data
+Ensembl and MySQL
+
+PLEASE NOTE - even if you do not wish to download all the Ensembl data - for the website to function you will need:
+
+a local database server to manage display settings and user accounts (if these are enabled).
+the mysql client software installed on your machine.
+If you do not wish to run MySQL (or cannot run a MySQL server locally) AND you do not wish to enable user accounts then you can alternatively install SQLite as an alternative server.
+
+Ensembl Version Numbers...
+
+Each Ensembl release has an integer version number associated with it, and that version number is used to identify the correct versions of API, Web code and databases (see below) that make up that release.
+
+For the API and Web code, a CVS branch (essentially a named snapshot of the code) is made for each release, named with the release version number. The current release is version 57, and the CVS tag for identifying the API and Web code for this release is 'branch-ensembl-57'.
+
+The Ensembl database names consist of the species, the database type, the release number, and the data version. The current human 'core' database is named homo_sapiens_core_57_37b. i.e. a human core database, release 57, data version 37b built on the NCBI 36 assembly. Subsequent data releases on the same assembly are suffixed with a lower case letter (a, b, etc.).
+
+The idea is that components with the same release version should work together - i.e. any web site built with 'version 31' API and web code, and 'version 31' databases should work correctly.
+
+How to install applications required by Ensembl
+How to install the Ensembl and BioMart software
+How to install the Ensembl data
+Once you have completed all these steps, you are ready to configure your installation.
+
+
+
+PAGE 2
+======
+
+
+If you review the Site Structure part of this document, you will recall that the site is based around a single server-root directory. The Ensembl, BioPerl and BioMart modules are all installed into this directory. Choose a suitable location, and create your server-root directory. For the purposes of illustration, we will use /usr/local/ensembl. When following these instructions, replace /usr/local/ensembl with your chosen server-root.
+
+Go to the server-root directory: cd /usr/local/ensembl
+Install the Ensembl modules
+Log into the Sanger CVS server (using a password of "CVSUSER"):
+$ cvs -d :pserver:cvsuser@cvs.sanger.ac.uk:/cvsroot/ensembl  login
+Logging in to :pserver:cvsuser@cvs.sanger.ac.uk:2401/cvsroot/ensembl
+CVS password: CVSUSER 
+To check out the most recent stable version of the ensembl API and web code from CVS (i.e. to download the code from the Sanger CVS server onto your local machine) you need to use the latest branch of the code. Please note the code on the CVS HEAD is under development and unstable. Use the following command making sure you use the code that matches your databases:
+$ cvs -d :pserver:cvsuser@cvs.sanger.ac.uk:/cvsroot/ensembl co -r branch-ensembl-57 ensembl-api ensembl-website 
+A listing of your server-root should now look something like:
+
+apache2/
+conf/
+ensembl/	 ensembl-compara/
+ensembl-draw/
+ensembl-external/	 ensembl-funcgen/
+ensembl-variation/
+htdocs/
+modules/
+perl/
+public-plugins/	 utils/
+N.B. You can also view the Ensembl CVS repository in your web browser.
+
+Install the BioMart modules (BioMart 0.6)
+If you haven't already done so, log into the Sanger CVS server as per the instructions above.
+
+Check the BioMart code out of CVS (downloads the code from the Sanger CVS server onto your local machine):
+
+$ cvs -d :pserver:cvsuser@cvs.sanger.ac.uk:/cvsroot/biomart co -r release-0_6 biomart-perl
+More information on tweaking and configuring BioMart to work within the Ensembl website is available; for general instructions on installing biomart (including creating the cached configuration file and templates) see the biomart website.
+
+Install the BioPerl modules (BioPerl 1.2.3)
+Important note: you must install version 1.2.3, not a more recent version. Starting with 1.2.4, major changes were made to the BioPerl API which have made it incompatible with Ensembl
+
+Log into the BioPerl CVS server (using a password of: cvs):
+cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl login
+Check-out the BioPerl code:
+cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl \
+  co -r bioperl-release-1-2-3 bioperl-live
+A listing of your server-root should now look something like:
+
+apache2/
+bioperl-live/
+biomart-perl/	 conf/
+ensembl/
+ensembl-compara/	 ensembl-draw/
+ensembl-external/
+ensembl-variation/	 htdocs/
+modules/
+perl/	 public-plugins/
+utils/
+
+
+PAGE 3
+======
+
+
+Configuring an Ensembl Website
+
+This section explains the configuration changes you have to make so that Ensembl will run on your local set-up.
+
+N.B. If you installed Ensembl prior to release 31 you will have edited files in the conf directory. From version 32 there is a new approach to configure the site using plugins.
+
+Setting up the "Mirror Plugin"
+
+In the main conf directory you will find a file called Plugins.pm-dist. Copy this file and name it Plugins.pm (i.e. without the -dist extension). This file sets up any plugins required by the website, including the mirror plugin mentioned above.
+
+$SiteDefs::ENSEMBL_PLUGINS = [
+  'EnsEMBL::Mirror'    => $SiteDefs::ENSEMBL_SERVERROOT.'/public-plugins/mirror',
+  'EnsEMBL::Ensembl'   => $SiteDefs::ENSEMBL_SERVERROOT.'/public-plugins/ensembl'
+];
+Background: configuration
+
+Plugins
+
+The default configuration files can all be found in the "conf" subdirectory of your server-root. The site-wide configuration (Apache config, global settings) is stored in conf/SiteDefs.pm.
+
+Elsewhere in the documentation you will read about how to extend Ensembl by writing your own plugins. A by product of this extensibility is that you can also use plugins to simply configuration of your server. For example, in your checked-out copy of Ensembl there is a public-plugins/mirror directory. The mirror/conf directory contains DEFAULTS.ini and SiteDefs.pm files which can be used to configure your copy of Ensembl.
+
+Configuring the available species
+
+If you wish to add to or remove from the full list of species on the main ensembl website, please see the documentation on extending Ensembl.
+
+As you can see, the default mirror setup uses two plugins:
+
+public-plugins/ensembl, which contains all the species configuration files, species home pages and public documentation
+public-plugins/mirror, which contains only the files needed to configure your mirror
+Note that the array of plugins is in order of precedence, so that in the default setup, the mirror plugin overrides the base Ensembl one. DO NOT edit the files in public-plugins/ensembl, as your changes may be overwritten when you update to the next release.
+
+Now go into the public-plugins/mirror/conf directory and make the changes listed below to SiteDefs.pm and ini_files/DEFAULTS.ini:
+
+public-plugins/mirror/conf/SiteDefs.pm
+
+First copy SiteDefs.pm-dist to SiteDefs.pm in this directory. If you open this file in a text editor, such as vi, you will see it is a Perl module with a single method "update_conf" which contains the changes needed to configure your copy of the website. The "update_conf" method consists of a list of variables (of the form $SiteDefs::ENSEMBL_whatever),
+
+Below are the variables you will need to change to match your installation. If you wish, you can change any variables that are defined in the main SiteDefs.pm file.
+
+Note: You should only change the values, that is the parts between single quotes.
+
+General configuration
+
+$SiteDefs::ENSEMBL_SERVERROOT sets the filesystem location of the web server root directory. By default, this is determined dynamically based on the location of the SiteDefs.pm file. You can, however, hard-code this value if you wish. For example, if you installed the Ensembl site in /usr/local/ensembl, then you could change this line of SiteDefs to read:
+
+  $SiteDefs::ENSEMBL_SERVERROOT = '/usr/local/ensembl';
+Configuration of the Apache web server
+
+Change $SiteDefs::ENSEMBL_SERVERNAME to the web name of the server - e.g. "www.yoursite.org". This value is dynamically set to the server hostname by default.
+
+Change $SiteDefs::ENSEMBL_USER and $SiteDefs::ENSEMBL_GROUP to the system user and group you want the Apache web server to run as. Usually, for security, this is a special user (such as "nobody") who has very few permissions.
+
+Mail configuration - error messages
+
+If you want errors to be automatically emailed to you, change $SiteDefs::ENSEMBL_MAIL_ERRORS to the value 1, and change $SiteDefs::ENSEMBL_ERRORS_TO to your email address. If you don't want errors mailed, set $SiteDefs::ENSEMBL_MAIL_ERRORS to 0.
+
+User database - Database and cookie configuration
+
+Change the values of the following to have the details for your web_user database
+
+  $SiteDefs::ENSEMBL_USERDB_NAME
+  $SiteDefs::ENSEMBL_USERDB_HOST
+  $SiteDefs::ENSEMBL_USERDB_USER
+  $SiteDefs::ENSEMBL_USERDB_PASS
+Remember this database needs a user with update/insert/delete privileges. Additionally if you wish to change the encryption keys used to "protect" the cookies, $SiteDefs::ENSEMBL_ENCRYPT_0 should be a six digit hex-number and $SiteDefs::ENSEMBL_ENCRYPT_1, _2 and _3 should each contain two alphanumeric characters. Unless you are particularly concerned about people changing cookies, the default values will probably do.
+
+Temporary Files
+
+There are three temporary file locations that can be configured:
+
+  $SiteDefs::ENSEMBL_TMP_DIR       General storage for temporary files
+  $SiteDefs::ENSEMBL_TMP_DIR_IMG   Storage for image files
+  $SiteDefs::ENSEMBL_TMP_DIR_BLAST Storage for blast files
+The values for these should be set to an appropriate filesystem path.
+
+Some temporary files need to be referenced by URL from web pages. The first two tmp directories above therefore have URL aliases, also configured within SiteDefs.pm. You should not need to edit these.
+
+  $SiteDefs::ENSEMBL_TMP_URL       URL alias for $ENSEMBL_TMP_DIR
+  $SiteDefs::ENSEMBL_TMP_URL_IMG   URL alias for $ENSEMBL_TMP_DIR_IMG
+There are two further temporary file configuration options available:
+
+$SiteDefs::ENSEMBL_TMP_CREATE If set, then at apache startup the server will attempt to create any temporary directories that have been configured, but which don't already exist. It also changes their ownership to $SiteDefs::ENSEMBL_USER.$SiteDefs::ENSEMBL_GROUP
+$SiteDefs::ENSEMBL_TMP_DELETE If set, then at apache startup the server will attempt to delete the contents of $ENSEMBL_TMP_DIR and $SiteDefs::ENSEMBL_TMP_DIR_IMG.
+public-plugins/mirror/conf/ini-files/DEFAULTS.ini 
+and public-plugins/mirror/conf/ini-files/[Species_name].ini
+
+Again the first thing to do is make a copy of the DEFAULTS.ini-dist file as DEFAULTS.ini, then you will need to go in and edit the appropriate lines of the DEFAULTS.ini.
+
+From version 33 onwards you should be able to re-use the same Plugins.pm, SiteDefs.pm and DEFAULTS.ini file to configure your new Ensembl.
+
+The format of the species-specific .ini files are similar to a standard windows ini file, i.e. split into sections identified by a header in square brackets, which contain key = value entries. When the Apache server is started, these files are parsed and stored in a file called config.packed in the conf directory. This config.packed file is regenerated whenever the server is restarted.
+
+Database configuration
+
+In the [general] section, change the values of DATABASE_DBUSER and DATABASE_DBPASS to the username and password you want MySQL to be accessed by. Set DATABASE_HOST and ENSEMBL_HOST_PORT to be the database server and port that MySQL is running on.
+
+These are default settings - you can override them by adding a section for a particular database. For example, adding a section like the following into the mirror plugin would override the defaults in public-plugin for the ENSEMBL_WEBSITE database:
+
+[DATABASE_WEBSITE]
+USER=mysqluser2
+PASS=helppass
+HOST=mysqlserver2
+PORT=4444
+DAS Proxy
+
+If you wish to display external DAS sources on your ensembl installation, and are behind a firewall, then you will need to set a value for ENSEMBL_DAS_PROXY. This should probably be set in DEFAULTS.ini, as the proxy is likely to be the same for all species. The value should be your usual web proxy setting, e.g.
+
+ENSEMBL_DAS_PROXY = http://webproxy.mycompany.com:80
+Fonts
+
+For the past few releases Ensembl uses TrueType fonts in some of the images, These need to be configured in the '[ENSEMBL_STYLE]' section of the DEFAULTS.ini file.
+
+[ENSEMBL_STYLE]
+GRAPHIC_FONT         = arial                           ; Arial file is arial.ttf
+GRAPHIC_FONT_FIXED   = cour                            ; Courier file is cour.ttf
+GRAPHIC_TTF_PATH     = /usr/local/share/fonts/ttfonts/ ; remember the trailing slash
+GRAPHIC_FONTSIZE     = 8                               ; Default font-size for graphic text...
+You will likely need to change the path to where your local copy of these files is stored. Please note that Mac TTF files are a slightly different format and do not reliably work.
+
+public-plugins/mirror/conf/ini-files/MULTI.ini
+
+Create this file to configure the multi species databases. Configure the [general] section for connection to the MySQL server, as for the species-specific ini files. In the [databases] section, change the values of DATABASE_COMPARA and the various _MART entries to match the name of the ensembl_compara and ensembl_mart databases that you created.
+
+In addition, if you chose to install a local GO database you can configure it here by adding an entry:
+
+DATABASE_GO = your_go_database_name
+to the [databases] section along with DATABASE_COMPARA and the BioMart datbases.
+
+As in the other species.ini files, you can override the database connection settings for a particular database by adding a section similar to the following:
+
+[DATBASE_MART_ENSEMBL]
+USER=mysqluser2
+PASS=dbpass
+HOST=mysqlserver2
+PORT=4444
+The Mart configuration automatically creates a simplified BioMart configuration file martRegistry.xml in the conf directory at server start up. Read the BioMart install document how to edit this to create a more functional BioMart registry which leverages BioMart's advanced features such as federated searches.
+
+BLAST
+
+BLAST is not installed by default. You have to configure blast for a local installation. See documentation describing how to configure BLAST.
+
+All relevant fasta files are on ftp://ftp.ensembl.org/pub.
+
+SSAHA
+
+SSAHA2 is not installed by default as it requires a large amount of memory to put the look up tables in memory. (Ensembl currently uses 10 4G machines for our SSAHA servers).
+
+All relevant fasta files are on ftp://ftp.ensembl.org/pub. These need processing to produce the appropriate files. SSAHA2 servers can be configured for any DNA based data.
+
+SSAHA2 software is at: http://www.sanger.ac.uk/resources/software/ssaha2/.
+
+Each species ini file (public-plugins/mirror/conf/ini-files/<Genus_species.ini>) needs the following:
+
+[SSAHA2_DATASOURCES]
+DATASOURCE_TYPE = dna
+LATESTGP        = host:port        ; for unmased dna
+CDNA_ALL        = host:port        ; for cDNA data 
+Note on Ensembl Web Site Search
+
+The Ensembl web site uses the Exalead search engine (http://www.exalead.com/). Previously it used AltaVista (http://www.altavista.com/). This software requires a user license and cannot be distributed as part of the Ensembl web code.
+
+By default, local installations of Ensembl use a simple search page called Unisearch that just does SQL searches against the database. This method is rather slow and crude, however. Also, Unisearch does not do cross species queries (too time consuming for the Unisearch's MySQL queries).
+
+Site Preparation
+
+cd into your server root and run the following commands:
+
+  mkdir logs
+  chown -R $ENSEMBL_USER:$ENSEMBL_GROUP .
+where $ENSEMBL_USER and $ENSEMBL_GROUP are the web server user & group you configured in SiteDefs.
+
+Your Ensembl site should now be ready to start up.
+
+DISCLAIMER
+
+Please note that the suggested set-up for Apache, mod_perl, MySQL and all Ensembl modules is not intended to provide high-level security. We strongly recommend that you get your systems administrator to audit any system that you provide to others. In particular, note that the perl.startup file in the conf directory may be run as root, so be careful about permissions on this file.
+
+We are not responsible for any damage or loss of data resulting or arising from running the Ensembl website on your own machines.
+
+Next: Running the Site ?
+
+
+
+Running an Ensembl Website
+
+This section outlines how to go about the day-to-day running of an Ensembl website.
+
+Starting the Ensembl website
+
+Check that MySQL is running. If not, you can start it:
+/data/mysql/bin/mysqld_safe --user=mysqldba &
+You should change the /data/mysql and mysqldba in the command above to the install path and user you chose when you installed MySQL.
+Start the web server:
+/usr/local/apache2/bin/httpd -d /usr/local/ensembl
+where /usr/local/ensembl is your server-root.
+Note that it is important that you start MySQL before you start the website. The startup scripts for the site rely on the databases being available, as they compile lists of available data at this point. You should now be able to point a web-browser at your server and see the Ensembl homepage.
+
+If you have already started the site - and then reconfigured it you will need to delete the config.packed file (and if you change mart configuration martconf.packed and martRegistry.xml files) in the conf directory before restarting.
+
+Stopping the Ensembl website
+
+To stop the web server:
+kill `cat /usr/local/ensembl/logs/HOSTNAME.httpd.pid`
+where /usr/local/ensembl is your server-root, and HOSTNAME is whatever the hostname is of the machine you are running the server on. Note the punctuation marks are backticks and not singlequotes.
+To stop MySQL:
+/data/mysql/bin/mysqladmin shutdown
+Troubleshooting
+
+The best way of troubleshooting is to watch the Apache error_log and look for exactly what the problem is. You can do this with the command:
+
+$ tail -f logs/error_log
+
+from the server-root. It is often obvious what the error is, especially if it is due to file permissions or a missing Perl module.
+
+If you have email errors turned on, then you will be receiving some additional information via that route. Please contact HelpDesk if you need assistance. Any details of the error, relevant sections from the error_log, etc, will be of help in tracking down your problem.
+
+

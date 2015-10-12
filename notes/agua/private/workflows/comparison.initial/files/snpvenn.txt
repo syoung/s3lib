@@ -1,0 +1,18 @@
+/nethome/bioinfo/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav \
+--replicates 1-33 \
+--loop distributed \
+--label eland-vennsav \
+--executable /nethome/bioinfo/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/hit-33.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav \
+--querylabel eland-33 \
+--targetlabel eland-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav/vennsav.out

@@ -1,0 +1,1 @@
+document.write('<a target="blank" href="http://ad.doubleclick.net/click;h=v8/379f/0/0/%2a/e;208817344;0-0;0;17389285;2321-160/600;28869846/28887725/3;;~sscs=%3fhttp://www.aeonclad.com"><img src="http://m1.2mdn.net/viewad/2036698/1-AeonCladNEW160x6002008.gif" border=0 alt="Click here to find out more!"></a>');

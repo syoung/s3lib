@@ -1,0 +1,664 @@
+PERL MODULE DEPENDENCY
+++++++++++++++++++++++
+
+1. XML::Quote
+
+
+sudo make install
+Password:
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/XML/Quote/Quote.bs
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/XML/Quote/Quote.bundle
+Files found in blib/arch: installing files in blib/lib into architecture dependent library tree
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/XML/Quote/autosplit.ix
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/XML/Quote.pm
+Installing /usr/local/man/man3/XML::Quote.3pm
+Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/XML/Quote/.packlist
+Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-m
+gems:~/FUNNYBASE/NOTES/iprscan/perl.modules/XML-Quote/XML-Quote-1.02 local$
+
+ 
+CONFIGURATION
++++++++++++++
+
+gems:/common/apps/iprscan local$ sudo ./Config.pl 
+Password:
+
+####################################################################################################
+#                Welcome to the InterProScan v4.2 installation script.
+#
+#  Tips:
+#     - If you are happy with the suggestion between [], just press <enter>
+#     - Whatever is shown between '/' and '/' is considered a valid input pattern
+####################################################################################################
+
+
+    Reconfigure everything? (first time install) [y] /(y|n)/? : y
+
+! Tip:
+!
+! InterProScan needs to know where it is installed and where perl is installed
+!
+    Do you want to set paths to perl and the installation directory? [y] /y|n/? : 
+
+! Tip:
+!
+! If your servers are using a shared file system, such as NFS, InterProScan is able to utilise this
+! and perform distributed computing across multiple servers
+! You will need set up the full UNIX path to the installation directory.
+! You also need to ensure that the InterProScan installation is on a SHARED DISK.
+!
+    Please enter the full path for the InterProScan installation [/common/apps/iprscan] /.+/? : 
+    Do you want to set another Perl command in place of [/usr/bin/perl]? [n] /y|n/? : 
+>>Changing Perl path in scripts ... >>DONE
+
+>>Checking if your Perl installation has the modules required by InterProScan...
+Can't locate XML/Quote.pm in @INC (@INC contains: /RemotePerl /System/Library/Perl/5.8.6/darwin-thread-multi-2level /System/Library/Perl/5.8.6 /Library/Perl/5.8.6/darwin-thread-multi-2level /Library/Perl/5.8.6 /Library/Perl /Network/Library/Perl/5.8.6/darwin-thread-multi-2level /Network/Library/Perl/5.8.6 /Network/Library/Perl /System/Library/Perl/Extras/5.8.6/darwin-thread-multi-2level /System/Library/Perl/Extras/5.8.6 /Library/Perl/5.8.1 .) at ./test.pl line 2.
+BEGIN failed--compilation aborted at ./test.pl line 2.
+WARNING: Module XML::Quote is not installed
+
+FATAL: 1 modules are missing, please install them or check your LD_LIBRARY_PATH and PATH
+environmental variables, then relaunch Config.pl.  Sorry for any inconvenience
+
+gems:/common/apps/iprscan local$ sudo ./Config.pl 
+
+####################################################################################################
+#                Welcome to the InterProScan v4.2 installation script.
+#
+#  Tips:
+#     - If you are happy with the suggestion between [], just press <enter>
+#     - Whatever is shown between '/' and '/' is considered a valid input pattern
+####################################################################################################
+
+
+    Reconfigure everything? (first time install) [n] /(y|n)/? : 
+
+! Tip:
+!
+! InterProScan needs to know where it is installed and where perl is installed
+!
+    Do you want to set paths to perl and the installation directory? [n] /y|n/? : 
+
+! Tip:
+!
+! To cope with bulk jobs and to enable efficient parallelization, InterProScan splits input files
+! with FASTA formatted sequences into smaller parts (chunks). Default size is "10" sequences per chunk
+!
+    Do you want to setup chunk size [n] /(y|n)/? : 
+
+
+! Tip:
+!
+! You can configure InterProScan to limit the number of input sequences (protein & nucleotide),
+! set a maximum length for nucleotide sequences and a minimum length for protein sequences.
+! You can also configure the minimum length for a translated orf and use the codon table value
+! to translate the dna/rna sequence into six frames (http://www.ebi.ac.uk/cgi-bin/mutations/trtables.cgi).
+!
+    Do you want to configure this? [n] /(y|n)/? : y
+    Enter the maximum number of input protein sequences allowed [1000] /\d+/? : 50000
+    Enter the maximum number of input nucleic sequences allowed [100] /\d+/? : 50000
+    Enter the maximum length (in nucleic acids) for a nucleotide sequence [10000] /\d+/? : 100000000
+    Enter the minimum length (in amino acids) for a protein sequence [5] /\d+/? : 
+    Enter the minimum allowed length of a translated orf [50] /\d+/? : 10
+    Enter the default codon table value to use to translate dna/rna in six frames [0] /\d+/? : 
+
+
+! Tip:
+!
+! InterProScan currently encorporates searching against 13 databases. You have the choice whether or not to
+! set up a particular search tool against a database and how exactly that application will be configured to run
+! in this next section. You will configure the queue systems (if any) you will use, first
+!
+    Do you want to setup applications (if you don't, no applications will be included in InterProScan by default)? [n] /(y|n)/? : y
+
+! Tip:
+!
+! InterProScan is able to execute the applications via a UNIX QUEUING system which has an INTERACTIVE mode (such as LSF).
+! Currently, we mainly support LSF (which is used at EBI) however, we also provide configuration files for other systems
+! which are listed in the documentation
+!
+    Do you wish to use a queue system? [n] /(y|n)/? : n
+>>Checking your local architecture for InterProScan compatibility
+
+! Tip:
+! Blastprodom (a wrapper script on top of Blast package) is used to search against PRODOM families
+    Do you want to use blastprodom ? [y] /(y|n)/? : 
+!
+! PLEASE NOTE:
+! InterProScan can be launched through a cluster machine using RSH. To be able to utilise this
+! feature, all your machines must be visible to each other (see the .rhost file) and be mounted on
+! a shared file system, such as NFS
+! (If you are installing InterProScan for use on only one machine please ignore the above message)
+!
+    
+Please enter the execution host name of blastprodom [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Coils is used to predict coiled-coil segments with the algorithm of Lupas et al.
+    Do you want to use coils ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of coils [gems.rsmas.miami.edu] /\S+/? : 
+ln: binaries/Darwin: File exists
+WARNING: Unable to create symbolic link 'ln -s Darwin binaries': 
+Please correct the error or create the symbolic link manually if necessary
+
+    
+Please enter the execution host name of coils [gems.rsmas.miami.edu] /\S+/? : 
+ln: binaries/Darwin: File exists
+WARNING: Unable to create symbolic link 'ln -s Darwin binaries': 
+Please correct the error or create the symbolic link manually if necessary
+
+    
+Please enter the execution host name of coils [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Gene3d Gene3D is supplementary to the CATH database. This protein sequence database contains proteins from complete genomes which have been clustered into protein families and annotated with CATH domains, Pfam domains and functional information from KEGG, GO, COG, Affymetrix and STRINGS.
+    Do you want to use gene3d ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of gene3d [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpanther (hmmpfam from HMMER 2.3.2 package) PANTHER classifies proteins into families and specific functional subfamilies, which are then mapped to ontology terms and pathways.
+    Do you want to use hmmpanther ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpanther [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpir PIR produces the Protein  Sequence Database (PSD) of functionally annotated protein sequences, which grew out of the Atlas of Protein Sequence and Structure (1965-1978) edited by Margaret Dayhoff and has been incorporated into an integrated knowledge base system of value-added databases and analytical tools.
+    Do you want to use hmmpir ? [y] /(y|n)/? :         
+    
+Please enter the execution host name of hmmpir [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpfam (hmmpfam from HMMER 2.3.2 package) is used to search against the Pfam HMM (Profile hidden Markov models) database
+    Do you want to use hmmpfam ? [y] /(y|n)/? :     
+    
+Please enter the execution host name of hmmpfam [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmsmart (hmmpfam from HMMER 2.3.2 package) is used to search against the Smart HMM (Profile hidden Markov models) database
+    Do you want to use hmmsmart ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmsmart [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmtigr (hmmpfam from HMMER 2.3.2 package) is used to search against TIGRFAMs collection of HMMs (Profile hidden Markov models)
+    Do you want to use hmmtigr ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmtigr [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Fprintscan (FingerPRINTScan) is used to search against the PRINTS collection of protein signatures
+    Do you want to use fprintscan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of fprintscan [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Scanregexp (ScanProsite) is used to search against the PROSITE patterns collection and verify the  matches by statistically significant CONFIRM patterns
+    Do you want to use scanregexp ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of scanregexp [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Profilescan (ProfileScan (pfscan & ps_scan.pl) from Pftools 2.2) package is used  to search against the PROSITE profiles collection
+    Do you want to use profilescan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of profilescan [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Superfamily A structural classification of proteins database for the investigation of sequences and structures.
+    Do you want to use superfamily ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of superfamily [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Seg is used for identifying and masking segments of low compositional complexity in amino acid sequences
+    Do you want to use seg ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of seg [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Signalp predicts the presence and location of signal peptide cleavage sites, using eukaryotic HMM (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use signalp ? [n] /(y|n)/? : 
+
+! Tip:
+! Tmhmm is used for prediction of transmembrane helices in proteins using a Hidden Markov Model (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use tmhmm ? [n] /(y|n)/? : y
+    
+Please enter the execution host name of tmhmm [gems.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+!
+! InterProScan can use taxonomy-based filtering of results which uses the InterPro taxonomy listed for each InterPro
+! entry to hide hits not relevant to that taxon.
+!
+    Do you want to make it available for users? [y] /y|n/? : 
+
+! Tip:
+!
+! You can specify an email address for the administrator. By default it will be you (root)
+! Administrators receive an email when a problem occurs in InterProScan.
+!
+    Do you want to set an administrator email address? [y] /y|n/? : 
+    Please enter the email address of the administrator: [] /[\w\.\-]+\@[\w\.\-]+/? : syoung@rsmas.miami.edu
+>>Writing to the configuration files ... 
+>>Processing file : /common/apps/iprscan/conf/blastprodom.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/coils.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/fprintscan.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/gene3d.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/hmmpanther.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/hmmpfam.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/hmmpir.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/hmmsmart.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/hmmtigr.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/profilescan.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/scanregexp.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/seg.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/superfamily.conf ... >>DONE
+>>Processing file : /common/apps/iprscan/conf/tmhmm.conf ... >>DONE
+>>Setting File /common/apps/iprscan/conf/iprscan.conf ... >>DONE
+
+! Tip:
+!
+! InterProScan can be launched through a web interface. It can also be launched through secure HTTP (https)
+!
+    Do you want to run InterProScan using a web interface? [n] /y|n/? : y
+    Do you want to run InterProScan through a secure HTTP server? [n] /y|n/? : y
+    Enter the name of your server. You can specify a specific port to listen to. (e.g. "foo.bar.com:4000") [foobar.com] /[\w\.\_\-\:\d]+/? : gems.rsmas.miami.edu
+!
+! Please add the following lines to your web server configuration (httpd.conf):
+#--------------------------------------
+ Alias /doc/ "/common/apps/iprscan/doc/html/"
+ Alias /images/ "/common/apps/iprscan/images/"
+ Alias /tmp/ "/common/apps/iprscan/tmp/"
+
+ ScriptAlias /iprscan/ "/common/apps/iprscan/bin/"
+
+ <Directory "/common/apps/iprscan/images">
+   Options Indexes MultiViews
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+ </Directory>
+
+ <Directory "/common/apps/iprscan/tmp/">
+   Options FollowSymLinks Includes SymLinksIfOwnerMatch
+    IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+    AllowOverride AuthConfig Limit FileInfo
+
+    Order deny,allow
+    Deny from all
+    Allow from .rsmas.miami.edu
+ </Directory>
+#--------------------------------------
+! Be sure that 'apache' or 'httpd' virtual user (uid/gid) have right to read/write into your /common/apps/iprscan iprscan directory.
+! Otherwise, if you are running a standalone http(s) web server, be sure also the user running it have to enough
+! rights to read/wrtie /common/apps/iprscan iprscan directory
+! If you encoutered problem with your web server running iprscan, read the FAQ or contact your system administrator.
+
+! After restarting your web server try https://gems.rsmas.miami.edu/iprscan/iprscan
+!
+>>Indexing datafile ... 
+No specific file(s) given, indexing all files:
+
+Pfam
+prints.pval
+prodom.ipr
+Pfam-C
+smart.desc
+sf_hmm
+sf.seq
+Pfam-A.seed
+superfamily.hmm
+smart.thresholds
+smart.HMMs
+match.xml
+interpro.xml
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+
+No specific file(s) given, converting all files:
+
+Pfam
+sf_hmm
+superfamily.hmm
+smart.HMMs
+sf_hmm_sub
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+WARNING: Some problems occured when trying to index the data files.
+ Please fix the error below and index your datafiles using the /common/apps/iprscan/bin/index_data.pl script.
+ For help, type './index_data.pl -h' 
+errormsg: ERROR: File [/common/apps/iprscan/data/sf.seq] not found : No such file or directory at /common/apps/iprscan/bin/index_data.pl line 217.
+>>DONE
+
+! Tip:
+!
+!  We would appreciate it if you would register your installation of InterProScan.  This will allow us to notify you
+! of bug fixes and new releases of the software. We will not use your email address for any other purpose.
+!
+    Would you like to register InterProScan? [n] /(y|n)/? : n
+
+>>Installation is completed.  Please test your installation by running on the command line:
+
+        /common/apps/iprscan/bin/iprscan -cli -i /common/apps/iprscan/test.seq -o /common/apps/iprscan/test.out -format raw -goterms -ipr
+
+and comparing it with the merged.raw file that is supplied.
+For help and options on the commandline, run /common/apps/iprscan/bin/iprscan -cli -h
+
+gems:/common/apps/iprscan local$ 
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+050711 genomics INSTALL LOG:
+
+
+ young$ ./Config.pl 
+
+####################################################################################################
+#                Welcome to the InterProScan v4.2 installation script.
+#
+#  Tips:
+#     - If you are happy with the suggestion between [], just press <enter>
+#     - Whatever is shown between '/' and '/' is considered a valid input pattern
+####################################################################################################
+
+
+    Reconfigure everything? (first time install) [n] /(y|n)/? : y
+
+! Tip:
+!
+! InterProScan needs to know where it is installed and where perl is installed
+!
+    Do you want to set paths to perl and the installation directory? [y] /y|n/? : y
+
+! Tip:
+!
+! If your servers are using a shared file system, such as NFS, InterProScan is able to utilise this
+! and perform distributed computing across multiple servers
+! You will need set up the full UNIX path to the installation directory.
+! You also need to ensure that the InterProScan installation is on a SHARED DISK.
+!
+    Please enter the full path for the InterProScan installation [/Users/young/FUNNYBASE/bin/iprscan] /.+/? : /Users/young/FUNNYBASE/apps/iprscan
+    Do you want to set another Perl command in place of [/usr/bin/perl]? [n] /y|n/? : n
+>>Changing Perl path in scripts ... >>DONE
+
+>>Checking if your Perl installation has the modules required by InterProScan...
+>>All modules needed are already installed.
+
+
+! Tip:
+!
+! To cope with bulk jobs and to enable efficient parallelization, InterProScan splits input files
+! with FASTA formatted sequences into smaller parts (chunks). Default size is "10" sequences per chunk
+!
+    Do you want to setup chunk size [y] /(y|n)/? : 
+
+! Tip:
+!
+! Here you should specify the maximum number of sequences allowed in each part (chunk).  Please note
+! it is not recommended to have more then 3000 chunks.
+!
+    Enter chunk size [10] /[0-9]+/? : 
+
+
+! Tip:
+!
+! You can configure InterProScan to limit the number of input sequences (protein & nucleotide),
+! set a maximum length for nucleotide sequences and a minimum length for protein sequences.
+! You can also configure the minimum length for a translated orf and use the codon table value
+! to translate the dna/rna sequence into six frames (http://www.ebi.ac.uk/cgi-bin/mutations/trtables.cgi).
+!
+    Do you want to configure this? [y] /(y|n)/? : n
+
+
+! Tip:
+!
+! InterProScan currently encorporates searching against 13 databases. You have the choice whether or not to
+! set up a particular search tool against a database and how exactly that application will be configured to run
+! in this next section. You will configure the queue systems (if any) you will use, first
+!
+    Do you want to setup applications (if you don't, no applications will be included in InterProScan by default)? [y] /(y|n)/? : 
+
+! Tip:
+!
+! InterProScan is able to execute the applications via a UNIX QUEUING system which has an INTERACTIVE mode (such as LSF).
+! Currently, we mainly support LSF (which is used at EBI) however, we also provide configuration files for other systems
+! which are listed in the documentation
+!
+    Do you wish to use a queue system? [n] /(y|n)/? : 
+>>Checking your local architecture for InterProScan compatibility
+
+! Tip:
+! Blastprodom (a wrapper script on top of Blast package) is used to search against PRODOM families
+    Do you want to use blastprodom ? [y] /(y|n)/? : 
+!
+! PLEASE NOTE:
+! InterProScan can be launched through a cluster machine using RSH. To be able to utilise this
+! feature, all your machines must be visible to each other (see the .rhost file) and be mounted on
+! a shared file system, such as NFS
+! (If you are installing InterProScan for use on only one machine please ignore the above message)
+!
+    
+Please enter the execution host name of blastprodom [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Coils is used to predict coiled-coil segments with the algorithm of Lupas et al.
+    Do you want to use coils ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of coils [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Gene3d Gene3D is supplementary to the CATH database. This protein sequence database contains proteins from complete genomes which have been clustered into protein families and annotated with CATH domains, Pfam domains and functional information from KEGG, GO, COG, Affymetrix and STRINGS.
+    Do you want to use gene3d ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of gene3d [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpanther (hmmpfam from HMMER 2.3.2 package) PANTHER classifies proteins into families and specific functional subfamilies, which are then mapped to ontology terms and pathways.
+    Do you want to use hmmpanther ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpanther [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpir PIR produces the Protein  Sequence Database (PSD) of functionally annotated protein sequences, which grew out of the Atlas of Protein Sequence and Structure (1965-1978) edited by Margaret Dayhoff and has been incorporated into an integrated knowledge base system of value-added databases and analytical tools.
+    Do you want to use hmmpir ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpir [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpfam (hmmpfam from HMMER 2.3.2 package) is used to search against the Pfam HMM (Profile hidden Markov models) database
+    Do you want to use hmmpfam ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpfam [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmsmart (hmmpfam from HMMER 2.3.2 package) is used to search against the Smart HMM (Profile hidden Markov models) database
+    Do you want to use hmmsmart ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmsmart [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmtigr (hmmpfam from HMMER 2.3.2 package) is used to search against TIGRFAMs collection of HMMs (Profile hidden Markov models)
+    Do you want to use hmmtigr ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmtigr [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Fprintscan (FingerPRINTScan) is used to search against the PRINTS collection of protein signatures
+    Do you want to use fprintscan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of fprintscan [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Scanregexp (ScanProsite) is used to search against the PROSITE patterns collection and verify the  matches by statistically significant CONFIRM patterns
+    Do you want to use scanregexp ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of scanregexp [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Profilescan (ProfileScan (pfscan & ps_scan.pl) from Pftools 2.2) package is used  to search against the PROSITE profiles collection
+    Do you want to use profilescan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of profilescan [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Superfamily A structural classification of proteins database for the investigation of sequences and structures.
+    Do you want to use superfamily ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of superfamily [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Seg is used for identifying and masking segments of low compositional complexity in amino acid sequences
+    Do you want to use seg ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of seg [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Signalp predicts the presence and location of signal peptide cleavage sites, using eukaryotic HMM (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use signalp ? [n] /(y|n)/? : y
+    
+Please enter the execution host name of signalp [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Tmhmm is used for prediction of transmembrane helices in proteins using a Hidden Markov Model (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use tmhmm ? [n] /(y|n)/? : y
+    
+Please enter the execution host name of tmhmm [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+!
+! InterProScan can use taxonomy-based filtering of results which uses the InterPro taxonomy listed for each InterPro
+! entry to hide hits not relevant to that taxon.
+!
+    Do you want to make it available for users? [y] /y|n/? : 
+
+! Tip:
+!
+! You can specify an email address for the administrator. By default it will be you (young)
+! Administrators receive an email when a problem occurs in InterProScan.
+!
+    Do you want to set an administrator email address? [y] /y|n/? : 
+    Please enter the email address of the administrator: [] /[\w\.\-]+\@[\w\.\-]+/? : young@genomics.rsmas.miami.edu
+>>Writing to the configuration files ... 
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/blastprodom.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/coils.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/fprintscan.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/gene3d.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/hmmpanther.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/hmmpfam.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/hmmpir.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/hmmsmart.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/hmmtigr.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/profilescan.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/scanregexp.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/seg.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/signalp.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/superfamily.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/apps/iprscan/conf/tmhmm.conf ... >>DONE
+>>Setting File /Users/young/FUNNYBASE/apps/iprscan/conf/iprscan.conf ... >>DONE
+
+! Tip:
+!
+! InterProScan can be launched through a web interface. It can also be launched through secure HTTP (https)
+!
+    Do you want to run InterProScan using a web interface? [n] /y|n/? : y
+    Do you want to run InterProScan through a secure HTTP server? [n] /y|n/? : n
+    Enter the name of your server. You can specify a specific port to listen to. (e.g. "foo.bar.com:4000") [foobar.com] /[\w\.\_\-\:\d]+/? : genomics.rsmas.miami.edu                                                                                            
+!
+! Please add the following lines to your web server configuration (httpd.conf):
+#--------------------------------------
+ Alias /doc/ "/Users/young/FUNNYBASE/apps/iprscan/doc/html/"
+ Alias /images/ "/Users/young/FUNNYBASE/apps/iprscan/images/"
+ Alias /tmp/ "/Users/young/FUNNYBASE/apps/iprscan/tmp/"
+
+ ScriptAlias /iprscan/ "/Users/young/FUNNYBASE/apps/iprscan/bin/"
+
+ <Directory "/Users/young/FUNNYBASE/apps/iprscan/images">
+   Options Indexes MultiViews
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+ </Directory>
+
+ <Directory "/Users/young/FUNNYBASE/apps/iprscan/tmp/">
+   Options FollowSymLinks Includes SymLinksIfOwnerMatch
+    IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+    AllowOverride AuthConfig Limit FileInfo
+
+    Order deny,allow
+    Deny from all
+    Allow from .rsmas.miami.edu
+ </Directory>
+#--------------------------------------
+! Be sure that 'apache' or 'httpd' virtual user (uid/gid) have right to read/write into your /Users/young/FUNNYBASE/apps/iprscan iprscan directory.
+! Otherwise, if you are running a standalone http(s) web server, be sure also the user running it have to enough
+! rights to read/wrtie /Users/young/FUNNYBASE/apps/iprscan iprscan directory
+! If you encoutered problem with your web server running iprscan, read the FAQ or contact your system administrator.
+
+! After restarting your web server try http://genomics.rsmas.miami.edu/iprscan/iprscan
+!
+>>Indexing datafile ... 
+No specific file(s) given, indexing all files:
+
+Pfam
+prints.pval
+prodom.ipr
+Pfam-C
+smart.desc
+sf_hmm
+sf.seq
+Pfam-A.seed
+superfamily.hmm
+smart.thresholds
+smart.HMMs
+match.xml
+interpro.xml
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+
+No specific file(s) given, converting all files:
+
+Pfam
+sf_hmm
+superfamily.hmm
+smart.HMMs
+sf_hmm_sub
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+WARNING: Some problems occured when trying to index the data files.
+ Please fix the error below and index your datafiles using the /Users/young/FUNNYBASE/apps/iprscan/bin/index_data.pl script.
+ For help, type './index_data.pl -h' 
+errormsg: ERROR: File [/Users/young/FUNNYBASE/apps/iprscan/data/sf.seq] not found : No such file or directory at /Users/young/FUNNYBASE/apps/iprscan/bin/index_data.pl line 217.
+>>DONE
+
+! Tip:
+!
+!  We would appreciate it if you would register your installation of InterProScan.  This will allow us to notify you
+! of bug fixes and new releases of the software. We will not use your email address for any other purpose.
+!
+    Would you like to register InterProScan? [y] /(y|n)/? : y
+    What is the name of your organization? [] /\S+/? : University of Miami
+WARNING: The information input is not valid (doesn't match /\S+/), please try again.
+    What is the name of your organization? [] /\S+/? : UniversityOfMiami
+    Who is the contact person? [] /\S+/? : StuartYoung
+    What is the e-mail address? [young@dlc-genomics.rsmas.miami.edu] /\S+/? : youngstuart@hotmail.com
+    If you installed the web interface, what is the server name? [http://genomics.rsmas.miami.edu] /(\S+|n)/? : 
+Thank you.
+
+>>Installation is completed.  Please test your installation by running on the command line:
+
+        /Users/young/FUNNYBASE/apps/iprscan/bin/iprscan -cli -i /Users/young/FUNNYBASE/apps/iprscan/test.seq -o /Users/young/FUNNYBASE/apps/iprscan/test.out -format raw -goterms -ipr
+
+and comparing it with the merged.raw file that is supplied.
+For help and options on the commandline, run /Users/young/FUNNYBASE/apps/iprscan/bin/iprscan -cli -h
+
+dlc-genomics:~/FUNNYBASE/apps/iprscan young$ cd bindlc-genomics:~/FUNNYBASE/apps/iprscan/bin young$ iprscan -cli -seqtype n -i ../test.nuc.seq  -iprlookup -goterms -o ../test.nuc.out.xml 
+SUBMITTED iprscan-20060721-15282589

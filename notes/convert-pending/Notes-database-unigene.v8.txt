@@ -1,0 +1,4761 @@
+Notes-database-unigene
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Feb  8 15:47:15 EST 2008] FILTER FOR CONTAMINATIONS>
+
+
+
+contamination warning entry
+
+
+
+</entry>
+
+
+
+<entry [Wed Jan 16 20:48:10 EST 2008] DO NAIVE BAYES AND DECISION TREES FOR BEST BLAST HITS OF unigene (1,000 human UniGenes) DATABASE>
+
+
+
+1. Get InterPro hits for all 1,000 human UniGenes
+=================================================
+
+cd ~/FUNNYBASE/bin/orthologues
+sudo ./arrayiprscandaemon.pl -d unigene -n 10
+
+(done earlier)
+
+
+2. Load non-swissprot InterPro hits into 'collectioniprscan' table
+==================================================================
+
+cd ~/FUNNYBASE/bin/orthologues
+./collectioniprscan.pl -d unigene
+
+(done earlier)
+
+
+3. LOAD THE collectioniprscan TABLE TO THE CLUSTER
+==================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigene -t collectioniprscan
+
+
+4. For each orthologue cluster, get Swissprot sequences with the same iprscans
+==============================================================================
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscansetdaemon.pl -d unigene -t 24
+
+    WHICH RUNS ON CLUSTER:
+
+    ./arrayiprscanset.pl -d unigene -t 24
+    
+    Run time: 00:11:54
+    Completed ./arrayiprscansetdaemon.pl
+    10:23PM, 12 January 2008
+    ****************************************
+
+NB: COLLECTS 20 MATCHES AND 40 MISMATCHES (OR LESS) PER SEQUENCE **IN ORDER** OF MOST MOTIF HITS.
+
+
+5. Get sequences for iprsan set
+===============================
+
+NB: NOT NECESSARILY A BALANCED SET BECAUSE WE WANT TO USE THE ONES WITH THE HIGHEST NUMBER OF MOTIFS IN COMMON TO CREATE THE MULTIPLE ALIGNMENT IN THE NEXT STEP.
+
+./iprscansetsequence.pl -d unigene
+
+    Run time: 00:01:14
+    Completed ./iprscansetsequence.pl
+    4:40PM, 13 January 2008
+    ****************************************
+
+
+6. Create iprscan set alignment
+===============================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d unigene -n 24
+
+    WHICH RUNS ON CLUSTER:
+    
+    ./arrayiprscansetalignment.pl 
+
+    Run time: 00:31:04
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    5:30PM, 13 January 2008
+    ****************************************
+
+
+7. Load alignments
+==================
+
+./arrayiprscanalignmentloaddata.pl -d 
+    
+    Run time: 00:00:56
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    5:53PM, 13 January 2008
+    ****************************************
+
+
+8. Create superdomains
+======================
+
+REDID SUPERDOMAINS TO ADD majority
+
+./iprscansuperdomain.pl -d unigene 
+
+    RUN TIME: 00:16:45
+    Completed ./iprscansuperdomain.pl
+    1:43PM, 26 January 2008
+    ****************************************
+
+    SELECT COUNT(DISTINCT collectionid) FROM iprscansuperdomain;
+    +------------------------------+
+    | COUNT(DISTINCT collectionid) |
+    +------------------------------+
+    |                          892 |
+    +------------------------------+
+
+    select querystart as start, name, majority, minority from iprscansuperdomain where collectionid = 4 order by querystart;
+    
+    +-------+-------------------------+-------------------------+--------------------------------------------+
+    | start | name                    | majority                | minority                                   |
+    +-------+-------------------------+-------------------------+--------------------------------------------+
+    |    32 | seg                     |                         |                                            |
+    |    60 | gene3d:g3dsa:1.10.20.10 | GENE3D:G3DSA:1.10.20.10 | GENE3D:G3DSA:1.10.20.10                    |
+    |   112 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONEH2B             |
+    |   174 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONEH2B             |
+    |   226 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONEH2B             |
+    |   256 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONEH2B             |
+    |   291 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONE_H2B,HISTONEH2B |
+    |   345 | histoneh2b              | Histone                 | Histone,HISTONE H2B,HISTONE_H2B,HISTONEH2B |
+    |   384 | histone h2b             | HISTONE H2B             | HISTONE H2B,HISTONE_H2B,HISTONEH2B         |
+    +-------+-------------------------+-------------------------+--------------------------------------------+
+    
+    select querystart, querystop from iprscansuperdomain where collectionid = 4 order by querystart;
+    +------------+-----------+
+    | querystart | querystop |
+    +------------+-----------+
+    |         32 |        56 |
+    |         60 |       111 |
+    |        112 |       173 |
+    |        174 |       225 |
+    |        226 |       255 |
+    |        256 |       290 |
+    |        291 |       435 |
+    |        345 |       446 |
+    |        384 |       446 |
+    +------------+-----------+
+    
+    select distinct number, start, stop, value from iprscanattribute where collectionid = 4 and accession = 1 and groupby = 'iprscan' order by number;
+    +--------+-------+------+-------------------------+
+    | number | start | stop | value                   |
+    +--------+-------+------+-------------------------+
+    |      1 | 0     | 57   | seg                     |
+    |      2 | 58    | 111  | gene3d:g3dsa:1.10.20.10 |
+    |      3 | 112   | 173  | histoneh2b              |
+    |      4 | 174   | 225  | histoneh2b              |
+    |      5 | 226   | 255  | histoneh2b              |
+    |      6 | 256   | 290  | histoneh2b              |
+    |      7 | 291   | 435  | histoneh2b              |
+    |      8 | 345   | 446  | histoneh2b              |
+    |      9 | 384   | 446  | histone h2b             |
+    +--------+-------+------+-------------------------+
+    
+    select distinct number, start, stop, value from iprscanattribute where collectionid = 4 and accession = 1 and groupby = 'both' order by number;
+    +--------+-------+------+-------------------------+
+    | number | start | stop | value                   |
+    +--------+-------+------+-------------------------+
+    |      1 | 32    | 58   | seg                     |
+    |      2 | 59    | 111  | gene3d:g3dsa:1.10.20.10 |
+    |      3 | 112   | 173  | histoneh2b              |
+    |      4 | 174   | 225  | histoneh2b              |
+    |      5 | 226   | 255  | histoneh2b              |
+    |      6 | 256   | 290  | histoneh2b              |
+    |      7 | 291   | 435  | histoneh2b              |
+    |      8 | 345   | 446  | histoneh2b              |
+    |      9 | 384   | 446  | histone h2b             |
+    +--------+-------+------+-------------------------+
+
+    select distinct number, start, stop, value from iprscanattribute where collectionid = 4 and accession = 1 and groupby = 'size' and domainsize = 100 order by number\G
+    *************************** 1. row ***************************
+    number: 1
+     start: 1
+      stop: 114
+     value: seg,no description,HISTONE H2B,seg
+    *************************** 2. row ***************************
+    number: 2
+     start: 115
+      stop: 228
+     value: no description,HISTONE H2B,seg,seg,no description,Histone,CAMP RESPONSE ELEMENT-BINDING PROTEIN,HISTONEH2B,seg,HISTONEH2B
+    *************************** 3. row ***************************
+    number: 3
+     start: 229
+      stop: 342
+     value: no description,HISTONE H2B,no description,Histone,Q8CGP2_MOUSE_Q8CGP2;,CAMP RESPONSE ELEMENT-BINDING PROTEIN,seg,HISTONEH2B,HISTONE_H2B
+    *************************** 4. row ***************************
+    number: 4
+     start: 343
+      stop: 456
+     value: HISTONEH2B,seg,HISTONEH2B
+    *************************** 5. row ***************************
+    number: 5
+     start: 457
+      stop: 571
+     value: *
+    
+
+
+
+
+
+#### CHECK arrayiprscansuperdomaindaemon AND arrayiprscansuperdomain FOR MISSING COLLECTION IDS
+#### AFTER RESTARTING NODES 2 AND 5 
+
+#sudo ./arrayiprscansuperdomaindaemon.pl -d unigene -t 18
+#    
+#    Run time: 00:02:18
+#    Completed ./arrayiprscansuperdomaindaemon.pl
+#    12:56AM, 26 January 2008
+#    ****************************************
+#
+#./loadiprscansuperdomain.pl -d unigene -t 18
+
+
+#./iprscansuperdomain.pl -d unigene 
+#
+#    RUN TIME: 00:16:59
+#    Completed ./iprscansuperdomain.pl
+#    6:53PM, 13 January 2008
+#    ***************************************
+
+
+9. POPULATE iprscanattributebayes (BALANCED DATA SET)
+======================================================
+
+853 out of 892 genes have balanced data sets.
+
+./iprscanattributebayes.pl -d unigene
+    
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:01:51
+    11:59AM, 18 January 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscanattributebayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          853 |
+    +------------------------------+
+
+    select count(*) from iprscanattributebayes;
+    +----------+
+    | count(*) |
+    +----------+
+    |   105575 |
+    +----------+
+
+select count(distinct accession) as count, collectionid from iprscanattributebayes group by collectionid having count >= 10 order by count;
+    ...
+    |    40 |          514 |
+    |    40 |          673 |
+    |    40 |          694 |
+    |    40 |          735 |
+    |    40 |          775 |
+    |    40 |          810 |
+    |    40 |          836 |
+    |    40 |          854 |
+    |    40 |          863 |
+    |    40 |          898 |
+    |    40 |          930 |
+    +-------+--------------+
+    592 rows in set (0.33 sec)
+
+
+10. DO N-FOLD PERMUTATIONS (USING BALANCED SET FROM iprscanattributebayes)
+========================================================================
+
+./nfoldbayes.pl -d unigene
+        
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:18
+    12:02AM, 18 January 2008
+    ****************************************
+    
+    select count(distinct collectionid) from nfoldbayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          853 |
+    +------------------------------+
+
+
+11. Load tables onto cluster to run 'iprscanattribute'
+======================================================
+
+TABLES: iprscanset, iprscansetsequence, iprscansetalignment, iprscansuperdomain, iprscanattributebayes
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigene -t iprscanset,iprscansetsequence,iprscansetalignment,iprscansuperdomain,iprscanattributebayes
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigene/collection/clusterloadtable.sh
+sudo /common/pipeline/unigene/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+    select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          892 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from iprscanset;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          892 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from iprscansetsequence;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          892 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from iprscansetalignment;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          892 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from iprscanattributebayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          853 |
+    +------------------------------+
+
+
+12. POPULATE iprscanattribute (USING nfoldbayes WITH BALANCED SET FROM iprscanattributebayes)
+========================================================================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+USING arrayiprscanattributedaemon.pl WHICH RUNS AS AN ARRAY JOB ON gems OR CLUSTER:
+    
+####    sudo ./arrayiprscanattribute.pl 1 /common/pipeline/unigene/collection/unigene.iprscanattribute.args
+
+    
+GROUP BY IPRSCAN, BY SIZE AND BY BOTH IPRSCAN AND SIZE
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g iprscan -t 24
+            
+    Run time: 00:35:52
+    Completed ./arrayiprscanattributedaemon.pl
+    3:33PM, 18 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d unigene -t 24
+
+    Run time: 00:00:25
+    Completed ./loadiprscanattribute.pl
+    4:03PM, 18 January 2008
+    ****************************************
+    
+    select groupby, domainsize, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+----------+
+    | groupby | domainsize | count(*) |
+    +---------+------------+----------+
+    | iprscan |          0 |    11315 |
+    +---------+------------+----------+
+
+    select distinct accession, label from iprscanattribute where collectionid = 4;
+    +-----------+-------+
+    | accession | label |
+    +-----------+-------+
+    | 1         |     1 |
+    | P55294    |     0 |
+    | Q43213    |     0 |
+    | Q43214    |     0 |
+    | Q43216    |     1 |
+    | Q43312    |     0 |
+    | Q5R893    |     1 |
+    | Q64525    |     1 |
+    +-----------+-------+
+    
+    
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | iprscan |          0 |           853 |   230296 |
+    +---------+------------+---------------+----------+
+
+    
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 300 -t 24
+
+    
+    Run time: 00:36:41
+    Completed ./arrayiprscanattributedaemon.pl
+    7:14PM, 18 January 2008
+    ****************************************
+        
+./loadiprscanattribute.pl -d unigene -t 24
+
+    Run time: 00:01:07
+    Completed ./loadiprscanattribute.pl
+    7:17PM, 18 January 2008
+    ****************************************
+    
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        300 |           853 |   213530 |
+    | iprscan |          0 |           853 |   230296 |
+    +---------+------------+---------------+----------+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 150 -t 24
+
+    Run time: 00:38:51
+    Completed ./arrayiprscanattributedaemon.pl
+    9:01PM, 18 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d unigene -t 24
+
+    Run time: 00:01:49
+    Completed ./loadiprscanattribute.pl
+    9:05PM, 18 January 2008
+    ****************************************
+
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        150 |           853 |   243652 |
+    | both    |        300 |           853 |   213530 |
+    | iprscan |          0 |           853 |   230296 |
+    +---------+------------+---------------+----------+
+
+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 150 -t 24
+
+    Run time: 00:35:54
+    Completed ./arrayiprscanattributedaemon.pl
+    12:17AM, 19 January 2008
+    ****************************************
+    
+./loadiprscanattribute.pl -d unigene -t 24
+
+    Run time: 00:02:02
+    Completed ./loadiprscanattribute.pl
+    12:20AM, 19 January 2008
+    ****************************************
+    
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        150 |           853 |   243652 |
+    | both    |        300 |           853 |   213530 |
+    | iprscan |          0 |           853 |   230296 |
+    | size    |        150 |           853 |   271520 |
+    +---------+------------+---------------+----------+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 300 -t 24
+    
+    Run time: 00:36:33
+    Completed ./arrayiprscanattributedaemon.pl
+    1:00PM, 19 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d unigene -t 24
+
+    Run time: 00:02:10
+    Completed ./loadiprscanattribute.pl
+    5:06PM, 19 January 2008
+    ****************************************
+
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        150 |           853 |   243652 |
+    | both    |        300 |           853 |   213530 |
+    | iprscan |          0 |           853 |   230296 |
+    | size    |        150 |           853 |   271520 |
+    | size    |        300 |           853 |   140034 |
+    +---------+------------+---------------+----------+
+
+
+
+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 100 -t 24
+
+
+	Run time: 00:40:25
+	Completed ./arrayiprscanattributedaemon.pl
+	10:15PM, 21 January 2008
+	****************************************
+
+./loadiprscanattribute.pl -d unigene -t 24
+
+	Run time: 00:03:30
+Completed ./loadiprscanattribute.pl
+11:07PM, 21 January 2008
+****************************************
+
+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 100 -t 24
+
+Run time: 00:35:41
+Completed ./arrayiprscanattributedaemon.pl
+11:46PM, 21 January 2008
+****************************************
+
+./loadiprscanattribute.pl -d unigene -t 24
+
+
+
+Run time: 00:04:57
+Completed ./loadiprscanattribute.pl
+0:24AM, 22 January 2008
+****************************************
+
+
+
++---------+------------+---------------+----------+
+| groupby | domainsize | collectionids | count(*) |
++---------+------------+---------------+----------+
+| both    |        100 |           853 |   273026 |
+| both    |        150 |           853 |   243652 |
+| both    |        300 |           853 |   213530 |
+| iprscan |          0 |           853 |   230296 |
+| size    |        100 |           853 |   403016 |
+| size    |        150 |           853 |   271520 |
+| size    |        300 |           853 |   140034 |
++---------+------------+---------------+----------+
+
+
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 200 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 250 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 400 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g size -s 500 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 100 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 200 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 250 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 400 -t 24
+    sudo ./arrayiprscanattributedaemon.pl -d unigene -g both -s 500 -t 24
+
+
+13. TEST THE BAYESIAN MODELS (USING THE BALANCED DATA SET IN nfoldbayes)
+
+INPUT:
+
+nfoldbayes TABLE
+iprscanattributebayes TABLE
+
+./learningbayes.pl -d unigene
+
+    Completed ./learningbayes.pl
+    Run time: 00:03:01
+    4:26PM, 18 January 2008
+    ****************************************
+
+    select avg(correct) from learningbayes;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7579 |
+    +--------------+
+    
+    
+14. TEST DECISION TREE MODEL (USING THE BALANCED DATA SET IN nfoldbayes) AND COLLECT TREES
+
+INPUT:
+
+nfoldbayes TABLE
+iprscanattribute TABLE
+
+./learningtrees.pl -d unigene -g iprscan
+    
+    Completed ./learningtrees.pl
+    Run time: 00:09:42
+    1:44AM, 21 January 2008
+    ****************************************
+    
+    select avg(correct) from learningtrees where groupby = 'iprscan';
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7517 |
+    +--------------+
+
+
+./learningtrees.pl -d unigene -g size -s 100
+
+
+
+Completed ./learningtrees.pl
+Run time: 00:16:41
+1:02AM, 22 January 2008
+****************************************
+
+    select avg(correct) from learningtrees where groupby = 'size' and domainsize = 100;
+
++--------------+
+| avg(correct) |
++--------------+
+|       0.8205 |
++--------------+
+
+
+./learningtrees.pl -d unigene -g size -s 150
+
+    Completed ./learningtrees.pl
+    Run time: 00:10:19
+    1:58AM, 21 January 2008
+    ****************************************
+
+    select avg(correct) from learningtrees where groupby = 'size' and domainsize = 150;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8242 |
+    +--------------+
+
+
+./learningtrees.pl -d unigene -g size -s 300
+
+    Completed ./learningtrees.pl
+    Run time: 00:08:38
+    2:10AM, 21 January 2008
+    ****************************************
+
+    select avg(correct) from learningtrees where groupby = 'size' and domainsize = 300;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8270 |
+    +--------------+
+
+
+./learningtrees.pl -d unigene -g both -s 100
+
+
+Completed ./learningtrees.pl
+Run time: 00:14:13
+1:29AM, 22 January 2008
+****************************************
+
+    
+./learningtrees.pl -d unigene -g both -s 150
+    
+    Completed ./learningtrees.pl
+    Run time: 00:11:18
+    2:26AM, 21 January 2008
+    ****************************************
+
+    select avg(correct) from learningtrees where groupby = 'both' and domainsize = 150;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7541 |
+    +--------------+
+
+
+./learningtrees.pl -d unigene -g both -s 300
+    
+    Completed ./learningtrees.pl
+    Run time: 00:10:58
+    2:29AM, 21 January 2008
+    ****************************************
+    
+select avg(correct) from learningtrees where groupby = 'both' and domainsize = 300;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7548 |
+    +--------------+
+
+
+   
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
+
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.7620 |
+| both    |        150 |       0.7541 |
+| both    |        300 |       0.7548 |
+| iprscan |          0 |       0.7517 |
+| size    |        100 |       0.8205 |
+| size    |        150 |       0.8242 |
+| size    |        300 |       0.8270 |
++---------+------------+--------------+
+
+
+
+12. GET OPTIMUM GROUPINGS FOR EACH SEQUENCE
+
+./learningtreesharvest.pl -d unigene
+
+
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 11 13:47:52 EST 2008] CHECK DISCREPANCY IN COUNTS FOR SWISSPROT AT 1e-100 CUTOFF IN FIGURE 2 (blastcountevaluecutoffgraph.pl) AND FIGURE 3 (blastcorrectcountsgraph.pl)>
+
+
+
+
+desc blastcountsevaluecutoff;
++---------------------+--------+------+-----+---------+-------+
+| Field               | Type   | Null | Key | Default | Extra |
++---------------------+--------+------+-----+---------+-------+
+| collectionid        | int(6) |      | PRI | 0       |       |
+| collectionaccession | int(6) |      | PRI | 0       |       |
+| count               | int(6) | YES  |     | NULL    |       |
+| evaluecutoff        | int(6) |      | PRI | 0       |       |
++---------------------+--------+------+-----+---------+-------+
+
+
+desc blastcorrectcounts;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| targetsource | varchar(20)  |      | PRI |         |       |
+| binstop      | int(6)       |      | PRI | 0       |       |
+| matches      | decimal(4,2) |      |     | 0.00    |       |
+| mismatches   | decimal(4,2) |      |     | 0.00    |       |
++--------------+--------------+------+-----+---------+-------+
+
+
+SAME RESULT FOR 
+/blastcountsevaluecutoff.pl -d unigene -t swissprot -e -100
+Doing BLAST bins for all sequences (total 983) ... 
+0
+SELECT COUNT(distinct targetaccession) FROM collectionblast
+        WHERE collectionid = '2'
+        AND collectionaccession = '1'
+        AND targetsource = 'swissprot'
+        AND hitevalueexp <= -100
+Count: 3
+
+
+
+./blastcorrectcounts.pl -d unigene -t swissprot -b 1,2,3,4,5,10,25,50,100,150,200,250 -e -100 -m 0.50
+Getting sequences from 'collectionblast'...
+0
+SELECT distinct collectionid, collectionaccession, targetaccession, targetannotation FROM collectionblast
+    WHERE collectionid = 2
+    AND collectionaccession = 1
+    AND hitevalueexp <= '-100' AND targetsource = 'swissprot'
+Hits: 3
+
+
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 200 and count <=250;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 150 and count <=200;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 100 and count <= 150;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 50 and count <= 100;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 25 and count <= 50;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 10 and count <= 25;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 5 and count <= 10;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 4 and count <= 5;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 3 and count <= 4;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 2 and count <= 3;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 1 and count <= 2;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 0 and count <= 1;
+
+
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 200 and count <=250;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                            2 |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 150 and count <=200;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           14 |
++------------------------------+
+1 row in set (0.03 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 100 and count <= 150;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           10 |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 50 and count <= 100;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           15 |
++------------------------------+
+1 row in set (0.03 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 25 and count <= 50;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           30 |
++------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 10 and count <= 25;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           89 |
++------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 5 and count <= 10;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           92 |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 4 and count <= 5;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           33 |
++------------------------------+
+1 row in set (0.02 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 3 and count <= 4;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           58 |
++------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 2 and count <= 3;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           80 |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 1 and count <= 2;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          116 |
++------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-100' and count > 0 and count <= 1;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                           86 |
++------------------------------+
+1 row in set (0.03 sec)
+
+
+select binstop , sum(matches + mismatches) from blastcorrectcounts where targetsource = 'swissprot' group by binstop;
++---------+---------------------------+
+| binstop | sum(matches + mismatches) |
++---------+---------------------------+
+|       1 |                     86.00 |
+|       2 |                    116.00 |
+|       3 |                     80.00 |
+|       4 |                     58.00 |
+|       5 |                     33.00 |
+|      10 |                     92.00 |
+|      25 |                     89.00 |
+|      50 |                     30.00 |
+|     100 |                     15.00 |
+|     150 |                     10.00 |
+|     200 |                     14.00 |
+|     250 |                      2.00 |
++---------+---------------------------+
+
+SO THE DATABASE NUMBERS ARE IDENTICAL AND IT TURNED OUT TO BE A PROBLEM OF BINNING WHEN USING DISCRETE count VALUES IN blastcountsevaluecutoffgraph.pl.
+
+FIXED BUG IN BinData - REMOVED ALLOCATION OF bins[0] = min, SINCE data < min IS CHECKED ABOVE IT SO NO NEED AND IT SHIFTS THE DATA UPWARDS:
+
+E.G., 1, 2, 3, ... BECOMES 0.1, 2, 3, ... SO ALL '1' DATA VALUES WERE INCORRECTLY PUT IN THE '2' BIN.
+
+OKAY NOW:
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 -l ""
+E-value cutoff: -100
+SELECT count FROM blastcountsevaluecutoff WHERE evaluecutoff = '-100'
+No. of count entries: 983
+Tags: 1 2 3 4 5 10 25 50 100 150 200 250 300 350 400 450 500
+Data:
+86 116 80 58 33 92 89 30 15 10 14 2 0 0 0 0 0 
+ 
+
+</entry>
+
+
+
+<entry [Tue Jan  8 19:29:15 EST 2008] OPTIMISATION OF MATCH CUTOFF FOR blastcorrectcounts (EXTREMELY LOW E-VALUE HITS)>
+
+
+
+
+Figure 1 - 3
+============
+
+Extremely low E-value human UniGene hits against Swiss-Prot, segregated by total number of BLAST hits, with breakdown by match and mismatch BLAST hits. Matches (black) and mismatches (stripes) are designated by fuzzy matching of the original human UniGene sequence annotation against the BLAST hit annotations. The average matches for a particular total BLAST hits grouping is the sum over all sequences in the grouping of the proportion of BLAST hits with matching annotation (its value ranges between 0 and 1 per sequence), as determined by fuzzy matching of the target annotation with the original human UniGene annotation. The average mismatches are similarly calculated for BLAST hits whose annotation does not match the original human UniGene annoation. E-value cutoff: -100; Match cutoff: 0.80. From left to right, each bar represents the number of sequences with total BLAST target hits greater than the preceding bar value (minimum zero) and less than or equal to the barís value (denoted below the bar)). Thus, the groupings represent UniGene sequences that have a total of 1, 2, 3, 4, 5, 6-10, 11-25, 26-50, 51-100, 101-150, 151-200 and 201-250 BLAST hits respectively.
+
+
+/Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.png
+
+CREATED FROM:
+
+/Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.swissprot.html
+/Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.swissprot.png
+
+/Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.unigene-mouse.html
+/Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.unigene-mouse.png
+
+
+
+SOURCE:
+
+./blastcorrectcounts.pl -d unigene -t swissprot -b 1,2,3,4,5,10,25,50,100,150,200,250 -e -100
+
+MATCH CUTOFF = 0.50
+
+    swissprot       1       75.0    11.0
+    swissprot       2       100.5   15.5
+    swissprot       3       74.0    6.0
+    swissprot       4       52.5    5.5
+    swissprot       5       30.6    2.4
+    swissprot       10      78.0    14.0
+    swissprot       25      77.3    11.7
+    swissprot       50      23.9    6.1
+    swissprot       100     11.8    3.2
+    swissprot       150     8.4     1.6
+    swissprot       200     13.0    1.0
+    swissprot       250     2.0     0.0
+    Output file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blastcorrectcounts.tsv
+    
+    Creating table 'blastcorrectcounts'...done.
+    Deleting from table 'blastcorrectcounts' where 'targetsource' is 'swissprot'...done.
+    Loading data into table 'blastcorrectcounts'... done.
+    
+    Run time: 00:03:20
+    Completed ./blastcorrectcounts.pl
+    7:22PM, 8 January 2008
+    ****************************************
+    
+MATCH CUTOFF = 0.80
+
+    swissprot       1       70.0    16.0
+    swissprot       2       98.0    18.0
+    swissprot       3       72.7    7.3
+    swissprot       4       50.8    7.2
+    swissprot       5       30.6    2.4
+    swissprot       10      74.0    18.0
+    swissprot       25      71.4    17.6
+    swissprot       50      23.1    6.9
+    swissprot       100     10.4    4.6
+    swissprot       150     7.4     2.6
+    swissprot       200     12.9    1.1
+    swissprot       250     2.0     0.0
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blastcorrectcounts.tsv
+        
+    Run time: 00:03:21
+    Completed ./blastcorrectcounts.pl
+    6:37PM, 8 January 2008
+    ****************************************
+
+    select * from blastcorrectcounts where targetsource = 'swissprot';
+    +--------------+---------+---------+------------+
+    | targetsource | binstop | matches | mismatches |
+    +--------------+---------+---------+------------+
+    | swissprot    |       1 |   70.00 |      16.00 |
+    | swissprot    |       2 |   98.00 |      18.00 |
+    | swissprot    |       3 |   72.70 |       7.30 |
+    | swissprot    |       4 |   50.80 |       7.20 |
+    | swissprot    |       5 |   30.60 |       2.40 |
+    | swissprot    |      10 |   74.00 |      18.00 |
+    | swissprot    |      25 |   71.40 |      17.60 |
+    | swissprot    |      50 |   23.10 |       6.90 |
+    | swissprot    |     100 |   10.40 |       4.60 |
+    | swissprot    |     150 |    7.40 |       2.60 |
+    | swissprot    |     200 |   12.90 |       1.10 |
+    | swissprot    |     250 |    2.00 |       0.00 |
+    +--------------+---------+---------+------------+
+
+./blastcorrectcountsgraph.pl -d unigene -t swissprot -l "Human UniGene sequences segregated by total number of BLAST hits, with breakdown by match and mismatch BLAST hits against Swiss-Prot. Matches (black) and mismatches (stripes) are designated by fuzzy matching of the original human UniGene sequence annotation against the BLAST hit annotations. The average matches for a particular total BLAST hits grouping is the sum over all sequences in the grouping of the proportion of BLAST hits with matching annotation (its value ranges between 0 and 1 per sequence), as determined by fuzzy matching of the target annotation with the original human UniGene annotation. The average mismatches are similarly calculated for BLAST hits whose annotation does not match the original human UniGene annoation. E-value cutoff: -100; Match cutoff: 0.80." > html/unigene.blastcorrectcountsgraph.swissprot.html
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.swissprot.html /Users/young/FUNNYBASE/thesis/final/chap1/images/unigene.blastcorrectcountsgraph.swissprot.html
+
+
+
+
+./blastcorrectcounts.pl -d unigene -t unigene-mouse -b 1,2,3,4,5,10,25,50,100,150,200,250 -e -100
+
+    unigene-mouse   1       204.0   190.0
+    unigene-mouse   2       13.0    13.0
+    unigene-mouse   3       4.3     3.7
+    unigene-mouse   4       2.8     2.2
+    unigene-mouse   5       0.8     0.2
+    unigene-mouse   10      0.6     2.4
+    unigene-mouse   25      1.6     3.4
+    unigene-mouse   50      0.0     0.0
+    unigene-mouse   100     0.0     0.0
+    unigene-mouse   150     0.0     0.0
+    unigene-mouse   200     0.0     0.0
+    unigene-mouse   250     0.0     0.0
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blastcorrectcounts.tsv
+    
+    Creating table 'blastcorrectcounts'...done.
+    Deleting from table 'blastcorrectcounts' where 'targetsource' is 'unigene-mouse'...done.
+    Loading data into table 'blastcorrectcounts'... done.
+    
+    Run time: 00:00:12
+    Completed ./blastcorrectcounts.pl
+    6:54PM, 8 January 2008
+    ****************************************
+    
+
+    select * from blastcorrectcounts where targetsource = 'unigene-mouse';
+    +---------------+---------+---------+------------+
+    | targetsource  | binstop | matches | mismatches |
+    +---------------+---------+---------+------------+
+    | unigene-mouse |       1 |  204.00 |     190.00 |
+    | unigene-mouse |       2 |   13.00 |      13.00 |
+    | unigene-mouse |       3 |    4.30 |       3.70 |
+    | unigene-mouse |       4 |    2.80 |       2.20 |
+    | unigene-mouse |       5 |    0.80 |       0.20 |
+    | unigene-mouse |      10 |    0.60 |       2.40 |
+    | unigene-mouse |      25 |    1.60 |       3.40 |
+    | unigene-mouse |      50 |    0.00 |       0.00 |
+    | unigene-mouse |     100 |    0.00 |       0.00 |
+    | unigene-mouse |     150 |    0.00 |       0.00 |
+    | unigene-mouse |     200 |    0.00 |       0.00 |
+    | unigene-mouse |     250 |    0.00 |       0.00 |
+    +---------------+---------+---------+------------+
+
+./blastcorrectcountsgraph.pl -d unigene -t unigene-mouse -l "Extremely low E-value human UniGene hits against mouse UniGene, segregated by total number of BLAST hits with breakdown by match and mismatch BLAST hits. Matches (blue) and mismatches (red) are designated by fuzzy matching of the original human UniGene sequence annotation against the BLAST hit annotations. The average matches for a particular total BLAST hits grouping is the sum over all sequences in the grouping of the proportion of BLAST hits with matching annotation (its value ranges between 0 and 1 per sequence), as determined by fuzzy matching of the target annotation with the original human UniGene annotation. The average mismatches are similarly calculated for BLAST hits whose annotation does not match the original human UniGene annoation. E-value cutoff: -100; Match cutoff: 0.80." > html/unigene.blastcorrectcountsgraph.unigene-mouse.html
+
+
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.unigene-mouse.html /Users/young/FUNNYBASE/thesis/final/chap1/images/unigene.blastcorrectcountsgraph.unigene-mouse.html
+
+
+
+
+./blastcorrectcounts.pl -d unigene -t unigene-rat -b 1,2,3,4,5,10,25,50,100,150,200,250 -e -100
+    
+    unigene-rat     1       318.0   105.0
+    unigene-rat     2       21.5    9.5
+    unigene-rat     3       6.0     4.0
+    unigene-rat     4       3.2     1.8
+    unigene-rat     5       1.4     0.6
+    unigene-rat     10      3.1     0.9
+    unigene-rat     25      0.6     0.4
+    unigene-rat     50      0.0     0.0
+    unigene-rat     100     0.0     0.0
+    unigene-rat     150     0.0     0.0
+    unigene-rat     200     0.0     0.0
+    unigene-rat     250     0.0     0.0
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blastcorrectcounts.tsv
+    
+    Run time: 00:00:13
+    Completed ./blastcorrectcounts.pl
+    7:00PM, 8 January 2008
+    ****************************************    
+
+    select * from blastcorrectcounts where targetsource = 'unigene-rat';
+    +--------------+---------+---------+------------+
+    | targetsource | binstop | matches | mismatches |
+    +--------------+---------+---------+------------+
+    | unigene-rat  |       1 |  318.00 |     105.00 |
+    | unigene-rat  |       2 |   21.50 |       9.50 |
+    | unigene-rat  |       3 |    6.00 |       4.00 |
+    | unigene-rat  |       4 |    3.20 |       1.80 |
+    | unigene-rat  |       5 |    1.40 |       0.60 |
+    | unigene-rat  |      10 |    3.10 |       0.90 |
+    | unigene-rat  |      25 |    0.60 |       0.40 |
+    | unigene-rat  |      50 |    0.00 |       0.00 |
+    | unigene-rat  |     100 |    0.00 |       0.00 |
+    | unigene-rat  |     150 |    0.00 |       0.00 |
+    | unigene-rat  |     200 |    0.00 |       0.00 |
+    | unigene-rat  |     250 |    0.00 |       0.00 |
+    +--------------+---------+---------+------------+
+
+
+
+./blastcorrectcountsgraph.pl -d unigene -t unigene-rat -l "Extremely low E-value human UniGene hits against rat UniGene, segregated by total number of BLAST hits with breakdown by match and mismatch BLAST hits. Matches (blue) and mismatches (red) are designated by fuzzy matching of the original human UniGene sequence annotation against the BLAST hit annotations. The average matches for a particular total BLAST hits grouping is the sum over all sequences in the grouping of the proportion of BLAST hits with matching annotation (its value ranges between 0 and 1 per sequence), as determined by fuzzy matching of the target annotation with the original human UniGene annotation. The average mismatches are similarly calculated for BLAST hits whose annotation does not match the original human UniGene annoation. E-value cutoff: -100; Match cutoff: 0.80." > html/unigene.blastcorrectcountsgraph.unigene-rat.html
+
+
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/unigene.blastcorrectcountsgraph.unigene-rat.html /Users/young/FUNNYBASE/thesis/final/chap1/images/unigene.blastcorrectcountsgraph.unigene-rat.html
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan  8 16:55:20 EST 2008] blastcountsevaluecutoffgraph - SIGNIFICANT NUMBER OF SEQUENCES HAD MORE THAN 250 HITS WHEN COMBINING HITS FROM MULTIPLE DATABASES>
+
+
+
+swissprot
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -100
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250
+Tags: 1 2 3 4 5 10 25 50 100 150 200 250
+Data:
+52 41 24 23 10 71 184 116 122 70 41 229 
+210 138 63 45 29 111 132 93 60 28 7 67 
+358 202 80 58 33 92 89 30 15 10 14 2 
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count >200 and count <=250;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 150 and count <=200;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 100 and count <= 150;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 50 and count <= 100;
+229
+41
+70
+122
+
+
+unigenes
+
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -100
+
+./blastcountsevaluecutoffgraph.pl -m 400 -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250 
+Tags: 1 2 3 4 5 10 25 50 100 150 200 250
+Data:
+17 90 156 90 73 188 209 84 37 10 11 7 
+186 276 310 87 46 47 20 10 1 0 0 0 
+350 312 241 42 11 15 9 2 1 0 0 0 
+
+
+swissprot + unigenes
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -100
+
+
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 > html/unigene.blastcountsevaluecutoffgraph.showcounts.all.html
+
+Tags: 1 2 3 4 5 10 25 50 100 150 200 250
+Data:
+0 20 17 14 15 87 136 177 154 68 54 43 
+79 86 67 61 80 161 180 96 70 24 11 25 
+183 177 107 93 76 158 108 39 15 10 15 2 
+
+
+
+REDO WITH 10 SEQUENCES:
+
+
+SWISSPROT
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -100
+
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5';
+10
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 250;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count is null;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = '';
+ENDS OK
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = 0;
+
+1
+
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 200 and count <=250;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 150 and count <=200;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 100 and count <= 150;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 50 and count <= 100;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 25 and count <= 50;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 10 and count <= 25;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 5 and count <= 10;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 4 and count <= 5;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 3 and count <= 4;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 2 and count <= 3;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 1 and count <= 2;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 0 and count <= 1;
+
+0
+1
+1
+0
+2
+1
+1
+1
+1
+1
+0
+
+
+SWISSPROT + UNIGENES
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -100
+
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5';
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 250;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count is null;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = '';
+ENDS OK
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = 0;
+
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 200 and count <=250;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 150 and count <=200;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 100 and count <= 150;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 50 and count <= 100;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 25 and count <= 50;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 10 and count <= 25;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 5 and count <= 10;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 4 and count <= 5;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 3 and count <= 4;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 2 and count <= 3;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 1 and count <= 2;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 0 and count <= 1;
+
+1
+1
+0
+0
+3
+3
+2
+0
+0
+0
+
+
+
+
+
+REDO WITH 50 SEQUENCES:
+
+
+SWISSPROT
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -100
+
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5';
+50
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 250;
+ENDS OK
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count is null;
+NULL OK
+
+EMPTY NOT OK
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = '';
+5
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = 0;
+5
+
+select distinct collectionid from blastcountsevaluecutoff where count = '' and evaluecutoff = '-5';
++--------------+
+| collectionid |
++--------------+
+|            6 |
+|           40 |
+|           24 |
+|           21 |
+|           14 |
++--------------+
+OK
+
+select count(*) from collectionblast where targetsource = 'swissprot' and collectionid = 6;
+select count(*) from collectionblast where targetsource = 'swissprot' and collectionid = 40;
+select count(*) from collectionblast where targetsource = 'swissprot' and collectionid = 24;
+select count(*) from collectionblast where targetsource = 'swissprot' and collectionid = 21;
+select count(*) from collectionblast where targetsource = 'swissprot' and collectionid = 14;
+ALL ZERO
+
+
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 200 and count <=250;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 150 and count <=200;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 100 and count <= 150;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 50 and count <= 100;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 25 and count <= 50;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 10 and count <= 25;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 5 and count <= 10;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 4 and count <= 5;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 3 and count <= 4;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 2 and count <= 3;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 1 and count <= 2;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 0 and count <= 1;
+
+4
+5
+2
+7
+9
+8
+3
+1
+3
+1
+0
+2
+total = 45 OK
+
+
+SWISSPROT + UNIGENES
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -100
+
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5';
+50
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 250;
+END NOT OK
+
+4
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count is null;
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = '';
+ZERO
+
+select count(count) from blastcountsevaluecutoff where evaluecutoff = '-5' and count = 0;
+0
+
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 200 and count <=250;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 150 and count <=200;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 100 and count <= 150;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 50 and count <= 100;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 25 and count <= 50;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 10 and count <= 25;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 5 and count <= 10;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 4 and count <= 5;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 3 and count <= 4;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 2 and count <= 3;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 1 and count <= 2;
+select count(distinct collectionid) from blastcountsevaluecutoff where evaluecutoff = '-5' and count > 0 and count <= 1;
+
+1
+5
+2
+9
+13
+6
+5
+1
+0
+2
+2
+0
+total = 46
+
+
+SO PROBLEM WAS THAT A SIGNIFICANT NUMBER OF SEQUENCES HAD MORE THAN 250 HITS WHEN COMBINING HITS FROM MULTIPLE DATABASES
+
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot -e -100
+
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 > html/unigene.blastcountsevaluecutoffgraph.swissprot.html
+
+
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t unigene-mouse,unigene-dog,unigene-rat -e -100
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 > html/unigene.blastcountsevaluecutoffgraph.unigenes.html
+
+
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -5
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -50
+./blastcountsevaluecutoff.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -100
+
+
+./blastcountsevaluecutoffgraph.pl -d unigene -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 > html/unigene.blastcountsevaluecutoffgraph.swissprot+unigene.html
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Jan  7 16:49:15 EST 2008] SELF-BLAST SUMMARY OF unigenehuman>
+
+
+
+1.1 RUN BLAST ON CLUSTER:
+
+(NB: SET MAX NUMBER OF HIT SEQUENCES TO 100, I.E.: B=100 )
+screen
+
+sudo ./arrayblast.pl -d unigenehuman -q unigene-human -t unigene-human -j 24
+
+    /common/pipeline/unigenehuman/blast/unigene-human-unigene-human.blast.tsv    
+    
+/common/pipeline/unigenehuman/blast/unigene-human-unigene-human.blast.tsv
+
+    Run time: 01:13:34
+    Completed ./arrayblast.pl
+    6:03PM, 7 January 2008
+    ****************************************
+
+1.2 LOAD INTO TABLE:
+use indexer;
+drop table unigenehumanselfblast;
+Query OK, 0 rows affected (1 min 57.19 sec)
+
+./arrayloaddata.pl -d indexer -t unigenehumanselfblast -i /common/pipeline/unigenehuman/blast/unigene-human-unigene-human.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+    Run time: 00:02:59
+    Completed ./arrayloaddata.pl
+    6:18PM, 7 January 2008
+    ****************************************
+
+
+1.3 ADD FULLTEXT INDEX:
+
+./addfulltext.pl -d indexer -t unigenehumanselfblast -n queryaccession -f queryaccession
+
+    Run time: 00:03:22
+    Completed ./addfulltext.pl
+    6:29PM, 7 January 2008
+    ****************************************
+
+1.4 (OPTIONAL) CLEAN OUT OLD FILES IN indexer/collection DIRECTORY
+
+sudo find /common/pipeline/indexer/collection -mtime +2 -type f -exec rm -rf {} \;
+
+1.5 LOAD TABLE TO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d indexer -t unigenehumanselfblast
+
+    Run time: 00:03:29
+    Completed ./clusterloadtable.pl
+    7:28PM, 7 January 2008
+    ****************************************
+
+RUN ON gems:
+
+cd /common/pipeline/indexer/collection
+sudo chmod 755 clusterloadtable.sh
+sudo ./clusterloadtable.sh
+
+1.6 DO MATCH/MISMATCH BINS ON CLUSTER (~ 12 hours ): 
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 24 -b 400 -s unigenehumanselfblast
+
+    Finished loading data.
+    Adding fulltext... done.
+    
+    Run time: 02:39:24
+    Completed ./arrayselfblastbinsdaemon.pl
+    3:04AM, 9 January 2008
+    ****************************************
+
+1.7 CREATE BIN-BY-BIN TOTALS OF MATCHES AND MISMATCHES FOR THE WHOLE DATABASE
+
+./selfblaststats.pl -d indexer -s unigenehumanselfblast -b -400,-300,-200,-100,-75,-50,-40,-30,-20,-10,-4
+    
+    Run time: 00:07:40
+    Completed ./selfblaststats.pl
+    12:42AM, 9 January 2008
+    ****************************************
+
+1.8 CREATE GRAPH OF MATCH/MISMATCHES FOR WHOLE DATABASE
+
+./selfblaststatsgraph.pl -d indexer -s unigenehumanselfblast > html/unigenehuman.selfblaststatsgraph.html
+
+    INPUT: unigenehumanselfblaststats TABLE
+    OUTPUT: unigenehumanselfblaststatsgraph TABLE
+
+1.9 COPY TO images DIRECTORY:
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/unigenehuman.selfblaststatsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/unigenehuman.selfblaststatsgraph.html
+
+
+
+</entry>
+
+
+
+<entry [Mon Jan  7 15:14:38 EST 2008] SELF-BLAST SUMMARY OF refseqmouse>
+
+
+
+***************************************
+************ INCOMPLETE ***************
+***************************************
+
+
+1.1 RUN BLAST ON CLUSTER:
+
+(NB: SET MAX NUMBER OF HIT SEQUENCES TO 100, I.E.: B=100 )
+sudo ./arrayblast.pl -d refseqmouse -q refseq-mouse -t refseq-mouse -j 24
+    
+    /common/pipeline/refseqmouse/blast/refseq-mouse-refseq-mouse.blast.tsv
+    
+    Run time: 00:16:04
+    Completed ./arrayblast.pl
+    3:42PM, 7 January 2008
+    ****************************************
+
+COMPARED TO refseq-human:
+
+    /common/pipeline/refseqhuman/blast/refseq-human-refseq-human.blast.tsv
+    
+    Run time: 00:19:46
+    Completed ./arrayblast.pl
+    9:54PM, 5 January 2008
+    ****************************************
+
+1.2 LOAD INTO TABLE:
+use indexer;
+drop table refseqmouseselfblast;
+Query OK, 0 rows affected (1 min 57.19 sec)
+
+./arrayloaddata.pl -d indexer -t refseqmouseselfblast -i /common/pipeline/refseqmouse/blast/refseq-mouse-refseq-mouse.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+ERROR:
+
+    dlc-genomics:~/FUNNYBASE/bin/orthologues young$ ./arrayloaddata.pl -d indexer -t refseqmouseselfblast -i /common/pipeline/refse\
+    > qmouse/blast/refseq-mouse-refseq-mouse.blast.tsv -s /Users/young/FUNNYBASE/bin/\
+    > mappings/sql/create_blast.sql
+    Creating table 'refseqmouseselfblast' if not exists... done.
+    Query failed: Duplicate entry '|refseq-mouse|-373----1-1' for key 1 (1062)
+    DID NOT LOAD!
+    
+    Run time: 00:00:06
+    Completed ./arrayloaddata.pl
+    3:44PM, 7 January 2008
+    ****************************************
+
+
+
+
+
+
+
+1.3 ADD FULLTEXT INDEX:
+
+./addfulltext.pl -d indexer -t refseqmouseselfblast -n queryaccession -f queryaccession
+
+1.4 (OPTIONAL) CLEAN OUT OLD FILES IN indexer/collection DIRECTORY
+
+sudo find /common/pipeline/indexer/collection -mtime +2 -type f -exec rm -rf {} \;
+
+1.5 LOAD TABLE TO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d indexer -t refseqmouseselfblast
+
+RUN ON gems:
+
+cd /common/pipeline/indexer/collection
+sudo ./clusterloadtable.sh
+
+1.6 DO MATCH/MISMATCH BINS ON CLUSTER (~ 12 hours ): 
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 24 -b 400 -s refseqmouseselfblast
+
+    ALL COMPLETED EXCEPT:
+
+    ----------------------------------------------------------------------------
+    all.q@node010.cluster.private  BIP   1/2       0.00     darwin        
+    1492645 0.55500 refseqhuma root         r     01/06/2008 12:53:31     1 14
+    ----------------------------------------------------------------------------
+
+    BECAUSE ITS A Worker::Ant JOB SO NO PROBLEM IF NOT RUN BECAUSE THE OTHER Worker::Ants WILL DO ALL OF THE ACCESSIONS IN THE ACCESSION FILE ANYWAY. SO DISABLED node014 AND RERAN WITHOUT DOING ARRAY JOB, JUST TO LOAD INTO indexer.refseqmouseselfblastbins TABLE:
+
+    
+#$arrayjob->run();
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 24 -b 400 -s refseqmouseselfblast
+
+    Run time: 00:05:58
+    Completed ./arrayselfblastbinsdaemon.pl
+    3:07PM, 7 January 2008
+    ****************************************
+
+
+1.7 CREATE BIN-BY-BIN TOTALS OF MATCHES AND MISMATCHES FOR THE WHOLE DATABASE
+
+./selfblaststats.pl -d indexer -s refseqmouseselfblast -b -400,-300,-200,-100,-75,-50,-40,-30,-20,-10,-4
+    
+    Run time: 00:02:44
+    Completed ./selfblaststats.pl
+    3:11PM, 7 January 2008
+    ****************************************
+
+1.8 CREATE GRAPH OF MATCH/MISMATCHES FOR WHOLE DATABASE
+
+./selfblaststatsgraph.pl -d indexer -s refseqmouseselfblast > html/refseqmouse.selfblaststatsgraph.html
+
+    INPUT: refseqmouseselfblaststats TABLE
+    OUTPUT: refseqmouseselfblaststatsgraph TABLE
+
+1.9 COPY TO images DIRECTORY:
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/refseqmouse.selfblaststatsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/refseqmouse.selfblaststatsgraph.html
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Jan  5 21:33:00 EST 2008] SELF-BLAST SUMMARY OF refseqhuman>
+
+
+
+
+***************************************
+************ INCOMPLETE ***************
+***************************************
+
+
+1.1 RUN BLAST ON CLUSTER:
+
+(NB: SET MAX NUMBER OF HIT SEQUENCES TO 100, I.E.: B=100 )
+sudo ./arrayblast.pl -d refseqhuman -q refseq-human -t refseq-human -j 26
+
+    /common/pipeline/refseqhuman/blast/refseq-human-refseq-human.blast.tsv
+    
+    
+    Run time: 00:19:46
+    Completed ./arrayblast.pl
+    9:54PM, 5 January 2008
+    ****************************************
+
+1.2 LOAD INTO TABLE:
+use indexer;
+drop table refseqhumanselfblast;
+Query OK, 0 rows affected (1 min 57.19 sec)
+
+./arrayloaddata.pl -d indexer -t refseqhumanselfblast -i /common/pipeline/refseqhuman/blast/refseq-human-refseq-human.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+1.3 ADD FULLTEXT INDEX:
+
+./addfulltext.pl -d indexer -t refseqhumanselfblast -n queryaccession -f queryaccession
+
+1.4 (OPTIONAL) CLEAN OUT OLD FILES IN indexer/collection DIRECTORY
+
+sudo find /common/pipeline/indexer/collection -mtime +2 -type f -exec rm -rf {} \;
+
+1.5 LOAD TABLE TO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d indexer -t refseqhumanselfblast
+
+RUN ON gems:
+
+cd /common/pipeline/indexer/collection
+sudo ./clusterloadtable.sh
+
+1.6 DO MATCH/MISMATCH BINS ON CLUSTER (~ 12 hours ): 
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 26 -b 400 -s refseqhumanselfblast
+
+    ALL COMPLETED EXCEPT:
+
+    ----------------------------------------------------------------------------
+    all.q@node010.cluster.private  BIP   1/2       0.00     darwin        
+    1492645 0.55500 refseqhuma root         r     01/06/2008 12:53:31     1 14
+    ----------------------------------------------------------------------------
+
+    BECAUSE ITS A Worker::Ant JOB SO NO PROBLEM IF NOT RUN BECAUSE THE OTHER Worker::Ants WILL DO ALL OF THE ACCESSIONS IN THE ACCESSION FILE ANYWAY. SO DISABLED node014 AND RERAN WITHOUT DOING ARRAY JOB, JUST TO LOAD INTO indexer.refseqhumanselfblastbins TABLE:
+
+    
+#$arrayjob->run();
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 26 -b 400 -s refseqhumanselfblast
+
+    Run time: 00:05:58
+    Completed ./arrayselfblastbinsdaemon.pl
+    3:07PM, 7 January 2008
+    ****************************************
+
+
+1.7 CREATE BIN-BY-BIN TOTALS OF MATCHES AND MISMATCHES FOR THE WHOLE DATABASE
+
+./selfblaststats.pl -d indexer -s refseqhumanselfblast -b -400,-300,-200,-100,-75,-50,-40,-30,-20,-10,-4
+    
+    Run time: 00:02:44
+    Completed ./selfblaststats.pl
+    3:11PM, 7 January 2008
+    ****************************************
+
+1.8 CREATE GRAPH OF MATCH/MISMATCHES FOR WHOLE DATABASE
+
+./selfblaststatsgraph.pl -d indexer -s refseqhumanselfblast > html/refseqhuman.selfblaststatsgraph.html
+
+    INPUT: refseqhumanselfblaststats TABLE
+    OUTPUT: refseqhumanselfblaststatsgraph TABLE
+
+1.9 COPY TO images DIRECTORY:
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/refseqhuman.selfblaststatsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/refseqhuman.selfblaststatsgraph.html
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Jan  5 21:33:00 EST 2008] SELF-BLAST SUMMARY>
+
+
+
+
+1.1 RUN BLAST ON CLUSTER:
+
+(NB: SET MAX NUMBER OF HIT SEQUENCES TO 100, I.E.: B=100 )
+sudo ./arrayblast.pl -d swissprot -q swissprot -t swissprot -j 26
+
+1.2 LOAD INTO TABLE:
+use indexer;
+drop table swissprotselfblast;
+Query OK, 0 rows affected (1 min 57.19 sec)
+
+./arrayloaddata.pl -d indexer -t swissprotselfblast -i /common/pipeline/swissprot/blast/swissprot-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+1.3 ADD FULLTEXT INDEX:
+
+./addfulltext.pl -d indexer -t swissprotselfblast -n queryaccession -f queryaccession
+
+1.4 (OPTIONAL) CLEAN OUT OLD FILES IN indexer/collection DIRECTORY
+
+sudo find /common/pipeline/indexer/collection -mtime +2 -type f -exec rm -rf {} \;
+
+1.5 LOAD TABLE TO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d indexer -t swissprotselfblast
+
+RUN ON gems:
+
+cd /common/pipeline/indexer/collection
+sudo ./clusterloadtable.sh
+
+1.6 DO MATCH/MISMATCH BINS ON CLUSTER (~ 12 hours ): 
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 26 -b 400 -s swissprotselfblast
+
+1.7 CREATE BIN-BY-BIN TOTALS OF MATCHES AND MISMATCHES FOR THE WHOLE DATABASE
+
+./selfblaststats.pl -d indexer -s swissprotselfblast -b -400,-300,-200,-100,-75,-50,-40,-30,-20,-10,-4
+
+1.8 CREATE GRAPH OF MATCH/MISMATCHES FOR WHOLE DATABASE
+
+./selfblaststatsgraph.pl -d indexer -s swissprotselfblast > html/swissprot.selfblaststatsgraph.pl
+
+    INPUT: swissprotselfblaststats TABLE
+    OUTPUT: swissprotselfblaststatsgraph TABLE
+
+1.9 COPY TO images DIRECTORY:
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/swissprot.selfblaststatsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/swissprot.selfblaststatsgraph.html
+
+
+</entry>
+
+
+
+<entry [Sat Jan  5 19:43:53 EST 2008] VERIFY BLAST ANNOTATIONS BASED ON COVERAGE: blastcoverage.pl --> ./correctannotation.pl>
+
+
+
+1. GET CORRECT ANNOTATIONS FOR unigene BASED ON TARGET MATCH COVERAGE THRESHOLD OF 0.8
+
+./blastcoverage.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+
+BEFORE:
+
+    #Doing annotations for collection sequences (total 3496)
+    #
+    #/Users/young/FUNNYBASE/pipeline/pfalagam/collection/pfalagam.blastcoverage.tsv
+    #
+    #Run time: 01:30:07 (ish)
+    #Completed ./blastcoverage.pl
+    #9:19PM, 15 November 2007
+    #****************************************
+
+AFTER:
+
+    /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blastcoverage.tsv
+    
+    Dropping table 'blastcoverage... done.
+    Creating table 'blastcoverage' if not exists... done.
+    Loading data into table 'blastcoverage'... done.
+    
+    Run time: 00:59:52
+    Completed ./blastcoverage.pl
+    10:13PM, 5 January 2008
+    ****************************************
+    
+
+
+2. CHECK IF E-VALUE-BASED ANNOTATION IS SAME AS COVERAGE-BASED ANNOTATION AT VARYING COVERAGE CUTOFFS
+
+./correctannotation.pl -d unigene -c 0.90,0.60 -m 0.30,0.25 -X 
+
+
+    (03:14:45 DURATION) WITH A RANGE OF COVERAGE CUTOFF AND MISMATCH CUTOFF VALUES
+
+
+
+</entry>
+
+
+
+<entry [Sat Jan  5 21:12:45 EST 2008] GET MIN, MAX, AVG AND STDDEV OF HIT COUNTS FOR swissprotselfblast AND refseqhumanselfblast>
+
+
+
+use indexer;
+select min(count) from swissprotselfblastcounts;
+select max(count) from swissprotselfblastcounts;
+select avg(count) from swissprotselfblastcounts;
+select stddev(count) from swissprotselfblastcounts;
+
+BEFORE:
+
+select min(count) from swissprotselfblastcounts;
++------------+
+| min(count) |
++------------+
+|          1 |
++------------+
+
+select max(count) from swissprotselfblastcounts;
++------------+
+| max(count) |
++------------+
+|        250 |
++------------+
+
+select avg(count) from swissprotselfblastcounts;
++------------+
+| avg(count) |
++------------+
+|    90.6688 |
++------------+
+
+select stddev(count) from swissprotselfblastcounts;
++---------------+
+| stddev(count) |
++---------------+
+|       87.5594 |
++---------------+
+
+AFTER:
+
+ select min(count) from swissprotselfblastcounts;
++------------+
+| min(count) |
++------------+
+|          0 |
++------------+
+1 row in set (0.09 sec)
+
+mysql> select max(count) from swissprotselfblastcounts;
++------------+
+| max(count) |
++------------+
+|        100 |
++------------+
+1 row in set (0.08 sec)
+
+mysql> select avg(count) from swissprotselfblastcounts;
++------------+
+| avg(count) |
++------------+
+|    56.8416 |
++------------+
+1 row in set (0.08 sec)
+
+mysql> select stddev(count) from swissprotselfblastcounts;
++---------------+
+| stddev(count) |
++---------------+
+|       40.4422 |
++---------------+
+
+
+use indexer;
+select min(count) from refseqhumanselfblastcounts;
+select max(count) from refseqhumanselfblastcounts;
+select avg(count) from refseqhumanselfblastcounts;
+select stddev(count) from refseqhumanselfblastcounts;
+
+select min(count) from refseqhumanselfblastcounts;
++------------+
+| min(count) |
++------------+
+|          0 |
++------------+
+1 row in set (0.01 sec)
+
+mysql> select max(count) from refseqhumanselfblastcounts;
++------------+
+| max(count) |
++------------+
+|        250 |
++------------+
+1 row in set (0.01 sec)
+
+mysql> select avg(count) from refseqhumanselfblastcounts;
++------------+
+| avg(count) |
++------------+
+|    41.1864 |
++------------+
+1 row in set (0.01 sec)
+
+mysql> select stddev(count) from refseqhumanselfblastcounts;
++---------------+
+| stddev(count) |
++---------------+
+|       70.4430 |
++---------------+
+
+</entry>
+
+
+
+<entry [Thu Jan  3 00:24:39 EST 2008] CREATE SWISSPROT SELFBLAST GRAPHS - 1) MATCH/MISMATCH DISTRIBUTION, AND 2) HIT COUNT DISTRIBUTION>
+
+
+
+
+show tables like '%self%';
++-----------------------------------+
+| Tables_in_indexer (%self%)        |
++-----------------------------------+
+| refseqdogselfblast                |
+| refseqdogselfblastbins            |
+| refseqhumanselfblast              |
+| refseqhumanselfblastbins          |
+| refseqhumanselfblastcounts        |
+| refseqmouseselfblast              |
+| refseqmouseselfblastbins          |
+| refseqratselfblast                |
+| refseqratselfblastbins            |
+| selfblastdistributiongraph        |
+| selfblastdistributionstats        |
+| swissprotselfblast                |
+| swissprotselfblastbins            |
+| swissprotselfblastbinsgraph       |
+| swissprotselfblastcounts          |
+| swissprotselfblastcountsgraph     |
+| swissprotselfblastdata            |
+| swissprotselfblaststats           |
+| swissprotselfblastverify          |
+| swissprotselfblastverifymanual    |
+| swissprotselfblastverifyoptimised |
+| swissprotshortselfblast           |
++-----------------------------------+
+
+
+
+1) BLAST HIT MATCH/MISMATCH E-VALUE DISTRIBUTION GRAPH WORKFLOW: arrayblast --> arrayloaddata.pl --> arrayselfblastbins --> selfblaststats --> selfblaststatsgraph
+
+
+SAVE OLD swissprot SELFBLAST:
+
+sudo mv /common/pipeline/swissprot/blast/swissprot-swissprot.blast.tsv.tar.gz /Volumes/Backup/young/FUNNYBASE/archive/swissprot-swissprot.blast.tsv.tar.gz
+
+1.1 RUN BLAST ON CLUSTER:
+
+(NB: SET MAX NUMBER OF HIT SEQUENCES TO 100, I.E.: B=100 )
+sudo ./arrayblast.pl -d swissprot -q swissprot -t swissprot -j 26
+
+    Run time: 05:53:17
+    Completed ./arrayblast.pl
+    11:49AM, 4 January 2008
+    ****************************************
+
+76-18-52-104
+
+1.2 LOAD INTO TABLE:
+
+use indexer;
+drop table swissprotselfblast;
+Query OK, 0 rows affected (1 min 57.19 sec)
+
+./arrayloaddata.pl -d indexer -t swissprotselfblast -i /common/pipeline/swissprot/blast/swissprot-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+    Run time: 00:22:57
+    Completed ./arrayloaddata.pl
+    12:34AM, 4 January 2008
+    ****************************************
+
+    BEFORE:
+
+    select count(*) from swissprotselfblast;
+    +----------+
+    | count(*) |
+    +----------+
+    | 16,510,153 |
+    +----------+
+
+    select count(distinct queryaccession) from swissprotselfblast;
+    +--------------------------------+
+    | count(distinct queryaccession) |
+    +--------------------------------+
+    |                         137161 |
+    +--------------------------------+
+
+    AFTER:
+    
+    select count(*) from swissprotselfblast;
+    +----------+
+    | count(*) |
+    +----------+
+    | 13440654 |
+    +----------+
+    1 row in set (0.00 sec)
+    
+    +--------------------------------+
+    | count(distinct queryaccession) |
+    +--------------------------------+
+    |                         186293 |
+    +--------------------------------+
+    1 row in set (44 min 50.40 sec)
+
+
+    NUMBER OF RECORDS IN SWISSPROT FILE MATCHES NUMBER OF RECORDS IN MYSQL TABLE:
+    
+    records /common/data/swissprot
+    188477
+
+
+1.3 ADD FULLTEXT INDEX:
+
+./addfulltext.pl -d indexer -t swissprotselfblast -n queryaccession -f queryaccession
+
+BEFORE:
+~ 3 hours
+
+AFTER:
+
+    Run time: 01:48:38
+    Completed ./addfulltext.pl
+    4:32PM, 4 January 2008
+    ****************************************
+
+
+1.4 (OPTIONAL) CLEAN OUT OLD FILES IN REMOTE /common/pipeline/indexer/collection DIRECTORY
+
+REMOVE ALL FILES MORE THAN ONE DAY OLD:
+
+sudo find /common/pipeline/indexer/collection -mtime +2 -type f -exec rm -rf {} \;
+BEFORE:
+drwxrwxrwx   632 www   508      20K Jan  4 14:37 collection
+AFTER:
+drwxrwxrwx   86 www   508      2K Jan  4 18:02 collection
+
+ls /common/pipeline/indexer/collection
+>>>
+clusterloadtable.sh
+indexer.swissprotselfblastbins.accessionfile
+indexer.swissprotselfblastbins.accessionfile.old.137161_records
+indexer.swissprotselfblastbins.args
+indexer.swissprotselfblastbins.lock
+swissprotselfblastbins.sh
+<<<
+
+
+1.5 LOAD TABLE TO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d indexer -t swissprotselfblast
+    
+    Table files: swissprotselfblast.MYD swissprotselfblast.MYI swissprotselfblast.frm
+    Copying files for table 'swissprotselfblast' to remote mysql data directory...
+    cp /usr/local/mysql/data/indexer/swissprotselfblast.MYD /common/mysql/data/indexer/swissprotselfblast.MYD
+    cp /usr/local/mysql/data/indexer/swissprotselfblast.MYI /common/mysql/data/indexer/swissprotselfblast.MYI
+    cp /usr/local/mysql/data/indexer/swissprotselfblast.frm /common/mysql/data/indexer/swissprotselfblast.frm
+    Finished copying
+
+WHICH CREATES THIS FILE:
+
+em /common/pipeline/indexer/collection/clusterloadtable.sh
+
+>>>...
+/common/bin/dsh -a mkdir -p /private/var/mysql/indexer
+/common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.MYD /private/var/mysql/indexer/swissprotselfblast.MYD
+/common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.MYI /private/var/mysql/indexer/swissprotselfblast.MYI
+/common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.frm /private/var/mysql/indexer/swissprotselfblast.frm
+/common/bin/dsh -a chmod -R 660 /private/var/mysql/indexer
+/common/bin/dsh -a chmod 700 /private/var/mysql/indexer
+/common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/indexer
+echo `pwd`
+/common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+<<<
+
+
+RUN ON gems:
+
+cd /common/pipeline/indexer/collection
+sudo ./clusterloadtable.sh
+
+OR RUN EACH COMMAND USING sudo:
+
+sudo /common/bin/dsh -a mkdir -p /private/var/mysql/indexer
+sudo /common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.MYD /private/var/mysql/indexer/swissprotselfblast.MYD
+
+COMPLETED:
+node005:/private/var/mysql vanwye$ sudo ls -al indexer/swissprotselfblast.MYD
+-rw-rw----   1 mysql  wheel  3301879804 Jan  4 15:37 indexer/swissprotselfblast.MYD
+
+
+sudo /common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.MYI /private/var/mysql/indexer/swissprotselfblast.MYI
+sudo /common/bin/dsh -a cp /common/mysql/data/indexer/swissprotselfblast.frm /private/var/mysql/indexer/swissprotselfblast.frm
+sudo /common/bin/dsh -a chmod -R 660 /private/var/mysql/indexer
+sudo /common/bin/dsh -a chmod 700 /private/var/mysql/indexer
+sudo /common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/indexer
+sudo /common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+
+
+1.6 DO MATCH/MISMATCH BINS ON CLUSTER:
+
+sudo ./arrayselfblastbinsdaemon.pl -d indexer -t 26 -b 400 -s swissprotselfblast
+
+    WHICH RUNS MULTIPLE JOBS OF arrayselfblastbins.pl AS FOLLOWS:
+    sudo ./arrayselfblastbins.pl 1 /common/pipeline/indexer/collection/indexer.swissprotselfblast.args
+
+TEST 100 sequences:
+
+    Run time: 00:15:55
+    Completed ./arrayselfblastbinsdaemon.pl
+    6:42PM, 4 January 2008
+    ***************************************
+
+BEFORE:
+
+    Run time: 07:14:57
+    Completed ./arrayselfblastbinsdaemon.pl
+    11:24AM, 28 October 2007
+    ****************************************
+
+    select count(*) from swissprotselfblastbins;
+    +----------+
+    | count(*) |
+    +----------+
+    | 69660536 |
+    +----------+
+
+    select * from swissprotselfblastbins limit 5;
+    +-----------+---------+-------+--------------+
+    | accession | binstop | count | matchboolean |
+    +-----------+---------+-------+--------------+
+    | O04795    |    -201 |     1 |            1 |
+    | O04795    |    -125 |     1 |            1 |
+    | O04795    |     -97 |     1 |            1 |
+    | O04795    |     -96 |     1 |            1 |
+    | O04795    |     -94 |     1 |            1 |
+    +-----------+---------+-------+--------------+
+
+AFTER:
+
+    Run time: ~12 hours
+
+    select count(*) from swissprotselfblastbins;
+    select * from swissprotselfblastbins limit 5;
+
+
+CREATE TABLE test (
+  accession varchar(20) NOT NULL default '',
+  binstop int(6) NOT NULL default '0',
+  count int(6) default NULL,
+  matchboolean int(12) NOT NULL default '0',
+  PRIMARY KEY  (accession,binstop,matchboolean),
+  FULLTEXT KEY accession (accession)
+)
+
+insert into test select * from swissprotselfblastbins limit 100;
+
+select * from test;
++-----------+---------+-------+--------------+
+| accession | binstop | count | matchboolean |
++-----------+---------+-------+--------------+
+| O00057    |    -204 |     1 |            1 |
+| O00057    |    -133 |     1 |            1 |
+| O00057    |    -123 |     1 |            0 |
+| O00057    |    -122 |     3 |            0 |
+| O00057    |    -118 |     1 |            0 |
+
+
+SELECT SUM(count)
+FROM test
+WHERE binstop >= '-10'
+AND binstop < '-5'
+AND matchboolean = 1
+
+SELECT SUM(count)
+FROM test
+WHERE binstop >= '-10'
+AND binstop < '-5'
+AND matchboolean = 0
+
+
+1.7 CREATE BIN-BY-BIN TOTALS OF MATCHES AND MISMATCHES FOR THE WHOLE DATABASE
+
+./selfblaststats.pl -d indexer -s swissprotselfblast -b -400,-300,-200,-100,-75,-50,-40,-30,-20,-10,-4
+
+
+    INPUT: swissprotselfblastbins TABLE
+    OUTPUT: swissprotselfblaststats TABLE
+
+BEFORE:
+
+    SELECT * FROM swissprotselfblaststats order by binstop;
+    +--------------+---------+---------+------------+
+    | collectionid | binstop | matches | mismatches |
+    +--------------+---------+---------+------------+
+    |            0 |    -310 | 1109835 |     166860 |
+    |            0 |    -300 | 1236525 |     153500 |
+    |            0 |    -290 | 1245257 |     197714 |
+    |            0 |    -280 | 1255158 |     193711 |
+    |            0 |    -270 | 1261833 |     231332 |
+    |            0 |    -260 | 1271303 |     404266 |
+    |            0 |    -250 | 1278531 |     395204 |
+    |            0 |    -240 | 1282004 |     560521 |
+    |            0 |    -230 | 1286073 |     750086 |
+    |            0 |    -220 | 1288713 |     832242 |
+    |            0 |    -210 | 1292443 |     862147 |
+    |            0 |    -200 | 1296487 |     889671 |
+    |            0 |    -190 | 1297432 |     913551 |
+    |            0 |    -180 | 1298841 |     903342 |
+    |            0 |    -170 | 1301565 |    1046591 |
+    |            0 |    -160 | 1303325 |    1099860 |
+    |            0 |    -150 | 1305048 |    1159229 |
+    |            0 |    -140 | 1305655 |    1158705 |
+    |            0 |    -130 | 1306546 |    1151678 |
+    |            0 |    -120 | 1307801 |    1185569 |
+    |            0 |    -110 | 1307589 |    1214773 |
+    |            0 |    -100 | 1309163 |    1252416 |
+    |            0 |     -90 | 1309587 |    1264377 |
+    |            0 |     -80 | 1310725 |    1276397 |
+    |            0 |     -70 | 1310839 |    1287252 |
+    |            0 |     -60 | 1311372 |    1298658 |
+    |            0 |     -50 | 1311769 |    1304500 |
+    |            0 |     -40 | 1312258 |    1308437 |
+    |            0 |     -30 | 1312356 |    1309716 |
+    |            0 |     -20 | 1312858 |    1311178 |
+    |            0 |     -10 | 1312909 |    1312264 |
+    |            0 |       0 |  656576 |     656413 |
+    |            0 |      10 |       0 |          0 |
+    +--------------+---------+---------+------------+
+
+AFTER:
+
+    select * from swissprotselfblaststats;
+   +--------------+---------+------------+------------+
+   | collectionid | binstop | matches    | mismatches |
+   +--------------+---------+------------+------------+
+   |            0 |    -300 |   35250272 |     707141 |
+   |            0 |    -200 |  825761818 |   26660106 |
+   |            0 |    -100 | 2147483647 |   91794342 |
+   |            0 |     -75 | 1492783204 |  117952279 |
+   |            0 |     -50 | 2147483647 |  313515934 |
+   |            0 |     -40 | 1461716957 |  272036453 |
+   |            0 |     -30 | 1839138500 |  436919745 |
+   |            0 |     -20 | 2147483647 |  668108718 |
+   |            0 |     -10 | 2147483647 | 1311225107 |
+   |            0 |      -4 | 2033548459 | 1363463648 |
+   +--------------+---------+------------+------------+
+
+
+1.8 CREATE GRAPH OF MATCH/MISMATCHES FOR WHOLE DATABASE
+
+./selfblaststatsgraph.pl -d indexer -s swissprotselfblast > html/swissprot.selfblaststatsgraph.pl
+
+    INPUT: swissprotselfblaststats TABLE
+    OUTPUT: swissprotselfblaststatsgraph TABLE
+
+
+1.9 COPY TO images DIRECTORY:
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/swissprot.selfblaststatsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/swissprot.selfblaststatsgraph.html
+
+
+
+2) BLAST HIT COUNT DISTRIBUTION GRAPH WORKFLOW  arrayselfblastcountsdaemon.pl --> selfblastcountsgraph.pl
+
+
+2.1 GET COUNT OF ALL BLAST HITS (UP TO MAX HIT LIMIT) FOR ALL DATABASE SEQUENCES
+
+sudo ./arrayselfblastcountsdaemon.pl -d indexer -s swissprotselfblast 
+
+BEFORE:
+
+    Run time: 00:05:15
+    Completed ./arrayselfblastcountsdaemon.pl
+    6:56PM, 17 November 2007
+    ****************************************
+
+    select count(*) from swissprotselfblastcounts;
+    +----------+
+    | count(*) |
+    +----------+
+    |   137162 |
+    +----------+
+    select * from swissprotselfblastCOUNTS limit 5;
+    +-----------+-------+
+    | accession | count |
+    +-----------+-------+
+    | O02639    |    28 |
+    | O02649    |   250 |
+    | O02655    |    39 |
+    | O02663    |    82 |
+    | O02664    |   250 |
+    +-----------+-------+
+
+AFTER:
+
+    ( 3 mins without creating accessions file)
+    Run time: 00:21:21
+    Completed ./arrayselfblastcountsdaemon.pl
+    8:00PM, 5 January 2008
+    ****************************************
+
+    select count(*) from swissprotselfblastcounts;
+    +----------+
+    | count(*) |
+    +----------+
+    |   186294 |
+    +----------+
+
+    select * from swissprotselfblastcounts limit 5;
+    +-----------+-------+
+    | accession | count |
+    +-----------+-------+
+    | O00409    |   100 |
+    | O00410    |    19 |
+    | O00411    |    21 |
+    | O00418    |    10 |
+    | O00422    |     5 |
+    +-----------+-------+
+
+
+2.2 BIN THE COUNTS AND PRINT TO GRAPH
+
+./selfblastcountsgraph.pl -d indexer -s swissprotselfblast -b 1,2,3,4,5,10,25,50,100 > html/swissprot.selfblastcountsgraph.v1.html
+
+    Run time: 00:00:08
+    Completed ./selfblastcountsgraph.pl
+    8:32PM, 5 January 2008
+    ****************************************
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/swissprot.selfblastcountsgraph.html /Users/young/FUNNYBASE/thesis/final/chap1/images/swissprot.selfblastcountsgraph.html
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan  4 05:24:41 EST 2008] TEST WITH MAX 100 HIT SEQUENCES PARAMETER ( B=100 )>
+
+
+
+
+sudo ./arrayblast.pl -d swissprot-short -q swissprot-short -t swissprot -j 26
+
+    /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+    
+    Run time: 00:04:11
+    Completed ./arrayblast.pl
+    5:30AM, 4 January 2008
+    ****************************************
+
+
+use indexer;
+drop table swissprotshortselfblast;
+
+./arrayloaddata.pl -d indexer -t swissprotshortselfblast -i /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+    Run time: 00:00:02
+    Completed ./arrayloaddata.pl
+    5:32AM, 4 January 2008
+    ****************************************
+
+SAVE A BACKUP OF ORIGINAL OUTPUT FILE:
+
+cp /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv.BLAST2TSV.max100.ARRAY
+
+records /common/data/swissprot-short
+1283
+
+lines /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv 
+82709 lines
+
+select count(distinct queryaccession) from swissprotshortselfblast;
+
+BEFORE AND AFTER:
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                           1275 |
++--------------------------------+
+
+select count(*) from swissprotshortselfblast;
+
+BEFORE:
++----------+
+| count(*) |
++----------+
+|   139763 |
++----------+
+
+AFTER:
+
++----------+
+| count(*) |
++----------+
+|    82709 |
++----------+
+
+
+</entry>
+
+
+
+<entry [Tue Jan  1 20:50:20 EST 2008] DISCREPANCY IN NUMBER OF RECORDS IN swissprot (188,477) AND NUMBER OF UNIQUE QUERY ACCESSIONS IN swissprotselfblast>
+
+
+
+BEFORE:
+select count(*) from swissprotselfblast;
++----------+
+| count(*) |
++----------+
+| 16,510,153 |
++----------+
+
+AFTER:
+ select count(*) from swissprotselfblast;
++----------+
+| count(*) |
++----------+
+|  2790790 |
++----------+
+
+
+select count(distinct queryaccession) from swissprotselfblast;
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                         137161 |
++--------------------------------+
+
+records /common/data/swissprot
+188477
+
+dlc-genomics:/common/pipeline/swissprot/blast young$ records swissprot-swissprot.1
+6732
+perl -e 'print 6732 * 28, "\n";'
+188496
+
+./arrayloaddata.pl -d indexer -t swissprotselfblast -i /common/pipeline/swissprot/blast/swissprot-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+
+select count(distinct queryaccession) from swissprotselfblast;
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                          30,706 |
++--------------------------------+
+
+ select count(*) from swissprotselfblast;
++----------+
+| count(*) |
++----------+
+|  2,790,790 |
++----------+
+
+TEST WITH swissprot-short
+
+chopfile /common/data/swissprot /common/data/swissprot-short 10000 
+records swissprot-short
+1283
+
+sudo ./arrayblast.pl -d swissprot-short -q swissprot-short -t swissprot -j 26
+
+    /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+    
+    Run time: 00:04:36
+    Completed ./arrayblast.pl
+    1:52AM, 31 December 2007
+    ****************************************
+
+OUTPUT:
+
+/common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv 
+
+use indexer;
+drop table swissprotshortselfblast;
+
+
+./arrayloaddata.pl -d indexer -t swissprotshortselfblast -i /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+    Run time: 00:00:03
+    Completed ./arrayloaddata.pl
+    10:25PM, 1 January 2008
+    ****************************************
+
+SAVE A BACKUP OF ORIGINAL OUTPUT FILE:
+
+cp /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv.BLAST2TSV.ARRAY
+
+    
+    
+select count(distinct queryaccession) from swissprotshortselfblast;
+
+select count(distinct queryaccession) from swissprotshortselfblast;
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                           1195 |
++--------------------------------+
+
+select count(*) from swissprotshortselfblast;
++----------+
+| count(*) |
++----------+
+|   139763 |
++----------+
+
+select distinct queryaccession from swissprotshortselfblast into outfile '/private/var/tmp/swissprot-short.accessions';
+Query OK, 1195 rows affected (0.43 sec)
+
+COPY TO unigene/blast DIRECTORY:
+
+mkdir -p /Users/young/FUNNYBASE/pipeline/unigene/blast
+sudo mv /private/var/tmp/swissprot-short.accessions /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short.accessions.sqltable
+
+GET LIST OF IDS FROM BLAST FASTA INPUT FILE:
+
+/common/data young$ grep ">" swissprot-short > swissprot-short-ids
+
+COPY TO unigene/blast DIRECTORY:
+
+mv /common/data/swissprot-short-ids /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids
+
+CHECK WHICH IDS ARE MISSING FROM THE SQL TABLE USING swissprotshortcheckmissingids.pl:
+
+cd /Users/young/FUNNYBASE/pipeline/unigene/blast
+./swissprotshortcheckmissingids.pl swissprot-short-ids-fasta swissprot-short-ids-sql
+
+NOT FOUND IN SQL
+P83011
+P83010
+P80166
+P28067
+P11887
+P80173
+Q9LEL5
+Q01468
+Q8RQD2
+Q9Z431
+Q93JW0
+Q9RHM8
+Q8KRR5
+Q9ZI54
+P49172
+P68522
+Q7WQA0
+Q7WC96
+Q7W066
+P59935
+P68523
+Q8KD41
+Q97JQ5
+P66840
+P66841
+Q6GIR7
+Q6GBA5
+Q8NXN2
+Q8CTG7
+Q63003
+Q40577
+Q6XXX9
+O42385
+Q9N297
+P08908
+Q64264
+Q9N298
+Q9N296
+P19327
+Q6XXY0
+P79250
+O08892
+P46636
+P35404
+O42384
+P83168
+Q98514
+P21133
+P15802
+P22760
+Q99PG0
+Q7M370
+Q9QZH8
+Q9Z6L3
+Q9NRG9
+P58742
+Q95JC7
+Q15758
+P51912
+O19105
+P39906
+P14195
+P14196
+P0A5N1
+Q49157
+P94968
+P0A5N0
+Q52424
+P13246
+P0A255
+P14197
+Q01515
+P14198
+P10051
+P50858
+P19650
+P20092
+P0A0C2
+P0A0C0
+P81463
+P81115
+P81116
+P11190
+Q8SQI5
+Q92337
+P27697
+P11191
+P31941
+Completed ./swissprotshortcheckmissingids.pl
+
+REDO ORIGINAL BLAST MANUALLY:
+
+/common/apps/wublast/wu-blastall -p blastp -d /common/data/swissprot -i /common/data/swissprot-short filter=seg -span2 noseqs -e 1e-5 > /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast
+
+SAVE A BACKUP:
+
+cp /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.safe
+
+
+FOUND THAT ALL THE FOLLOWING MISSING IDS WERE IN THE ORIGINAL BLAST OUTPUT FILE:
+
+grep -n Q92337 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P31941 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P11191 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P27697 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n Q8SQI5 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P11190 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast > /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv.BLAST2TSV.MANUAL
+
+    QUERY ACCESSION: P38945
+    QUERY ACCESSION: Q9LEL5
+    Can't use an undefined value as an ARRAY reference at /common/myEST/bin/pipeline4/blast2tsv.pl line 261, <STDIN> line 711125.
+
+grep -n "Q9LEL5"  /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast
+
+QUERY-TARGET HIT AGAINST ITSELF
+710510:Query=  Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+710524:Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...  1805  9.7e-205  1
+710574:>Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+
+TARGET HITS FOR OTHER SEQUENCES
+1102940:Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...   831  8.5e-92   1
+1102998:>Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+1168937:Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...   616  7.3e-67   1
+1169058:>Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+1169604:Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...   612  2.1e-66   1
+1169725:>Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+1170271:Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...   603  2.3e-65   1
+1170392:>Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+
+getlines -f /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast -n 710500 -l 1000 > /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q9LEL5.blast
+
+>>>
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-coclaurine
+    4'-O-methyltransferase (EC 2.1.1.116)
+    (S-adenosyl-L-methionine:3'-hydroxy-N-methylcoclaurine
+    4'-O-methyltransferase) (4'-OMT)
+        (350 letters; record 564)
+
+Database:  /common/data/swissprot
+           188,477 sequences; 68,230,664 total letters.
+Searching....10....20....30....40....50....60....70....80....90....100% done
+
+                                                                     Smallest
+                                                              High  Probability
+Sequences producing High-scoring Segment Pairs:              Score  P(N)      N
+
+Q9LEL5 4OMT_COPJA|swissprot|3'-hydroxy-N-methyl-(S)-cocla...  1805  9.7e-205  1
+Q9LEL6 6OMT_COPJA|swissprot|(RS)-norcoclaurine 6-O-methyl...   969  8.5e-108  1
+Q93WU3 CVMT1_OCIBA|swissprot|Chavicol O-methyltransferase...   693  8.4e-76   1
+Q93WU2 EOMT1_OCIBA|swissprot|Eugenol O-methyltransferase ...   680  2.7e-74   1
+...
+<<<
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q9LEL5.blast 
+    
+    QUERY ACCESSION: Q9LEL5
+    Can't use an undefined value as an ARRAY reference at /common/myEST/bin/pipeline4/blast2tsv.pl line 261, <STDIN> line 624.
+
+
+CHECK THE ACTUAL HITS EXTRACTED FROM THE FILE:
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q9LEL5.blast > hits
+
+em hits
+>>>
+Hits:
+$VAR1 = [
+          {
+            'length' => '350'
+          },
+          {
+            'length' => '347',
+            'identity' => 52,
+            'significance' => '8.5e-108',
+            'hsps' => [
+                        {
+                          'targetsource' => 'swissprot',
+                          'targetstart' => '7',
+                          'significance' => '8.5e-108',
+                          'hspscore' => '969',
+                          'querystop' => '350',
+                          'querystart' => '11',
+                          'orientation' => 'plus',
+                          'targetannotation' => '(RS)-norcoclaurine 6-O-methyltransferase (EC',
+                          'targetaccession' => 'Q9LEL6',
+                          'hitevalueexp' => '-108',
+                          'targetstop' => '346',
+                          'identity' => '0.52',
+                          'hitevaluedec' => '8.5',
+                          'targetid' => '6OMT_COPJA',
+                          'hsplength' => 340
+                        }
+                      ],
+            'targetaccession' => 'Q9LEL6'
+          },
+         
+...
+<<<
+
+
+  
+REWROTE blast2tsv.pl TO FIX BUGS.
+
+
+RERAN blast2tsv PARSE OF /common/pipeline/swissprot/blast/swissprot-short-swissprot.blast.tsv:
+
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast > /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+
+use indexer;
+drop table swissprotshortselfblast;
+
+
+./arrayloaddata.pl -d indexer -t swissprotshortselfblast -i /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+
+
+
+ select count(*) from  swissprotshortselfblast;
++----------+
+| count(*) |
++----------+
+|     3962 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct queryaccession) from  swissprotshortselfblast;
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                           1275 |
++--------------------------------+
+
+
+records /common/data/swissprot-short
+1283
+
+lines /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv 
+3962 lines
+
+
+FINAL ITERATION:
+================
+
+BACKUP BLAST TSV FILE
+
+
+SAVE A BACKUP OF ORIGINAL OUTPUT FILE:
+
+cp /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv.BLAST2TSV.IMPROVED
+
+
+select distinct queryaccession from swissprotshortselfblast into outfile '/private/var/tmp/swissprot-short-ids-sql';
+
+
+BACKUP OLD ids-sql FILE
+
+cp /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql.MISSING
+
+COPY NEW ids-sql FILE TO unigene/blast FOLDER
+
+sudo mv /private/var/tmp/swissprot-short-ids-sql /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql
+
+
+
+CHECK WHICH IDS ARE MISSING FROM THE SQL TABLE USING swissprotshortcheckmissingids.pl:
+
+cd /Users/young/FUNNYBASE/pipeline/unigene/blast
+./swissprotshortcheckmissingids.pl swissprot-short-ids-fasta swissprot-short-ids-sql
+
+
+
+NOT FOUND IN SQL
+P83011
+P83010
+P80166
+P28067
+P11887
+P80173
+P83168
+Q98514
+
+
+
+grep -n P83011 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P83010 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P80166 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P28067 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P11887 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P80173 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n P83168 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+
+
+THESE WERE ALL FRAGMENTS EXCEPT FOR TWO:
+
+>P83011 13KDA_SCYCA|swissprot|13.2 kDa protein (Fragment)
+MIFTAXDRSAIEXV
+>P83010 13KDA_TRISC|swissprot|13 kDa protein (Fragment)
+AGEPANNEDRFNY
+>P80166 23KD_BACST|swissprot|23 kDa basic protein (Fragment)
+XKESSFDIVSKVDLSEVANAIN
+>P11887 2ENR_CLOTY|swissprot|2-enoate reductase (EC 1.3.1.31) (Fragment)
+MKNKSLFEVIKIGKVEVXXKIXMAVMGAFG
+>P80173 48KD_BACCE|swissprot|48 kDa protein (Fragment)
+XTQQEGMDISSSLXK
+>P83168 A2AP_STRCA|swissprot|Alpha-2-antiplasmin (Alpha-2-plasmin inhibitor) (Alpha-2-PI) (Alpha-2-AP) (Fragment)
+LQVDYLVLEVA
+
+>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha chain precursor (MHC class II antigen DMA)
+MGHEQNQGAALLQMLPLLWLLPHSWAVPEAPTPMWPDDLQNHTFLHTVYCQDGSPSVGLS
+EAYDEDQLFFFDFSQNTRVPRLPEFADWAQEQGDAPAILFDKEFCEWMIQQIGPKLDGKI
+PVSRGFPIAEVFTLKPLEFGKPNTLVCFVSNLFPPMLTVNWHDHSVPVEGFGPTFVSAVD
+GLSFQAFSYLNFTPEPSDIFSCIVTHEIDRYTAIAYWVPRNALPSDLLENVLCGVAFGLG
+VLGIIVGIVLIIYFRKPCSGD
+
+grep -n P28067 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+552895:Query=  P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM
+552907:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...  1271  1.1e-142  1
+553008:>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha
+554110:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...  1021  1.1e-113  1
+554231:>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha
+555714:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...   113  1.2e-06   1
+561659:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...   251  2.1e-24   1
+562196:>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha
+570804:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...   184  1.2e-16   1
+571363:>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha
+573850:P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...   198  2.9e-18   1
+574303:>P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM alpha
+
+
+>Q98514 A464_PBCV1|swissprot|Putative protein A464R
+MENISKCMERGTTVGTMMVSERFKDQVQIPNTDDNFPEGPPSTKSGVMFTKEDVEYLIGM
+PIIDFSYYKTAFSYNAIVEGEATYERMEFVGDSVLGFIIARYLYDNFPGKDEGFLSRLRT
+KFVSGKFLSSIALRMGLHNYVIMHQKGLYRGWNTNPRILEDVFEALMGAIYFDLGINAAK
+QFFMTTLAKYADMQSLMLDTNYKDRLLKHTRKVELPRPEFVSVFEKGGANPSFIVDVVIN
+GQKISTGTGKSRKDAEQNASKIALHTMGVPEEFIH
+
+grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+
+
+1270284:Query=  Q98514 A464_PBCV1|swissprot|Putative protein A464R
+1270295:Q98514 A464_PBCV1|swissprot|Putative protein A464R            1428  6.4e-161  1
+1270395:>Q98514 A464_PBCV1|swissprot|Putative protein A464R
+
+
+getlines -f /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast -n 1270270 -l 1200 > /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q98514.blast
+
+em /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q98514.blast
+
+
+TEST blast2tsv.pl USING THE BLAST FILE FOR THIS SEQUENCE :
+
+
+
+/common/myEST/bin/pipeline4/blast2tsv.pl <  /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q98514.blast
+
+WORKS:
+
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q98514  A464_PBCV1      Putative protein A464R  6.4     -161    1               275     275     1275              1       275     1.00
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8KAN7  RNC_CHLTE       Ribonuclease III (EC 3.1.26.3) (RNase III)      4.0     -33     1       A464_PBCV1        275     272     68      264             48      253     0.35
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8Y691  RNC_LISMO       Ribonuclease III (EC 3.1.26.3) (RNase III)      2.1     -25     1       RNC_CHLTE 275     229     52      267             5       226     0.28
+
+
+CHECK IF IN BLAST tsv FILE:
+
+
+
+grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+2757:swissprot  P80069  A45K_MYCBO      45/47 kDa antigen (Fragment)    swissprot       Q98514  A464_PBCV1      Putative protein A464R  6.4     -161    1               17      275       1       275             1       275     1.00
+
+
+SELF-HIT FOR SEQUENCE Q98514 NOT PARSED OUT OF LARGE BLAST FILE:
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast > /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+dlc-genomics:~/FUNNYBASE/bin/orthologues young$ grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+2757:swissprot  P80069  A45K_MYCBO      45/47 kDa antigen (Fragment)    swissprot       Q98514  A464_PBCV1      Putative protein A464R  6.4     -161    1               17      275       1       275             1       275     1.00
+
+
+PRESENT IN LARGE BLAST FILE:
+
+dlc-genomics:~/FUNNYBASE/bin/orthologues young$ grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast    
+1270284:Query=  Q98514 A464_PBCV1|swissprot|Putative protein A464R
+1270295:Q98514 A464_PBCV1|swissprot|Putative protein A464R            1428  6.4e-161  1
+1270395:>Q98514 A464_PBCV1|swissprot|Putative protein A464R
+
+
+PARSES FINE FROM SINGLE QUERY FILE:
+
+dlc-genomics:~/FUNNYBASE/bin/orthologues young$ /common/myEST/bin/pipeline4/blast2tsv.pl < /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q98514.blast
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q98514  A464_PBCV1      Putative protein A464R  6.4     -161    1               275     275     1275              1       275     1.00
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8KAN7  RNC_CHLTE       Ribonuclease III (EC 3.1.26.3) (RNase III)      4.0     -33     1       A464_PBCV1        275     272     68      264             48      253     0.35
+swissprot       Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8Y691  RNC_LISMO       Ribonuclease III (EC 3.1.26.3) (RNase III)      2.1     -25     1       RNC_CHLTE 275     229     52      267             5       226     0.28
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Dec 31 01:56:42 EST 2007] CONFIRM THAT TOP HIT FOR EACH SELFBLAST SEQUENCE IS IN FACT ITSELF>
+
+
+
+
+use indexer;
+select queryaccession, targetaccession, hitevalueexp, hitevaluedec from swissprotselfblast group by queryaccession order by hitevalueexp, hitevaluedec limit 1000;
+
++----------------+-----------------+--------------+--------------+
+| queryaccession | targetaccession | hitevalueexp | hitevaluedec |
++----------------+-----------------+--------------+--------------+
+| Q70EK9         | Q70EK9          |         -319 |         4.74 |
+| Q56887         | Q56887          |         -319 |         4.87 |
+| Q9MZT2         | Q9MZT2          |         -319 |         5.12 |
+| P40357         | P40357          |         -319 |         5.17 |
+| Q6PJG9         | Q6PJG9          |         -319 |         5.30 |
+| Q60596         | Q60596          |         -319 |         5.34 |
+| Q969P6         | Q969P6          |         -319 |         5.60 |
+| Q8Y0I4         | Q8Y0I4          |         -319 |         5.63 |
+| P06163         | P06163          |         -319 |         5.65 |
+| Q03400         | Q03400          |         -319 |         5.68 |
+| Q8AA33         | Q8AA33          |         -319 |         5.68 |
+| Q80XG9         | Q80XG9          |         -319 |         5.71 |
+| Q9CE80         | Q9CE80          |         -319 |         5.71 |
+| P97318         | P97318          |         -319 |         5.73 |
+| Q9HGM7         | Q9HGM7          |         -319 |         5.76 |
+| P56518         | P56518          |         -319 |         5.85 |
+| P97711         | P97711          |         -319 |         5.85 |
+| P35740         | P35740          |         -319 |         5.90 |
+| P78698         | P78698          |         -319 |         5.91 |
+| P79066         | P79066          |         -319 |         5.98 |
+| Q9PJT8         | Q9PJT8          |         -319 |         5.98 |
+| P42948         | P42948          |         -319 |         6.01 |
+| P48747         | P48747          |         -319 |         6.05 |
+| O23066         | O23066          |         -319 |         6.09 |
+| P43015         | P43015          |         -319 |         6.09 |
+| P43016         | P43016          |         -319 |         6.09 |
+| Q5PEB1         | Q5PEB1          |         -319 |         6.09 |
+| P77510         | P77510          |         -319 |         6.10 |
+| Q06512         | Q06512          |         -319 |         6.10 |
+| Q62507         | Q62507          |         -319 |         6.10 |
+| O88446         | O88446          |         -319 |         6.11 |
+| P40413         | P40413          |         -319 |         6.11 |
+| Q8XHA1         | Q8XHA1          |         -319 |         6.14 |
+| O22494         | O22494          |         -319 |         6.17 |
+| P52344         | P52344          |         -319 |         6.17 |
+| Q8FBI8         | Q8FBI8          |         -319 |         6.17 |
+| Q09887         | Q09887          |         -319 |         6.19 |
+| P07947         | P07947          |         -319 |         6.20 |
+| Q979B7         | Q979B7          |         -319 |         6.20 |
+| Q8EI02         | Q8EI02          |         -319 |         6.24 |
+| Q6AXR4         | Q6AXR4          |         -319 |         6.27 |
+| Q7NMK9         | Q7NMK9          |         -319 |         6.28 |
+| P12931         | P12931          |         -319 |         6.30 |
+| P37629         | P37629          |         -319 |         6.30 |
+| Q8EM53         | Q8EM53          |         -319 |         6.30 |
+| P36366         | P36366          |         -319 |         6.31 |
+| P36895         | P36895          |         -319 |         6.33 |
+| Q29548         | Q29548          |         -319 |         6.34 |
+| Q9I993         | Q9I993          |         -319 |         6.40 |
+| Q9JWM8         | Q9JWM8          |         -319 |         6.45 |
+| Q9K1N8         | Q9K1N8          |         -319 |         6.45 |
+| P74055         | P74055          |         -319 |         6.49 |
+| Q64NF0         | Q64NF0          |         -319 |         6.49 |
+| P15202         | P15202          |         -319 |         6.54 |
+| Q88894         | Q88894          |         -319 |         6.54 |
+| P49750         | P49750          |         -319 |         6.91 |
+| Q9XAR5         | Q9XAR5          |         -318 |         1.03 |
+| Q68FU8         | Q68FU8          |         -318 |         1.04 |
+| Q96QE2         | Q96QE2          |         -318 |         1.07 |
+| P10047         | P10047          |         -318 |         1.08 |
+| Q892R0         | Q892R0          |         -318 |         1.09 |
+| P04843         | P04843          |         -318 |         1.11 |
+| P23030         | P23030          |         -318 |         1.13 |
+| P36711         | P36711          |         -318 |         1.14 |
+| Q96ME7         | Q96ME7          |         -318 |         1.18 |
+| Q8DY60         | Q8DY60          |         -318 |         1.20 |
+| Q9LSG3         | Q9LSG3          |         -318 |         1.20 |
+| P30303         | P30303          |         -318 |         1.21 |
+| P70312         | P70312          |         -318 |         1.22 |
+| Q5XHX6         | Q5XHX6          |         -318 |         1.22 |
+| Q630Y3         | Q630Y3          |         -318 |         1.22 |
+| Q92819         | Q92819          |         -318 |         1.22 |
+| Q9Z0W0         | Q9Z0W0          |         -318 |         1.22 |
+| P0A6A0         | P0A6A1          |         -318 |         1.23 |
+| P0A6A1         | P0A6A1          |         -318 |         1.23 |
+| P0A6A2         | P0A6A1          |         -318 |         1.23 |
+| P33950         | P33950          |         -318 |         1.23 |
+| Q6L0N9         | Q6L0N9          |         -318 |         1.23 |
+| P39671         | P39671          |         -318 |         1.24 |
+| P47041         | P47041          |         -318 |         1.24 |
+| P26218         | P26218          |         -318 |         1.25 |
+| P28492         | P28492          |         -318 |         1.26 |
+| Q9T467         | Q9T467          |         -318 |         1.26 |
+| P08631         | P08631          |         -318 |         1.28 |
+| P14930         | P14930          |         -318 |         1.29 |
+| P55306         | P55306          |         -318 |         1.31 |
+| P14164         | P14164          |         -318 |         1.38 |
+| Q9XBF8         | Q9XBF8          |         -318 |         1.63 |
+| O67068         | O67068          |         -318 |         1.73 |
+| Q12815         | Q12815          |         -318 |         1.73 |
+| Q8SWH4         | Q8SWH4          |         -318 |         1.74 |
+| P50635         | P50635          |         -318 |         1.79 |
+| Q8P455         | Q8P455          |         -318 |         1.79 |
+| Q8E3S6         | Q8E3S6          |         -318 |         1.81 |
+| P36616         | P36616          |         -318 |         1.85 |
+| P42700         | P42700          |         -318 |         1.87 |
+| P97872         | P97872          |         -318 |         1.90 |
+| Q92359         | Q92359          |         -318 |         1.98 |
+| P43736         | P43736          |         -318 |         2.12 |
+| O94927         | O94927          |         -318 |         2.13 |
+...
+| O60656         | O60656          |         -314 |         1.69 |
+| Q19529         | Q19529          |         -314 |         1.69 |
+| P32432         | P32432          |         -314 |         1.71 |
+| Q27793         | Q27793          |         -314 |         1.72 |
+| Q9EPT4         | Q9EPT4          |         -314 |         1.72 |
+| P30373         | P30373          |         -314 |         1.76 |
+| Q8IWZ8         | Q8IWZ8          |         -314 |         1.81 |
+| Q9D786         | Q9D786          |         -314 |         1.89 |
+| Q6P5E6         | Q6P5E6          |         -314 |         1.94 |
+| Q8WWT9         | Q8WWT9          |         -314 |         1.94 |
+| P0A2V0         | P0A2V0          |         -314 |         1.99 |
+| P0A2V1         | P0A2V0          |         -314 |         1.99 |
+| P51281         | P51281          |         -314 |         2.07 |
+| O08808         | O08808          |         -314 |         2.08 |
+| Q64I01         | Q64I01          |         -314 |         2.10 |
+| Q75DX7         | Q75DX7          |         -314 |         2.10 |
+| Q9KVZ8         | Q9KVZ8          |         -314 |         2.14 |
+| O67353         | O67353          |         -314 |         2.20 |
+| O44431         | O44431          |         -314 |         2.26 |
+| Q8P8F8         | Q8P8F8          |         -314 |         2.26 |
+| P38109         | P38109          |         -314 |         2.30 |
+| Q9VPS5         | Q9VPS5          |         -314 |         2.36 |
+| P33611         | P33611          |         -314 |         2.55 |
+| P35564         | P35564          |         -314 |         2.59 |
+| P26616         | P26616          |         -314 |         2.66 |
+| Q8ZU33         | Q8ZU33          |         -314 |         2.68 |
+| Q9JHK4         | Q9JHK4          |         -314 |         2.70 |
+| P18158         | P18158          |         -314 |         2.75 |
+| P09603         | P09603          |         -314 |         2.76 |
+| Q8ZMX9         | Q8ZMX9          |         -314 |         2.83 |
+| Q63886         | Q63886          |         -314 |         2.86 |
+| Q9K6D7         | Q9K6D7          |         -314 |         2.87 |
+| Q8SPQ7         | Q8SPQ7          |         -314 |         2.88 |
+| Q7V9A9         | Q7V9A9          |         -314 |         2.90 |
+| P48564         | P48564          |         -314 |         2.92 |
+| P00432         | P00432          |         -314 |         3.02 |
+| O27351         | O27351          |         -314 |         3.35 |
+| P18459         | P18459          |         -314 |         3.45 |
+| P19239         | P19239          |         -314 |         3.50 |
+| P75323         | P75323          |         -314 |         3.54 |
+| P38652         | P38652          |         -314 |         3.56 |
+| O33064         | O33064          |         -314 |         3.60 |
+| O59836         | O59836          |         -314 |         3.67 |
+| Q9Y6F7         | Q9Y6F7          |         -314 |         3.69 |
+| Q9Z7Q1         | Q9Z7Q1          |         -314 |         3.69 |
+| Q8Z4K0         | Q8Z4K0          |         -314 |         3.70 |
+| P35503         | P35503          |         -314 |         3.74 |
+| P13115         | P13115          |         -314 |         3.76 |
+| P31513         | P31513          |         -314 |         3.76 |
+| O84637         | O84637          |         -314 |         3.78 |
+| P29973         | P29973          |         -314 |         3.80 |
+| Q8EC52         | Q8EC52          |         -314 |         3.81 |
+| P44390         | P44390          |         -314 |         3.93 |
+| Q86Y01         | Q86Y01          |         -314 |         4.21 |
+| Q823H7         | Q823H7          |         -314 |         4.33 |
+| Q9PEE7         | Q9PEE7          |         -314 |         4.43 |
+| Q14995         | Q14995          |         -314 |         4.51 |
+| O34389         | O34389          |         -314 |         4.61 |
+| Q737I0         | Q737I0          |         -314 |         4.61 |
+| P07686         | P07686          |         -314 |         4.69 |
+| P36848         | P36848          |         -314 |         4.69 |
+| Q8K3P5         | Q8K3P5          |         -314 |         4.69 |
+| O43405         | O43405          |         -314 |         4.75 |
+| P96885         | P96885          |         -314 |         4.76 |
+| Q8DKT7         | Q8DKT7          |         -314 |         4.81 |
+| Q7V5U5         | Q7V5U5          |         -314 |         4.83 |
+| Q50644         | Q50644          |         -314 |         4.93 |
+| Q22295         | Q22295          |         -314 |         4.97 |
+| P37657         | P37657          |         -314 |         4.99 |
+| P52719         | P52719          |         -314 |         4.99 |
+| Q9NSY1         | Q9NSY1          |         -314 |         5.01 |
+| Q9BXF6         | Q9BXF6          |         -314 |         5.22 |
+| Q86U38         | Q86U38          |         -314 |         5.36 |
+| Q87EF0         | Q87EF0          |         -314 |         5.79 |
+| P49448         | P49448          |         -314 |         6.11 |
+| Q04847         | Q04847          |         -314 |         6.17 |
+| P43133         | P43133          |         -314 |         6.19 |
+| P17178         | P17178          |         -314 |         6.40 |
+| Q95LA1         | Q95LA1          |         -314 |         6.42 |
+| Q5RC84         | Q5RC84          |         -314 |         6.45 |
+| Q7VEH5         | Q7VEH5          |         -314 |         6.46 |
+| Q9ZDF8         | Q9ZDF8          |         -314 |         6.46 |
+| Q12573         | Q12573          |         -314 |         6.57 |
+| Q12788         | Q12788          |         -314 |         6.57 |
+| Q8TFG1         | Q8TFG1          |         -314 |         6.58 |
+| Q8R5G2         | Q8R5G2          |         -314 |         6.61 |
+| P29013         | P29013          |         -314 |         6.69 |
+| Q68EF6         | Q68EF6          |         -314 |         7.42 |
+| Q09868         | Q09868          |         -314 |         7.73 |
+| Q8C437         | Q8C437          |         -314 |         7.85 |
+| Q9KSW1         | Q9KSW1          |         -314 |         7.98 |
+| Q96NY9         | Q96NY9          |         -314 |         8.08 |
+| P38137         | P38137          |         -314 |         8.20 |
+| P00541         | P00541          |         -314 |         8.36 |
+| Q7YS44         | Q7YS44          |         -314 |         8.39 |
+| Q7V3N7         | Q7V3N7          |         -314 |         8.44 |
+| Q7VLE9         | Q7VLE9          |         -314 |         8.52 |
+| P13682         | P13682          |         -314 |         8.58 |
+| P38081         | P38081          |         -314 |         8.89 |
+| Q835R7         | Q835R7          |         -314 |         9.55 |
+| P15706         | P15706          |         -314 |         9.71 |
+| Q8K4J2         | Q8K4J2          |         -314 |         9.71 |
+| Q10072         | Q10072          |         -314 |         9.88 |
+| P78871         | P78871          |         -313 |         1.02 |
+| Q9D0F9         | Q9D0F9          |         -313 |         1.03 |
+| Q9S777         | Q9S777          |         -313 |         1.03 |
+| Q8W0Z7         | Q8W0Z7          |         -313 |         1.04 |
+| P76473         | P76473          |         -313 |         1.05 |
+| Q57776         | Q57776          |         -313 |         1.06 |
+| P01125         | P01125          |         -313 |         1.08 |
+| P11636         | P11636          |         -313 |         1.08 |
+| Q89A56         | Q89A56          |         -313 |         1.09 |
+| Q8DC38         | Q8DC38          |         -313 |         1.10 |
+| Q8Z4Q3         | Q8Z4Q3          |         -313 |         1.10 |
+| Q9PJB1         | Q9PJB1          |         -313 |         1.10 |
+| Q87BK6         | Q87BK6          |         -313 |         1.11 |
+| Q9VVR9         | Q9VVR9          |         -313 |         1.11 |
+| O05519         | O05519          |         -313 |         1.18 |
+| P17789         | P17789          |         -313 |         1.18 |
+| Q13387         | Q13387          |         -313 |         1.20 |
+| Q6ZU80         | Q6ZU80          |         -313 |         1.22 |
+| Q8ZTZ0         | Q8ZTZ0          |         -313 |         1.26 |
+| P70545         | P70545          |         -313 |         1.29 |
+| Q9VMN5         | Q9VMN5          |         -313 |         1.31 |
+| P47365         | P47365          |         -313 |         1.34 |
+| Q5A6N8         | Q5A6N8          |         -313 |         1.35 |
+| Q5HRD1         | Q5HRD1          |         -313 |         1.37 |
+| P26506         | P26506          |         -313 |         1.38 |
+| Q8TPF7         | Q8TPF7          |         -313 |         1.39 |
+| O83679         | O83679          |         -313 |         1.41 |
+| P53541         | P53541          |         -313 |         1.41 |
+| Q8XT53         | Q8XT53          |         -313 |         1.41 |
+| P15325         | P15325          |         -313 |         1.42 |
+| P13116         | P13116          |         -313 |         1.43 |
+| P16496         | P16496          |         -313 |         1.45 |
+| Q9CNX8         | Q9CNX8          |         -313 |         1.45 |
+| Q63150         | Q63150          |         -313 |         1.46 |
+| Q7M1E7         | Q7M1E7          |         -313 |         1.47 |
+| Q9V9J3         | Q9V9J3          |         -313 |         1.47 |
+| P08927         | P08927          |         -313 |         1.66 |
+| Q98QW3         | Q98QW3          |         -313 |         1.66 |
+| P49023         | P49023          |         -313 |         1.67 |
+| Q9EQ61         | Q9EQ61          |         -313 |         1.70 |
+| Q9YBQ2         | Q9YBQ2          |         -313 |         1.70 |
+| Q13416         | Q13416          |         -313 |         1.72 |
+| P63038         | P63038          |         -313 |         1.73 |
+| P63039         | P63038          |         -313 |         1.73 |
+| Q97SA3         | Q97SA3          |         -313 |         1.77 |
+| O75487         | O75487          |         -313 |         1.78 |
+| P38124         | P38124          |         -313 |         1.81 |
+| P36509         | P36509          |         -313 |         1.87 |
+| O14442         | O14442          |         -313 |         1.89 |
+| O24338         | O24338          |         -313 |         1.89 |
+| P04079         | P04079          |         -313 |         1.89 |
+| P64294         | P64295          |         -313 |         1.89 |
+| P64295         | P64295          |         -313 |         1.89 |
+| Q83QL1         | Q83QL1          |         -313 |         1.89 |
+| Q87UY0         | Q87UY0          |         -313 |         2.02 |
+| Q9ZHZ8         | Q9ZHZ8          |         -313 |         2.16 |
+| P60612         | P60612          |         -313 |         2.22 |
+| P60613         | P60612          |         -313 |         2.22 |
+| P60614         | P60612          |         -313 |         2.22 |
+| Q8BMD0         | Q8BMD0          |         -313 |         2.24 |
+| Q9JHI9         | Q9JHI9          |         -313 |         2.27 |
+| P40475         | P40475          |         -313 |         2.30 |
+| Q6D2F3         | Q6D2F3          |         -313 |         2.33 |
+| Q8FFL9         | Q8FFL9          |         -313 |         2.35 |
+| P46309         | P46309          |         -313 |         2.48 |
+| P15052         | P15052          |         -313 |         2.50 |
+| P03135         | P03135          |         -313 |         2.57 |
+| Q06496         | Q06496          |         -313 |         2.65 |
+| O43292         | O43292          |         -313 |         2.73 |
+| P54719         | P54719          |         -313 |         2.80 |
+| P57453         | P57453          |         -313 |         2.81 |
+| P59117         | P61540          |         -313 |         2.89 |
+| P61540         | P61540          |         -313 |         2.89 |
+| Q12627         | Q12627          |         -313 |         2.94 |
+| O08700         | O08700          |         -313 |         2.97 |
+| Q9VKH0         | Q9VKH0          |         -313 |         2.97 |
+| O95361         | O95361          |         -313 |         3.00 |
+| Q8WYA6         | Q8WYA6          |         -313 |         3.00 |
+| Q9CWL8         | Q9CWL8          |         -313 |         3.00 |
+| Q8XDZ1         | Q8XDZ1          |         -313 |         3.07 |
+| P39079         | P39079          |         -313 |         3.10 |
+| Q66FS8         | Q8ZAM1          |         -313 |         3.11 |
+| Q8ZAM1         | Q8ZAM1          |         -313 |         3.11 |
+| Q46808         | Q46808          |         -313 |         3.13 |
+| Q7VA78         | Q7VA78          |         -313 |         3.13 |
+| Q8EKT6         | Q8EKT6          |         -313 |         3.13 |
+| Q7UA53         | Q7UA53          |         -313 |         3.20 |
+| Q7N3K4         | Q7N3K4          |         -313 |         3.22 |
+| Q8ZN60         | Q8ZN60          |         -313 |         3.22 |
+| P48209         | P48209          |         -313 |         3.49 |
+| P22409         | P22409          |         -313 |         3.56 |
+| P93002         | P93002          |         -313 |         3.72 |
+| P25799         | P25799          |         -313 |         3.88 |
+| P59765         | P59765          |         -313 |         3.88 |
+| O72909         | O72909          |         -313 |         4.00 |
+| Q8YMD4         | Q8YMD4          |         -313 |         4.05 |
+| P07633         | P07633          |         -313 |         4.08 |
+| Q58574         | Q58574          |         -313 |         4.09 |
+| P35504         | P35504          |         -313 |         4.14 |
+| Q7MHS5         | Q7MHS5          |         -313 |         4.21 |
+| Q886X5         | Q886X5          |         -313 |         4.21 |
+| Q12586         | Q12586          |         -313 |         4.24 |
+| Q9PQU6         | Q9PQU6          |         -313 |         4.24 |
+| Q8KML6         | Q8KML6          |         -313 |         4.70 |
+| P16128         | P16128          |         -313 |         4.86 |
+| Q9Y5A9         | Q9Y5A9          |         -313 |         4.98 |
+| P75472         | P75472          |         -313 |         5.11 |
+| Q8DFG4         | Q8DFG4          |         -313 |         5.22 |
+| P35381         | P35381          |         -313 |         5.23 |
+| Q04636         | Q04636          |         -313 |         5.23 |
+| Q8BMC3         | Q8BMC3          |         -313 |         5.27 |
+| Q67YU0         | Q67YU0          |         -313 |         5.34 |
+| P00527         | P00527          |         -313 |         5.47 |
+| P44974         | P44974          |         -313 |         5.56 |
+| P56591         | P56591          |         -313 |         5.56 |
+| P31447         | P31447          |         -313 |         5.81 |
+| P13526         | P13526          |         -313 |         6.18 |
+| Q89A38         | Q89A38          |         -313 |         6.31 |
+| Q97BF7         | Q97BF7          |         -313 |         6.44 |
+| P03275         | P03275          |         -313 |         6.48 |
+| P36419         | Q72KH6          |         -313 |         6.50 |
+| Q5SKD2         | Q72KH6          |         -313 |         6.50 |
+| Q72KH6         | Q72KH6          |         -313 |         6.50 |
+| P18687         | P18687          |         -313 |         6.58 |
+| Q9Z2A9         | Q9Z2A9          |         -313 |         6.58 |
+| Q971D0         | Q971D0          |         -313 |         6.66 |
+| P42770         | P42770          |         -313 |         6.67 |
+| P12613         | P12613          |         -313 |         6.77 |
+| P70194         | P70194          |         -313 |         6.88 |
+| Q86YH2         | Q86YH2          |         -313 |         6.94 |
+| P40445         | P40445          |         -313 |         6.96 |
+| Q9PKL0         | Q9PKL0          |         -313 |         7.03 |
+| Q9Y4X1         | Q9Y4X1          |         -313 |         7.15 |
+| Q9N0A8         | Q9N0A8          |         -313 |         7.17 |
+| Q7NSG1         | Q7NSG1          |         -313 |         7.18 |
+| Q8UIL2         | Q8UIL2          |         -313 |         7.18 |
+| P52710         | P52710          |         -313 |         7.21 |
+| Q9LBQ3         | Q9LBQ3          |         -313 |         8.75 |
+| Q94757         | Q94757          |         -313 |         9.04 |
+| P28595         | P28595          |         -313 |         9.05 |
+| Q14449         | Q14449          |         -313 |         9.12 |
+| Q8YP23         | Q8YP23          |         -313 |         9.12 |
+| Q9Y6F8         | Q9Y6F8          |         -313 |         9.12 |
+| P24507         | P24507          |         -313 |         9.17 |
+| P54001         | P54001          |         -313 |         9.22 |
+| Q8Y495         | Q8Y495          |         -313 |         9.26 |
+| P06865         | P06865          |         -313 |         9.31 |
+| P38625         | P38625          |         -313 |         9.40 |
+| P44335         | P44335          |         -313 |         9.42 |
+| Q9EQF5         | Q9EQF5          |         -313 |         9.49 |
+| P16924         | P16924          |         -313 |         9.54 |
+| Q14585         | Q14585          |         -312 |         1.00 |
+| Q9UJY5         | Q9UJY5          |         -312 |         1.00 |
+| P26480         | P26480          |         -312 |         1.04 |
+| Q9EPZ6         | Q9EPZ6          |         -312 |         1.04 |
+| P38817         | P38817          |         -312 |         1.10 |
+| P46150         | P46150          |         -312 |         1.11 |
+| Q13112         | Q13112          |         -312 |         1.15 |
+| Q99NB7         | Q99NB7          |         -312 |         1.15 |
+| P38741         | P38741          |         -312 |         1.17 |
+| Q9FYC2         | Q9FYC2          |         -312 |         1.19 |
+| P53322         | P53322          |         -312 |         1.20 |
+| Q92IB5         | Q92IB5          |         -312 |         1.22 |
+| Q9PKU9         | Q9PKU9          |         -312 |         1.22 |
+| Q9PAR6         | Q9PAR6          |         -312 |         1.23 |
+| Q9NQZ8         | Q9NQZ8          |         -312 |         1.31 |
+| Q8CP17         | Q8CP17          |         -312 |         1.38 |
+| Q00583         | Q00583          |         -312 |         1.43 |
+| Q83LP0         | Q83LP0          |         -312 |         1.44 |
+| P55870         | P55870          |         -312 |         1.45 |
+| Q21432         | Q21432          |         -312 |         1.45 |
+| Q8U9D8         | Q8U9D8          |         -312 |         1.48 |
+| O94069         | O94069          |         -312 |         1.49 |
+| P45514         | P45514          |         -312 |         1.51 |
+| P13129         | P13129          |         -312 |         1.53 |
+| O81345         | O81345          |         -312 |         1.55 |
+| Q88IS4         | Q88IS4          |         -312 |         1.55 |
+| Q71WM0         | Q71WM0          |         -312 |         1.57 |
+| Q9NR81         | Q9NR81          |         -312 |         1.59 |
+| Q04489         | Q04489          |         -312 |         1.60 |
+| Q09653         | Q09653          |         -312 |         1.61 |
+| Q82SA9         | Q82SA9          |         -312 |         1.62 |
+| Q01167         | Q01167          |         -312 |         1.67 |
+| Q8FJB1         | Q8FJB1          |         -312 |         1.88 |
+| P32532         | P32532          |         -312 |         1.93 |
+| P04956         | P04956          |         -312 |         1.94 |
+| O35776         | O35776          |         -312 |         1.98 |
+| P15965         | P15965          |         -312 |         2.01 |
+| Q9VRM7         | Q9VRM7          |         -312 |         2.02 |
+| O83903         | O83903          |         -312 |         2.03 |
+| Q28612         | Q28612          |         -312 |         2.06 |
+| Q927T4         | Q927T4          |         -312 |         2.06 |
+| Q5R9B3         | Q5R9B3          |         -312 |         2.08 |
+| O93383         | O93383          |         -312 |         2.11 |
+| P15129         | P15129          |         -312 |         2.15 |
+| Q05558         | Q05558          |         -312 |         2.31 |
+| Q8RFD1         | Q8RFD1          |         -312 |         2.37 |
+| P0A5U6         | P0A5U7          |         -312 |         2.44 |
+| P0A5U7         | P0A5U7          |         -312 |         2.44 |
+| P60752         | P60753          |         -312 |         2.46 |
+| P60753         | P60753          |         -312 |         2.46 |
+| P97863         | P97863          |         -312 |         2.51 |
+| P00402         | P00402          |         -312 |         2.52 |
+| O15530         | O15530          |         -312 |         2.57 |
+| O57424         | O57424          |         -312 |         2.59 |
+| Q6CH28         | Q6CH28          |         -312 |         2.63 |
+| Q64634         | Q64634          |         -312 |         2.70 |
+| O27221         | O27221          |         -312 |         2.71 |
+| O49859         | O49859          |         -312 |         2.73 |
+| P23228         | P23228          |         -312 |         2.74 |
+| Q91YN5         | Q91YN5          |         -312 |         2.74 |
+| Q92039         | Q92039          |         -312 |         2.75 |
+| Q9EPH1         | Q9EPH1          |         -312 |         2.79 |
+| P41717         | P41717          |         -312 |         2.81 |
+| P17336         | P17336          |         -312 |         2.83 |
+| Q9UKG4         | Q9UKG4          |         -312 |         2.98 |
+| Q8RH05         | Q8RH05          |         -312 |         3.08 |
+| Q15835         | Q15835          |         -312 |         3.32 |
+| Q09894         | Q09894          |         -312 |         3.33 |
+| Q21388         | Q21388          |         -312 |         3.34 |
+| P40871         | P40871          |         -312 |         3.47 |
+| Q28042         | Q28042          |         -312 |         3.48 |
+| P96188         | P96188          |         -312 |         3.55 |
+| O75886         | O75886          |         -312 |         3.56 |
+| Q9HCS2         | Q9HCS2          |         -312 |         3.57 |
+| Q03500         | Q03500          |         -312 |         3.71 |
+| Q9R1E0         | Q9R1E0          |         -312 |         3.75 |
+| Q04121         | Q04121          |         -312 |         3.86 |
+| Q8PUY5         | Q8PUY5          |         -312 |         3.96 |
+| P45835         | P45835          |         -312 |         4.00 |
+| P35240         | P35240          |         -312 |         4.10 |
+| P46224         | P46224          |         -312 |         4.18 |
+| Q86X55         | Q86X55          |         -312 |         4.18 |
+| O08792         | O08792          |         -312 |         4.25 |
+| P38206         | P38206          |         -312 |         4.26 |
+| Q9YE64         | Q9YE64          |         -312 |         4.32 |
+| Q65949         | Q65949          |         -312 |         4.34 |
+| Q64TC3         | Q64TC3          |         -312 |         4.35 |
+| P33727         | P33727          |         -312 |         4.57 |
+| Q22931         | Q22931          |         -312 |         4.57 |
+| Q8ZCU4         | Q8ZCU4          |         -312 |         4.65 |
+| P33590         | P33590          |         -312 |         4.66 |
+| Q16222         | Q16222          |         -312 |         4.68 |
+| Q8Z9L4         | Q8Z9L4          |         -312 |         4.72 |
+| Q17850         | Q17850          |         -312 |         5.58 |
+| Q9KEL8         | Q9KEL8          |         -312 |         5.69 |
+| Q9Z1B8         | Q9Z1B8          |         -312 |         5.71 |
+| Q10046         | Q10046          |         -312 |         5.87 |
+| Q9CLQ2         | Q9CLQ2          |         -312 |         5.90 |
+| P16141         | P16141          |         -312 |         5.94 |
+| Q9CD55         | Q9CD55          |         -312 |         5.94 |
+| P13674         | P13674          |         -312 |         5.98 |
+| O84089         | O84089          |         -312 |         6.06 |
+| Q8ZRX4         | Q8ZRX4          |         -312 |         6.17 |
+| Q96VB8         | Q96VB8          |         -312 |         6.33 |
+| O79678         | O79678          |         -312 |         6.89 |
+| P59750         | P59750          |         -312 |         7.01 |
+| Q8N787         | Q8N787          |         -312 |         7.15 |
+| P63359         | P63360          |         -312 |         7.16 |
+| P63360         | P63360          |         -312 |         7.16 |
+| Q10739         | Q10739          |         -312 |         7.16 |
+| Q9F5P4         | Q9F5P4          |         -312 |         7.24 |
+| P57490         | P57490          |         -312 |         7.30 |
+| Q9X1G3         | Q9X1G3          |         -312 |         7.38 |
+| Q7VP38         | Q7VP38          |         -312 |         7.43 |
+| P30524         | P30524          |         -312 |         7.97 |
+| Q9Y758         | Q9Y758          |         -312 |         8.03 |
+| Q9Z0K8         | Q9Z0K8          |         -312 |         8.14 |
+| Q48449         | Q48449          |         -312 |         8.27 |
+| Q9LSM5         | Q9LSM5          |         -312 |         8.47 |
+| P20823         | P20823          |         -312 |         8.63 |
+| Q5HNW6         | Q8CP17          |         -312 |         8.94 |
+| Q84WU6         | Q84WU6          |         -312 |         9.31 |
+| O28648         | O28648          |         -312 |         9.37 |
+| P47113         | P47113          |         -312 |         9.49 |
+| Q6P7C7         | Q6P7C7          |         -312 |         9.52 |
++----------------+-----------------+--------------+--------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Dec 30 02:16:00 EST 2007] CREATED blast2tsv.pl FOR FASTER BLAST PARSING>
+
+
+
+TEST SEQUENCE:
+
+/common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.1
+ 
+>P15711 104K_THEPA|swissprot|104 kDa microneme-rhoptry antigen
+MKFLILLFNILCLFPVLAADNHGVGPQGASGVDPITFDINSNQTGPAFLTAVEMAGVKYL
+QVQHGSNVNIHRLVEGNVVIWENASTPLYTGAIVTNNDGPYMAYVEVLGDPNLQFFIKSG
+DAWVTLSEHEYLAKLQEIRQAVHIESVFSLNMAFQLENNKYEVETHAKNGANMVTFIPRN
+GHICKMVYHKNVRIYKATGNDTVTSVVGFFRGLRLLLINVFSIDDNGMMSNRYFQHVDDK
+YVPISQKNYETGIVKLKDYKHAYHPVDLDIKDIDYTMFHLADATYHEPCFKIIPNTGFCI
+TKLFDGDQVLYESFNPLIHCINEVHIYDRNNGSIICLHLNYSPPSYKAYLVLKDTGWEAT
+THPLLEEKIEELQDQRACELDVNFISDKDLYVAALTNADLNYTMVTPRPHRDVIRVSDGS
+EVLWYYEGLDNFLVCAWIYVSDGVASLVHLRIKDRIPANNDIYVLKGDLYWTRITKIQFT
+QEIKRLVKKSKKKLAPITEEDSDKHDEPPEGPGASGLPPKAPGDKEGSEGHKGPSKGSDS
+SKEGKKPGSGKKPGPAREHKPSKIPTLSKKPSGPKDPKHPRDPKEPRKSKSPRTASPTRR
+PSPKLPQLSKLPKSTSPRSPPPPTRPSSPERPEGTKIIKTSKPPSPKPPFDPSFKEKFYD
+DYSKAASRSKETKTTVVLDESFESILKETLPETPGTPFTTPRPVPPKRPRTPESPFEPPK
+DPDSPSTSPSEFFTPPESKRTRFHETPADTPLPDVTAELFKEPDVTAETKSPDEAMKRPR
+SPSEYEDTSPGDYPSLPMKRHRLERLRLTTTEMETDPGRMAKDASGKPVKLKRSKSFDDL
+TTVELAPEPKASRIVVDDEGTEADDEETHPPEERQKTEVRRRRPPKKPSKSPRPSKPKKP
+KKPDSAYIPSILAILVVSLIVGIL
+
+
+COMMANDS:
+
+BLASTMAT=/common/apps/wublast/matrix
+export BLASTMAT
+
+/common/apps/wublast/wu-blastall -p blastp -d /common/data/swissprot-test -i /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.1 filter=seg -span2 noseqs -e 1e-5
+
+/common/apps/wublast/wu-blastall -p blastp -d /common/data/swissprot-test -i /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.1 filter=seg -span2 noseqs -e 1e-5 > /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast.1
+
+em /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast.1
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast.1
+
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast > /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast.tsv
+
+
+
+/common/apps/wublast/wu-blastall -p blastp -d /common/data/swissprot-test -i /common/pipeline/swissprot-test/blast/swissprot-test filter=seg -span2 noseqs -e 1e-5  |  /common/myEST/bin/pipeline4/blast2tsv.pl > /common/pipeline/swissprot-test/blast/swissprot-test.blast.tsv
+
+
+em /common/pipeline/swissprot-test/blast/swissprot-test.blast.tsv
+
+WORKS!!!
+
+
+
+
+
+
+TEST WITH ALL swissprot-test SEQUENCES:
+
+CREATE BLAST FILE:
+/common/apps/wublast/wu-blastall -p blastp -d /common/data/swissprot-test -i /common/pipeline/swissprot-test/blast/swissprot-test filter=seg -span2 noseqs -e 1e-5 > /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast
+
+PARSE BLAST FILE:
+/common/myEST/bin/pipeline4/blast2tsv.pl  < /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast
+
+em /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast
+
+
+> /common/pipeline/swissprot-test/blast/swissprot-test-swissprot-test.blast.1.tsv
+
+
+</entry>
+
+
+
+<entry [Sun Dec 23 03:46:28 EST 2007] MSG DOUG >
+
+
+
+Hi Doug,
+
+Sorry about the delay in getting back to you. I was doing a check of the BLAST hit data for Chapter 1 and I came across two issues, which I wanted to investigate thoroughly so as not to alarm you when I explained the issues:
+
+1) The sample of UniGenes was too small. The number of BLAST hits in the first sample (of 5 x 100 human UniGenes) seems to have contained an inordinate amount of sequences with no BLAST hits when compared to a larger sample of 1,000 human UniGenes. The number of sequences with no BLAST hits remains roughly the samewith the larger sample:
+
+Queries  Total_hits  Query_hits  Query_hits_unigene
+490       123,578     479            469
+1,000     340,731     984           967
+
+2) A bug in the BLAST parser caused an underestimation of hits. The first BLAST record of every array job (~20 sequences per database) was ignored by the most recent BLAST parser version. I've fixed the bug and taken a sample of 1,000 UniGenes in total (i.e., double what we had before). This means that there are more BLAST hits for human UniGene against the other mammalian UniGene databases:
+
+Database           Unique_targets    Unique_queries    Best_hits
+swissprot           28,822                932                    499
+unigene-mouse   3,836                 929                    113
+unigene-dog       1,640                 814                    252
+unigene-rat        3,016                 930                    120
+unigene             8,492                 967                    485
+all                     37,314               984                    984
+
+However, this doesn't affect the interdependence and quality issues:
+
+Database        Total   Dependent    Poor_quality
+swissprot       64610   5638         9625
+unigene-mouse   10138   1211         2692
+unigene-dog     2875    2212         2537
+unigene-rat     6025    3695         4717
+all             83648   12756        19571
+
+I'm redoing all the graphs and tables, which required InterProScan and some manual steps. I've done about half and I should hopefully have the rest done tomorrow, including the p-value table. I'll email you with my progress tomorrow.
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Sat Dec 22 22:56:52 EST 2007] REDID CHAPTER 1 TABLES AND FIGURES USING unigene>
+
+
+
+
+./blastbestevalue.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+select count(*) from blastbestevalue;
++----------+
+| count(*) |
++----------+
+|     3233 |
++----------+
+1 row in set (0.00 sec)
+
+select count(*) from blastbestevalue;
++----------+
+| count(*) |
++----------+
+|     3615 |
++----------+
+
+./blastevalueannotation.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+
+select count(*) from blastevalueannotation;
++----------+
+| count(*) |
++----------+
+|      984 |
++----------+
+
+./blasthits.pl -d unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -05
+
+swissprot       28822   932     499
+unigene-mouse   3836    929     113
+unigene-dog     1640    814     252
+unigene-rat     3016    930     120
+unigene 8492    967     485
+all     37314   984     984
+
+cp /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.blasthits.tsv /Users/young/FUNNYBASE/thesis/final/chap1/images/unigene.blasthits.tsv
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Dec 22 17:23:40 EST 2007] REBLASTED unigene AFTER FIXING myEST/bin/pipeline4/blastxml2tsv.pl>
+
+
+
+
+BLAST
+
+sudo ./arrayblast.pl -d unigene -q unigene -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+
+
+DELETE EXISTING collectionblast ENTRIES
+
+use unigene
+delete from collectionblast;
+Query OK, 110632 rows affected (0.20 sec)
+
+
+LOAD
+
+./arrayblastloaddata.pl -d unigene -t swissprot,unigene-rat,unigene-mouse,unigene-dog 
+
+BEFORE:
+======
+
+    use unigene;
+
+    select count(*) from collectionblast;
+    +----------+
+    | count(*) |
+    +----------+
+    |   324185 |
+    +----------+
+    
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          912 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from collectionblast;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          943 |
+    +------------------------------+
+
+AFTER:
+======
+
+    use unigene;
+
+    select count(*) from collectionblast;
+    +----------+
+    | count(*) |
+    +----------+
+    |   340731 |
+    +----------+
+    
+    select count(distinct collectionid) from collectionblast;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          984 |
+    +------------------------------+
+
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          967 |
+    +------------------------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Dec 22 17:23:40 EST 2007] REBLASTED unigene7 AFTER FIXING myEST/bin/pipeline4/blastxml2tsv.pl>
+
+
+
+
+BLAST
+
+sudo ./arrayblast.pl -d unigene7 -q unigene7 -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+
+
+DELETE EXISTING collectionblast ENTRIES
+
+use unigene7
+delete from collectionblast;
+Query OK, 110632 rows affected (0.20 sec)
+
+
+LOAD
+
+./arrayblastloaddata.pl -d unigene7 -t swissprot,unigene-rat,unigene-mouse,unigene-dog 
+
+BEFORE:
+======
+
+    use unigene7;
+
+    select count(*) from collectionblast;
+    +----------+
+    | count(*) |
+    +----------+
+    |   110625 |
+    +----------+
+    
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          430 |
+    +------------------------------+
+    1 row in set (0.33 sec)
+    
+    select count(distinct collectionid) from collectionblast;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          443 |
+    +------------------------------+
+
+AFTER:
+======
+
+    use unigene7;
+
+    select count(*) from collectionblast;
+    +----------+
+    | count(*) |
+    +----------+
+    |   123578 |
+    +----------+
+    
+    select count(distinct collectionid) from collectionblast;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          479 |
+    +------------------------------+
+
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          469 |
+    +------------------------------+
+
+
+</entry>
+
+
+
+<entry [Sat Dec 22 17:23:15 EST 2007] REBLASTED unigene2 AFTER FIXING BUG IN myEST/bin/pipeline4/blastxml2tsv.pl (SKIPPED FIRST BLAST RECORD)>
+
+
+
+
+BLAST
+
+sudo ./arrayblast.pl -d unigene2 -q unigene2 -t swissprot,unigene-mouse,unigene-dog,unigene-rat
+
+DELETE EXISTING collectionblast ENTRIES
+use unigene2
+delete from collectionblast;
+Query OK, 14503 rows affected (0.08 sec)
+
+
+LOAD
+./arrayblastloaddata.pl -d unigene2 -t swissprot,unigene-rat,unigene-mouse,unigene-dog 
+
+    select count(*) from collectionblast;
+    +----------+
+    | count(*) |
+    +----------+
+    |    19031 |
+    +----------+
+    
+    select count(distinct collectionid) from collectionblast;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                           98 |
+    +------------------------------+
+    
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                           98 |
+    +------------------------------+
+
+
+</entry>
+
+
+
+<entry [Sat Dec 22 01:44:20 EST 2007] BLAST DISCREPANCIES BETWEEN unigene2 AND unigene7>
+
+
+
+P40501 hit
+
+/common/pipeline/unigene2/blast young$ em unigene2-swissprot.blast.tsv 
+>>>
+...
+unigene-human-100       2       1       Solute carrier family 38, member 3      swissprot       P40501  AVT7_YEAST      Vacuolar amino acid transporter 7       0.00638112      1\
+       1       105     108     993     1316    3       193     297     0.09
+...
+<<<
+
+
+mysql> use unigene2;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select targetsource, targetaccession, hitevalueexp, hitevaluedec  from collectionblast where collectionid =2 ;
++---------------+-----------------+--------------+--------------+
+| targetsource  | targetaccession | hitevalueexp | hitevaluedec |
++---------------+-----------------+--------------+--------------+
+| swissprot     | P03413          |            1 |         0.85 |
+| swissprot     | P38176          |            1 |         0.00 |
+| swissprot     | P39981          |          -19 |         2.73 |
+| swissprot     | P39981          |          -19 |         2.73 |
+| swissprot     | P40074          |           -6 |         2.51 |
+| swissprot     | P40074          |           -6 |         2.51 |
+| swissprot     | P40501          |            1 |         0.00 |
+| swissprot     | P47082          |            1 |         0.44 |
+| swissprot     | Q10586          |            1 |         0.60 |
+| swissprot     | Q99624          |         -257 |         5.79 |
+| swissprot     | Q9DCP2          |         -226 |         8.99 |
+| swissprot     | Q9JHZ9          |         -224 |         3.78 |
+| unigene-dog   | AB178767        |            1 |         0.56 |
+| unigene-dog   | XM_533820       |         -291 |         3.22 |
+| unigene-dog   | XM_533820       |         -222 |         6.16 |
+| unigene-dog   | XM_533820       |          -29 |         4.82 |
+| unigene-dog   | XM_533820       |          -19 |         6.85 |
+| unigene-dog   | XM_533820       |          -16 |         1.67 |
+| unigene-dog   | XM_533820       |          -15 |         2.62 |
+| unigene-dog   | XM_533820       |          -10 |         6.21 |
+| unigene-dog   | XM_533820       |            1 |         0.56 |
+| unigene-dog   | XM_534827       |            1 |         0.14 |
+| unigene-dog   | XM_543721       |           -9 |         9.69 |
+| unigene-dog   | XM_543721       |            1 |         0.03 |
+| unigene-dog   | XM_546486       |            1 |         0.14 |
+| unigene-dog   | XM_549369       |            1 |         0.55 |
+| unigene-dog   | XM_862219       |            1 |         0.56 |
+| unigene-mouse | AK051023        |            1 |         0.00 |
+| unigene-mouse | AK051023        |            1 |         0.09 |
+| unigene-mouse | AK158125        |          -27 |         1.89 |
+| unigene-mouse | AK158125        |           -5 |         9.36 |
+| unigene-mouse | AK158125        |            1 |         0.00 |
+| unigene-mouse | BC054846        |         -212 |         5.73 |
+| unigene-mouse | BC054846        |         -184 |         6.71 |
+| unigene-mouse | BC054846        |          -31 |         1.26 |
+| unigene-mouse | BC054846        |          -17 |         2.71 |
+| unigene-mouse | BC054846        |          -14 |         2.62 |
+| unigene-mouse | BC054846        |           -6 |         1.51 |
+| unigene-mouse | BC054846        |           -5 |         2.37 |
+| unigene-mouse | BE984396        |           -6 |         1.36 |
+| unigene-mouse | BE984396        |           -5 |         2.15 |
+| unigene-rat   | AF075704        |            1 |         0.00 |
+| unigene-rat   | AF249673        |            1 |         0.06 |
+| unigene-rat   | AF276870        |          -30 |         1.29 |
+| unigene-rat   | AF276870        |            1 |         0.00 |
+| unigene-rat   | AF276870        |            1 |         0.94 |
+| unigene-rat   | BC081717        |         -209 |         3.61 |
+| unigene-rat   | BC081717        |         -193 |         4.81 |
+| unigene-rat   | BC081717        |          -26 |         7.82 |
+| unigene-rat   | BC081717        |          -12 |         1.07 |
+| unigene-rat   | BC081717        |          -12 |         1.07 |
+| unigene-rat   | BC081717        |           -9 |         4.11 |
+| unigene-rat   | BC081717        |           -8 |         1.62 |
+| unigene-rat   | BC081717        |            1 |         0.01 |
+| unigene-rat   | BC081717        |            1 |         0.23 |
+| unigene-rat   | BC081717        |            1 |         0.94 |
+| unigene-rat   | BC097292        |            1 |         0.00 |
+| unigene-rat   | BC097292        |            1 |         0.23 |
+| unigene-rat   | BC099182        |            1 |         0.93 |
+| unigene-rat   | BE101931        |            1 |         0.90 |
+| unigene-rat   | DY470991        |            1 |         0.92 |
+| unigene-rat   | NM_173126       |            1 |         0.93 |
+| unigene-rat   | NM_182669       |            1 |         0.94 |
+| unigene-rat   | XM_001061408    |            1 |         0.94 |
+| unigene-rat   | XM_219988       |            1 |         0.94 |
+| unigene-rat   | XM_228590       |            1 |         0.94 |
+| unigene-rat   | XM_343671       |            1 |         0.94 |
+| unigene-rat   | XM_575928       |            1 |         0.05 |
+| unigene-rat   | XR_008896       |            1 |         0.05 |
++---------------+-----------------+--------------+--------------+
+69 rows in set (0.01 sec)
+
+ use unigene7
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select targetsource, targetaccession, hitevalueexp, hitevaluedec  from collectionblast where collectionid =2 ;
++---------------+-----------------+--------------+--------------+
+| targetsource  | targetaccession | hitevalueexp | hitevaluedec |
++---------------+-----------------+--------------+--------------+
+| swissprot     | P39981          |          -19 |         2.73 |
+| swissprot     | P39981          |          -19 |         2.73 |
+| swissprot     | P40074          |           -6 |         2.51 |
+| swissprot     | P40074          |           -6 |         2.51 |
+| swissprot     | Q99624          |         -257 |         5.79 |
+| swissprot     | Q9DCP2          |         -226 |         8.99 |
+| swissprot     | Q9JHZ9          |         -224 |         3.78 |
+| unigene-dog   | XM_533820       |         -291 |         3.22 |
+| unigene-dog   | XM_533820       |         -222 |         6.16 |
+| unigene-dog   | XM_533820       |          -29 |         4.82 |
+| unigene-dog   | XM_533820       |          -19 |         6.85 |
+| unigene-dog   | XM_533820       |          -16 |         1.67 |
+| unigene-dog   | XM_533820       |          -15 |         2.62 |
+| unigene-dog   | XM_533820       |          -10 |         6.21 |
+| unigene-dog   | XM_543721       |           -9 |         9.69 |
+| unigene-mouse | AK158125        |          -27 |         1.89 |
+| unigene-mouse | BC054846        |         -212 |         5.73 |
+| unigene-mouse | BC054846        |         -184 |         6.71 |
+| unigene-mouse | BC054846        |          -31 |         1.26 |
+| unigene-mouse | BC054846        |          -17 |         2.71 |
+| unigene-mouse | BC054846        |          -14 |         2.62 |
+| unigene-mouse | BC054846        |           -6 |         1.51 |
+| unigene-mouse | BE984396        |           -6 |         1.36 |
+| unigene-rat   | AF276870        |          -30 |         1.29 |
+| unigene-rat   | BC081717        |         -209 |         3.61 |
+| unigene-rat   | BC081717        |         -193 |         4.81 |
+| unigene-rat   | BC081717        |          -26 |         7.82 |
+| unigene-rat   | BC081717        |          -12 |         1.07 |
+| unigene-rat   | BC081717        |          -12 |         1.07 |
+| unigene-rat   | BC081717        |           -9 |         4.11 |
+| unigene-rat   | BC081717        |           -8 |         1.62 |
++---------------+-----------------+--------------+--------------+
+31 rows in set (0.00 sec)
+
+
+REMOVING ALL ENTRIES WITH hitevalueexp = 1 IN unigene2 DOES NOT SOLVE THE ISSUE OF unigene7 HAVING BLAST HITS FOR THE SAME SEQUENCES IN unigene2 THAT DO NOT HAVE BLAST HITS:
+
+
+unigene2;
+select distinct collectionid from collectionblast where collectionid <= 100;
++--------------+
+| collectionid |
++--------------+
+|            2 |
+|            3 |
+|            4 |
+|            6 |
+|            7 |
+|            8 |
+|           10 |
+|           11 |
+|           12 |
+|           14 |
+|           15 |
+|           16 |
+|           18 |
+|           19 |
+|           20 |
+|           22 |
+|           23 |
+|           24 |
+|           26 |
+|           27 |
+|           28 |
+|           30 |
+|           31 |
+|           32 |
+|           34 |
+|           35 |
+|           36 |
+|           38 |
+|           39 |
+|           40 |
+|           42 |
+|           43 |
+|           44 |
+|           46 |
+|           47 |
+|           48 |
+|           50 |
+|           51 |
+|           52 |
+|           54 |
+|           55 |
+|           56 |
+|           58 |
+|           59 |
+|           60 |
+|           62 |
+|           63 |
+|           64 |
+|           66 |
+|           67 |
+|           70 |
+|           71 |
+|           72 |
+|           74 |
+|           75 |
+|           76 |
+|           78 |
+|           79 |
+|           80 |
+|           82 |
+|           83 |
+|           84 |
+|           86 |
+|           87 |
+|           88 |
+|           90 |
+|           91 |
+|           93 |
+|           94 |
+|           96 |
+|           97 |
+|           99 |
+|          100 |
++--------------+
+73 rows in set (0.06 sec)
+
+
+unigene7;
+select distinct collectionid from collectionblast where collectionid <= 100;
++--------------+
+| collectionid |
++--------------+
+|            2 |
+|            3 |
+|            4 |
+|            5 |
+|            6 |
+|            7 |
+|            8 |
+|            9 |
+|           10 |
+|           11 |
+|           12 |
+|           13 |
+|           14 |
+|           15 |
+|           16 |
+|           17 |
+|           18 |
+|           19 |
+|           21 |
+|           22 |
+|           23 |
+|           24 |
+|           25 |
+|           26 |
+|           27 |
+|           28 |
+|           29 |
+|           30 |
+|           31 |
+|           32 |
+|           35 |
+|           36 |
+|           37 |
+|           38 |
+|           40 |
+|           41 |
+|           42 |
+|           43 |
+|           44 |
+|           45 |
+|           46 |
+|           47 |
+|           48 |
+|           49 |
+|           50 |
+|           51 |
+|           52 |
+|           53 |
+|           54 |
+|           55 |
+|           56 |
+|           57 |
+|           59 |
+|           60 |
+|           61 |
+|           62 |
+|           64 |
+|           65 |
+|           66 |
+|           67 |
+|           70 |
+|           71 |
+|           72 |
+|           73 |
+|           74 |
+|           75 |
+|           76 |
+|           78 |
+|           79 |
+|           80 |
+|           81 |
+|           82 |
+|           83 |
+|           84 |
+|           85 |
+|           86 |
+|           87 |
+|           88 |
+|           89 |
+|           90 |
+|           91 |
+|           92 |
+|           93 |
+|           94 |
+|           95 |
+|           97 |
+|           98 |
+|           99 |
+|          100 |
++--------------+
+89 rows in set (0.04 sec)
+
+
+
+use unigene2;
+select targetsource, targetaccession, hitevalueexp, hitevaluedec  from collectionblast where collectionid =5 ;
+Empty set (0.00 sec)
+
+use unigene2;
+select targetsource, targetaccession, hitevalueexp, hitevaluedec  from collectionblast where collectionid =5 ;
+
++---------------+-----------------+--------------+--------------+
+| targetsource  | targetaccession | hitevalueexp | hitevaluedec |
++---------------+-----------------+--------------+--------------+
+| swissprot     | Q6AXF6          |         -252 |         5.95 |
+| swissprot     | Q6AXF6          |         -252 |         5.95 |
+| swissprot     | Q6Q3F5          |         -179 |         4.66 |
+| swissprot     | Q6Q3F5          |          -72 |         1.00 |
+| swissprot     | Q9GZC8          |          -23 |         4.13 |
+| swissprot     | Q9GZC8          |          -23 |         4.13 |
+| swissprot     | Q9NXL6          |         -253 |         7.06 |
+| swissprot     | Q9NXL6          |         -253 |         7.06 |
+| unigene-dog   | BU744485        |          -12 |         3.95 |
+| unigene-dog   | BU744485        |           -8 |         1.52 |
+| unigene-dog   | DR106704        |          -20 |         6.59 |
+| unigene-dog   | XM_546509       |         -233 |         1.26 |
+| unigene-dog   | XM_546509       |          -38 |         2.20 |
+| unigene-dog   | XM_546509       |          -32 |         8.13 |
+| unigene-dog   | XM_546509       |          -28 |         3.10 |
+| unigene-dog   | XM_546509       |          -26 |         1.92 |
+| unigene-dog   | XM_546509       |           -9 |         3.96 |
+| unigene-dog   | XM_546509       |           -6 |         3.83 |
+| unigene-mouse | AK139379        |          -59 |         6.89 |
+| unigene-mouse | AK171920        |          -44 |         1.52 |
+| unigene-mouse | AK171920        |          -19 |         1.80 |
+| unigene-mouse | AK171920        |           -8 |         3.97 |
+| unigene-mouse | BF465931        |          -12 |         2.44 |
+| unigene-mouse | BF465931        |           -9 |         9.45 |
+| unigene-mouse | NM_172257       |         -254 |         1.08 |
+| unigene-mouse | NM_172257       |          -30 |         3.23 |
+| unigene-mouse | NM_172257       |          -26 |         4.89 |
+| unigene-mouse | NM_172257       |          -22 |         7.38 |
+| unigene-mouse | NM_172257       |          -13 |         6.65 |
+| unigene-mouse | NM_172257       |          -10 |         1.62 |
+| unigene-mouse | NM_172257       |          -10 |         1.62 |
+| unigene-mouse | NM_172257       |           -8 |         1.00 |
+| unigene-rat   | CB773011        |         -127 |         6.75 |
+| unigene-rat   | CK472606        |          -18 |         7.03 |
+| unigene-rat   | XM_221455       |          -42 |         2.42 |
+| unigene-rat   | XM_221455       |          -31 |         5.36 |
+| unigene-rat   | XM_221455       |           -8 |         2.62 |
++---------------+-----------------+--------------+--------------+
+
+
+select targetsource, targetaccession, substring(targetannotation, 1, 50), hitevalueexp, hitevaluedec  from collectionblast where collectionid =5 group by targetaccession order by targetaccession, hitevalueexp;
++---------------+-----------------+----------------------------------------------------+--------------+--------------+
+| targetsource  | targetaccession | substring(targetannotation, 1, 50)                 | hitevalueexp | hitevaluedec |
++---------------+-----------------+----------------------------------------------------+--------------+--------------+
+| unigene-mouse | AK139379        | Mus musculus 10 days neonate cortex cDNA           |          -59 |         6.89 |
+| unigene-mouse | AK171920        | Mus musculus activated spleen cDNA                 |          -44 |         1.52 |
+| unigene-mouse | BF465931        | UI-M-CG0p-bqo-f-02-0-UI.s1 NIH_BMAP_Ret4_S2 Mus mu |          -12 |         2.44 |
+| unigene-dog   | BU744485        | CH1#002_E02T7 Canine heart non-normalized cDNA Lib |          -12 |         3.95 |
+| unigene-rat   | CB773011        | AMGNNUC:SRPB2-00077-G1-A srpb2 (10220) Rattus norv |         -127 |         6.75 |
+| unigene-rat   | CK472606        | AGENCOURT_17618451 NIH_MGC_236 Rattus norvegicus c |          -18 |         7.03 |
+| unigene-dog   | DR106704        | JHU120H06L603 Canine cardiovascular system biased  |          -20 |         6.59 |
+| unigene-mouse | NM_172257       | Mus musculus SID1 transmembrane family             |         -254 |         1.08 |
+| swissprot     | Q6AXF6          | SID1 transmembrane family member 1 precursor       |         -252 |         5.95 |
+| swissprot     | Q6Q3F5          | SID1 transmembrane family member 1 precursor       |         -179 |         4.66 |
+| swissprot     | Q9GZC8          | Systemic RNA interference defective protein 1 prec |          -23 |         4.13 |
+| swissprot     | Q9NXL6          | SID1 transmembrane family member 1 precursor       |         -253 |         7.06 |
+| unigene-rat   | XM_221455       | PREDICTED: Rattus norvegicus Msid2 (LOC288109)     |          -42 |         2.42 |
+| unigene-dog   | XM_546509       | PREDICTED: Canis familiaris similar to SID1 transm |         -233 |         1.26 |
++---------------+-----------------+----------------------------------------------------+--------------+--------------+
+
+GET THE SEQUENCE AND BLAST MANUALLY:
+
+em /Users/young/FUNNYBASE/dev/unigene/testblast/unigene2_5.1.fasta
+
+>S17092879 AY358442|unigene-human-100|SID1 transmembrane family, member 2
+CGGCAACCAGCCGCCGCCACCACCGCTGCCACTGCCGCCCTGCCGGGGCCATGTTCGCTCTGGGCTTGCCCTTCTTGGTGCTCTTGGTGGCCTCGGTCGAGAGCCATCTGGGGGTTCTGGGGCCCAAGAACGTCTCGCAGAAAGACGCCGAGTTTGAGCGCACCTACGTGGACGAGGTCAACAGCGAGCTGGTCAACATCTACACCTTCAACCATACTGTGACCCGCAACAGGACAGAGGGCGTGCGTGTGTCTGTGAACGTCCTGAACAAGCAGAAGGGGGCGCCGTTGCTGTTTGTGGTCCGCCAGAAGGAGGCTGTGGTGTCCTTCCAGGTGCCCCTAATCCTGCGAGGGATGTTTCAGCGCAAGTACCTCTACCAAAAAGTGGAACGAACCCTGTGTCAGCCCCCCACCAAGAATGAGTCGGAGATTCAGTTCTTCTACGTGGATGTGTCCACCCTGTCACCAGTCAACACCACATACCAGCTCCGGGTCAGCCGCATGGACGATTTTGTGCTCAGGACTGGGGAGCAGTTCAGCTTCAATACCACAGCAGCACAGCCCCAGTACTTCAAGTATGAGTTCCCTGAAGGCGTGGACTCGGTAATTGTCAAGGTGACCTCCAACAAGGCCTTCCCCTGCTCAGTCATCTCCATTCAGGATGTGCTGTGTCCTGTCTATGACCTGGACAACAACGTAGCCTTCATCGGCATGTACCAGACGATGACCAAGAAGGCGGCCATCACCGTACAGCGCAAAGACTTCCCCAGCAACAGCTTTTATGTGGTGGTGGTGGTGAAGACCGAAGACCAAGCCTGCGGGGGCTCCCTGCCTTTCTACCCCTTCGCAGAAGATGAACCGGTCGATCAAGGGCACCGCCAGAAAACCCTGTCAGTGCTGGTGTCTCAAGCAGTCACGTCTGAGGCATACGTCAGTGGGATGCTCTTTTGCCTGGGTATATTTCTCTCCTTTTACCTGCTGACCGTCCTCCTGGCCTGCTGGGAGAACTGGAGGCAGAAGAAGAAGACCCTGCTGGTGGCCATTGACCGAGCCTGCCCAGAAAGCGGTCACCCTCGAGTCCTGGCTGATTCTTTTCCTGGCAGTTCCCCTTATGAGGGTTACAACTATGGCTCCTTTGAGAATGTTTCTGGATCTACCGATGGTCTGGTTGACAGCGCTGGCACTGGGGACCTCTCTTACGGTTACCAGGGCCGCTCCTTTGAACCTGTAGGTACTCGGCCCCGAGTGGACTCCATGAGCTCTGTGGAGGAGGATGACTACGACACATTGACCGACATCGATTCCGACAAGAATGTCATTCGCACCAAGCAATACCTCTATGTGGCTGACCTGGCACGGAAGGACAAGCGTGTTCTGCGGAAAAAGTACCAGATCTACTTCTGGAACATTGCCACCATTGCTGTCTTCTATGCCCTTCCTGTGGTGCAGCTGGTGATCACCTACCAGACGGTGGTGAATGTCACAGGGAATCAGGACATCTGCTACTACAACTTCCTCTGCGCCCACCCACTGGGCAATCTCAGCGCCTTCAACAACATCCTCAGCAACCTGGGGTACATCCTGCTGGGGCTGCTTTTCCTGCTCATCATCCTGCAACGGGAGATCAACCACAACCGGGCCCTGCTGCGCAATGACCTCTGTGCCCTGGAATGTGGGATCCCCAAACACTTTGGGCTTTTCTACGCCATGGGCACAGCCCTGATGATGGAGGGGCTGCTCAGTGCTTGCTATCATGTGTGCCCCAACTATACCAATTTCCAGTTTGACACATCGTTCATGTACATGATCGCCGGACTCTGCATGCTGAAGCTCTACCAGAAGCGGCACCCGGACATCAACGCCAGCGCCTACAGTGCCTACGCCTGCCTGGCCATTGTCATCTTCTTCTCTGTGCTGGGCGTGGTCTTTGGCAAAGGGAACACGGCGTTCTGGATCGTCTTCTCCATCATTCACATCATCGCCACCCTGCTCCTCAGCACGCAGCTCTATTACATGGGCCGGTGGAAACTGGACTCGGGGATCTTCCGCCGCATCCTCCACGTGCTCTACACAGACTGCATCCGGCAGTGCAGCGGGCCGCTCTACGTGGACCGCATGGTGCTGCTGGTCATGGGCAACGTCATCAACTGGTCGCTGGCTGCCTATGGGCTTATCATGCGCCCCAATGATTTCGCTTCCTACTTGTTGGCCATTGGCATCTGCAACCTGCTCCTTTACTTCGCCTTCTACATCATCATGAAGCTCCGGAGTGGGGAGAGGATCAAGCTCATCCCCCTGCTCTGCATCGTTTGCACCTCCGTGGTCTGGGGCTTCGCGCTCTTCTTCTTCTTCCAGGGACTCAGCACCTGGCAGAAAACCCCTGCAGAGTCGAGGGAGCACAACCGGGACTGCATCCTCCTCGACTTCTTTGACGACCACGACATCTGGCACTTCCTCTCCTCCATCGCCATGTTCGGGTCCTTCCTGGTGTTGCTGACACTGGATGACGACCTGGATACTGTGCAGCGGGACAAGATCTATGTCTTCTAGCAGGAGCTGGGCCCTTCGCTTCACCTCAAGGGGCCCTGAGCTCCTTTGTGTCATAGACCGGTCACTCTGTCGTGCTGTGGGGATGAGTCCCAGCACCGCTGCCCAGCACTGGATGGCAGCAGGACAGCCAGGTCTAGCTTAGGCTTGGCCTGGGACAGCCATGGGGTGGCATGGAACCTTGCAGCTGCCCTCTGCCGAGGAGCAGGCCTGCTCCCCTGGAACCCCCAGATGTTGGCCAAATTGCTGCTTTCTTCTCAGTGTTGGGGCCTTCCATGGGCCCCTGTCCTTTGGCTCTCCATTTGTCCCTTTGCAAGAGGAAGGATGGAAGGGACACCCTCCCCATTTCATGCCTTGCATTTTGCCCGTCCTCCTCCCCACAATGCCCCAGCCTGGGACCTAAGGCCTCTTTTTCCTCCCATACTCCCACTCCAGGGCCTAGTCTGGGGCCTGAATCTCTGTCCTGTATCAGGGCCCCAGTTCTCTTTGGGCTGTCCCTGGCTGCCATCACTGCCCATTCCAGTCAGCCAGGATGGATGGGGGTATGAGATTTTGGGGGTTGGCCAGCTGGTGCCAGACTTTTGGTGCTAAGGCCTGCAAGGGGCCTGGGGCAGTGCGTATTCTCTTCCCTCTGACCTGTGCTCAGGGCTGGCTCTTTAGCAATGCGCTCAGCCCAATTTGAGAACCGCCTTCTGATTCAAGAGGCTGAATTCAGAGGTCACCTCTTCATCCCATCAGCTCCCAGACTGATGCCAGCACCAGGACTGGAGGGAGAAGCGCCTCACCCCTTCCCTTCCTTCTTTCCAGGCCCTTAGTCTTGCCAAACCCCAGCTGGTGGCCTTTCAGTGCCATTGACACTGCCCAAGAATGTCCAGGGGCAAAGGAGGGATGATACAGAGTTCAGCCCGTTCTGCCTCCACAGCTGTGGGCACCCCAGTGCCTACCTTAGAAAGGGGCTTCAGGAAGGGATGTGCTGTTTCCCTCTACGTGCCCAGTCCTAGCCTCGCTCTAGGACCCAGGGCTGGCTTCTAAGTTTCCGTCCAGTCTTCAGGCAAGTTCTGTGTTAGTCATGCACACACATACCTATGAAACCTTGGAGTTTACAAAGAATTGCCCCAGCTCTGGGCACCCTGGCCACCCTGGTCCTTGGATCCCCTTCGTCCCACCTGGTCCACCCCAGATGCTGAGGATGGGGGAGCTCAGGCGGGGCCTCTGCTTTGGGGATGGGAATGTGTTTTTCTCCCAAACTTGTTTTTATAGCTCTGCTTGAAGGGCTGGGAGATGAGGTGGGTCTGGATCTTTTCTCAGAGCGTCTCCATGCTATGGTTGCATTTCCGTTTTCTATGAATGAATTTGCATTCAATAAACAACCAGACTCaaaaaaaaaaaaaaaG
+
+TEST BLAST OF unigene2_5.1
+
+export WUBLASTMAT=/common/apps/wublast/matrix
+export BLASTMAT=/common/apps/wublast/matrix
+/common/apps/wublast/wu-blastall -p blastx mformat 7 -cpus 2 -filter seg -span2 noseqs -e 1e-5 -d /common/data/swissprot -i /Users/young/FUNNYBASE/dev/unigene/testblast/unigene2_5.1.fasta
+
+WHICH GAVE THE HITS FOUND IN unigene7 BUT NOT FOUND IN unigene2
+
+SO REBLASTED unigene2... (SEE ABOVE)
+
+
+</entry>
+
+
+
+<entry [Fri Dec 21 16:16:23 EST 2007] TABLES AND IMAGES FOR CHAPTER 1>
+
+
+
+
+TABLE 1 - 1
+===========
+
+BLAST analysis of all five 100-gene human UniGene randomly sample sequence sets against mouse, dog and rat UniGenes and Swiss-Prot. Total sequences is the total number of sequences in each database. Target hits represents the average number of hits per 100 human UniGenes. Query hits is  the average number of hits per 100 human UniGenes. Best hits indicates the average number of sequences per 100 human UniGenes for which the database had the lowest E-value hit. The E-value cutoff was 1e-05.
+
+chap1/images/multiblasthits.unigene2-v2.xls
+
+SOURCE:
+
+./multiblasthits.pl -d unigene2,unigene3,unigene4,unigene5,unigene6 -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -05
+
+
+
+TABLE 1 - 2
+===========
+
+Counts of UniGene and Swiss-Prot for BLAST hit annotations for all 500 human UniGenes that are dependent on other databases (“similar”, predicted’, ‘hypothetical’) or of “poor quality”. Poor quality annotations contained only a clone number, chromosomal location, or annotation referring to an obscure phenotype. The E-value cutoff was 1e-05.
+
+chap1/images/multiblastquality.unigene1-5-v2.xls
+
+SOURCE:
+
+./multiblastquality.pl -d unigene2,unigene3,unigene4,unigene5,unigene6 -t swissprot,unigene-mouse,unigene-dog,unigene-rat -e -05
+
+cp /Users/young/FUNNYBASE/pipeline/unigene2/collection/unigene2.multiblastquality.tsv ~/FUNNYBASE/thesis/final/chap1/images/multiblastquality.unigene1-5.v2.tsv
+
+
+TABLE 1 - 3
+===========
+
+Fuzzy match algorithm accuracy – Type I error and Type II error against match score cutoff.
+
+chap1/images/iprscanevalueverifystats-v2.xls
+
+SOURCE:
+
+./blastbestevalue.pl -d unigene2
+./blastevalueannotation.pl -d unigene2
+./arrayiprscan.pl -d unigene2
+./collectionorf.pl -d unigene2
+./collectionuniqueorf.pl -d unigene2
+./collectioniprscan.pl -d unigene2
+./iprscanevalueverify.pl -d unigene2
+MANUAL MATCHING OF iprscan ANNOTATION AGAINST BLAST ANNOATION
+./arrayloaddata.pl -d unigene2 -t iprscanevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene2/collection/unigene2.iprscanevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_iprscanevalueverifymanual.sql
+
+
+./iprscanevalueverifystats.pl -d unigene2
+
+cp /Users/young/FUNNYBASE/pipeline/unigene2/collection/unigene2.iprscanevalueverifystats.tsv ~/FUNNYBASE/thesis/final/chap1/images/iprscanevalueverifystats.tsv
+
+
+
+Figure 1 - 1
+============
+
+Fuzzy match algorithm flowchart. For any two input annotations, a fuzzy match score from 0 to 1 is calculated, representing the possibility that the two annotations are the same. 
+
+chap1/images/fuzzymatch_flowchart.png
+
+
+
+
+Figure 1 - 2
+============
+
+Distribution of total Swiss-prot BLAST hits per human UniGene sequence (out of 500) with E-values less than e-99.
+
+chap1/images/unigene1-5.blastcountsgraphevaluecutoff.e-100.png
+
+SOURCE:
+
+./multiblastcountsgraphevaluecutoff.pl
+
+
+
+Figure 1 - 3
+============
+
+Similarity in E-value between best hit and next best hits. For a BLAST analysis of 500 UniGene human sequences against Swiss-Prot and three mammalian UniGenes (mouse, dog, rat), the E-values of the second, third and fourth best hit are compared to that of the best (lowest E-value) hit. The ratio of the natural log of next best hit divided by the natural log the best hit is shown for the second (black), third (gray) and fourth (white) best hits.
+
+chap1/images/unigene1-5.multiblastgraphevalueordinals.e-5.png
+
+SOURCE:
+
+./multiblastgraphevalueordinals.pl -d unigene2,unigene3,unigene4,unigene5,unigene6 -b 20  -g "" > unigene2.multiblastgraphevalueordinals.html
+
+
+
+Figure 1 - 4
+============
+
+The distribution of matches (blue) and mismatches (red) for a BLAST analysis of all Swiss-Prot sequences against the Swiss-Prot database itself (max 250 hits per query). Matches/mismatches were defined by fuzzy matching of query and hit annotations. The number of mismatches roughly equals the number of matches at an E-value of 1E-60.
+
+chap1/images/swissprotselfblastbinsgraph.png
+
+SOURCE:
+
+./selfblastbinsgraph.pl -d indexer -s swissprotselfblast
+
+
+
+Figure 1 - 5
+============
+
+BLAST search results of 100 human UniGenes against Swiss-Prot shows mis-annotations are the majority at E-values greater than or equal to 1e-60. 
+
+images/unigene2.blastbins.novalues.png
+
+SOURCE:
+
+./blaststatsgraph.pl -d unigene2  > unigene2.blaststatsgraph.v2.html
+
+
+
+Figure 1 - 6
+============
+
+Correct (blue) and incorrect (red) BLAST hits for four human UniGene sequences against Swiss-Prot and three mammalian UniGenes (mouse, dog, rat). The number of matched and mis-matched annotations relative to E-value are plotted for selected examples from the same set of 100 human UniGenes. 
+
+
+images/unigene2.blastgraph.seq22.1.png
+
+SOURCE:
+
+./blaststatsgraph.pl -d unigene2  > unigene2.blaststatsgraph.v2.html
+
+
+
+Figure 1 - 7
+============
+
+
+The number of human UniGene sequences plotted against the total number of extremely low E-value BLAST hits per sequence (E-value cutoff: 1e-100). Matches (solid) and mismatches (stripes) are designated by fuzzy matching of the original human UniGene sequence annotation against the BLAST hit annotations (match cutoff: 0.80). Out of 100 human UniGene sequences, only 74 had BLAST hits against either Swiss-prot or three mammalian UniGene databases - mouse, rat, dog. The total number of hits was 907: 663 against Swiss-prot and 80, 90 and 74 against the UniGene mammalian databases ,respectively.
+
+
+NEW
+
+In order to verify the performance of the fuzzy matching algorithm on Swissprot-Swissprot annotation comparisons, the BLAST hits for 100 Swissprot sequences (E-value cutoff: 1e-05) were
+examined manually for matching annotations (total hits: 7,457) and these manual checks were compared to the automated fuzzy match predictions. The TypeI and TypeII errors using different match score cutoffs were calculated based on the manual checks. The algorithm showed a relatively high Type I error rate (0.299 to 0.638) but a lower Type II error rate (0.063 to 0.140). In order to maximize the number of correct annotations, we are more interested in the Type II error rate. At a match cutoff score of 0.5, the false positive (Type I) and false negative (Type II) rates were 0.332 and 0.102, respectively. In the manual matching
+process, BLAST hit annotations were considered a match to the query
+sequence annotation if both annotations described essentially the same
+protein function without the need to refer to external sources such as
+expert knowledge of the proteins to impute associations between the
+annotations. Different substrates for enzymes with the same basic
+function were considered to be mismatches, whereas different subunits
+of the same protein were considered to be matches. Due to the nature of
+the fuzzy match algorithm, shorter, more general descriptions were more
+likely to match. This was not necessarily a drawback as they were
+considered incomplete but not incorrect descriptions of the protein
+function. Two important factors relating to the overall use of fuzzy
+matching are 1) a protein may have more than one function, which may
+not match, and 2) annotations describing the same function may differ
+significantly and therefore not match. The fuzzy match algorithm is
+sensitive to the latter, however the use of a ‘stop list’ of words to
+be ignored by the matching algorithm and the use of stringent matching
+of short annotations (one or two words) significantly reduced the Type
+I and Type II errors.
+
+
+OLD
+
+Evaluation of fuzzy match algorithm for matching Swissprot annotations from the results of a Swissprot vs Swissprot BLAST analysis. All 7,457 BLAST hits for 100 Swissprot sequences (E-value cutoff: 1e-05) were examined manually for matching annotations. In the manual matching process, BLAST hit annotations were considered a match to the query sequence annotation if both annotations described essentially the same protein function without the need to refer to external sources such as expert knowledge of the proteins to impute associations between the annotations. Different substrates for enzymes with the same basic function were considered to be mismatches, whereas different subunits of the same protein were considered to be matches. Due to the nature of the fuzzy match algorithm, shorter, more general descriptions were more likely to match. This was not necessarily a drawback as they were considered incomplete but not incorrect descriptions of the protein function. Two important factors relating to the overall use of fuzzy matching are 1) a protein may have more than one function, which may not match, and 2) annotations describing the same function may differ significantly and therefore not match. The fuzzy match algorithm is sensitive to the latter, however the use of a ‘stop list’ of words to be ignored by the matching algorithm and the use of stringent matching of short annotations (one or two words) significantly reduces the Type I and Type II errors.
+
+
+
+
+
+./chap1/images/indexer.swissprotselfblastverifymanual-v2.xls
+
+SOURCE
+
+sudo ./selfblastverify.pl -d indexer -s swissprotselfblast -b 32
+
+./fuzzymatchverify.pl –i 
+
+sudo ./selfblastverifystats.pl -d indexer -s swissprotselfblast
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Dec 21 13:33:33 EST 2007] RAN iprscan ON unigene>
+
+
+
+
+sudo ./arrayiprscandaemon.pl -d unigene 
+
+</entry>
+
+
+
+<entry [Fri Dec 21 14:04:44 EST 2007] RAN BLAST ON unigene7>
+
+
+
+1. GENERATE FASTA FILE
+
+./collectionfasta.pl -d unigene7
+
+2. RUN BLAST
+
+sudo ./arrayblast.pl -d unigene7 -q unigene7 -t swissprot,unigene-rat,unigene-mouse,unigene-dog -j 26
+    
+    Run time: 00:06:38
+    Completed ./arrayblast.pl
+    2:51PM, 21 December 2007
+    ****************************************
+        
+3. LOAD BLAST
+
+./arrayblastloaddata.pl -d unigene7 -t swissprot,unigene-rat,unigene-mouse,unigene-dog 
+
+    Run time: 00:00:05
+    Completed ./arrayblastloaddata.pl
+    2:51PM, 21 December 2007
+    ****************************************
+
+    use unigene7;
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          430 |
+    +------------------------------+
+
+
+</entry>
+
+
+
+<entry [Fri Dec 21 04:33:16 EST 2007] RAN BLAST ON unigene>
+
+
+
+
+1. GENERATE FASTA FILE
+
+./collectionfasta.pl -d unigene
+
+2. RUN BLAST
+
+sudo ./arrayblast.pl -d unigene -q unigene -t swissprot,unigene-rat,unigene-mouse,unigene-dog -j 26
+    
+    Run time: 00:11:34
+    Completed ./arrayblast.pl
+    4:43AM, 21 December 2007
+    ***************************************
+
+3. LOAD BLAST
+
+./arrayblastloaddata.pl -d unigene -t swissprot,unigene-rat,unigene-mouse,unigene-dog 
+
+    Run time: 00:24:08
+    Completed ./arrayblastloaddata.pl
+    1:56PM, 21 December 2007
+    ****************************************
+
+    use unigene;
+    select count(distinct collectionid) from collectionblast where targetsource != 'swissprot';
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          912 |
+    +------------------------------+
+
+
+4. GET BLAST BEST EVALUE HITS
+
+./blastbestevalue.pl -d unigene -t swissprot,unigene-mouse,unigene-rat,unigene-dog
+
+
+5. GET BLAST ANNOTATION
+
+./blastevalueannotation.pl -d unigene 
+
+
+6. CREATE BLAST STATS
+
+./blasthitstats.pl -d refseq1  -t swissprot,refseq-mouse,refseq-dog,refseq-rat
+
+
+
+</entry>
+
+
+
+<entry [Thu Dec 20 15:03:09 EST 2007] CREATE unigene WITH 1000 HUMAN UNIGENE SEQUENCES>
+
+
+
+1. CREATE unigene7 - MERGE collection ENTRIES FROM unigene2 TO unigene6 (TOTAL 490 UNIQUE)
+
+./unigenemergecollection.pl -d unigene7 -s unigene2,unigene3,unigene4,unigene5,unigene6 
+
+    use unigene7;
+    select count(*) from collection;
+    +----------+
+    | count(*) |
+    +----------+
+    |      490 |
+    +----------+
+
+2. CREATE unigene8 - GET REMAINING SEQUENCES FROM /common/data/unigene-human (TOTAL 510)
+
+    2.1 GET SEED SEQUENCES
+    
+./unigeneseed.pl -d unigene8 -m 510 -i /common/data/unigene-human
+ 
+    Output file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/data/unigene.seed
+    
+    Completed ./unigeneseed.pl
+    Run time: 01:02:31
+    3:02PM, 20 December 2007
+    ****************************************
+
+    2.2 LOAD SEED SEQUENCES INTO collection
+
+./fasta2collection.pl -d unigene8 -f /Users/young/FUNNYBASE/pipeline/unigene8/data/unigene8.seed
+
+    select count(*) from collection;
+    +----------+
+    | count(*) |
+    +----------+
+    |      510 |
+    +----------+
+
+3. CREATE unigene9 - MERGE unigene7 AND unigene8 
+
+./unigenemergecollection.pl -d unigene9 -s unigene7,unigene8 
+
+    Duplicates: 37
+
+    select count(*) from collection;
+    +----------+
+    | count(*) |
+    +----------+
+    |      962 |
+    +----------+
+
+
+4. REPEAT 2 AND 3 SO THAT TOTAL SEQUENCES = 1000
+
+    4.1 GET SEED SEQUENCES
+    
+./unigeneseed.pl -d unigene10 -m 60 -i /common/data/unigene-human
+ 
+    Output file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/unigene/data/unigene.seed
+    
+    Completed ./unigeneseed.pl
+    Run time: 01:02:31
+    3:02PM, 20 December 2007
+    ****************************************
+    
+    
+    4.2 LOAD SEED SEQUENCES INTO collection
+
+./fasta2collection.pl -d unigene10 -f /Users/young/FUNNYBASE/pipeline/unigene10/data/unigene10.seed
+
+    use unigene10;
+    select count(*) from collection;
+
+
+5. CREATE unigene11 - MERGE unigene9 AND unigene10 
+
+./unigenemergecollection.pl -d unigene11 -s unigene9,unigene10 
+
+    use unigene11;
+    select count(*) from collection;
+    +---------------------------------+
+    | count(distinct sourceaccession) |
+    +---------------------------------+
+    |                            1014 |
+    +---------------------------------+
+    
+    select max(collectionid) from collection;
+    +-------------------+
+    | max(collectionid) |
+    +-------------------+
+    |              1014 |
+    +-------------------+
+    
+    delete from collection where collectionid > 1000;
+    
+    select count(distinct sourceaccession) from collection;
+    +---------------------------------+
+    | count(distinct sourceaccession) |
+    +---------------------------------+
+    |                            1000 |
+    +---------------------------------+
+    
+    select max(collectionid) from collection;
+    +-------------------+
+    | max(collectionid) |
+    +-------------------+
+    |              1000 |
+    +-------------------+
+
+
+6. COPY unigene11 TO unigene
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./mysqlcopytable.pl -d unigene11 -t unigene
+
+
+
+

@@ -1,0 +1,325 @@
+Notes-apps-outlook.txt
+
+
+</entry>
+
+
+
+<entry [Mon Jan  3 11:44:00 EDT 2011] BACKUP AND RESTORE OUTLOOK FOLDERS>
+
+
+REMOVED .PST FILE TO FIX REPEAT PASSWORD POPUP
+
+
+LOCATION OF .PST FILE:
+
+C:\Documents and Settings\syoung\Local Settings\Application Data\Microsoft\Outlook\outlook.pst
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep 13 10:11:00 EDT 2010] BACKUP AND RESTORE OUTLOOK FOLDERS>
+
+
+
+
+1. CHANGED .ost FILE LOCATION TO E: DRIVE
+
+COPIED
+
+C:\Documents and Settings\syoung\Local Settings\Application Data\Microsoft\Outlook\outlook.ost
+
+TO
+
+E:\software\backup\backups\outlook\
+
+
+RENAMED ORIGINAL .ost FILE TO 
+
+
+Options --> Mail Setup --> Data Files
+
+
+
+PROBLEM:
+
+browse button is greyed out
+
+
+
+ found the location of the OST in Outlook's preferences, but the browse button is greyed out. I tried shutting down Outlook, moving the files to D:, and restarting outlook in the hopes that it would ask me to point it to the new location, but upon relaunch it just rebuilt the OST from the data on the server.
+
+Any ideas?
+
+
+Something I found on Google groups. The OP was using OL2003 with SBS 2003:
+
+1) Shutdown all e-mail enabled apps. 
+2) Go to the mail applet in the control panel. 
+3) Disable cached mode. Now you can move the OST.
+4) Re-enable cached mode option.
+MCF_trinity
+Tribus: SW Washington State
+Registered: Jun 24, 2003
+Posts: 1379
+Posted: Tue Nov 16, 2004 7:09 pm
+That looks like the recipe for moving any file with a lock on it. How does Outlook 2003 know where you moved it to (per your instructions anyhow)?
+Rex Fenestrarum
+Tribus: Foxbase Alpha
+Registered: Sep 30, 1999
+Posts: 5659
+Posted: Tue Nov 16, 2004 7:31 pm
+You're closing Outlook, then using all Control Panel's Mail applet to do the moving. Note that in the OP we're trying to get the "Browse" button within the Exchange settings to "unghost" so the OST file can be moved (or re-created) with the applet. We're not trying to move the file with Explorer or anything. 
+
+I played around with this and don't know if it works or not. 
+
+You've gotta open the applet, click on "Accounts" then click on your Exchange account and uncheck the "Use Cached Exchange Mode" box. 
+
+However, doing this does not enable the "Browse" button under Exchange seetings > More settings > Advanced > Offline File Folder Settings. I *think* to do that you need to click on the "Disable Offline Use" button and *then* the "Browse" button will be enabled, at which point you should be able to reverse the process with the OST at its new location. 
+
+However, clicking on the "Disable Offline Use" button gives a "Are you ABSOLUTELY POSITIVELY SURE??" message that I'm a bit leery of. I'm not gonna screw up my own Outlook just for this post. If I was in the OP's position, I'd give it a try though.
+
+
+
+
+NOTES
+-----
+
+
+Backup and Restore
+
+With today's use of e-mail you almost can't afford to lose a single e-mail so let alone your entire mail archive. This guide is all about backing up and restoring your Outlook Data. It describes various methods and explains which method is best to be used in which scenarios.
+
+Locating the pst-file
+Relocating the pst-file (optional)
+Backup pst-file
+Restore pst-file
+Export pst-file
+Import pst-file
+Backing up individual items
+Backing up an Exchange mailbox
+Restoring the Exchange mailbox
+Tools
+Locating the pst-file
+Before you can make a backup you'll need to know what to backup first. In the case of Outlook in a home environment, all data is stored in a single file with a pst-extension. The pst-file is also known as Personal Folders and is able to store several mail, contacts, journal, notes and calendar folders. More about pst-files can be found here.
+
+You can locate your pst-file by using one of the following methods;
+
+Make sure you include hidden and system files and folders when searching for a pst-file.
+
+For Outlook 2007 and previous on Windows XP the default location is; 
+C:\Documents and Settings\%username%\Local Settings\Application Data\Microsoft\Outlook\
+For Outlook 2007 and previous on Windows Vista and Windows 7 the default location is; 
+C:\Users\%username%\AppData\Local\Microsoft\Outlook\
+For Outlook 2010 on Windows XP the default location is;
+C:\Documents and Settings\%username%\My Documents\Outlook Files\
+For Outlook 2010 on Windows Vista or Windows 7 the default location is;
+C:\Users\%username%\Documents\Outlook Files\
+You can also locate the file by using; 
+Right click the root folder (probably Outlook Today)-> Properties-> button Advanced-> field Filename
+If you have multiple pst-files you can get an overview via; 
+File-> Data File Management… (Outlook 2007 and previous)
+File-> Account Settings-> Account Settings-> tab Data Files (Outlook 2010)
+Tool Tip!
+ While making a copy of the pst-file will effectively backup your Outlook data, it will not include any mail account configuration settings (mail profile), templates or signatures. If you want to include this into your backups as well you can use the backup tool Outlook Backup from ABF Software. The backups can also be scheduled so you won't have to worry about it again.
+If you decide to order use ABF-1HTJ8 to get a discount.
+Relocating the pst-file (optional)
+I assume lots of you have already relocated the "My Documents" folder to a more convenient location by right clicking it on the Desktop-> Properties-> tab Target. I've got mine set to D:\My Documents so I won't have to rescue my data in the (worst) case that I have to reformat my C:\ drive. As I see the pst-file to be data, just like a Word file, I like to have it where I keep all my important documents; in the "My Documents" folder. In the "My Documents" folder I have a folder called "My Outlook" where I store the file in.
+
+Note:
+If you are using Outlook 2010 you can skip the steps below as Outlook 2010 already places the pst-files in a subfolder of the My Documents folder.
+To configure Outlook with a new pst-file location do the following;
+
+Make sure Outlook is closed
+Go the the location of your pst-file
+Copy it to the new location (D:\My Documents\My Outlook)
+Rename the file in the old location to .old
+Start Outlook; after a warning message it will prompt you to locate the pst-file. Use the Browse button to direct it to the location you've set in step 3
+You're done! If all is successful you can delete the renamed pst-file in the old location to get some space back on your C:\-drive. You might need to recreate some "move to folder" Wizard Rules to update the new location.
+Backup pst-file
+Backing up the pst-file is quite easy; you just copy the pst-file to your safe location when Outlook is closed. A safe location can be one of the following;
+
+another physical hard drive in your machine
+another physical hard drive in another machine
+an external hard drive
+a USB memory stick
+a Flash memory card
+a CD-R(W)
+a DVD+/-R(W)
+a backup tape
+Restore pst-file
+A backup is worthless if you can't restore it. So we first test the back-up. Testing the backup when knowing that the original still works is a lot less stressful then as well.
+
+To restore your pst-file, copy the file to the location where you want to work with it like; D:\My Documents\My Outlook\Temp. 
+If you restored from CD/DVD, make sure you uncheck the "Read Only" file attribute by right clicking the file and choosing Properties. Now open Outlook and connect to the file by choosing; File-> Open-> Outlook Data File… 
+You can now check if the backup was successful and make sure you backed up the correct file.
+
+In the case of a real disaster, the original pst-file would be missing or will be beyond repair. When the pst-file is missing, Outlook would have prompted you for the pst-file location. You then need to close Outlook and restore the file from backup to D:\My Documents\My Outlook as described above. Then start Outlook again and if prompted browse to the location of the pst-file.
+
+When the pst-file is beyond repair, Outlook will start with the message that it can't be opened and that you need to run the Inbox Repair Tool (scanpst.exe). If scanpst.exe can't fix the pst-file either, rename the corrupted pst-file to .old and you would now be in the situation that the pst-file went missing.
+
+Export pst-file
+It's a general misconception that an export of your mail is a good backup. This misconception gets even bigger if you run the export and see that the default name of the file to export to is backup.pst. The reason that it isn't a backup is because you will lose data during an export, even if you configure the export feature to export all the folders and subfolders. Amongst others, the following data gets lost during an export;
+
+custom forms
+custom views
+Wizard Rules
+folder properties like AutoArchive settings
+An export of your pst-file to another pst-file can be seen as a selective backup since during the export you can choose which data you want to backup. This is handy if you see no need in backing up the entire pst-file like the Sent Items folder or the Funny Forwards folder (who doesn't have one of those?) which can get quite big over time and you might consider them as not important enough to backup.
+
+Let's say you only want to export your Inbox and your Contacts folder;
+
+Open the Import and Export Wizard
+Outlook 2007 and previous
+File-> Import and Export…
+Outlook 2010
+File-> Open-> Import
+(unlike the name suggests, it also includes export options)
+Choose Export to a file.
+Choose Personal Folder File (.pst).
+Select the Inbox and press Next (we do the Contacts folder later).
+Set the file location to D:\My Documents\My Outlook\Backup\export.pst
+Press Finish and you'll be prompted to set properties for the export.pst file.
+In the Name field type a descriptive name like "Export June 2004" (yeah, I wrote this guide a long time ago but don’t worry; I still keep it up to date!).
+Press OK to start the export.
+To export the Contacts folder as well repeat step 1 to 4 and this time select the Contacts folder.
+If the save location is not set to the path you've set in step 5 browse to it.
+Press Finish to export the Contact folder.
+Close Outlook and copy the exported file to your safe location as described in Backup pst-file.
+Import pst-file
+Importing a pst-file can only be done in a working Outlook situation, like when you've reinstalled your machine, configured Outlook and now want to restore your Inbox and Contacts. Importing a pst-file can be done in two different ways; automatically through a wizard or manually by dragging and dropping. Before importing, restore your pst-file; Copy the file to the location where you want to work with it like; D:\My Documents\My Outlook\Temp. If you restored from CD/DVD, make sure you uncheck the "Read Only" file attribute by right clicking the file and choosing Properties.
+
+Restore through the Import and Export Wizard
+
+Open the Import and Export Wizard
+Outlook 2007 and previous
+File-> Import and Export…
+Outlook 2010
+File-> Open-> Import
+Choose Import from another program or file.
+Choose Personal Folder File (.pst).
+Browse to the location where you've restored the pst file (D:\My Documents\My Outlook\Temp)
+Set the options to "Include subfolders" and "Import items into the same folder in:" and select the folder that is listed as your Outlook Today folder set in the dropdown list.
+Press Finish to complete the import.
+Restart Outlook and remove the export.pst file from the Temp directory if desired.
+Restore manually
+
+Choose File-> Open-> Outlook Data File…
+Browse to the location where you've restored the pst file (D:\My Documents\My Outlook\Temp)
+You'll now see an additional set of folders added to your folder list which you can expand. Expand the list and select the Inbox folder
+In this folder select the messages you want to restore to the original Inbox folder
+Drag & drop them to the default Inbox folder
+Do the same for the Contacts folder. You might want to set your view to a list view so you can easily select and move the items. To change the view choose View-> Current View-> Phone List (Outlook 2007 and previous) or tab Home-> group Current View-> List (Outlook 2010).
+Now that the importing is complete, right click the pst-file in Outlook added in step 2 and choose Disconnect.
+Restart Outlook and remove the export.pst file from the Temp directory if desired.
+Backing up individual items
+Sometimes it's more convenient to backup a single item. Think about account login information you receive by e-mail. Backing up this way is very easy. You can choose File-> Save as… and then choose in which format you want to save the message. If you want to be able to open them on just about any system you can choose the txt or htm format.
+
+To easily save several messages in the Outlook format (msg) you can select those messages and drag & drop them out of Outlook into an Explorer window. When you save them in the msg-format, any attachments that might have been included in the message are saved within the msg-file as well.
+
+Backing up an Exchange mailbox
+Backing up an Exchange mailbox is the task of the Exchange administrator. Since this is managed on the Exchange server it's beyond the scope of this article. However in some cases it's good to have a backup for yourself as well. This is especially true if you are a mobile user and you synchronize with the Exchange server so you'll have your messages available when you are not connected to the Exchange server. If you are not able to connect to the Exchange server for a long time but you'll have to make sure you can always reach your e-mail, you might want to export your messages as well. This way you'll have a backup of the mailbox in case something happens to the off-line mailbox. See the Export section for more info on how you can export certain folders.
+
+Restoring the Exchange mailbox
+Restoring the Exchange mailbox is also a task of the Exchange administrator. Here I'll describe how you can use the exported pst-file when the off-line mailbox gets lost or scanost.exe can't repair it and you won't be able to connect to the Exchange server for a while.
+
+Outlook 2007 and Outlook 2010
+
+Go to Control Panel-> Mail-> button Data Files…
+Press the Add… button.
+Outlook 2007 only;
+Select whether it's an Outlook 97-2002 or Office Outlook pst-file (in the example we've created an Office Outlook file but it doesn't matter which one you choose when you add an existing pst-file).
+Browse to the location where you've restored the pst file; D:\My Documents\My Outlook\Temp
+You'll get a details overview; press OK
+Set the file as the default delivery location by selecting it and pressing the button “Set as Default”.
+Start Outlook and see that it adds the other default Outlook folders in case you haven't exported these.
+Cancel all security prompts you might be getting from the Exchange account.
+For Outlook 2002/2003
+
+Go to Control Panel-> Mail-> button E-mail Accounts-> button Next.
+Cancel all password prompts you might be getting from the Exchange Account.
+Now press the button New Outlook Data File…
+Outlook 2003 only;
+Select whether it's an Outlook 97-2002 or Outlook 2003 pst-file (in the example we've created an Outlook 2003 file but it doesn't matter which one you choose when you add an existing pst-file).
+Browse to the location where you've restored the pst file; D:\My Documents\My Outlook\Temp
+You'll get a details overview; press OK
+Now set the default delivery location to the pst-file you've just added by using the dropdown list.
+Start Outlook and see that it adds the other default Outlook folders in case you haven't exported these.
+Cancel all security prompts you might be getting from the Exchange account.
+For Outlook 2000
+
+Go to Control Panel-> Mail
+Press Add…
+Browse to the location where you've restored the pst file; D:\My Documents\My Outlook\Temp
+You'll get a details overview; press OK
+Cancel all password prompts you might be getting from the Exchange Account (Work Offline).
+Press the Delivery tab.
+Now set the default delivery location to the pst-file you've just added by using the dropdown list.
+Start Outlook and see that it adds the other default Outlook folders in case you haven't exported these.
+Cancel all security prompts you might be getting from the Exchange account (Work Offline).
+Tools
+Outlook Add-in: Personal Folders Backup 
+The Personal Folders Backup download creates backup copies of your .PST files at regular intervals, making it easy to keep all of your Outlook folders safely backed up. Although the download site states that it works for Outlook 2002 or later, it actually still works for Outlook 2000 as well. To make this add-in work for Outlook 2010 as well see; Microsoft Outlook Backup Add-in not available
+
+Backup script 
+I created this batch in order to be able to schedule Outlook pst-file backups by using Scheduled tasks in Windows. Since I always have my Outlook open a simple copy to backup isn't possible without an "open file backup" service.
+
+Outlook Backup (tip!) 
+ABF Outlook Backup is a backup and synchronization tool for MS Outlook. It allows you to backup and restore your messages, address book, settings, accounts, message rules, junk email lists, signatures, and even your Internet favorites. It also works great for migrating your Outlook data, settings and accounts from one machine to another; the version of Windows and Outlook don’t even have to be the same. 
+If you decide to order use ABF-1HTJ8 to get a discount.
+
+Last modified: October 26, 2010
+
+
+</entry>
+
+
+
+<entry [Mon Sep 13 10:11:00 EDT 2010] DELETE OLD .ost FILE IN offline folder>
+
+
+
+
+C:\Documents and Settings\syoung\Local Settings\Application Data\Microsoft\Outlook\outlook.ost
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep 13 14:51:00 EDT 2010] CHECK MESSAGE SIZE USAGE>
+
+
+
+In Microsoft Outlook, how do I check my disk quota usage on the Exchange server?
+
+Note: Exchange accounts at Indiana University have a default quota of 500MB. For information on managing your usage of Exchange server resources, see In Microsoft Outlook 2002, 2003, and 2007 for Windows, what can I do about an "exceeding" or "over size limit" message?
+
+Different versions of Outlook provide different ways to check your Exchange disk quota usage. In Outlook 2002 and 2003, you have a choice of methods.
+
+Note: In Outlook 2003, the instructions below assume that you are not using Cached Exchange Mode.
+
+Outlook 2002, 2003, or 2007
+
+From the Tools menu, choose Mailbox Cleanup... . 
+
+Click View Mailbox Size... (Outlook 2003 or 2007) or Click Here (Outlook 2002).
+Outlook 2000, 2002, or 2003
+
+From the View menu, select Folder List.
+
+In the "Folder List" column, right-click Outlook Today-[Mailbox-Name], where Name is your name.
+
+Select Properties or Properties for Mailbox. 
+
+Under the General tab, click Folder Size. 
+
+Your total usage is listed beside "Total Size (Fld+SubFld)". A detailed breakdown of each folder's size is listed below the total.
+Outlook Web Access

@@ -1,0 +1,178 @@
+
+++++++</entry>
+
+
+
+<entry [Wed Feb 13 23:40:51 EST 2008] SSH PROBLEM WHEN DOING dsh TO COPY FILES>
+
+
+
+There is no problem doing commands like:
+
+dsh -a ls
+dsh -a pwd
+dsh -a cp .... etc
+
+co
+
+But when I try to copy files using dsh I get the following errors:
+
+
+
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm
+executing '/common/bin/dsh -a cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node001.cluster.private:        executing 'cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node001.cluster.private:        node001.cluster.private:        Connection closed by 192.168.2.1
+node001.cluster.private:        node002.cluster.private:        Connection closed by 192.168.2.2
+node001.cluster.private:        node004.cluster.private:        Connection closed by 192.168.2.4
+node001.cluster.private:        node005.cluster.private:        Connection closed by 192.168.2.5
+node001.cluster.private:        node006.cluster.private:        Connection closed by 192.168.2.6
+node001.cluster.private:        node007.cluster.private:        Connection closed by 192.168.2.7
+node001.cluster.private:        node008.cluster.private:        Connection closed by 192.168.2.8
+node001.cluster.private:        node009.cluster.private:        Connection closed by 192.168.2.9
+node001.cluster.private:        node010.cluster.private:        Connection closed by 192.168.2.10
+node001.cluster.private:        node011.cluster.private:        Connection closed by 192.168.2.11
+node001.cluster.private:        node012.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node012.cluster.private:        @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+node001.cluster.private:        node012.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node012.cluster.private:        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+node001.cluster.private:        node012.cluster.private:        Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+node001.cluster.private:        node012.cluster.private:        It is also possible that the RSA host key has just been changed.
+node001.cluster.private:        node012.cluster.private:        The fingerprint for the RSA key sent by the remote host is
+node001.cluster.private:        node012.cluster.private:        71:4a:c4:fd:f3:11:8f:91:ad:e7:30:aa:17:01:d3:45.
+node001.cluster.private:        node012.cluster.private:        Please contact your system administrator.
+node001.cluster.private:        node012.cluster.private:        Add correct host key in /private/var/root/.ssh/known_hosts to get rid of this message.
+node001.cluster.private:        node012.cluster.private:        Offending key in /private/var/root/.ssh/known_hosts:4
+node001.cluster.private:        node012.cluster.private:        Password authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node012.cluster.private:        Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node012.cluster.private:        Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password,keyboard-interactive).
+node001.cluster.private:        node013.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node013.cluster.private:        @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+node001.cluster.private:        node013.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node013.cluster.private:        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+node001.cluster.private:        node013.cluster.private:        Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+node001.cluster.private:        node013.cluster.private:        It is also possible that the RSA host key has just been changed.
+node001.cluster.private:        node013.cluster.private:        The fingerprint for the RSA key sent by the remote host is
+node001.cluster.private:        node013.cluster.private:        71:4a:c4:fd:f3:11:8f:91:ad:e7:30:aa:17:01:d3:45.
+node001.cluster.private:        node013.cluster.private:        Please contact your system administrator.
+node001.cluster.private:        node013.cluster.private:        Add correct host key in /private/var/root/.ssh/known_hosts to get rid of this message.
+node001.cluster.private:        node013.cluster.private:        Offending key in /private/var/root/.ssh/known_hosts:5
+node001.cluster.private:        node013.cluster.private:        Password authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node013.cluster.private:        Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node013.cluster.private:        Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password,keyboard-interactive).
+node001.cluster.private:        node014.cluster.private:        Connection closed by 192.168.2.14
+node001.cluster.private:        node015.cluster.private:        Connection closed by 192.168.2.15
+node001.cluster.private:        node016.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node016.cluster.private:        @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+node001.cluster.private:        node016.cluster.private:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node001.cluster.private:        node016.cluster.private:        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+node001.cluster.private:        node016.cluster.private:        Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+node001.cluster.private:        node016.cluster.private:        It is also possible that the RSA host key has just been changed.
+node001.cluster.private:        node016.cluster.private:        The fingerprint for the RSA key sent by the remote host is
+node001.cluster.private:        node016.cluster.private:        71:4a:c4:fd:f3:11:8f:91:ad:e7:30:aa:17:01:d3:45.
+node001.cluster.private:        node016.cluster.private:        Please contact your system administrator.
+node001.cluster.private:        node016.cluster.private:        Add correct host key in /private/var/root/.ssh/known_hosts to get rid of this message.
+node001.cluster.private:        node016.cluster.private:        Offending key in /private/var/root/.ssh/known_hosts:8
+node001.cluster.private:        node016.cluster.private:        Password authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node016.cluster.private:        Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+node001.cluster.private:        node016.cluster.private:        Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password,keyboard-interactive).
+node002.cluster.private:        executing 'cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node002.cluster.private:        node001.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node001.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node001.cluster.private:        Received disconnect from 192.168.2.1: 2: Too many authentication failures for root
+node002.cluster.private:        node002.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node002.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node002.cluster.private:        Received disconnect from 192.168.2.2: 2: Too many authentication failures 
+
+1. 
+Tried restoring node001 from image (problem initially started with node001) and restarting head and nodes several times. It appeared to work on nodes after a restart but when I got back to the lab it had reverted to the original error...
+
+2.
+Tried blanking out /private/var/root/.ssh/known_hosts file on all hosts so that it would repopulate but got the following errors:
+
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm
+executing '/common/bin/dsh -a cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node001.cluster.private:        executing 'cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node001.cluster.private:        node001.cluster.private:        Warning: Permanently added '192.168.2.1' (RSA) to the list of known hosts.
+node001.cluster.private:        node001.cluster.private:        Connection closed by 192.168.2.1
+node001.cluster.private:        node002.cluster.private:        Warning: Permanently added '192.168.2.2' (RSA) to the list of known hosts.
+node001.cluster.private:        node002.cluster.private:        Connection closed by 192.168.2.2
+node001.cluster.private:        node004.cluster.private:        Warning: Permanently added '192.168.2.4' (RSA) to the list of known hosts.
+node001.cluster.private:        node004.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node004.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node004.cluster.private:        Received disconnect from 192.168.2.4: 2: Too many authentication failures for root
+node001.cluster.private:        node005.cluster.private:        Warning: Permanently added '192.168.2.5' (RSA) to the list of known hosts.
+node001.cluster.private:        node005.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node005.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node005.cluster.private:        Received disconnect from 192.168.2.5: 2: Too many authentication failures for root
+node001.cluster.private:        node006.cluster.private:        Warning: Permanently added '192.168.2.6' (RSA) to the list of known hosts.
+node001.cluster.private:        node006.cluster.private:        Connection closed by 192.168.2.6
+node001.cluster.private:        node007.cluster.private:        Warning: Permanently added '192.168.2.7' (RSA) to the list of known hosts.
+node001.cluster.private:        node007.cluster.private:        Connection closed by 192.168.2.7
+node001.cluster.private:        node008.cluster.private:        Warning: Permanently added '192.168.2.8' (RSA) to the list of known hosts.
+node001.cluster.private:        node008.cluster.private:        Connection closed by 192.168.2.8
+node001.cluster.private:        node009.cluster.private:        Warning: Permanently added '192.168.2.9' (RSA) to the list of known hosts.
+node001.cluster.private:        node009.cluster.private:        Connection closed by 192.168.2.9
+node001.cluster.private:        node010.cluster.private:        Warning: Permanently added '192.168.2.10' (RSA) to the list of known hosts.
+node001.cluster.private:        node010.cluster.private:        Connection closed by 192.168.2.10
+node001.cluster.private:        node011.cluster.private:        Warning: Permanently added '192.168.2.11' (RSA) to the list of known hosts.
+node001.cluster.private:        node011.cluster.private:        Connection closed by 192.168.2.11
+node001.cluster.private:        node012.cluster.private:        Warning: Permanently added '192.168.2.12' (RSA) to the list of known hosts.
+node001.cluster.private:        node012.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node012.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node012.cluster.private:        Received disconnect from 192.168.2.12: 2: Too many authentication failures for root
+node001.cluster.private:        node013.cluster.private:        Warning: Permanently added '192.168.2.13' (RSA) to the list of known hosts.
+node001.cluster.private:        node013.cluster.private:        Connection closed by 192.168.2.13
+node001.cluster.private:        node014.cluster.private:        Warning: Permanently added '192.168.2.14' (RSA) to the list of known hosts.
+node001.cluster.private:        node014.cluster.private:        Connection closed by 192.168.2.14
+node001.cluster.private:        node015.cluster.private:        Warning: Permanently added '192.168.2.15' (RSA) to the list of known hosts.
+node001.cluster.private:        node015.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node015.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node015.cluster.private:        Received disconnect from 192.168.2.15: 2: Too many authentication failures for root
+node001.cluster.private:        node016.cluster.private:        Warning: Permanently added '192.168.2.16' (RSA) to the list of known hosts.
+node001.cluster.private:        node016.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node016.cluster.private:        Permission denied, please try again.
+node001.cluster.private:        node016.cluster.private:        Received disconnect from 192.168.2.16: 2: Too many authentication failures for root
+node002.cluster.private:        executing 'cp /common/mysql/data/unigeneblast/collection.frm /private/var/mysql/unigeneblast/collection.frm'
+node002.cluster.private:        node001.cluster.private:        Warning: Permanently added '192.168.2.1' (RSA) to the list of known hosts.
+node002.cluster.private:        node001.cluster.private:        Connection closed by 192.168.2.1
+node002.cluster.private:        node002.cluster.private:        Warning: Permanently added '192.168.2.2' (RSA) to the list of known hosts.
+node002.cluster.private:        node002.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node002.cluster.private:        Permission denied, please try again.
+node002.cluster.private:        node002.cluster.private:        Received disconnect from 192.168.2.2: 2: Too many authentication failures for root
+node002.cluster.private:        node004.cluster.private:        Warning: Permanently added '192.168.2.4' (RSA) to the list of known hosts.
+node002.cluster.private:        node004.cluster.private:        Connection closed by 192.168.2.4
+node002.cluster.private:        node005.cluster.private:        Warning: Permanently added '192.168.2.5' (RSA) to the list of known hosts.
+node002.cluster.private:        node005.cluster.private:        Connection closed by 192.168.2.5
+node002.cluster.private:        node006.cluster.private:        Warning: Permanently added '192.168.2.6' (RSA) to the list of known hosts.
+node002.cluster.private:        node006.cluster.private:        Connection closed by 192.168.2.6
+node002.cluster.private:        node007.cluster.private:        Warning: Permanently added '192.168.2.7' (RSA) to the list of known hosts.
+node002.cluster.private:        node007.cluster.private:        Connection closed by 192.168.2.7
+node002.cluster.private:        node008.cluster.private:        Warning: Permanently added '192.168.2.8' (RSA) to the list of known hosts.
+node002.cluster.private:        node008.cluster.private:        Connection closed by 192.168.2.8
+node002.cluster.private:        node009.cluster.private:        Warning: Permanently added '192.168.2.9' (RSA) to the list of known hosts.
+node002.cluster.private:        node009.cluster.private:        Connection closed by 192.168.2.9
+node002.cluster.private:        node010.cluster.private:        Warning: Permanently added '192.168.2.10' (RSA) to the list of known hosts.
+node002.cluster.private:        node010.cluster.private:        Connection closed by 192.168.2.10
+node002.cluster.private:        node011.cluster.private:        Warning: Permanently added '192.168.2.11' (RSA) to the list of known hosts.
+node002.cluster.private:        node011.cluster.private:        Connection closed by 192.168.2.11
+node002.cluster.private:        node012.cluster.private:        Warning: Permanently added '192.168.2.12' (RSA) to the list of known hosts.
+node002.cluster.private:        node012.cluster.private:        Connection closed by 192.168.2.12
+node002.cluster.private:        node013.cluster.private:        Warning: Permanently added '192.168.2.13' (RSA) to the list of known hosts.
+node002.cluster.private:        node013.cluster.private:        Connection closed by 192.168.2.13
+node002.cluster.private:        node014.cluster.private:        Warning: Permanently added '192.168.2.14' (RSA) to the list of known hosts.
+node002.cluster.private:        node014.cluster.private:        Connection closed by 192.168.2.14
+node002.cluster.private:        node015.cluster.private:        Warning: Permanently added '192.168.2.15' (RSA) to the list of known hosts.
+node002.cluster.private:        node015.cluster.private:        Connection closed by 192.168.2.15
+node002.cluster.private:        node016.cluster.private:        Warning: Permanently added '192.168.2.16' (RSA) to the list of known hosts. 
+
+
+
+Checked online and found info relating to:
+
+"The fingerprint for the RSA key sent by the remote host is"
+
+
+
+
+

@@ -1,0 +1,56 @@
+<html>
+<head>
+    <title>test auto hide</title>
+
+	<!-- prevent cache -->
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="pragma" content="no-cache">
+	
+	<!-- declare character set -->
+	<meta charset="utf-8" />
+
+</head>
+<body>
+
+<script type="text/javascript"
+	src="../../agua/dojo-1.6.1rc2/dojo/dojo.js">
+</script>
+
+<script type="text/javascript">
+
+dojo.require("dojo.fx.Toggler");
+//dojo.require("dojo.dom");
+//dojo.require("dojo.on");
+//dojo.require("dojo.domReady!");
+
+//function(Toggler, dom, on){
+  var toggler = new Toggler({
+    node: "basicNode"
+  });
+  on(dojo.byId("hideButton"), "click", function(e){
+	console.log("hideButton   click fired");
+	
+    toggler.hide();
+  });
+  on(dojo.byId("showButton"), "click", function(e){
+	console.log("showButton   click fired");
+    toggler.show();
+  });
+//});
+
+</script>
+
+
+<button
+	type="button"
+	dojoAttachEvent="onclick:"
+	id="hideButton">Hide the node!
+</button>
+
+<button type="button" id="showButton">Show the node! </button>
+<div id="basicNode" style="width: 200px; background-color: red;">
+  <b>This is a container of random content to toggle!</b>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+Notes-project20-exon_count.txt
+
+</entry>
+
+
+
+<entry [Tues Aug 12 01:09:28 EDT 2008] CREATED compare-reference.pl TO COUNT EXONS IN COMMON BETWEEN TWO ASSEMBLIES ON A REFERENCE BACKBONE>
+
+
+
+
+compare-reference.pl
+
+THIS SCRIPT MAKES THE FOLLOWING ASSUMPTIONS ABOUT THE INPUT DATA:
+
+    -   OVERLAPPING EXONS CAN BE MERGED INTO A SINGLE EXON ENTITY
+
+    -   CONSECUTIVE ALTERNATE TRANSCRIPTS HAVE AT LEAST ONE EXON IN COMMON
+
+./exons-refseq.pl -i /home/syoung/base/pipeline/exons-refseq/refseq-exons.ncbi36.tsv
+
+WHERE THE INPUT FILE refseq-exons.ncbi36.tsv WAS DOWNLOADED FROM UCSC:
+
+http://genome.ucsc.edu/cgi-bin/hgTables?hgsid=111084073&clade=vertebrate&org=Human&db=hg18&hgta_group=genes&hgta_track=refGene&hgta_table=0&hgta_regionType=genome&position=chrX%3A151073054-151383976&hgta_outputType=primaryTable&hgta_outFileName=
+
+RESULTS:
+
+27,017                   ALTERNATE TRANSCRIPTS (RefSeq)
+209,369                 UNIQUE EXONS (RefSeq)
+
+This compares to the following counts from the ASTD (Alternate Splicing and Transcript Database):
+http://www.ebi.ac.uk/astd/download.html
+
+93,463                   ALTERNATE TRANSCRIPTS (ASTD)
+325,693                 UNIQUE EXONS (ASTD)
+
+
+
+
+From: Young, Stuart 
+Sent: Tuesday, August 12, 2008 3:00 AM
+To: Zuchner, Stephan
+Cc: Khuri, Sawsan; Hedges, Dale
+Subject: RefSeq unique exon count
+
+Hi Stephan,
+
+Here’s the results of the RefSeq unique exon count you wanted urgently:
+
+27,017                   ALTERNATE TRANSCRIPTS (RefSeq)
+209,369                 UNIQUE EXONS (RefSeq)
+
+The counts were based on the data download you showed me:
+http://genome.ucsc.edu/cgi-bin/hgTables?hgsid=111084073&clade=vertebrate&org=Human&db=hg18&hgta_group=genes&hgta_track=refGene&hgta_table=0&hgta_regionType=genome&position=chrX%3A151073054-151383976&hgta_outputType=primaryTable&hgta_outFileName=
+
+This compares to the following counts from the ASTD (Alternate Splicing and Transcript Database):
+
+93,463                   ALTERNATE TRANSCRIPTS (ASTD)
+325,693                 UNIQUE EXONS (ASTD)
+
+These counts were based on this data:
+http://www.ebi.ac.uk/astd/download.html
+
+It took a while to complete the exon count because the RefSeq data was a bit messy (exon start/stops differing, exons overlapping, etc.) so the parser needed a lot of testing. 
+
+I’ll do the assembly comparison and try to install ERANGE tomorrow.
+
+Cheers,
+
+Stuart. 
+
+
+
+
+From: Zuchner, Stephan 
+Sent: Monday, August 11, 2008 6:13 PM
+To: Young, Stuart
+Subject: RE: 
+
+Thanks. Please think about being more down here.
+
+Stephan Züchner, MD
+Director, Center for Human Molecular Genomics
+University of Miami Miller School of Medicine 
+Miami Institute of Human Genomics
+Clinical Research Building
+Room 810
+1120 N.W. 14th Street
+Miami, FL 33136
+Phone: +1-305-243-2281
+Fax: +1-305-243-2396
+e-mail: szuchner@med.miami.edu
+________________________________________
+From: Young, Stuart 
+Sent: Monday, August 11, 2008 6:06 PM
+To: Zuchner, Stephan
+Subject: RE: 
+
+Hi Stephan,
+
+Thanks for the list of captured genes. I’ve got to head off now but I’ll email you the count of refseq exons later this evening (the parser is working but I’m triple checking to make sure there are no bugs).
+
+Cheers,
+
+Stuart.  
+
+
+
+From: Zuchner, Stephan 
+Sent: Monday, August 11, 2008 5:14 PM
+To: Young, Stuart
+Subject: 
+
+For our in-house capture array we covered the following genes:
+
+DLGAP3
+GRIP
+RAPGEF4
+GRM7
+
+GRM7 is only partly on it.
+
+Stephan
+
+
+
+
+
+
+
+Stephan Züchner, MD
+Associate Professor of Human Genetics and Neurology
+Director, Center for Human Molecular Genomics
+University of Miami Miller School of Medicine 
+Miami Institute for Human Genomics
+Clinical Research Building
+Room 810
+1120 N.W. 14th Street
+Miami, FL 33136
+Phone: +1-305-243-2281
+Fax: +1-305-243-2396
+e-mail: szuchner@med.miami.edu
+
+
+
+

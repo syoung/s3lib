@@ -1,0 +1,283 @@
+Notes-apps-sam.txt
+
+</entry>
+
+
+
+<entry [Mon Jul  7 20:23:47 EDT 2008] INSTALL SAM >
+
+
+
+SAM -- Sequence Assembly Manager v.1.0  Rene Warren, August 2004
+
+Copyright (c) 2004 Canada's Michael Smith Genome Science Centre.  All rights reserved.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+ABOUT SAM
+==============================
+
+SAM is a data management system to organize, analyze and visualize Whole Genome Shotgun (WGS), Whole Genome Assembly (WGA) and Genome annotation data flow.  
+Additional information on SAM and how it could be useful to you can be found here: ./SAM/docs/slides
+
+
+REQUIREMENTS:
+==============================
+
+linux-gnu (i686) /clock 2.4Ghz (the faster, the better) / RAM 512k. The System requirements will change with the size of the WGS project. 
+Never tested on PC, but since it uses programs and algorithms developed for and running on unix machines, SAM will not run optimally on PCs.
+ 
+perl, version 5.005_03 built for i686-linux or higher (You may need more recent libraries in some cases)
+MySQL Ver 10.8 Distrib 3.23.21-beta, for pc-linux-gnu (i686) or higher
+Mozilla, Windows Internet Explorer, etc (anything except Netscape)
+
+
+OPTIONAL, BUT HIGHLY RECOMMENDED:
+==============================
+
+phredPhrap (Green, 1995) http://www.phrap.org
+Arachne v1.0-3.0 (Batzoglou, 2002-Jaffe, 2003) http://www.broad.mit.edu/wga/
+Glimmer v1.0-2.1 (Delcher, 1999) http://www.tigr.org/software/glimmer/
+pressdb, setdb, WU-blast (Altschul and Gish (1996)) http://blast.wustl.edu/
+blastall, formatdb (Altschul, 1990) http://genome.nhgri.nih.gov/blastall/blast_install/
+RBSfinder (TIGR) ftp://ftp.tigr.org/pub/software/RBSfinder/
+Bioperl http://bioperl.org/
+
+
+INSTALL:
+==============================
+
+1) Unzip and Untar SAM.tar.gz:
+------------------------------
+gunzip SAM.tar.gz
+tar -xvf SAM.tar
+
+
+2) Modify the shebang line to the full path of your perl interpreter for ALL perl scripts locate here: ./SAM/bin/*.pl
+------------------------------
+Repeat in ./SAM/cgi-bin/*.pl
+
+
+3) Many scripts are caching data structures.  You will have to change the lines where the full path of the cache is specified for the following scripts and modules:
+------------------------------
+
+CHANGED CACHE DIRECTORY IN SEVERAL .pl FILES 
+FROM
+/home/tmp/rwarren
+
+TO
+/tmp/sam-cache.
+
+
+
+./SAM/bin/
+
+DumpSequencesNmakeBlastDB.pl:                     cache_root=>"/home/tmp/rwarren",
+import_assembly.pl:                     cache_root=>"/home/tmp/rwarren",
+run_assembler.pl:                     cache_root=>"/home/tmp/rwarren",
+run_glimmerGene.pl:                     cache_root=>"/home/tmp/rwarren",
+run_glimmerGeneRBS.pl:                     cache_root=>"/home/tmp/rwarren",
+run_glimmer.pl:                     cache_root=>"/home/tmp/rwarren",
+SAMauto_annotate.pl:                     cache_root=>"/home/tmp/rwarren",
+
+./SAM/lib/
+
+wgsDATA.pm:                     cache_root=>"/home/tmp/rwarren",
+
+*The cache object definition is always on top on the script/module
+
+The cache_root is the location in the filesystem that will hold the root of the cache.  Defaults to the 'FileCache' under the OS default temp directory ( often '/tmp' on UNIXes )
+unless explicitly set.  You can use ./SAM/tmp to cache data structure or any other directories with read/write permission for the user 'nobody' (web user)
+The duration of the cache is variable depending on the type of information, but set to expires after 1,000-1,500 seconds in most of the above scripts.
+
+4) Changing the path of SAM libraries for sam.pl
+------------------------------
+
+CHANGED PATH OF USE lib IN cgi-bin/sam.pl
+FROM
+/home/rwarren/Production/SAM/lib
+
+TO
+/home/syoung/base/apps/sam/lib
+
+
+./SAM/cgi-bin/sam.pl uses libraries to encode data (Cipher.pm), query SAMdb, generate graphs, format the data (wgsDATA.pm) and generate HTML (wgsHTML.pm)
+You MUST change the use lib "/home/rwarren/Production/SAM/lib";  to reflect the location of these libraries on your system.
+
+
+5) Changing the path of Bioperl libraries for BlastParser.pl
+------------------------------
+
+INSTALLED BioPerl v1.4 TO /home/syoung/base/apps/sam/bioperl:
+
+cd /home/syoung/base/apps/sam/bioperl
+
+perl Makefile.PL  LIB=/home/syoung/base/apps/sam/bioperl
+make
+make test
+make install
+
+(FOR DETAILS SEE Notes-apps-sam-bioperl.txt)
+
+
+
+CHANGED PATH OF BioPerl IN bin/BlastParser.pl
+FROM
+
+/home/rwarren/Production/SAM/lib
+
+TO
+/home/syoung/base/apps/sam/bioperl
+
+
+
+./SAM/bin/BlastParser.pl uses the BPlite module from the Bioperl distribution.  Make sure you change the path of this library in this script.
+
+
+6) Setting up SAM web pages
+------------------------------
+
+
+6.1. create a new directory in /usr/local/apache/cgi-bin/gc/Project_Name or the location of your web server
+
+sudo mkdir /var/www/cgi-bin/sam
+
+6.2. copy sam.pl and nph-Blast_Server.html from ./SAM/cgi-bin/
+
+sudo cp /home/syoung/base/apps/sam/cgi-bin/sam.pl /var/www/cgi-bin/sam
+sudo cp /home/syoung/base/apps/sam/cgi-bin/nph-Blast_Server.html /var/www/cgi-bin/sam
+
+INSTALLED DEPENDENCIES FOR sam.pl USING CPAN:
+
+    Date::Manip 
+    Text::Cipher
+
+
+TEST sam.pl:
+
+cd /var/www/cgi-bin/sam
+./sam.pl
+
+Can't locate Cipher.pm in @INC (@INC contains: /home/syoung/base/apps/sam/lib /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at /var/www/cgi-bin/sam/sam.pl line 27.
+BEGIN failed--compilation aborted at /var/www/cgi-bin/sam/sam.pl line 27.
+
+
+*** CHECK HOW TO DISABLE SELINUX ON COMMAND LINE ***
+
+
+6.3. create an htdocs dir with the same name and copy ./SAM/web_images/*  AND ./SAM/javascript/*  to the htdocs/ssl/gc/Project_Name dir
+
+sudo mkdir -p /var/www/htdocs/ssl/sam 
+sudo cp /home/syoung/base/apps/sam/web_images/* /var/www/htdocs/ssl/sam 
+sudo cp /home/syoung/base/apps/sam/javascript/* /var/www/htdocs/ssl/sam 
+
+
+ll /var/www
+
+drwxr-xr-x  3 apache    users 4096 Jul  7 22:41 cgi-bin
+drwxr-xr-x  3 root      root  4096 Feb  5 14:59 error
+drwxr-xr-x  3 root      root  4096 Jul  7 22:50 htdocs
+drwxr-xr-x  2 root      root  4096 Aug  6  2007 html
+drwxr-xr-x  3 root      root  4096 Feb  5 14:59 icons
+drwxr-xr-x 14 root      root  4096 Feb  5 15:00 manual
+drwxr-xr-x  2 webalizer root  4096 Feb  5 14:59 usage
+
+
+chown -R apache:users html
+chown -R apache:users htdocs
+chown -R apache:users icons 
+
+
+6.4. make a report directory and ask the webmaster to make it viewable by users using the https protocol
+
+
+
+6.5. The wgsHTML.pm also makes use of a style sheet to format text, tables, etc displayed on the web (./SAM/site-style/common.css) and you may want to make use of it.
+
+
+6.6. create 2 files in your cgi-bin directory with the following names:
+
+userinfo.txt
+   content: username;password;assemblydb;host;sequencedb;host;project_id
+   These are login credential for MySQL-SAMdb.  It is a good idea to have a login name with read-only privileges for this. 
+   e.g. viewer;viewer;WGSdrosophila;
+
+config.txt
+   content: htdocs dir for those perl scripts located in the corresponding cgi-bin
+   e.g. http://rwweb.bcgsc.bc.ca/intranet/drosophila
+
+
+6.7. edit ./SAM/cgi-bin/nph-Blast_Server.html and change the directory of the wuBLAST and blast servers
+
+
+
+
+    ORIGINAL INSTRUCTIONS:
+    
+    -create a new directory in /usr/local/apache/cgi-bin/gc/Project_Name or the location of your web server
+    -copy sam.pl and nph-Blast_Server.html from ./SAM/cgi-bin/
+    -create an htdocs dir with the same name and copy ./SAM/web_images/*  AND ./SAM/javascript/*  to the htdocs/ssl/gc/Project_Name dir
+    -make a report directory and ask the webmaster to make it viewable by users using the https protocol
+    
+    The wgsHTML.pm also makes use of a style sheet to format text, tables, etc displayed on the web (./SAM/site-style/common.css) and you may want to make use of it.
+    
+    -create 2 files in your cgi-bin directory with the following names:
+    userinfo.txt
+       content: username;password;assemblydb;host;sequencedb;host;project_id
+       These are login credential for MySQL-SAMdb.  It is a good idea to have a login name with read-only privileges for this. 
+       e.g. viewer;viewer;WGSdrosophila;
+    
+    config.txt
+       content: htdocs dir for those perl scripts located in the corresponding cgi-bin
+       e.g. http://rwweb.bcgsc.bc.ca/intranet/drosophila
+    
+    
+    **You will have to edit ./SAM/cgi-bin/nph-Blast_Server.html
+    and change the directory of the wuBLAST and blast servers
+  
+  
+    
+
+7) Build a SAMdb MySQL database 
+------------------------------
+
+*YOU MUST HAVE MySQL PRIVILEGES TO CREATE, EDIT, ALTER, UPDATE, DROP SAMdb in order to use SAM.
+
+after creating a SAMdb database on mysql_server, import the structure::: 
+
+Structure:
+
+`mysql -h mysql_server -u me -D SAMdb(or any name you want) -p < ./SAM/SAMdb/SAMdb.sql`
+
+
+Configuration Data:
+
+`mysql -h mysql_server -u me -D SAMdb(or any name you want) -p < ./SAM/SAMdb/fill_config_example.sql;
+
+./SAM/SAMdb/fill_config_example.sql contains examples of config data set for our system and projects.
+
+*For SAM to function properly, you will have to go through the configuration tables (Assembler, Blastable, Blast_Config, Config, Center, Enzyme, Executable, Gene_Finder, Node, Project) and change the directories, full path to executable, names, etc. to reflect your systems and project profile.  
+
+*It is important to note that once everything is set the way you want, SAM will create 'project directories' under the following field if its sees that project for the first time:
+
+TABLE: Config FIELD: Config_Data_Dir
+
+The 'project directory' will be created using the following field:
+
+TABLE: Project FIELD: Project_Name
+
+
+

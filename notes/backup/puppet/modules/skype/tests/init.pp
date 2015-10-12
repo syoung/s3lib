@@ -1,0 +1,2 @@
+# include skype
+class { 'skype': }

@@ -1,0 +1,356 @@
+Notes-workflow-signature.txt
+
+
+1. POPULATE collection TABLE 
+===========================================
+
+./<DATABASE>orthologues -d <DATABASE>
+
+
+EXAMPLES
+
+cd ~/FUNNYBASE/bin/orthologues
+./unigeneorthologues -d unigene
+
+
+cd ~/FUNNYBASE/bin/signature
+./kogorthologues.pl -d kog1
+./blastorthologues.pl -d unigene -t unigeneblast
+./clustrorthologues.pl -d humanmouse
+
+
+./swissprotorthologues.pl -d swissprot
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 1
+
+
+    select count(distinct collectionid) from collection;
+
+
+1. GET INTERPRO HITS
+====================
+    
+cd ~/FUNNYBASE/bin/orthologues
+./arrayiprscandaemon.pl -d <DATABASE>
+
+
+2. Load InterPro hits into 'collectioniprscan' table
+====================================================
+
+cd ~/FUNNYBASE/bin/orthologues
+./collectioniprscan.pl -d <DATABASE>
+
+    select count(distinct collectionid) from collectioniprscan;
+
+
+3. Load 'collection' and 'collectioniprscan' tables onto cluster
+================================================================
+
+ON genomics:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d <DATABASE> -t collection,collectioniprscan
+
+**OR** ON gems:
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d <DATABASE> -t collection,collectioniprscan
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+sudo /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+4. GET IPRSCAN SET 
+==================
+
+Get set of Swiss-Prot sequences with similar complement of InterPro hits (based on the InterPro hits of a limited seed of proteins in orthologue group, default two proteins).
+
+sudo ./arrayiprscansetdaemon.pl -d <DATABASE> -t 24 
+    
+    select count(distinct collectionid) from iprscanset;
+
+    
+5. GET IPRSCAN SET SEQUENCES
+============================
+
+Get the nucleotide sequences of all members of the sequence set for each orthologue group.
+
+./arrayiprscansetsequence.pl -d <DATABASE> -t 24
+
+    select count(distinct collectionid) from iprscansetsequence;    
+
+
+6. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+Use ClustalW to construct multiple alignments of the original orthologue seed sequences and the Swiss-Prot set for these orthologues.
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d <DATABASE> -n 20
+
+
+7. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+./arrayiprscansetalignmentloaddata.pl -d <DATABASE>
+        
+    select count(distinct collectionid) from iprscansetalignment;
+    
+    
+7. LOAD iprscanset AND iprscansetalignment TABLES TO CLUSTER
+============================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d <DATABASE> -t iprscanset,iprscansetalignment
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+sudo /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+8. DO SUPERDOMAINS
+==================
+
+sudo ./arrayiprscansuperdomaindaemon.pl -d <DATABASE> -t 20
+                    
+
+9. LOAD SUPERDOMAINS
+====================
+
+./arrayiprscansuperdomainloaddata.pl -d <DATABASE> -t 20
+            
+    select count(distinct collectionid) from iprscansuperdomain;
+
+
+10. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d <DATABASE>
+        
+    select count(distinct collectionid) from iprscanattributebayes; 
+
+
+11. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d <DATABASE>
+
+    select count(distinct collectionid) from nfoldbayes;
+    
+    
+12. Load TABLES onto cluster
+========================================================================================
+
+iprscansetsequence
+iprscanattributebayes
+iprscansuperdomain 
+
+
+ON genomics:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d <DATABASE> -t iprscansetsequence,iprscansuperdomain,iprscanattributebayes
+
+**OR** ON gems:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d <DATABASE> -t iprscansetsequence,iprscansuperdomain,iprscanattributebayes
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+
+sudo /common/pipeline/<DATABASE>/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+12. Populate 'iprscanattribute' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+
+USING:
+
+sudo ./signaturecommandengine.pl -d <DATABASE>
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g iprscan -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g size -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g size -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g size -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g both -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g both -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d <DATABASE> -g both -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d <DATABASE> -t 20
+
+    select distinct groupby, domainsize from iprscanattribute;
+
+
+13. DO DECISION TREES
+=====================
+
+USING:
+
+sudo ./signaturecommandengine.pl -d <DATABASE>
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d <DATABASE> -g both -s 300
+
+
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
+
+
+14. EXTRACT BEST TREES TO POPULATE treelibrary
+==============================================
+
+./treelibrary.pl -d swissprot
+
+
+    CREATE TABLE IF NOT EXISTS treelibrary (
+        collectionid    INT(6),
+    
+    
+        groupby         VARCHAR(30),    -- iprscan | size | both
+        domainsize      INT(6),         
+        type            VARCHAR(30),    -- attribute type, e.g., iprscan, AA distribution
+    
+        correct         INT(6),
+        total           INT(6),
+        probability     DECIMAL(3,2),
+        tree            TEXT,
+        treenumber      INT(4),
+        
+        PRIMARY KEY (collectionid, groupby, domainsize, type, treenumber)
+    )
+
+
+    GET THE TREES FROM learningtrees, IN ORDER OF THE GREATEST NUMBER OF APPEARANCES AND HIGHEST sum(correct)/count(correct) INCLUDING PROBABILITIES
+            
+        select sum(correct) as sum, count(correct) as count, probability, tree from learningtrees where collectionid = 4 group by tree ORDER BY SUM DESC, COUNT DESC\G
+        *************************** 1. row ***************************
+                sum: 54
+              count: 54
+        probability: 1.00
+               tree: ["domain6",{"HISTONEH2A":0,"histoneh2b":1,"*":0}]
+        *************************** 2. row ***************************
+                sum: 8
+              count: 8
+        probability: 1.00
+               tree: ["domain3",{"Histone_H2A,HISTONEH2A,HISTONEH2A":0,"*":0,"HISTONEH2A,HISTONEH2A":0,"Q8CGP2_MOUSE_Q8CGP2;,CAMP RESPONSE ELEMENT-BINDING":1,"HISTONEH2B,Histone_H2B,HISTONEH2B,HISTONE_H2B,HIST":1}]
+         ...
+
+
+15. POPULATE treedomain TO STORE DOMAIN POSITIONS BY GROUPBY AND DOMAINSIZE
+===========================================================================
+
+        iprscan -   SIMPLE ORDER OF SUPERDOMAINS DICTATES ORDER OF MOTIF GROUPS 
+        
+        both    -   DOMAIN BLOCKS DETERMINED BY Signature::Attribute::Iprscan
+        
+        size    -   DOMAIN BLOCKS BASED ON FIXED WIDTH
+
+
+
+
+16. POPULATE treebranch TO CREATE A QUICK LOOKUP TABLE OF SUCCESSIVE MOTIF PAIRS IN QUERY SEQUENCES
+===================================================================================================
+    
+./treebranch.pl -d unigene -g iprscan
+
+        fromvalue   :   targetnames OF ALL DISTINCT IPRSCAN MOTIFS IN THE SEQUENCE
+                        WHICH FALL WITHIN THE **CURRENT** treedomain, ADJUSTED BY POSITION
+                        IN THE iprscansetalignment
+    
+        tovalue     :   targetnames OF ALL DISTINCT IPRSCAN MOTIFS IN THE SEQUENCE
+                        WHICH FALL WITHIN THE **NEXT** treedomain, ADJUSTED BY POSITION
+                        IN THE iprscansetalignment
+
+
+
+TEST unigene AGAINST TREES OF swissprot
+=======================================
+
+REQUIRES swissprot.treebranch TABLE ON CLUSTER
+
+
+1. RUN arraytreelookup
+======================
+
+    USE INTERPRO MOTIFS OF QUERY SEQUENCE, SEGREGATED BY DOMAINS IN treedomain, TO LOOKUP    
+    MOTIF PAIRS IN treebranch TABLE. ORDER BY NUMBER OF CORRECT CONSECUTIVE PAIRS.
+    
+
+sudo ./arraytreelookupdaemon.pl -d unigene -t swissprot -g size -s 300 -n 20
+
+
+2. LOAD DATA WITH arraytreelookuploaddata
+=========================================
+
+./arraytreelookuploaddata.pl -D -d unigeneblast -t unigene -g size -s 300 -n 20
+    
+    *** DID MANUALLY ~ 3 mins
+    Fri Feb 15 00:45:15 EST 2008
+
+    select collectionid, targetid, hits, sourceannotation, targetannotation  from treelookup into outfile '/private/var/tmp/unigeneblast-unigene.treelookup.summary.tsv';
+
+sudo mv /private/var/tmp/unigeneblast-unigene.treelookup.ssummary.tsv /Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast-unigene.treelookup.summary.tsv
+
+SUMMARY FILE:
+/Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast-unigene.treelookup.summary.tsv
+
+
+3. DO treealign:
+
+sudo ./arraytreealigndaemon.pl -d unigene -t swissprot -g size -s 300 -n 20
+
+
+
+
+6. LOADED ALIGNMENT FILES INTO treealign
+
+
+./arraytreealignloaddata.pl -d unigene -t swissprot
+
+
+    Run time: 00:01:08
+    Completed ./arraytreealignloaddata.pl
+    1:20AM, 16 February 2008
+    ****************************************
+
+7. TEST PREDICTIONS
+
+./treepredict.pl -d unigene -t swissprot -g size -s 300
+
+    
+
+
+
+
+
+
+

@@ -1,0 +1,679 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html class="regenabled gecko jsenabled" lang="en-US"><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="date" content="2007-05-30">
+<meta name="collection" content="1552.1">
+<meta name="partnumber" content="820-0042">
+<meta http-equiv="Content-Language" content="en-US">
+<meta name="chapter-id" content="gezsm"><title>Overview of the
+AJAXTableContainerProvider (Technical Note: Managing Sun Java System
+Portal Server 7.1 Update 1 AJAX Table Container) - Sun Microsystems</title>
+
+<link rel="shortcut icon" href="http://docs.sun.com/app/css/favicon.ico">
+<link rel="stylesheet" href="nice%20icons_files/default.css">
+<link rel="stylesheet" href="nice%20icons_files/dsc.css">
+<script language="javascript1.2" type="text/javascript" src="nice%20icons_files/sniff.js"></script><script language="javascript1.2" type="text/javascript" src="nice%20icons_files/menucontent.js"></script><script language="javascript1.2" type="text/javascript" src="nice%20icons_files/menucode.js"></script><script language="javascript1.2" type="text/javascript" src="nice%20icons_files/lang-selector.js"></script></head><body bgcolor="#ffffff">
+<div class="a0 a0v1" id="a0v1">
+<a name="top"></a>
+<!-- stopindex -->
+<!-- BEGIN A1 COMPONENT V.0 -->
+<div class="a1 a1r2">
+<div class="a1v0">
+<a href="#skip2content" class="skiplink">Skip to Content</a><span class="toolbarlinks"><a class="karrow k2over a1menu1 y3 x-6" href="http://www.sun.com/java/">Java</a><div id="a1menu1" class="a1menu a1Small"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<ul class="bluearrows"><li><a href="http://www.sun.com/java/">Java at Sun</a></li><li><a href="http://www.sun.com/software/opensource/java/">Free and Open Source Java</a></li><li><a href="http://java.com/download/">Java for your computer</a></li><li><a href="http://java.sun.com/javase/downloads/">Download the latest JDK</a></li><li><a href="http://www.netbeans.org/downloads/index.html">Download NetBeans IDE</a></li><li><a href="http://developers.sun.com/prodtech/javatools/">Java Developer Tools</a></li><li><a href="http://java.sun.com/">Java Developer Resources</a></li><li><a href="http://java.sun.com/javase/">Java Standard Edition</a></li><li><a href="http://java.sun.com/javaee/">Java Enterprise Edition</a></li><li><a href="http://java.sun.com/javame/">Java Micro Edition</a></li><li><a href="http://java.sun.com/learning/training/">Java Training</a></li><li><a href="http://developers.sun.com/services/">Java Support</a></li></ul></div><div class="a1menux2"></div></div></div><a href="http://www.sun.com/software/solaris/" class="dividelink karrow k2over a1menu2 y3 x-6">Solaris</a><div id="a1menu2" class="a1menu a1Medium"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<ul class="bluearrows"><li><a href="http://www.sun.com/software/solaris/">Solaris</a><p>The free and open Solaris OS.</p></li><li><a href="http://developers.sun.com/sunstudio/">Sun Studio</a><p>Optimizing compilers and tools for C/C++/Fortran for application development.</p></li><li><a href="http://developers.sun.com/prodtech/solaris/">Solaris Developer Resources</a><p>Find what you need at the Solaris developers center.</p></li><li><a href="http://developers.sun.com/services/">Solaris Developer Services</a><p>Get dedicated Solaris support and more with Sun Developer Services. </p></li><li><a href="http://www.sun.com/third-party/srsc/index.jsp">Solaris ISV Applications</a><p>ISV applications shipping on Solaris 10.</p></li><li><a href="http://www.sun.com/bigadmin/home/index.html">Solaris System Administrator Resources</a><p>Get all the Solaris information you need. </p></li><li><a href="http://www.opensolaris.org/">OpenSolaris</a><p>The
+OpenSolaris project is an open source community and a place for
+collaboration and conversation around OpenSolaris technology.</p></li></ul></div><div class="a1menux2"></div></div></div><a href="http://www.sun.com/communities/" class="dividelink karrow k2over a1menu3 y3 x-6">Communities</a><div id="a1menu3" class="a1menu a1Large"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<div class="a1-2colwrap"><div class="a1-2colul"><ul class="bluearrows"><li><a href="http://www.sun.com/communities/">Communities at Sun</a><p>Networks connect more than computers. Find out more about Sun communities.</p></li><li><a href="http://developers.sun.com/">Developers</a><p>Join
+the Sun Developer Network, a worldwide community of over 2 million
+developers, and get your BackStage Pass to technical information,
+developer tools, discounted books and training, and more.</p></li><li><a href="http://www.sun.com/bigadmin/home/index.html">System Administrators</a><p>Find online articles and participate in community forums on the BigAdmin portal.</p></li><li><a href="http://www.sun.com/aboutsun/investor/">Investors</a><p>Access Sun earnings announcements, annual reports, and company information.</p></li><li><a href="http://www.sun.com/partners/">Partners</a><p>Sun's partner network delivers innovation and value to customers around the world.</p></li></ul><ul class="bluearrows"><li><a href="http://www.sun.com/products-n-solutions/edu/">Education</a><p>Find out about Sun programs, software, and systems for students and educators.</p></li><li><a href="http://www.sun.com/aboutsun/media/index.jsp">Press</a><p>See the latest news from Sun, and hear what the industry is saying.</p></li><li><a href="http://research.sun.com/">Research</a><p>What's happening in Sun Labs?</p></li><li><a href="http://www.sun.com/customers/index.xml">Customers</a><p>Success stories about business problems solved by collaboration with Sun.</p></li><li><a href="http://java.sun.com/">Java Technology</a><p>Find out what's happening with the Java programming language — in mobile devices, smart cards, and data centers.</p></li><li><a href="http://blogs.sun.com/">Sun Blogs</a><p>Join the conversation — meet the people at Sun who are passionate about their jobs.</p></li></ul></div></div><br class="clear"></div><div class="a1menux2"></div></div></div><a class="karrow k2over a1menu4 y3 x-6" href="http://www.sun.com/aboutsun/">About Sun</a><div id="a1menu4" class="a1menu a1Large"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<div class="a1-2colwrap"><div class="a1-2colul"><ul class="bluearrows"><li><a href="http://www.sun.com/aboutsun/company/index.jsp">Our Company</a><p>Since
+our inception in 1982, the vision of "The Network is the Computer" has
+evolved into the Participation Age. We see everyone and everything
+participating on the network.</p></li><li><a href="http://www.sun.com/aboutsun/media/index.jsp">Sun News Center</a><p>Get the latest news and information about Sun.</p></li><li><a href="http://sunfeedroom.sun.com/ifr_main.jsp?nsid=b7d910b32:110f044bb29:-288c&amp;st=1172264235694&amp;mp=FLV&amp;cpf=false&amp;fr=022307_035715_7d910b32x110f044bb29xw288b&amp;rdm=476814.5163635833">Multimedia Center</a><p>Sun's Multimedia Center has multiple channels with lots of rich media content.</p></li><li><a href="http://www.sun.com/aboutsun/investor/index.jsp">Investor Relations</a><p>Find information and resources for Sun's investor community.</p></li><li><a href="http://www.sun.com/aboutsun/executives/">Executive Perspectives</a><p>Get the latest inside thinking from Sun's executive leadership team.</p></li><li><a href="http://www.sun.com/company/cgov/index.jsp">Corporate Governance</a><p>Sun
+has always been dedicated to the highest standards of business
+integrity, and over the past two decades we've continually taken steps
+to reinforce that commitment.</p></li></ul><ul class="bluearrows"><li><a href="http://www.sun.com/aboutsun/csr/">Corporate Responsibility</a><p>The economic, environmental and social sustainability of the communities where we operate is among our top priorities.</p></li><li><a href="http://www.sun.com/aboutsun/environment/">Eco Responsibility</a><p>Sun
+is committed to designing eco-responsible products and sharing
+information and technology so that we can all move forward to a more
+sustainable model.</p></li><li><a href="http://www.sun.com/aboutsun/sunfederal/">Sun Microsystems Federal, Inc.</a><p>Sun
+Microsystems Federal Inc., a wholly owned subsidiary of Sun
+Microsystems, Inc., manages strategic opportunities that bring Sun's
+solutions to the U.S. Federal government.</p></li><li><a href="http://www.sun.com/corp_emp/">Employment at Sun</a><p>Find jobs in countries around the globe.</p></li><li><a href="http://www.sun.com/secure/contact/">Contact Sun</a><p>Find a way to get in touch.</p></li></ul></div></div><br class="clear"></div><div class="a1menux2"></div></div></div><a href="http://www.sun.com/sales/" class="dividelink karrow k2over a1menu5 y3 x-6">How to Buy</a><div id="a1menu5" class="a1menu a1Medium"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<ul class="bluearrows"><li><a href="http://www.sun.com/sales/index.jsp">How to Buy</a><p>Find out about buying at Sun in the U.S. and worldwide.</p></li></ul></div><div class="a1menux2"></div></div></div><a class="karrow k2over a1menu6 y3 x-6" href="https://portal.sun.com/portal/dt/">My Account</a><div id="a1menu6" class="a1menu a1Medium"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<ul class="bluearrows"><li><a href="https://portal.sun.com/portal/dt">My Sun Connection</a><p>Your personal portal to Sun products, services, and support.</p></li><li><a href="https://reg.sun.com/register?goto=http%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview">Register Now</a><p>Get a login to access Sun resources.</p></li></ul></div><div class="a1menux2"></div></div></div><a style="padding-left: 0px;" href="http://shop.sun.com/cart/" class="a1cart lastlink karrow k2over a1menu7 y3 x-6"><span class="carticon small">Cart</span></a><div id="a1menu7" class="a1menu a1Small"><div class="a1menux1"></div>
+<div class="a1menuw2"><div class="a1menuw1">
+<ul class="bluearrows"><li><a href="http://shop.sun.com/cart">My Cart</a></li><li><a href="http://shop.sun.com/saved_items">Saved Items</a></li><li><a href="http://shop.sun.com/quotes">Quotes</a></li><li><a href="http://shop.sun.com/orders">Orders</a></li></ul></div><div class="a1menux2"></div></div></div></span><span class="siteid"><span>United States</span><a href="http://www.sun.com/worldwide/">Worldwide</a></span>
+</div>
+</div>
+<!-- END A1 COMPONENT V.0 -->
+<div class="a2w0">
+<div class="a2" id="a2v0">
+<div class="a2w1">
+<div class="a2w2">
+<div class="a2w3">
+<div class="a2w4">
+<div class="a2topiclinks">
+<div class="a2search">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp" accept-charset="utf-8">
+<input name="charset" value="UTF-8" type="hidden"><input id="searchfield" name="qt" value="Search" type="text"><input id="searchbttn" src="nice%20icons_files/a2_bttn_search.gif" alt="Submit Search" border="0" type="image">
+</form>
+</div>
+<a href="http://www.sun.com/" title="Sun Microsystems Home Page" id="sunlogo"><img src="nice%20icons_files/a.gif" alt="Sun Microsystems Home Page" border="0" height="58" width="98"></a>
+<ul id="mtopics">
+<li id="mtopic1">
+<a id="glink1" class="tpclink a2menu" title="See All Products" href="http://www.sun.com/products/">Products</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="http://www.sun.com/software/">Software</a></li><li><a href="http://www.sun.com/desktop/">Desktop Systems</a></li><li><a href="http://www.sun.com/servers/">Servers</a></li><li><a href="http://www.sun.com/storage/">Storage</a></li><li><a href="http://www.sun.com/products/microelectronics/index.jsp">Microelectronics</a></li><li><a href="http://www.sun.com/tryandbuy/index.jsp">Free 60-Day Product Trials</a></li><li><a href="http://www.sun.com/outlet/index.jsp?intcmp=1201">Sun Outlet</a></li><li><a href="http://www.sun.com/tradeins/">Trade-In Program</a></li><li><a href="http://www.sun.com/optionsandspares/">Options &amp; Spares</a></li><li><a href="http://www.sun.com/ibb/remanufactured/">Remanufactured Systems</a></li><li><a href="http://www.sun.com/sales/leasing/">Financing</a></li><li><a href="http://www.sun.com/products/">See All »</a></li></ul></div></li>
+<li id="mtopic2">
+<a id="glink2" class="tpclink a2menu" title="See All Downloads" href="http://www.sun.com/downloads/">Downloads</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="http://www.sun.com/software/solaris/get.jsp">Solaris 10</a></li><li><a href="http://java.sun.com/j2se/downloads/">Java SE</a></li><li><a href="http://www.sun.com/software/products/mysql/getit.jsp">MySQL</a></li><li><a href="http://www.sun.com/download/index.jsp?cat=Application%20Development&amp;tab=3&amp;subcat=Development%20Tools">Developer Tools</a></li><li><a href="http://www.sun.com/download/index.jsp?tab=5">Top Downloads</a></li><li><a href="http://www.sun.com/download/index.jsp?tab=4">New Downloads</a></li><li><a href="http://www.sun.com/download/index.jsp?cat=Patches%20%26%20Updates&amp;tab=3">Patches &amp; Updates</a></li><li><a href="http://www.sun.com/downloads/">See All »</a></li></ul></div></li>
+<li id="mtopic3">
+<a id="glink3" class="tpclink a2menu" title="See All Services &amp; Solutions" href="http://www.sun.com/servicessolutions/">Services &amp; Solutions</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="http://www.sun.com/service/serviceplans/index.jsp">Service Plans</a></li><li><a href="http://www.sun.com/service/warranty/index.xml">Warranties</a></li><li><a href="http://www.sun.com/service/consulting/">Consulting &amp; IT Services</a></li><li><a href="http://www.sun.com/servers/hpc/index.jsp">High Performance Computing</a></li><li><a href="http://www.sun.com/service/sungrid/overview.jsp">Utility Computing</a></li><li><a href="http://www.sun.com/service/managedservices/">Managed Services</a></li><li><a href="http://www.sun.com/service/sunconnection/">Secure IT Network Services</a></li><li><a href="http://www.sun.com/servicessolutions/infrastructure/">Sun Solutions Portfolio</a></li><li><a href="http://www.sun.com/servicessolutions/">See All »</a></li></ul></div></li>
+<li id="mtopic4">
+<a id="glink4" class="tpclink a2menu" title="See All Support" href="http://sunsolve.sun.com/">Support</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="http://sunsolve.sun.com/handbook_pub/">Sun System Handbook</a></li><li><a href="http://www.sun.com/support/membersupportcenter/index.jsp">Member Support Center</a></li><li><a href="http://www.sun.com/support/knowledge/index.jsp">Knowledge Resources</a></li><li><a href="http://sunsolve.sun.com/show.do?target=patchpage">Patches &amp; Updates</a></li><li><a href="http://www.sun.com/documentation/index.html">Product Documentation</a></li><li><a href="http://www.sun.com/support/communities/index.jsp">Community Resources</a></li><li><a href="http://www.sun.com/support/tools/index.jsp">Proactive &amp; Diagnostic Tools</a></li><li><a href="http://sunsolve.sun.com/">SunSolve Knowledgebase</a></li><li><a href="http://sunsolve.sun.com/">See All »</a></li></ul></div></li>
+<li id="mtopic5">
+<a id="glink5" class="tpclink a2menu" title="See All Training" href="http://www.sun.com/training/">Training</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="http://www.sun.com/training/catalog/">Course Catalog</a></li><li><a href="http://www.sun.com/training/certification/">Certification</a></li><li><a href="http://www.sun.com/training/team/consulting/index.html">Consulting Solutions</a></li><li><a href="http://nettalk.sun.com/bhive/t/1000/index.jsp">Net Talks</a></li><li><a href="http://www.sun.com/training/">See All »</a></li></ul></div></li>
+<li id="mtopic6">
+<a id="glink6" class="tpclink a2menu" title="See All Developer" href="http://developers.sun.com/">Developer</a>
+<div style="margin-left: -20px;" class="a2m"><ul><li class="firstchild"><a href="https://reg.sun.com/register?program=sdn">Join Sun Developer Network</a></li><li><a href="http://java.sun.com/reference/api/index.html">APIs &amp; Docs</a></li><li><a href="http://developers.sun.com/forums/">Forums</a></li><li><a href="http://java.sun.com/">Java For Developers</a></li><li><a href="http://developers.sun.com/prodtech/solaris/index.html">Solaris For Developers</a></li><li><a href="http://developers.sun.com/prodtech/index.html">Technologies</a></li><li><a href="http://developers.sun.com/services/">Developer Services</a></li><li><a href="http://developers.sun.com/">See All »</a></li></ul></div></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<br>
+<div id="sharepage" class="pagetitle">Sun Microsystems Documentation<div class="sharepage">		<div class="sharepagew1 share-mailto">		<table summary="layout" cellpadding="0" cellspacing="0"><tbody><tr>		<td id="share-mailto"><a href="mailto:?subject=Sun%20Web%20Page:%20Overview%20of%20the%20AJAXTableContainerProvider%20%28Technical%20Note%3A%20Managing%20Sun%20Java%20System%20Portal%20Server%207.1%20Update%201%20AJAX%20Table%20Container%29%20-%20Sun%20Microsystems&amp;body=Check%20out%20this%20page%20on%20sun.com:%20%0A%0Ahttp%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview" class="sharelink mailto" title="Email this page to a friend"></a></td>		<td id="share-technorati"><a href="http://www.technorati.com/search/http%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview" class="sharelink technorati" title="See who links to this page on Technorati"></a></td>		<td id="share-delicious"><a href="http://del.icio.us/post?v=4;url=http%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview;title=Overview%20of%20the%20AJAXTableContainerProvider%20%28Technical%20Note%3A%20Managing%20Sun%20Java%20System%20Portal%20Server%207.1%20Update%201%20AJAX%20Table%20Container%29%20-%20Sun%20Microsystems" class="sharelink delicious" title="Bookmark this page in del.icio.us"></a></td>		<td id="share-digg"><a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview&amp;title=Overview%20of%20the%20AJAXTableContainerProvider%20%28Technical%20Note%3A%20Managing%20Sun%20Java%20System%20Portal%20Server%207.1%20Update%201%20AJAX%20Table%20Container%29%20-%20Sun%20Microsystems" class="sharelink digg" title="Submit this page to Digg"></a></td>		<td id="share-slashdot"><a href="http://slashdot.org/bookmark.pl?title=Overview%20of%20the%20AJAXTableContainerProvider%20%28Technical%20Note%3A%20Managing%20Sun%20Java%20System%20Portal%20Server%207.1%20Update%201%20AJAX%20Table%20Container%29%20-%20Sun%20Microsystems&amp;url=http%3A%2F%2Fdocs.sun.com%2Fapp%2Fdocs%2Fdoc%2F820-0042%2Fgdyyu%3Fa%3Dview" class="sharelink slashdot" title="Submit this page to Slashdot"></a></td>		<td id="share-blank"> </td></tr></tbody></table></div></div></div>
+
+
+<img src="nice%20icons_files/a.gif" alt=" " border="0" height="1" width="750">
+
+<div class="d7v0">
+<div class="skip">
+<a href="#content-of-tab"><img src="nice%20icons_files/a.gif" alt="Skip over tab links" border="0" width="0"></a>
+</div>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr valign="bottom">
+<td class="suntab" nowrap="nowrap">
+<div>
+<a href="http://docs.sun.com/app/docs">docs.sun.com</a>
+</div>
+</td><td class="suntab" nowrap="nowrap">
+<div>
+<a href="http://docs.sun.com/app/docs/titl?n=1">Browse Documentation Titles</a>
+</div>
+</td><td class="suntab" nowrap="nowrap">
+<div>
+<a href="http://docs.sun.com/app/docs/prod">Browse Product Documentation</a>
+</div>
+</td><td class="suntab" nowrap="nowrap">
+<div>
+<a href="http://docs.sun.com/app/docs/doc/DSCHelp">Help</a>
+</div>
+</td>
+</tr>
+</tbody></table>
+
+</div>
+<div class="d7v1">
+<div class="suntabbg">
+<div class="suntabsubrow">
+<img src="nice%20icons_files/a.gif" alt="Begin Tab Sub Links" border="0" height="0" width="0"><span><img src="nice%20icons_files/a.gif" alt="Active Sub Link" border="0" height="0" width="0"><b>View this Book</b></span>&nbsp;<span><a href="http://docs.sun.com/app/docs/doc/820-0042?a=load">Download this Book</a></span>
+</div>
+</div>
+</div>
+
+<img src="nice%20icons_files/a_002.gif" alt="" height="4"><div class="d7v8">
+<div class="suntabsubsubrow">
+<div>
+<form method="get" action="http://onesearch.sun.com/search/docs/index.jsp" accept-charset="utf-8">
+<input name="col" value="docs_en" type="hidden"><input name="locale" value="en" type="hidden">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr valign="baseline">
+<td nowrap="1" width="1%">&nbsp;</td><td colspan="2" nowrap="1" width="99%">&nbsp;Search all books for</td><td nowrap="1" width="1%">&nbsp;</td>
+</tr>
+<tr valign="baseline">
+<td nowrap="1" width="1%">&nbsp;</td><td nowrap="1" width="19%">&nbsp;<input name="qt" size="30" value="" type="text"></td><td nowrap="1" width="79%">&nbsp;&nbsp;<input value=" Go " type="submit">&nbsp;<input name="book" value="/doc/820-0042" type="checkbox">&nbsp;Search only this book</td><td nowrap="1" width="1%">&nbsp;</td>
+</tr>
+<tr valign="baseline">
+<td nowrap="1" width="1%">&nbsp;</td><td colspan="2" nowrap="1" width="99%">&nbsp;<a href="http://docs.sun.com/source/DSCHelp/p3.html?a=view">Search Tips</a></td><td nowrap="1" width="1%"><script language="javascript" type="text/javascript" charset="UTF-8" src="nice%20icons_files/oo_engine.js"></script><a><script language="javascript" type="text/javascript" charset="UTF-8">
+         O_GoT('<img src="/app/images/sm_3E6B8A_oo.gif" border="0" alt="Click here to give feedback" title="Feedback" style="margin-right:5px:">Feedback');
+       </script></a><a href="javascript:O_LC()"><img src="nice%20icons_files/sm_3E6B8A_oo.gif" alt="Click here to give feedback" title="Feedback" style="" border="0">Feedback</a></td>
+</tr>
+<tr>
+<td colspan="4" nowrap="1"><img src="nice%20icons_files/greyline.gif" alt="Separator" height="5" width="1"></td>
+</tr>
+</tbody></table>
+</form>
+</div>
+</div>
+</div>
+
+<table border="0" cellpadding="10" cellspacing="0" width="100%">
+<tbody><tr>
+<td valign="top" width="100%"><a name="skip2content"></a>
+<p>
+<a href="http://docs.sun.com/app/docs/coll/1552.1">Sun Java System Portal Server 7.1 Update 1</a><font color="red"> &gt;&gt; </font><a href="http://docs.sun.com/app/docs/doc/820-0042">Technical Note: Managing Sun Java System Portal Server 7.1 Update 1 AJAX Table Container</a><font color="red"> &gt;&gt; </font><a href="http://docs.sun.com/app/docs/doc/820-0042/gezsm?a=view">Managing the AJAXTableContainerProvider </a><font color="red"> &gt;&gt; </font>Overview of the AJAXTableContainerProvider</p>
+<!--startindex-->
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tbody><tr>
+<td background="nice%20icons_files/violet-bar.gif"><img src="nice%20icons_files/previous.gif" alt="Previous"><font size="+1"><b>Previous</b>: <a href="http://docs.sun.com/app/docs/doc/820-0042/gdyyj?a=view">Technical Note Revision History</a></font></td>
+</tr>
+</tbody></table>
+<br>
+<a name="gdyzy"></a>
+<h1 class="sol">Overview of the AJAXTableContainerProvider</h1>
+
+<a name=""></a>
+<p>This section contains the following:</p>
+
+<ul>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdysh">AJAXTableContainerProvider Features</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdysz">AJAXTableContainerProvider Constraints</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyvz">AJAXTableContainerProvider Architecture</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyym">AJAXEditContainer Overview</a>
+</p>
+
+
+</li>
+</ul>
+
+<a name="gdysh"></a>
+<h2 class="sol">AJAXTableContainerProvider Features</h2>
+
+<p>The AJAXTableContainerProvider integrates Asynchronous JavaScript and
+XML (AJAX) capabilities at the portal framework level. The container provides
+asynchronous loading of individual channels and portlets. Therefore, a slow
+channel or portlet will not affect the loading time of the other channels
+and portlets on a page, improving overall performance. The AJAXTableContainerProvider
+includes AJAX based interaction for all container controls and features which
+provides for a much richer and faster user experience.</p>
+
+<a name=""></a>
+<p>The AJAXTableContainerProvider also supports rich user interface functionality
+such as:</p>
+
+<ul>
+<li>
+<p>Drag and drop positioning of channels and portlets on the
+page.</p>
+
+
+</li>
+<li>
+<p>Asynchronous interaction for channel container controls such
+as minimize, remove, and maximize.</p>
+
+
+</li>
+<li>
+<p>Independent refresh for individual channels and portlets without
+refreshing the complete page.</p>
+
+
+</li>
+<li>
+<p>Edit channels and portlets inline without refreshing the complete
+page.</p>
+
+
+</li>
+<li>
+<p>Easy addition and removal of channels.</p>
+
+
+</li>
+<li>
+<p>Multiple layouts for portal page.</p>
+
+
+</li>
+</ul>
+
+<a name="gdysz"></a>
+<h2 class="sol">AJAXTableContainerProvider Constraints</h2>
+
+<a name=""></a>
+<p>The AJAXTableContainerProvider has the following constraints:</p>
+
+<ul>
+<li>
+<p>Javascript must be supported and enabled on client browsers.</p>
+
+
+</li>
+<li>
+<p>The AJAXTableContainerProvider will not automatically enable
+content within a channel or portlet for AJAX. It is the channel or portlet
+developer's responsibility to incorporate AJAX functionality (if required)
+in the channel or portlet content.</p>
+
+
+</li>
+<li>
+<p>By default, channels and portlets do not display edit pages
+inline. The display profile property <tt>channelsEditInline</tt> must
+be set to <tt>true</tt> for channels that will display edit pages
+inline. For more information, see <a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk6?a=view#gdyyc">Display Profile properties</a>. Edit pages of channels and portlets must be customized
+to appear properly in the inline edit box. This customization is required
+because of less screen width available for edit forms in the AJAXTableContainerProvider
+as compared to other containers where the complete screen width is available.</p>
+
+
+</li>
+<li>
+<p>Nesting of AjaxTableContainerProvider is not supported. Only
+one instance of AjaxTableContainerProvider can be used per portal page.</p>
+
+
+</li>
+</ul>
+
+<a name="gdyvz"></a>
+<h2 class="sol">AJAXTableContainerProvider Architecture</h2>
+
+<p>The AJAXTableContainerProvider is based on a hybrid architecture. Unlike
+other portal containers where all the processing takes place on the server
+and only the HTML content is returned to a browser, in the AJAXTableContainerProvider,
+several tasks such as page construction, style, and container controls are
+handled at the client side using DHTML and Javascript. The server-side component
+of the container provider sends a JavaScript Object Notation (<a href="http://www.json.org/">JSON</a>) message in response to
+requests, and the client-side JavaScript processes the JSON message to make
+the appropriate changes to the portal interface. Similarly, if the user modifies
+the portal interface, the changes are persisted to the server using AJAX.</p>
+
+<img alt="This diagram shows the high-level architecture of the
+AJAXTableContainerProvider." title="This diagram shows the high-level architecture of the
+AJAXTableContainerProvider." src="nice%20icons_files/components1.gif"><a name=""></a>
+<p>The diagram shows the high-level architecture of the AJAXTableContainerProvider.
+The container is divided into two pieces:</p>
+
+<ul>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyyb">Server-side Container Architecture</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyxz">Client-side Architecture</a>
+</p>
+
+
+</li>
+</ul>
+
+<a name="gdyyb"></a>
+<h3 class="sol">Server-side Container Architecture</h3>
+
+<p>The AJAXTableContainerProvider is implemented as a JSPTableContainerProvider
+instance on the server. All the provider logic is implemented in JavaServer
+Page (JSP) template files of the AJAXTableContainerProvider. The container
+provider class remains JSPTableContainerProvider. For a content request, the
+AJAX Container returns a JavaScript object as a JSON representation of the
+display profile for the current user.</p>
+
+<a name="gdyzn"></a>
+<hr>
+<h5 class="sol">Example 1  JSON Representation of the Display Profile</h5>
+<br>
+<p>An example JSON Representation of the Display Profile is shown here.</p>
+
+<a name=""></a>
+<pre>    "title": "News",
+    "name": "NewsContainer",
+    "layout": 3,
+    "isAuthless": false,
+    "maximizedChannel": "",
+    "channelsIsMinimizable": {"SiteSearch": false},
+    "channelsIsMinimized": {
+        "NewsContainer/NextTourPoll": false,
+        "SiteSearch": false
+    },
+    "channelsHasFrame": {
+        "SiteSearch": false,
+        "NewsContainer/google": true
+    },
+    "selectedChannels": [
+        {
+            "width": 1,
+            "isEditable": false,
+            "title": "Vote for our Next Tour",
+            "description": "A poll to vote for what tour should be offered next.",
+            "refreshTime": 0,
+            "name": "NewsContainer/NextTourPoll",
+            "id": "NextTourPoll"
+        },
+        {
+            "width": 1,
+            "isEditable": false,
+            "title": "Search",
+            "description": "Enter search term to search site content.",
+            "refreshTime": 0,
+            "name": "SiteSearch",
+            "id": "SiteSearch"
+        }
+    ],
+    "channelsIsDetachable": {"SiteSearch": false},
+    "channelsRow": {
+        "SiteSearch": "1",
+        "NewsContainer/NextTourPoll": "1"
+    },
+    "refreshTime": "0",
+    "isEditable": true,
+    "channelsColumn": {
+        "SiteSearch": "3",
+        "NewsContainer/NextTourPoll": "1"
+    },
+    "description": Search",
+    "channelsIsMaximizable": {"SiteSearch": false},
+    "availableChannels": [
+        {
+            "width": 1,
+            "isEditable": false,
+            "title": "Customer Favorites",
+            "description": "The top tours as rated by customers.",
+            "refreshTime": 0,
+            "name": "NewsContainer/CustomerFavorites",
+            "id": "CustomerFavorites"
+        },
+        {
+            "width": 2,
+            "isEditable": false,
+            "title": "UrlScraper Channel",
+            "description": "This is a test for urlscraper",
+            "refreshTime": 0,
+            "name": "NewsContainer/google",
+            "id": "google"
+        }
+    ]
+}</pre>
+
+<hr>
+
+<p>The AJAXTableContainerProvider uses JSON Java API to construct a JSON
+representation of the display profile. The following JSON Java API classes
+are currently used in AJAXTableContainerProvider to construct the JSON message:</p>
+
+<table border="1" cellpadding="1" width="100%">
+<tbody><tr>
+<td nowrap="1">
+<br>
+<pre>org.json.JSONObject
+org.json.JSONArray
+org.json.JSONException</pre>
+</td>
+</tr>
+</tbody></table>
+<a name="gdyxz"></a>
+<h3 class="sol">Client-side Architecture</h3>
+
+<a name=""></a>
+<p>There are three high-level client side components:</p>
+
+<ul>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyyi">AJAXTableContainerProvider JavaScript library</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyxu">AJAXTableContainerProvider CSS</a>
+</p>
+
+
+</li>
+<li>
+<p>
+<a href="http://docs.sun.com/app/docs/doc/820-0042/6nbqdvrk5?a=view#gdyyd">Dojo JavaScript library</a>
+</p>
+
+
+</li>
+</ul>
+
+<a name="gdyyi"></a>
+<h4 class="sol">AJAXTableContainerProvider JavaScript library</h4>
+<p>The AJAXTableContainerProvider JavaScript library handles the core logic
+of the container layout, style and container functionality. This library defines
+the following JavaScript classes:</p>
+
+<a name=""></a>
+<dl>
+<dt>
+<kbd>sunportal.AJAXTableContainer</kbd>
+</dt>
+<dd>
+<p>Defines methods that constructs the container and handles
+container functionality.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXChannel</kbd>
+</dt>
+<dd>
+<p>Defines methods for individual channel control and display.
+A separate instance of this class is created for each channel on the page.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXRequest</kbd>
+</dt>
+<dd>
+<p>Defines methods that handle the AJAX network Input and Output.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXPageOptions</kbd>
+</dt>
+<dd>
+<p>Defines methods that handle the page preferences module.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXAddContent</kbd>
+</dt>
+<dd>
+<p>Defines methods to preview and add new container content.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXPageStyles</kbd>
+</dt>
+<dd>
+<p>Defines methods to modify the container style.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXChangeLayout</kbd>
+</dt>
+<dd>
+<p>Defines methods to modify the container layout.</p>
+
+</dd>
+<dt>
+<kbd>sunportal.AJAXUtils</kbd>
+</dt>
+<dd>
+<p>Utility methods for other package classes.</p>
+
+</dd>
+<dt>
+<kbd>portal.dnd.ChannelDropTarget</kbd>
+</dt>
+<dd>
+<p>Defines methods for drag and drop functionality.</p>
+
+</dd>
+<dt>
+<kbd>portal.dnd.ChannelDragSource</kbd>
+</dt>
+<dd>
+<p>Defines methods for drag and drop functionality.</p>
+
+</dd>
+</dl>
+
+
+<a name="gdyxu"></a>
+<h4 class="sol">AJAXTableContainerProvider CSS</h4>
+<p>The AJAXTableContainerProvider ships with three out-of-the-box CSS themes:
+blue, orange and gray. Each CSS theme has the following directory structure:</p>
+
+<a name=""></a>
+<pre>styles
+|---- &lt;css theme name&gt;
+| |---- PrintableFloatingPane.css
+| |---- images
+| | |---- ajaxChannelEdit.png
+| | |---- ajaxChannelHelp.png
+| | |---- ajaxChannelMaximize.png
+| | |---- ajaxChannelMinimize.png
+| | |---- ajaxChannelRefresh.png
+| | |---- ajaxChannelRemove.png
+| | |---- ajaxChannelTitlebarBackground.gif
+| | |---- ajaxChannelUnmaximize.png
+| | |---- ajaxChannelUnminimize.png
+| | |---- preview.png
+| |---- screen.css</pre>
+
+<p>To create a customized theme, developers can copy an existing theme
+directory and modify the <kbd>screen.css</kbd> file, <kbd>PrintableFloatingPane.css</kbd> file, and the images to desired design and color. The <kbd>screen.css</kbd> file defines all the CSS classes used by the container. The <kbd>PrintableFloatingPane.css</kbd> is used by the floating pane widget that
+is used by some channels in the container.</p>
+
+
+<a name="gdyyd"></a>
+<h4 class="sol">Dojo JavaScript library</h4>
+<p>The AJAXTableContainerProvider uses Dojo, an open source Javascript
+library, for all the DOM manipulation, network I/O and visual effects. More
+information about Dojo can be found at <a href="http://www.dojotoolkit.org/"><tt>http://www.dojotoolkit.org</tt></a>. The Dojo packages &amp; classes
+used in the container are listed below</p>
+
+<table border="1" cellpadding="1" width="100%">
+<tbody><tr>
+<td nowrap="1">
+<br>
+<pre>dojo.io.*
+dojo.event.*
+dojo.html
+dojo.widget.Toggler
+dojo.widget.ContentPane
+dojo.widget.Dialog
+dojo.dnd.*
+dojo.fx.html</pre>
+</td>
+</tr>
+</tbody></table>
+
+<a name="gdyym"></a>
+<h2 class="sol">AJAXEditContainer Overview</h2>
+
+<p>In addition to AJAXTableContainerProvider, an AJAXEditContainer is also
+implemented. AJAXEditContainer allows inline editing of channel preferences
+from the AJAXTableContainerProvider. AJAXEditContainer is an instance of JSPSingleContainerProvider.
+AJAXEditContainer sends back HTML content for edit pages, and a JSON response
+upon successful completion of edit process. Examples of JSON messages returned
+by the AJAXEditContainer are shown below.</p>
+
+<a name="gdyyu"></a>
+<hr>
+<h5 class="sol">Example 2  Success Message</h5>
+<br>
+<a name=""></a>
+<pre>{
+   "response": {
+        "status": "SUCCESS",
+        "messages": [
+            ""
+        ]
+    }
+}</pre>
+
+<hr>
+
+<a name="gdyzr"></a>
+<hr>
+<h5 class="sol">Example 3  Failure Message</h5>
+<br>
+<a name=""></a>
+<pre>{
+   "response": {
+        "status": "FAIL",
+        "messages": [
+           "A serious error has occured in the Desktop. 
+						This may have been caused by a mis-configuration on the server.",
+           "Please report this problem to your administrator.",
+           "Possible causes : Your session has expired or has been otherwise 
+						terminated. Please re-login.",
+       ]
+   }
+
+}</pre>
+
+<hr>
+
+<br>
+<table border="0" cellpadding="5" cellspacing="0" width="100%">
+<tbody><tr>
+<td background="nice%20icons_files/violet-bar.gif"><img src="nice%20icons_files/next.gif" alt="Next"><font size="+1"><b>Next</b>: <a href="http://docs.sun.com/app/docs/doc/820-0042/gdyxw?a=view">Using the AJAXTableContainerProvider</a></font></td>
+</tr>
+</tbody></table>
+<!-- stopindex -->
+</td>
+</tr>
+<tr>
+<td><img src="nice%20icons_files/a.gif" alt=" " border="0" height="1" width="750"></td>
+</tr>
+</tbody></table>
+</div>
+<!--Begin SiteCatalyst code version: G.5.-->
+<script language="JavaScript" src="nice%20icons_files/s_code_remote.js"></script><script type="text/javascript" src="nice%20icons_files/metrics_group1.js"></script>
+<!--End SiteCatalyst code version: G.5.-->
+<div class="a5" id="a5v0">
+<span class="footerlinks"><a href="http://www.sun.com/contact">Contact</a><a href="http://www.sun.com/aboutsun/index.html">About Sun</a><a href="http://www.sun.com/aboutsun/media/index.html">News</a><a href="http://www.sun.com/corp_emp/">Employment</a><a href="http://www.sun.com/sitemap/">Site Map</a><a href="http://www.sun.com/privacy/">Privacy</a><a href="http://www.sun.com/share/text/termsofuse.html">Terms of Use</a><a href="http://www.sun.com/suntrademarks/">Trademarks</a><span class="footercopy">Copyright <span id="copyDate" class="cssDate">1994-2008 </span> Sun Microsystems, Inc.</span></span>
+    &nbsp;&nbsp;&nbsp;
+    <a><script language="javascript" type="text/javascript" charset="UTF-8">
+      O_GoT('<img src="/app/images/sm_3E6B8A_oo.gif" border="0" title="Feedback" style="margin-right:5px:">Feedback');
+    </script></a><a href="javascript:O_LC()"><img src="nice%20icons_files/sm_3E6B8A_oo.gif" title="Feedback" style="" border="0">Feedback</a>
+</div>
+
+</body></html>

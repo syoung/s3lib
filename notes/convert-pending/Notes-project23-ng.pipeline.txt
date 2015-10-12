@@ -1,0 +1,2947 @@
+Notes-project23-ng.pipeline.txt
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Zongjun DOING kronos /nethome SHARE ON zion
+
+Tues Oct 21 16:35:58 EDT 2008
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 22 16:35:58 EDT 2008] dionysius /dionysius_zpool/solexa SHARE ON kronos>
+
+
+
+Warner SET UP SHARE ON kronos:
+
+[syoung@kronos /]$ cd /mihgdata
+[syoung@kronos mihgdata]$ ll
+
+drwxrwxr-x   9 mihgadm mihgadm      11 Oct  7 18:23 .
+drwxr-xr-x  34 root    root       4.0K Oct 22 16:29 ..
+drwxrwx---   4 jhahn   mihg          4 Jul 25 13:17 core
+-rwx------+  1 root    root       6.1K Apr 25 16:56 .DS_Store
+-rwx------+  1 root    root       4.0K Apr 25 16:49 ._EIGENSOFT2.0.tar
+drwx--x---+  6 jhahn   root          6 May  6 15:31 Illumina
+drwxr-x---+  3 jhahn   root          3 Aug  6 13:08 Illumina_new
+drwxrwx---  16 jhahn   4294967294   16 Jul 25 13:24 projects
+drwxr-xr-x+ 22     508 users        35 Oct 15 13:18 solexa
+drwxr-x---+  2 jhahn   root         19 Apr 15  2008 VandyData08-10-07
+drwxr-xr-x+  3 jhahn   4294967294    3 Aug 13 10:14 vendor
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 1:33:36 EDT 2008] html AND cgi-bin FOLDERS, AND mysql ON web>
+
+
+
+From: Hu, Zongjun 
+Sent: Tuesday, October 21, 2008 1:33 PM
+To: Young, Stuart
+Subject: RE: nfs mount on VM
+
+Stuart,
+
+Your web environment is set up as below,
+
+Html files: /var/www/html/ngs
+CGI files: /var/www/cgi-bin/ngs
+Web url: http://www.ccs.miami.edu/ngs
+Database: ngs
+DB user: ngs
+DB passwd: ngs
+Database access: localhost
+Moab command enabled: mshow, msub, canceljob, checkjob
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 11:49:36 EDT 2008] MOUNT dionysus ON zion>
+
+
+
+sudo mount -v dionysius.ccs.miami.edu:/dionysius_zpool /data
+
+(HAS TO BE DONE BY Zongjun BECAUSE nfs IS CONTROLLED BY VM)
+
+[syoung@zion data]$ ls
+Illumina  Illumina_new  VandyData08-10-07  core  projects  solexa  vendor
+[syoung@zion data]$ pwd
+/data
+[syoung@zion data]$ ls
+Illumina  Illumina_new  VandyData08-10-07  core  projects  solexa  vendor
+[syoung@zion data]$ ls /data/solexa/
+08-09-29_18-48-08  08-10-14_16-22-24                                                             081015_HWI-EAS185_00035test                   Instruments   perl_scripts
+08-09-29_19-04-02  08-10-15_13-18-14                                                             201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH  Overnightrun  s_6_hits.txt
+08-10-14_14-07-22  080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH                                     2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH   SGE           split_files
+08-10-14_14-40-07  080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH        3UTR_allgenes.txt                             Velvet        workflow1
+08-10-14_14-59-06  080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH  3UTR_map_file.txt                             error.txt     workflow2
+08-10-14_15-11-32  080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH                            AMOS                                          hit_files
+08-10-14_15-24-09  080930_HWI-EAS185_0001                                                        GSL                                           humanRef
+
+
+
+From: Young, Stuart 
+Sent: Tuesday, October 21, 2008 12:40 PM
+To: Hu, Zongjun
+Subject: nfs mount on VM
+
+sudo mount -v dionysius.ccs.miami.edu:/dionysius_zpool /data
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 11:49:36 EDT 2008] MOUNT dionysus ON zion>
+
+
+
+1. INSTALL nfs CLIENT ON zion
+
+sudo yum install nfs-utils
+
+
+2. SET UP SHARE ON dionysius
+
+zfs set sharenfs=root=zion.ccs.miami.edu:anon=0 dionysius_zpool
+
+
+3. MOUNT dionysius SHARE ON zion
+
+mount -v dionysius.ccs.miami.edu:dionysius_zpool /data
+
+sudo mount -v dionysius.ccs.miami.edu:dionysius_zpool /data
+audit_log_user_command(): Connection refused
+mount: no type was given - I'll assume nfs because of the colon
+mount: trying 204.68.94.122 prog 100003 vers 3 prot tcp port 2049
+mount: trying 204.68.94.122 prog 100005 vers 3 prot udp port 62386
+mount.nfs: No such device
+
+
+
+ABOVE INSTRUCTIONS ARE BASED ON:
+
+http://www.stevens.edu/itwiki/cgi-bin/wiki/index.php/Linux_Map_a_Network_Drive
+
+Linux Map a Network Drive
+From Itwiki
+Jump to: navigation, search
+[edit] Requirements
+
+Before you can mount Windows Shares you need to have samba.
+You also need support built into the kernel. If you are using a binary distribution your kernel should be automatically configured for this.
+[edit] Getting Samba on Ubuntu
+
+Open a terminal and type:
+
+sudo apt-get install smbfs
+
+To install the required mount and unmount utilities.
+[edit] Instructions
+
+You can map a network drive to Storage01 using the smbmount utility. You can run the following command as a regular user:
+
+$ smbmount //storage01/share /path/to/mount -o username=myusername,workgroup=campus,uid=mylocalusername,ip=storage01.stevens.edu
+
+    * //storage01/share is the mount location. Replacing 'share' with your domain username will map the network drive to your personal storage space. Please read the article on Storage01 for other possible locations.
+    * /path/to/mount is the location you want to map/mount the network drive at. You can map it to a mountpoint in your current directory such as 'mnt' by not using any slashes (full pathname is also fine)
+    * username=myusername - myusername should be replaced with your domain username.
+    * workgroup=campus - this specifies the domain to check your username and password against, leave it like this
+    * uid=mylocalusername - mylocalusername should be the name of your linux user (whoami will tell you this if you are unsure). This is the user who owns the directory/mountpoint you are mounting/mapping to.
+    * ip=storage01.stevens.edu - this specifies an "ip address" (a FQDN in this case) to locate Storage01 by. Leave as-is. 
+
+When you run this command, you should see a prompt similar to:
+
+Password:
+
+Type in your domain password and press enter. You will now be able to access the file stored on storage01 at the mountpoint you specified.
+Retrieved from "http://www.stevens.edu/itwiki/cgi-bin/wiki/index.php/Linux_Map_a_Network_Drive"
+
+
+
+
+
+http://www.linuxquestions.org/questions/linux-newbie-8/mounting-a-network-drive-454435/
+
+
+
+
+NB: MOUNT A WINDOWS SHARE ON LINUX VIA SAMBA 
+
+mount //192.168.1.222/win_share -t smbfs /mnt/folder_on_linux -o "username=winuser,password=winsharepassword"
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 11:42:55 EDT 2008] CREATE zion USER AND GIVE IT A UID AND GID>
+
+
+
+1. CHECK syoung USER AND GROUP IDS IN CCS LDAP
+
+USER syoung ON CCS LDAP
+[syoung@olympus ~]$ id 
+uid=1008(syoung) gid=1072(bioinfo) groups=1072(bioinfo)
+
+USER syoung ON zion
+[syoung@zion ~]$ id
+uid=500(syoung) gid=502 groups=502
+
+
+2. EDIT bioinfo GROUP ENTRY IN /etc/group
+
+FROM
+
+bioinfo:x:502:
+
+TO
+
+bioinfo:x:1072:
+
+
+3. USE groupdel AND groupadd TO REMOVE OLD bioinfo GROUP FROM passwd FILE
+
+sudo /usr/sbin/groupdel bioinfo
+
+sudo /usr/sbin/groupadd -g 1072 bioinfo
+
+
+
+2. CREATE USER AND ADD TO GROUPS:
+
+sudo /usr/sbin/useradd -u 1008 -G bioinfo zion
+
+
+
+( NB:
+
+CAN USE -a OPTION MODIFY USER AND ADD ADDITIONAL GROUPS (-G OPTION) WITHOUT OVERWRITING EXISTING GROUPS:
+
+/usr/sbin/usermod -a -G mihgg zion)
+
+CAN USE userdel TO REMOVE A USER:
+
+sudo /usr/sbin/userdel zion )
+
+
+
+
+4. SET NEW PASSWORD
+
+passwd zion
+
+
+
+5. GET USER INFO FOR zion
+
+[syoung@zion ~]$ id zion
+uid=1008(zion) gid=1008(zion) groups=1008(zion),1072(bioinfo)
+
+
+
+ABOVE INSTRUCTIONS ARE BASED ON:
+
+Howto: Linux Add User To Group
+http://www.cyberciti.biz/faq/howto-linux-add-user-to-group/#comment-37267
+
+
+useradd example - Add a new user to secondary group
+===================================================
+
+Use useradd command to add new users to existing group (or create a new group and then add user). If group does not exist, create it. Syntax:
+
+    useradd -G {group-name} username
+
+Create a new user called vivek and add it to group called developers. First login as a root user (make sure group developers exists), enter:
+
+    grep developers /etc/group
+
+developers:x:1124:
+
+
+If you do not see any output then you need to add group developers using groupadd command:
+
+    groupadd developers
+
+Next, add a user called vivek to group developers:
+
+    useradd -G developers vivek
+
+Setup password for user vivek:
+
+    passwd vivek
+
+Ensure that user added properly to group developers:
+
+    id vivekOutput:
+
+uid=1122(vivek) gid=1125(vivek) groups=1125(vivek),1124(developers)
+
+Please note that capital G (-G) option add user to a list of supplementary groups. Each group is separated from the next by a comma, with no intervening whitespace. For example, add user jerry to groups admins, ftp, www, and developers, enter:
+
+    useradd -G admins,ftp,www,developers jerry
+
+
+
+useradd example - Add a new user to primary group
+=================================================
+
+To add a user tony to group developers use following command:
+
+    useradd -g developers tony
+    id tony
+
+    uid=1123(tony) gid=1124(developers) groups=1124(developers)
+
+
+Please note that small -g option add user to initial login group (primary group). The group name must exist. A group number must refer to an already existing group.
+
+
+
+usermod example - Add a existing user to existing group
+=======================================================
+
+Add existing user tony to ftp supplementary/secondary group with usermod command using -a option ~ i.e. add the user to the supplemental group(s). Use only with -G option :
+
+
+    usermod -a -G ftp tony
+    
+Change existing user tony primary group to www:
+
+    usermod -g www tony
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct  7 14:59:50 EDT 2008] FIRST IPAR RUN (1.01) BASE CALLING>
+
+
+
+see documentation here:
+
+file:///C:/DATA/02-ng.assembly/eland/GAPipeline.version1.0/GAPipeline-1.0/docs/Pipeline%20usage.html
+
+
+CURRENTLY RUNNING:
+
+/store/home/jhoffman/GAPipeline-1.0/Goat/goat_pipeline.py --tiles=s_3_0025 --GERALD=/store/home/jhoffman/GAII_training/config.txt /store/data/pipeline_in/081015_HWI-EAS185_0004_PhiX
+cd
+/store/home/jhoffman/GAPipeline-1.0/Goat/goat_pipeline.py --tiles=s_3_0025 --GERALD=/store/home/jhoffman/GAII_training/config.txt /store/data/pipeline_in/081015_HWI-EAS185_0004_PhiX
+/store/home/syoung/base/apps/GAPipeline-1.0/Goat/goat_pipeline.py --tiles=s_3_0025 --GERALD=/store/home/jhoffman/GAII_training/config.txt /store/data/pipeline_in/081015_HWI-EAS185_0004_PhiX
+
+
+
+
+cd /store/data/pipeline_in/081015_HWI-EAS185_0004_PhiX/Data
+
+du -hs IPAR_1.01/
+48G     IPAR_1.01/
+
+
+[syoung@solexa01 Data]$ ll
+total 244K
+drwxrwxr-x 7 Mihglabtech users 4.0K Oct 20 11:33 .
+drwxrwxr-x 8 Mihglabtech users 4.0K Oct 17 16:33 ..
+drwxr-xr-x 8 jhoffman    users 4.0K Oct 17 18:39 C1-36_Firecrest1.9.5_17-10-2008_jhoffman
+drwxr-xr-x 8 jhoffman    users  72K Oct 18 07:43 C1-36_Firecrest1.9.5_17-10-2008_jhoffman.2
+drwxr-xr-x 8 jhoffman    users 4.0K Oct 20 12:54 C1-36_Firecrest1.9.5_20-10-2008_jhoffman.2
+-rw-r--r-- 1 jhoffman    users  210 Oct 20 12:17 default_offsets.txt
+drwxrwxr-x 3 Mihglabtech users  76K Oct 17 16:21 IPAR_1.01
+-rwxrw-r-- 1 Mihglabtech users  19K Oct 20 11:11 .params
+drwxrwxr-x 2 Mihglabtech users  12K Oct 17 16:02 RunBrowser
+
+
+cp IPAR_1.01/*int*gz ./
+
+
+BASE CALLING ONLY
+=================
+
+<PipelinePath>/Goat/bustard.py <analysis-folder> [--make] [--matrix=<matrixfile>] [--phasing=<phasingratio>] [--prephasing=<prephasingratio>] [--tiles=tilelist] [--GERALD=<configfile>] 
+
+<PipelinePath>/Goat/bustard.py Image_Analysis_Directory --make
+
+1. MOVE TO *** Data *** DIRECTORY AND GENERATE MAKE FILES
+
+#TEST WITHOUT MAKE (CAN SKIP THIS)
+#cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+#/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+    ...
+    s_8_0298  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+    Instrument:    HWI-EAS185
+    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+      Using automatic offset calibration.
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    Generating journals, Makefiles and parameter files ...
+
+
+2. MOVE TO Bustard DIRECTORY AND RUN MAKE:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+make recursive -j8
+
+    Starting the Bustard base-caller, Bustard version 1.9.2
+    Paramsfile:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+      s_4_0150  36
+      s_4_0151  36
+      s_4_0152  36
+      s_4_0153  36
+      s_4_0154  36
+      s_4_0155  36
+      s_4_0156  36
+      s_4_0157  36
+      s_4_0158  36
+      s_4_0159  36
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Bustard1.9.2_12-07-2008_jhoffman
+    Instrument:    HWI-EAS185
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    You can generate the Makefiles by using the "--make" option.
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct  7 14:59:50 EDT 2008] WORKFLOWS>
+
+
+
+1) IMAGE PROCESSING AND BASE CALLING, FOLLOWED BY ASSEMBLY
+==========================================================
+
+
+single read WORKFLOW (Images to .ace files) 
+===========================================
+
+1. DO IMAGE PROCESSING (Firecrest), BASE CALLING (Bustard) AND ASSEMBLY (Eland)
+
+image2eland.pl --type single \
+    --rundir /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH \
+    --geraldfile=/home/syoung/base/pipeline/run2lane6-test/eland/phix-config.txt \
+    --outputdir /home/syoung/base/pipeline/run2lane6-test/eland \
+    --referencefile /store/home/syoung/base/pipeline/phix/phiFasta.fa \
+    --readlength 26 \
+    --tiles s_5_015
+
+image2eland.pl --type single \
+    --rundir /store/data/pipeline_in/workflow1 \
+    --geraldfile /mihg/users/syoung/base/pipeline/workflow1/eland/geraldfile.txt \
+    --outputdir /mihg/users/syoung/base/pipeline/workflow1/eland \
+    --referencefile /store/home/syoung/base/pipeline/human-mtdna/human-mtDNA-AC_000021.fasta \
+    --readlength 26 \
+    --tiles s_6_015
+
+
+    Run time: 00:12:34
+    Completed /home/syoung/base/bin/nextgen/image2eland.pl
+    0:22AM, 11 October 2008
+    ****************************************
+
+
+image2eland.pl --type single \
+    --rundir /store/data/pipeline_in/workflow1 \
+    --geraldfile=/home/syoung/base/pipeline/run2lane6-test/eland/geraldfile.txt \
+    --outputdir /home/syoung/base/pipeline/workflow1/eland \
+    --referencefile /store/home/syoung/base/pipeline/phix/phiFasta.fa \
+    --readlength 26 \
+    --tiles s_6_015
+
+    Run time: 00:12:23
+    Completed /home/syoung/base/bin/nextgen/image2eland.pl
+    5:47PM, 10 October 2008
+    ****************************************
+
+
+
+2. PROCESS Eland ASSEMBLY INTO CONTIGS AND PRINT TO .ace FILES
+
+eland2ace.pl -i /mihg/users/syoung/base/pipeline/workflow1/eland/s_6_sorted.txt 
+
+
+
+paired end WORKFLOW (Images to .ace files) 
+==========================================
+
+1. DO IMAGE PROCESSING (Firecrest), BASE CALLING (Bustard) AND ASSEMBLY (Eland)
+
+image2eland.pl --type paired \
+    --rundir /store/data/pipeline_in/workflow1,/store/data/pipeline_in/workflow2 \
+    --outputdir /mihg/users/syoung/base/pipeline/workflow2/eland \
+    --referencefile /store/home/syoung/base/pipeline/human-mtdna/human-mtDNA-AC_000021.fasta \
+    --readlength 26 \
+    --tiles s_6_015
+
+CREATES A FILE NAMED geraldfile.txt IN THE OUTPUT DIRECTORY:
+
+ANALYSIS        eland_pair
+ELAND_GENOME    /store/home/syoung/base/pipeline/human-mtdna
+READ_LENGTH     30
+USE_BASES       nY*
+
+
+    Run time: 00:22:32
+    Completed /home/syoung/base/bin/nextgen/image2eland.pl
+    1:00AM, 11 October 2008
+    ****************************************
+
+OUTPUT FILES ARE AS FOLLOWS:
+
+    [syoung@solexa01 nextgen]$ cd /mihg/users/syoung/base/pipeline/workflow2/eland
+    [syoung@solexa01 eland]$ ll
+    total 21330
+    -rw-rw-rw-+ 1 syoung users     132 Oct 11  2008 geraldfile.txt
+    drwxrwxrwx  2 syoung users      12 Oct 11 01:05 intfiles
+    -rw-rw-rw-+ 1 syoung users   29891 Oct 11 01:04 make.error
+    -rw-rw-rw-+ 1 syoung users     816 Oct 11  2008 makefile.error
+    -rw-rw-rw-+ 1 syoung users       0 Oct 11  2008 makefile.out
+    -rw-rw-rw-+ 1 syoung users  766788 Oct 11 01:04 make.out
+    -rw-rw-rw-+ 1 syoung users 9662662 Oct 11 01:05 s_6_1_sequence.txt
+    -rw-rw-rw-+ 1 syoung users  692691 Oct 11 01:05 s_6_1_sorted.txt
+    -rw-rw-rw-+ 1 syoung users 9662662 Oct 11 01:05 s_6_2_sequence.txt
+    -rw-rw-rw-+ 1 syoung users  729083 Oct 11 01:05 s_6_2_sorted.txt
+    drwxrwxrwx  2 syoung users      12 Oct 11 01:05 seqfiles
+
+    [syoung@solexa01 eland]$ ls intfiles/
+    s_6_0150_int.txt.gz  s_6_0152_int.txt.gz  s_6_0154_int.txt.gz  s_6_0156_int.txt.gz  s_6_0158_int.txt.gz
+    s_6_0151_int.txt.gz  s_6_0153_int.txt.gz  s_6_0155_int.txt.gz  s_6_0157_int.txt.gz  s_6_0159_int.txt.gz
+
+    [syoung@solexa01 eland]$ ls seqfiles/
+    s_6_0150_seq.txt  s_6_0152_seq.txt  s_6_0154_seq.txt  s_6_0156_seq.txt  s_6_0158_seq.txt
+    s_6_0151_seq.txt  s_6_0153_seq.txt  s_6_0155_seq.txt  s_6_0157_seq.txt  s_6_0159_seq.txt
+
+
+2. PROCESS INTO .ace FILES
+
+
+elandpaired2ace.pl -i /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.txt -o paired,distant,unpaired -m 400 -c 16500
+
+    Finding paired reads in file: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.txt...
+    Tying hash to partnerfile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_2_sorted.txt... done.
+    0
+    Intermediate files printed:
+    
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.paired.txt
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.distant.txt
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.unpaired.txt
+    
+    Outfile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.paired.ace
+    Infile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.paired.txt
+    0
+    1000
+    2000
+    3000
+    4000
+    Output file printed:
+    
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.paired.ace
+    
+    Outfile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.distant.ace
+    Infile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.distant.txt
+    0
+    Output file printed:
+    
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.distant.ace
+    
+    Outfile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.unpaired.ace
+    Infile: /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.unpaired.txt
+    0
+    Output file printed:
+    
+    /mihg/users/syoung/base/pipeline/workflow2/eland/s_6_1_sorted.unpaired.ace
+    
+    
+    Run time: 00:00:06
+    Completed /home/syoung/base/bin/nextgen/elandpaired2ace.pl
+    6:14PM, 11 October 2008
+    ****************************************
+
+
+
+2) RERUN BASE CALLING (NO IMAGE PROCESSING)
+===========================================
+
+single read BASE CALLING
+========================
+
+
+USE Gerald.pl SPECIFYING
+
+
+ANALYSIS        sequence
+READ_LENGTH     30
+USE_BASES       nY*
+
+
+paired end BASE CALLING
+========================
+
+
+USE Gerald.pl SPECIFYING
+
+
+ANALYSIS        sequence_pair
+READ_LENGTH     30
+USE_BASES       nY*
+
+
+
+
+3) RERUN ELAND ASSEMBLY
+====================
+
+USE Gerald.pl SPECIFYING
+
+
+single read BASE CALLING
+========================
+
+
+USE eland.pl SPECIFYING
+
+
+ANALYSIS        eland_extended
+READ_LENGTH     30
+USE_BASES       nY*
+
+
+paired end BASE CALLING
+========================
+
+
+USE eland.pl SPECIFYING
+
+
+ANALYSIS        eland_extended
+READ_LENGTH     30
+USE_BASES       nY*
+
+
+
+
+4) RUN VELVET ASSEMBLY
+======================
+
+single read VELVET ASSEMBLY
+===========================
+
+1. COPY *sequence.txt FILES TO velvet/data DIRECTORY
+eland2velvet.pl --outputdir /home/syoung/base/pipeline/run2lane6-test/eland
+
+CREATES THIS FILE STRUCTURE:
+
+base/pipeline/runXlaneY
+                       /eland
+                       /velvet
+                              /data
+                              /assembly
+
+RUN velvet TO OUTPUT FILES TO velvet/assembly DIRECTORY
+
+
+
+
+
+
+
+CONVERT .ace FILES TO .bnk DIRECTORIES
+======================================
+
+ace2bnk.pl -i ~/base/pipeline/run2lane6-test/eland/acefiles
+
+
+
+
+RUN MAQ 
+=======
+
+run-maq.pl -d ~/base/pipeline/run2-lane7-mtdna-maq/assembly -i s_7_1_sequence.txt,s_7_2_sequence.txt -r Homo_sapiens.NCBI36.49.cdna.known.fas &> runlog.txt
+
+run-maq.pl -d ~/base/pipeline/run2-lane7-mtdna-maq/assembly -i s_7_1_sequence.txt,s_7_2_sequence.txt -r Homo_sapiens.NCBI36.49.cdna.known.fas &> runlog.txt
+
+
+
+
+
+RUN ssahaSNP
+============
+
+TEST 1 (FAILED)
+
+cd /mihg/users/syoung/base/pipeline/test-ssahaSNP
+ssaha2Build -save reference reference.fasta
+time ssahaSNP -tags 1 -save reference test.fastq  > ssahaSNP.out
+
+
+
+# time ssahaSNP -tags 1 -solexa -save reference test.fastq  > ssahaSNP.out
+
+
+
+emacs ssahaSNP.out
+Reading hashtable reference to memory.
+Hashtable size      : 0.000001 GB
+Number of sequences : 1
+K-mer length        : 12
+Skip step           : 12
+Max. sequence length: 1560
+
+===================================================
+Matches For Query 0 (26 bases): HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:133:308/1
+===================================================
+Score     Q_Name             S_Name            Q_Start    Q_End  S_Start    S_End Direction #Bases identity
+...
+
+
+
+head test.fastq
+
+@HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:133:308/1
+TAACAAAAGCTTTTCAGCCATCTGTA
++HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:133:308/1
+10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 
+...
+
+
+
+
+TEST 2 (SUCCEEDED)
+
+DOWNLOADED FROM ftp://ftp.sanger.ac.uk/pub/zn1/BMC_paper/other_codes/
+
+cd /home/syoung/base/apps/ssaha2/test-new
+
+[syoung@solexa01 test-new]$ ll
+total 28M
+drwxr-xr-x 2 syoung users 4.0K Oct 12 21:59 .
+drwxr-xr-x 6 syoung users 4.0K Oct 12 21:57 ..
+-rw-r--r-- 1 syoung users  654 Oct 12 21:41 BMC_paper
+-rw-r--r-- 1 syoung users 2.9M Oct 12 21:41 bQ199E5.reads.clip.fasta
+-rw-r--r-- 1 syoung users  12M Oct 12 21:41 bQ199E5.reads.clip.fasta.fastq
+-rw-r--r-- 1 syoung users 8.3M Oct 12 21:41 bQ199E5.reads.clip.fasta.qual
+-rw-r--r-- 1 syoung users 5.6M Oct 12 21:41 bQ199E5.reads.clip.fastq
+-rw-r--r-- 1 syoung users  38K Oct 12 21:41 compFastq
+-rw-r--r-- 1 syoung users  25K Oct 12 21:41 compFastq.c
+-rw-r--r-- 1 syoung users  370 Oct 12 21:41 fasta.h
+-rw-r--r-- 1 syoung users 9.0K Oct 12 21:41 fast.c
+-rw-r--r-- 1 syoung users  582 Oct 12 21:41 fast.h
+-rw-r--r-- 1 syoung users 1.4K Oct 12 21:41 fastq.pl
+-rw-r--r-- 1 syoung users  230 Oct 12 21:41 Makefile
+-rw-r--r-- 1 syoung users  130 Oct 12 21:41 README
+
+
+./fastq.pl bQ199E5.reads.clip.fasta bQ199E5.reads.clip.fasta
+
+
+[syoung@solexa01 test-new]$ ll
+total 28M
+drwxr-xr-x 2 syoung users 4.0K Oct 12 22:12 .
+drwxr-xr-x 6 syoung users 4.0K Oct 12 21:57 ..
+-rw-r--r-- 1 syoung users  654 Oct 12 21:41 BMC_paper
+-rw-r--r-- 1 syoung users 2.9M Oct 12 21:41 bQ199E5.reads.clip.fasta
+-rw-r--r-- 1 syoung users  12M Oct 12 22:12 bQ199E5.reads.clip.fasta.fastq
+-rw-r--r-- 1 syoung users 8.3M Oct 12 21:41 bQ199E5.reads.clip.fasta.qual
+-rw-r--r-- 1 syoung users 5.6M Oct 12 21:41 bQ199E5.reads.clip.fastq
+-rw-r--r-- 1 syoung users  38K Oct 12 21:41 compFastq
+-rw-r--r-- 1 syoung users  25K Oct 12 21:41 compFastq.c
+-rw-r--r-- 1 syoung users  370 Oct 12 21:41 fasta.h
+-rw-r--r-- 1 syoung users 9.0K Oct 12 21:41 fast.c
+-rw-r--r-- 1 syoung users  582 Oct 12 21:41 fast.h
+-rwxr-xr-x 1 syoung users 1.4K Oct 12 22:12 fastq.pl
+-rwxr-xr-x 1 syoung users 1.4K Oct 12 21:41 fastq.pl~
+-rw-r--r-- 1 syoung users  230 Oct 12 21:41 Makefile
+-rw-r--r-- 1 syoung users  130 Oct 12 21:41 README
+
+
+./compFastq bQ199E5.reads.clip.fasta.fastq bQ199E5.reads.clip.fastq
+
+emacs bQ199E5.reads.clip.fasta.fastq
+
+@11bQ199E5-2a01.p1k
+GCGGAGCCTGCGTTTGAGTTTTGGCAATGACCTAACGCCAAAGCCTGTGTCTTCACCTTA
+AGTAGCGTCTCCCTTCGGTCAGAAACCGCCCCCCTGCCTATGTGAGACCAGTTAGTTATC
+AGCACATCAGAGATCCAGCTGTGGCTCTGCACTGAGCTTTGCAGAGGACGGAGAGGAAAA
+TGATAAAGTTCGGGTGCTCCCCTTGAGAGGCCGAGAGACAAGAGACCCCTGTGTTGTTGG
+AGCTGAGCTTTGTGGCTGGGGAGAGGCAGAGTCCTAGGACAACTGCATCTGCAGCAAGAG
+AGACCAGCGCCACAAGAAGAGAGTGATGTGAAGGCTGTGAAGGCTCATTGTTAGAAGAGT
+GTCTGGGGTGGGGTGGCTGCGGTTTGTTGGACTCTTAAGAGCCCGTTGTATGTGGGGGCT
+ACTGGAGGGTGAATACTGGAAGAAGAGTCTTCATAAAGACATCCCTGGGGCCTGCCATGT
+GGATCATAGGTGTGAGAGCGGAAGGCTGAAAAGGAGAGGCTCGCAGCTTGCTGTAGCTTT
+CAGTGGCGAGCACCTAAAGCCATGACTTTCCCCAGAGCAGAGGATGGGGTGGGAGAGGCA
+GAGAGGCATGGAGCATAAGCGGAGGGGACTTGAGAAGGGTTGGAAGCTCGCAGCTCACTG
+TAGCTTTCAGTGGCGAGCACCTAAAGCCATGACTTTCCCCAGAGCAGAGGATGGGGTGGG
+AGAGGCAGAGAGGCATGGAGAATAAGCGGAGGGGACTTGAGAAGGGTTGGAATCCTTACC
+TAGAGGGTCCTTGTGCTTTCTGGTGGGCAGGCCCCTGGTCTCTTCCGCAGAGCTAAATAG
+ACTTAGAGTTATTGCTTGCAACTGAG
++11bQ199E5-2a01.p1k
+ 0 23 20 16 16 13 7 8 19 19 20 25 25 29 29 29 29 33 33 35 40 42 40 37 37 37 40 37 37 34
+ 34 31 31 32 35 33 33 25 14 14 14 25 31 45 45 35 29 29 29 34 34 29 31 31 29 29 31 31 32 32
+ 32 35 35 35 35 40 34 35 35 35 35 35 35 37 37 35 35 32 32 32 35 35 42 42 42 56 42 42 56 56
+ 44 40 35 35 35 35 35 35 35 35 35 32 33 33 28 29 29 39 35 37 37 35 35 37 37 37 35 37 33 33
+ 30 33 33 36 40 35 35 37 42 37 37 37 37 40 40 37 35 35 35 35 38 35 35 24 24 29 35 35 40 37
+ 37 40 40 40 45 40 40 40 40 41 44 37 37 42 42 45 41 41 41 42 42 50 42 41 42 42 42 42 50 50
+...
+
+
+CREATE A REFERENCE FILE FROM FIRST FASTA RECORD:
+
+emacs reference.fasta
+>REFERENCE
+GCGGAGCCTGCGTTTGAGTTTTGGCAATGACCTAACGCCAAAGCCTGTGTCTTCACCTTA
+AGTAGCGTCTCCCTTCGGTCAGAAACCGCCCCCCTGCCTATGTGAGACCAGTTAGTTATC
+AGCACATCAGAGATCCAGCTGTGGCTCTGCACTGAGCTTTGCAGAGGACGGAGAGGAAAA
+TGATAAAGTTCGGGTGCTCCCCTTGAGAGGCCGAGAGACAAGAGACCCCTGTGTTGTTGG
+AGCTGAGCTTTGTGGCTGGGGAGAGGCAGAGTCCTAGGACAACTGCATCTGCAGCAAGAG
+AGACCAGCGCCACAAGAAGAGAGTGATGTGAAGGCTGTGAAGGCTCATTGTTAGAAGAGT
+GTCTGGGGTGGGGTGGCTGCGGTTTGTTGGACTCTTAAGAGCCCGTTGTATGTGGGGGCT
+ACTGGAGGGTGAATACTGGAAGAAGAGTCTTCATAAAGACATCCCTGGGGCCTGCCATGT
+GGATCATAGGTGTGAGAGCGGAAGGCTGAAAAGGAGAGGCTCGCAGCTTGCTGTAGCTTT
+CAGTGGCGAGCACCTAAAGCCATGACTTTCCCCAGAGCAGAGGATGGGGTGGGAGAGGCA
+GAGAGGCATGGAGCATAAGCGGAGGGGACTTGAGAAGGGTTGGAAGCTCGCAGCTCACTG
+TAGCTTTCAGTGGCGAGCACCTAAAGCCATGACTTTCCCCAGAGCAGAGGATGGGGTGGG
+AGAGGCAGAGAGGCATGGAGAATAAGCGGAGGGGACTTGAGAAGGGTTGGAATCCTTACC
+TAGAGGGTCCTTGTGCTTTCTGGTGGGCAGGCCCCTGGTCTCTTCCGCAGAGCTAAATAG
+ACTTAGAGTTATTGCTTGCAACTGAG
+
+
+ssaha2Build -save reference reference.fasta
+
+time ssahaSNP -tags 1 -save reference bQ199E5.reads.clip.fasta.fastq > ssahaSNP.out
+
+
+emacs ssahaSNP.out
+Reading hashtable reference to memory.
+Hashtable size      : 0.000001 GB
+Number of sequences : 1
+K-mer length        : 12
+Skip step           : 12
+Max. sequence length: 866
+
+===================================================
+Matches For Query 0 (866 bases): 11bQ199E5-2a01.p1k
+===================================================
+Score     Q_Name             S_Name            Q_Start    Q_End  S_Start    S_End Direction #Bases identity
+ALIGNMENT::50 853   11bQ199E5-2a01.p1k REFERENCE        1      866         1       866   F     866 100.00 866
+-n  11bQ199E5-2a01.p1k
+ProcessSNP_end 11bQ199E5-2a01.p1k
+
+ProcessIndel_start 11bQ199E5-2a01.p1k 0 5
+ProcessIndel_end 11bQ199E5-2a01.p1k
+
+
+===================================================
+Matches For Query 1 (886 bases): 11bQ199E5-2a03.p1k
+===================================================
+Score     Q_Name             S_Name            Q_Start    Q_End  S_Start    S_End Direction #Bases identity
+...
+
+
+
+
+
+run-ssahaSNP.pl
+
+MANUAL  
+
+cd /mihg/users/syoung/base/pipeline/workflow1
+mkdir ssahaSNP
+cd ssahaSNP
+
+solexa2fastq.pl -i s_6_1_sequence.txt -o s_6_1_sequence.fastq    
+    
+    Run time: 00:04:45
+    Completed /home/syoung/base/bin/nextgen/solexa2fastq.pl
+    11:35PM, 12 October 2008
+    ****************************************
+
+cp ~/base/pipeline/human-mtdna/human-mtDNA-AC_000021.fasta ./
+
+
+#run-ssahaSNP.pl --directory /mihg/users/syoung/base/pipeline/workflow1 --inputfile s_6_1_sequence.fastq --referencefile human-mtDNA-AC_000021.fasta  
+
+time ssahaSNP -tags 1 human-mtDNA-AC_000021.fasta s_6_1_sequence.fastq > ssahaSNP.out
+
+real    14m35.409s
+user    14m21.372s
+sys     0m6.884s
+
+BUT STILL GIVES NO HITS IN ssahaSNP.out ...
+
+
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-ssahasnp/mtdna
+
+
+# 1. Align the reads to the reference
+
+time ssahaSNP -tags 1 human-mtDNA-AC_000021.fasta s_6_1_sequence.fastq  > s_6_1_sequence.ssahaSNP.out
+
+real    21m7.674s
+user    20m57.800s
+sys     0m8.486s
+
+
+    ll
+    
+    total 3039016
+    -rw-r--r-- 1 syoung users      16880 Sep 22 21:52 human-mtDNA-AC_000021.fasta
+    -rw-r--r-- 1 syoung users       6636 Sep 22 21:53 human-mtdna.base
+    -rw-r--r-- 1 syoung users       5920 Sep 22 21:53 human-mtdna.body
+    -rw-r--r-- 1 syoung users  134217728 Sep 22 21:53 human-mtdna.head
+    -rw-r--r-- 1 syoung users         74 Sep 22 21:53 human-mtdna.name
+    -rw-r--r-- 1 syoung users         16 Sep 22 21:53 human-mtdna.size
+    -rw-r--r-- 1 syoung users  931153898 Sep 22 22:29 run2-lane6-both.fastq
+    -rw-r--r-- 1 syoung users        274 Oct 11 17:57 run2-lane6_human-mtdna.gff
+    -rw-r--r-- 1 syoung users  465576949 Sep 22 22:28 s_6_1_sequence.fastq
+    -rw-r--r-- 1 syoung users  465576949 Sep 22 22:28 s_6_2_sequence.fastq
+    -rw-r--r-- 1 syoung users 1112261161 Oct 12 19:16 ssahaSNP.out
+
+
+# 2. Prepare an alignment file of all the reads against the reference
+
+time egrep ALIGN ssahaSNP.out | awk '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,cell_line}' >  ssahaSNP.align
+
+
+# 3. Parse SNP results
+
+time egrep ssaha:SNP ssahaSNP.out > ssahaSNP-snp.dat";
+time parse_SNP ssahaSNP-snp.dat ssahaSNP.align > ssahaSNP.snps";
+
+
+# 4. Parse indel results
+push @$commands, "time egrep ssaha:indel ssahaSNP.out > ssahaSNP-indel.dat";
+push @$commands, "parse_indel ssahaSNP-indel.dat ssahaSNP.align > ssahaSNP.indels";
+
+
+
+
+
+RUN SOAP
+========
+
+
+</entry>
+
+
+
+<entry [Thu Sep 18 16:35:00 EDT 2008] COPIED RUN 2 AND RUN 3 FILES (without IMAGE FILES) TO bacchus>
+
+
+
+ON bacchus:
+
+mkdir -p /mnt/users/syoung/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data
+mkdir -p /mnt/users/syoung/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data
+
+mkdir -p /mnt/users/syoung/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data
+
+REM: CREATE LANE 4 sequence FILES FOR RUN 3
+
+
+ON solexa01:
+
+time scp -r /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman syoung@bacchus.ccs.miami.edu:/mnt/users/syoung/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data
+
+    real    1468m54.913s
+    user    0m56.274s
+    sys     11m12.695s
+
+time scp -r /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung syoung@bacchus.ccs.miami.edu:/mnt/users/syoung/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data
+
+    real    912m55.311s
+    user    0m32.178s
+    sys     6m32.674s
+
+time scp -r /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung syoung@bacchus.ccs.miami.edu:/mnt/users/syoung/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Sep 17 15:44:12 EDT 2008] TEST RUNNING VELVET WITH READ/WRITE TO NFS SHARE ON bacchus>
+
+
+
+
+1. COPY DATA FROM LOCAL DIRECTORY TO bacchus SHARE ON /mihg/users/syoung
+
+    cd /mihg/users/syoung/base/pipeline
+
+    time cp -r ~/base/pipeline/human2-velvet/ ./
+    
+    real    11m14.872s
+    user    0m4.344s
+    sys     1m26.602s
+
+2. RUN VELVET WITH I/O ON NFS
+
+    velvet.pl -i /mihg/users/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /mihg/users/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+    Output directory: /mihg/users/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Output directory: /mihg/users/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth /mihg/users/syoung/base/pipeline/human2-velvet 21 data/human2_sequence_in.solexa.fasta &> /mihg/users/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg /mihg/users/syoung/base/pipeline/human2-velvet -cov_cutoff 5 -read_trkg yes -amos_file yes &> /mihg/users/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+    
+    Run time: 01:14:28
+    Completed /home/syoung/base/bin/nextgen/velvet.pl
+    5:05PM, 17 September 2008
+    ****************************************
+
+
+3. TEST COPY
+
+    mkdir ~/base/pipeline/temp
+    cd ~/base/pipeline/temp
+    time cp -r ~/base/pipeline/human2-velvet/ ./
+
+    
+    real    17m41.059s
+    user    0m9.665s
+    sys     3m39.030s
+
+
+3. RUN VELVET WITH I/O ON LOCAL DRIVE
+
+    velvet.pl -i /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21
+
+    Output directory: /home/syoung/base/pipeline/human2-velvet/assembly
+    Input file: /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+    Input: data/human2_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth /home/syoung/base/pipeline/human2-velvet 21 data/human2_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg /home/syoung/base/pipeline/human2-velvet -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+    
+    Run time: 01:15:02
+    Completed /home/syoung/base/bin/nextgen/velvet.pl
+    4:04AM, 18 September 2008
+    ****************************************
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep  8 01:49:33 EDT 2008] ELAND PAIRED END INSTRUCTIONS - WIKI>
+
+
+
+RUN OR RERUN AN ELAND PAIRED END ALIGNMENT AGAINST A REFERENCE GENOME
+
+(NB: WE WILL USE A PAIRED READ RUN OF HUMAN MITOCHONDRIAL DNA FOR THIS EXAMPLE)
+
+
+**1. COPY REFERENCE SEQUENCE TO '<EXPERIMENT>/data' DIRECTORY IN THE 'base/pipeline' DIRECTORY IN YOUR HOME FOLDER**
+
+CREATE THE data AND assembly DIRECTORIES
+
+    mkdir -p /home/syoung/base/pipeline/run2-mtdna-eland/data
+    mkdir -p /home/syoung/base/pipeline/run2-mtdna-eland/assembly
+
+COPY THE REFERENCE SEQUENCE FROM YOUR HOME FOLDER /home/myusername TO THE DATA DIRECTORY
+
+    cp ~/human-mtDNA-AC-000021.fasta ~/base/pipeline/run2-mtdna-eland/data
+
+
+CHECK CONTENTS OF GENOME FILE
+    
+    emacs /home/syoung/base/pipeline/run2-mtdna-eland/data/human-mtDNA-AC_000021.fasta
+
+    >gi|115315570|ref|AC_000021.2| Homo sapiens mitochondrion, complete genome
+    GATCACAGGTCTATCACCCTATTAACCACTCACGGGAGCTCTCCATGCATTTGGTATTTTCGTCTGGGGG
+    GTATGCACGCGATAGCATTGCGAGACGCTGGAGCCGGAGCACCCTATGTCGCAGTATCTGTCTTTGATTC
+    ...
+
+**2. SQUASH REFERENCE SEQUENCE FOR INPUT INTO ELAND**
+
+SQUASH MITOCHONDRIAL GENOME FOR ELAND
+
+    /usr/local/GAPipeline-0.3.0/Eland/squashGenome /home/syoung/base/pipeline/run2-mtdna-eland/data human-mtDNA-AC-000021.fasta
+    
+    squash: opened file human-mtDNA-AC_000021.fasta of size 16880 bytes.
+    finished file human-mtDNA-AC_000021.fasta
+    16569 bases
+    16568 valid bases (99.994%)
+    2 valid regions
+    User: 0s System: 0.001s Actual: 0.009282s Efficiency: 10.7735%
+
+    cd /home/syoung/base/pipeline/run2-mtdna-eland/data
+    ll
+    -rw-r--r-- 1 syoung users  17K Aug 26 17:38 human-mtDNA-AC_000021.fasta
+    -rw-r--r-- 1 syoung users 4.1K Aug 26 17:45 human-mtDNA-AC_000021.fasta.2bpb
+    -rw-r--r-- 1 syoung users   91 Aug 26 17:45 human-mtDNA-AC_000021.fasta.vld
+
+**3. CREATE A GERALD CONFIGURATION FILE**
+
+    emacs /home/syoung/base/pipeline/run2-mtdna-eland/data/gerald_configfile.txt
+    
+    ANALYSIS eland_pair
+    ELAND_GENOME        /home/syoung/base/pipeline/run2-mtdna-eland/data
+    GENOME_FILE         human-mtDNA-AC_000021.fasta
+    GENOME_DIR          /home/syoung/base/pipeline/run2-mtdna-eland/data
+    USE_BASES nY*
+
+**4. GENERATE THE Makefile **
+
+MOVE TO THE EXPERIMENT DIRECTORY:
+
+cd /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+
+GENERATE Makefile:
+
+/usr/local/Pipeline/Gerald/GERALD.pl /home/syoung/base/pipeline/run2-mtdna-eland/data/gerald_configfile.txt --FORCE --EXPT_DIR /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung
+
+THE OUTPUT SHOULD LOOK LIKE THIS:
+
+    ...
+    Running 'make self_test' on /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Makefile
+    Run 'make self_test' on /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-21706.txt
+
+CHECK CONTENTS OF Makefile:
+
+    head -n 20 /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Makefile
+
+    # File: Makefile 
+    # Description: file for auto-generation of sequence analysis
+    # Auto-generated by @(#) Id: GERALD.pl,v 1.131 2007/12/04 11:14:32 rshaw Exp
+    # Auto-generated on Sun Sep  7 20:02:33 2008
+    
+    # Copyright (c) Solexa Limited 2005
+    # Author: A. J. Cox
+    
+    
+    # @(#) $Id: GERALD.pl,v 1.131 2007/12/04 11:14:32 rshaw Exp $
+    
+    .SUFFIXES:
+    
+    # General variable definitions
+    
+    EXPT_DIR:=/store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung
+    
+    
+    TOOLS_DIR:=/usr/local/Pipeline/Gerald
+    QCAL_TOOLS_DIR:=$(TOOLS_DIR)/../QCalibration
+    ...
+
+
+**4. RUN make **
+    
+MOVE TO GERALD DIRECTORY:
+
+    cd /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung
+    
+    make -j8
+
+THE OUTPUT SHOULD LOOK LIKE THIS:
+
+    cd /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung && /usr/local/Pipeline/Gerald/convertToFasta.pl -useBases nYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYnyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy -read1 \
+             s_6_0001_seq.txt s_6_0002_seq.txt s_6_0003_seq.txt s_6_0004_seq.txt s_6_0005_seq.txt s_6_0006_seq.txt s_6_0007_seq.txt s_6_0008_seq.txt s_6_0009_seq.txt s_6_0010_seq.txt
+     s_6_0011_seq.txt s_6_0012_seq.txt s_6_0013_seq.txt s_6_0014_seq.txt s_6_0015_seq.txt s_6_0016_seq.txt s_6_0017_seq.txt s_6_0018_seq.txt s_6_0019_seq.txt s_6_0020_seq.txt s_6_002
+    1_seq.txt s_6_0022_seq.txt s_6_0023_seq.txt s_6_0024_seq.txt s_6_0025_seq.txt s_6_0026_seq.txt s_6_0027_seq.txt s_6_0028_seq.txt s_6_0029_seq.txt
+    ...
+    opened s_8_0299_qhg.txt
+    opened s_8_0300_qhg.txt
+    4590247 sequences out of 6271544 passed filter criteria
+    set -o pipefail; cat s_8_1_export.txt | \
+            perl -ane '{ next if ($F[12] eq ""); print if (s/\tY$//) }' | \
+            sort --field-separator="        " -k11,11 -k12,12 -k13,13n > s_8_1_sorted.txt.tmp && mv s_8_1_sorted.txt.tmp s_8_1_sorted.txt
+    set -o pipefail; cat s_8_1_export.txt s_8_2_export.txt | \
+            /usr/local/Pipeline/Gerald/score.pl -saf-multi-input && \
+            echo `date` > s_8_score_files.txt
+    set -o pipefail; cat s_8_2_export.txt | \
+            perl -ane '{ next if ($F[12] eq ""); print if (s/\tY$//) }' | \
+            sort --field-separator="        " -k11,11 -k12,12 -k13,13n > s_8_2_sorted.txt.tmp && mv s_8_2_sorted.txt.tmp s_8_2_sorted.txt
+    ...
+    < 250 2.1.5 <syoung>... Recipient ok
+    > To: Gerald Reports <syoung>
+    > Subject: GERALD run completed in pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung
+    > Report sent from solexa01 via localhost port 25 at Mon Sep  8 01:08:58 2008
+    >
+    > Links to output files:
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Error.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/IVC.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/All.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Perfect.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/Summary.htm
+    >
+    > .
+    < 354 Enter mail, end with "." on a line by itself
+    > quit
+    < 250 2.0.0 m8858wjG023103 Message accepted for delivery
+    find . -maxdepth 1 -name "*_qval.txt" | xargs rm -f
+    echo Gerald analysis finished successfully. ;
+    Gerald analysis finished successfully.
+    You have new mail in /var/spool/mail/syoung
+
+** 5. CHECK FOR THE NEWLY CREATED *_sorted.txt FILES:**
+
+    ll | grep sorted
+   -rw-r--r-- 1 syoung users   45329796 Sep  7 23:25 s_6_1_sorted.txt
+   -rw-r--r-- 1 syoung users   31530271 Sep  7 23:22 s_6_2_sorted.txt
+   -rw-r--r-- 1 syoung users    1644745 Sep  7 22:51 s_7_1_sorted.txt
+   -rw-r--r-- 1 syoung users    1222602 Sep  7 22:51 s_7_2_sorted.txt
+   -rw-r--r-- 1 syoung users    4835034 Sep  8 00:17 s_8_1_sorted.txt
+   -rw-r--r-- 1 syoung users    3164966 Sep  8 00:17 s_8_2_sorted.txt
+   [syoung@solexa01 GERALD_07-09-2008_syoung]$ ll -h | grep sorted
+   -rw-r--r-- 1 syoung users   44M Sep  7 23:25 s_6_1_sorted.txt
+   -rw-r--r-- 1 syoung users   31M Sep  7 23:22 s_6_2_sorted.txt
+   -rw-r--r-- 1 syoung users  1.6M Sep  7 22:51 s_7_1_sorted.txt
+   -rw-r--r-- 1 syoung users  1.2M Sep  7 22:51 s_7_2_sorted.txt
+   -rw-r--r-- 1 syoung users  4.7M Sep  8 00:17 s_8_1_sorted.txt
+   -rw-r--r-- 1 syoung users  3.1M Sep  8 00:17 s_8_2_sorted.txt
+
+
+** 6. COPY FILES TO assembly DIRECTORY IN PIPELINE**
+
+MOVE NEWLY CREATED *_sorted.txt FILES TO assembly DIRECTORY:
+
+    cp /store/data/pipeline_in/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data/C1-72_Firecrest1.9.2_28-08-2008_syoung/Bustard1.9.2_28-08-2008_syoung/GERALD_07-09-2008_syoung/*sorted.txt /home/syoung/base/pipeline/run2-mtdna-eland/assembly
+
+CHECK CONTENTS OF assembly DIRECTORY:
+
+    cd /home/syoung/base/pipeline/run2-mtdna-eland/assembly
+
+    ls -alh
+    total 84M
+    drwxr-xr-x 2 syoung users 4.0K Sep  8 01:27 .
+    drwxr-xr-x 3 syoung users 4.0K Sep  8 01:26 ..
+    -rw-r--r-- 1 syoung users  44M Sep  8 01:27 s_6_1_sorted.txt
+    -rw-r--r-- 1 syoung users  31M Sep  8 01:27 s_6_2_sorted.txt
+    -rw-r--r-- 1 syoung users 1.6M Sep  8 01:27 s_7_1_sorted.txt
+    -rw-r--r-- 1 syoung users 1.2M Sep  8 01:27 s_7_2_sorted.txt
+    -rw-r--r-- 1 syoung users 4.7M Sep  8 01:27 s_8_1_sorted.txt
+    -rw-r--r-- 1 syoung users 3.1M Sep  8 01:27 s_8_2_sorted.txt
+    
+
+**7. CONVERT *_sorted.txt FILES INTO .ace FILES**
+
+CONVERT WITH elandpaired2ace.pl:
+
+
+cd /home/syoung/base/bin/nextgen
+./elandpaired2ace.pl -i /home/syoung/base/pipeline/run2-mtdna-eland/assembly/s_6_1_sorted.txt -r 50-200
+
+OR, IF YOU HAVE ALTERED YOUR '~/.bash_profile' FILE TO INCLUDE THE PATH TO THE 'nextgen' DIRECTORY:
+
+elandpaired2ace.pl -i /home/syoung/base/pipeline/run2-mtdna-eland/assembly/s_6_1_sorted.txt -r 50-200
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep  8 02:11:13 EDT 2008] CONVERT AMOS .ace FILES TO EagleView .ace - WIKI>
+
+
+
+
+
+**6. CONVERT AMOS .ace FILES INTO EagleView .ace FILES**
+
+    ./ace2eagleview.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/assembly/acefiles
+
+THIS MODIFIES THE FORMAT OF THE AMOS-PRODUCED .ace FILES IN THE FOLLOWING WAYS TO MAKE THEM ACCEPTABLE TO EagleView:
+        
+    1. MAKE READ START + OFFSET <= CONTIG LENGTH BY REDUCING THE READ LENGTH
+    
+        IN THE 'RD' RECORD
+        
+    2. MAKE ALL READ OFFSETS >= 1 (AMOS PRODUCES SOME WITH NEGATIVE VALUES), WHICH ENTAILS:
+        
+        - INCREASE ALL OFFSETS BY -(MOST NEGATIVE OFFSET)
+        
+        - INCREASE ALL BASE SEGMENTS BY -(MOST NEGATIVE OFFSET)
+        
+        - ADD 'N' x -(MOST NEGATIVE OFFSET) TO THE BEGINNING OF THE CONTIG SEQUENCE
+        
+        - ADD '0 ' x -(MOST NEGATIVE OFFSET) TO THE BEGINNING OF THE CONTIG QUALITY
+        
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Sep  7 00:31:19 EDT 2008] TROUBLESHOOTING Input/Output error>
+
+
+
+Last login: Fri Sep  5 09:03:25 on console
+uzoezi-ozomaros-powerbook-g4-12:~ Uzoezi$ mkdir –p ~/base/pipeline/run3-barcoding/data
+mkdir: –p: File exists
+mkdir: /Users/Uzoezi/base/pipeline/run3-barcoding/data: File exists
+uzoezi-ozomaros-powerbook-g4-12:~ Uzoezi$ cd ~/base/pipeline/run3-barcoding/datauzoezi-ozomaros-powerbook-g4-12:data Uzoezi$ cp /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD2.txt ./ cp /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD1.txt ./ cp /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD3.txt ./ cp /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.unmatched.txt ./ 
+cp: /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD2.txt: Input/output error
+cp: cp: No such file or directory
+cp: . and ./ are identical (not copied).
+cp: /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD3.txt: Input/output error
+cp: cp: No such file or directory
+cp: . and ./ are identical (not copied).
+cp: /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD1.txt: Input/output error
+cp: cp: No such file or directory
+cp: . and ./ are identical (not copied).
+cp: /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.unmatched.txt: Input/output error
+uzoezi-ozomaros-powerbook-g4-12:data Uzoezi$ cp /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD2.txt ./ 
+cp: /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.AD2.txt: Input/
+
+-uuu:---F1  s_2_sequence.unmatched.txt   All L1     (Text)----------------------
+Use M-x make-directory RET RET to create the directory and its parents
+
+
+TEST:
+
+# make a test directory
+mkdir -p ~/temp/cpdir
+cd ~/temp
+
+# create some files to copy
+echo "myfile1" | cat > myfile1
+echo "myfile2" | cat > myfile2
+echo "myfile3" | cat > myfile3
+echo "myfile4" | cat > myfile3
+
+# go to the cpdir and copy the files but string the 'cp' commands together in one line
+cd ~/temp/cpdir
+cp ../myfile1 ./ cp ../myfile2 ./ cp ../myfile3 ./ cp ../myfile4 ./
+
+# You get this output:
+
+cp: omitting directory `./'
+cp: cannot stat `cp': No such file or directory
+cp: omitting directory `./'
+cp: cannot stat `cp': No such file or directory
+cp: omitting directory `./'
+cp: cannot stat `cp': No such file or directory
+
+# check the contents of the 'cpdir' directory:
+ll ..
+total 64K
+drwxr-xr-x  3 syoung users 4.0K Sep  7 00:47 .
+drwxr-x--- 24 syoung users 4.0K Sep  7 00:42 ..
+drwxr-xr-x  2 syoung users 4.0K Sep  7 00:48 cpdir
+-rw-r--r--  1 syoung users   27 Sep  7 00:44 myfile1
+-rw-r--r--  1 syoung users   25 Sep  7 00:44 myfile2
+-rw-r--r--  1 syoung users    7 Sep  7 00:47 myfile3
+-rw-r--r--  1 syoung users    7 Sep  7 00:47 myfile4
+
+
+
+</entry>
+
+
+
+<entry [Thurs Sep  4 12:10:38 EDT 2008] INSTALLED AMOS WITH hawkeye AND PUT INSTRUCTIONS ON WIKI>
+
+
+
+
+====== ACCESS AMOS ======
+
+**ENABLE AUTOMATIC AMOS APPLICATION LOOKUP BY ADDING AMOS DIRECTORY TO PATH BY EDITING ~/.bash_profile FILE**
+
+See [[bash_profile|How to modify your '.bash_profile' file]] IN ORDER TO CALL AMOS APPLICATIONS BY NAME:
+
+    tarchive2amos
+
+INSTEAD OF HAVING TO SUPPLY THEIR FULL LOCATION:
+
+    /home/syoung/base/apps/amos/bin/tarchive2amos
+
+
+====== AMOS TOOLS ======
+
+**tarchive2amos**
+
+Convert files from the NCBI Trace Archive format into the AMOS message format.
+
+**USAGE**
+
+    tarchive2amos -o <prefix> [options] fasta1 ... fastan
+
+**DESCRIPTION**
+
+tarchive2amos will read one or more fasta-format sequence files and place the ouptut in a file called <prefix>.afg. Note that the -o option is required.        
+    
+    <prefix> - prefix for the output files
+        
+    fasta1 ... fastan - list of files to be converted.
+             
+The program assumes that for each file called <file>.seq there is a <file>.qual and a <file>.xml. (alternatively the files may be called fasta.<file>, qual.<file> and xml.<file>). If no .xml file is present the program will only produce a set of RED (read) records.
+
+
+**OPTIONS**
+
+-assembly <assembly> - XML file containing assembly in assembly archive format http://www.ncbi.nlm.nih.gov/Traces/assembly/assmbrowser.cgi usually named ASSEMBLY.xml in the tar-ball downloaded from NCBI
+
+-tracedir <tracedir> - directory containing the trace information as downloaded from the NCBI, either from the assembly archive or through a direct query in the trace archive.  This directory must contain a file named TRACEINFO.xml as well as one or more subdirs containing the trace information for the organism(s) whose traces are being processed.
+
+-c <clip>      - file containing clear ranges for the reads.  If this file is provided, any sequence that does not appear in it is excluded from the output. The clip file is in the format:
+    
+    <read id> <clip_left> <clip_right>
+    
+These values will overwrite any value specified in the XML or sequence files.
+
+-m <mates>     - file containing mate-pair information as specified in the BAMBUS documentation.  This file replaces information provided in .xml files
+
+-l <lib>       - file containing mean/stdev information for libraries. Overrides .xml input. The library file is formatted as follows:
+                    
+    <lib_id>  <mean_size>   <size_stdev>
+                    
+-i <id>        - start numbering messages with id <id> (useful when appending to a bank)
+
+-min <minlen>  - reads shorter than <minlen> are rejected (default $MINSEQ)
+-max <maxlen>  - reads longer than <maxlen> are rejected (default no limit)
+
+-qual <qval>   - default quality value assigned when no quality file is provided (default $DEFAULT_QUAL)
+
+
+**INPUT FILES**
+
+1. FASTA FILES
+  
+Sequence data in one or more multi-fasta formatted files. These files must be named fasta.* (Trace Archive standard) or *.seq.
+
+2. QUAL FILES
+  
+Quality data in zero or more multi-fasta formatted files. These files must be named qual.* (Trace Archive standard) or *.qual and must match the names of the sequence files.
+Note that the quality files are not necessary: if they are absent all bases will be assigned quality value of 20 (1 error in 100 bp).
+
+3. XML FILES
+These files must be named xml.* (Trace Archive standard) or *.xml and must match the names of the sequence files. The information specified in these files includes (but is not limited to) clipping information, library size information, etc.
+For more information please refer to the Trace Archive documentation. Like the quality information, the XML files are not required.
+
+In addition to these files, the user can provide a list of clear ranges (clipping coordinates) in a separate file. This information will override any set by the xml files. Furthermore, reads not present in the clear range file will be excluded from the conversion.
+
+Note that if a clear range file is not specified, reads with no clear range set in the XML or the sequence file (see below) will be assigned a clear range that spans the entire extent of the read.
+
+
+
+**INPUT FILE FORMATS**
+
+tarchive2amos accepts four different formats for the header lines in the sequence file:
+
+1. Trace Archive format generated by a query (either through website or query_tracedb script)
+
+    >gnl|ti|145655111 name:38245161 ...
+
+The first identifier is the TRACE_ID in the XML file and the second one is the name assigned to the trace (TRACE_NAME) in the xml file.
+
+2. Trace Archive format:
+
+    >gnl|ti|145655111 38245161
+
+The first identifier is the trace identifier (TRACE_ID in the XML file) while the second one is the assigned name for the trace (TRACE_NAME in the XML file). The output message file will only contain the trace name (in the eid: field of each read record).
+
+
+3. TIGR sequence format (also produced by the trimming package lucy) :
+
+      >GBRAA01TF 1000 2000 1500 17 823
+
+The first identifier is the trace name, followed by three numbers representing the library size estimates (ignored by tarchive2amos), then 
+followed by the clear range.
+
+
+4. Generic multi-fasta
+
+      >GBRAA01TF
+
+
+====== AMOS pipelines ======
+
+**minimus**
+
+   Minimus is an assembly pipeline designed specifically for small
+   data-sets, such as the set of reads covering a specific gene. Note
+   that the code will work for larger assemblies (we have used it to
+   assemble bacterial genomes), however, due to its stringency, the
+   resulting assembly will be highly fragmented.  For large and/or
+   complex assemblies the execution of Minimus should be followed by
+   additional processing steps, such as scaffolding.
+
+**minimus2**
+
+   minimus2 is an assembly pipeline designed for merging two sequence sets
+   (Example: the contigs generated by two assembly processes)
+
+   It uses a nucmer based overlap detector instead of the hash-overlap program 
+   used by the minimus pipeline. 
+
+   Usage:
+         minimus2 prefix \
+            -D REFCOUNT=<n>  \  # Number of sequences is the 1st assembly
+            -D OVERLAP=<n>   \  # Minimum overlap (Default 40bp)
+            -D CONSERR=<f>   \  # Maximum consensus error (0..1) (Def 0.06)
+            -D MINID=<n>     \  # Minimum overlap %id for align. (Def 94)
+            -D MAXTRIM=<n>      # Maximum sequence trimming length (Def 20bp)
+
+   For assembling two sequence sets, REFCOUNT should be the set to the
+   number of sequences in the first set.
+   By default REFCOUNT=0. An all vs all alignment is run is REFCOUNT is not
+   given as input parameter (same as minimus).
+
+**AMOScmp**
+
+   AMOScmp provides a general overlap-layout-consensus pipeline for
+   assembly, but with a twist. The overlap phase of the process is
+   replaced with an alignment to a reference, i.e. all sequencing reads
+   are aligned to a finished reference sequence and their alignments are
+   used to determine their layout position.
+
+**AMOScmp-shortReads**
+
+   Modified version AMOScmp for assembling short reads
+   Differences compared to AMOScmp:
+     * smaller nucmer alignment cluster size (20 vs 65)
+     * smaller make-consensus alignment wiggle value (2 vs 15)
+
+**AMOScmp-shortReads-alignmentTrimmed**
+
+   Very similar to AMOScmp-shortReads but it does a reference based alignment 
+   trimming of the reads prior to the assembly. 
+   Differences compared to AMOScmp-shortReads:
+     * aligns the reads to reference using nucmer
+     * determines zero coverage regions
+     * extracts the read clear ranges from the alignment(delta) file
+     * exrtends the read clear ranges for reads adjacent to zero coverage regions
+     * updates the bank with the new clear ranges
+     * updates the alignment(delta) file with the new read lengths and clear ranges
+
+**amosvalidate**
+
+   Amosvalidate is a validation pipeline for genome assemblies. This
+   pipeline includes a collection of methods for ascertaining the
+   quality of an assembly, and examines multiple measures of assembly
+   quality to pinpoint potential mis-assemblies. Validation techniques
+   include mate-pair validation, repeat analysis, coverage analysis,
+   identification of correlated read polymorphisms, and read alignment
+   breakpoint analysis. Regions of the assembly exhibiting multiple
+   signatures of mis-assembly are flagged as suspicious and output by
+   amosvalidate for further examination.
+
+**hawkeye**
+
+   Hawkeye is a visual analytics tool for genome assembly analysis and
+   validation, designed to aid in identifying and correcting assembly
+   errors. Hawkeye blends the best practices from information and
+   scientific visualization to facilitate inspection of large-scale
+   assembly data while minimizing the time needed to detect
+   mis-assemblies and make accurate judgments of assembly quality.
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 22:09:11 EDT 2008] ONLINE DOCUMENTATION>
+
+
+
+GAPipeline VERSION 0.3
+
+http://rulai.cshl.edu/xuan/Doc/GApipeline-0.3/
+
+NEW eland_extended AND eland_pair (PAIRED END) ANALYSIS
+
+http://rulai.cshl.edu/xuan/Doc/GApipeline-0.3/New%20analysis%20modes%20for%20GERALD%20in%20Pipeline%20Version%200.3.html
+
+GAPipeline VERSION 1.0
+
+http://rulai.cshl.edu/xuan/Doc/GApipeline-1.0/
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 21:41:22 EDT 2008] *realign.txt FILE CONVERSION FOR VIEWING IN UCSC browser >
+
+
+
+Data that is uniquely aligned to a genome could be viewed as a custom track in the UCSC genome browser (viewable only from the machine it was uploaded). More on UCSC custom tracks at http://genome.ucsc.edu/goldenPath/help/customTrack.html. To generate a track in the BED format from Gerald *_realign.txt files (let's say for lane 3, assuming 25 nt sequences):
+
+cat s_3_????_realign.txt|egrep -v '^#'| \
+
+ perl -ane 'if (@F>3){$_=~/(chr.+):(\d+)\s([F|R])/;print $1,"\t",$2,"\t",($2+25),"\n"}'\
+
+ > s3_customTrack.txt
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 20:41:22 EDT 2008] CONVERT VELVET OUTPUT TO .ace FILES WITH amos2ace.pl>
+
+
+
+
+cd /home/syoung/base/bin/nextgen
+
+./amos2ace.pl -o /home/syoung/base/pipeline/human2-velvet/assembly/human2-velvet.ace /home/syoung/base/pipeline/human2-velvet/assembly/velvet_assy.afg
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 19:41:22 EDT 2008] CONVERTED TWIKI PAGES TO DOKUWIKI>
+
+
+
+Capture:
+
+**Papers**
+
+Carninci_2008_Hunting_hidden_transcripts.pdf [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Carninci_2008_Hunting_hidden_transcripts.pdf]]
+
+Elledge-DMSO_to_allow_opening_of_shRNA_pPRIME.pdf[[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Elledge-DMSO_to_allow_opening_of_shRNA_pPRIME.pdf]] 
+
+
+Erlich_2008_Alta-Cyclic_-_self-optimizing_base_caller_for_next_generation_sequencing.pdf [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Erlich_2008_Alta-Cyclic_-_self-optimizing_base_caller_for_next_generation_sequencing.pdf]]
+
+
+Mortazavi_2008_Mapping_and_quantifying_mammalian_transcriptomes_by_RNA-Seq.pdf [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Mortazavi_2008_Mapping_and_quantifying_mammalian_transcriptomes_by_RNA-Seq.pdf]]
+
+
+Nagalakshmi_2008_The_Transcriptional_Landscape_of_the_Yeast_Genome_Defined_by_RNA_Sequencing.enw [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Nagalakshmi_2008_The_Transcriptional_Landscape_of_the_Yeast_Genome_Defined_by_RNA_Sequencing.enw]]
+
+
+Shendure_2008_The_beginning_of_the_end_for_microarrays.pdf [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Shendure_2008_The_beginning_of_the_end_for_microarrays.pdf]]
+
+
+Wilhelm_2008_Dynamic_repertoire_of_a_eukaryotic_transcriptome_surveyed_at_single-nucleotide_resolution.pdf [[http://solexa01.med.miami.edu/dokuwiki/docs/Capture/Wilhelm_2008_Dynamic_repertoire_of_a_eukaryotic_transcriptome_surveyed_at_single-nucleotide_resolution.pdf]] 
+
+
+twiki page:
+
+
+Short Read Sequence Assembly Applications
+
+[[http://bioinfo.cgrb.oregonstate.edu/docs/solexa/Whole genome alignments using ELAND.html][Eland (Solexa, free)]]
+
+[[http://chevreux.org/projects_mira.html][Mira (Open Source)]]
+
+[[http://www.clcbio.com/index.php?id=354][Genomics Workbench ( CLC Bio)]]
+
+[[http://euler-assembler.ucsd.edu/portal][Euler-SR (Open Source)]]
+
+[[http://www.dnastar.com/products/SMGA.php][Seqman Genome Assembler SMGA (DNAStar)]]
+
+[[https://sourceforge.net/projects/vcake][VCAKE (Open Source)]]
+
+[[http://www.softgenetics.com/][NextGene (SoftGenetics)]]
+
+Short Read Sequence Viewers
+
+[[http://clavius.bc.edu/~whuang/eagleview/][Eagle View]] [[http://www.genome.org/cgi/content/abstract/gr.076067.108v1][paper]] Does not load E.coli data
+
+[[http://amos.sourceforge.net/][AMOS]] Hawkeye viewer and other tools
+
+[[http://www.jcvi.org/cms/research/software/][JCVI tools (incl. AMOS)]]
+
+[[http://www.broad.mit.edu/igv/]] Free viewer from Broad
+
+SeqMan Pro (Lasergene)
+
+Pros:
+
+    * Relatively inexpensive (?)
+    * SNP discovery
+    * Displays 454 flowgrams
+
+Cons:
+
+    * Data format interoperability with other applications
+    * Can’t easily import own SNPs
+    * Can’t view your own assembly created with another application without reassembly against reference
+    * Doesn’t export GFF files for viewing in GBrowse (see below)
+    * GUI can be difficult to navigate
+    * Can’t assemble large (~50M read) short read data sets
+
+Genomics Workbench (CLC Bio)
+
+Pros:
+
+    * Nice, easy to use GUI with scope for additions
+    * Other tools in suite or add-ons, some free
+    * Assembler works for small (~5M read) assemblies
+    * Relatively fast assembly when using a reference sequence
+    * Plug-in structure allows customization
+    * The company is keen for our input and may make our particular needs into new product features
+
+Cons:
+
+    * Data format interoperability with other applications
+    * Can’t easily import own SNPs and other data types
+    * Doesn’t easily allow export into other common data formats
+    * Can’t assemble large (~50M read) short read data sets
+
+Sequence view of human data?
+
+I haven’t had much of a chance to test how SeqMan Pro and Genomics Workbench scale up. Ideally I’d like to test them with a whole human genome reference set and a lane or two of human short reads. Having seen how long it takes to load E.coli data on SeqMan Pro, my suspicion is that it won’t be able to deal with the human data.
+
+GBrowse as open-source alternative
+
+An alternative is using an open-source packages like Gbrowse to view aligned contigs, SNPs, etc. ll compare the assembled short read human contigs to whole human chromosomes and then convert the alignment into GFF format for input into GBr\
+owseon my new dev server:
+
+[[http://204.68.94.166/cgi-bin/gbrowse/yeast_chr1/?name=ORF:YAL063C][http://204.68.94.166/cgi-bin/gbrowse/yeast_chr1/?name=ORF%3AYAL063C]]
+
+Pros:
+
+    * Open-source and well supported (the most popular GMOD sequence viewer)
+    * Many tools for data input (command line SNP callers, etc.)
+    * Open-source allows customization
+
+Cons
+
+    * Few data export functions (but can be easily written)
+    * Doesn’t easily allow export into other common data formats
+    * Does not do assembly
+    * Data input is command line only so far
+
+Base Callers
+
+[[http://hannonlab.cshl.edu/Alta-Cyclic/main.html][Alta-Cyclic]]
+
+Data analysis
+
+[[http://www.genomatix.de][Genomatix]] [[http://www.genomatix.de/cgi-bin/./eldorado/main.pl][Register/Login]] [[http://www.genomatix.de/products/RegionMiner/index.html][RegionMiner]] [[http://www.medicalnewstoday.com/articles/98564.php][Open chromatin paper - Genomatix press release]]
+
+Illumina iPar
+
+[[http://www.illumina.com/pages.ilmn?ID=270][iPar]]
+
+Roche competition
+
+[[https://www.roche-applied-science.com/gseq/index.jsp][10 gigabases worth of 454 sequencing]]
+
+
+
+http://solexa01.med.miami.edu/twiki/bin/edit/Main/Capture?t=1219435257
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Aug 22 11:05:11 EDT 2008
+RUN LOG: human run 1, human run 2, human run 3
+
+====== human run 1 ======
+
+** SAMPLES **
+
+^ Lane ^ Sample ^
+|   1 | Human cDNA  |
+|   2 | Human cDNA  |
+|   3 | Human cDNA  |
+|   4 | Human cDNA  |
+|   5 | PhiX control|
+|   6 | Human cDNA  |
+|   7 | Human cDNA  |
+|   8 | Human cDNA  |
+
+** LOCATION **
+
+TRANSFERRED TO mighstore (REMOVED FROM solexa01) ON July 18th 2008:
+
+    cd /d1/Solexa/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data\
+    /C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung
+    
+    ls -alh | grep sequence 
+    -rw-r--r-- 1 root root 4.5G Jul 19 12:56 s_1,2,3,5,6,7,8_sequence.txt
+    -rw-rw-rw- 1 root root 648M Jul 18 18:52 s_1_sequence.txt
+    -rw-rw-rw- 1 root root 673M Jul 18 19:07 s_2_sequence.txt
+    -rw-rw-rw- 1 root root 685M Jul 18 19:21 s_3_sequence.txt
+    -rw-rw-rw- 1 root root 635M Jul 18 21:36 s_5_sequence.txt
+    -rw-rw-rw- 1 root root 642M Jul 19 01:15 s_6_sequence.txt
+    -rw-rw-rw- 1 root root 653M Jul 19 01:16 s_7_sequence.txt
+    -rw-rw-rw- 1 root root 665M Jul 19 02:03 s_8_sequence.txt
+
+
+====== human run 2 ======
+
+** SAMPLES **
+
+^ Lane ^ Sample ^
+|   1 | Human cDNA* |
+|   2 | Human cDNA* |
+|   3 | Human cDNA* |
+|   4 | Human cDNA* |
+|   5 | PhiX control|
+|   6 | Total mtDNA |
+|   7 | Small mtDNA |
+|   8 | Medium mtDNA |
+
+* Same human subject as in 'human run 1'
+
+** LOCATION **
+
+    cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data\
+    /C1-72_Firecrest1.9.2_11-08-2008_ddittman/Bustard1.9.2_11-08-2008_ddittman/GERALD_11-08-2008_ddittman
+
+    ls -al | grep sequence
+    -rw-r--r-- 1 ddittman users 443M Aug 12 16:01 s_1_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 443M Aug 12 16:02 s_1_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 458M Aug 12 16:02 s_2_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 458M Aug 12 16:03 s_2_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 433M Aug 12 16:03 s_3_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 433M Aug 12 16:04 s_3_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 433M Aug 12 16:04 s_4_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 433M Aug 12 16:05 s_4_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 224M Aug 12 16:05 s_5_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 224M Aug 12 16:05 s_5_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 456M Aug 12 16:16 s_6_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 456M Aug 12 16:16 s_6_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 416M Aug 12 16:17 s_7_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 416M Aug 12 16:17 s_7_2_sequence.txt
+    -rw-r--r-- 1 ddittman users 512M Aug 12 16:33 s_8_1_sequence.txt
+    -rw-r--r-- 1 ddittman users 512M Aug 12 16:35 s_8_2_sequence.txt
+
+
+
+====== human run 3 ======
+
+** SAMPLES **
+
+^ Lane ^ Sample ^
+| 1  | AD0*         |
+| 2  | Barcodes (AD1, AD2, AD3) |
+| 3  | AD2  |
+| 4  | PhiX control |                                    
+| 5  | SeqCapture   |                                
+| 6  | mir133       |                             
+| 7  | let7         |                            
+| 8  | Control      |                             
+* (IDT adapters with original sequence) 
+
+** Barcodes **
+
+AD1: AAGGAT
+
+AD2: ACACAT
+
+AD3: AGCTAT
+
+
+** LOCATION **
+
+/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+    /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data\
+    /C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/
+    
+    -rw-r--r-- 1 syoung users  361M Aug 25 04:46 s_1_sequence.txt
+    -rw-r--r-- 1 syoung users  476M Aug 25 04:47 s_2_sequence.txt
+    -rw-r--r-- 1 syoung users  771M Aug 25 04:47 s_3_sequence.txt
+    -rw-r--r-- 1 syoung users 1010M Aug 25 04:48 s_5_sequence.txt
+    -rw-r--r-- 1 syoung users  993M Aug 25 04:46 s_6_sequence.txt
+    -rw-r--r-- 1 syoung users  985M Aug 25 04:47 s_7_sequence.txt
+    -rw-r--r-- 1 syoung users  966M Aug 25 04:53 s_8_sequence.txt
+
+
+
+BASE CALLING
+/usr/local/Pipeline/Goat/bustard.py C1-42_Firecrest1.9.2_18-08-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+cd C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_19-08-2008_syoung.2/
+make recursive -j8
+
+
+/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/
+-rw-r--r-- 1 syoung users  361M Aug 25 04:46 s_1_sequence.txt
+-rw-r--r-- 1 syoung users  476M Aug 25 04:47 s_2_sequence.txt
+-rw-r--r-- 1 syoung users  771M Aug 25 04:47 s_3_sequence.txt
+-rw-r--r-- 1 syoung users 1010M Aug 25 04:48 s_5_sequence.txt
+-rw-r--r-- 1 syoung users  993M Aug 25 04:46 s_6_sequence.txt
+-rw-r--r-- 1 syoung users  985M Aug 25 04:47 s_7_sequence.txt
+-rw-r--r-- 1 syoung users  966M Aug 25 04:53 s_8_sequence.txt
+
+hea
+
+BASE CALLING AND CREATE SEQUENCE FILES
+
+screen run3-lanes1to4-basetoeland
+
+/usr/local/Pipeline/Goat/bustard.py C1-42_Firecrest1.9.2_18-08-2008_syoung --tiles=s_1,s_2,s_3,s_4 --make
+
+cd C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_19-08-2008_syoung.2/
+make recursive -j4
+
+
+ANALYSIS ONLY
+
+/usr/local/GAPipeline-0.3.0/Gerald
+
+
+
+
+From: Hoffman, Josh D 
+Sent: Thursday, August 14, 2008 12:27 PM
+To: Huang, Jia
+Cc: Zuchner, Stephan; Young, Stuart
+Subject: Recent Standard Run
+
+Hi Jia,
+
+The 1st base incorporation was a success for all lanes. We will be running 42 cycles which will take 105 hours from the time of this e-mail. Attached is the 1st base summary file and the samples were assigned as followed.
+
+Lane 1 AD0 (IDT adapters with original sequence) @ 2.5pM
+Lane 2 Barcodes (AD1, AD2, AD3)                      @ 2.5pM
+Lane 3 AD2                                                       @ 2.5pM
+Lane 4 phiX                                                       @ 2.0pM
+Lane 5 SeqCapture                                            @ 2.5pM
+Lane 6 mir133                                                    @ 2.5pM
+Lane 7 let7                                                        @ 2.5pM
+Lane 8 Control                                                   @ 2.5pM
+
+Have a nice weekend and I will see you Wednesday,
+
+Josh
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Aug 22 11:04:50 EDT 2008
+IMAGE PROCESSING AND BASE CALLING ON COMMAND LINE
+
+
+FROM: Notes-apps-eland.txt
+Fri Jul 11 22:06:43 EDT 2008
+IMAGE PROCESSING AND BASE CALLING WITH PIPELINE
+
+
+Command line: Image processing, base calling
+============================================
+
+Hi Bill/Jia,
+
+Here’s the pipeline command line instructions for the first to steps 1) image processing, and 2) base calling. I’ll be sending you perl wrappers for both of these soon as well as for step 3) Eland assembly. I recently sent you step  4) Velvet assembly (copied below with an additional parameter (-r insert_length) for velvet-paired.pl which now uses 250 bp as the default maximum insert length). After that, I’ll send you step 5) Assembly comparison.
+
+Cheers,
+
+Stuart.
+
+
+
+DOCUWIKI PAGE:
+
+
+
+
+__**Command line pipeline: Image processing, base calling, Velvet (paired end) assembly **__
+
+** PLEASE NOTE: FOR THE FOLLOWING INSTRUCTIONS, WE'LL USE THE SEQUENCING RUN DIRECTORY '080620_HWI-EAS185_0001_JIA_cDNA_JH' BUT REMEMBER TO CHANGE IT FOR THE NAME OF YOUR SEQUENCING RUN DIRECTORY! THE NAMES OF THE RESULTING '...Firecrest...' AND 'Bustard...' FOLDER SHOULD ALSO BE CHANGED TO THE DIRECTORIES CREATED BY YOU WHEN YOU FOLLOW THIS PROCEDURE. USE THE FOLLOWING COMMANDS TO DETERMINE THE NAMES OF YOUR DIRECTORIES: **
+
+NB: THESE OUTPUT FOLDER NAMES ARE CREATED ACCORDING TO THE FOLLOWING SCHEMA EVERY TIME YOU RUN AN APPLICATION FOR IMAGE FILE PROCESSING (Firecrest), BASE CALLING (Bustard) OR ALIGNMENT/ASSEMBLY (GERALD):
+
+    C1-42_Firecrest1.9.2_18-08-2008_syoung
+    |
+    <ANALYSIS-no. cycles> 
+          |   
+          <software>
+                         |
+                         <date>
+                                    |
+                                    <username>
+ 
+
+    """Create a new unique name for the folder that the base caller save its
+    image analysis output to."""
+    times = time.localtime()
+    date = "%02i-%02i-%04i" % (times[2], times[1], times[0])
+
+    folder = "%s_%s_%s" % (software+software_version,
+                           date, get_login())
+
+
+^command  ^what it does ^
+| ls    | LIST THE FILES AND DIRECTORIES IN THE CURRENT WORKING DIRECTORY  |
+| pwd   | GET THE NAME OF THE CURRENT WORKING DIRECTORY (I.E., WHERE YOU ARE IN THE FILE SYSTEM)  |
+| cd    | CHANGE DIRECTORY TO ENTER A NEW DIRECTORY (NB: cd .. = GO BACK UP THE FILE SYSTEM ONE DIRECTORY, cd ../../.. = GO BACK UP THREE DIRECTORIES, ETC.)  |
+
+
+============= 1) IMAGE PROCESSING ============
+
+1. DO chmod ON .params FILE TO MAKE WRITEABLE BY USER syoung
+
+    chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+(IF YOU DON'T HAVE PRIVILEGES TO CHANGE PERMISSIONS ON THE FILE, EMAIL ME: syoung@med.miami.edu AND I'LL chmod IT FOR YOU.)
+
+CHECK THE RESULT:
+
+    ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    -rw-rw---- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+
+2. GENERATE THE Makefile
+
+MOVE TO THE DIRECTORY
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+
+CREATE THE Makefile
+(NB: YOU CAN SPECIFY MULTIPLE LANES OR INDIVIDUAL FLOWCELLS WITH THE --tiles OPTION, E.G., --tiles=s_1,s_2,s_3 OR --tiles=s_1_150)  
+
+    /usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+YOU SHOULD SEE THE FOLLOWING KIND OF OUTPUT:
+
+    ...
+    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_13-07-2008_syoung
+    Instrument:    HWI-EAS185
+    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+      Using automatic offset calibration.
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    Generating journals, Makefiles and parameter files ...
+    
+TOTAL DURATION ~10 MINS FOR 8 LANES
+
+
+3. PROCESS THE IMAGES WITH make INSIDE THE 'C1-36_Firecrest...' DIRECTORY
+(NB: REPLACE 'C1-36_Firecrest1.9.2_15-07-2008_syoung' WITH THE NAME OF THE Firecrest DIRECTORY YOU CREATED IN THE PREVIOUS STEP)
+
+MOVE TO THE 'C1-36_Firecrest1.9.2_15-07-2008_syoung' DIRECTORY
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung
+
+RUN make
+
+    make recursive -j8
+
+THE OUTPUT SHOULD END WITH SOMETHING LIKE THE FOLLOWING LINES:
+
+    ...
+    Found 19156 clusters
+    touch s_2_finished.txt && echo  s_2
+    s_2
+    touch finished.txt && \
+            echo "Base-calling has completed successfully." && \
+            echo
+    Base-calling has completed successfully.
+    
+    make[2]: Leaving directory `/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung'
+    make[1]: Leaving directory `/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung'
+
+TOTAL DURATION ~1 DAY FOR 8 LANES
+
+    AMONG OTHER THINGS, THIS WILL CREATE A s_N_sequence.txt READ FILE FOR EACH LANE IN fastq FORMAT (SEQUENCE WITH ASSOCIATED QUALITY VALUES) CONTAINING THIS KIND OF OUTPUT:
+
+
+    Reading intensity file ../s_8_0019_int.txt.
+    Intensity file: ../s_8_0020_int.txt
+    Noise file:     ../s_8_0020_nse.txt
+    Exposure:  A  0.000  C  0.000  G  0.000  T  0.000
+    Exposure:  A  0.000  C  0.000  G  0.000  T  0.000
+    Exposure:  A  0.000  C  0.000  G  0.000  T  0.000
+    Exposure:  A  0.000  C  0.000  G  0.000  T  0.000    
+
+ANALYSING INTENSITY FILES:
+
+    About to analyse intensity file s_5_0162_sig2.txt
+    Will send output to standard output
+    Found 36276 clusters
+    /usr/local/Pipeline/Gerald/quahog -useBases all -pureBases 12 s_5_0163_sig2.txt > s_5_0163_qhg.txt.tmp && mv s_5_0163_qhg.txt.tmp s_5_0163_qhg.txt
+    About to analyse intensity file s_5_0163_sig2.txt
+    Will send output to standard output
+
+END OF IMAGE PROCESSING
+
+
+
+=============== 2) BASE CALLING AND ELAND ALIGNMENT =============== 
+
+1. MOVE TO THE **Data** DIRECTORY 
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+
+2. CREATE A GERALD CONFIGURATION FILE
+
+emacs /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/gerald_configfile.txt
+
+COPY AND PASTE THE FOLLOWING TEXT INTO IT (NB: EDIT AS REQUIRED. FOR EXAMPLE, CHANGE eland_extended TO eland_pair IF USING PAIRED END READS)
+
+    ANALYSIS            eland_extended
+    SEQUENCE_FORMAT     fasta
+    QUALITY_FORMAT      numeric
+    USE_BASES           nY*
+    GENOME_FILE         Homo_sapiens.NCBI36.49.cdna.known.fas
+    GENOME_DIR          /home/syoung/base/pipeline/human-cdna-embl
+
+3. GENERATE THE Makefile
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+    /usr/local/Pipeline/Goat/bustard.py C1-42_Firecrest1.9.2_18-08-2008_syoung --tiles=s_6,s_7,s_8 --GERALD=/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/gerald_configfile.txt --make
+
+THE OUTPUT SHOULD END LIKE THIS:
+
+    ...
+    Running 'make self_test' on /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_24-08-2008_syoung/GERALD_24-08-2008_syoung/Makefile
+    make: Nothing to be done for `self_test'.
+    Run 'make self_test' on /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_24-08-2008_syoung/GERALD_24-08-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-5088.txt
+
+
+3. MOVE TO THE Bustard DIRECTORY
+
+NB: THE -j8 OPTION MEANS YOU WANT TO USE 8 CPUs (I.E., ALL OF THE CPUS ON solexa01). BEST CHECK WITH top TO SEE IF ALL ARE FREE BEFORE YOU RUN make.
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+
+4. RUN make
+
+    make recursive -j8
+
+
+
+4. CHECK THE OUTPUT FILES
+
+THE OUTPUT FILES ARE *_seq.txt FILES IN THE Bustard1.9.2_15-07-2008_syoung FOLDER (THE NAME OF YOUR Bustard FOLDER WILL BE SLIGHTLY DIFFERENT):
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+    ls | grep seq.txt | more
+
+YOU'LL SEE THE FOLLOWING KIND OF OUTPUT:
+    
+    ...
+    s_8_0091_seq.txt
+    s_8_0092_seq.txt
+    s_8_0093_seq.txt
+    s_8_0094_seq.txt
+    s_8_0095_seq.txt
+    ...
+
+
+THE FILES SHOULD CONTAIN THIS KIND OF DATA (VIEW THE TOP FEW LINES WITH THE head COMMAND):
+
+    head s_8_0300_seq.txt
+    LANE    TILE    X       Y       SEQUENCE
+    8       300     124     634     TTTGGAAGCAATTCAGCACCCAGTAATTAATTGAGT
+    8       300     125     785     GCTCATGTTTGGTAAACAGAACCTATCATTATCATA
+    8       300     115     328     TAATAAAATATTTTAGAGTAGGTTAAGTGTTTTTAT
+    8       300     105     347     TTATGAGTTTTGATAAATGGATAGAGTTATATAACC
+    8       300     125     406     TCTATCATGTGAAACTACTAAAGGATGTATAGAGTT
+    8       300     216     368     TTCCTTCCTAAAGGATGATTCCATCACCTGAGGTTG
+    8       300     182     270     TATAAAGAAATGTTTATCCCTCAGGAGTCTGTGAGT
+    8       300     214     319     TCTTACTAGAAAAACTCTTACAAGTGTAAAGAATGT
+    8       300     209     305     TATTATCATCAAATAATAAAATTGCTACTTTCTGTA
+
+    
+5. COPY THE SEQUENCE FILES AND THE ELAND ALIGNMENT FILES TO YOUR HOME DIRECTORY
+
+CREATE DIRECTORIES
+
+mkdir -p ~/base/pipeline/human-run2-eland/data
+mkdir -p ~/base/pipeline/human-run2-eland/assembly
+
+COPY THE *.sequence.txt FILES TO THE data DIRECTORY
+
+cp /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-36_Firecrest1.9.2_05-08-2008_jhoffman/Bustard1.9.2_05-08-2008_jhoffman/GERALD_05-08-2008_jhoffman/s_*_sequence.txt ~/base/pipeline/human-run2-eland/data
+
+COPY THE ELAND ALIGNMENT FILES TO THE assembly DIRECTORY
+
+
+
+THE OUTPUT SHOULD END LIKE THIS:
+    
+    > To: Gerald Reports <syoung>
+    > Subject: GERALD run completed in pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung
+    > Report sent from solexa01 via localhost port 25 at Mon Aug 25 04:53:48 2008
+    >
+    > Links to output files:
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Error.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/IVC.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/All.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Perfect.htm
+    >
+    >
+    > http://host.domain.com/yourshare/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Summary.htm
+    >
+    > .
+    < 354 Enter mail, end with "." on a line by itself
+    > quit
+    < 250 2.0.0 m7P8rmD3006044 Message accepted for delivery
+    find . -maxdepth 1 -name "*_qval.txt" | xargs rm -f
+    echo Gerald analysis finished successfully. ;
+    Gerald analysis finished successfully.
+    make[1]: Leaving directory `/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung'
+    You have mail in /var/spool/mail/syoung
+
+
+END OF BASE CALLING AND ELAND ASSEMBLY
+
+
+
+
+EXAMPLE phiX
+============
+
+
+============= 1) IMAGE PROCESSING, BASE CALLING AND ELAND ASSEMBLY ============
+
+1. DO chmod ON .params FILE TO MAKE WRITEABLE BY USER syoung
+
+chmod 660 /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/.params
+
+(IF YOU DON'T HAVE PRIVILEGES TO CHANGE PERMISSIONS ON THE FILE, EMAIL ME: syoung@med.miami.edu AND I'LL chmod IT FOR YOU.)
+
+CHECK THE RESULT:
+
+ll /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/.params
+
+2. CREATE A GERALD CONFIGURATION FILE
+
+emacs /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/phiX-gerald_configfile.txt
+
+    ANALYSIS            eland_extended
+    SEQUENCE_FORMAT     fasta
+    QUALITY_FORMAT      numeric
+    USE_BASES           nY*
+    4:ELAND_GENOME        /home/syoung/base/pipeline/phiX
+    
+#    GENOME_FILE         phiFasta.fa
+#    GENOME_DIR          /home/syoung/base/pipeline/phiX
+
+3. GENERATE THE Makefile
+
+MOVE TO THE DIRECTORY
+
+cd /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+CREATE THE Makefile
+
+/usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_4 --GERALD=/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/phiX-gerald_configfile.txt --make
+
+THE OUTPUT SHOULD END LIKE THIS:
+
+    ...
+    5:ANALYSIS                   eland_extended
+    6:ANALYSIS                   eland_extended
+    7:ANALYSIS                   eland_extended
+    8:ANALYSIS                   eland_extended
+    Created directory /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung
+    want to make /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Makefile
+    Successfully created /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Makefile
+    Copying config file /tmp/tmp-GERALD-511-1714.txt to /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/config.txt
+    Dumping config parameters into /tmp/tmp-GERALD-511-1714.txt to /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/config.xml
+    Running 'make self_test' on /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Makefile
+    make: Nothing to be done for `self_test'.
+    Run 'make self_test' on /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-1714.txt
+
+
+
+3. PROCESS THE IMAGES WITH make INSIDE THE 'C1-36_Firecrest...' DIRECTORY
+
+    cd /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_25-08-2008_syoung.3
+    make recursive -j8
+
+
+============= 1) BASE CALLING AND ELAND ASSEMBLY ============
+
+
+1. MOVE TO THE **Data** DIRECTORY 
+
+cd /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+2. CREATE A GERALD CONFIGURATION FILE
+
+emacs /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/phiX-gerald_configfile.txt
+
+    ANALYSIS            eland_extended
+    SEQUENCE_FORMAT     fasta
+    QUALITY_FORMAT      numeric
+    USE_BASES           nY*
+    ELAND_GENOME        /home/syoung/base/pipeline/phiX
+#    GENOME_FILE         phiFasta.fa
+#    GENOME_DIR          /home/syoung/base/pipeline/phiX
+    
+
+3. GENERATE THE Makefile
+
+cd /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data
+
+/usr/local/Pipeline/Goat/goat_pipeline.py C1-42_Firecrest1.9.2_18-08-2008_syoung --tiles=s_4 --GERALD=/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/phiX-gerald_configfile.txt --make
+
+4. MOVE TO THE Bustard DIRECTORY
+
+NB: THE -j8 OPTION MEANS YOU WANT TO USE 8 CPUs (I.E., ALL OF THE CPUS ON solexa01). BEST CHECK WITH top TO SEE IF ALL ARE FREE BEFORE YOU RUN make.
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+
+5. RUN make
+
+    make recursive -j8
+
+
+
+
+============= 3) ELAND ASSEMBLY ALONE =============
+
+
+Gerald
+
+Gerald can be run without the rest of the pipeline. A typical invocation would be
+
+Pipeline/Gerald/GERALD.pl  gerald_config.txt --EXPT_DIR path_to_bustard_folder --FORCE
+
+For more information on config files and GERALD.pl see GERALD User Guide and FAQ. Please also note the difference between the possible short-read alignment programs that Gerald can use: PhageAlign for exhaustive alignments of short genomes (<1 Mb), and Eland for a fast alignment to large genomes with up to two mismatches.
+
+GERALD is usually run automatically as part of an overall pipeline run (see Pipeline usage). However there will frequently be occasions where it needs to be run on its own. The standard way to run GERALD is to give it a config file of parameters, as follows:
+
+   1. Edit a suitable config file, say "config.txt" - see section below for an example.
+   2. To create a Makefile for sequence aligment type
+
+    GERALD.pl config.txt --FORCE
+
+As a result of running GERALD, a new directory named something like "GERALD_16-08-2007_user" will have been created (the date is the current date, and "user" is your computer login). If you want to rerun the analysis and change parameters, you can rerun GERALD with the new parameters. A new directory will be created, and no information will be overwritten by default.
+
+In earlier versions of GERALD, analysis parameters were given to GERALD via the command line. An example of a command line GERALD invocation would be:
+
+GERALD.pl --EXPT_DIR /data/070813_ILMN-1_0217_FC1234/Data/C1-27_Firecrest1.9.0_23-08-2007-user/Bustard1.9.0_23-08-2007_user/ --FORCE --GENOME_DIR /data/Genomes --GENOME_FILE BAC_plus_vector.fa
+
+Command-line arguments take precedence over parameters set in the config file, so command-line parameter specification can be used to override paramters in a default config file. Parameters can also be set as environment variables.
+
+The meaning of the parameters is explained here:
+
+http://rulai.cshl.edu/xuan/Doc/GApipeline-1.0/docs/GERALD%20User%20Guide%20and%20FAQ.html
+
+
+
+Coming soon.
+
+
+
+** 3) Eland ALIGNMENT **
+
+
+1. MAKE A base/pipeline DIRECTORY STRUCTURE IN YOUR HOME FOLDER
+
+mkdir -p ~/base/pipeline/human-run2-eland/data
+cd ~/base/pipeline/human-run2-eland/data
+
+2. COPY THE *.sequence.txt FILES TO THE data DIRECTORY
+
+cp /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-36_Firecrest1.9.2_05-08-2008_jhoffman/Bustard1.9.2_05-08-2008_jhoffman/GERALD_05-08-2008_jhoffman/s_*_sequence.txt ~/base/pipeline/human-run2-eland/data
+
+
+
+./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.fasta -r /home/syoung/base/pipeline/human-eland/data -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.fasta
+
+
+
+
+
+
+#1. MOVE TO *** Data *** DIRECTORY
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+
+
+#2. GENERATE THE Makefile
+
+/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt --make
+
+#    ...
+#    Running 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung/Makefile
+#    make: Nothing to be done for `self_test'.
+#    Run 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung/Makefile completed with no problems
+#    Task complete, exiting
+#    Removing temporary file /tmp/tmp-GERALD-511-31324.txt
+
+
+#3. MOVE TO 'Firecrest...' DIRECTORY
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung
+
+
+#4. RUN MAKE
+
+make recursive -j8
+
+
+
+
+
+
+
+
+============== 4) VELVET ASSEMBLY INSTRUCTIONS (PAIRED ENDS) =============
+
+1. CREATE A DATA DIRECTORY FOR THE ASSEMBLY IN YOUR HOME FOLDER (CHANGE THE NAME 'human-run2-velvet' TO THE PARTICULAR RUN YOU'RE ASSEMBLING. E.G., 'human-run10-velvet')
+
+(NB: '~' IS COMMAND LINE SHORTHAND FOR YOUR HOME DIRECTORY, I.E., /home/myusername)
+
+    mkdir -p ~/base/pipeline/human-run2-velvet/data
+
+
+2. COPY THE PAIRED END SEQUENCE FILES TO THE DATA DIRECTORY
+
+    cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman/Bustard1.9.2_11-08-2008_ddittman/GERALD_11-08-2008_ddittman
+
+    cp s_1_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_1_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_2_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_2_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_3_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_3_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_4_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+    cp s_4_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+
+
+3. CONVERT THE SEQUENCE FILE FROM .fastq TO .fasta FORMAT
+
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_1_sequence.txt -o s_1_1_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_2_sequence.txt -o s_1_2_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_1_sequence.txt -o s_2_1_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_2_sequence.txt -o s_2_2_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_1_sequence.txt -o s_3_1_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_2_sequence.txt -o s_3_2_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_1_sequence.txt -o s_4_1_sequence.solexa
+    ~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_2_sequence.txt -o s_4_2_sequence.solexa
+
+
+4. MERGE THE .fasta FILES TOGETHER
+
+    cd ~/base/pipeline/human-run2-velvet/data
+    /store~/base/apps/velvet/shuffleSequences.pl s_1_1_sequence.solexa.fasta s_1_2_sequence.solexa.fasta s_1_paired.solexa.fasta
+    /store~/base/apps/velvet/shuffleSequences.pl s_2_1_sequence.solexa.fasta s_2_2_sequence.solexa.fasta s_2_paired.solexa.fasta
+    /store~/base/apps/velvet/shuffleSequences.pl s_3_1_sequence.solexa.fasta s_3_2_sequence.solexa.fasta s_3_paired.solexa.fasta    
+    /store~/base/apps/velvet/shuffleSequences.pl s_4_1_sequence.solexa.fasta s_4_2_sequence.solexa.fasta s_4_paired.solexa.fasta
+
+THIS IS WHAT THE FILE CONTENTS SHOULD LOOK LIKE:
+
+    head s_1_paired.solexa.fasta
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:527:816/1
+    AGAGTACGGGGGCACTAAATATTATCT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:527:816/2
+    AGAAAATTTGGACCATTAAACTAGGGG
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:879:875/1
+    TCTCAGATGTGCCTCTCATAGAAGCCC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:879:875/2
+    TTAGTTAAGAGAATTGCAGGATGTGAC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:895:923/1
+    TTTCATTGATATATCCTCCTTCAGTAG
+
+
+5. RUN ‘velvet-paired.pl’ ON EACH LANE
+
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_paired.solexa.fasta -l 21 -o assembly-paired-lane1
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_paired.solexa.fasta -l 21 -o assembly-paired-lane2
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_paired.solexa.fasta -l 21 -o assembly-paired-lane3
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_paired.solexa.fasta -l 21 -o assembly-paired-lane4
+
+
+NB: TO GET INFORMATION ON HOW TO RUN THE APPLICATION, ALWAYS USE THE -h OPTION:
+    
+   /home/syoung/base/bin/nextgen/velvet-paired.pl -h
+    
+6. MERGE THE .fasta files into larger fasta files
+
+    cd ~/base/pipeline/human-run2-velvet/data
+    cat s_1_paired.solexa.fasta s_1_paired.solexa.fasta > s_1-2_paired.solexa.fasta
+    cat s_3_paired.solexa.fasta s_4_paired.solexa.fasta > s_3-4_paired.solexa.fasta
+    cat s_1_paired.solexa.fasta s_1_paired.solexa.fasta s_3_paired.solexa.fasta s_4_paired.solexa.fasta > s_1-4_paired.solexa.fasta
+
+
+7. RUN ‘velvet-paired’ ON THE LARGER FASTA FILES
+
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i /home/syoung/base/pipeline/human-run2-velvet/data/s_1-2_paired.solexa.fasta -l 21 -o assembly-paired-lane1-2
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i /home/syoung/base/pipeline/human-run2-velvet/data/s_3-4_paired.solexa.fasta -l 21 -o assembly-paired-lane3-4
+    /home/syoung/base/bin/nextgen/velvet-paired.pl -i /home/syoung/base/pipeline/human-run2-velvet/data/s_1-4_paired.solexa.fasta -l 21 -o assembly-paired-lane1-4
+
+
+8. ANALYZE THE RESULTS
+
+'velvet-paired' will produce an 'assy.afg' file describing all the contigs contained in the contigs.fa file.
+You can break it down into individual files for each contig:
+
+    /home/syoung/base/apps/velvet/third-party/afg_handling/asmbly_splitter.pl <contig number> <afg file>
+
+
+
+
+
+
+TROUBLESHOOTING
+===============
+
+1. IMAGE PROCESSING: "Unable to open /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params"
+=============================================================================================================
+
+WHEN PROCESSING IMAGES YOU GET THE ABOVE MESSAGE IN THE LAST LINE OF OUTPUT:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+/usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+#    ...
+#    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+#    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+#    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung
+#    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung/Bustard1.9.2_12-07-2008_syoung
+#    Instrument:    HWI-EAS185
+#    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+#      Using automatic offset calibration.
+#    Matrix :       Using automatic matrix estimation.
+#    Phasing:       Using automatic phasing estimation.
+#    Generating journals, Makefiles and parameter files ...
+#****    Unable to open /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+DIAGNOSIS:
+
+.params FILE IS NOT WRITEABLE BY users SO USER syoung COULD NOT WRITE .params FILE:
+
+ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+-rw-r--r-- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+SOLUTION:
+
+CHANGE THE PERMISSIONS ON THE .params FILE
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+
+
+2. BASE CALLING: "Could not find run in .params file"
+=====================================================
+
+WHEN RUNNING THE BASE CALLER YOU GET THE FOLLOWING ERROR MESSAGE:
+
+#    Starting the Bustard base-caller, Bustard version 1.9.2
+#    Paramsfile:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+#    Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung
+#    Error: Could not find run in .params file
+#    Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+#    Error: Failed to parse command-line options.
+#    Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+
+
+DIAGNOSIS A:
+
+USER syoung COULD NOT WRITE .params FILE WHEN DID IMAGE PROCESSING SO THE RUN IS NOT IN THE .params FILE.
+
+
+ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+-rw-r--r-- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+SOLUTION A:
+
+CHANGE PERMISSIONS ON .params FILE
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+THEN RERUN IMAGE PROCESSING WITH goat_pipeline.pl
+
+
+DIAGNOSIS B:
+
+YOU ARE IN THE WRONG DIRECTORY
+
+SOLUTION B:
+
+CHANGE TO THE 'Data' DIRECTORY BEFORE RUNNING BASE CALLING WITH bustard.py
+
+
+3. BASE CALLING: "Error: Failed to open ../s_1_0007_int.txt.gz.  Error: Error reading signal file ../s_1_0007_int.txt"
+=====================================================================================================================
+
+DIAGNOSIS:
+
+CAN'T FIND THE IMAGE INTENSITY FILES *int.txt BECAUSE YOU'RE IN THE WRONG DIRECTORY
+
+SOLUTION:
+
+CHANGE TO THE 'Firecrest' DIRECTORY AND RERUN THE BASE CALLING
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+OPTIONAL: TRIM READ LENGTHS
+
+    FROM: Notes-apps-seqman_ngen.txt
+    Thu Aug  7 13:46:18 EDT 2008
+    TRIMMED .fasta READS AND .fasta.qual TO 29BP AND RERAN HUMAN LANES (1,2,3 AND 5,6,7,8) AGAINST EMBL cDNA
+
+
+./trimfasta.pl -i /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta -l 29 -t sequence
+
+    ...
+    4600000
+    4700000
+    Output file printed:
+    
+    /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta.29bp
+    
+    Run time: 00:01:09
+    Completed ./trimfasta.pl
+    1:39PM, 7 August 2008
+    ****************************************
+    
+./trimfasta.pl -i /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta.qual -l 29 -t quality
+
+    ...
+    4600000
+    4700000
+    Output file printed:
+    
+    /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta.qual.29bp
+        
+    Run time: 00:04:36
+    Completed ./trimfasta.pl
+    1:52PM, 7 August 2008
+    ****************************************
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug 21 15:44:43 EDT 2008] PROCESS ***NCBI*** cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES>
+
+
+
+
+1. GET REFSEQ CDNAS FROM HERE:
+
+ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/RNA
+
+    rna.gbk.gz  -   CONTAINS 45,045 cDNAs
+
+
+2. CALCULATE CHROMOSOME SIZES ON solexa:
+
+cd ~/base/bin/nextgen
+./chomosome_sizes.pl -d ~/base/pipeline/human-genome
+
+emacs /home/syoung/base/pipeline/human-genome/chromosome_positions.txt
+
+    chr1    0       252194715       252194715
+    chr2    252194716       500004889       247810173
+    chr3    500004890       703496755       203491865
+    chr4    703496756       898595282       195098526
+    chr5    898595283       1083070308      184475025
+    chr6    1083070309      1257388302      174317993
+    chr7    1257388303      1419386157      161997854
+    ...
+
+3. GET CDNA POSITIONS USING CHROMOSOME START POSITIONS TO FILTER cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES
+
+cd /home/syoung/base/pipeline/human-cdna-embl
+grep -n ">" Homo_sapiens.NCBI36.49.cdna.known.fas > cdna_positions.txt
+
+head cdna_positions.txt
+    1:>ENST00000391556 cdna:known supercontig::NT_113908:7373:8827:-1 gene:ENSG00000212867
+    27:>ENST00000361390 cdna:known chromosome:NCBI36:MT:3308:4264:1 gene:ENSG00000198888
+    44:>ENST00000391565 cdna:known chromosome:NCBI36:MT:3308:5514:1 gene:ENSG00000212876
+    82:>ENST00000361453 cdna:known chromosome:NCBI36:MT:4471:5512:1 gene:ENSG00000198763
+    101:>ENST00000391564 cdna:known chromosome:NCBI36:MT:5585:7515:1 gene:ENSG00000212875
+    135:>ENST00000361624 cdna:known chromosome:NCBI36:MT:5905:7446:1 gene:ENSG00000198804
+    162:>ENST00000361739 cdna:known chromosome:NCBI36:MT:7587:8270:1 gene:ENSG00000198712
+    175:>ENST00000391563 cdna:known chromosome:NCBI36:MT:7587:8295:1 gene:ENSG00000212874
+    188:>ENST00000361851 cdna:known chromosome:NCBI36:MT:8367:8573:1 gene:ENSG00000198744
+    193:>ENST00000361899 cdna:known chromosome:NCBI36:MT:8528:9208:1 gene:ENSG00000198899
+
+
+4. CREATE GFF FILE USING cdna_positions.txt FILE AND chromosome_positions.txt FILE
+
+./cdna2gff.pl -d /home/syoung/base/pipeline/human-cdna -i /home/syoung/base/pipeline/human-genome/chromosome_positions.txt
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug 21 15:32:26 EDT 2008] eland GFF PIPELINE>
+
+
+
+1. GENERATE .fasta AND .fasta.qual FILES FROM .solexa FILE
+
+./solexa2numericfasta.pl -i /home/syoung/pipeline/human2/data/human2_sequence_in.solexa
+
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual
+
+    Run time: 00:57:51
+    Completed ./solexa2numericfasta.pl
+    2:00PM, 7 August 2008
+    ****************************************
+
+2. TRIM .fasta AND .fasta.qual FILES TO 29 bp
+
+./trimfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta -l 29 -t sequence
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta
+        
+    Run time: 00:07:40
+    Completed ./trimfasta.pl
+    2:22PM, 7 August 2008
+    ****************************************
+
+./trimfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual -l 29 -t quality
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual    
+    
+    Run time: 00:29:09
+    Completed ./trimfasta.pl
+    3:00PM, 7 August 2008
+    ****************************************
+
+31 MILLION FASTA RECORDS IN EACH FILE:
+
+records /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta ">"
+    Records: 31939318
+records /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual ">"    
+    Records: 31939318
+
+3. CHOP .fasta AND .fasta.qual FILES INTO SMALLER FILES (TO AVOID eland LIMIT AND AVOID OVERLOADING NGen)
+
+./elandfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta -m 16500000
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.1
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.2
+    
+    Run time: 00:00:50
+    Completed ./elandfasta.pl
+    3:16PM, 7 August 2008
+    ****************************************
+    
+    
+./elandfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual -m 16500000
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual.1
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual.2
+    
+    Run time: 00:01:09
+    Completed ./elandfasta.pl
+    3:29PM, 7 August 2008
+    ****************************************
+
+CONVERT ELAND RESULT INTO GFF WITH eland2gff
+
+./eland2gff.pl -i /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1 -d /home/syoung/base/pipeline/human-cdna-embl/gff -o /home/syoung/base/pipeline/human-eland/assembly/gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -l 34
+
+    ...
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr11.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr12.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr13.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr3.eland.gff
+    
+    Run time: 00:02:27
+    Completed ./eland2gff.pl
+    1:09AM, 9 August 2008
+    ****************************************
+
+
+
+
+
+
+CALCULATED NUMBER OF READS ALIGNED TO HUMAN cDNAs BY ELAND
+
+./elandgff2stats.pl -d /home/syoung/base/pipeline/human-eland/assembly/gff
+
+    Chromosome summary: chr9        698     0.305082022361991
+    Printed outputfile: /home/syoung/base/pipeline/human-eland/assembly/gff/eland.stats
+    
+    Run time: 00:12:59
+    Completed ./elandgff2stats.pl
+    6:39AM, 9 August 2008
+    ****************************************
+
+
+NB: 43,368 cDNAs in Homo_sapiens.NCBI36.49.cdna.known.fas FILE BUT ONLY 42514 ARE REGULAR GENOMIC cDNAs
+(there are some mitochondrial, hyper-variable region and 'supercontig' cDNAs which I excluded due to lack of genomic positioning data)
+
+
+cd /home/syoung/base/pipeline/human-cdna-embl/gff
+
+cat * > human-cdna-embl-all.gff
+lines human-cdna-embl-all.gff 
+    42514
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug 21 15:22:21 EDT 2008] velvet GFF PIPELINE>
+
+
+
+./velvet.pl -i /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta -l 21 
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human1-velvet
+    Input: data/human1_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human1-velvet
+    Input: data/human1_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/human1_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human1-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/human1-velvet/assembly/velvetg_log.txt
+    
+    Run time: 00:08:09
+    Completed ./velvet.pl
+    4:08PM, 14 August 2008
+    ****************************************
+
+records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+Records: 4532
+
+
+./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+ls -al
+    -rw-rw-rw-  1 syoung users  6152192 Aug 14 19:15 out.cluster
+    -rw-rw-rw-  1 syoung users  2400256 Aug 14 19:33 out.delta
+    -rw-rw-rw-  1 syoung users 48480783 Aug 14 17:10 out.mgaps
+    -rw-rw-rw-  1 syoung users   954512 Aug 14 16:21 out.ntref
+
+
+2. RUN nucmer TO COMPARE velvet CONTIGS TO COMPLETE HUMAN GENOME    
+
+./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+    ~ 2.5 hours
+
+3. CREATE delta.filter FILE (A one-to-one local mapping of reference to query sequences)
+
+./nucmer-deltafilter.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/out.delta
+
+
+4. GENERATE COORDINATES FOR HITS WITHIN delta.filter FILE
+
+./nucmer-showcoords.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/out.delta
+
+head delta.filter.coords 
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords
+45129
+
+
+5. GENERATE GFF FILE FOR HITS IN delta.filter.coords FILE
+
+./coords2gff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords -s velvet -a nucmer -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -s velvet -a nucmer
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords.gff
+45125
+
+
+6. SORT THE GFF LINES
+
+./sortgff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords.gff -o /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff
+    
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff
+45125
+
+
+7. SPLIT THE GFF LINES INTO PER-CHROMOSOME FILES
+
+./chromosomegff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/chromosome-gff -o human-velvet-nucmer 
+
+CHECK IF CHROMOSOME 8 OR DOWNSTREAM GFF FILES PRESENT
+
+
+
+
+

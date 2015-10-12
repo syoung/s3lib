@@ -1,0 +1,3079 @@
+Notes-apps-subversion.txt
+
+</entry>
+
+
+
+<entry [Tue Apr 28 14:33:00 EDT 2009] FIXED COMMIT ERROR: svn: Can't open file '/srv/svn/aqwa/db/txn-current-lock': Permission denied>
+
+
+
+SOLUTION:
+
+chmod -R 777 /srv/svn/aqwa/db
+
+
+</entry>
+
+
+
+<entry [Thu Apr  9 21:43:48 EDT 2009] COMMITTED CHANGES TO plugins/report, lib AND cgi-bin>
+
+
+
+plugins/report
+--------------
+
+mkdir /nethome/syoung/base/svn/aqwa0.2.5
+cd /nethome/syoung/base/svn/aqwa0.2.5
+svn checkout http://ngsdev.ccs.miami.edu/svn/aqwa/trunk/html/plugins/report
+    ...
+    A    report\templates\SNP.json
+    A    report\templates\SNP-v3.html
+    A    report\templates\SNP-v4.html
+    Checked out revision 3.
+
+cp /nethome/syoung/base/html/Bioptic0.2.5/html/plugins/report/* /nethome/syoung/base/svn/aqwa0.2.5/report
+cd /nethome/syoung/base/svn/aqwa0.2.5/report
+svn commit -m "Updated report.Template.SNP to link grid onClick to openView()"
+
+    Sending        Template/SNP.js
+    Sending        Template.js
+    Sending        templates/SNP.html
+    Transmitting file data ...
+    Committed revision 4.
+
+lib
+---
+
+cd /nethome/syoung/base/svn/aqwa0.2.5
+svn checkout http://ngsdev.ccs.miami.edu/svn/aqwa/trunk/lib
+cp -fr /nethome/syoung/base/html/Bioptic0.2.5/lib/* /nethome/syoung/base/svn/aqwa0.2.5/lib
+svn delete 5.8.8/x86_64-linux-thread-multi-bkp
+cd /nethome/syoung/base/svn/aqwa0.2.5/lib
+svn commit -m "Updated Report::SNP for filtering reports"
+
+    Deleting       5.8.8/x86_64-linux-thread-multi-bkp
+    Sending        DBase/SQLite.pm
+    Transmitting file data .
+    Committed revision 5.
+
+svn add Report
+svn add Report.pm
+
+    Adding         Report
+    Adding         Report/SNP.pm
+    Adding         Report.pm
+    Transmitting file data ..
+    Committed revision 6.
+
+
+cgi-bin
+-------
+
+cd /nethome/syoung/base/svn/aqwa0.2.5
+svn checkout http://ngsdev.ccs.miami.edu/svn/aqwa/trunk/cgi-bin
+cp -fr /nethome/syoung/base/html/Bioptic0.2.5/cgi-bin/* /nethome/syoung/base/svn/aqwa0.2.5/cgi-bin
+cd /nethome/syoung/base/svn/aqwa0.2.5/cgi-bin
+svn delete Bioptic0.2.5/
+svn delete conf
+svn delete lib
+svn commit -m "Updated cgi-bin JSON postdata changes"
+
+    ...
+    Adding         upload_status.cgi
+    Adding         workflow-debug.json
+    Adding         workflow.cgi
+    Transmitting file data ..................................
+    Committed revision 7.
+
+
+DO EXTRA COMMIT AS rloredo
+
+cd /nethome/rloredo/base/svn/aqwa0.2.5
+svn checkout http://ngsdev.ccs.miami.edu/svn/aqwa/trunk/cgi-bin
+cp -fr /nethome/rloredo/base/html/Bioptic0.2.5/cgi-bin/* /nethome/rloredo/base/svn/aqwa0.2.5/cgi-bin
+cd /nethome/rloredo/base/svn/aqwa0.2.5/cgi-bin
+svn delete Bioptic0.2.5/
+svn delete conf
+svn delete lib
+svn commit -m "Test commit of cgi-bin as rloredo"
+
+    Deleting       Bioptic0.2.5
+    Deleting       conf
+    Deleting       lib
+    
+    Committed revision 8.
+
+
+</entry>
+
+
+
+<entry [Thu Apr  9 21:43:48 EDT 2009] FIXED PROBLEM WITH 'svn checkout http://'>
+
+
+
+
+PROBLEM:
+
+REMOTE CHECKOUT OF aqwa NOT ALLOWED AND CHECKOUT OF test FAILS
+
+    [rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/aqwa
+    svn: Server sent unexpected return value (405 Method Not Allowed) in response to PROPFIND request for '/svn/aqwa'
+    [rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/test
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Password for 'rloredo': 
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Username: codemaster
+    Password for 'codemaster': 
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Username: rloredo
+    Password for 'rloredo': 
+    svn: OPTIONS of 'http://ngsdev.ccs.miami.edu/svn/test': authorization failed (http://ngsdev.ccs.miami.edu)
+    [rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/test
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Password for 'rloredo': 
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Username: rloredo
+    Password for 'rloredo': 
+    Authentication realm: <http://ngsdev.ccs.miami.edu:80> test Repository
+    Username: rloredo
+    Password for 'rloredo': 
+    svn: OPTIONS of 'http://ngsdev.ccs.miami.edu/svn/test': authorization failed (http://ngsdev.ccs.miami.edu)
+    [rloredo@ngsdev test4]$ 
+
+
+SOLUTION:
+
+FIRST PROBLEM - ADD aqwa TO THE subversion.conf:
+
+emacs /etc/httpd/conf.d/subversion.conf
+
+Add the following directive:
+
+<Location /svn/aqwa>
+	DAV svn
+	SVNPath /srv/svn/aqwa
+	AuthType Basic
+	AuthName "aqwa Repository"
+	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+	AuthUserFile /srv/svn/aqwa.htpasswd
+	Require valid-user
+</Location>
+
+
+SECOND PROBLEM - REDID SVN USER PASSWORD FOR rloredo
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd rloredo
+
+    codemaster
+
+touch /srv/svn/test.htpasswd
+htpasswd -m /srv/svn/test.htpasswd rloredo
+
+    codemaster
+
+
+NOTES:
+
+DUMPED aqwa, REMOVED REPOSITORY TO aqwa-old2 AND RE-CREATED AS ROOT:
+
+svnadmin create /srv/svn/aqwa
+svnadmin load /srv/svn/aqwa < /nethome/syoung/base/svn/aqwa/aqwa-090409.dmp
+
+chown -R apache.apache /srv/svn/aqwa
+
+
+OK FOR ACCESS ON FILESYSTEM
+
+svn list file:///srv/svn/aqwa
+
+OK
+
+BUT STILL NO REPONSE ON
+
+svn co http://ngsdev.ccs.miami.edu/svn/aqwa
+
+    svn: Server sent unexpected return value (405 Method Not Allowed) in response to PROPFIND request for '/svn/aqwa'
+
+
+SO REDID SVN USER PASSWORDS
+
+#touch /srv/svn/<project>.htpasswd
+#htpasswd -m /srv/svn/<project>.htpasswd <username>
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd syoung
+    
+    New password: 
+    Re-type new password: 
+    Adding password for user syoung
+
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd rloredo
+
+    codemaster
+
+touch /srv/svn/test.htpasswd
+htpasswd -m /srv/svn/test.htpasswd rloredo
+
+    codemaster
+
+
+NOW rloredo AND syoung CAN CHECK OUT test
+
+    [rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/test
+    Checked out revision 1.
+
+BUT CAN'T FIND aqwa
+
+[rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/aqwa
+svn: Server sent unexpected return value (405 Method Not Allowed) in response to PROPFIND request for '/svn/aqwa'
+
+
+SO ADDED aqwa TO THE subversion.conf:
+
+emacs /etc/httpd/conf.d/subversion.conf
+
+Add the following directive:
+
+<Location /svn/aqwa>
+	DAV svn
+	SVNPath /srv/svn/aqwa
+	AuthType Basic
+	AuthName "aqwa Repository"
+	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+	AuthUserFile /srv/svn/aqwa.htpasswd
+	Require valid-user
+</Location>
+
+RESTARTED
+
+/usr/sbin/apachectl -k restart
+
+
+
+
+
+
+
+
+Authorization Required
+
+This server could not verify that you are authorized to access the document requested. Either you supplied the wrong credentials (e.g., bad password), or your browser doesn't understand how to supply the credentials required.
+Apache/2.2.3 (CentOS) Server at ngsdev.ccs.miami.edu Port 80
+
+
+    What is this "dump/load cycle" people sometimes talk about when upgrading a Subversion server?
+    Subversion's repository database schema has changed occasionally during development. Old repositories, created with a pre-1.0 development version of Subversion, may require the following operation when upgrading. If a schema change happens between Subversion releases X and Y, then repository administrators upgrading to Y must do the following:
+    
+    Shut down svnserve, Apache, and anything else that might be accessing the repository.
+    svnadmin dump /path/to/repository > dumpfile.txt , using version X of svnadmin.
+    mv /path/to/repository /path/to/saved-old-repository
+    Now upgrade to Subversion Y (i.e., build and install Y, replacing X).
+    svnadmin create /path/to/repository, using version Y of svnadmin.
+    svnadmin load /path/to/repository < dumpfile.txt , again using version Y of svnadmin.
+    Copy over hook scripts, etc, from the old repository to the new one.
+    Restart svnserve, Apache, etc.
+    See this section of the Subversion book for more details on dumping and loading.
+    
+    Note: Most upgrades of Subversion do not involve a dump and load. When one is required, the release announcement and the CHANGES file for the new version will carry prominent notices about it. If you don't see such a notice, then there has been no schema change, and no dump/load is necessary.
+    
+
+
+</entry>
+
+
+
+<entry [Thu Apr  9 21:42:48 EDT 2009] SUBVERSION INTRODUCTION ON WIKI>
+
+
+
+
+Subversion
+A brief introduction to how to use the Subversion concurrent versions control system. (You must be logged onto ngsdev to access the code repository.)
+
+Check out a copy of the complete Aqwa distribution
+1. Create a directory to receive the checked-out files
+
+mkdir -p base/svn-checkout/aqwa
+cd base/svn-checkout/aqwa
+2. Use the 'svn co' or 'svn checkout' command to check out the latest version of the trunk:
+
+svn co file:///srv/svn/aqwa/trunk
+3. Check the downloaded files
+
+ls
+    trunk
+ls trunk
+    Changes
+    MANIFEST
+    MANIFEST.bak
+    Makefile
+    Makefile.PL
+    README
+    bin/
+    cgi-bin/
+    conf/
+    fileroot/
+    html/
+    lib/
+    perlmods/
+    t/
+
+Check out a subdirectory of Aqwa
+
+mkdir -p base/svn-checkout/plugins/report
+cd base/svn-checkout/plugins/report
+
+2. Use the 'svn co' or 'svn checkout' command to check out the subdirectory:
+
+svn co file:///srv/svn/aqwa/trunk/html/plugins/report
+3. Check the downloaded files
+
+ls
+    report
+ls report
+Branch commit
+Description http://svnbook.red-bean.com/en/1.0/ch04.html
+
+Branch copy command http://svnbook.red-bean.com/en/1.0/ch04s02.html
+
+
+
+
+COMMIT SUBDIR
+
+1. Create 'dummy' dir in subdir 'plugins/report'
+
+svn mkdir trunk/html/plugins/report/dummy
+
+2. Commit the changes to the subdir
+
+svn commit trunk/html/plugins/report -m "Added 'dummy' directory to plugins/report"
+
+
+
+
+
+TROUBLESHOOTING
+
+ERROR
+
+svn: Commit failed (details follow):
+svn: Can't open file '/srv/svn/aqwa/db/txn-current-lock': Permission denied
+
+
+
+Note that with this permission, only root has write access to these 
+directories. 
+Ideally you should not be setting root ownership to these directories. 
+Create an owner/group called svn/svn. Then add you and your freinds to the 
+svn group. Give write access to both owner and group. This should pretty 
+solve your problem.
+
+
+SOLUTION
+
+chmod 777 aqwa
+find /srv/svn/aqwa -type f -exec chmod 664 {} \;
+find /srv/svn/aqwa -type d -exec chmod 2775 {} \;
+chmod 755 aqwa
+chown -R root:apache /srv/svn/aqwa
+
+So the solution, which is quite simple, was to just change to root and run
+Code:
+chown csvn:csvn /var/svn/repos/MYREPO
+(note: I didn't have to actually change the mode of any files, I just had to get the ownership back to the correct user).[/code]
+
+
+So the solution, which is quite simple, was to just change to root and run
+Code:
+chown csvn:csvn /var/svn/repos/MYREPO
+(note: I didn't have to actually change the mode of any files, I just had to get the ownership back to the correct user).[/code]
+
+
+THE CORRECT PERMISSIONS FOR AN SVN REPOSITORY:
+
+[root@ngsdev svn]# ls -al test
+total 32
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 .
+drwxr-xr-x 5 root   root   4096 Mar 27 10:35 ..
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 conf
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 db
+-r--r--r-- 1 apache apache    2 Mar 20 16:31 format
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 hooks
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 locks
+-rw-r--r-- 1 apache apache  229 Mar 20 16:31 README.txt
+
+
+
+THE PERMISSIONS FOR ALL SUBDIRECTORIES:
+
+[root@ngsdev svn]# ls -alR test
+test:
+total 32
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 .
+drwxr-xr-x 5 root   root   4096 Mar 27 10:35 ..
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 conf
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 db
+-r--r--r-- 1 apache apache    2 Mar 20 16:31 format
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 hooks
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 locks
+-rw-r--r-- 1 apache apache  229 Mar 20 16:31 README.txt
+
+test/conf:
+total 20
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 .
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 apache apache 1080 Mar 20 16:31 authz
+-rw-r--r-- 1 apache apache  309 Mar 20 16:31 passwd
+-rw-r--r-- 1 apache apache 2279 Mar 20 16:31 svnserve.conf
+
+test/db:
+total 44
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 .
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 root   apache    2 Mar 20 16:50 current
+-r--r--r-- 1 apache apache   22 Mar 20 16:31 format
+-rw-r--r-- 1 apache apache    5 Mar 20 16:31 fs-type
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 revprops
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 revs
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 transactions
+-rw-r--r-- 1 root   apache    2 Mar 20 16:50 txn-current
+-rw-r--r-- 1 apache apache    0 Mar 20 16:31 txn-current-lock
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 txn-protorevs
+-rw-r--r-- 1 apache apache   37 Mar 20 16:31 uuid
+-rw-r--r-- 1 apache apache    0 Mar 20 16:31 write-lock
+
+test/db/revprops:
+total 12
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 .
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 ..
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 0
+
+test/db/revprops/0:
+total 16
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 .
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 apache apache   50 Mar 20 16:31 0
+-rw-r--r-- 1 root   apache  104 Mar 20 16:50 1
+
+test/db/revs:
+total 12
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 .
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 ..
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 0
+
+test/db/revs/0:
+total 16
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 .
+drwxr-sr-x 3 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 apache apache  115 Mar 20 16:31 0
+-rw-r--r-- 1 root   apache  544 Mar 20 16:50 1
+
+test/db/transactions:
+total 8
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 .
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 ..
+
+test/db/txn-protorevs:
+total 8
+drwxr-sr-x 2 apache apache 4096 Mar 20 16:50 .
+drwxr-sr-x 6 apache apache 4096 Mar 20 16:50 ..
+
+test/hooks:
+total 44
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 .
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 apache apache 2015 Mar 20 16:31 post-commit.tmpl
+-rw-r--r-- 1 apache apache 1638 Mar 20 16:31 post-lock.tmpl
+-rw-r--r-- 1 apache apache 2268 Mar 20 16:31 post-revprop-change.tmpl
+-rw-r--r-- 1 apache apache 1567 Mar 20 16:31 post-unlock.tmpl
+-rw-r--r-- 1 apache apache 2934 Mar 20 16:31 pre-commit.tmpl
+-rw-r--r-- 1 apache apache 2038 Mar 20 16:31 pre-lock.tmpl
+-rw-r--r-- 1 apache apache 2764 Mar 20 16:31 pre-revprop-change.tmpl
+-rw-r--r-- 1 apache apache 1980 Mar 20 16:31 pre-unlock.tmpl
+-rw-r--r-- 1 apache apache 2758 Mar 20 16:31 start-commit.tmpl
+
+test/locks:
+total 16
+drwxr-xr-x 2 apache apache 4096 Mar 20 16:31 .
+drwxr-xr-x 6 apache apache 4096 Mar 20 16:31 ..
+-rw-r--r-- 1 apache apache  139 Mar 20 16:31 db.lock
+-rw-r--r-- 1 apache apache  139 Mar 20 16:31 db-logs.lock
+
+
+
+NOTE: You can change permissions to 'drwxr-sr-x' using 'chmod 2755'
+
+mkdir test1
+chmod 2755 test1
+ls -ld test1
+
+    drwxr-sr-x 2 root other .
+
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 26 21:18:00 EST 2009] DO BRANCH OF AQWA AS rloredo>
+
+
+
+
+IMPORT branches AND tags DIRS
+
+cd ~
+mkdir branches
+mkdir tags
+svn import /root/branches file:///srv/svn/aqwa/branches -m "Added branches directory."
+
+    Committed revision 2.
+
+svn import /root/tags file:///srv/svn/aqwa/tags -m "Added tags directory."
+
+    Committed revision 3.
+
+svn list -v file:///srv/svn/aqwa
+
+      3 root                  Apr 09 04:16 ./
+      2 root                  Apr 09 04:15 branches/
+      3 root                  Apr 09 04:16 tags/
+      1 root                  Mar 27 11:16 trunk/
+
+
+ALTERNATELY, COULD HAVE USED svn mkdir (see BELOW).
+
+
+DELETE build DIRECTORIES
+
+1. CHECKOUT aqwa
+
+cd ~/test2
+svn co file:///srv/svn/aqwa test2
+
+
+2. DELETE WITH svn delete (REMOVES THE DIRECTORIES INSIDE /srv/svn/aqwa - CHECK WITH svn list file:///srv/svn/aqwa)
+
+cd ~/test2/aqwa/trunk
+
+svn delete build1
+svn delete build2
+svn delete build3
+svn delete build4
+svn delete build5
+svn delete build6
+svn delete build7
+svn delete build8
+
+3. COMMIT CHANGES
+
+cd ~/test2/aqwa
+svn commit -m "Removed build directories" trunk
+
+
+
+ADD A DIRECTORY TO THE REPOSITORY
+
+svn commit -m "Added 'tempdir' directory"
+
+
+
+SIMPLE CHECKOUT AND COMMIT
+--------------------------
+
+1. CREATE SVN WORKING DIRECTORY DIRECTORY:
+
+mkdir ~/base/svn/aqwa0.2.5
+cd ~/base/svn/aqwa0.2.5
+
+
+2. CHECKOUT report PLUGIN FILES
+
+svn checkout file:///srv/svn/aqwa/trunk/html/plugins/report
+
+OR USE HTTP IF ON REMOTE SERVER
+
+svn checkout http://ngsdev.ccs.miami.edu/svn/aqwa/trunk/html/plugins/report
+
+    A    report\info.json
+    A    report\images
+    A    report\images\report.png
+    A    report\Report.js
+    A    report\Template.js
+    A    report\css
+    A    report\css\report.css
+    A    report\Template-v1.js
+    A    report\Template
+    A    report\Template\SNP-v1.js
+    A    report\Template\SNP-v2.js
+    A    report\Template\SNP-v3.js
+    A    report\Template\SNP.js
+    A    report\Template\SNP-v1js.js
+    A    report\Template-v2.js
+    A    report\Controller.js
+    A    report\templates
+    A    report\templates\SNP.html
+    A    report\templates\SNP-dnd.html
+    A    report\templates\SNP-v2.html
+    A    report\templates\SNP.json
+    A    report\templates\SNP-v3.html
+    A    report\templates\SNP-v4.html
+    Checked out revision 3.
+
+
+3. COPY NEWER FILES TO WORKING DIRECTORY
+
+cp /nethome/syoung/base/html/Bioptic0.2.5/html/plugins/report/* /nethome/syoung/base/svn/aqwa0.2.5/report
+
+4. COMMIT CHANGES
+
+MOVE TO INSIDE THE WORKING DIRECTORY
+
+cd /nethome/syoung/base/svn/aqwa0.2.5/report
+
+COMMIT
+
+svn commit -m "Updated report.Template.SNP to link grid 
+onClick to openView()"
+
+    Sending        Template/SNP.js
+    Sending        Template.js
+    Sending        templates/SNP.html
+    Transmitting file data ...
+    Committed revision 4.
+
+
+
+
+
+
+
+
+FIVE COMMANDS TO MAKE TREE CHANGES
+
+svn add foo
+
+Schedule file, directory, or symbolic link foo to be added to the repository. When you
+next commit, foo will become a child of its parent directory. Note that if foo is a directory,
+everything underneath foo will be scheduled for addition. If you want only to add
+foo itself, pass the --depth empty option.
+
+
+svn delete foo
+
+Schedule file, directory, or symbolic link foo to be deleted from the repository. If foo is
+a file or link, it is immediately deleted from your working copy. If foo is a directory, it is
+not deleted, but Subversion schedules it for deletion. When you commit your changes,
+foo will be entirely removed from your working copy and the repository. 
+(Of course, nothing is ever totally deleted from the repository—just from the HEAD of the repository. You can get
+back anything you delete by checking out (or updating your working copy to) a revision earlier than the one in
+which you deleted it. Also see the section called “Resurrecting Deleted Items”.)
+
+
+svn copy foo bar
+
+Create a new item bar as a duplicate of foo and automatically schedule bar for addition.
+When bar is added to the repository on the next commit, its copy history is recorded
+(as having originally come from foo). svn copy does not create intermediate directories
+unless you pass the --parents option.
+
+
+svn move foo bar
+
+This command is exactly the same as running svn copy foo bar; svn delete
+foo. That is, bar is scheduled for addition as a copy of foo, and foo is scheduled for
+removal. svn move does not create intermediate directories unless you pass the -
+-parents option.
+
+
+svn mkdir blort
+
+This command is exactly the same as running mkdir blort; svn add blort.
+That is, a new directory named blort is created and scheduled for addition.
+
+
+
+ADD FILES TO REPOSITORY
+
+You can get new files into your Subversion repository in two ways: svn import and svn
+add. We'll discuss svn import now and will discuss svn add later in this chapter when we
+review a typical day with Subversion.
+svn import
+The svn import command is a quick way to copy an unversioned tree of files into a repository,
+creating intermediate directories as necessary. svn import doesn't require a working
+copy, and your files are immediately committed to the repository. You typically use this
+when you have an existing tree of files that you want to begin tracking in your Subversion
+repository. For example:
+$ svnadmin create /var/svn/newrepos
+$ svn import mytree file:///var/svn/newrepos/some/project \
+-m "Initial import"
+Adding mytree/foo.c
+Adding mytree/bar.c
+Adding mytree/subdir
+Adding mytree/subdir/quux.h
+
+
+
+CLEANUP
+
+svn cleanup /srv/svn/aqwa
+
+
+COPY TRUNK TO A BRANCH
+
+svn copy file:///srv/svn/aqwa/trunk file:///srv/svn/aqwa/branches/api-entrez -m "Creating the Entrez API branch of aqwa/trunk."
+
+
+svn: Local, non-commit operations do not take a log message or revision properties
+
+
+
+DOWNLOAD THE TRUNK
+
+svn co file:///srv/svn/aqwa/trunk 
+
+
+
+
+LIST THE CONTENTS OF A REPOSITORY
+
+svn list file:///srv/svn/aqwa
+
+
+
+LIST THE CONTENTS OF A WORKING DIRECTORY
+
+svn list trunk
+
+
+CLEAN UP A WORKING DIRECTORY
+
+Searches your working copy and runs any leftover logs, removing working copy locks in the process.
+
+If Subversion ever tells you that some part of your working copy is “locked,” this is the command that you should run.
+
+
+GET THE STATUS OF A WORKING DIRECTORY
+
+Also, svn status will display an L next to locked items:
+
+svn status file:///srv/svn/aqwa
+
+
+COPY TRUNK TO BRANCH
+
+svn copy /srv/svn/aqwa/trunk /srv/svn/aqwa/branches/api-entrez -m "Creating the Entrez API branch of aqwa/trunk."
+
+
+
+MERGE BRANCH BACK TO TRUNK
+
+Merge a branch back into the trunk by first adding an up-to-date working copy of the trunk to it, verifying the code works with the branch changes include, then committing it to the trunk:
+
+
+1. CHECK OUT TRUNK INTO BRANCH
+
+mkdir -p /home/rloredo/svn-checkout/aqwa/branches/api-ucsc
+cd /home/rloredo/svn-checkout/aqwa/branches/api-ucsc
+
+
+1. ADD THE TRUNK CODE TO THE BRANCH
+
+$ svn merge --reintegrate file:///srv/svn/aqwa/branches/api-ucsc
+
+--- Merging differences between repository URLs into '.':
+U button.c
+U integer.c
+U Makefile
+U .
+
+
+2. BUILD, TEST AND VERIFY THAT THE BRANCH CODE PLAYS NICELY WITH THE TRUNK
+
+$ svn commit -m "Merge api-usc branch back into trunk!"
+Sending .
+Sending button.c
+Sending integer.c
+Sending Makefile
+Transmitting file data ..
+Committed revision 391.
+
+
+MERGE CHANGES TO A SINGLE FILE
+
+1. MOVE TO THE DIRECTORY
+
+$ cd myproj
+
+
+2. MERGE thisfile.txt FILE ONLY
+
+$ svn merge -r 30:31 thisfile.txt
+U thisfile.txt
+
+Subversion Complete Reference
+
+
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 26 21:18:00 EST 2009] LOAD AQWA INTO SUBVERSION ON ngsdev>
+
+
+
+Importing
+
+
+svn import — Commit an unversioned file or tree into the repository.
+
+--auto-props
+--depth ARG
+--editor-cmd EDITOR
+--encoding ENC
+--file (-F) FILE
+--force
+--force-log
+--message (-m) TEXT
+--no-auto-props
+--no-ignore
+--quiet (-q)
+--with-revprop ARG
+
+
+
+Creating a Branch
+Creating a branch is very simple—you make a copy of the project in the repository using
+the svn copy command. Subversion is able to copy not only single files, but whole directories
+as well. In this case, you want to make a copy of the /calc/trunk directory. Where
+should the new copy live? Wherever you wish—it's a matter of project policy. Let's say that
+your team has a policy of creating branches in the /calc/branches area of the repository,
+and you want to name your branch my-calc-branch. You'll want to create a new directory,
+/calc/branches/my-calc-branch, which begins its life as a copy of /
+calc/trunk.
+You may already have seen svn copy used to copy one file to another within a working
+copy. But it can also be used to do a “remote” copy entirely within the repository. Just copy
+one URL to another:
+$ svn copy http://svn.example.com/repos/calc/trunk \
+http://svn.example.com/repos/calc/branches/my-calc-branch \
+-m "Creating a private branch of /calc
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 26 12:40:00 EST 2009] LOAD AQWA INTO SUBVERSION ON ngsdev>
+
+
+
+1. TRANSFER FILES TO ngsdev
+
+cd /nethome/syoung/base/html/Bioptic0.2.5
+ll
+    drwxr-x--x 10 syoung bioinfo  16K Mar 26 13:51 .
+    drwxr-xr-x  4 syoung bioinfo  16K Mar  3 00:53 ..
+    drwxrwx--x  4 syoung apache   16K Mar 15 10:04 bin
+    drwxr-xr-x  3 syoung bioinfo  16K Mar  3 20:07 cgi-bin
+    -rw-r--r--  1 syoung bioinfo  159 Nov 11 15:17 Changes
+    drwxr-xr-x  2 syoung bioinfo  16K Mar 13 12:42 conf
+    drwxr-xr-x  4 apache apache   16K Mar  5 21:01 fileroot
+    drwxr-xr-x 16 syoung bioinfo  16K Mar 26 12:43 html
+    drwxr-xr-x  7 syoung bioinfo  16K Mar  9 11:31 lib
+    -rw-r--r--  1 syoung bioinfo  22K Nov 11 15:22 Makefile
+    -rw-r--r--  1 syoung bioinfo  532 Nov 11 15:17 Makefile.PL
+    -rw-r--r--  1 syoung bioinfo  602 Nov 11 15:29 MANIFEST
+    -rw-r--r--  1 syoung bioinfo   85 Nov 11 15:22 MANIFEST.bak
+    drwxr-xr-x 20 syoung bioinfo  16K Mar  8 01:17 perlmods
+    -rw-r--r--  1 syoung bioinfo 1.2K Nov 11 15:17 README
+    drwxr-xr-x  2 syoung bioinfo  16K Jan 18 23:56 t
+
+2. CREATE aqwa
+
+sudo su
+cd /srv/svn
+svnadmin create aqwa
+
+
+
+3. CREATE TRUNK, BRANCH AND TAGS DIRECTORIES IN SOURCE DIRECTORY
+
+mkdir /nethome/syoung/base/svn/aqwa
+cp -r /nethome/syoung/base/html/Bioptic0.2.5 /nethome/syoung/base/svn/aqwa/trunk
+
+###/nethome/syoung/base/svn/aqwa/branches
+###/nethome/syoung/base/svn/aqwa/tags
+
+
+4. IMPORT THE SOURCE DIRECTORY INTO AQWA
+
+svn import /nethome/syoung/base/html/aqwa file:///srv/svn/aqwa -m "First aqwa import"
+
+    OK!
+
+
+
+##sudo mv aqwa.dmp /var/svn
+##cd /var/svn
+## svnadmin create aqwa
+#
+#svnadmin load aqwa --parent-dir trunk < /nethome/syoung/base/pipeline/svn/windows/aqwa2.dmp
+#
+
+
+
+
+ALTERNATELY
+===========
+
+DUMP AQWA ON WINDOWS, TRANSFER TO ngsdev
+
+1. ON WINDOWS LAPTOP
+
+cd c:\svn-checkout
+svnadmin dump c:\svn\aqwa > aqwa2.dmp
+    
+    * Dumped revision 0.
+    * Dumped revision 1.
+    * Dumped revision 2.
+    * Dumped revision 3.
+    * Dumped revision 4.
+    * Dumped revision 5.
+    * Dumped revision 6.
+    * Dumped revision 7.
+    * Dumped revision 8.
+    * Dumped revision 9.
+    
+
+2. TRANSFER aqwa2.dmp FILE TO ngsdev
+
+mkdir /nethome/syoung/base/pipeline/svn/windows
+cd /nethome/syoung/base/pipeline/svn/windows
+
+
+3. REPLACE DIRECTORY PATHS IN dump FILE
+
+cat aqwa3.dmp | sed -e 's,^C:,C:,' > aqwa3.dmp
+
+
+4. TEST LOAD aqwa INTO test/trunk
+
+AS root
+
+svnadmin load trunk "--parent-dir" trunk
+
+svn import /nethome/syoung/base/pipeline/ file:///srv/svn/aqwa/trunk -m "First aqwa import"
+
+    Adding         /nethome/syoung/base/pipeline/trac/test/trunk
+    Adding         /nethome/syoung/base/pipeline/trac/test/branches
+    Adding         /nethome/syoung/base/pipeline/trac/test/tags
+    
+    Committed revision 1.
+
+
+AND VIEW NEW DIRECTORIES INSIDE test PROJECT:
+
+http://ngsdev.ccs.miami.edu/trac/test/browser
+
+    OK!
+    
+#### DIDN'T HAVE TO DO THIS
+####Fix permissions to the repository:
+####
+####find /var/svn/project -type f -exec chmod 660 {} \;
+####find /var/svn/project -type d -exec chmod 2770 {} \;
+####chown -R root.www-data /var/svn/project
+
+
+
+
+
+#sudo mv aqwa.dmp /var/svn
+#cd /var/svn
+# svnadmin create aqwa
+
+svnadmin load aqwa --parent-dir trunk < /nethome/syoung/base/pipeline/svn/windows/aqwa2.dmp
+
+
+OR, ALTERNATELY, USE import:
+
+svn import /nethome/syoung/base/pipeline/trac/aqwa file:///srv/svn/aqwa -m "Test import"
+
+
+
+
+
+
+
+http://www.yolinux.com/TUTORIALS/SubversionRepositoryDataTransfer.html
+
+Subversion repository migration:
+
+Transferring directory branch of data from an existing SVN repository to a new repository under a new directory branch:
+
+   1. Create hotcopy: (required for an active repository otherwise skip this step)
+      svnadmin hotcopy /srv/svn/projX /srv/svn/projxHotCopy
+
+   2. Dump repository:
+      svnadmin dump /srv/svn/projxHotCopy -r 17257:HEAD > file1.dump
+      (Dump revisions from version 17257 to current. Specify "0" to transfer entire history.)
+
+   3. Filter the directory tree branches you want:
+      cat file1.dump | svndumpfilter --renumber-revs --drop-empty-revs include trunk/dir1/dir2/dir3/dir4/dir5 trunk/dir1/dir2/dir3/dir4a > file2.dump
+      (Data is dumped with the full directory path from trunk to dir5 and dir4a)
+      Note: The directive "--renumber-revs" will renumber history starting with "1". If you wish to match the revision history numbers with the old repository, do not use this directive.
+
+   4. Create new repository: (on same or different server)
+      svnadmin create --fs-type fsfs /srv/svn/projZ
+
+   5. Allow import of diretory structure through http access:
+      chown apache:apache -R /srv/svn/projZ
+      Else you get this error when you perform the next step:
+      svn: Can't create directory '/srv/svn/projZ/db/transactions/0-1.txn': Permission denied
+
+   6. Create shell directory structure for new target repository:
+      mkdir -p trunk/dira/dirb
+      (Note that this is one directory higher than the branch to load. We create the parent directory into which the directories go. Remove local directory after it is imported into Subversion.)
+
+   7. Import directory structure:
+      svn import -m "Enter directory structure" trunk http://svn2.super-megacorp.com/svn/projZ/trunk
+      Note:
+          * The local directory "trunk" and the target "trunk" both have to be mentioned. This avoids the error:
+            svnadmin: File not found: transaction '0-1', path 'trunk/dira/dirb'
+            when a load occurs to a directory branch which does not exist. The parent path must exist before a load.
+          * If you create directories too deep into the directory tree, you may get the following error:
+            svnadmin: File already exists: filesystem '/srv/svn/projZ/db', transaction '1-1', path 'trunk/dira/dirb/dir5'
+            The creation of "dir5" is pressent in the dump file and thus Subversion tries to create a directory which already exists and will give you this error. See the log file for the directory it was trying to create.
+          * The offending "already exists" error can also be fixed by removing the command to add the directory stated in the dump file. Remove the directory addition: (example dump file snippet)
+
+                Node-path: trunk/dira/dirb/dirxxx
+                Node-action: add
+                Node-kind: dir
+                Prop-content-length: 10
+                Content-length: 10
+
+                PROPS-END
+                        
+
+   8. Allow local svnadmin command to work on local repository as root:
+      chown root:root -R /srv/svn/projZ
+
+   9. Edit directory paths in file2.dump :
+      cat file2.dump | sed -e 's,^Node-path: trunk/dir1/dir2/dir3/dir4,Node-path: trunk/dira/dirb,' > file3.dump
+      cat file3.dump | sed -e 's,^Node-path: trunk/dir1/dir2/dir3,Node-path: trunk/dira/dirb,' > file4.dump
+
+      Note: The path for Subversion item "Node-copyfrom-path" may also have to be edited.
+
+  10. Load filtered repository:
+      svnadmin load /srv/svn/projZ < file4.dump > log.txt
+      Note: The directive "--parent-dir /dir/path" can be specified. The default is "/".
+
+  11. Change permissions for apache web server access:
+      chown apache:apache -R /srv/svn/projZ
+
+  12. Remove old directory branch from old repository:
+      svn rm http://svn1.super-megacorp.com/svn/projX/trunk/dir1/dir2/dir3/dir4/dir5
+      svn rm http://svn1.super-megacorp.com/svn/projX/trunk/dir1/dir2/dir3/dir4a
+
+Old URL: http://svn1.super-megacorp.com/svn/projX/trunk/dir1/dir2/dir3/dir4/dir5/... and http://svn1.super-megacorp.com/svn/projX/trunk/dir1/dir2/dir3/dir4a/...
+
+New URL: http://svn2.super-megacorp.com/svn/projZ/trunk/dira/dirb/dir5/... and http://svn2.super-megacorp.com/svn/projZ/trunk/dira/dirb/dir4a/...
+
+[Potential Pitfall]: The data for repository content in the dump file can NOT be edited before loading into the repository as it will alter the md5sum for the data item. You will get an error upon loading.
+
+[Potential Pitfall]: Some of these commands may take a long time to execute if the Subversion repository and dump files are very large. Your shell may timeout before the task is done. Solution: change the bash shell time out defaults:
+
+    export TMOUT=0 
+
+This will set the shell session to have no timeout duration.
+
+    export TMOUT=345600 
+
+This will set the timeout duration to four days (345600 seconds).
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 20 15:33:36 EST 2009] SETUP subversion AND trac ON ngsdev>
+
+
+
+http://www.daniel-skinner.co.uk/setup-subversion-and-trac-on-centos-5/06/01/2008
+Setup Subversion and Trac on CentOS 5
+
+    SEE Notes-apps-trac.txt
+    Fri Mar 20 15:33:36 EST 2009
+    SETUP subversion AND trac ON ngsdev
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 20 12:21:36 EST 2009] DUMP aqwa REPOSITORY ON WINDOWS, LOAD ONTO LINUX>
+
+
+
+1. DUMP aqwa ON WINDOWS
+
+cd c:\svn-checkout
+svnadmin dump c:\svn\aqwa > aqwa.dmp
+
+    * Dumped revision 0.
+    * Dumped revision 1.
+    * Dumped revision 2.
+    * Dumped revision 3.
+    * Dumped revision 4.
+    * Dumped revision 5.
+    * Dumped revision 6.
+    * Dumped revision 7.
+    
+
+2. LOAD aqwa ON LINUX (solexa01)
+
+TRANSFER aqwa.dmp FILE FROM WINDOWS TO /var/svn/repos ON solexa01, THEN LOAD aqwa
+
+cd /nethome/syoung/
+sudo mv aqwa.dmp /var/svn
+cd /var/svn
+svnadmin create aqwa
+svnadmin load aqwa < aqwa.dmp
+
+        * adding path : html/plugins/workflow/json/Text-1.txt ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels-LONG.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels-large.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels-unterminated-string-literal.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels-v1.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels-with-values.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-indels.json ... done.
+        * adding path : html/plugins/workflow/json/Workflow3-shortnames.json ... done.
+        * adding path : html/plugins/workflow/json/application-eland.json ... done.
+   
+    ------- Committed revision 7 >>>
+
+
+###This tutorial is great, however, I think the change directory step is not necessary, it can be simplified as:
+###
+###svnadmin create new-repository-path
+###svnadmin load new-repository-path
+
+
+3. TEST CHECKING OUT aqwa
+
+mkdir -p /home/syoung/base/html/aqwa-0.0.7
+cd /home/syoung/base/html/aqwa-0.0.7
+svn checkout file:///var/svn/aqwa
+
+
+
+4. EDIT A FILE AND DO svn diff
+
+emacs /home/syoung/base/html/aqwa-0.0.7/aqwa/html/plugins/report/Report/SNP.js
+
+cd /home/syoung/base/html/aqwa-0.0.7
+svn diff aqwa
+
+   Index: aqwa/html/plugins/report/Report/SNP.js
+   ===================================================================
+   --- aqwa/html/plugins/report/Report/SNP.js      (revision 7)
+   +++ aqwa/html/plugins/report/Report/SNP.js      (working copy)
+   @@ -9,6 +9,9 @@
+    // dummy text
+    // dummy text
+    // dummy text
+   +
+   +
+   +
+    // dummy text
+    // dummy text
+    // dummy text
+   @@ -17,23 +20,6 @@
+    // dummy text
+    // dummy text
+    // dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+   -// dummy text
+    
+    dojo.declare(
+        "plugins.report.Report.SNP",
+   
+
+
+You can edit the files in your working copy and then commit those changes back into
+the repository.
+
+• Enter your working copy and edit a file's contents.
+• Run svn diff to see unified diff output of your changes.
+
+
+5. svn commit to commit the new version of your file to the repository.
+
+cd /home/syoung/base/html/aqwa-0.0.7
+svn commit -m "Test commit to aqwa-0.0.7" aqwa
+
+    Sending        aqwa/html/plugins/report/Report/SNP.js
+    Transmitting file data .
+    Committed revision 8.
+
+
+6. Run svn update to bring your working copy “up to date” with the repository.
+
+cd /home/syoung/base/html/aqwa-0.0.7
+svn update aqwa
+    At revision 8.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 20 12:21:36 EST 2009] RENAME svn FOLDER FOR bioptic0.2.5 TO aqwa>
+
+
+
+ERROR:
+
+DO CHECKOUT THEN COMMIT -> FAILS
+
+1. COPY Bioptic2 TO aqwa
+2. CHECKOUT FROM aqwa TO c:\svn-checkout\aqwa-0.2.7
+3. COPY NEW FILES FROM bioptic0.2.5 TO aqwa-0.2.7
+4. COMMIT FROM c:\svn-checkout\aqwa-0.2.7 TO aqwa
+
+    FAILED WITH THIS MESSAGE:
+
+        Command: Commit  
+        Error: Commit failed (details follow):  
+        Error: Unable to open an ra_local session to URL  
+        Error: Unable to open repository 'file:///C:/svn'  
+        Finished!:   
+
+
+SOLUTION:
+
+REDID THE SEQUENCE AS ABOVE AND IT WORKED!!
+
+
+
+NB: RENAME SEEMS OKAY ON LINUX AND WITH trac
+
+Re: Is it ok to rename a repository?
+
+    * This message: [ Message body ] [ More options ]
+    * Related messages: [ Next message ] [ Previous message ] [ In reply to ] [ Next in thread ]
+
+From: richard hornsby <richardjhornsby_at_gmail.com>
+Date: Tue, 19 Feb 2008 08:32:55 -0500
+
+I had to rename a repo yesterday and the only issue I had was (not
+subversion's problem) that I had to change the trac.ini variable
+repository_dir to point at the new location, and resync the trac project.
+
+$ trac-admin /var/trac/projects/projectname resync
+
+I only mention it for completeness because lots of folks use svn and trac
+together.
+
+ -rj
+
+On Feb 19, 2008 3:18 AM, Henrik Sundberg <storangen_at_gmail.com> wrote:
+
+> 2008/2/19, Ryan Schmidt <subversion-2008a_at_ryandesign.com>:
+> > On Feb 19, 2008, at 02:00, Henrik Sundberg wrote:
+> >
+> > > I created a big, but not wildly used, repository with a poor name.
+> > > Is it possiple to just rename the repository, at the same location?
+> > > I can do this when no one else is using it.
+> > > Is there a danger in this?
+> >
+> >
+> > No danger that I can see.
+> >
+> >
+> > > I understand that checkouts will need to be relocated.
+> >
+> >
+> > Depending on the protocol you use to access the repository and how
+> > you did the checkout, you may or may not need to relocate the working
+> > copies.
+> >
+>
+> Thanks!
+> /$ 
+
+
+</entry>
+
+
+
+<entry [Mon Mar 16 09:47:36 EST 2009] DOWNLOAD DOJO.1.2.2 USING svn ON WINDOWS>
+
+
+
+
+1. CREATE FOLDER
+
+mkdir c:\svn-checkout\dojo.1.2.2
+
+
+2. CHECK OUT VERSION 1.2.2 USING SUBVERSION ON DOS COMMAND LINE:
+
+cd c:\svn-checkout\dojo.1.2.2
+
+svn co http://svn.dojotoolkit.org/src/tags/release-1.2.2
+
+    ...
+    Checked out revision 17040
+
+
+SEE ALSO:
+
+Notes-project22-aqwa.txt
+Mon Mar 16 09:47:36 EST 2009
+FIXED VERSION OF attr('href', ...) FOR CONTENT PANE
+
+
+
+</entry>
+
+
+
+<entry [Fri Feb 13 14:04:36 EST 2009] SUBVERSION ON devngs>
+
+
+
+Command: Commit  
+Error: Commit failed (details follow):  
+Error: Unable to open an ra_local session to URL  
+Error: Unable to open repository 'file:///C:/svn'  
+Finished!:   
+
+
+
+How to Move a Subversion Repository
+===================================
+http://www.digitalmediaminute.com/article/2251/how-to-move-a-subversion-repository
+
+I recently had to move our main Subversion repository to a new server the other day, so I thought I would pass along this quick how-to.
+
+To move a Subversion repository from one system to another you only have to enter a couple of easy subversion commands. To start, go to the source system and at a command prompt or terminal window type:
+
+svnadmin dump /path/to/repository > repository-name.dmp
+
+If the dump file is rather large you can compress it with your favorite zip utility. Now you need to get the dump to your new server, so simply transfer the file via FTP, local share, CD, thumbdrive or whatever it takes.
+
+Once the dump file is on the new machine and uncompressed, you need to set up and load the new repo by typing:
+
+cd /path/to/new-repository
+svnadmin create repository-name
+svnadmin load repository-name< repository-name.dmp
+
+A couple of small things to note - the dump file will be rather large as it represents every commit made on your repository. If your repository is rather large and mature, this file could get quite large. Also this method works across platforms so moving from UNIX to Windows or visa-versa is also possible.
+
+    #  Eric said on March 17th, 2007 at 10:46 pm
+    
+    This tutorial is great, however, I think the change directory step is not necessary, it can be simplified as:
+    
+    svnadmin create new-repository-path
+    svnadmin load new-repository-path
+
+
+    # Larry Rubin said on May 8th, 2007 at 7:59 pm
+    
+    Worked like a charm. Thanks!
+    
+    If you’re using svn w/ trac you will need to a) update your trac conf to point to the new repo location, and b) resync trac
+    
+
+
+I.E.:
+
+I had to rename a repo yesterday and the only issue I had was (not
+subversion's problem) that I had to change the trac.ini variable
+repository_dir to point at the new location, and resync the trac project.
+
+$ trac-admin /var/trac/projects/projectname resync
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Feb 13 14:04:36 EST 2009] SUBVERSION ON solexa>
+
+
+
+DOCUMENTATION
+
+http://svnbook.red-bean.com/
+
+
+1. CREATE REPOSITORY
+
+svnadmin create /var/svn/repos
+
+This creates a new repository in the directory /var/svn/repos, and with the default
+filesystem data store (FSFS).
+
+2. ADDED ExomeSNP.pm DEVELOPMENT VERSION AND PACKAGE TO REPOSITORY
+
+/home/syoung/base/pipeline/nimblegen-run1/ExomeSNP
+/home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package
+
+cd /home/syoung/base/pipeline/nimblegen-run1
+svn import ExomeSNP file:///var/svn/repos/ExomeSNP -m "Initial import"
+    
+    Adding         ExomeSNP/t
+    Adding         ExomeSNP/t/ExomeSNP.t
+    Adding         ExomeSNP/t/02-ExomeSNP
+    Adding         ExomeSNP/t/02-ExomeSNP/unknown
+    Adding         ExomeSNP/t/02-ExomeSNP/unknown/test-snps1.txt
+    Adding         ExomeSNP/t/02-ExomeSNP/dbfile
+    Adding  (bin)  ExomeSNP/t/02-ExomeSNP/dbfile/exome.dbl
+    Adding         ExomeSNP/t/02-ExomeSNP/CCDS30547.1-known-dbSNPs.txt
+    Adding         ExomeSNP/t/02-ExomeSNP/test-snps3-CCDS2.2-known-dbSNPs.txt
+    Adding         ExomeSNP/lib
+    Adding         ExomeSNP/lib/Util.pm
+    Adding         ExomeSNP/lib/ExomeSNP.pm
+    Adding         ExomeSNP/lib/DBase.pm
+    Adding         ExomeSNP/lib/DBase
+    Adding         ExomeSNP/lib/DBase/SQLite.pm
+    
+    Committed revision 1.
+    
+    
+cd /home/syoung/base/pipeline/nimblegen-run1
+svn import ExomeSNP-package file:///var/svn/repos/ExomeSNP-package -m "Initial import"
+
+
+3. CHECKOUT ExomeSNP TO A LOCAL DIRECTORY
+
+mkdir /home/syoung/base/pipeline/nimblegen-run1/test
+cd /home/syoung/base/pipeline/nimblegen-run1/test
+
+cd ~ # OR WHEREVER YOU WANT TO PUT THE temp DIRECTORY
+mkdir temp
+cd temp
+svn checkout file:///var/svn/repos/ExomeSNP
+
+    A    ExomeSNP/t
+    A    ExomeSNP/t/ExomeSNP.t
+    A    ExomeSNP/t/02-ExomeSNP
+    A    ExomeSNP/t/02-ExomeSNP/unknown
+    A    ExomeSNP/t/02-ExomeSNP/unknown/test-snps1.txt
+    A    ExomeSNP/t/02-ExomeSNP/dbfile
+    A    ExomeSNP/t/02-ExomeSNP/dbfile/exome.dbl
+    A    ExomeSNP/t/02-ExomeSNP/CCDS30547.1-known-dbSNPs.txt
+    A    ExomeSNP/t/02-ExomeSNP/test-snps3-CCDS2.2-known-dbSNPs.txt
+    A    ExomeSNP/lib
+    A    ExomeSNP/lib/Util.pm
+    A    ExomeSNP/lib/DBase.pm
+    A    ExomeSNP/lib/ExomeSNP.pm
+    A    ExomeSNP/lib/DBase
+    A    ExomeSNP/lib/DBase/SQLite.pm
+    Checked out revision 2.
+
+
+
+Chapter 2 -  Basic usage
+
+
+svn import
+The svn import command is a quick way to copy an unversioned tree of files into a repository,
+creating intermediate directories as necessary. svn import doesn't require a working
+copy, and your files are immediately committed to the repository. You typically use this
+when you have an existing tree of files that you want to begin tracking in your Subversion
+repository. For example:
+$ svnadmin create /var/svn/newrepos
+$ svn import mytree file:///var/svn/newrepos/some/project \
+-m "Initial import"
+Adding mytree/foo.c
+Adding mytree/bar.c
+Adding mytree/subdir
+Adding mytree/subdir/quux.h
+Committed revision 1.
+The previous example copied the contents of directory mytree under the directory some/
+project in the repository:
+$ svn list file:///var/svn/newrepos/some/project
+bar.c
+foo.c
+subdir/
+
+Note that after the import is finished, the original tree is not converted into a working copy.
+To start working, you still need to svn checkout a fresh working copy of the tree.
+
+Recommended Repository Layout
+
+While Subversion's flexibility allows you to lay out your repository in any way that you
+choose, we recommend that you create a trunk directory to hold the “main line” of development,
+a branches directory to contain branch copies, and a tags directory to contain
+tag copies. For example:
+$ svn list file:///var/svn/repos
+/trunk
+/branches
+/tags
+You'll learn more about tags and branches in Chapter 4, Branching and Merging. For details
+and how to set up multiple projects, see the section called “Repository Layout” and the
+section called “Planning Your Repository Organization” to read more about project roots.
+Initial Checkout
+Most of the time, you will start using a Subversion repository by doing a checkout of your
+project. Checking out a repository creates a “working copy” of it on your local machine.
+This copy contains the HEAD (latest revision) of the Subversion repository that you specify
+on the command line:
+Basic Usage
+16
+
+
+
+
+Basic Work Cycle
+Subversion has numerous features, options, bells, and whistles, but on a day-to-day basis,
+odds are that you will use only a few of them. In this section, we'll run through the most
+common things that you might find yourself doing with Subversion in the course of a day's
+work.
+The typical work cycle looks like this:
+1. Update your working copy.
+• svn update
+2. Make changes.
+• svn add
+• svn delete
+• svn copy
+• svn move
+3. Examine your changes.
+• svn status
+• svn diff
+4. Possibly undo some changes.
+• svn revert
+5. Resolve conflicts (merge others' changes).
+• svn update
+• svn resolve
+6. Commit your changes.
+• svn commit
+Update Your Working Copy
+When working on a project with a team, you'll want to update your working copy to receive
+any changes other developers on the project have made since your last update. Use svn
+update to bring your working copy into sync with the latest revision in the repository:
+$ svn update
+Basic Usage
+19
+
+
+U foo.c
+U bar.c
+Updated to revision 2.
+In this case, it appears that someone checked in modifications to both foo.c and bar.c
+since the last time you updated, and Subversion has updated your working copy to include
+those changes.
+When the server sends changes to your working copy via svn update, a letter code is displayed
+next to each item to let you know what actions Subversion performed to bring your
+working copy up to date. To find out what these letters mean, run svn help update.
+Make Changes to Your Working Copy
+Now you can get to work and make changes in your working copy. It's usually most convenient
+to decide on a discrete change (or set of changes) to make, such as writing a new
+feature, fixing a bug, and so on. The Subversion commands that you will use here are svn
+add, svn delete, svn copy, svn move, and svn mkdir. However, if you are merely editing
+files that are already in Subversion, you may not need to use any of these commands until
+you commit.
+You can make two kinds of changes to your working copy: file changes and tree changes.
+You don't need to tell Subversion that you intend to change a file; just make your changes
+using your text editor, word processor, graphics program, or whatever tool you would normally
+use. Subversion automatically detects which files have been changed, and in addition,
+it handles binary files just as easily as it handles text files—and just as efficiently, too.
+For tree changes, you can ask Subversion to “mark” files and directories for scheduled removal,
+addition, copying, or moving. These changes may take place immediately in your
+working copy, but no additions or removals will happen in the repository until you commit
+them.
+Versioning Symbolic Links
+On non-Windows platforms, Subversion is able to version files of the special type
+symbolic link (or “symlink”). A symlink is a file that acts as a sort of transparent reference
+to some other object in the filesystem, allowing programs to read and write to
+those objects indirectly by way of performing operations on the symlink itself.
+When a symlink is committed into a Subversion repository, Subversion remembers
+that the file was in fact a symlink, as well as the object to which the symlink “points.”
+When that symlink is checked out to another working copy on a non-Windows system,
+Subversion reconstructs a real filesystem-level symbolic link from the versioned
+symlink. But that doesn't in any way limit the usability of working copies on systems
+such as Windows that do not support symlinks. On such systems, Subversion simply
+creates a regular text file whose contents are the path to which to the original symlink
+pointed. While that file can't be used as a symlink on a Windows system, it also won't
+prevent Windows users from performing their other Subversion-related activities.
+Here is an overview of the five Subversion subcommands that you'll use most often to
+make tree changes:
+svn add foo
+Schedule file, directory, or symbolic link foo to be added to the repository. When you
+next commit, foo will become a child of its parent directory. Note that if foo is a directory,
+everything underneath foo will be scheduled for addition. If you want only to add
+foo itself, pass the --depth empty option.
+svn delete foo
+Basic Usage
+20
+
+
+
+
+Schedule file, directory, or symbolic link foo to be deleted from the repository. If foo is
+a file or link, it is immediately deleted from your working copy. If foo is a directory, it is
+not deleted, but Subversion schedules it for deletion. When you commit your changes,
+foo will be entirely removed from your working copy and the repository. 2
+svn copy foo bar
+Create a new item bar as a duplicate of foo and automatically schedule bar for addition.
+When bar is added to the repository on the next commit, its copy history is recorded
+(as having originally come from foo). svn copy does not create intermediate directories
+unless you pass the --parents option.
+svn move foo bar
+This command is exactly the same as running svn copy foo bar; svn delete
+foo. That is, bar is scheduled for addition as a copy of foo, and foo is scheduled for
+removal. svn move does not create intermediate directories unless you pass the -
+-parents option.
+svn mkdir blort
+This command is exactly the same as running mkdir blort; svn add blort.
+That is, a new directory named blort is created and scheduled for addition.
+Changing the Repository Without a Working Copy
+There are some use cases that immediately commit tree changes to the repository.
+This happens only when a subcommand is operating directly on a URL, rather than
+on a working-copy path. In particular, specific uses of svn mkdir, svn copy, svn
+move, and svn delete can work with URLs (and don't forget that svn import always
+makes changes to a URL).
+URL operations behave in this manner because commands that operate on a working
+copy can use the working copy as a sort of “staging area” to set up your changes before
+committing them to the repository. Commands that operate on URLs don't have
+this luxury, so when you operate directly on a URL, any of the aforementioned actions
+represents an immediate commit.
+Examine Your Changes
+Once you've finished making changes, you need to commit them to the repository, but before
+you do so, it's usually a good idea to take a look at exactly what you've changed. By
+examining your changes before you commit, you can make a more accurate log message.
+You may also discover that you've inadvertently changed a file, and this gives you a
+chance to revert those changes before committing. Additionally, this is a good opportunity
+to review and scrutinize changes before publishing them. You can see an overview of the
+changes you've made by using svn status, and dig into the details of those changes by
+using svn diff.
+Look Ma! No Network!
+You can use the commands svn status, svn diff, and svn revert without any network
+access even if your repository is across the network. This makes it easy to manage
+your changes-in-progress when you are somewhere without a network connection,
+such as traveling on an airplane, riding a commuter train, or hacking on the
+beach. 3
+
+
+2Of course, nothing is ever totally deleted from the repository—just from the HEAD of the repository. You can get
+back anything you delete by checking out (or updating your working copy to) a revision earlier than the one in
+which you deleted it. Also see the section called “Resurrecting Deleted Items”.
+3And you don't have a WLAN card. Thought you got us, huh?
+
+
+
+Subversion does this by keeping private caches of pristine versions of each versioned
+file inside the .svn administrative areas. This allows Subversion to report—
+and revert—local modifications to those files without network access. This
+cache (called the “text-base”) also allows Subversion to send the user's local modifications
+during a commit to the server as a compressed delta (or “difference”) against
+the pristine version. Having this cache is a tremendous benefit—even if you have a
+fast Internet connection, it's much faster to send only a file's changes rather than the
+whole file to the server.
+Subversion has been optimized to help you with this task, and it is able to do many things
+without communicating with the repository. In particular, your working copy contains a hidden
+cached “pristine” copy of each version-controlled file within the .svn area. Because of
+this, Subversion can quickly show you how your working files have changed or even allow
+you to undo your changes without contacting the repository.
+See an overview of your changes
+To get an overview of your changes, you'll use the svn status command. You'll probably
+use svn status more than any other Subversion command.
+CVS Users: Hold That Update!
+You're probably used to using cvs update to see what changes you've made to your
+working copy. svn status will give you all the information you need regarding what
+has changed in your working copy—without accessing the repository or potentially incorporating
+new changes published by other users.
+In Subversion, svn update does just that—it updates your working copy with any
+changes committed to the repository since the last time you updated your working
+copy. You may have to break the habit of using the update command to see what
+local modifications you've made.
+If you run svn status at the top of your working copy with no arguments, it will detect all file
+and tree changes you've made. Here are a few examples of the most common status
+codes that svn status can return. (Note that the text following # is not actually printed by
+svn status.)
+? scratch.c # file is not under version control
+A stuff/loot/bloo.h # file is scheduled for addition
+C stuff/loot/lump.c # file has textual conflicts from an update
+D stuff/fish.c # file is scheduled for deletion
+M bar.c # the content in bar.c has local modifications
+In this output format, svn status prints six columns of characters, followed by several
+whitespace characters, followed by a file or directory name. The first column tells the status
+of a file or directory and/or its contents. The codes we listed are:
+A item
+The file, directory, or symbolic link item has been scheduled for addition into the repository.
+C item
+The file item is in a state of conflict. That is, changes received from the server during
+an update overlap with local changes that you have in your working copy (and weren't
+resolved during the update). You must resolve this conflict before committing your
+
+
+
+
+changes to the repository.
+D item
+The file, directory, or symbolic link item has been scheduled for deletion from the repository.
+M item
+The contents of the file item have been modified.
+If you pass a specific path to svn status, you get information about that item alone:
+$ svn status stuff/fish.c
+D stuff/fish.c
+svn status also has a --verbose (-v) option, which will show you the status of every
+item in your working copy, even if it has not been changed:
+$ svn status -v
+M 44 23 sally README
+44 30 sally INSTALL
+M 44 20 harry bar.c
+44 18 ira stuff
+44 35 harry stuff/trout.c
+D 44 19 ira stuff/fish.c
+44 21 sally stuff/things
+A 0 ? ? stuff/things/bloo.h
+44 36 harry stuff/things/gloo.c
+This is the “long form” output of svn status. The letters in the first column mean the same
+as before, but the second column shows the working revision of the item. The third and
+fourth columns show the revision in which the item last changed, and who changed it.
+None of the prior invocations to svn status contact the repository—instead, they compare
+the metadata in the .svn directory with the working copy. Finally, there is the -
+-show-updates (-u) option, which contacts the repository and adds information about
+things that are out of date:
+$ svn status -u -v
+M * 44 23 sally README
+M 44 20 harry bar.c
+* 44 35 harry stuff/trout.c
+D 44 19 ira stuff/fish.c
+A 0 ? ? stuff/things/bloo.h
+Status against revision: 46
+Notice the two asterisks: if you were to run svn update at this point, you would receive
+changes to README and trout.c. This tells you some very useful information—you'll
+need to update and get the server changes on README before you commit, or the repository
+will reject your commit for being out of date (more on this subject later).
+svn status can display much more information about the files and directories in your working
+copy than we've shown here—for an exhaustive description of svn status and its output,
+see svn status.
+Examine the details of your local modifications
+Another way to examine your changes is with the svn diff command. You can find out exactly
+how you've modified things by running svn diff with no arguments, which prints out
+file changes in unified diff format:
+Basic Usage
+23
+
+
+
+The svn diff command produces this output by comparing your working files against the
+cached “pristine” copies within the .svn area. Files scheduled for addition are displayed as
+all added text, and files scheduled for deletion are displayed as all deleted text.
+Output is displayed in unified diff format. That is, removed lines are prefaced with -, and
+added lines are prefaced with +. svn diff also prints filename and offset information useful
+to the patch program, so you can generate “patches” by redirecting the diff output to a file:
+$ svn diff > patchfile
+You could, for example, email the patch file to another developer for review or testing prior
+to a commit.
+Subversion uses its internal diff engine, which produces unified diff format, by default. If
+you want diff output in a different format, specify an external diff program using -
+-diff-cmd and pass any flags you'd like to it using the --extensions (-x) option. For
+example, to see local differences in file foo.c in context output format while ignoring case
+differences, you might run svn diff --diff-cmd /usr/bin/diff --extensions
+'-i' foo.c.
+Undoing Working Changes
+Suppose while viewing the output of svn diff you determine that all the changes you made
+
+
+
+
+
+to a particular file are mistakes. Maybe you shouldn't have changed the file at all, or perhaps
+it would be easier to make different changes starting from scratch.
+This is a perfect opportunity to use svn revert:
+$ svn revert README
+Reverted 'README'
+Subversion reverts the file to its premodified state by overwriting it with the cached
+“pristine” copy from the .svn area. But also note that svn revert can undo any scheduled
+operations—for example, you might decide that you don't want to add a new file after all:
+$ svn status foo
+? foo
+$ svn add foo
+A foo
+$ svn revert foo
+Reverted 'foo'
+$ svn status foo
+? foo
+svn revert item has exactly the same effect as deleting item from your
+working copy and then running svn update -r BASE item. However, if
+you're reverting a file, svn revert has one very noticeable difference—it
+doesn't have to communicate with the repository to restore your file.
+Or perhaps you mistakenly removed a file from version control:
+$ svn status README
+$ svn delete README
+D README
+$ svn revert README
+Reverted 'README'
+$ svn status README
+Resolve Conflicts (Merging Others' Changes)
+We've already seen how svn status -u can predict conflicts. Suppose you run svn
+update and some interesting things occur:
+$ svn update
+U INSTALL
+G README
+Conflict discovered in 'bar.c'.
+Select: (p) postpone, (df) diff-full, (e) edit,
+(h) help for more options:
+The U and G codes are no cause for concern; those files cleanly absorbed changes from
+the repository. The files marked with U contained no local changes but were Updated with
+changes from the repository. The G stands for merGed, which means that the file had local
+changes to begin with, but the changes coming from the repository didn't overlap with the
+
+
+
+
+
+local changes.
+But the next two lines are part of a feature (new in Subversion 1.5) called interactive conflict
+resolution. This means that the changes from the server overlapped with your own,
+and you have the opportunity to resolve this conflict. The most commonly used options are
+displayed, but you can see all of the options by typing h:
+…
+(p) postpone - mark the conflict to be resolved later
+(df) diff-full - show all changes made to merged file
+(e) edit - change merged file in an editor
+(r) resolved - accept merged version of file
+(mf) mine-full - accept my version of entire file (ignore their changes)
+(tf) theirs-full - accept their version of entire file (lose my changes)
+(l) launch - launch external tool to resolve conflict
+(h) help - show this list
+Let's briefly review each of these options before we go into detail on what each option
+means.
+(p)ostpone
+Leave the file in a conflicted state for you to resolve after your update is complete.
+(d)iff
+Display the differences between the base revision and the conflicted file itself in unified
+diff format.
+(e)dit
+Open the file in conflict with your favorite editor, as set in the environment variable EDITOR.
+(r)esolved
+After editing a file, tell svn that you've resolved the conflicts in the file and that it should
+accept the current contents—basically that you've “resolved” the conflict.
+(m)ine-(f)ull
+Discard the newly received changes from the server and use only your local changes
+for the file under review.
+(t)heirs-(f)ull
+Discard your local changes to the file under review and use only the newly received
+changes from the server.
+(l)aunch
+Launch an external program to perform the conflict resolution. This requires a bit of
+preparation beforehand.
+(h)elp
+Show the list of all possible commands you can use in interactive conflict resolution.
+We'll cover these commands in more detail now, grouping them together by related functionality.
+Viewing conflict differences interactively
+Before deciding how to attack a conflict interactively, odds are that you'd like to see exactly
+what is in conflict, and the diff command (d) is what you'll use for this:
+…
+Select: (p) postpone, (df) diff-full, (e) edit,
+
+
+
+
+
+--- .svn/text-base/sandwich.txt.svn-base Tue Dec 11 21:33:57 2007
++++ .svn/tmp/tempfile.32.tmp Tue Dec 11 21:34:33 2007
+@@ -1 +1,5 @@
+-Just buy a sandwich.
++<<<<<<< .mine
++Go pick up a cheesesteak.
++=======
++Bring me a taco!
++>>>>>>> .r32
+…
+The first line of the diff content shows the previous contents of the working copy (the BASE
+revision), the next content line is your change, and the last content line is the change that
+was just received from the server (usually the HEAD revision). With this information in hand,
+you're ready to move on to the next action.
+Resolving conflict differences interactively
+There are four different ways to resolve conflicts interactively—two of which allow you to
+selectively merge and edit changes, and two of which allow you to simply pick a version of
+the file and move along.
+If you wish to choose some combination of your local changes, you can use the “edit” command
+(e) to manually edit the file with conflict markers in a text editor (determined by the
+EDITOR environment variable). Editing the file by hand in your favorite text editor is a
+somewhat low-tech way of remedying conflicts (see the section called “Merging conflicts by
+hand” for a walkthrough), so some people like to use fancy graphical merge tools instead.
+To use a merge tool, you need to either set the SVN_MERGE environment variable or define
+the merge-tool-cmd option in your Subversion configuration file (see the section called
+“Configuration Options” for more details). Subversion will pass four arguments to the
+merge tool: the BASE revision of the file, the revision of the file received from the server as
+part of the update, the copy of the file containing your local edits, and the merged copy of
+the file (which contains conflict markers). If your merge tool is expecting arguments in a different
+order or format, you'll need to write a wrapper script for Subversion to invoke. After
+you've edited the file, if you're satisfied with the changes you've made, you can tell Subversion
+that the edited file is no longer in conflict by using the “resolve” command (r).
+If you decide that you don't need to merge any changes, but just want to accept one version
+of the file or the other, you can either choose your changes (a.k.a. “mine”) by using
+the “mine-full” command (mf) or choose theirs by using the “theirs-full” command (tf).
+Postponing conflict resolution
+This may sound like an appropriate section for avoiding marital disagreements, but it's actually
+still about Subversion, so read on. If you're doing an update and encounter a conflict
+that you're not prepared to review or resolve, you can type p to postpone resolving a conflict
+on a file-by-file basis when you run svn update. If you're running an update and don't
+want to resolve any conflicts, you can pass the --non-interactive option to svn update,
+and any file in conflict will be marked with a C automatically.
+The C stands for conflict. This means that the changes from the server overlapped with
+your own, and now you have to manually choose between them after the update has completed.
+When you postpone a conflict resolution, svn typically does three things to assist
+you in noticing and resolving that conflict:
+• Subversion prints a C during the update and remembers that the file is in a state of conflict.
+• If Subversion considers the file to be mergeable, it places conflict markers—special
+
+
+ strings of text that delimit the “sides” of the conflict—into the file to visibly demonstrate
+the overlapping areas. (Subversion uses the svn:mime-type property to decide whether
+a file is capable of contextual, line-based merging. See the section called “File Content
+Type” to learn more.)
+• For every conflicted file, Subversion places three extra unversioned files in your working
+copy:
+filename.mine
+This is your file as it existed in your working copy before you updated your working
+copy—that is, without conflict markers. This file has only your latest changes in it. (If
+Subversion considers the file to be unmergeable, the .mine file isn't created, since it
+would be identical to the working file.)
+filename.rOLDREV
+This is the file that was the BASE revision before you updated your working copy. That
+is, the file that you checked out before you made your latest edits.
+filename.rNEWREV
+This is the file that your Subversion client just received from the server when you updated
+your working copy. This file corresponds to the HEAD revision of the repository.
+Here OLDREV is the revision number of the file in your .svn directory, and NEWREV is the
+revision number of the repository HEAD.
+For example, Sally makes changes to the file sandwich.txt, but does not yet commit
+those changes. Meanwhile, Harry commits changes to that same file. Sally updates her
+working copy before committing and she gets a conflict, which she postpones:
+$ svn update
+Conflict discovered in 'sandwich.txt'.
+Select: (p) postpone, (df) diff-full, (e) edit,
+(h)elp for more options : p
+C sandwich.txt
+Updated to revision 2.
+$ ls -1
+sandwich.txt
+sandwich.txt.mine
+sandwich.txt.r1
+sandwich.txt.r2
+At this point, Subversion will not allow Sally to commit the file sandwich.txt until the
+three temporary files are removed:
+$ svn commit -m "Add a few more things"
+svn: Commit failed (details follow):
+svn: Aborting commit: '/home/sally/svn-work/sandwich.txt' remains in conflict
+If you've postponed a conflict, you need to resolve the conflict before Subversion will allow
+you to commit your changes. You'll do this with the svn resolve command and one of several
+arguments to the --accept option.
+If you want to choose the version of the file that you last checked out before making your
+edits, choose the base argument.
+If you want to choose the version that contains only your edits, choose the mine-full argument.
+If you want to choose the version that your most recent update pulled from the server (and
+
+
+
+thus discarding your edits entirely), choose the theirs-full argument.
+However, if you want to pick and choose from your changes and the changes that your update
+fetched from the server, merge the conflicted text “by hand” (by examining and editing
+the conflict markers within the file) and then choose the working argument.
+svn resolve removes the three temporary files and accepts the version of the file that you
+specified with the --accept option, and Subversion no longer considers the file to be in a
+state of conflict:
+$ svn resolve --accept working sandwich.txt
+Resolved conflicted state of 'sandwich.txt'
+Merging conflicts by hand
+Merging conflicts by hand can be quite intimidating the first time you attempt it, but with a
+little practice, it can become as easy as falling off a bike.
+Here's an example. Due to a miscommunication, you and Sally, your collaborator, both edit
+the file sandwich.txt at the same time. Sally commits her changes, and when you go to
+update your working copy, you get a conflict and you're going to have to edit sandwich.
+txt to resolve the conflict. First, let's take a look at the file:
+$ cat sandwich.txt
+Top piece of bread
+Mayonnaise
+Lettuce
+Tomato
+Provolone
+<<<<<<< .mine
+Salami
+Mortadella
+Prosciutto
+=======
+Sauerkraut
+Grilled Chicken
+>>>>>>> .r2
+Creole Mustard
+Bottom piece of bread
+The strings of less-than signs, equals signs, and greater-than signs are conflict markers
+and are not part of the actual data in conflict. You generally want to ensure that those are
+removed from the file before your next commit. The text between the first two sets of markers
+is composed of the changes you made in the conflicting area:
+<<<<<<< .mine
+Salami
+Mortadella
+Prosciutto
+=======
+The text between the second and third sets of conflict markers is the text from Sally's commit:
+=======
+Sauerkraut
+Grilled Chicken
+>>>>>>> .r2
+Basic Usage
+29
+
+
+
+
+Usually you won't want to just delete the conflict markers and Sally's changes—she's going
+to be awfully surprised when the sandwich arrives and it's not what she wanted. This is
+where you pick up the phone or walk across the office and explain to Sally that you can't
+get sauerkraut from an Italian deli. 4 Once you've agreed on the changes you will commit,
+edit your file and remove the conflict markers:
+Top piece of bread
+Mayonnaise
+Lettuce
+Tomato
+Provolone
+Salami
+Mortadella
+Prosciutto
+Creole Mustard
+Bottom piece of bread
+Now use svn resolve, and you're ready to commit your changes:
+$ svn resolve --accept working sandwich.txt
+Resolved conflicted state of 'sandwich.txt'
+$ svn commit -m "Go ahead and use my sandwich, discarding Sally's edits."
+Note that svn resolve, unlike most of the other commands we deal with in this chapter, requires
+that you explicitly list any filenames that you wish to resolve. In any case, you want
+to be careful and use svn resolve only when you're certain that you've fixed the conflict in
+your file—once the temporary files are removed, Subversion will let you commit the file
+even if it still contains conflict markers.
+If you ever get confused while editing the conflicted file, you can always consult the three
+files that Subversion creates for you in your working copy—including your file as it was before
+you updated. You can even use a third-party interactive merging tool to examine those
+three files.
+Discarding your changes in favor of a newly fetched revision
+If you get a conflict and decide that you want to throw out your changes, you can run svn
+resolve --accept theirs-full CONFLICTED-PATH and Subversion will discard
+your edits and remove the temporary files:
+$ svn update
+Conflict discovered in 'sandwich.txt'.
+Select: (p) postpone, (df) diff-full, (e) edit,
+(h) help for more options: p
+C sandwich.txt
+Updated to revision 2.
+$ ls sandwich.*
+sandwich.txt sandwich.txt.mine sandwich.txt.r2 sandwich.txt.r1
+$ svn resolve --accept theirs-full sandwich.txt
+Resolved conflicted state of 'sandwich.txt'
+Punting: Using svn revert
+If you decide that you want to throw out your changes and start your edits again (whether
+this occurs after a conflict or anytime), just revert your changes:
+Basic Usage
+30
+
+
+4And if you ask them for it, they may very well ride you out of town on a rail.
+
+
+$ svn revert sandwich.txt
+Reverted 'sandwich.txt'
+$ ls sandwich.*
+sandwich.txt
+Note that when you revert a conflicted file, you don't have to use svn resolve.
+Commit Your Changes
+Finally! Your edits are finished, you've merged all changes from the server, and you're
+ready to commit your changes to the repository.
+The svn commit command sends all of your changes to the repository. When you commit
+a change, you need to supply a log message describing your change. Your log message
+will be attached to the new revision you create. If your log message is brief, you may wish
+to supply it on the command line using the --message (or -m) option:
+$ svn commit -m "Corrected number of cheese slices."
+Sending sandwich.txt
+Transmitting file data .
+Committed revision 3.
+However, if you've been composing your log message as you work, you may want to tell
+Subversion to get the message from a file by passing the filename with the --file (-F)
+option:
+$ svn commit -F logmsg
+Sending sandwich.txt
+Transmitting file data .
+Committed revision 4.
+If you fail to specify either the --message or --file option, Subversion will automatically
+launch your favorite editor (see the information on editor-cmd in the section called
+“Config”) for composing a log message.
+If you're in your editor writing a commit message and decide that you want to
+cancel your commit, you can just quit your editor without saving changes. If
+you've already saved your commit message, simply delete the text, save
+again, and then abort:
+$ svn commit
+Waiting for Emacs...Done
+Log message unchanged or not specified
+(a)bort, (c)ontinue, (e)dit
+a$
+The repository doesn't know or care whether your changes make any sense as a whole; it
+checks only to make sure nobody else has changed any of the same files that you did
+when you weren't looking. If somebody has done that, the entire commit will fail with a
+message informing you that one or more of your files are out of date:
+$ svn commit -m "Add another rule"
+Sending rules.txt
+Basic Usage
+31
+
+
+
+
+
+svn: Commit failed (details follow):
+svn: File '/sandwich.txt' is out of date
+…
+(The exact wording of this error message depends on the network protocol and server
+you're using, but the idea is the same in all cases.)
+At this point, you need to run svn update, deal with any merges or conflicts that result,
+and attempt your commit again.
+That covers the basic work cycle for using Subversion. Subversion offers many other features
+that you can use to manage your repository and working copy, but most of your dayto-
+day use of Subversion will involve only the commands that we've discussed so far in this
+chapter. We will, however, cover a few more commands that you'll use fairly often.
+Examining History
+Your Subversion repository is like a time machine. It keeps a record of every change ever
+committed and allows you to explore this history by examining previous versions of files
+and directories as well as the metadata that accompanies them. With a single Subversion
+command, you can check out the repository (or restore an existing working copy) exactly
+as it was at any date or revision number in the past. However, sometimes you just want to
+peer into the past instead of going into it.
+Several commands can provide you with historical data from the repository:
+svn log
+Shows you broad information: log messages with date and author information attached
+to revisions and which paths changed in each revision
+svn diff
+Shows line-level details of a particular change
+svn cat
+Retrieves a file as it existed in a particular revision number and displays it on your
+screen
+svn list
+Displays the files in a directory for any given revision
+Generating a List of Historical Changes
+To find information about the history of a file or directory, use the svn log command. svn
+log will provide you with a record of who made changes to a file or directory, at what revision
+it changed, the time and date of that revision, and—if it was provided—the log message
+that accompanied the commit:
+$ svn log
+------------------------------------------------------------------------
+r3 | sally | 2008-05-15 23:09:28 -0500 (Thu, 15 May 2008) | 1 line
+Added include lines and corrected # of cheese slices.
+------------------------------------------------------------------------
+r2 | harry | 2008-05-14 18:43:15 -0500 (Wed, 14 May 2008) | 1 line
+Added main() methods.
+------------------------------------------------------------------------
+r1 | sally | 2008-05-10 19:50:31 -0500 (Sat, 10 May 2008) | 1 line
+Basic Usage
+32
+
+
+
+Initial import
+------------------------------------------------------------------------
+Note that the log messages are printed in reverse chronological order by default. If you
+wish to see a different range of revisions in a particular order or just a single revision, pass
+the --revision (-r) option:
+$ svn log -r 5:19 # shows logs 5 through 19 in chronological order
+$ svn log -r 19:5 # shows logs 5 through 19 in reverse order
+$ svn log -r 8 # shows log for revision 8
+You can also examine the log history of a single file or directory. For example:
+$ svn log foo.c
+…$
+svn log http://foo.com/svn/trunk/code/foo.c
+…
+These will display log messages only for those revisions in which the working file (or URL)
+changed.
+Why Does svn log Not Show Me What I Just Committed?
+If you make a commit and immediately type svn log with no arguments, you may
+notice that your most recent commit doesn't show up in the list of log messages. This
+is due to a combination of the behavior of svn commit and the default behavior of
+svn log. First, when you commit changes to the repository, svn bumps only the revision
+of files (and directories) that it commits, so usually the parent directory remains
+at the older revision (See the section called “Updates and commits are separate” for
+an explanation of why). svn log then defaults to fetching the history of the directory at
+its current revision, and thus you don't see the newly committed changes. The solution
+here is to either update your working copy or explicitly provide a revision number
+to svn log by using the --revision (-r) option.
+If you want even more information about a file or directory, svn log also takes a -
+-verbose (-v) option. Because Subversion allows you to move and copy files and directories,
+it is important to be able to track path changes in the filesystem. So, in verbose
+mode, svn log will include a list of changed paths in a revision in its output:
+$ svn log -r 8 -v
+------------------------------------------------------------------------
+r8 | sally | 2008-05-21 13:19:25 -0500 (Wed, 21 May 2008) | 1 line
+Changed paths:
+M /trunk/code/foo.c
+M /trunk/code/bar.h
+A /trunk/code/doc/README
+Frozzled the sub-space winch.
+------------------------------------------------------------------------
+svn log also takes a --quiet (-q) option, which suppresses the body of the log message.
+When combined with --verbose, it gives just the names of the changed files.
+Basic Usage
+33
+
+
+
+
+Why Does svn log Give Me an Empty Response?
+After working with Subversion for a bit, most users will come across something like
+this:
+$ svn log -r 2
+------------------------------------------------------------------------
+$
+At first glance, this seems like an error. But recall that while revisions are repositorywide,
+svn log operates on a path in the repository. If you supply no path, Subversion
+uses the current working directory as the default target. As a result, if you're operating
+in a subdirectory of your working copy and attempt to see the log of a revision in
+which neither that directory nor any of its children was changed, Subversion will show
+you an empty log. If you want to see what changed in that revision, try pointing svn
+log directly at the topmost URL of your repository, as in svn log -r 2 http://
+svn.collab.net/repos/svn.
+Examining the Details of Historical Changes
+We've already seen svn diff before—it displays file differences in unified diff format; we
+used it to show the local modifications made to our working copy before committing to the
+repository.
+In fact, it turns out that there are three distinct uses of svn diff:
+• Examining local changes
+• Comparing your working copy to the repository
+• Comparing repository revisions
+Examining local changes
+As we've seen, invoking svn diff with no options will compare your working files to the
+cached “pristine” copies in the .svn area:
+$ svn diff
+Index: rules.txt
+===================================================================
+--- rules.txt (revision 3)
++++ rules.txt (working copy)
+@@ -1,4 +1,5 @@
+Be kind to others
+Freedom = Responsibility
+Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+Comparing working copy to repository
+If a single --revision (-r) number is passed, your working copy is compared to the specified
+revision in the repository:
+Basic Usage
+34
+
+
+
+
+$ svn diff -r 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt (revision 3)
++++ rules.txt (working copy)
+@@ -1,4 +1,5 @@
+Be kind to others
+Freedom = Responsibility
+Everything in moderation
+-Chew with your mouth open
++Chew with your mouth closed
++Listen when others are speaking
+$
+Comparing repository revisions
+If two revision numbers, separated by a colon, are passed via --revision (-r), the two
+revisions are directly compared:
+$ svn diff -r 2:3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt (revision 2)
++++ rules.txt (revision 3)
+@@ -1,4 +1,4 @@
+Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+Everything in moderation
+Chew with your mouth open
+$
+A more convenient way of comparing one revision to the previous revision is to use the -
+-change (-c) option:
+$ svn diff -c 3 rules.txt
+Index: rules.txt
+===================================================================
+--- rules.txt (revision 2)
++++ rules.txt (revision 3)
+@@ -1,4 +1,4 @@
+Be kind to others
+-Freedom = Chocolate Ice Cream
++Freedom = Responsibility
+Everything in moderation
+Chew with your mouth open
+$
+Lastly, you can compare repository revisions even when you don't have a working copy on
+your local machine, just by including the appropriate URL on the command line:
+$ svn diff -c 5 http://svn.example.com/repos/example/trunk/text/rules.txt
+…$ Browsing the Repository
+Using svn cat and svn list, you can view various revisions of files and directories without
+Basic Usage
+35
+
+
+
+changing the working revision of your working copy. In fact, you don't even need a working
+copy to use either one.
+svn cat
+If you want to examine an earlier version of a file and not necessarily the differences
+between two files, you can use svn cat:
+$ svn cat -r 2 rules.txt
+Be kind to others
+Freedom = Chocolate Ice Cream
+Everything in moderation
+Chew with your mouth open
+$
+You can also redirect the output directly into a file:
+$ svn cat -r 2 rules.txt > rules.txt.v2
+$
+svn list
+The svn list command shows you what files are in a repository directory without actually
+downloading the files to your local machine:
+$ svn list http://svn.collab.net/repos/svn
+README
+branches/
+clients/
+tags/
+trunk/
+If you want a more detailed listing, pass the --verbose (-v) flag to get output like this:
+$ svn list -v http://svn.collab.net/repos/svn
+20620 harry 1084 Jul 13 2006 README
+23339 harry Feb 04 01:40 branches/
+21282 sally Aug 27 09:41 developer-resources/
+23198 harry Jan 23 17:17 tags/
+23351 sally Feb 05 13:26 trunk/
+The columns tell you the revision at which the file or directory was last modified, the user
+who modified it, the size if it is a file, the date it was last modified, and the item's name.
+The svn list command with no arguments defaults to the repository URL of
+the current working directory, not the local working copy directory. After all, if
+you want a listing of your local directory, you could use just plain ls (or any
+reasonable non-Unixy equivalent).
+Fetching Older Repository Snapshots
+In addition to all of the previous commands, you can use svn update and svn checkout
+with the --revision option to take an entire working copy “back in time”: 5
+
+
+$ svn checkout -r 1729 # Checks out a new working copy at r1729
+…$
+svn update -r 1729 # Updates an existing working copy to r1729
+…
+Many Subversion newcomers attempt to use the preceding svn update example
+to “undo” committed changes, but this won't work as you can't commit
+changes that you obtain from backdating a working copy if the changed files
+have newer revisions. See the section called “Resurrecting Deleted Items” for
+a description of how to “undo” a commit.
+Lastly, if you're building a release and wish to bundle up your files from Subversion but
+don't want those pesky .svn directories in the way, you can use svn export to create a
+local copy of all or part of your repository sans .svn directories. As with svn update and
+svn checkout, you can also pass the --revision option to svn export:
+$ svn export http://svn.example.com/svn/repos1 # Exports latest revision
+…$
+svn export http://svn.example.com/svn/repos1 -r 1729
+# Exports revision r1729
+…
+Sometimes You Just Need to Clean Up
+Now that we've covered the day-to-day tasks that you'll frequently use Subversion for, we'll
+review a few administrative tasks relating to your working copy.
+Disposing of a Working Copy
+Subversion doesn't track either the state or the existence of working copies on the server,
+so there's no server overhead to keeping working copies around. Likewise, there's no need
+to let the server know that you're going to delete a working copy.
+If you're likely to use a working copy again, there's nothing wrong with just leaving it on
+disk until you're ready to use it again, at which point all it takes is an svn update to bring it
+up to date and ready for use.
+However, if you're definitely not going to use a working copy again, you can safely delete
+the entire thing, but you'd be well served to take a look through the working copy for unversioned
+files. To find these files, run svn status and review any files that are prefixed with
+a ? to make certain that they're not of importance. After you're done reviewing, you can
+safely delete your working copy.
+Recovering from an Interruption
+When Subversion modifies your working copy (or any information within .svn), it tries to
+do so as safely as possible. Before changing the working copy, Subversion writes its intentions
+to a logfile. Next, it executes the commands in the logfile to apply the requested
+change, holding a lock on the relevant part of the working copy while it works—to prevent
+other Subversion clients from accessing the working copy mid-change. Finally, Subversion
+removes the logfile. Architecturally, this is similar to a journaled filesystem. If a Subversion
+operation is interrupted (e.g, if the process is killed or if the machine crashes), the logfiles
+remain on disk. By reexecuting the logfiles, Subversion can complete the previously started
+operation, and your working copy can get itself back into a consistent state.
+
+
+
+And this is exactly what svn cleanup does: it searches your working copy and runs any
+leftover logs, removing working copy locks in the process. If Subversion ever tells you that
+some part of your working copy is “locked,” this is the command that you should run. Also,
+svn status will display an L next to locked items:
+$ svn status
+L somedir
+M somedir/foo.c
+$ svn cleanup
+$ svn status
+M somedir/foo.c
+Don't confuse these working copy locks with the ordinary locks that Subversion users create
+when using the lock-modify-unlock model of concurrent version control; see the sidebar
+The Three Meanings of “Lock” for clarification.
+Summary
+Now we've covered most of the Subversion client commands. Notable exceptions are
+those dealing with branching and merging (see Chapter 4, Branching and Merging) and
+properties (see the section called “Properties”). However, you may want to take a moment
+to skim through Chapter 9, Subversion Complete Reference to get an idea of all the different
+commands that Subversion has—and how you can use them to make your work easier.
+Basic Usage
+38
+
+
+
+Chapter 5 -  Repository administration
+--------------------------------------
+
+$ # Create a repository
+$ svnadmin create /var/svn/repos
+$
+This creates a new repository in the directory /var/svn/repos, and with the default
+filesystem data store. Prior to Subversion 1.2, the default was to use Berkeley DB; the default
+is now FSFS. You can explicitly choose the filesystem type using the --fs-type argument,
+which accepts as a parameter either fsfs or bdb.
+$ # Create an FSFS-backed repository
+$ svnadmin create --fs-type fsfs /var/svn/repos
+$
+# Create a Berkeley-DB-backed repository
+$ svnadmin create --fs-type bdb /var/svn/repos
+
+
+svnadmin
+The svnadmin program is the repository administrator's best friend. Besides providing the
+ability to create Subversion repositories, this program allows you to perform several maintenance
+operations on those repositories. The syntax of svnadmin is similar to that of other
+Subversion command-line programs:
+
+$ svnadmin help
+general usage: svnadmin SUBCOMMAND REPOS_PATH [ARGS & OPTIONS ...]
+Type 'svnadmin help <subcommand>' for help on a specific subcommand.
+Type 'svnadmin --version' to see the program version and FS modules.
+Available subcommands:
+crashtest
+create
+deltify
+
+
+
+svnlook
+svnlook is a tool provided by Subversion for examining the various revisions and transactions
+(which are revisions in the making) in a repository. No part of this program attempts
+to change the repository. svnlook is typically used by the repository hooks for reporting the
+changes that are about to be committed (in the case of the pre-commit hook) or that were
+just committed (in the case of the post-commit hook) to the repository. A repository administrator
+may use this tool for diagnostic purposes.
+svnlook has a straightforward syntax:
+$ svnlook help
+general usage: svnlook SUBCOMMAND REPOS_PATH [ARGS & OPTIONS ...]
+Note: any subcommand which takes the '--revision' and '--transaction'
+options will, if invoked without one of those options, act on
+the repository's youngest revision.
+Type 'svnlook help <subcommand>' for help on a specific subcommand.
+Type 'svnlook --version' to see the program version and FS modules.
+…
+Most of svnlook's subcommands can operate on either a revision or a transaction tree,
+printing information about the tree itself, or how it differs from the previous revision of the
+repository. You use the --revision (-r) and --transaction (-t) options to specify
+which revision or transaction, respectively, to examine. In the absence of both the -
+-revision (-r) and --transaction (-t) options, svnlook will examine the youngest
+(or HEAD) revision in the repository. So the following two commands do exactly the same
+thing when 19 is the youngest revision in the repository located at /var/svn/repos:
+$ svnlook info /var/svn/repos
+$ svnlook info /var/svn/repos -r 19
+Repository Administration
+131
+
+
+One exception to these rules about subcommands is the svnlook youngest subcommand,
+which takes no options and simply prints out the repository's youngest revision number:
+$ svnlook youngest /var/svn/repos
+19
+$
+Keep in mind that the only transactions you can browse are uncommitted
+ones. Most repositories will have no such transactions because transactions
+are usually either committed (in which case, you should access them as revision
+with the --revision (-r) option) or aborted and removed.
+Output from svnlook is designed to be both human- and machine-parsable. Take, as an
+example, the output of the svnlook info subcommand:
+$ svnlook info /var/svn/repos
+sally
+2002-11-04 09:29:13 -0600 (Mon, 04 Nov 2002)
+27
+Added the usual
+Greek tree.
+$
+The output of svnlook info consists of the following, in the order given:
+1. The author, followed by a newline
+2. The date, followed by a newline
+3. The number of characters in the log message, followed by a newline
+4. The log message itself, followed by a newline
+This output is human-readable, meaning items such as the datestamp are displayed using
+a textual representation instead of something more obscure (such as the number of nanoseconds
+since the Tastee Freez guy drove by). But the output is also machine-parsable—
+because the log message can contain multiple lines and be unbounded in length,
+svnlook provides the length of that message before the message itself. This allows scripts
+and other wrappers around this command to make intelligent decisions about the log message,
+such as how much memory to allocate for the message, or at least how many bytes
+to skip in the event that this output is not the last bit of data in the stream.
+svnlook can perform a variety of other queries: displaying subsets of bits of information
+we've mentioned previously, recursively listing versioned directory trees, reporting which
+paths were modified in a given revision or transaction, showing textual and property differences
+made to files and directories, and so on. See the section called “svnlook” for a full
+reference of svnlook's features.
+svndumpfilter
+While it won't be the most commonly used tool at the administrator's disposal, svndumpfilter
+provides a very particular brand of useful functionality—the ability to quickly and easily
+modify streams of Subversion repository history data by acting as a path-based filter.
+The syntax of svndumpfilter is as follows:
+
+
+
+$ svndumpfilter help
+general usage: svndumpfilter SUBCOMMAND [ARGS & OPTIONS ...]
+Type "svndumpfilter help <subcommand>" for help on a specific subcommand.
+Type 'svndumpfilter --version' to see the program version.
+Available subcommands:
+exclude
+include
+help (?, h)
+There are only two interesting subcommands: svndumpfilter exclude and svndumpfilter
+include. They allow you to make the choice between implicit or explicit inclusion of paths
+in the stream. You can learn more about these subcommands and svndumpfilter's unique
+purpose later in this chapter, in the section called “Filtering Repository History”.
+svnsync
+The svnsync program, which is new to the 1.4 release of Subversion, provides all the
+functionality required for maintaining a read-only mirror of a Subversion repository. The
+program really has one job—to transfer one repository's versioned history into another repository.
+And while there are few ways to do that, its primary strength is that it can operate
+remotely—the “source” and “sink” 7 repositories may be on different computers from each
+other and from svnsync itself.
+As you might expect, svnsync has a syntax that looks very much like every other program
+we've mentioned in this chapter:
+$ svnsync help
+general usage: svnsync SUBCOMMAND DEST_URL [ARGS & OPTIONS ...]
+Type 'svnsync help <subcommand>' for help on a specific subcommand.
+Type 'svnsync --version' to see the program version and RA modules.
+Available subcommands:
+initialize (init)
+synchronize (sync)
+copy-revprops
+help (?, h)
+$
+We talk more about replicating repositories with svnsync later in this chapter (see the section
+called “Repository Replication”).
+
+
+
+
+Commit Log Message Correction
+Sometimes a user will have an error in her log message (a misspelling or some misinformation,
+perhaps). If the repository is configured (using the pre-revprop-change hook;
+see the section called “Implementing Repository Hooks”) to accept changes to this log
+message after the commit is finished, the user can “fix” her log message remotely using
+svn propset (see svn propset). However, because of the potential to lose information
+forever, Subversion repositories are not, by default, configured to allow changes to unversioned
+properties—except by an administrator.
+If a log message needs to be changed by an administrator, this can be done using svnadmin
+setlog. This command changes the log message (the svn:log property) on a given
+revision of a repository, reading the new value from a provided file.
+$ echo "Here is the new, correct log message" > newlog.txt
+$ svnadmin setlog myrepos newlog.txt -r 388
+The svnadmin setlog command, by default, is still bound by the same protections against
+modifying unversioned properties as a remote client is—the pre- and post-revprop-
+change hooks are still triggered, and therefore must be set up to accept changes of
+this nature. But an administrator can get around these protections by passing the -
+
+-bypass-hooks option to the svnadmin setlog command.
+Remember, though, that by bypassing the hooks, you are likely avoiding such
+things as email notifications of property changes, backup systems that track
+unversioned property changes, and so on. In other words, be very careful
+about what you are changing, and how you change it.
+
+
+
+Migrating Repository Data Elsewhere
+A Subversion filesystem has its data spread throughout files in the repository, in a fashion
+generally understood by (and of interest to) only the Subversion developers themselves.
+However, circumstances may arise that call for all, or some subset, of that data to be
+copied or moved into another repository.
+Subversion provides such functionality by way of repository dump streams. A repository
+dump stream (often referred to as a “dump file” when stored as a file on disk) is a portable,
+flat file format that describes the various revisions in your repository—what was changed,
+by whom, when, and so on. This dump stream is the primary mechanism used to marshal
+versioned history—in whole or in part, with or without modification—between repositories.
+And Subversion provides the tools necessary for creating and loading these dump
+streams: the svnadmin dump and svnadmin load subcommands, respectively.
+While the Subversion repository dump format contains human-readable portions
+and a familiar structure (it resembles an RFC 822 format, the same type
+of format used for most email), it is not a plain-text file format. It is a binary file
+format, highly sensitive to meddling. For example, many text editors will corrupt
+the file by automatically converting line endings.
+There are many reasons for dumping and loading Subversion repository data. Early in
+Subversion's life, the most common reason was due to the evolution of Subversion itself.
+As Subversion matured, there were times when changes made to the backend database
+schema caused compatibility issues with previous versions of the repository, so users had
+to dump their repository data using the previous version of Subversion and load it into a
+freshly created repository with the new version of Subversion. Now, these types of schema
+changes haven't occurred since Subversion's 1.0 release, and the Subversion developers
+promise not to force users to dump and load their repositories when upgrading between
+minor versions (such as from 1.3 to 1.4) of Subversion. But there are still other reasons for
+dumping and loading, including re-deploying a Berkeley DB repository on a new OS or
+CPU architecture, switching between the Berkeley DB and FSFS backends, or (as we'll
+cover later in this chapter in the section called “Filtering Repository History”) purging versioned
+data from repository history.
+The Subversion repository dump format describes versioned repository
+changes only. It will not carry any information about uncommitted transactions,
+user locks on filesystem paths, repository or server configuration customizations
+(including hook scripts), and so on.
+Whatever your reason for migrating repository history, using the svnadmin dump and
+svnadmin load subcommands is straightforward. svnadmin dump will output a range of
+repository revisions that are formatted using Subversion's custom filesystem dump format.
+The dump format is printed to the standard output stream, while informative messages are
+printed to the standard error stream. This allows you to redirect the output stream to a file
+while watching the status output in your terminal window. For example:
+$ svnlook youngest myrepos
+26
+$ svnadmin dump myrepos > dumpfile
+* Dumped revision 0.
+* Dumped revision 1.
+Repository Administration
+139
+
+
+
+…*
+Dumped revision 25.
+* Dumped revision 26.
+At the end of the process, you will have a single file (dumpfile in the previous example)
+that contains all the data stored in your repository in the requested range of revisions. Note
+that svnadmin dump is reading revision trees from the repository just like any other
+“reader” process would (e.g., svn checkout), so it's safe to run this command at any time.
+The other subcommand in the pair, svnadmin load, parses the standard input stream as a
+Subversion repository dump file and effectively replays those dumped revisions into the
+target repository for that operation. It also gives informative feedback, this time using the
+standard output stream:
+$ svnadmin load newrepos < dumpfile
+<<< Started new txn, based on original revision 1
+* adding path : A ... done.
+* adding path : A/B ... done.
+…
+------- Committed new rev 1 (loaded from original rev 1) >>>
+<<< Started new txn, based on original revision 2
+* editing path : A/mu ... done.
+* editing path : A/D/G/rho ... done.
+------- Committed new rev 2 (loaded from original rev 2) >>>
+…
+<<< Started new txn, based on original revision 25
+* editing path : A/D/gamma ... done.
+------- Committed new rev 25 (loaded from original rev 25) >>>
+<<< Started new txn, based on original revision 26
+* adding path : A/Z/zeta ... done.
+* editing path : A/mu ... done.
+------- Committed new rev 26 (loaded from original rev 26) >>>
+The result of a load is new revisions added to a repository—the same thing you get by
+making commits against that repository from a regular Subversion client. Just as in a commit,
+you can use hook programs to perform actions before and after each of the commits
+made during a load process. By passing the --use-pre-commit-hook and -
+-use-post-commit-hook options to svnadmin load, you can instruct Subversion to execute
+the pre-commit and post-commit hook programs, respectively, for each loaded revision.
+You might use these, for example, to ensure that loaded revisions pass through the
+same validation steps that regular commits pass through. Of course, you should use these
+options with care—if your post-commit hook sends emails to a mailing list for each new
+commit, you might not want to spew hundreds or thousands of commit emails in rapid succession
+at that list! You can read more about the use of hook scripts in the section called
+“Implementing Repository Hooks”.
+Note that because svnadmin uses standard input and output streams for the repository
+dump and load processes, people who are feeling especially saucy can try things such as
+this (perhaps even using different versions of svnadmin on each side of the pipe):
+$ svnadmin create newrepos
+$ svnadmin dump oldrepos | svnadmin load newrepos
+Repository Administration
+140
+
+
+By default, the dump file will be quite large—much larger than the repository itself. That's
+because by default every version of every file is expressed as a full text in the dump file.
+This is the fastest and simplest behavior, and it's nice if you're piping the dump data directly
+into some other process (such as a compression program, filtering program, or loading
+process). But if you're creating a dump file for longer-term storage, you'll likely want to
+save disk space by using the --deltas option. With this option, successive revisions of
+files will be output as compressed, binary differences—just as file revisions are stored in a
+repository. This option is slower, but it results in a dump file much closer in size to the original
+repository.
+We mentioned previously that svnadmin dump outputs a range of revisions. Use the -
+-revision (-r) option to specify a single revision, or a range of revisions, to dump. If you
+omit this option, all the existing repository revisions will be dumped.
+$ svnadmin dump myrepos -r 23 > rev-23.dumpfile
+$ svnadmin dump myrepos -r 100:200 > revs-100-200.dumpfile
+As Subversion dumps each new revision, it outputs only enough information to allow a future
+loader to re-create that revision based on the previous one. In other words, for any given
+revision in the dump file, only the items that were changed in that revision will appear in
+the dump. The only exception to this rule is the first revision that is dumped with the current
+svnadmin dump command.
+By default, Subversion will not express the first dumped revision as merely differences to
+be applied to the previous revision. For one thing, there is no previous revision in the dump
+file! And second, Subversion cannot know the state of the repository into which the dump
+data will be loaded (if it ever is). To ensure that the output of each execution of svnadmin
+dump is self-sufficient, the first dumped revision is, by default, a full representation of
+every directory, file, and property in that revision of the repository.
+However, you can change this default behavior. If you add the --incremental option
+when you dump your repository, svnadmin will compare the first dumped revision against
+the previous revision in the repository—the same way it treats every other revision that
+gets dumped. It will then output the first revision exactly as it does the rest of the revisions
+in the dump range—mentioning only the changes that occurred in that revision. The benefit
+of this is that you can create several small dump files that can be loaded in succession, instead
+of one large one, like so:
+
+LOAD DUMPFILE INTO NEW REPOSITORY
+
+$ svnadmin dump myrepos -r 0:1000 > dumpfile1
+$ svnadmin dump myrepos -r 1001:2000 --incremental > dumpfile2
+$ svnadmin dump myrepos -r 2001:3000 --incremental > dumpfile3
+These dump files could be loaded into a new repository with the following command sequence:
+$ svnadmin load newrepos < dumpfile1
+$ svnadmin load newrepos < dumpfile2
+$ svnadmin load newrepos < dumpfile3
+Another neat trick you can perform with this --incremental option involves appending to
+an existing dump file a new range of dumped revisions. For example, you might have a
+post-commit hook that simply appends the repository dump of the single revision that
+triggered the hook. Or you might have a script that runs nightly to append dump file data
+for all the revisions that were added to the repository since the last time the script ran.
+Used like this, svnadmin dump can be one way to back up changes to your repository
+over time in case of a system crash or some other catastrophic event.
+Repository Administration
+141
+
+
+MERGE REPOSITORIES
+
+The dump format can also be used to merge the contents of several different repositories
+into a single repository. By using the --parent-dir option of svnadmin load, you can
+specify a new virtual root directory for the load process. That means if you have dump files
+for three repositories—say calc-dumpfile, cal-dumpfile, and ss-dumpfile—you
+can first create a new repository to hold them all:
+$ svnadmin create /var/svn/projects
+$
+Then, make new directories in the repository that will encapsulate the contents of each of
+the three previous repositories:
+$ svn mkdir -m "Initial project roots" \
+file:///var/svn/projects/calc \
+file:///var/svn/projects/calendar \
+file:///var/svn/projects/spreadsheet
+Committed revision 1.
+$
+Lastly, load the individual dump files into their respective locations in the new repository:
+$ svnadmin load /var/svn/projects --parent-dir calc < calc-dumpfile
+…$
+svnadmin load /var/svn/projects --parent-dir calendar < cal-dumpfile
+…$
+svnadmin load /var/svn/projects --parent-dir spreadsheet < ss-dumpfile
+…$
+We'll mention one final way to use the Subversion repository dump format—conversion
+from a different storage mechanism or version control system altogether. Because the
+dump file format is, for the most part, human-readable, it should be relatively easy to describe
+generic sets of changes—each of which should be treated as a new revision—using
+this file format. In fact, the cvs2svn utility (see the section called “Converting a Repository
+from CVS to Subversion”) uses the dump format to represent the contents of a CVS repository
+so that those contents can be copied into a Subversion repository.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 16 14:04:36 EST 2009] INSTALLED SUBVERSION ON solexa>
+
+
+
+yum install subversion
+
+
+See http://subversion.tigris.org/
+
+H:\>svn help import
+import: Commit an unversioned file or tree into the repository.
+usage: import [PATH] URL
+
+  Recursively commit a copy of PATH to URL.
+  If PATH is omitted '.' is assumed.
+  Parent directories are created as necessary in the repository.
+  If PATH is a directory, the contents of the directory are added
+  directly under URL.
+  Unversionable items such as device files and pipes are ignored
+  if --force is specified.
+
+Valid options:
+  -q [--quiet]             : print nothing, or only summary information
+  -N [--non-recursive]     : obsolete; try --depth=files or --depth=immediates
+  --depth ARG              : limit operation by depth ARG ('empty', 'files',
+                            'immediates', or 'infinity')
+  --auto-props             : enable automatic properties
+  --force                  : force operation to run
+  --no-auto-props          : disable automatic properties
+  -m [--message] ARG       : specify log message ARG
+  -F [--file] ARG          : read log message from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd ARG         : use ARG as external editor
+  --encoding ARG           : treat value as being in charset encoding ARG
+  --with-revprop ARG       : set revision property ARG in new revision
+                             using the name[=value] format
+  --no-ignore              : disregard default and svn:ignore property ignores
+
+Global options:
+  --username ARG           : specify a username ARG
+  --password ARG           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir ARG         : read user configuration files from directory ARG
+
+
+
+
+</entry>
+
+
+
+<entry [Tues Dec 02 23:09:36 EDT 2008] USED TORTOISE-SVN TO COMMIT Bioptic2 TO C:\svn\Bioptic2>
+
+
+
+1. Browse to C:\svn\Bioptic2
+
+2. Right-click inside folder and select 'Checkout' to C:\svn-checkout\Bioptic2
+
+3. Copy files in C:\DATA\base\html\Bioptic2 to C:\svn-checkout\Bioptic2
+
+4. Right-click inside C:\svn-checkout\Bioptic2 and 'Commit'
+
+5. 
+
+
+</entry>
+
+
+
+<entry [Fri Oct 17 15:23:36 EDT 2008] COMMAND LINE CREATE A SUBVERSION PROJECT>
+
+
+
+To create a Subversion project at /var/svn/project, issue these commands to get SVN up and running:
+
+  $ mkdir /var/svn
+  $ mkdir /var/svn/project
+  $ mkdir /tmp/project
+  $ mkdir /tmp/project/branches
+  $ mkdir /tmp/project/tags
+  $ mkdir /tmp/project/trunk
+  $ svnadmin create /var/svn/project
+  $ svn import /tmp/project file:///var/svn/project -m "initial import"
+  $ rm -rf /tmp/project
+
+Fix permissions to the repository:
+
+  $ find /var/svn/project -type f -exec chmod 660 {} \;
+  $ find /var/svn/project -type d -exec chmod 2770 {} \;
+  $ chown -R root.www-data /var/svn/project
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct  8 17:56:57 EDT 2008] INSTALLED SUBVERSION ON WINDOWS AND CREATED repository>
+
+
+
+C:> cd C:\DATA\22-bioptic\subversion>
+
+C:\DATA\22-bioptic\subversion>dir
+Directory of C:\DATA\22-bioptic\subversion
+
+10/08/2008  05:52 PM    <DIR>          .
+10/08/2008  05:52 PM    <DIR>          ..
+10/02/2008  05:35 PM            25,394 CollabNet Subversion Downloads.htm
+10/02/2008  05:35 PM    <DIR>          CollabNet Subversion Downloads_files
+10/08/2008  05:52 PM            23,166 subversion create respository ch05s02.htm
+l
+10/08/2008  05:52 PM    <DIR>          subversion create respository ch05s02_fil
+es
+10/02/2008  05:32 PM            24,509 subversion features.htm
+10/02/2008  05:32 PM    <DIR>          subversion features_files
+               3 File(s)         73,069 bytes
+               5 Dir(s)  26,765,684,736 bytes free
+
+C:\DATA\22-bioptic\subversion>svnadmin create repository
+C:\DATA\22-bioptic\subversion>cd repository
+C:\DATA\22-bioptic\subversion\repository>dir
+ Volume in drive C has no label.
+ Volume Serial Number is 1FC3-814D
+
+ Directory of C:\DATA\22-bioptic\subversion\repository
+
+10/08/2008  05:54 PM    <DIR>          .
+10/08/2008  05:54 PM    <DIR>          ..
+10/08/2008  05:54 PM    <DIR>          conf
+10/08/2008  05:54 PM    <DIR>          db
+10/08/2008  05:54 PM                 2 format
+10/08/2008  05:54 PM    <DIR>          hooks
+10/08/2008  05:54 PM    <DIR>          locks
+10/08/2008  05:54 PM               234 README.txt
+               2 File(s)            236 bytes
+               6 Dir(s)  26,765,598,720 bytes free
+
+
+
+GET HELP INFO:
+
+
+H:\> svn help
+
+usage: svn <subcommand> [options] [args]
+Subversion command-line client, version 1.5.2.
+Type 'svn help <subcommand>' for help on a specific subcommand.
+Type 'svn --version' to see the program version and RA modules
+  or 'svn --version --quiet' to see just the version number.
+
+Most subcommands take file and/or directory arguments, recursing
+on the directories.  If no arguments are supplied to such a
+command, it recurses on the current directory (inclusive) by default.
+
+Available subcommands:
+   add
+   blame (praise, annotate, ann)
+   cat
+   changelist (cl)
+   checkout (co)
+   cleanup
+   commit (ci)
+   copy (cp)
+   delete (del, remove, rm)
+   diff (di)
+   export
+   help (?, h)
+   import
+   info
+   list (ls)
+   lock
+   log
+   merge
+   mergeinfo
+   mkdir
+   move (mv, rename, ren)
+   propdel (pdel, pd)
+   propedit (pedit, pe)
+   propget (pget, pg)
+   proplist (plist, pl)
+   propset (pset, ps)
+   resolve
+   resolved
+   revert
+   status (stat, st)
+   switch (sw)
+   unlock
+   update (up)
+
+Subversion is a tool for version control.
+For additional information, see http://subversion.tigris.org/
+
+H:\>svn help import
+import: Commit an unversioned file or tree into the repository.
+usage: import [PATH] URL
+
+  Recursively commit a copy of PATH to URL.
+  If PATH is omitted '.' is assumed.
+  Parent directories are created as necessary in the repository.
+  If PATH is a directory, the contents of the directory are added
+  directly under URL.
+  Unversionable items such as device files and pipes are ignored
+  if --force is specified.
+
+Valid options:
+  -q [--quiet]             : print nothing, or only summary information
+  -N [--non-recursive]     : obsolete; try --depth=files or --depth=immediates
+  --depth ARG              : limit operation by depth ARG ('empty', 'files',
+                            'immediates', or 'infinity')
+  --auto-props             : enable automatic properties
+  --force                  : force operation to run
+  --no-auto-props          : disable automatic properties
+  -m [--message] ARG       : specify log message ARG
+  -F [--file] ARG          : read log message from file ARG
+  --force-log              : force validity of log message source
+  --editor-cmd ARG         : use ARG as external editor
+  --encoding ARG           : treat value as being in charset encoding ARG
+  --with-revprop ARG       : set revision property ARG in new revision
+                             using the name[=value] format
+  --no-ignore              : disregard default and svn:ignore property ignores
+
+Global options:
+  --username ARG           : specify a username ARG
+  --password ARG           : specify a password ARG
+  --no-auth-cache          : do not cache authentication tokens
+  --non-interactive        : do no interactive prompting
+  --config-dir ARG         : read user configuration files from directory ARG
+
+
+
+
+
++++++++++++++++++++++</entry>
+
+
+
+<entry [Sun Jul 20 22:12:33 EDT 2008] installed subversion ON zion>
+
+
+        
+yum install subversion
+
+    Installed: subversion.x86_64 0:1.4.2-2.el5 subversion.i386 0:1.4.2-2.el5
+    Dependency Installed: apr.i386 0:1.2.7-11 apr-util.i386 0:1.2.7-7.el5 neon.i386 0:0.25.5-5.1 neon.x86_64 0:0.25.5-5.1 perl-URI.noarch 0:1.35-3 postgresql-libs.i386 0:8.1.11-1.el5_1.1 sqlite.i386 0:3.3.6-2
+    Complete!
+
+

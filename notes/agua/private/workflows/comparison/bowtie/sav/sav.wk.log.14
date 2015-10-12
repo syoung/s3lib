@@ -1,0 +1,125 @@
+[workflow sav]
+2011-01-30 11:46:26
+
+Workflow:	sav
+Started: 2011-01-30 11:44:46
+Stopped: 2011-01-30 11:45:21
+Duration: 0 hrs 0 mins 35 secs
+
+
+	Application	1	snptosav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 1
+	started: 2011-01-28 14:30:44
+	stopped: 2011-01-29 02:38:01
+	duration: 12 hrs 7 mins 17 secs
+
+
+
+	Application	2	filtersav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 1
+	started: 2011-01-29 21:33:37
+	stopped: 2011-01-29 21:34:12
+	duration: 0 hrs 0 mins 35 secs
+
+
+
+	Application	3	vendbsnp
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+	status: completed
+	locked: 0
+	started: 2011-01-30 11:44:46
+	stopped: 2011-01-30 11:45:21
+	duration: 0 hrs 0 mins 35 secs
+
+
+
+	Application	4	vennnondbsnp
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+	locked: 0
+
+
+
+
+[app 4 vennnondbsnp]
+2011-01-30 11:46:26
+
+  Application:
+  name           vennnondbsnp
+  owner          anonymous
+  ordinal        4
+  locked         0
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl \
+  description    Do Venn analysis of non-dbSNP SNPs with increasing read depth
+
+    Parameters:
+    cluster        LSF \
+    cpus           1 \
+    executable     /nethome/syoung/0.5/bin/apps/venn/snpVenn.pl \
+    label          bowtie-savvenn-non-dbsnp \
+    loop           distributed \
+    looplabel      bowtie-savvenn-non-dbsnp \
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie/savvenn-non-dbsnp.out
+    maxjobs        1000 \
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%-non-dbsnp.sav \
+    querylabel     bowtie-%REPLICATE%-non-dbsnp \
+    queue          small \
+    replicates     1-33 \
+    suffix         sav \
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-33-non-dbsnp.sav \
+    targetlabel    bowtie-33-non-dbsnp \
+    walltime       24 \
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \ \
+ --outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \ \
+ --replicates 1-33 \ \
+ --loop distributed \ \
+ --looplabel bowtie-savvenn-non-dbsnp \ \
+ --executable /nethome/syoung/0.5/bin/apps/venn/snpVenn.pl \ \
+ --queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%-non-dbsnp.sav \ \
+ --targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-33-non-dbsnp.sav \ \
+ --querylabel bowtie-%REPLICATE%-non-dbsnp \ \
+ --targetlabel bowtie-33-non-dbsnp \ \
+ --label bowtie-savvenn-non-dbsnp \ \
+ --suffix sav \ \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \ \
+ --maxjobs 1000 \ \
+ --queue small \ \
+ --cluster LSF \ \
+ --walltime 24 \ \
+ --cpus 1 \ \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie/savvenn-non-dbsnp.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie/savvenn-non-dbsnp.out
+
+
+------------------------------------------------------------
+---[status bowtie-savvenn-non-dbsnp: completed ]---
+------------------------------------------------------------
+
+Run time: 00:00:34
+Completed /nethome/syoung/0.5/bin/apps/logic/loop.pl
+11:47AM, 30 January 2011
+****************************************
+
+
+
+
+Job label 'bowtie-savvenn-non-dbsnp' completion status: completed
+
+
+Completed workflow sav
+2011-01-30 11:47:02

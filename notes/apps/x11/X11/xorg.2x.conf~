@@ -1,0 +1,91 @@
+Section "ServerLayout"
+	Identifier     "Nvidia-Layout"
+	Screen	        0  "DisplayLinkScreen" 0 0
+	Screen          1  "Screen1" LeftOf "DisplayLinkScreen"
+	Screen          2  "Screen2" Below "DisplayLinkScreen"
+	Option         "Xinerama" "off"
+    Option         "Clone" "on"
+EndSection
+
+Section "Device"
+	Identifier      "Default Device"
+	Driver  "fglrx"
+EndSection
+
+Section "Module"
+	Load    "glx"
+EndSection
+
+Section "Device"
+	Identifier      "DisplayLinkDevice"
+	driver          "displaylink"
+	Option  "fbdev" "/dev/fb0"
+EndSection
+
+Section "Monitor"
+	Identifier      "DisplayLinkMonitor"
+EndSection
+
+Section "Screen"
+	Identifier      "DisplayLinkScreen"
+	Device          "DisplayLinkDevice"
+	Monitor         "DisplayLinkMonitor"
+	SubSection "Display"
+		Depth   24
+		Modes   "1280x1024" "1024x768" "800x600"
+		Virtual	2173 1950
+	EndSubSection
+EndSection
+
+
+Section "Monitor"
+	Identifier "VX2235wm"
+	Option "DPMS"
+EndSection
+
+
+Section "Screen"
+	Identifier      "Default Screen"
+	DefaultDepth    24
+	SubSection "Display"
+		Virtual	2173 1950
+	EndSubSection
+EndSection
+
+Section "Screen"
+	Identifier "Screen1"
+	Device "Default Device"
+	Monitor "VX2235wm"
+	DefaultDepth 24
+	SubSection "Display"
+		Depth 1
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+	SubSection "Display"
+		Depth 4
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+	SubSection "Display"
+		Depth 8
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+	SubSection "Display"
+		Depth 15
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+	SubSection "Display"
+		Depth 16
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+	SubSection "Display"
+		Depth 24
+		Modes "1680x1050" "1600x1200" "1440x1440" "1400x1050" "1280x1024" "1280x960" "1152x864" "1024x768" "832x624" "800x600" "720x400" "640x480"
+		Virtual	2173 1950
+	EndSubSection
+EndSection
+

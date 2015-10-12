@@ -1,0 +1,1 @@
+document.write('<a target="_blank" href="http://ad.doubleclick.net/click;h=v8/3802/0/0/%2a/t;206344697;0-0;0;16194897;2321-160/600;27630050/27647929/2;;~sscs=%3fhttp://www.nature.com/hdy/archive/index.html"><img src="http://m1.2mdn.net/viewad/915375/1-20296-01-Heredity-back-archive-160X600.gif" border=0 alt="Click here to find out more!"></a>');

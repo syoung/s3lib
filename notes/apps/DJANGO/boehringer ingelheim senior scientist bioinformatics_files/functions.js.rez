@@ -1,0 +1,1686 @@
+// Copyright � Hanover Capital Management Corp. 2004. All Rights Reserved.
+// Copyright © The RightThing Inc. 2011. All Rights Reserved.
+
+//
+// Common functions.
+//
+// $Author: mflorence $
+// $Date: 2011-10-06 17:06:16 $
+// $Revision: 1.123 $
+//
+
+// extension of strings to allow removal of HTML tags,
+// basically for removing MSO crap when it appears.
+String.prototype.stripHTML = function()
+{
+  var tagRegex = /<(?:.|\s)*?>/g;
+  return this.replace(tagRegex, "");
+};
+
+// code adapted from the Morten library (harmless outside of portal app)
+// NOTE: BH #11882 -- this code isn't as harmless as it looks -- if the calling
+// page is iframed inside a 3rd party site, then the reference to 'top' throws
+// a security error -- which prevents any other JavaScript code from running
+var MTMCodeFrame = null;
+try {
+  MTMCodeFrame = top.frames["code"];
+  if (MTMCodeFrame && MTMCodeFrame.MTMLoaded) {
+    //pca added check to detect if 'Favorites' is being used since
+    //different code should execute depending on whether Favorites exist
+    if (top.favoritesHeader) {
+      var params = Functions_parameters();
+      setTimeout("top.favoritesHeader.menuItemWasClicked('" + params["menuItem"] + "')", 50);
+    }
+    else {
+      MTMCodeFrame.MTMTrack = true;
+      setTimeout("MTMCodeFrame.MTMDisplayMenu()", 50);
+    }
+  }
+}
+catch (ignored) { }
+
+// Add an event handler
+//
+// @param obj
+// @param type
+// @param handler
+//
+function Functions_addEventHandler(obj, type, handler) {
+  if (obj.addEventListener)
+    obj.addEventListener(type, handler, false);
+  else if (obj.attachEvent)
+    obj.attachEvent("on" + type, handler);
+  else obj["on" + type] = handler;
+}
+
+// Calendar Helper -- eat onkeydown
+//
+// @see Cel.makeCelCalendar and RTiStandardTable/RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_calendarKeyDown(obj, event) {
+  var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+  if ((keyCode == 8)    // backspace
+   || (keyCode == 46))  // delete
+    obj.value = '';
+  else {
+    alert("Please click the adjoining button to select a date via the calendar popup");
+    if (event.preventDefault)
+      event.preventDefault(); // For Mozilla
+    if (Functions_isIE())
+      event.returnValue = false;
+    return false;
+  }
+}
+
+function Functions_calendarShadowFollow() {
+  var calshadow = document.getElementById("calendarShadow");
+  if (!calshadow) {
+  var nShad = document.createElement("div");
+  nShad.id = 'calendarShadow';
+  nShad.style.filter = 'progid:DXImageTransform.Microsoft.Shadow(color=#444444,direction=135,strength=6)';
+  nShad.style.position = 'absolute';
+  nShad.style.height = '0px';
+  nShad.style.width = '0px';
+  nShad.style.backgroundColor = 'white';
+  nShad.style.color = 'white';
+  document.body.appendChild(nShad);
+  calshadow = $('calendarShadow');
+  }
+  try {
+  Site_layerOnZIndex(calshadow, -2);
+    var cals = document.getElementsByClassName('calendar');
+    var cal = cals[cals.length-1];
+    cal.attachEvent('onmove', Functions_calendarDoCalendarFollow);
+  } catch (e) {}
+  try {
+  calshadow.style.left = cal.offsetLeft;
+  calshadow.style.top = cal.offsetTop;
+  calshadow.style.width = cal.offsetWidth;
+  calshadow.style.height = cal.offsetHeight;
+    calshadow.style.visibility = 'visible';
+  } catch (errr) {}
+}
+
+
+function Functions_calendarDoCalendarFollow(){
+  var cals = document.getElementsByClassName('calendar');
+  var cal = cals[cals.length-1];
+  $('calendarShadow').style.left = cal.offsetLeft;
+  $('calendarShadow').style.top = cal.offsetTop;
+}
+
+// Clear a form field
+//
+// @param obj
+//
+function Functions_clearFormField(obj) {
+  if (obj.tagName.toUpperCase() == 'SELECT')
+    obj.selectedIndex = -1;
+  else if (obj.tagName.toUpperCase() == 'INPUT') {
+    if ((obj.type == 'checkbox') || (obj.type == 'radio'))
+      obj.checked = false;
+    else obj.value = "";
+  }
+  else if (obj.tagName.toUpperCase() == 'TEXTAREA')
+    obj.value = "";
+  else if (obj.length) {
+    for (var i = 0; i < obj.length; i++)
+      obj[i].checked = false;
+  }
+}
+
+// Clone an array
+//
+// @param original
+//
+// @return clone
+//
+function Functions_cloneArray(original) {
+  var clone = new Array(original.length);
+  for (var i = 0; i < original.length; i++)
+    clone[i] = original[i];
+  return clone;
+}
+
+// VERY preliminary code to correct an input field from Word pasted data
+//
+// CREDIT http://jonathanhedley.com/articles/2008/03/convert-microsoft-word-to-plain-text
+//
+// @param input
+//
+function Functions_correctWordField(data) {
+  if (data) {
+    var swapCodes   = new Array(8211, 8212, 8216, 8217, 8220, 8221, 8226, 8230);
+    var swapStrings = new Array("--", "--", "'",  "'",  '"',  '"',  "*",  "...");
+    for (i = 0; i < swapCodes.length; i++) {
+      var swapper = new RegExp("\\u" + swapCodes[i].toString(16), "g");
+      data = data.replace(swapper, swapStrings[i]);
+    }
+  }
+  return data;
+}
+
+function Functions_correctWordFields(inputs) {
+  for (var i = 0; i < inputs.length; i++) {
+    var input = inputs[i];
+    if ((input.tagName.toUpperCase() == 'INPUT' && input.type.toUpperCase() == 'TEXT')
+     || (input.tagName.toUpperCase() == 'TEXTAREA'))
+      input.value = Functions_correctWordField(input.value);
+  }
+}
+
+//Currency -- change
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+// @param cfun
+//
+function Functions_currencyChange(obj, event, cfun) {
+  try {
+    var hidden = Functions_currencyHidden(obj);
+    var thousandSep = Functions_currencyThouSep(obj);
+    var decimalSep = Functions_currencyDecSep(obj);
+    var symbol = Functions_currencySymbol(obj);
+    var negative = false;
+    if (hidden) {
+      if (! obj.value) { // empty or missing?
+        hidden.value = "";
+      } else {
+      var cSymbol = symbol.value;
+      var thouSep = thousandSep.value;
+      var decSep = decimalSep.value;
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 2; // Default to 2
+        if (isNaN(maxDP)) maxDP = 2; // default to 2
+        if (maxDP < 2) maxDP = 2; // minimum is 2
+        if (/-/.test(obj.value)) { // temporarily remove negative sign, but remember it
+          negative = true;
+          obj.value = obj.value.replace(/-/g,'');
+        }
+        // try to grab all the content before a non-number followed by numbers - eg a decimal point of some kind
+        if (decSep === '.') {
+          decSep = '\\' + decSep;
+        }
+        var left = obj.value.replace(new RegExp('^(.*)(' + decSep + ')(\\d{0,' + maxDP + '})(?:\\d{0,})$','mg'), '$1');
+        left = left.replace(/[^0-9]/g, '');
+        var right = obj.value.replace(new RegExp('^(.*)(' + decSep + ')(\\d{0,' + maxDP + '})(?:\\d{0,})$','mg'), '$3');
+        if (!(new RegExp(decSep, 'g').test(obj.value))) {
+          right = "00";
+        }
+        var number = parseFloat(left + '.' + right);
+        if (isNaN(number)) {
+          hidden.value = "";
+        } else {
+          var pow = Math.pow(10, maxDP);
+          number = Math.round(number*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+          if (negative)
+            number = -1 * number;
+          hidden.value = "" + number;
+        }
+      }
+      Functions_currencyPopulate(obj, event);
+      if (cfun) {
+        cfun(obj, event);
+      }
+    }
+  } catch (ignore) { }
+}
+
+//Currency Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencyHidden(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm);
+}
+
+//Currency Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencySymbol(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm + "$$_currencySymbol_");
+}
+
+//Currency Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencyDecSep(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm + "$$_currencyDecimalSeparator_");
+}
+
+//Currency Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencyThouSep(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm + "$$_currencyThousandSeparator_");
+}
+
+//Currency Helper -- onkeydown
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencyKeyDown(obj, event) {
+  try {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if ((keyCode >= 48 && keyCode <= 57)
+      || (keyCode >= 96 && keyCode <= 105)
+      || keyCode == 8    // BS
+      || keyCode == 9    // tab
+      || keyCode == 13   // enter
+      || keyCode == 37   // left-arrow
+      || keyCode == 39   // right-arrow
+      || keyCode == 52   // 4???
+      || keyCode == 109  // subtract (because is keydown event and not keypress, both - and _ actually)
+      || keyCode == 110  // decimal
+      || keyCode == 188  // comma
+      || keyCode == 189  // dash
+      || keyCode == 190) // period
+    {
+      // let keydown handle it
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  }
+  catch (ignore) { }
+}
+
+//Currency Helper -- populate in formatted mode
+//
+// @see Cel.makeCelOfCurrency, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_currencyPopulate(obj, event) {
+  try {
+    var hidden = Functions_currencyHidden(obj);
+    var thousandSep = Functions_currencyThouSep(obj);
+    var decimalSep = Functions_currencyDecSep(obj);
+    var symbol = Functions_currencySymbol(obj);
+    if (! hidden || ! hidden.value) {
+      obj.value = "";
+    } else {
+      var number = parseFloat(hidden.value);
+      if (isNaN(number)) {
+        obj.value = "";
+      } else {
+        // NOTE: zero values are normally displayed as blank.  The fmtZero=true attribute changes this.
+        var cSymbol = symbol.value;
+        var thouSep = thousandSep.value;
+        var decSep = decimalSep.value;
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 2; // Default to 2
+        var fmtZero = (obj.getAttribute("fmtZero")) ? new Boolean(obj.getAttribute("fmtZero")) : false;
+        if (isNaN(maxDP)) maxDP = 2; // default to 2
+        if (maxDP < 2) maxDP = 2; // minimum is 2 <------------------------------------<<<
+        var negative = false;
+        if (number < 0) {
+          negative = true; // save for later so we can put negative sign before the currency symbol
+          number = -number;
+        }
+        var pow = Math.pow(10, maxDP);
+        number = Math.round(number*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+        var value = number.toString();
+        var parts = value.split('.');
+        var fraction = '';
+        var integral = '';
+        if (parts.length > 1) {
+          fraction = parts[parts.length-1];
+          for (var i = 0; i < parts.length - 1; i++){
+            integral += parts[i];
+          }
+        } else {
+          integral = parts[0];
+        }
+        if ((! integral || integral == 0) && (! fraction || fraction == 0) && ! fmtZero) {
+          obj.value = "";
+        } else {
+          var dollars = "0";
+          if (integral && integral > 0) {
+            dollars = integral;
+            // Add ',' separator(s)
+            var regexp  = new RegExp('(-?[0-9]+)([0-9]{3})');
+            while(regexp.test(dollars)) {
+              dollars = dollars.replace(regexp, '$1'+thouSep+'$2');
+            }
+          }
+          var cents;
+          if (! fraction) {
+            cents = "00"; // minimum 2 DP <------------------------------------<<<
+          } else if (fraction.length == 1) {
+            cents = fraction + "0"; // minimum 2 DP <------------------------------------<<<
+          } else {
+            cents = fraction;
+          }
+          value = cSymbol + dollars + decSep + cents; // Not always correct order, but its closer so we'll use it
+          if (negative) value = "-" + value; // Not always correct, but we'll let that slide for now...
+          obj.value = value;
+        }
+      }
+    }
+  } catch (ignore) { }
+}
+
+// Special function to eat 'enter' key
+//
+// ONLY for use by special IE textarea hack [ see Cell.makeCelOfText() ]
+//
+function Functions_eatEnter() {
+  event.keyCode = (event.keyCode == 13)? 32 : event.keyCode;
+}
+
+// Show hide a floating frame
+//
+// @param showing
+// @param floaterName
+// @param rx
+// @param ry
+//
+
+function Functions_floaterShowHide(showing, floaterName, wrapper, rx, ry) {
+  var floater = $(floaterName);
+
+  // IE needs a coaster object
+  var coaster = null;
+
+  if (Functions_isIE()) {
+    coaster = $('floaterCoaster');
+    if (!coaster) {
+      document.body.insertAdjacentHTML("BeforeEnd", "<iframe id='floaterCoaster' frameborder=0 scrolling=no style='position:absolute;left:0;top:0;filter:alpha(opacity=0);display:none'></iframe>");
+      coaster = $('floaterCoaster');
+    }
+  }
+
+  if (showing) {
+    var coords = Position.cumulativeOffset(wrapper);
+    rx = coords[0] + rx;
+    ry = coords[1] + ry;
+
+    if (Functions_isIE()) {
+      floater.style.posLeft = rx;
+      floater.style.posTop =  ry;
+      Site_layerOnZIndex(floater, -2);
+      coaster.style.posLeft = floater.style.posLeft;
+      coaster.style.posTop = floater.style.posTop;
+      coaster.style.posWidth = floater.offsetWidth;
+      coaster.style.posHeight = floater.offsetHeight;
+      coaster.style.visibility = showing ? "visible" : "hidden";
+    } else {
+      floater.style.left = rx;
+      floater.style.top = ry;
+    }
+  }
+
+  floater.style.visibility = showing ? "visible" : "hidden";
+}
+
+// Access a cookie's value
+//
+// @param name
+//
+// @return value
+//
+function Functions_getCookie(name) {
+  var search = name + "=";
+  if (document.cookie.length > 0) {
+    offset = document.cookie.indexOf(search);
+    if (offset != -1) {
+      offset += search.length;
+      end = document.cookie.indexOf(";", offset);
+      if (end == -1)
+        end = document.cookie.length;
+      return unescape(document.cookie.substring(offset, end));
+    }
+  }
+}
+
+//Identifier -- change
+//
+// @see RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+// @param cfun
+//
+function Functions_identifierChange(obj, event, cfun) {
+  try {
+    Functions_identifierPopulate(obj,event);
+    if (cfun) {
+      cfun(obj,event);
+    }
+  } catch (ignore) {}
+}
+
+//Identifier Helper -- onkeydown
+//
+// @see RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_identifierKeyDown(obj, event) {
+  try {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if (    (keyCode >= 48 && keyCode <= 57)  // 0-9
+         || (keyCode >= 96 && keyCode <= 105) // numpad 0-9
+         || keyCode == 8                      // backspace
+         || keyCode == 9                      // tab
+         || keyCode == 13                     // enter
+         || keyCode == 37                     // left-arrow
+         || keyCode == 39                     // right-arrow
+         || keyCode == 46                     // delete
+       )
+    {
+      // let keydown handle it
+      if (Functions_isIE()) event.returnValue = true;
+      return true;
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  } catch (ignore) {}
+}
+
+//Identifier Helper -- populate in formatted mode
+//
+// @see RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_identifierPopulate(obj, event) {
+  try {
+    var id = (obj.value >> 0);
+    // Nothing to do.
+    // There's just no way to realiably deal with unsigned integers in JavaScript such that we can validate the maximum value
+  } catch (x) {
+    obj.value = "";
+  }
+}
+
+//Integer -- change
+//
+// @see Cel.makeCelOfInteger, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+// @param cfun
+//
+function Functions_integerChange(obj, event, cfun) {
+  try {
+    var hidden = Functions_integerHidden(obj);
+    var integer = parseInt(obj.value);
+    hidden.value = "" + integer;
+    Functions_integerPopulate(obj,event);
+    if (cfun) {
+      cfun(obj,event);
+    }
+  } catch (ignore) {}
+}
+
+//Integer Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfInteger, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_integerHidden(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm);
+}
+
+//Integer Helper -- onkeydown
+//
+// @see Cel.makeCelOfInteger, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_integerKeyDown(obj, event) {
+  try {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if (    (keyCode >= 48 && keyCode <= 57)  // 0-9
+         || (keyCode >= 96 && keyCode <= 105) // numpad 0-9
+         || keyCode == 8                      // backspace
+         || keyCode == 9                      // tab
+         || keyCode == 13                     // enter
+         || keyCode == 37                     // left-arrow
+         || keyCode == 39                     // right-arrow
+         || keyCode == 46                     // delete
+         || keyCode == 107                    // add (because is keydown event and not keypress, both + and = actually)
+         || keyCode == 109                    // subtract (because is keydown event and not keypress, both - and _ actually)
+         || keyCode == 189                    // dash
+       )
+    {
+      // let keydown handle it
+      if (Functions_isIE()) event.returnValue = true;
+      return true;
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  } catch (ignore) {}
+}
+
+//Integer Helper -- populate in formatted mode
+//
+// @see Cel.makeCelOfInteger, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_integerPopulate(obj, event) {
+  try {
+    var hidden = Functions_integerHidden(obj);
+    var integer = parseInt(hidden.value);
+    var fmtZero = (obj.getAttribute("fmtZero")) ? new Boolean(obj.getAttribute("fmtZero")) : false;
+    if (isNaN(integer)) {
+      obj.value = "";
+    } else if (integer == 0 && ! fmtZero)  {
+      obj.value = "";
+    } else {
+      obj.value = "" + integer;
+    }
+  } catch (ignore) {}
+}
+
+function Functions_isDescendantOrSame(parent, child) {
+  try {
+  if (parent == child) {
+    return true;
+  }
+  var node = child.parentNode;
+  while (node != null) {
+    if (node == parent) {
+      return true;
+    }
+    node = node.parentNode;
+  }
+  return false;
+  } catch (error) {
+  return false;
+  }
+}
+
+function Functions_isGecko() {
+  return (window.addEventListener && /Gecko/.test(navigator.userAgent) && !/WebKit/.test(navigator.userAgent) && !window.opera);
+}
+
+function Functions_isIE() {
+  return (window.attachEvent && /MSIE/.test(navigator.userAgent) && !window.opera);
+}
+
+function Functions_isIE9() {
+  return Functions_isIE() && /9.0/.test(navigator.userAgent) && /Trident\/5.0/.test(navigator.userAgent);
+}
+
+function Functions_isWebKit() {
+  return (window.addEventListener && /WebKit/.test(navigator.userAgent) && !window.opera);
+}
+
+function Functions_listen(evnt, elem, func) {
+  if (elem.addEventListener)  // W3C DOM
+    elem.addEventListener(evnt,func,false);
+  else if (elem.attachEvent) { // IE DOM
+    var r = elem.attachEvent("on"+evnt, func);
+    return r;
+  }
+}
+
+// Call LiveHelp
+//
+// @param livehelpXXX [parameters from Configuration]
+//
+function Functions_liveHelp(livehelpServer,
+                            livehelpChat,
+                            offlineURL,
+                            livehelpWindowName,
+                            livehelpWindowWidth,
+                            livehelpWindowHeight,
+                            disabled) {
+  if (disabled)
+    window.open(offlineURL, livehelpWindowName, "width=" + livehelpWindowWidth + ",height=" + livehelpWindowHeight);
+  else window.open("http://" + livehelpServer + livehelpChat + "&offlineURL=" + offlineURL,
+                   livehelpWindowName, "width=" + livehelpWindowWidth + ",height=" + livehelpWindowHeight);
+}
+
+// Grab parameters from form
+//
+// @param fieldnames
+//
+function Functions_makeParmsFromForm(fieldNames) {
+  var parms = "";
+  // add the special hidden field that tells theRequest which fields should NOT be XSS-Guarded
+  var ugf = Functions_makeUnguardedFieldParm();
+  if (ugf)
+    parms += ugf;
+  for (var i = 0; i < arguments.length; i++) {
+    if (arguments[i]) {
+      var temp = Functions_makeParmsFromFormImpl(arguments[i]);
+      if (temp)
+        parms += temp;
+    }
+  }
+  return parms;
+}
+
+function Functions_makeParmsFromFormImpl(fieldName) {
+  var parms = "";
+  var objs = eval("document.forms[0]." + fieldName);
+  if (objs) {
+    if (objs.style)
+      objs = new Array(objs);
+    for (var i = 0; i < objs.length; i++) {
+      if (objs[i] && !objs[i].disabled) {
+        var temp = Functions_makeParmsFromFormImpl2(objs[i]);
+        if (temp)
+          parms += temp;
+      }
+    }
+  }
+  return parms;
+}
+
+function Functions_makeParmsFromFormImpl2(obj) {
+  var parm = "";
+  if (obj.tagName && obj.tagName.toUpperCase() == 'SELECT') {
+    for (var i = 0; i < obj.options.length; i++) {
+      if (obj.options[i].selected)
+        parm += obj.name + "=" + encodeURIComponent(obj.options[i].value) + "&";
+    }
+  }
+  else if ((obj.tagName && obj.tagName.toUpperCase() == 'INPUT')
+      && (((obj.type != 'checkbox') && (obj.type != 'radio')) || obj.checked))
+    parm = obj.name + "=" + Functions_makeParmsFromFormEscaped(Functions_correctWordField(obj.value)) + "&";
+  else if (obj.tagName && obj.tagName.toUpperCase() == 'TEXTAREA')
+    parm = obj.name + "=" + Functions_makeParmsFromFormEscaped(Functions_correctWordField(obj.value)) + "&";
+  else if (obj.length) {
+    for (var i = 0; i < obj.length; i++) {
+      if (obj[i].checked)
+        parm += obj[i].name + "=" + encodeURIComponent(obj[i].value) + "&";
+    }
+  }
+  return parm;
+}
+
+function Functions_makeParmsFromFormEscaped(data) {
+  var xcoded = encodeURIComponent(data);
+  var xlated = "";
+  for (var i = 0; i < xcoded.length; i++) {
+    if (xcoded.charAt(i) == "'")
+      xlated += "%27";
+    else xlated += xcoded.charAt(i);
+  }
+  return xlated;
+}
+
+function Functions_makeParmsFromFormRegex(pattern) {
+  var parms = "";
+  var regex = new RegExp(pattern);
+  for (var i = 0; i < document.forms[0].elements.length; i++) {
+    var element = document.forms[0].elements[i];
+    if (regex.exec(element.name))
+      parms += Functions_makeParmsFromFormImpl(element.name)
+  }
+  return parms;
+}
+
+// Grab Unguarded Field hidden parameter from form
+//
+function Functions_makeUnguardedFieldParm() {
+  var parm = "";
+  // WARNING: the following special hidden parameter is defined in com.airs.utilities.server.Request!!!
+  // it's used by theRequest to determine for which fields XSS guarding is NOT to be done
+  var ugf = Functions_makeParmsFromFormImpl('___ugf');
+  if (ugf)
+    parm = ugf;
+  return parm;
+}
+
+// Make an XMLHttpRequest object
+//
+// @return req
+function Functions_makeXMLHttpRequest() {
+  var req = false;
+  // branch for native XMLHttpRequest object
+  if (window.XMLHttpRequest) {
+    try {
+      req = new XMLHttpRequest();
+    }
+    catch (e) {
+      req = false;
+    }
+  }
+  // branch for IE/Windows ActiveX version
+  else if (window.ActiveXObject) {
+    try {
+      req = new ActiveXObject("Msxml2.XMLHTTP");
+    }
+    catch (e) {
+      try {
+        req = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      catch (e) {
+        req = false;
+      }
+    }
+  }
+  return req;
+}
+
+//Number -- change
+//
+// @see Cel.makeCelOfNumber, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+// @param cfun
+//
+function Functions_numberChange(obj, event, cfun) {
+  try {
+    var hidden = Functions_numberHidden(obj);
+    if (hidden) {
+      if (! obj.value) { // empty or missing?
+        hidden.value = "";
+      } else {
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 10; // Default to 10 ??????????????????????????????????
+        if (isNaN(maxDP)) maxDP = 10; // default to 10
+        if ( maxDP < 0) maxDP = 0; // minimum is 0
+        var value = obj.value.replace(/\,/g,''); // get rid of commas
+        var number = parseFloat(value);
+        if (isNaN(number)) {
+          hidden.value = "";
+        } else {
+          var pow = Math.pow(10, maxDP);
+          number = Math.round(number*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+          hidden.value = "" + number;
+        }
+      }
+      Functions_numberPopulate(obj,event);
+      if (cfun) {
+        cfun(obj,event);
+      }
+    }
+  } catch (ignore) { }
+}
+
+//Number Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfNumber, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_numberHidden(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm);
+}
+
+//Number Helper -- onkeydown
+//
+// @see Cel.makeCelOfNumber, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_numberKeyDown(obj, event) {
+  try {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if (    (keyCode >= 48 && keyCode <= 57)  // 0-9
+         || (keyCode >= 96 && keyCode <= 105) // numpad 0-9
+         || keyCode == 8                      // backspace
+         || keyCode == 9                      // tab
+         || keyCode == 13                     // enter
+         || keyCode == 37                     // left-arrow
+         || keyCode == 39                     // right-arrow
+         || keyCode == 46                     // delete
+         || keyCode == 107                    // add (because is keydown event and not keypress, both + and = actually)
+         || keyCode == 109                    // subtract (because is keydown event and not keypress, both - and _ actually)
+         || keyCode == 110                    // decimal point (because is keydown event and not keypress, both . and > actually)
+         || keyCode == 189                    // dash
+         || keyCode == 190                    // period
+      )
+    {
+      // let keydown handle it
+      if (Functions_isIE()) event.returnValue = true;
+      return true;
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  } catch (ignore) {}
+}
+
+//Number Helper -- populate in formatted mode
+//
+// @see Cel.makeCelOfNumber, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_numberPopulate(obj, event) {
+  try {
+    var hidden = Functions_numberHidden(obj);
+    if (! hidden || ! hidden.value) {
+      obj.value = "";
+    } else {
+      var number = parseFloat(hidden.value);
+      if (isNaN(number)) {
+        obj.value = "";
+      } else {
+        // NOTE: zero values are normally displayed as blank.  The fmtZero=true attribute changes this.
+        var negative = false;
+        if (number < 0) {
+          negative = true;
+          number = -number;
+        }
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 10; // Default to 10
+        if (isNaN(maxDP)) maxDP = 10; // default to 10
+        if (maxDP < 0) maxDP = 0; // minimum is 0
+        var fmtZero = (obj.getAttribute("fmtZero")) ? new Boolean(obj.getAttribute("fmtZero")) : false;
+        var pow = Math.pow(10, maxDP);
+        number = Math.round(number*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+        var value = number.toString();
+        var parts = value.split('.');
+        var integral = parts[0];
+        var fraction = parts[1];
+        if ((! integral || integral == 0) && (! fraction || fraction == 0 || maxDP == 0) && ! fmtZero) {
+          obj.value = "";
+        } else {
+          if (! integral) {
+            integral = "0";
+          } else if (integral > 0) {
+            // Add ',' separator(s)
+            var regexp  = new RegExp('(-?[0-9]+)([0-9]{3})');
+            while(regexp.test(integral)) {
+              integral = integral.replace(regexp, '$1,$2');
+            }
+          }
+          if (! fraction) {
+            fraction = "";
+            //if (maxDP > 0) fraction = "0";
+          }
+          if (fraction.length > 0) {
+            value = integral + "." + fraction;
+          } else {
+            value = integral;
+          }
+          if (negative) value = "-" + value;
+          obj.value = "" + value;
+        }
+      }
+    }
+  } catch (ignore) { }
+}
+
+// Run onload handlers
+//
+var Functions_onLoadOriginal;
+var Functions_onLoadHandlers = new Array();
+function Functions_onload() {
+  // execute original handler
+  if (Functions_onLoadOriginal)
+    eval(Functions_onLoadOriginal);
+  // now run additional handlers
+  for (var i = 0; i < Functions_onLoadHandlers.length; i++)
+    Functions_onLoadHandlers[i]();
+}
+
+// Add a new "onload" handler
+//
+// @param handler
+//
+function Functions_onloadAdd(handler) {
+  if (handler) {
+    // cache original onload handler
+    if (!Functions_onLoadOriginal && window.onload && (window.onload != Functions_onload)) {
+      var t = "" + window.onload;
+      var i = t.indexOf("{");
+      var j = t.lastIndexOf("}");
+      if ((i > 0) && (j > 0))
+        Functions_onLoadOriginal = t.substring(i + 1, j);
+    }
+    // cache new onload handler
+    Functions_onLoadHandlers[Functions_onLoadHandlers.length] = handler;
+    // set new handler
+    window.onload = Functions_onload;
+  }
+}
+
+// Run onunload handlers
+//
+var Functions_onUnloadOriginal;
+var Functions_onUnloadHandlers = new Array();
+function Functions_onunload() {
+  // execute original handler
+  if (Functions_onUnloadOriginal)
+    eval(Functions_onUnloadOriginal);
+  // now run additional handlers
+  for (var i = 0; i < Functions_onUnloadHandlers.length; i++)
+    Functions_onUnloadHandlers[i]();
+}
+
+// Add a new "onunload" handler
+//
+// @param handler
+//
+function Functions_onunloadAdd(handler) {
+  if (handler) {
+    // cache original ononload handler
+    if (!Functions_onUnloadOriginal && window.onunload && (window.onunload != Functions_onunload)) {
+      var t = "" + window.onunload;
+      var i = t.indexOf("{");
+      var j = t.lastIndexOf("}");
+      if ((i > 0) && (j > 0))
+        Functions_onUnloadOriginal = t.substring(i + 1, j);
+    }
+    // cache new onunload handler
+    Functions_onUnloadHandlers[Functions_onUnloadHandlers.length] = handler;
+    // set new handler
+    window.onunload = Functions_onunload;
+  }
+}
+
+// Grab startup parameters as an associative array
+//
+function Functions_parameters() {
+  var parms = new Array();
+  if (location.search) {
+    var search = location.search.substr(1);
+    var nvpairs = search.split("&");
+    for (var i = 0; i < nvpairs.length; i++) {
+      var nvpair = nvpairs[i].split("=");
+      if (nvpair.length == 2)
+        parms[nvpair[0]] = nvpair[1];
+    }
+  }
+  return parms;
+}
+
+//Percent -- change
+//
+// @see Cel.makeCelOfPercent, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+// @param cfun
+//
+function Functions_percentChange(obj, event, cfun) {
+  try {
+    var hidden = Functions_percentHidden(obj);
+    if (hidden) {
+      if (! obj.value) { // empty or missing?
+        hidden.value = "";
+      } else {
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 1; // Default to 1
+        if (isNaN(maxDP)) maxDP = 1; // default to 1
+        if (maxDP < 0) maxDP = 0; // minimum is 0
+        var value = obj.value.replace(/\%|\,/g,''); // get rid of % and commas
+        var number = parseFloat(value);
+        if (isNaN(number)) {
+          hidden.value = "";
+        } else {
+          var percent = number / 100;
+          var pow = Math.pow(10, maxDP) * 100; // NOTE the extra 100!
+          percent = Math.round(percent*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+          hidden.value = "" + percent;
+        }
+      }
+      Functions_percentPopulate(obj,event);
+      if (cfun) {
+        cfun(obj,event);
+      }
+    }
+  } catch (ignore) { }
+}
+
+//Percent Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfPercent, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_percentHidden(obj, event) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm);
+}
+
+//Percent Helper -- onkeydown
+//
+// @see Cel.makeCelOfPercent, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_percentKeyDown(obj, event) {
+  try {
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if ((keyCode >= 48 && keyCode <= 57)
+      || (keyCode >= 96 && keyCode <= 105)
+      || keyCode == 8    // BS
+      || keyCode == 9    // tab
+      || keyCode == 13   // enter
+      || keyCode == 37   // left-arrow
+      || keyCode == 39   // right-arrow
+      || keyCode == 53   // 5???
+      || keyCode == 109  // subtract (because is keydown event and not keypress, both - and _ actually)
+      || keyCode == 110  // decimal
+      || keyCode == 189  // dash
+      || keyCode == 190) // period
+    {
+      // let keydown handle it
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  }
+  catch (ignore) { }
+}
+
+//Percent Helper -- populate in formatted mode
+//
+// @see Cel.makeCelOfPercent, RTiStandardTable, RTiCustomTable
+//
+// @param obj
+// @param event
+//
+function Functions_percentPopulate(obj, event) {
+  try {
+    var hidden = Functions_percentHidden(obj);
+    if (! hidden || ! hidden.value) {
+      obj.value = ""
+    } else {
+      var number = parseFloat(hidden.value);
+      var fmtZero = (obj.getAttribute("fmtZero")) ? new Boolean(obj.getAttribute("fmtZero")) : false;
+      if (isNaN(number)) {
+        obj.value = ""
+      } else if (number == 0 && ! fmtZero)  {
+        obj.value = ""
+      } else {
+        var maxDP = (obj.getAttribute("maxdp")) ? new Number(obj.getAttribute("maxdp")) : 1; // Default to 1
+        if (isNaN(maxDP)) maxDP = 1; // default to 1
+        if (maxDP < 0) maxDP = 0; // minimum is 0
+        var percent = number * 100;
+        var pow = Math.pow(10, maxDP) * 100; // NOTE the extra 100
+        percent = Math.round(percent*pow)/pow; // maybe this would be better: number.toFixed(maxDP)
+        obj.value = "" + percent + "%";
+      }
+    }
+  } catch (ignore) { }
+}
+
+// Popup a nominated URL
+//
+// @param url [to be popped up]
+// @param name [of window]
+// @param cx
+// @param cy
+// @param scrollable [if true]
+// @param spos [if true, system positioned, else centered]
+// @param modal
+//
+function Functions_popup(url, name, cx, cy, scrollable, spos, modal) {
+  if (modal && (Functions_isIE() || window.showModalDialog)) {
+    var opts = "dialogWidth:" + cx + "px" +
+               ";dialogHeight:" + cy + "px" +
+               ";edge:sunken" +
+               ";status:0" +
+               ";unadorned:1" +
+               ";resizable:1" +
+               ";scroll=" + (scrollable? "1" : "0");
+    if (!spos)
+      opts += ";center:1";
+    document.body.style.cursor = 'wait';
+    var rc = window.showModalDialog(url, self, opts);
+    document.body.style.cursor = 'auto';
+    return rc;
+  }
+  else {
+    var opts = "width=" + cx +
+               ",height=" + cy +
+               ",status=0" +
+               ",location=0" +
+               ",menubar=0" +
+               ",resizable=1" +
+               ",scrollbars=" + (scrollable? "1" : "0") +
+               ",modal=" + (modal? "1" : "0") +
+               ",toolbar=0";
+    if (!spos) {
+      if (window.screenLeft && window.screenTop)
+        opts += ",left=" + window.screenLeft +
+                ",top=" + window.screenTop;
+      else opts += ",left=" + ((screen.width - cx) / 2) +
+                   ",top=" + ((screen.height - cy) / 2);
+    }
+    window.open(url, name, opts).focus();
+  }
+}
+
+// Popup a nominated URL
+//
+// @param url [to be popped up]
+// @param name
+// @param dontScroll
+//
+function Functions_popup2(url, name, dontScroll) {
+  var opts = "status=no" +
+             ",location=no" +
+             ",menubar=no" +
+             ",resizable=yes" +
+             ",scrollbars=" + (dontScroll? "no" : "yes") +
+             ",toolbar=no";
+  var cx = eval("window." + name + "_cx");
+  var cy = eval("window." + name + "_cy");
+  if (cx && cy) {
+    opts += ",width=" + cx + ",height=" + cy;
+    var xx = eval("window." + name + "_xx");
+    var yy = eval("window." + name + "_yy");
+    if (xx && yy)
+      opts += ",left=" + xx + ",top=" + yy;
+    eval("window." + name + "_resized=true;");
+  }
+  else {
+    opts += ",width=10,height=10";
+    eval("window." + name + "_resized=false;");
+  }
+  window.open(url, name, opts);
+}
+
+// Resize a popup after it has been opened by Functions_popup2
+//
+// @param cx
+// @param cy
+// @param spos [if true, system positioned, else centered]
+//
+function Functions_popup2Resize(cx, cy, spos) {
+  var optimal = window.name && window.opener && !window.opener.closed;
+  if (!optimal || !eval("window.opener." + name + "_resized")) {
+    var xx = 0;
+    var yy = 0;
+    var ccx = cx + 8;
+    var ccy = cy + 38;
+    window.resizeTo(ccx, ccy);
+    if (!spos) {
+      if (optimal && window.opener.screenLeft && window.opener.screenTop) {
+        xx = window.opener.screenLeft + 10;
+        yy = window.opener.screenTop + 10;
+      }
+      else {
+        xx = (screen.width - ccx) / 2;
+        yy = (screen.height - ccy) / 2;
+      }
+      window.moveTo(xx, yy);
+    }
+    if (optimal) {
+      eval("window.opener." + name + "_resized=true;");
+      eval("window.opener." + name + "_cx=" + cx + ";");
+      eval("window.opener." + name + "_cy=" + cy + ";");
+      if (!spos) {
+        eval("window.opener." + name + "_xx=" + xx + ";");
+        eval("window.opener." + name + "_yy=" + yy + ";");
+      }
+    }
+  }
+  window.focus();
+}
+
+// Pop a new window, copy styles and html of postcard and add disabling overlay
+//
+function Functions_printPostcard() {
+  top.consoleRef=window.open('','',
+    'width=' + ($('Site_pageMaskContent').offsetWidth + 60)
+    + ',height=' + Math.min($('Site_pageMaskContent').offsetHeight, 720)
+    +',menubar=0 ,toolbar=0, status=0, scrollbars=1, resizable=1');
+  if (!top.consoleRef) {
+    alert(XLATOR("You need to disable your pop-up blocker to print this postcard"));
+    return;
+  }
+  var headDat = document.getElementsByTagName('head')[0];
+  var doc = top.consoleRef.document;
+  doc.writeln('<html><head><title>' + document.title + '<\/title>');
+  for (var el in headDat.children) {
+    if (headDat.children[el].tagName == 'STYLE')
+      doc.writeln('<style>' + headDat.children[el].innerHTML + '<\/style>');
+  }
+  doc.writeln('<script>');
+  doc.writeln('function PrintPopup_doPrint() { ');
+  doc.writeln(' document.getElementById(\'newCover\').style.display = \'none\';');
+  doc.writeln(' print();')
+  doc.writeln(' document.getElementById(\'newCover\').style.display = \'\';');
+  doc.writeln('} <\/script>');
+  var text = $("Site_pageMaskContent2").innerHTML;
+  doc.writeln(
+    '<\/head><body bgcolor=white onLoad="self.focus();">' +
+    '<div id="printer" style="z-index:3; text-align:right; width:100%;">' +
+    '<img align=absmiddle src="print.dbrez">' +
+    '<a href="javascript:PrintPopup_doPrint();">&nbsp;Print<\/a>' +
+    '<\/div><div id="content" style="z-index:1;">'
+    + text + '<\/div><\/body><\/html>'
+  );
+  doc.close();
+  try{
+    var oversizes = doc.getElementsByTagName('div');
+    for (var el in oversizes) {
+      if (oversizes[el].offsetHeight < oversizes[el].scrollHeight) {
+        oversizes[el].style.overflow = '';
+        oversizes[el].style.overflowY = '';
+        oversizes[el].style.overflowX = '';
+        oversizes[el].style.width = "100%";
+        oversizes[el].style.height = "100%";
+      }
+    }
+  } catch (e) {}
+  try{
+    var oversizes = doc.getElementsByTagName('select');
+    for (var el in oversizes) {
+      if (oversizes[el].multiple) {
+        oversizes[el].size = oversizes[el].length;
+      }
+    }
+  } catch (e) {}
+  var newCover = doc.createElement('div');
+  newCover.id = "newCover";
+  newCover.style.position = "absolute";
+  newCover.style.top = doc.getElementById('content').offsetTop;
+  newCover.style.left = 0;
+  newCover.style.height =
+    doc.getElementById('content').offsetHeight + 40;
+  newCover.style.width = '100%';
+  newCover.style.zIndex = 2;
+  newCover.style.backgroundColor = 'white';
+  newCover.style.filter = 'alpha(opacity=00)';
+  newCover.style.opacity = 0;
+  doc.body.appendChild(newCover);
+  if (Functions_isIE()) {
+    doc.getElementById('newCover').attachEvent('onclick', function() {});
+  }
+  var prnt = doc.getElementById('printer');
+  var cnt = doc.getElementById('content').children[0];
+  prnt.style.width = cnt.offsetWidth;
+}
+
+// Print some text
+//
+// @param text
+//
+function Functions_printText(text) {
+  var w = window.open("", "text", "width=8,height=8");
+  window.focus();
+  w.document.open();
+  w.document.write(text);
+  w.document.write("</pre><scr" + "ipt>print();setTimeout('close()',1000);</scr" + "ipt>");
+  w.document.close();
+}
+
+// Reset form
+//
+function Functions_resetForm() {
+  with (document.forms[0]) {
+    for (var i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      if (element.type == "checkbox"
+        || element.type == "radio"
+        || element.type == "select"
+        || element.type == "select-one"
+        || element.type == "select-multiple"
+        || element.type == "text"
+        || element.type == "textarea")
+          element.disabled = true;
+    }
+  }
+}
+
+// Scroll the options of ALL multi-select listboxes into view
+//
+function Functions_scrollAllOptionsIntoView() {
+  var elements = document.getElementsByTagName("SELECT");
+  for (var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    if (element.multiple && (element.selectedIndex >= 0))
+      element.options[element.selectedIndex].selected = true;
+  }
+}
+
+// Set a cookie's value
+//
+// @param name
+// @param value
+// @param daysExpire
+//
+function Functions_setCookie(name, value, daysExpire) {
+  if (daysExpire) {
+    var expires = new Date();
+    expires.setTime(expires.getTime() + 1000*60*60*24*daysExpire);
+  }
+  document.cookie = name + "=" + escape(value) + (daysExpire == null ? "" : (";expires=" + expires.toGMTString())) + ";path=/";
+}
+
+// SS# Helper -- onfocus()
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param obj
+//
+function Functions_ssEnter(obj) {
+  obj.value = "";
+}
+
+// SS# Helper -- find corresponding hidden object
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param obj
+//
+function Functions_ssHidden(obj) {
+  var ix = obj.name.lastIndexOf("_");
+  var nm = obj.name.substring(0, ix);
+  return eval("document.forms[0]." + nm);
+}
+
+// SS# Helper -- onkeydown
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param obj
+// @param event
+//
+function Functions_ssKeyDown(obj, event) {
+  try {
+    var hidden = Functions_ssHidden(obj);
+    var keyCode = Functions_isIE()? event.keyCode : event.which;
+    if (keyCode == 8) { // BS
+      hidden.value = hidden.value.substring(0, hidden.value.length - 1);
+    } else if (Functions_ssKeyNumeric(keyCode) && (obj.value.length < 9)) {
+      // let keydown handle it
+    } else {
+      if (event.preventDefault) event.preventDefault(); // For Mozilla
+      if (Functions_isIE()) event.returnValue = false;
+      return false;
+    }
+  }
+  catch (ignore) { }
+}
+
+// SS# Helper -- is this keycode a number?
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param keyCode
+//
+function Functions_ssKeyNumeric(keyCode) {
+  return ((keyCode >= 48) && (keyCode <= 57))
+      || ((keyCode >= 96) && (keyCode <= 105));
+}
+
+// SS# Helper -- onkeypress
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param obj
+// @param event
+//
+function Functions_ssKeyPress(obj, event) {
+  try {
+    var hidden = Functions_ssHidden(obj);
+    if (obj.value.length == 0) hidden.value = "";
+    var keyCode = Functions_isIE()? event.keyCode : event.which;
+    if (Functions_ssKeyNumeric(keyCode)) {
+      hidden.value += String.fromCharCode(keyCode);
+      if (obj.value.length < 5) {
+        if (Functions_isIE())
+          event.keyCode = 42;
+        else event.which = 42;
+      }
+    }
+  }
+  catch (ignore) { }
+}
+
+// SS# Helper -- populate in formatted mode
+//
+// @see Cel.makeCelOfSoSecNum and RTiStandardTable
+//
+// @param obj
+//
+function Functions_ssPopulate(obj) {
+  try {
+    var hidden = Functions_ssHidden(obj);
+    var digits = "";
+    for (var i = 0; i < hidden.value.length; i++) {
+      var c = hidden.value.charAt(i);
+      if ((c >= '0') && (c <= '9'))
+        digits += c;
+    }
+    if (digits.length == 9)
+      obj.value = "***-**-" + digits.substring(5);
+    else obj.value = "***-**-****";
+  }
+  catch (ignore) { }
+}
+
+Functions_tooltipOffsetX = 5;
+Functions_tooltipOffsetY = -10;
+
+// Helper method to handle tooltip move
+//
+// @param tooltip -- tooltip ref
+//
+function Functions_tooltipMove(tooltip) {
+  if (Functions_isIE()) {
+    var tooltipShadow = $("tooltipShadow");
+    var coaster = $("tooltipCoaster");
+    tooltipShadow.style.posLeft = tooltip.style.posLeft;
+    tooltipShadow.style.posTop = tooltip.style.posTop;
+    tooltipShadow.style.posWidth = tooltip.offsetWidth;
+    tooltipShadow.style.posHeight = tooltip.offsetHeight;
+    coaster.style.posLeft = tooltip.style.posLeft;
+    coaster.style.posTop = tooltip.style.posTop;
+    coaster.style.posWidth = tooltip.offsetWidth;
+    coaster.style.posHeight = tooltip.offsetHeight;
+  }
+}
+
+// Show hide a tooltip
+//
+// @param showing
+// @param event
+// @param tooltipName
+// @param delay
+//
+var Functions_tooltipShowHideTimerID = null;
+function Functions_tooltipShowHide(showing, event, tooltipName, delay) {
+  if (showing) {
+    var x, y;
+    if (Functions_isIE()) {
+      x = event.x;
+      y = event.y;
+    }
+    else {
+      x = event.clientX;
+      y = event.clientY;
+    }
+    Functions_tooltipShowHideXY(true, x, y, tooltipName, delay);
+  }
+  else Functions_tooltipShowHideXY(false, 0, 0, tooltipName, delay, event);
+}
+
+// Show hide a tooltip
+//
+// @param showing
+// @param event
+// @param tooltipName
+// @param delay
+//
+function Functions_tooltipShowHideXY(showing, x, y, tooltipName, delay, event) {
+  var tooltip = $(tooltipName);
+  // create a shadow object
+  var tooltipShadow = $("tooltipShadow");
+  if (!tooltipShadow) {
+    if (document.body.insertAdjacentHTML && Functions_isIE()) {
+      var tooltipShadowHTML = "<div id='tooltipShadow' style='position:absolute;left:0;top:0;display:none;background-color:#000000;filter:progid:DXImageTransform.Microsoft.Shadow(color=#444444,direction=135,strength=6)'></div>";
+      document.body.insertAdjacentHTML("BeforeEnd", tooltipShadowHTML);
+      tooltipShadow = $("tooltipShadow");
+    }
+  }
+  // IE needs a coaster object
+  var coaster = null;
+  if (Functions_isIE()) {
+    coaster = $('tooltipCoaster');
+    if (!coaster)
+      document.body.insertAdjacentHTML("BeforeEnd", "<iframe id='tooltipCoaster' frameborder=0 scrolling=no style='position:absolute;left:0;top:0;filter:alpha(opacity=0);display:none'></iframe>");
+    coaster = $('tooltipCoaster');
+  }
+  // NOTE: tooltip MUST be child of BODY
+  if (tooltip.parentNode != document.body) {
+    var child = tooltip.parentNode.removeChild(tooltip);
+    document.body.appendChild(child);
+  }
+  if (Functions_tooltipShowHideTimerID != null)
+    clearTimeout(Functions_tooltipShowHideTimerID);
+  if (showing) {
+    x += document.body.scrollLeft;
+    y += document.body.scrollTop;
+    Functions_tooltipShowHideTimerID = setTimeout("Functions_tooltipShowImpl(" + x + "," + y + ",'" + tooltipName + "')", delay? delay : 1000);
+  }
+  else {
+
+  var relTarg = event ? (event.relatedTarget || event.toElement) : null;
+  if (Functions_isDescendantOrSame(tooltip, relTarg)) {
+    Functions_listen('mouseout', tooltip, function (e) {
+      var ev = e || window.event;
+      var relateTarg = ev.relatedTarget || ev.toElement;
+      if (!Functions_isDescendantOrSame(tooltip, relateTarg)) {
+        tooltip.style.display = "none";
+        var tooltipShadow = $("tooltipShadow");
+        if (tooltipShadow)
+          tooltipShadow.style.display = "none";
+        var coaster = $("tooltipCoaster");
+        if (coaster)
+          coaster.style.display = "none";
+        }
+      });
+  } else {
+    tooltip.style.display = "none";
+    if (tooltipShadow)
+      tooltipShadow.style.display = "none";
+    if (coaster)
+      coaster.style.display = "none";
+    }
+  }
+}
+
+// Show/hide a tooltip implementation
+//
+// @param x, y of pointer
+// @param tooltipName
+//
+function Functions_tooltipShowImpl(x, y, tooltipName) {
+  Functions_tooltipHide();
+  var tooltip = $(tooltipName);
+  var tooltipShadow = $("tooltipShadow");
+  var coaster = $("tooltipCoaster");
+  Functions_tooltipShowHideLastTooltip = tooltip;
+  Functions_tooltipShowHideLastTooltipShadow = tooltipShadow;
+  var shadow = 4;
+  tooltip.style.display = "inline";
+  var border = Math.abs((document.body.offsetWidth - document.body.clientWidth) / 2);
+  var dx = Math.max(0, (x + Functions_tooltipOffsetX + tooltip.offsetWidth) - (document.body.scrollLeft + document.body.clientWidth - border));
+  var dy = Math.max(0, (y + Functions_tooltipOffsetY + tooltip.offsetHeight) - (document.body.scrollTop + document.body.clientHeight - border));
+  if (Functions_isIE()) {
+    tooltip.style.posLeft = x + Functions_tooltipOffsetX - dx;
+    if (dx && dy <= 0) {
+      dy = -1*Math.min(
+          document.body.scrollTop + document.body.clientHeight - border - y - tooltip.offsetHeight,
+          -3*Functions_tooltipOffsetY);
+    }
+    tooltip.style.posTop = y + Functions_tooltipOffsetY - dy;
+    Site_layerOnZIndex(tooltip, 0);
+    tooltipShadow.style.posLeft = tooltip.style.posLeft;
+    tooltipShadow.style.posTop = tooltip.style.posTop;
+    tooltipShadow.style.posWidth = tooltip.offsetWidth;
+    tooltipShadow.style.posHeight = tooltip.offsetHeight;
+    tooltipShadow.style.display = "inline";
+    Site_layerOnZIndex(tooltipShadow, -2);
+    coaster.style.posLeft = tooltip.style.posLeft;
+    coaster.style.posTop = tooltip.style.posTop;
+    coaster.style.posWidth = tooltip.offsetWidth;
+    coaster.style.posHeight = tooltip.offsetHeight;
+    coaster.style.display = "inline";
+    Site_layerOnZIndex(coaster, -4);
+  }
+  else {
+    tooltip.style.left = x + Functions_tooltipOffsetX - dx;
+    if (dx && dy <= 0) {
+      dy = -1*Math.min(
+          document.body.scrollTop + document.body.clientHeight - border - y - tooltip.offsetHeight,
+          -3*Functions_tooltipOffsetY);
+    }
+    tooltip.style.top = y + Functions_tooltipOffsetY - dy;
+    Site_layerOnZIndex(tooltip);
+  }
+}
+
+// Hide last tooltip
+//
+var Functions_tooltipShowHideLastTooltip = null;
+var Functions_tooltipShowHideLastTooltipShadow = null;
+function Functions_tooltipHide() {
+  if (Functions_tooltipShowHideTimerID != null)
+    clearTimeout(Functions_tooltipShowHideTimerID);
+  if (Functions_tooltipShowHideLastTooltip != null)
+    Functions_tooltipShowHideLastTooltip.style.display = 'none';
+  if (Functions_tooltipShowHideLastTooltipShadow != null)
+    Functions_tooltipShowHideLastTooltipShadow.style.display = 'none';
+  var theMaskItem = $('Site_maskPageContent2');
+  if (theMaskItem)
+    theMaskItem.innerHTML = '';
+}
+
+
+// simply return the phrase
+// puts a pattern in javascript that tells translator to translate
+XLATOR = function(phrase) {
+  return phrase;
+}
+
+

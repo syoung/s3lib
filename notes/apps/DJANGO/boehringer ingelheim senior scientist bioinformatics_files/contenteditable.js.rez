@@ -1,0 +1,73 @@
+// Copyright © Hanover Capital Management Corp. 2003. All Rights Reserved.
+
+//
+// ContentEditable semantics
+//
+// $Author: mflorence $
+// $Date: 2003-01-28 15:17:36 $
+// $Revision: 1.1 $
+//
+
+// Object ctor
+//
+// @param controlID [of contentEditable field]
+//
+function ContentEditable(controlID) {
+  this.controlID = controlID;
+  this.left = ContentEditable_JustifyLeft;
+  this.center = ContentEditable_JustifyCenter;
+  this.right = ContentEditable_JustifyRight;
+  this.indent = ContentEditable_Indent;
+  this.outdent = ContentEditable_Outdent;
+  this.OL = ContentEditable_InsertOrderedList;
+  this.UL = ContentEditable_InsertUnorderedList;
+}
+
+// "JustifyLeft"
+//
+function ContentEditable_JustifyLeft() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("JustifyLeft");
+}
+
+// "JustifyCenter"
+//
+function ContentEditable_JustifyCenter() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("JustifyCenter");
+}
+
+// "JustifyRight"
+//
+function ContentEditable_JustifyRight() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("JustifyRight");
+}
+
+// "Indent"
+//
+function ContentEditable_Indent() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("Indent");
+}
+
+// "Outdent"
+//
+function ContentEditable_Outdent() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("Outdent");
+}
+
+// "InsertOrderedList"
+//
+function ContentEditable_InsertOrderedList() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("InsertOrderedList");
+}
+
+// "InsertUnorderedList"
+//
+function ContentEditable_InsertUnorderedList() {
+  eval(this.controlID + ".focus()");
+  document.execCommand("InsertUnorderedList");
+}

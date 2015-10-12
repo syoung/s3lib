@@ -1,0 +1,2217 @@
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Jun 19 23:32:01 EDT 2007
+DISCREPANCIES IN ANNOTATION IN .downloads.tsv FILE
+
+MSG: Doug
+CC: Margie
+
+Hi Doug,
+
+Here's the analysis of the issue with the different annotations - it turns out that the
+problem was twofold:
+
+    -  THE collectionsequencesannotation TABLE NEEDED TO BE REPOPULATED USING
+        THE NEWEST VERSION OF collectionsequencesannotation.pl (ALLOWING 'HYPOTHETICAL', ETC.)
+        
+    - IN CASES WHERE THERE ARE MORE THAN ONE 'BEST_HIT' (I.E., IDENTICAL E-VALUES), DIFFERENT
+        QUERIES TO THE TABLE AT DIFFERENT TIMES WILL RANDOMLY CHOSE BETWEEN THE 'BEST HITS'.
+        
+        SO THE 'BEST HIT' ISOFORM RETRIEVED FROM THE collectionblast TABLE WHEN POPULATING
+        THE collectionsequencesannotation TABLE MAY BE DIFFERENT FROM THE ISOFORM RETRIEVED
+        WHEN QUERYING THE collectionblast TABLE AGAIN FOR BEST HITS FROM ALL TARGET DATABASES
+        DURING THE COMPILATION OF THE .download.tsv FILE
+
+Here's my analysis of these two issues below (please see SOLUTION sections).
+
+Cheers,
+
+Stuart.
+
+
+PROBLEM 1:  two collection id with different annotations but the same Gene_Id (SwissProt)
+=========
+collectionid    targetsource    Gene_Id     targetannotation
+    6257        swissprot       O10341      Extensin precursor (Proline-rich glycoprotein)
+    11784       swissprot       O10341      Endoglucanase E1 precursor (EC 3.2.1.4) (Endo-1,4-beta-glucanase E1) (Cellulase E1) (Endocellulase E1)
+
+
+ANALYSIS:
+=========
+
+THIS IS THE ORIGINAL .downloads.tsv FILE ENTRY FOR COLLECTION ID 6257 (contigstart, ETC. CHOPPED OUT):
+
+                                                                                                       FROM collectionsequencesannotation TABLE                                 FROM collectionblast TABLE
+                                                                                                                    |                                                                        |  
+                                                                                                                    V                                                                        V
+experiment   plate   well    collectionid     collectionaccession   sequencetype    numberreads targetsource    targetannotation                                targetid    targetname   targetannotation
+130          78     H01        6257           1                     singlet         1           swissprot       Extensin precursor (Proline-rich glycoprotein)   O10341     Y091_NPVOP   Hypothetical 29.3 kDa protein (ORF92)1.89
+
+*** NB: THE targetid BELONGS TO THE collectionblast TABLE ENTRY ***
+
+
+
+AND THE SWISSPROT BLAST FASTA FILE SHOWS THAT 010341 IS IN FACT 'Hypothetical 29.3 kDa protein (ORF92)':
+
+1288951:>Y091_NPVOP (O10341) Hypothetical 29.3 kDa protein (ORF92)
+
+CONFIRMED THAT COLLECTION ID 6257 HAS THE BEST HIT ANNOTATION 'Hypothetical 29.3 kDa protein (ORF92)' IN collectionblast:
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE collectionid=6257 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+----------+--------------+--------------+-------------------------------------------------------------+
+| collectionid | targetsource | targetid | hitevalueexp | hitevaluedec | targetannotation                                            |
++--------------+--------------+----------+--------------+--------------+-------------------------------------------------------------+
+|         6257 | funnybase10  | 6017.1   |        -9999 |         0.00 |                                                             |
+|         6257 | swissprot    | O10341   |           -6 |         1.89 | Hypothetical 29.3 kDa protein (ORF92)                       |
+|         6257 | swissprot    | P14918   |           -6 |         4.21 | Extensin precursor (Proline-rich glycoprotein)              |
+|         6257 | swissprot    | P41479   |           -6 |         7.19 | Hypothetical 24.1 kDa protein in LEF4-P33 intergenic region |
++--------------+--------------+----------+--------------+--------------+-------------------------------------------------------------+
+
+
+JUST TO MAKE SURE, CONFIRM THAT THE ANNOTATION FOR SWISSPROT SEQUENCE 'O10341' IS THE SAME IN ALL CASES:
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE targetsource = 'swissprot' and targetid='O10341' ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+----------+--------------+--------------+---------------------------------------+
+| collectionid | targetsource | targetid | hitevalueexp | hitevaluedec | targetannotation                      |
++--------------+--------------+----------+--------------+--------------+---------------------------------------+
+|         8768 | swissprot    | O10341   |          -22 |         2.49 | Hypothetical 29.3 kDa protein (ORF92) |
+|         2687 | swissprot    | O10341   |          -15 |         3.34 | Hypothetical 29.3 kDa protein (ORF92) |
+|         3551 | swissprot    | O10341   |          -13 |         2.35 | Hypothetical 29.3 kDa protein (ORF92) |
+|          387 | swissprot    | O10341   |          -11 |         2.04 | Hypothetical 29.3 kDa protein (ORF92) |
+|         7663 | swissprot    | O10341   |          -10 |         1.41 | Hypothetical 29.3 kDa protein (ORF92) |
+|          153 | swissprot    | O10341   |          -10 |         1.54 | Hypothetical 29.3 kDa protein (ORF92) |
+|          207 | swissprot    | O10341   |           -9 |         3.46 | Hypothetical 29.3 kDa protein (ORF92) |
+|         2777 | swissprot    | O10341   |           -9 |         5.05 | Hypothetical 29.3 kDa protein (ORF92) |
+|        10719 | swissprot    | O10341   |           -8 |         1.15 | Hypothetical 29.3 kDa protein (ORF92) |
+|         7452 | swissprot    | O10341   |           -8 |         1.29 | Hypothetical 29.3 kDa protein (ORF92) |
+|         4082 | swissprot    | O10341   |           -8 |         3.37 | Hypothetical 29.3 kDa protein (ORF92) |
+|         3572 | swissprot    | O10341   |           -8 |         3.60 | Hypothetical 29.3 kDa protein (ORF92) |
+|        11784 | swissprot    | O10341   |           -8 |         4.97 | Hypothetical 29.3 kDa protein (ORF92) |
+|        11847 | swissprot    | O10341   |           -8 |         5.11 | Hypothetical 29.3 kDa protein (ORF92) |
+|         3608 | swissprot    | O10341   |           -8 |         8.73 | Hypothetical 29.3 kDa protein (ORF92) |
+|         9762 | swissprot    | O10341   |           -7 |         1.09 | Hypothetical 29.3 kDa protein (ORF92) |
+|         1158 | swissprot    | O10341   |           -7 |         1.20 | Hypothetical 29.3 kDa protein (ORF92) |
+|         7456 | swissprot    | O10341   |           -7 |         1.89 | Hypothetical 29.3 kDa protein (ORF92) |
+|         1071 | swissprot    | O10341   |           -7 |         2.40 | Hypothetical 29.3 kDa protein (ORF92) |
+|         1598 | swissprot    | O10341   |           -7 |         3.18 | Hypothetical 29.3 kDa protein (ORF92) |
+|         6952 | swissprot    | O10341   |           -7 |         3.29 | Hypothetical 29.3 kDa protein (ORF92) |
+|         4194 | swissprot    | O10341   |           -7 |         5.14 | Hypothetical 29.3 kDa protein (ORF92) |
+|         4823 | swissprot    | O10341   |           -7 |         5.50 | Hypothetical 29.3 kDa protein (ORF92) |
+|         7484 | swissprot    | O10341   |           -7 |         6.85 | Hypothetical 29.3 kDa protein (ORF92) |
+|         3152 | swissprot    | O10341   |           -7 |         9.38 | Hypothetical 29.3 kDa protein (ORF92) |
+|         7580 | swissprot    | O10341   |           -6 |         1.10 | Hypothetical 29.3 kDa protein (ORF92) |
+|          639 | swissprot    | O10341   |           -6 |         1.15 | Hypothetical 29.3 kDa protein (ORF92) |
+|         2748 | swissprot    | O10341   |           -6 |         1.21 | Hypothetical 29.3 kDa protein (ORF92) |
+|           42 | swissprot    | O10341   |           -6 |         1.43 | Hypothetical 29.3 kDa protein (ORF92) |
+|         6257 | swissprot    | O10341   |           -6 |         1.89 | Hypothetical 29.3 kDa protein (ORF92) |
+|          231 | swissprot    | O10341   |           -6 |         1.95 | Hypothetical 29.3 kDa protein (ORF92) |
+|         3597 | swissprot    | O10341   |           -6 |         2.69 | Hypothetical 29.3 kDa protein (ORF92) |
+|         2376 | swissprot    | O10341   |           -6 |         3.69 | Hypothetical 29.3 kDa protein (ORF92) |
+|         1865 | swissprot    | O10341   |           -6 |         3.81 | Hypothetical 29.3 kDa protein (ORF92) |
+|         4047 | swissprot    | O10341   |           -6 |         4.61 | Hypothetical 29.3 kDa protein (ORF92) |
+|         2763 | swissprot    | O10341   |           -6 |         5.44 | Hypothetical 29.3 kDa protein (ORF92) |
++--------------+--------------+----------+--------------+--------------+---------------------------------------+
+36 rows in set (24.55 sec)
+
+
+HOWEVER, IN THE collectionsequencesannotation TABLE ITS ANNOTATION IS Extensin precursor (Proline-rich glycoprotein).
+
+select * from collectionsequencesannotation where collectionid = 6257\G
+*************************** 1. row ***************************
+       collectionid: 6257
+collectionaccession: 1
+  collectionversion: 0.00
+   targetannotation: Extensin precursor (Proline-rich glycoprotein)
+       targetsource: swissprot
+           targetid: P14918
+         targetname: EXTN_MAIZE
+       hitevaluedec: 4.21
+       hitevalueexp: -6
+            support: 1
+      supportsource: 
+      queryhitstart: 0
+       queryhitstop: 0
+     targethitstart: 151
+      targethitstop: 206
+1 row in set (0.00 sec)
+
+TO CONFIRM AGAIN, THE .TSV FILE ENTRY (WHICH POPULATED THE collectionsequencesannotation TABLE) FOR COLLECTION ID 6257 READS:
+
+6257       1       0.00    Extensin precursor (Proline-rich glycoprotein)  swissprot       P14918  EXTN_MAIZE      4.21 -6       1               0       0       151     206
+
+
+AND THE SAME ISSUE FOR COLLECTION ID 11784:
+
+select * from collectionsequencesannotation where collectionid = 11784\G
+*************************** 1. row ***************************
+       collectionid: 11784
+collectionaccession: 1
+  collectionversion: 0.00
+   targetannotation: Endoglucanase E1 precursor (EC 3.2.1.4) (Endo-1,4-beta-glucanase E1) (Cellulase E1) (Endocellulase E1)
+       targetsource: swissprot
+           targetid: P54583
+         targetname: GUN1_ACICE
+       hitevaluedec: 5.50
+       hitevalueexp: -7
+            support: 1
+      supportsource: 
+      queryhitstart: 0
+       queryhitstop: 0
+     targethitstart: 402
+      targethitstop: 461
+1 row in set (0.01 sec)
+
+
+DIAGNOSIS:
+==========
+
+THE PROBLEM AROSE DUE TO A DISCREPANCY BETWEEN THE collectionsequencesannotation TABLE
+AND THE BEST HITS IN THE collectionblast TABLE. THE collectionsequencesannotation TABLE
+HAD BEEN POPULATED BEFORE THE CHANGES TO ./collectionsequencesannotation.pl WHICH ALLOW
+'HYPOTHETICAL', 'PUTATIVE' AND 'PREDICTED' ANNOTATIONS (WHICH WERE SCRAPPED BEFORE).
+
+
+SOLUTION:
+=========
+
+SO RERAN ./collectionsequencesannotation.pl:
+
+./collectionsequencesannotation.pl -d funnybase11
+
+    Doing annotations for collection sequences (total 11972)
+    0
+    100
+    200
+    ...
+    11900
+    Output .TSV file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase11/collection/collectionsequencesannotation.tsv
+    
+    Annotated sequences: 4956
+    Unknown sequences: 7016
+    Swissprot defined: 4558
+    Refseq defined: 4744
+    Both defined: 4346
+    Either defined: 4956
+    Deleting from table 'collectionsequencesannotation'
+    Loading data into table 'collectionsequencesannotation'... done.
+    Updating FULLTEXT targetannotation (targetannotation, targetsource, targetid, targetname)... done.
+    
+    Run time: 00:03:18
+    Completed ./collectionsequencesannotation.pl
+    10:04PM, 19 June 2007
+    ****************************************
+    
+AND CHECKED collectionid 6257's ANNOTATION AGAIN:
+
+SELECT targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation FROM collectionsequencesannotation WHERE collectionid='6257';
++--------------+----------+--------------+--------------+---------------------------------------+
+| targetsource | targetid | hitevalueexp | hitevaluedec | targetannotation                      |
++--------------+----------+--------------+--------------+---------------------------------------+
+| swissprot    | O10341   |           -6 |         1.89 | Hypothetical 29.3 kDa protein (ORF92) |
++--------------+----------+--------------+--------------+---------------------------------------+
+
+PROBLEM SOLVED!!
+
+
+PROBLEM 2:
+=========
+
+DIFFERENT ISOFORMS OF BEST HITS IN THE collectionsequencesannotation AND collectionblast TABLES
+
+E.G.:
+
+expt    plate   well    collectionid    targetid        targetannotation                        besthit_targetid    besthit_targetannotation
+126	    3	    D09	    2518            NP_631976	    nexilin isoform b [Rattus norvegicus]   NP_631976	        nexilin isoform s [Rattus norvegicus]
+
+
+ANALYSIS:
+=========
+
+I USED check.collectionsequencesdownload.pl TO CHECK FOR CASES WHERE THE targetannotation AND
+THE besthit_targetannotation (E.G., IN THIS CASE FROM REFSEQ-RAT) DIFFER:
+
+
+Read: 126-3-D09
+Collection id: 2518
+Annotation regex: nexilin isoform b \[Rattus norvegicus\]
+Targetsource: refseq-rat
+Annotation: **nexilin isoform b [Rattus norvegicus]**
+Actual annotation: **nexilin isoform s [Rattus norvegicus]**
+
+
+CHECK THESE COLLECTION IDS: 2518, 2538, 2558, 2599
+
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE collectionid=2518 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+-----------+--------------+--------------+------------------------------------------------------------+
+| collectionid | targetsource | targetid  | hitevalueexp | hitevaluedec | targetannotation                                           |
++--------------+--------------+-----------+--------------+--------------+------------------------------------------------------------+
+|         2518 | funnybase10  | 1873.1    |        -9999 |         0.00 |                                                            |
+|         2518 | refseq-rat   | NP_631976 |          -16 |         2.47 | nexilin isoform s [Rattus norvegicus]                      |
+|         2518 | refseq-rat   | NP_631977 |          -16 |         2.47 | nexilin isoform b [Rattus norvegicus]                      |
+|         2518 | refseq-mouse | NP_955759 |          -16 |         5.43 | nexilin [Mus musculus]                                     |
+|         2518 | refseq-dog   | XP_547323 |          -15 |         1.06 | PREDICTED: similar to nexilin isoform s [Canis familiaris] |
+|         2518 | refseq-human | NP_653174 |          -14 |         2.03 | nexilin (F actin binding protein) [Homo sapiens]           |
++--------------+--------------+-----------+--------------+--------------+------------------------------------------------------------+
+
+
+SELECT targetsource, targetid, targetannotation, hitevalueexp, hitevaluedec FROM collectionsequencesannotation WHERE collectionid=2518;
+
++--------------+-----------+---------------------------------------+--------------+--------------+
+| targetsource | targetid  | targetannotation                      | hitevalueexp | hitevaluedec |
++--------------+-----------+---------------------------------------+--------------+--------------+
+| refseq-rat   | NP_631977 | nexilin isoform b [Rattus norvegicus] |          -16 |         2.47 |
++--------------+-----------+---------------------------------------+--------------+--------------+
+
+Read: 126-3-H01
+Collection id: 2538
+Annotation regex: UPF0195 protein CG30152
+Targetsource: swissprot
+Annotation: **UPF0195 protein CG30152**
+Actual annotation: **Hypothetical UPF0195 protein CGI-128 homolog**
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE collectionid=2538 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+--------------+--------------+--------------+-------------------------------------------------------------------------------+
+| collectionid | targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                                                              |
++--------------+--------------+--------------+--------------+--------------+-------------------------------------------------------------------------------+
+|         2538 | funnybase10  | 1896.1       |        -9999 |         0.00 |                                                                               |
+|         2538 | refseq-mouse | NP_081029    |          -69 |         9.43 | hypothetical protein LOC68523 [Mus musculus]                                  |
+|         2538 | refseq-human | NP_057146    |          -68 |         1.87 | hypothetical protein LOC51647 [Homo sapiens]                                  |
+|         2538 | swissprot    | Q9D187       |          -68 |         4.00 | Hypothetical UPF0195 protein CGI-128 homolog                                  |
+|         2538 | swissprot    | Q9Y3D0       |          -68 |         6.82 | Hypothetical UPF0195 protein CGI-128                                          |
+|         2538 | refseq-dog   | XP_854044    |          -64 |         1.24 | PREDICTED: similar to Hypothetical UPF0195 protein CGI-128 [Canis familiaris] |
+|         2538 | swissprot    | Q9VTC4       |          -57 |         4.15 | Hypothetical UPF0195 protein CG7949                                           |
+|         2538 | funnybase10  | 29.1         |          -54 |         4.16 |                                                                               |
+|         2538 | swissprot    | O62252       |          -47 |         8.67 | Hypothetical UPF0195 protein F45G2.10 in chromosome III                       |
+|         2538 | swissprot    | Q9C9G6       |          -41 |         1.10 | Hypothetical UPF0195 protein At1g68310                                        |
+|         2538 | swissprot    | Q9UTL0       |          -34 |         2.21 | Hypothetical UPF0195 protein C144.16 in chromosome I                          |
+|         2538 | refseq-human | NP_115607    |          -33 |         4.36 | hypothetical protein FLJ22875 isoform a [Homo sapiens]                        |
+|         2538 | refseq-mouse | NP_080911    |          -33 |         8.33 | hypothetical protein FLJ22875 [Mus musculus]                                  |
+|         2538 | refseq-dog   | XP_535508    |          -33 |         9.58 | PREDICTED: similar to CG30152-PA isoform 1 [Canis familiaris]                 |
+|         2538 | refseq-dog   | XP_865510    |          -33 |         9.58 | PREDICTED: similar to CG30152-PA isoform 8 [Canis familiaris]                 |
+|         2538 | swissprot    | Q9H5X1       |          -32 |         1.59 | Hypothetical UPF0195 protein FLJ22875                                         |
+|         2538 | refseq-rat   | NP_001008328 |          -32 |         3.22 | family with sequence similarity 96, member A [Rattus norvegicus]              |
+|         2538 | swissprot    | Q9DCL2       |          -32 |         3.53 | Hypothetical UPF0195 protein FLJ22875 homolog                                 |
+|         2538 | swissprot    | Q9SR25       |          -32 |         4.62 | Hypothetical UPF0195 protein At3g09380                                        |
+|         2538 | refseq-dog   | XP_865403    |          -31 |         1.38 | PREDICTED: similar to CG30152-PA isoform 2 [Canis familiaris]                 |
+|         2538 | swissprot    | P38829       |          -30 |         1.94 | Hypothetical UPF0195 protein YHR122w                                          |
+|         2538 | swissprot    | Q9V968       |          -29 |         4.78 | UPF0195 protein CG30152                                                       |
+|         2538 | refseq-dog   | XP_865440    |          -26 |         1.75 | PREDICTED: similar to CG30152-PA isoform 4 [Canis familiaris]                 |
+|         2538 | refseq-dog   | XP_865424    |          -22 |         2.00 | PREDICTED: similar to CG30152-PA isoform 3 [Canis familiaris]                 |
+|         2538 | refseq-dog   | XP_865476    |          -14 |         4.47 | PREDICTED: similar to CG30152-PA isoform 6 [Canis familiaris]                 |
+|         2538 | refseq-human | NP_001014812 |          -12 |         5.54 | hypothetical protein FLJ22875 isoform b [Homo sapiens]                        |
+|         2538 | refseq-dog   | XP_865490    |          -11 |         1.22 | PREDICTED: similar to F45G2.10 isoform 7 [Canis familiaris]                   |
+|         2538 | refseq-dog   | XP_865458    |           -9 |         4.33 | PREDICTED: similar to CG30152-PA isoform 5 [Canis familiaris]                 |
++--------------+--------------+--------------+--------------+--------------+-------------------------------------------------------------------------------+
+28 rows in set (0.01 sec)
+
+
+SELECT targetsource, targetid, targetannotation, hitevalueexp, hitevaluedec FROM collectionsequencesannotation WHERE collectionid=2538;
+
++--------------+----------+----------------------------------------------+--------------+--------------+
+| targetsource | targetid | targetannotation                             | hitevalueexp | hitevaluedec |
++--------------+----------+----------------------------------------------+--------------+--------------+
+| swissprot    | Q9D187   | Hypothetical UPF0195 protein CGI-128 homolog |          -68 |         4.00 |
++--------------+----------+----------------------------------------------+--------------+--------------+
+
+(REMEMBER: WE TAKE THE SWISSPROT HIT IF THE RATIO ( REFSEQ E-VALUE) / (SWISSPROT E-VALUE) IS LESS THAN 1.2 ) 
+
+
+Read: 126-4-B10
+Collection id: 2558
+Annotation regex: Tubulin alpha\-1 chain
+Targetsource: swissprot
+Annotation: **Tubulin alpha-1 chain**
+Actual annotation: **Tubulin alpha-2/alpha-4 chain**
+
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE collectionid=2558 ORDER BY hitevalueexp, hitevaluedec LIMIT 25;
+
++--------------+--------------+--------------+--------------+--------------+---------------------------------------------------------------------------------------------+
+| collectionid | targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                                                                            |
++--------------+--------------+--------------+--------------+--------------+---------------------------------------------------------------------------------------------+
+|         2558 | funnybase10  | 1917.1       |        -9999 |         0.00 |                                                                                             |
+|         2558 | funnybase10  | 7993.1       |         -124 |         1.63 |                                                                                             |
+|         2558 | funnybase10  | 309.1        |         -112 |         5.55 |                                                                                             |
+|         2558 | refseq-mouse | NP_033474    |         -111 |         2.72 | tubulin, alpha 6 [Mus musculus]                                                             |
+|         2558 | refseq-mouse | NP_035783    |         -111 |         2.72 | tubulin, alpha 1 [Mus musculus]                                                             |
+|         2558 | refseq-mouse | NP_035784    |         -111 |         2.72 | tubulin, alpha 2 [Mus musculus]                                                             |
+|         2558 | refseq-rat   | NP_001011995 |         -111 |         2.76 | tubulin, alpha 6 (predicted) [Rattus norvegicus]                                            |
+|         2558 | refseq-rat   | NP_071634    |         -111 |         2.76 | tubulin, alpha 1 [Rattus norvegicus]                                                        |
+|         2558 | refseq-rat   | XP_576340    |         -111 |         2.76 | PREDICTED: tubulin, alpha 6 (predicted) [Rattus norvegicus]                                 |
+|         2558 | refseq-human | NP_006000    |         -111 |         3.17 | tubulin, alpha 3 [Homo sapiens]                                                             |
+|         2558 | refseq-human | NP_006073    |         -111 |         3.17 | tubulin, alpha, ubiquitous [Homo sapiens]                                                   |
+|         2558 | refseq-human | NP_116093    |         -111 |         3.17 | tubulin alpha 6 [Homo sapiens]                                                              |
+|         2558 | refseq-dog   | XP_534814    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 1 isoform 1 [Canis familiaris]                         |
+|         2558 | refseq-dog   | XP_850665    |         -111 |         4.09 | PREDICTED: similar to Tubulin alpha-2 chain (Alpha-tubulin 2) isoform 2 [Canis familiaris]  |
+|         2558 | refseq-dog   | XP_862179    |         -111 |         4.09 | PREDICTED: similar to Tubulin alpha-2 chain (Alpha-tubulin 2) isoform 10 [Canis familiaris] |
+|         2558 | refseq-dog   | XP_862226    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 2 isoform 2 isoform 11 [Canis familiaris]              |
+|         2558 | refseq-dog   | XP_862418    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 1 isoform 8 [Canis familiaris]                         |
+|         2558 | refseq-dog   | XP_862497    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 2 isoform 2 isoform 11 [Canis familiaris]              |
+|         2558 | refseq-dog   | XP_862523    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 1 isoform 12 [Canis familiaris]                        |
+|         2558 | refseq-dog   | XP_862547    |         -111 |         4.09 | PREDICTED: similar to tubulin, alpha 1 isoform 13 [Canis familiaris]                        |
+|         2558 | swissprot    | P06605       |         -111 |         6.79 | Tubulin alpha-3 chain                                                                       |
+|         2558 | swissprot    | P41383       |         -111 |         6.79 | Tubulin alpha-2/alpha-4 chain                                                               |
+|         2558 | swissprot    | P06603       |         -111 |         8.86 | Tubulin alpha-1 chain                                                                       |
+|         2558 | refseq-dog   | XP_851095    |         -111 |         9.10 | PREDICTED: similar to Tubulin alpha-2 chain (Alpha-tubulin 2) [Canis familiaris]            |
+|         2558 | swissprot    | P05213       |         -110 |         1.16 | Tubulin alpha-2 chain (Alpha-tubulin 2) (Alpha-tubulin isotype M-alpha-2)                   |
++--------------+--------------+--------------+--------------+--------------+---------------------------------------------------------------------------------------------+
+
+SELECT targetsource, targetid, targetannotation, hitevalueexp, hitevaluedec FROM collectionsequencesannotation WHERE collectionid=2558;
+
++--------------+----------+-----------------------+--------------+--------------+
+| targetsource | targetid | targetannotation      | hitevalueexp | hitevaluedec |
++--------------+----------+-----------------------+--------------+--------------+
+| swissprot    | P33623   | Tubulin alpha-1 chain |         -111 |         1.16 |
++--------------+----------+-----------------------+--------------+--------------+
+
+
+Read: 126-4-H05
+Collection id: 2599
+Annotation regex: nuclear protein UKp68 isoform 1 \[Homo sapiens\]
+Targetsource: refseq-human
+Annotation: **nuclear protein UKp68 isoform 1 [Homo sapiens]**
+Actual annotation: **nuclear protein UKp68 isoform 3 [Homo sapiens]**
+200
+
+
+select distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation from collectionblast WHERE collectionid=2599 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+--------------+--------------+--------------+------------------------------------------------------------------------------------+
+| collectionid | targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                                                                   |
++--------------+--------------+--------------+--------------+--------------+------------------------------------------------------------------------------------+
+|         2599 | funnybase10  | 1954.1       |        -9999 |         0.00 |                                                                                    |
+|         2599 | refseq-human | NP_079100    |          -23 |         3.13 | nuclear protein UKp68 isoform 1 [Homo sapiens]                                     |
+|         2599 | refseq-human | NP_997544    |          -23 |         3.13 | nuclear protein UKp68 isoform 3 [Homo sapiens]                                     |
+|         2599 | refseq-rat   | NP_001029123 |          -23 |         3.60 | nuclear protein UKp68 isoform 1 [Rattus norvegicus]                                |
+|         2599 | refseq-rat   | NP_620275    |          -23 |         3.60 | nuclear protein UKp68 isoform 2 [Rattus norvegicus]                                |
+|         2599 | refseq-dog   | XP_537533    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 1 isoform 1 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_854349    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 1 isoform 2 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868378    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 1 isoform 4 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868382    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 4 isoform 5 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868386    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 4 isoform 6 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868394    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 2 isoform 8 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868396    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 1 isoform 9 [Canis familiaris] |
+|         2599 | refseq-dog   | XP_868399    |          -23 |         8.74 | PREDICTED: similar to nuclear protein UKp68 isoform 10 [Canis familiaris]          |
+|         2599 | refseq-human | NP_997543    |          -22 |         1.19 | nuclear protein UKp68 isoform 2 [Homo sapiens]                                     |
+|         2599 | refseq-human | NP_997545    |          -22 |         1.19 | nuclear protein UKp68 isoform 4 [Homo sapiens]                                     |
+|         2599 | refseq-mouse | NP_001008506 |          -22 |         1.35 | nuclear protein UKp68 isoform b [Mus musculus]                                     |
+|         2599 | refseq-mouse | NP_083610    |          -22 |         1.35 | nuclear protein UKp68 isoform a [Mus musculus]                                     |
+|         2599 | refseq-dog   | XP_868393    |          -22 |         1.49 | PREDICTED: similar to nuclear protein UKp68 isoform 2 isoform 7 [Canis familiaris] |
+|         2599 | funnybase10  | 1946.1       |          -22 |         4.69 |                                                                                    |
+|         2599 | refseq-mouse | XP_618982    |          -14 |         3.02 | PREDICTED: similar to nuclear protein UKp68 [Mus musculus]                         |
++--------------+--------------+--------------+--------------+--------------+------------------------------------------------------------------------------------+
+
+SELECT targetsource, targetid, targetannotation, hitevalueexp, hitevaluedec FROM collectionsequencesannotation WHERE collectionid=2599;
+
++--------------+-----------+------------------------------------------------+--------------+--------------+
+| targetsource | targetid  | targetannotation                               | hitevalueexp | hitevaluedec |
++--------------+-----------+------------------------------------------------+--------------+--------------+
+| refseq-human | NP_079100 | nuclear protein UKp68 isoform 1 [Homo sapiens] |          -23 |         3.13 |
++--------------+-----------+------------------------------------------------+--------------+--------------+
+1 row in set (0.00 sec)
+
+
+
+STRANGE DIFFERENCE IN targetannotation BETWEEN TWO READS WITH THE SAME targetid:
+
+expt    plate   well    collectionid    targetid        targetannotation
+126	    11      G04	    2838            NP_001020116	quiescin Q6 isoform b [Mus musculus]
+126	    105	    A05	    4266            NP_001020116	quiescin Q6 isoform a [Mus musculus]
+
+
+CHECKED FOR 4266:
+
+
+SELECT targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation FROM collectionsequencesannotation WHERE collectionid='4266';
++--------------+--------------+--------------+--------------+--------------------------------------+
+| targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                     |
++--------------+--------------+--------------+--------------+--------------------------------------+
+| refseq-mouse | NP_001020116 |           -6 |         1.13 | quiescin Q6 isoform a [Mus musculus] |
++--------------+--------------+--------------+--------------+--------------------------------------+
+
+
+SELECT distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation  from collectionblast where collectionid=4266 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+| collectionid | targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                                               |
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+|         4266 | funnybase10  | 684.1        |        -9999 |         0.00 |                                                                |
+|         4266 | refseq-mouse | NP_001020116 |           -6 |         1.13 | quiescin Q6 isoform a [Mus musculus]                           |
+|         4266 | refseq-human | NP_002817    |           -6 |         2.88 | quiescin Q6 isoform a [Homo sapiens]                           |
+|         4266 | refseq-dog   | XP_547419    |           -6 |         6.39 | PREDICTED: similar to quiescin Q6 isoform a [Canis familiaris] |
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+
+
+CHECKED FOR 2838:
+
+SELECT targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation FROM collectionsequencesannotation WHERE collectionid=2838;
+
++--------------+-----------+--------------+--------------+--------------------------------------+
+| targetsource | targetid  | hitevalueexp | hitevaluedec | targetannotation                     |
++--------------+-----------+--------------+--------------+--------------------------------------+
+| refseq-mouse | NP_075757 |          -54 |         2.34 | quiescin Q6 isoform b [Mus musculus] |
++--------------+-----------+--------------+--------------+--------------------------------------+
+
+SELECT distinct collectionid, targetsource, targetid, hitevalueexp, hitevaluedec, targetannotation  from collectionblast where collectionid=2838 ORDER BY hitevalueexp, hitevaluedec;
+
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+| collectionid | targetsource | targetid     | hitevalueexp | hitevaluedec | targetannotation                                               |
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+|         2838 | funnybase10  | 2173.1       |        -9999 |         0.00 |                                                                |
+|         2838 | refseq-mouse | NP_001020116 |          -54 |         2.34 | quiescin Q6 isoform a [Mus musculus]                           |
+|         2838 | refseq-mouse | NP_075757    |          -54 |         2.34 | quiescin Q6 isoform b [Mus musculus]                           |
+|         2838 | refseq-human | NP_001004128 |          -52 |         1.15 | quiescin Q6 isoform b [Homo sapiens]                           |
+|         2838 | refseq-human | NP_002817    |          -52 |         1.15 | quiescin Q6 isoform a [Homo sapiens]                           |
+|         2838 | refseq-rat   | NP_445883    |          -52 |         1.30 | quiescin Q6 [Rattus norvegicus]                                |
+|         2838 | refseq-dog   | XP_547419    |          -50 |         1.06 | PREDICTED: similar to quiescin Q6 isoform a [Canis familiaris] |
+|         2838 | refseq-dog   | XP_849400    |          -41 |         2.61 | PREDICTED: similar to quiescin Q6-like 1 [Canis familiaris]    |
+|         2838 | refseq-human | NP_859052    |          -41 |         5.90 | quiescin Q6-like 1 [Homo sapiens]                              |
+|         2838 | refseq-mouse | NP_705787    |          -40 |         3.28 | quiescin Q6-like 1 [Mus musculus]                              |
+|         2838 | refseq-rat   | XP_231083    |          -22 |         6.98 | PREDICTED: LIM homeobox protein 3 [Rattus norvegicus]          |
++--------------+--------------+--------------+--------------+--------------+----------------------------------------------------------------+
+
+DIAGNOSIS:
+=========
+
+THE 'BEST HIT' ISOFORM RETRIEVED FROM THE collectionblast TABLE WHEN POPULATING
+THE collectionsequencesannotation TABLE MAY BE DIFFERENT FROM THE ISOFORM RETRIEVED
+WHEN QUERYING THE collectionblast TABLE AGAIN FOR BEST HITS FROM ALL TARGET DATABASES
+DURING THE COMPILATION OF THE .download.tsv FILE
+
+
+SOLUTION:
+========
+
+This may be a feature, not a bug. But I can make sure the isoforms are identical by
+arbitrarily choosing one of them and setting both outputs to that 'best hit'.
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Jun 19 15:22:16 EDT 2007
+DUPLICATE ANNOTATION FOR THE SAME SWISSPROT ID
+
+From:  Douglas Crawford (dcrawford@rsmas.miami.edu)
+Sent: Tue 6/19/07 5:05 PM
+To: Stuart Young (youngstuart@hotmail.com)
+Cc: Margie Oleksiak (moleksiak@rsmas.miami.edu)
+
+Stuart,
+   There is a problem with the database.
+Are you planning on coming in this week?
+
+dlc
+
+
+NOTICE:  two collection id with different annotations but the same Gene_Id (SwissProt)
+
+collectionid    targetsource    Gene_Id     targetannotation
+    6257        swissprot       O10341      Extensin precursor (Proline-rich glycoprotein)
+    11784       swissprot       O10341      Endoglucanase E1 precursor (EC 3.2.1.4) (Endo-1,4-beta-glucanase E1) (Cellulase E1) (Endocellulase E1)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Jun 18 02:40:13 EDT 2007
+TABLE IS FULL
+
+./collectionblastloaddata.pl -d funnybase12
+
+...
+Doing target database: refseq-rat
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-rat.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-rat'...done.
+DBD::mysql::db do failed: The table 'collectionblast' is full at /Users/young/FUNNYBASE/lib/Database.pm line 590.
+Query failed: The table 'collectionblast' is full (1114)
+Loading 'refseq-rat' hits data into table 'collectionblast'...DID NOT LOAD!
+done.
+...
+
+
+
+show table status from funnybase12 like 'collectionblast'\G
+*************************** 1. row ***************************
+           Name: collectionblast
+           Type: MyISAM
+     Row_format: Dynamic
+           Rows: 7564201
+ Avg_row_length: 567
+    Data_length: 4294966856
+Max_data_length: 4294967295
+   Index_length: 128234496
+      Data_free: 0
+ Auto_increment: NULL
+    Create_time: 2007-06-15 00:00:05
+    Update_time: 2007-06-15 23:55:22
+     Check_time: NULL
+ Create_options: 
+        Comment: 
+1 row in set (0.00 sec)
+
+
+DO ALTER TABLE AND SET MAX_ROWS TO 2 BILLION:
+
+
+ALTER TABLE collectionblast  MAX_ROWS = 2000000000 AVG_ROW_LENGTH = 600;
+Query OK, 7564201 rows affected (7 min 28.48 sec)
+Records: 7564201  Duplicates: 0  Warnings: 0
+
+
+THEN RELOADED:
+
+sudo ./collectionblastloaddata.pl -d funnybase12
+Password:
+
+Using default conf file: conf/default.conf
+Directory: /common/pipeline/funnybase12/blast
+
+Doing target database: refseq-human
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-human.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-human'...done.
+Loading 'refseq-human' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-mouse
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-mouse.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-mouse'...done.
+Loading 'refseq-mouse' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-dog
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-dog.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-dog'...done.
+Loading 'refseq-dog' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-rat
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-rat.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-rat'...done.
+Loading 'refseq-rat' hits data into table 'collectionblast'...done.
+
+Doing target database: swissprot
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-swissprot.blast.tsv
+Deleting from collectionblast WHERE targetsource='swissprot'...done.
+Loading 'swissprot' hits data into table 'collectionblast'...done.
+
+Run time: 00:55:07
+Completed ./collectionblastloaddata.pl
+2:12AM, 19 June 2007
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Feb 22 14:23:33 EST 2007
+funnybase10 ASSEMBLY
+
+
+0. CREATE DATABASE
+==================
+./create_database.pl -d funnybase10
+
+1. LOAD READS
+=============
+
+./reads.pl -d funnybase10
+
+2. SCREEN READS
+===============
+
+ON gems:
+
+./readsarrayscreen.pl -d funnybase10
+
+3. LOAD SCREENED READS
+======================
+
+ON genomics:
+
+./readsarrayscreenloaddata.pl -d funnybase10
+
+
+4. GET UNIQUE SEQUENCES OF supercraw0 THAT DON'T SHARE ANNOTATION WITH funnybase7
+=================================================================================
+
+EXTRACT supercraw0 SEQUENCES THAT DON'T MATCH funnybase7 SEQUENCES:
+
+ ./comparemultiplecollectionannotation.pl -d supercraw0 -t funnybase
+ 
+EXTRACT supercraw0 SEQUENCES THAT DON'T MATCH funnybase7 SEQUENCES:
+
+./comparemultipleextractassemblysequences.pl -d supercraw0 -m funnybase7 -t comparemultipleannotation_supercraw0_funnybase7
+
+
+5. LOAD supercraw0 SEQUENCES INTO funnybase11 DATABASE
+======================================================
+
+MYSQL:
+
+delete from assemblyreads;
+delete from assemblysequences;
+
+
+CREATE .extract.contigs.qual FILE:
+
+./readsfastacontigsqualfile.pl -d supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs -t contigs
+
+
+CREATE .extract.singlets.qual FILE:
+
+./readsfastasingletsqualfile.pl -d supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.singlets
+
+
+CREATE .TSV FILES FOR assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+    732 out of 733 singlets added to 'assemblysequences' table
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.singlets.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.singlets.assemblyreads.tsv
+    
+    Doing contigs file: /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblyreads.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblysequences.tsv
+
+    1052 out of 1052 contigs added to 'assemblysequences' table
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblyreads.tsv
+    
+    Completed ./assemblyreadsassemblysequences.pl
+    Run time: 00:00:25
+    4:45PM, 12 June 2007
+    ****************************************
+
+
+LOAD supercraw0 .TSV FILES INTO assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequencesloaddata.pl -d funnybase10 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+use funnybase10
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
+
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
+
+    +--------------+----------------+--------------+----------+
+    | assemblyname | assemblynumber | sequencetype | count(*) |
+    +--------------+----------------+--------------+----------+
+    | supercraw0   |              1 | contig       |     1052 |
+    | supercraw0   |              1 | singlet      |      732 |
+    +--------------+----------------+--------------+----------+
+
+PREVIOUSLY:
+
+    +--------------+----------------+--------------+----------+
+    | assemblyname | assemblynumber | sequencetype | count(*) |
+    +--------------+----------------+--------------+----------+
+    | supercraw0   |              1 | contig       |      749 |
+    | supercraw0   |              1 | singlet      |      707 |
+    +--------------+----------------+--------------+----------+
+
+
+5. LOAD ASSEMBLY SEQUENCES FROM funnybase10
+===========================================
+
+
+CREATE funnybase10.fasta.qual FILE:
+
+cd /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir
+phd2fasta  -id ../phd_dir  -os funnybase10.fasta -oq funnybase10.fasta.qual
+
+
+CREATE .extract.singlets.qual FILE:
+
+./readsfastasingletsqualfile.pl -d funnybase10
+
+
+    24100
+    Singlets quality file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+    
+    Completed ./readsfastasingletsqualfile.pl
+    Run time: 00:00:21
+    6:17PM, 12 June 2007
+    ****************************************
+
+    ll /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+    56M Jun 12 18:17 /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+
+
+CREATE .TSV FILES FOR assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -q 10
+
+    ...
+    24187 out of 24187 singlets added to 'assemblysequences' table
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.singlets.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.singlets.assemblyreads.tsv
+    
+    1779 out of 1779 contigs added to 'assemblysequences' table
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.contigs.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.contigs.assemblyreads.tsv
+    
+    Completed ./assemblyreadsassemblysequences.pl
+    Run time: 00:01:28
+    5:14PM, 12 June 2007
+
+LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequencesloaddata.pl -d funnybase10
+
+
+    select assemblyname, sequencetype, count(*) from assemblysequences where assemblyquality='' group by assemblyname, sequencetype; 
+    +--------------+--------------+----------+
+    | assemblyname | sequencetype | count(*) |
+    +--------------+--------------+----------+
+    | supercraw0   | singlet      |      495 |
+    +--------------+--------------+----------+
+    
+    
+    select assemblyname, sequencetype, count(*) from assemblysequences group by assemblyname, sequencetype;
+    +--------------+--------------+----------+
+    | assemblyname | sequencetype | count(*) |
+    +--------------+--------------+----------+
+    | funnybase10  | contig       |     1779 |
+    | funnybase10  | singlet      |    17574 |
+    | supercraw0   | contig       |     1052 |
+    | supercraw0   | singlet      |      732 |
+    +--------------+--------------+----------+
+    
+    
+    PREVIOUSLY:
+    
+    select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
+    +--------------+----------------+--------------+----------+
+    | assemblyname | assemblynumber | sequencetype | count(*) |
+    +--------------+----------------+--------------+----------+
+    | funnybase10  |              2 | contig       |     1758 |
+    | funnybase10  |              2 | singlet      |    20088 |
+    | supercraw0   |              1 | contig       |      749 |
+    | supercraw0   |              1 | singlet      |      707 |
+    +--------------+----------------+--------------+----------+
+    
+    select assemblyname, sequencetype, count(*), min(sequencenumber), max(sequencenumber) from assemblysequences group by assemblyname, sequencetype ;
+    +--------------+--------------+----------+---------------------+---------------------+
+    | assemblyname | sequencetype | count(*) | min(sequencenumber) | max(sequencenumber) |
+    +--------------+--------------+----------+---------------------+---------------------+
+    | funnybase10  | contig       |     1758 |               21545 |               23302 |
+    | funnybase10  | singlet      |    20088 |                1457 |               21544 |
+    | supercraw0   | contig       |      749 |                 708 |                1456 |
+    | supercraw0   | singlet      |      707 |                   1 |                 707 |
+    +--------------+--------------+----------+---------------------+---------------------+
+    
+6. CALCULATE READ COVERAGE
+==========================
+
+./assemblysequencesreadcoverage.pl -d funnybase10
+...
+Total 21846 coverages added (total sequences 21846)
+Completed ./assemblysequencesreadcoverage.pl
+
+Run time: 00:22:23
+0:22AM, 24 February 2007
+****************************************
+
+7. POPULATE collectionsequences
+===============================
+
+MYSQL:
+
+delete from collectionsequences;
+
+./collectionsequences.pl -d funnybase10 -n supercraw0
+./collectionsequences.pl -d funnybase10
+
+select assemblyname, count(*) from collectionsequences group by assemblyname;
++--------------+----------+
+| assemblyname | count(*) |
++--------------+----------+
+| funnybase10  |    21845 |
+| supercraw0   |     1455 |
++--------------+----------+
+
+8. BLAST COLLECTION SEQUENCES
+=============================
+sudo ./collectionarrayblast.pl -d funnybase10
+sudo ./collectionblastloaddata.pl -d funnybase10
+
+select targetsource, count(distinct targetid) from collectionblast group by targetsource;
++--------------+--------------------------+
+| targetsource | count(distinct targetid) |
++--------------+--------------------------+
+| refseq-dog   |                    18989 |
+| refseq-human |                    13438 |
+| refseq-mouse |                    12061 |
+| refseq-rat   |                    10389 |
+| swissprot    |                    57587 |
++--------------+--------------------------+
+
+9. POPULATE collectionsequencesannotation
+=========================================
+
+./collectionsequencesannotation.pl -d funnybase10
+
+
+10. CALCULATE DIVS
+==================
+
+FOR ASSEMBLED SEQUENCE VIEW:
+./collectionsequencesdiv.pl -d funnybase10
+./assemblyreadsdiv.pl -d funnybase10
+
+./assemblysequencesdiv.pl -d funnybase10
+
+FOR blastdiv OF collectionsequencesdiv TABLE:
+./collectionsequencesblastdiv.pl -d funnybase10
+
+FOR selectexperiment HTML OF platesinfo TABLE:
+./experimentplatesdiv.pl
+
+FOR HTML divs OF ALL PLATES IN THE MYSQL TABLE 'plates'
+./platesdiv.pl
+
+11. CALCULATE STATS
+===================
+
+./collectionstats.pl -d funnybase10
+
+12. DO PATHWAYS
+==============
+
+./collectionsequencespathways.pl -d funnybase10
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Jun 11 11:53:53 EDT 2007
+PROBLEM WITH collectionsequences - TRUNCATES LAST ENTRY IN TABLE  (karenia5)
+
+
+mysql> select * from collectionsequences where collectionid = 6203\G
+*************************** 1. row ***************************
+       collectionid: 6203
+collectionaccession: 1
+  collectionversion: 0.00
+   assemblydatetime: 2007-05-29 20:20:29
+       assemblyname: karenia5
+     assemblynumber: 1
+       assemblytype: cap3
+     sequencenumber: 8621
+       sequencetype: singlet
+           sequence: TCAAACTGCAACTCTGCTGACGGTCCAGGGGTTGCTCGAGATTATGCTTCATCTTTGAGTATCTCATTGAACTTCTGGTTTGACTCGATGGCTGTGCTGCGAGACCCGCCATTACCGTTGCCCGATCACTTGGAGCTTGAATTGGCCCGGCACATCGAGTTCTTCGCTTGTATTTTGGCTGGACCACCTGGTGCCAAGGCTCTGTCGGAAGCGCTGACTGCTGACGTCTCACTGGGCATCTCTGGTACACTTGGCCCTTACAATGGAGTGCCTTTGGAGATTCGCGACTTCGTTCTTCTTAGACTTCTTGACCTCCTTGGCAAGCAGCAGGTTGCACCCCTTCATCCGCGCCTTCCTGGGCTCAGA
+            quality: 16 9 8 8 15 18 24 24 20 17 17 27 42 44 44 38 44 38 38 34 34 34 38 38 38 38 38 38 38 44 44 46 46 46 53 53 53 53 47 47 47 47 47 47 47 47 53 47 47 47 47 47 47 53 53 47 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 62 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 59 59 53 47 47 47 53 53 53 53 53 53 53 53 53 53 53 53 53 47 47 47 44 39 38 39 44 53 53 53 47 26 2
+     averagequality: NULL
+               snps: NULL
+        numberreads: 0
+          readnames: 
+             divtag: NULL
+           blastdiv: NULL
+    sequencereaddiv: NULL
+                svg: NULL
+1 row in set (0.00 sec)
+
+
+ALTHOUGH THE averagequality AND readnames FIELDS ARE PRESENT IN THE assemblysequences TABLE
+
+
+select * from assemblysequences where readnames = '530-088-G10'\G
+*************************** 1. row ***************************
+        collectionid: 6203
+ collectionaccession: 1
+ assemblydescription: 
+    assemblydatetime: 2007-05-29 20:20:29
+        assemblyname: karenia5
+      assemblynumber: 1
+        assemblytype: cap3
+      sequencenumber: 8621
+        sequencetype: singlet
+    assemblysequence: TTTTTGGTGGCCCCTGTCTGTGGTGAGAGTCAAACTGCAACTCTGCTGACGGTCCAGGGGTTGCTCGAGATTATGCTTCATCTTTGAGTATCTCATTGAACTTCTGGTTTGACTCGATGGCTGTGCTGCGAGACCCGCCATTACCGTTGCCCGATCACTTGGAGCTTGAATTGGCCCGGCACATCGAGTTCTTCGCTTGTATTTTGGCTGGACCACCTGGTGCCAAGGCTCTGTCGGAAGCGCTGACTGCTGACGTCTCACTGGGCATCTCTGGTACACTTGGCCCTTACAATGGAGTGCCTTTGGAGATTCGCGACTTCGTTCTTCTTAGACTTCTTGACCTCCTTGGCAAGCAGCAGGTTGCACCCTTCATCCGCGCCTTCCTGGGCTCAGAACGATTTAGATGAGCAGCAAGCACTTGGCGCAGTGCAGAGGAATTGATANGGAGTAGGNATTCAAATATNATCTTGCGAGG
+     assemblyquality: 8 8 8 8 8 9 9 9 6 10 6 7 6 6 6 6 9 14 9 12 17 18 24 25 25 23 23 23 16 16 9 8 8 15 18 24 24 20 17 17 27 42 44 44 38 44 38 38 34 34 34 38 38 38 38 38 38 38 44 44 46 46 46 53 53 53 53 47 47 47 47 47 47 47 47 53 47 47 47 47 47 47 53 53 47 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 62 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 59 59 53 47 47 47 53 53 53 53 53 53 53 53 53 53 53 53 53 47 47 47 44 39 38 39 44 53 53 53 47 26 26 34 34 34 38 44 47 47 47 47 47 42 33 42 33 29 29 33 33 38 42 38 38 38 38 38 43 47 53 53 53 43 43 43 43 43 43 43 43 39 44 53 44 39 39 39 39 39 47 53 38 38 38 38 47 38 38 38 38 42 38 33 33 33 42 27 27 24 16 14 23 26 29 31 32 33 31 29 27 31 32 38 38 38 22 22 14 16 16 15 17 25 28 28 32 25 24 20 20 19 15 17 16 18 25 16 20 14 11 11 18 12 16 24 16 16 30 30 29 27 25 18 16 16 16 22 18 21 21 21 16 24 24 17 12 6 7 7 7 8 20 28 25 19 21 19 16 16 24 24 14 17 14 12 16 12 12 16 16 18 25 13 16 16 19 7 6 12 9 9 9 12 15 12 20 16 14 11 14 9 9 9 13 13 10 10 10 10 10 11 11 11 23 16 17 14 19 20 19 17 20 11 11 10 10 10 13 14 7 7 7 7 7 8 9 16 10 10 11 11 7 0 7 11 11 12 12 6 6 6 0 6 6 9 12 12 12 14 13 13 7 0 7 11 8 9 9 9 10 10 10 10 9
+assemblysequencetrim: TCAAACTGCAACTCTGCTGACGGTCCAGGGGTTGCTCGAGATTATGCTTCATCTTTGAGTATCTCATTGAACTTCTGGTTTGACTCGATGGCTGTGCTGCGAGACCCGCCATTACCGTTGCCCGATCACTTGGAGCTTGAATTGGCCCGGCACATCGAGTTCTTCGCTTGTATTTTGGCTGGACCACCTGGTGCCAAGGCTCTGTCGGAAGCGCTGACTGCTGACGTCTCACTGGGCATCTCTGGTACACTTGGCCCTTACAATGGAGTGCCTTTGGAGATTCGCGACTTCGTTCTTCTTAGACTTCTTGACCTCCTTGGCAAGCAGCAGGTTGCACCCCTTCATCCGCGCCTTCCTGGGCTCAGA
+ assemblyqualitytrim: 16 9 8 8 15 18 24 24 20 17 17 27 42 44 44 38 44 38 38 34 34 34 38 38 38 38 38 38 38 44 44 46 46 46 53 53 53 53 47 47 47 47 47 47 47 47 53 47 47 47 47 47 47 53 53 47 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 62 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 59 59 53 47 47 47 53 53 53 53 53 53 53 53 53 53 53 53 53 47 47 47 44 39 38 39 44 53 53 53 47 26 26 34 34 34 38 44 47 47 47 47 47 42 33 42 33 29 29 33 33 38 42 38 38 38 38 38 43 47 53 53 53 43 43 43 43 43 43 43 43 39 44 53 44 39 39 39 39 39 47 53 38 38 38 38 47 38 38 38 38 42 38 33 33 33 42 27 27 24 16 14 23 26 29 31 32 33 31 29 27 31 32 38 38 38 22 22 14 16 16 15 17 25 28 28 32 25 24 20 20 19 15 17 16 18 25 16 20 14 11 11 18 12 16 24 16 16 30 30 29 27 25 18 16 16 16 22 18 21 21 21 16 24 24 17 12 6 7 7 7 8 20 28 25 19 21 21 19 16 16 24 24 14 17 14 12 16 12 12 16 16 18 25 13 16 16 19 7 6 12 9 9 9 12
+           trimstart: 29
+            trimstop: 394
+                snps: 
+      averagequality: 33.72
+         numberreads: 1
+           readnames: 530-088-G10
+        minreaddepth: 0.00
+        maxreaddepth: 0.00
+        readcoverage: 0.00
+              divtag: 
+                 svg: 
+1 row in set (0.09 sec)
+
+
+DIAGNOSIS:
+
+POSSIBLY A PROBLEM WITH THE 'LOAD DATA INFILE' EXECUTION IN MYSQL.
+
+THERE WAS A \t MISSING FROM THE 530-088-G10 SINGLET assemblysequences RECORD (ONLY SIX TABS INSTEAD OF SEVEN):
+
+			2007-05-29 16:24:16	karenia5	1	cap3	6205	singlet	TTTTTGGTGGCCCCTGTCTGTGGTGAGAGTCAAACTGCAACTCTGCTGACGGTCCAGGGGTTGCTCGAGATTATGCTTCATCTTTGAGTATCTCATTGAACTTCTGGTTTGACTCGATGGCTGTGCTGCGAGACCCGCCATTACCGTTGCCCGATCACTTGGAGCTTGAATTGGCCCGGCACATCGAGTTCTTCGCTTGTATTTTGGCTGGACCACCTGGTGCCAAGGCTCTGTCGGAAGCGCTGACTGCTGACGTCTCACTGGGCATCTCTGGTACACTTGGCCCTTACAATGGAGTGCCTTTGGAGATTCGCGACTTCGTTCTTCTTAGACTTCTTGACCTCCTTGGCAAGCAGCAGGTTGCACCCTTCATCCGCGCCTTCCTGGGCTCAGAACGATTTAGATGAGCAGCAAGCACTTGGCGCAGTGCAGAGGAATTGATANGGAGTAGGNATTCAAATATNATCTTGCGAGG							0.00	1	530-088-G10						
+			2007-05-29 16:24:16	karenia5	1	cap3	6206	singlet	ACCCATTTGAAACGACTTAGCGAAAACTTCAGTTCTCAACGCCCCACTGTATGGAGACCACGTGCAGACAACATCTTTCATGGGGGAGCTTGTAAACGGCGTCATCATGCAGGACGATCACTCAGATACTCCGTTCTATGCGAAATTTGATGGTATTGCGGCAAGTTGGTATGAAGAATACAAGGTGCATTTGGTTGGGCGCAATTCGAGTTCTGGTGTTCTAGCGAATGTCTACAACAGCGGCTTTACAGATGTCATGCGTACGGCAGGGGCCCTGGTTGAAGACAGGCAGGGTCGTTGCCCAAAGCGTAGACGTTGTTCTTGATAAGTTGAAAGTTAGAGAGGT							0.00	1	530-088-H03						
+
+BUT THAT DOES NOT EXPLAIN WHY THE assemblysequence RECORD IS CORRECT BUT THE collectionsequences RECORD IS MISSING THE numberreads, readnames AND averagequality FIELDS.
+
+FURTHERMORE, THE *.collectionsequences.tsv FILE SHOWED NO ABNORMALITIES IN THE ENTRY FOR COLLECTION SEQUENCE 6203:
+
+6203	1		2007-05-29 20:20:29	karenia5	1	cap3	8621	singlet	TCAAACTGCAACTCTGCTGACGGTCCAGGGGTTGCTCGAGATTATGCTTCATCTTTGAGTATCTCATTGAACTTCTGGTTTGACTCGATGGCTGTGCTGCGAGACCCGCCATTACCGTTGCCCGATCACTTGGAGCTTGAATTGGCCCGGCACATCGAGTTCTTCGCTTGTATTTTGGCTGGACCACCTGGTGCCAAGGCTCTGTCGGAAGCGCTGACTGCTGACGTCTCACTGGGCATCTCTGGTACACTTGGCCCTTACAATGGAGTGCCTTTGGAGATTCGCGACTTCGTTCTTCTTAGACTTCTTGACCTCCTTGGCAAGCAGCAGGTTGCACCCCTTCATCCGCGCCTTCCTGGGCTCAGA	16 9 8 8 15 18 24 24 20 17 17 27 42 44 44 38 44 38 38 34 34 34 38 38 38 38 38 38 38 44 44 46 46 46 53 53 53 53 47 47 47 47 47 47 47 47 53 47 47 47 47 47 47 53 53 47 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 59 59 59 59 59 62 62 62 62 59 59 62 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 59 59 59 59 59 59 59 59 53 47 47 47 53 53 53 53 53 53 53 53 53 53 53 53 53 47 47 47 44 39 38 39 44 53 53 53 47 26 26 34 34 34 38 44 47 47 47 47 47 42 33 42 33 29 29 33 33 38 42 38 38 38 38 38 43 47 53 53 53 43 43 43 43 43 43 43 43 39 44 53 44 39 39 39 39 39 47 53 38 38 38 38 47 38 38 38 38 42 38 33 33 33 42 27 27 24 16 14 23 26 29 31 32 33 31 29 27 31 32 38 38 38 22 22 14 16 16 15 17 25 28 28 32 25 24 20 20 19 15 17 16 18 25 16 20 14 11 11 18 12 16 24 16 16 30 30 29 27 25 18 16 16 16 22 18 21 21 21 16 24 24 17 12 6 7 7 7 8 20 28 25 19 21 21 19 16 16 24 24 14 17 14 12 16 12 12 16 16 18 25 13 16 16 19 7 6 12 9 9 9 12	33.72		1	530-088-G10					
+6204	1		2007-05-29 20:20:29	karenia5	1	cap3	8623	singlet	CAGTTCTCAACGCCCCACTGTATGGAGACCACGTGCAGACAACATCTTTCATGGGGGAGCTTGTAAACGGCGTCATCATGCAGGACGATCACTCAGATACTCCGTTCTATGCGAAATTTGATGGTATTGCGGCAAGTTGGTATGAAGAATACAAGGTGCATTTGGTTGGGCGCAATTCGAGTTCTGGTGTTCTAGCGAATGTCTACAACAGCGGCTTTACAGATGTCATGCGTACGGCAGGGGCCCTGGTTGAAGACAGGCAGGGTCGTTGCCCAAAGCGTAGACGTTGTTCTTGATAAGTTGAAAGTTAGAGA	31 32 32 30 44 27 29 27 24 19 27 33 33 32 38 38 38 26 16 14 6 6 6 14 17 26 31 38 38 38 34 34 34 34 38 38 34 34 34 38 38 38 38 38 38 38 53 38 44 44 44 39 39 53 53 47 47 47 47 47 53 53 53 53 53 53 47 47 59 59 59 59 59 59 59 59 59 59 59 51 51 51 51 51 53 53 59 59 59 59 59 59 41 39 39 39 51 53 53 59 59 59 59 59 62 59 59 62 62 59 59 59 59 59 59 59 62 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 59 56 56 56 56 59 59 51 59 59 59 59 59 59 59 59 62 62 62 62 62 62 62 62 62 62 62 62 59 59 59 59 59 53 53 59 59 59 59 59 59 59 59 59 59 59 62 62 62 59 59 59 59 59 59 59 59 59 59 59 59 53 53 51 51 39 41 39 39 39 47 47 53 47 53 47 44 39 39 39 39 44 44 47 47 43 43 53 53 53 53 44 39 39 39 39 39 39 39 38 38 38 35 38 47 47 38 33 33 31 30 29 31 42 32 32 38 36 32 31 23 23 29 31 32 32 32 44 38 38 38 38 38 38 39 39 43 53 53 34 32 29 30 30 34 38 34 38 38 38 38 35 38 32 24 17 22 25 33 33 33 38 29 33 31 23 29 31 33 23 23 15	42.83		1	530-088-H03					
+
+
+SOLUTION:
+
+REDID ./collectionsequences.pl
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri May 11 01:33:22 EDT 2007
+CREATED supercraw0reads TO ADD supercraw0 READS TO funnybase10
+    
+    NAME        supercraw0reads.pl
+    
+    PURPOSE
+    
+        1. COPY THE READS FROM supercraw0 TO funnybase10
+        
+        2. supercraw0 DOES NOT HAVE THE FIELDS filteredsequence
+            AND filteredquality, SO ADD THESE (COPY screenedsequence
+            AND screenedquality)
+        
+
+	USAGE
+    
+        supercraw0reads.pl [-h] 
+
+        -h help              : print this help message
+	
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Apr 18 19:17:39 EDT 2007
+VECTOR SCREENING
+
+DO ARRAY VECTOR SCREEN ON CLUSTER
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readsarrayvectorscreen.pl
+
+WHICH RUNS readsvectorscreen.pl
+
+THEN LOAD WITH:
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readsloadscreenedreads.pl
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Apr 18 12:52:47 EDT 2007
+REDO reads TABLE AND ADD screenedreads TABLE TO funnybase10
+
+1. CREATE .TSV FILES FOR screenedreads
+
+COPY funnybase10 TO /common/pipeline
+
+sudo mkdir /common/pipeline/funnybase10
+sudo cp -r /Users/young/FUNNYBASE/pipeline/funnybase10/phd_dir /common/pipeline/funnybase10
+
+ON gems:
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+sudo ./readsarrayscreen.pl -d funnybase10
+
+
+LOAD .TSV FILE INTO screenedreads
+
+ON genomics:
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readsloadscreenedreads.pl -d funnybase10
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Apr 12 17:45:53 EDT 2007
+DISCORDANCE IN collectionid SEQUENCE AND readnames IN assemblyreadsassemblysequences.pl
+
+ASSEMBLY SEQUENCE AND COLLECTION SEQUENCE CORRESPONDS TO LATER CONTIG
+E.G., collectionid=27, Contig31
+E.G., collectionid=28, Contig32
+
+BUT readnames CORRESPOND TO ACTUAL CONTIG
+E.G., readnames FOR collectionid=27 (i.e., Contig31) ARE THOSE FOR Contig27
+
+
+select assemblysequence from assemblysequences where collectionid=28\G
+*************************** 1. row ***************************
+assemblysequence: ATGGGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAGTGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTTATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCACGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGAGGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGCTCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCGAGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGGTGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGCTGCACATGAAGCTCCAGCATGAGAAGATTCATGGGCAGCACGCAGTGGGAGCCTGCAGAAGCAGAGAGTTCGACACATTGCCCCGAAGCAGCGAGATGCTACATTGAGGCCTGCTTCAGATTGGCACCAGAGAAAAGACCTGAAGCACAAGAAGTTCTTTTCAGTCTAGCGGCACCTCCAGATGACGATCCTGCTGGGATGGCGTCGGCACCACAACAGAAGGCAGCCACTGCATGCAGCGGCCCACAAGCGGCCGATGGCGATGTGCCGTCACGGATGCACTCTCCGGCCCCTGGCAGCACGCTCGGGCAAGCAGGTGATTCTTGTTCGTCACCGACGCAGCGGCGCAGATCTTGGCCGCAGTCCTTGACGTACGAGGAGTTTTCTGCAGAGATGTTCGTTCCAGCTCCACGTGAAAAGTGGTACTTTTCTGCATAGGTGTTCGCAGGTGACGTCTTGATGCAGCTGACAGAAGCGCAGCTGTGTGTGTTCCGAGGTGGCTTGTGCCGGAGCCGCTGAGATTTGTGGATTAGAGCATGTGAATGCAGCCGAGCAGGATGCAGTTGCAATCTACGCCATGGTGCATGGAGCCGGGAGCGTTGAATCACCAACCGCCGTCACGGTTTTTGCAACTCATTCCT
+1 row in set (0.15 sec)
+
+mysql> select sequence, sequencetype, sequencenumber, readnames from collectionsequences where collectionid=28\G
+*************************** 1. row ***************************
+      sequence: GGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAGTGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTTATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCACGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGAGGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGCTCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCGAGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGGTGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGGCTGCACATGAAGCTCCAGCATGAGAAGAT
+  sequencetype: contig
+sequencenumber: 32
+     readnames: 501-003-C05;501-008-G11;525-001-G01
+1 row in set (0.00 sec)
+
+
+IN .ACE FILE:
+
+CO Contig28 1236 3 13 U
+GCATGCGTCGACGAATTCCCCAATTGGATCTCTTAGGAAGTTCACAAGCCATGTGTTCTC
+TTGTAGAGGCGGAGACCACAGGGTGGCCATTTTCACAAGAATCTTACAAAGCCAGCTGGG
+TTTCTCCAGAGTGCACATGTGACTGGCTCAGTCAACCTCTATGTAGCTACTGGAGCCGAG
+ATGATTCGCCGGGCTGATGCACTCAGCATGAGTGGCATCATGATCCTTGTTGATGACACC
+TCTCTAATTGGGTCCAAGTATGAATTGGTGCGCATACCAACAGATAATGTTGAAGAGCAT
+GTGGCCTTTGCAAAGAGCGGCTCAGTGTTCCCAGCCGACGCGCAGGGCATCTGGTGGATG
+GACCAGCGTGGTACCCATTTGCCAGTTGCAAGTGACCCAGGCTACAAGCAGGTTTGTGAA
+GCAGCAGCTGATGAGATCTTGGTATCTTTTGGGGAGGCAGGCTGGGATCCGCAATCACGA
+TGTGTGACGGGTGTTCACATTTACGGTGGTGGGCCTTTACGTGGTCATTGGACTTGGTTG
+GACGTGGGTGGTGGCAACAGCAATGACTGGCGAGCGACGGGAACGCATCGGCCTGTGGCA
+GACTTCTGCTTCATCGACGAGAGCATGCAAGAAGTTCAAATTCATCGGAGTTTCAAAGTA
+GGCAATGCTTTGGAGGGACTTTTCGGATTCAACCTGCCTGAATTTATGGACTTCAGCATG
+AGGATGCCTTCCTGGGTGATGGATCTCCGAATGGTGCGTAAGCCATGGGGATGGGACCGG
+GTAACTTATGCTGG*ACCTTGGGAGTGCCACTACCCAGTGGTTCCAAATTGTGGATGGGT
+TTGGGAGCCATACAGAACACTACAATGCTTACTTGGCATTTGCTAACAATCAGACCGATT
+GCCCAAACAGCACTTTTTCGTGTCCATCTAACAGAGGGAATGGAACACAACTTGTTGCAC
+GCCTGTCTACGTAGGTTTGGCTGGCAAACATATTCATGACTCGCCTTCTGAGAATCAGTC
+CCGCACGGATGGTGCCGTCAATTGTACAGCATACCACACAAACATTTGCTATTACCAAGA
+GAGTTGTGGCATTTGTGTGCGTATTTTGAGTTTTGTCAAAAGTAGAAGTGAACTACGTTT
+TCACCTATCCNGTGCATGAGGAATTTGCATCAAGTGCCGATGAGACAGCAACGTTCATAC
+ATGTAGGCTGTATCGAGCGGTTGTGGAAAAAAAAAA
+...
+AF 501-003-C05 U -16
+AF 501-008-G11 U 141
+AF 525-001-G01 U 459
+
+
+CO Contig32 1104 3 89 U
+ATGGGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAG
+TGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTT
+ATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCA
+CGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGA
+GGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGC
+TCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCG
+AGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGG
+TGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGCTGCACATGAAGCTCCAGCA
+TGAGAAGATTCATGGGCAGCACGCAGTGGGAGCCTGCAGAAGCAGAGAGTTCGACACATT
+GCCCCGAAGCAGCGAGATGCTACATTGAGGCCTGCTTCAG*ATTGGCACCAGAGAAAAGA
+*CCTGAAGCACAAGAAGTTCTTTTCAGTCTAGCGGCACCTCCAGATGACGATCCTGCTGG
+GATGGCGTCGGCACCACAACAGAAGGCAGCCACTGCATGCAGCGGCCCACAAGCGGCCGA
+TGGCGATGTGCCGTCACGGATGCACTCTCCGGCCCCTGGCAGCACGCTCGGGCAAGCAGG
+TGATTCTTGTTCGTCACCGACGCAGCGGCGCAGATCTTGGCCGCAGTCCTTGACGTACGA
+GGAGTTTTCTGCAGAGATGTTCGTTCCAGCTCCACGTGAAAAGTGGTACTTTTCTGCATA
+GGTGTTCGCAGGTGACGTCTTGATGCAGCTGACAGAAGCGCAGCTGTGTGTGTTCCGAGG
+TGGCTTGTGCCGGAGCCGCTGAGATTTGTGGATTAGAGCATGTGAATGCAGCCGAGCAGG
+ATGCAGTTGCAATCTACGCCATGGTGCATGGAGCCGGGAGCGTTGAATCACCAACCGCCG
+TCACGGTTTTTGCAACTCATTCCT
+
+AF 501-003-D09 U -15
+AF 501-010-E03 U 533
+AF 501-007-D10 U 538
+
+BEFORE CORRECTION:
+
+select sequence, sequencetype, sequencenumber, readnames from collectionsequences where collectionid=28\G
+*************************** 1. row ***************************
+      sequence: GGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAGTGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTTATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCACGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGAGGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGCTCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCGAGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGGTGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGGCTGCACATGAAGCTCCAGCATGAGAAGAT
+  sequencetype: contig
+sequencenumber: 32
+     readnames: 501-003-C05;501-008-G11;525-001-G01
+1 row in set (0.00 sec)
+
+
+AFTER CORRECTION:
+
+mysql> select sequence, sequencetype, sequencenumber, readnames from collectionsequences where collectionid=28\G
+*************************** 1. row ***************************
+      sequence: GGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAGTGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTTATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCACGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGAGGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGCTCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCGAGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGGTGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGGCTGCACATGAAGCTCCAGCATGAGAAGAT
+  sequencetype: contig
+sequencenumber: 32
+     readnames: 501-003-D09;501-007-D10;501-010-E03
+1 row in set (0.00 sec)
+
+
+mysql> select assemblysequencetrim, sequencetype, sequencenumber, readnames from assemblysequences where collectionid=28\G
+*************************** 1. row ***************************
+assemblysequencetrim: GGCATGCGTCGACGAATTCACTGCCTGGTCAGATCCGCTAGGCGCTGCCCGTGGAAGTGCCATGCCTTTGGAGAAGGCGTTGCAATCAGAATCTGCGCAGTGTCCTCAGTGGCGTTTATCAGTTGCGCGACAGCTCTGCGTGGCGCTGGCAGCCCTTCGCAACTCAGGACGTAGCCACGGCAGCTTCTCACCGAGAAACGTGTGGGTGTCACCAAGTGGAGAGGTTGCTGTCATGGAGGCCGGCTTTGCGGACTCGCTGCTTCTGGCTGACGTCTTGCGCCAGAACGAATTGCCTGCTCACCTCGGCTTAGATTTTGCGAAGTACCTCGCTCCAGAAGGATGGCAACTGCCACGCCGAGCAGGCCCAGCTGCTGACGTGTGGAGCCTGGGCTTGGTGCTTCTGGAAGTGCTCGGCGGTGCGAGCCCGCCCCACGCAGAATGCAGCACCTTGGAGCAGGCTGCACATGAAGCTCCAGCATGAGAAGAT
+        sequencetype: contig
+      sequencenumber: 32
+           readnames: 501-003-D09;501-007-D10;501-010-E03
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Apr  3 11:23:21 EDT 2007
+ERROR IN SUPERCRAW SEQUENCE READNAMES 
+
+mysql> select * from collectionsequences where readnames like '%123-041-F07%'\G
+*************************** 1. row ***************************
+        collectionid: 36
+ collectionaccession: 1
+   collectionversion: 0.00
+collectionannotation: 
+    annotationsource: 
+        annotationid: 
+ annotationevaluedec: 0.00
+ annotationevalueexp: 0
+    assemblydatetime: 2007-02-22 13:43:43
+        assemblyname: supercraw0
+      assemblynumber: 1
+        assemblytype: cap3
+      sequencenumber: 743
+        sequencetype: contig
+            sequence: GNGNGGCCTNCGCTCAGGAATCGGACACAACATGGCGTCCGCCGTACTGAANGTNCAGTGGCAGGCATTTCCAGATGTTCTCGTGCCGCCCTCCTGAGGGCACATTCAACAACAGCCGCTCTCCAACAAGGCGTTCCTGGGATCTCCGTGGAAGCTGGGGAAACTCAACCACATAGCCATCGCCGTCCCCGACATGGAGAAGGCCACGGCTCTGTATCGAGATGTGCTCGGTGCCACTGTGAGCGAAAAAGTCCCCCTGCCGGAACACGGCGTCTACACGGTGTTTGTGGAGCTGGGCAACACTAAGCTGGAGCTGCTCCATCCTATCGGGGAGAAGAGCCCCATCTCTGGGTTCTTACAAGAAAAACAAGTCAGGAGGGATGCCACCACATTTGTATTGAGGTGGACGACATTCACGCTGCCGTAACCGACTGAAGTCAAAGAACATCAGAACCCTTTCGGCGGAGCCTCGGATAGGTGCTCACGGGAAACCGGTCATGTTCCTCCATCCCAAAGACTGCGACGGTTGCTGGTGGAGCTGGAAAGAGGCATGAGCCTCTCTGTTTGCAGGAACTTGTTTGGAGTCTTCATTTTAATTTCTAACATATTCCTCCGGCGTTTTGATACTCGGTTATAACAGTGTGGATTTGNTTCTTTACTTCTCATTTCAGAAATGTTGTTTCCTGAATTGGGTTTGTTGAAATAAGGTAAANAGGGGAGGATGTTTGAACGGTTATAAAGGGAATGTTCCAAAAAAAAACGGGGGGGGG
+             quality: 
+      averagequality: 0.00
+                snps: 
+         numberreads: 3
+           readnames: 001-100251-G11;123-041-F07;124-003-G09
+                 div: 
+            blastdiv: 
+     sequencereaddiv: 
+                 svg: 
+1 row in set (0.14 sec)
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Mar 30 12:25:18 EDT 2007
+TIM DATABASE ISSUES
+
+MSG: Tim
+CC: Doug, Margie
+
+From : 	Tim McLean <tmclean@rsmas.miami.edu>
+Sent : 	Thursday, March 29, 2007 1:33 PM
+To : 	"stuart young" <youngstuart@hotmail.com>
+CC : 	Douglas L. Crawford <dcrawford@rsmas.miami.edu>
+Subject : 	issues in database
+
+Hi Tim,
+
+Here are some answers to your questions about the database filters (sequence length, homopolymers) and clustering (similar singletons, chromat-read sequence discrepancies):
+	
+> Stuart,
+
+> As I continue to root around the data, here are some ideas or issues I have come across:
+
+> 1)  is the current length cut-off 50 bases?  I think it should be increased to at least 75 bases.
+
+Okay - karenia3 is coming up.
+
+> 2)  I have found trimmed sequences that have gaps of X's.  Are the "good" base runs concatenated to form a single sequence that is then used for alignment and BLASTing?
+
+The Xs are inserted by cross_match to mask vector sequence in each individual read. The good base runs are not concatenated, as far as I know. With both CAP3 and PHRAP, the individual reads are aligned using a gapped alignment (more sensitive than just using BLASTN) and the 'mosaic' (PHRAP) or 'overall' consensus residues are predicted from the combination of these pairwise alignments.
+
+> 3)  I have found some sequences that are NNNNNNN.... in the database.
+
+That's an artefact of the clustering algorithm but we could use an automatic filter or manual editing later to remove that. Did you find it in a lot of sequences?
+
+> 4)  The copy of the vector sequence you have may not be the correct sequence--many trimmed sequences still have vector sequence associated with it.
+
+I've attached a copy of the vector.seq file which contains all of the vector sequences I've got so far. It contains sequences for the following vectors:
+
+	pBluescriptIISK
+	pSmart-HCKan
+	bluescript
+	lorist2
+	lorist6
+	loristb
+	pbs
+	pjb8
+	pphc79
+	prs313
+	prs423
+	prs424
+	pwe15
+	pyac4
+	scos
+	m13mp18
+	m13mp19
+	mg3_left
+	mg3_right
+	puc118
+	puc18
+	pSC
+
+> 5)  Are polyA sequences not trimmed?  What about sequences downstream of polyA?  Are they used for aligning and/or BLASTing?
+
+The CAP3 and PHRAP clustering algorithms only trim off homopolymer runs at either end of the reads so you may find homopoly segments left inside the reads that lead to AAAAAAAAAAA sections inside the clustered consensus sequences. Can you show me which sequences you've found? Depending on the scale of the issue, we could do post-processing to screen them out or just manually edit the sequences.
+
+> 6)  I've noticed that there can be small sequence differences between an electropherogram sequence and the sequence in the database for the same sample?  How can that arise?
+
+I'm using the phred predictions that are found in the .phd files. Are you using a different prediction package? I'm not sure which is used in MacVector but it's possible there may be discrepancies there.
+
+> 7)  Some singleton sequences appear identical, or at least highly similar, but don't cluster.  I can find these because they annotate as the same protein and I can then do the alignment.
+
+This problem first surfaced when I did the 'unique annotation' algorithm, i.e., chose the best singleton/contig from a group of singletons/contigs that have the same 'best BLAST hit'. It appears that CAP3 classifies them as singlets if they differ slightly AND have high quality values (i.e., maybe SNPs, duplicates, etc.)
+
+> I'm not sure how widespread some of these problems are--I may have gotten "lucky" and found the rare exception.  But I would feel better if I knew exactly how the process of trimming, screening, aligning, clustering, etc. occurred.  Can we get together to discuss some of these things?
+
+Pop by anytime today. I'll keep checking to see if you're in too.
+
+Cheers,
+
+Stuart.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Mar 29 23:27:08 EDT 2007
+POPULATE collectionsequencesdiv TABLE
+
+1. RUN collectionsequencesdiv.pl
+
+2. RUN collectionsequencesblastdiv.pl
+
+
+	NAME: collectionsequencesdiv.pl
+
+	PURPOSE: CREATE sequencesdiv ELEMENT FOR collectionsequencesdiv TABLE
+	
+	INPUT:
+			1. Sequence information from 'collectionsequences' table
+
+			2. Annotation information from 'collectionsequencesannotation' table
+
+	OUTPUT:
+			1. DELETES THE CONTENT OF THE collectionsequences TABLE
+			
+			2. ADDS THE sequencediv FIELD TO THE collectionsequences TABLE
+
+			+---------------------+--------------+------+-----+---------+-------+
+			| Field               | Type         | Null | Key | Default | Extra |
+			+---------------------+--------------+------+-----+---------+-------+
+			| collectionid        | int(8)       |      | PRI | 0       |       |
+			| collectionaccession | int(2)       |      | PRI | 0       |       |
+			| collectionversion   | decimal(4,2) |      |     | 0.00    |       |
+			| sequencediv         | mediumtext   | YES  |     | NULL    |       |
+			| blastdiv            | mediumtext   | YES  |     | NULL    |       |
+			| sequencereaddiv     | mediumtext   | YES  |     | NULL    |       |
+			| svg                 | mediumtext   | YES  |     | NULL    |       |
+			+---------------------+--------------+------+-----+---------+-------+
+			
+			
+			
+	NOTES:	**** MUST RUN collectionsequencesblastdiv AFTER RUNNING THIS APPLICATION
+			
+			TO POPULATE THE blastdiv FIELDS! ****
+	
+	USAGE:
+
+       ./collectionsequencesdiv.pl <-d database> [-h]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Mar 27 21:53:58 EDT 2007
+ASSEMBLY PIPELINE
+
+	NAME:	assemblypipeline
+	
+	VERSION: 1
+
+	PURPOSE:
+
+ 		1. COLLECT AND ASSEMBLE SEQUENCES
+
+		2. DISPLAY STATUS OF PIPELINE
+
+    This program collects sequence files and assembles them into contigs and singlets
+    by the following process:
+		
+        stage 1. Collect all of the chromat files from the user-specified experiment
+                 (option -e) and place them within the 'chromat_dir' inside the user-
+                 specified directory (option -d)
+        stage 2. Create '.phd' files using phred
+		 stage 3. Create a single .fasta file from the .phd files
+		 stage 4. Screen for vector
+        stage 5. Assemble with CAP3 or phrap
+        stage 6. Predict SNPs with polyphred
+		
+	1. COLLECT CHROMAT FILES collect
+	/usr/bin/perl /Users/young/FUNNYBASE/bin/pipeline3/collectreads.pl -e151 -d /Users/young/FUNNYBASE/pipeline/162
+
+	2. CALCULATE .PHD FILES FROM CHROMATS phred
+    /Users/young/FUNNYBASE/apps/phred/phred
+	
+    export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+	chdir("/Users/young/FUNNYBASE/pipeline/$assembly_number");
+	phred -id chromat_dir -pd phd_dir
+
+	3. CREATE ONE FASTA FILE FOR ASSEMBLY phd2fasta
+    /Users/young/FUNNYBASE/apps/phd2fasta/phd2fasta
+ 	
+    phd2fasta  -id ../phd_dir  -os 161.fasta -oq 161.fasta.qual
+
+	4. SCREEN FOR VECTOR cross_match
+	/Users/young/FUNNYBASE/apps/phrap/cross_match
+    cross_match $assembly_directory/$assembly_name.fasta /Users/young/FUNNYBASE/pipeline/vector.seq -minmatch 12 -penalty -2 -minscore 20 -screen
+
+	5. ASSEMBLE WITH phrap OR cap3
+
+		phrap 161.fasta.screen -new_ace -view -minmatch 20 -new_ace -view 
+
+		cap3 $assembly_directory/$assembly_name.fasta.screen
+
+
+	6. FIND SNPS
+
+		polyphred -ace $acefile -dir $assembly_directory -output $assembly_directory/$assembly_name.poly"); 
+
+
+	USAGE:
+
+        -n database            : name of database (e.g., funnybase7, karenia1)
+        -e experiment_number   : name of experiment (e.g., experiment '126', in
+                               the directory '126Library')
+        -p plates              : start and end numbers of plates to be collected
+                               (a single number or a '-' separated range)
+							   (DEFAULT = all plates)
+        -p assembly_programme  : name of contig assembly programme ('phrap' or 'cap3', DEFAULT = cap3)
+        -s stage               : start doing from this stage
+        -h help                : print this help message
+
+	< option > denotes REQUIRED argument
+	[ option ] denotes OPTIONAL argument
+
+    EXAMPLE:
+    Collect all of the chromat files for experiment 126 and place in the required directory:
+        collectassemble -e 126 -p 1:115 -d funnybaseX
+
+    Skip stages 1-3 and run stage 4 only for experiment 151:
+        collectassemble -e 151  -d experiment151 -s 4
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Mar 27 21:53:38 EDT 2007
+SNP PIPELINE
+
+        SNP PREDICTION AND ANNOTATION PIPELINE
+        ++++++++++++++++++++++++++++++++++++++
+        
+        1. PREDICT SNPs WITH polyphred
+        
+            ./assemblypipeline.pl -d funnybase10 -s 6
+    
+        2. CONDENSE .poly FILE INTO .stats FILE
+        
+            ./SNPassemblysequences.pl -d funnybase10
+        
+        3. UPDATE snp_stats FIELD OF stats TABLE
+        
+            ./SNPstats.pl -d funnybase10
+    
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Mar 27 21:21:08 EDT 2007
+DID GRAPHS FOR ALL DATABASES (funnybase10, karenia2, aplysia4)
+
+./sequencequalitybargraph.pl -d funnybase10 -a annotated -s contig
+./sequencequalitybargraph.pl -d funnybase10 -a annotated -s singlet
+./sequencequalitybargraph.pl -d funnybase10 -a annotated -s both
+./sequencequalitybargraph.pl -d funnybase10 -a unknown -s contig
+./sequencequalitybargraph.pl -d funnybase10 -a unknown -s singlet
+./sequencequalitybargraph.pl -d funnybase10 -a unknown -s both
+./sequencequalitybargraph.pl -d funnybase10 -a both -s contig
+./sequencequalitybargraph.pl -d funnybase10 -a both -s singlet
+./sequencequalitybargraph.pl -d funnybase10 -a both -s both
+
+./sequencequalitybargraph.pl -d karenia2 -a annotated -s contig
+./sequencequalitybargraph.pl -d karenia2 -a annotated -s singlet
+./sequencequalitybargraph.pl -d karenia2 -a annotated -s both
+./sequencequalitybargraph.pl -d karenia2 -a unknown -s contig
+./sequencequalitybargraph.pl -d karenia2 -a unknown -s singlet
+./sequencequalitybargraph.pl -d karenia2 -a unknown -s both
+./sequencequalitybargraph.pl -d karenia2 -a both -s contig
+./sequencequalitybargraph.pl -d karenia2 -a both -s singlet
+./sequencequalitybargraph.pl -d karenia2 -a both -s both
+
+./sequencequalitybargraph.pl -d aplysia4 -a annotated -s contig
+./sequencequalitybargraph.pl -d aplysia4 -a annotated -s singlet
+./sequencequalitybargraph.pl -d aplysia4 -a annotated -s both
+./sequencequalitybargraph.pl -d aplysia4 -a unknown -s contig
+./sequencequalitybargraph.pl -d aplysia4 -a unknown -s singlet
+./sequencequalitybargraph.pl -d aplysia4 -a unknown -s both
+./sequencequalitybargraph.pl -d aplysia4 -a both -s contig
+./sequencequalitybargraph.pl -d aplysia4 -a both -s singlet
+./sequencequalitybargraph.pl -d aplysia4 -a both -s both
+
+AND MOVED THE DISPLAY OF QUALITY DISTRIBUTIONS MENU OPTION FROM 'OPEN' TO 'VIEW',
+WITH A MULTI-NESTED SUBMENU FOR ALL NINE OPTIONS.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Mar 27 18:16:58 EDT 2007
+ERROR: MISSING readname AND numberreads IN COLLECTION SEQUENCES FOR supercraw0
+
+./sequencequalitybargraph.pl -d funnybase10 -a Y -s contigUnknown option: a
+Result file: /Users/young/FUNNYBASE/pipeline/graph/funnybase10.sequencequality.a-both.s-both.bins100.tsv
+Printing sequences to result file '/Users/young/FUNNYBASE/pipeline/graph/funnybase10.sequencequality.a-both.s-both.bins100.tsv'
+$VAR1 = {
+          'sequencenumber' => '706',
+          'numberreads' => '0',
+          'collectionaccession' => '1',
+          'sequencetype' => 'singlet',
+          'collectionid' => '1455',
+          'assemblyname' => 'supercraw0',
+          'readnames' => '',
+          'assemblytype' => 'cap3',
+          'assemblynumber' => '1',
+          'averagequality' => undef
+        };
+Key numberreads has no value
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Mar 19 15:04:43 EDT 2007
+TO DO FOR WEEK BEGINNING MON 19th MARCH
+
+From : 	Douglas Crawford <dcrawford@rsmas.miami.edu>
+Sent : 	Monday, March 19, 2007 3:11 PM
+To : 	"stuart young" <youngstuart@hotmail.com>
+Subject : 	Re: Plan for the week of March 18
+	
+STUART 
+
+  Your TO DO
+  
+	Please finish Karenia.    Remember the goal is to identify   approx 6,000 good EST for microarrays
+
+	Please finish the submission of Funnybase EST  (are you submitting Karenia???)
+
+	IMPORTANT:
+
+   A   There are two task:  we need to but the data and figures about "The problem with Annotation"
+         
+		 1:   X% OF Y number of Human refseq are not annotated.
+         2: quality of annotation depends on database,  the better the database, the lower is X%
+         3:  gene names differ among databases  (??)
+         4:  More than one "equivalent" hit with different names
+         5:  GENE NAMES in publication are often unrelated to well managed databases
+			- how do we know this is true,  is it true?
+
+	B:  You (and I) need to play with funnybase and make sure all the links and searches work
+   Currently we are only searching the SwissProt hits
+   We can not search by hits to human/mouse/rat/dog  accession number, locus number or any standard in NCBI
+   Blasting??
+
+dlc
+
+
+
+******-----********------------**************---*******
+Douglas L. Crawford
+Director Marine Genomics
+Rosenstiel School of Marine Sciences
+University of Miami
+4600 Rickenbacker Cswy
+Miami, FL 33149
+
+305-421-4121
+http://crawford.rsmas.miami.edu/
+http://genomics.rsmas.miami.edu/funnybase/super_craw4/
+
+
+On Mar 19, 2007, at 3:34 AM, stuart young wrote:
+
+    Hi Doug,
+
+    Here's my summary of last week and plan for this week:
+
+    0. Karenia, aplysia, funnybase (additional jobs not included in last week's plan)
+
+      DONE: Fixed problem in calculation of read and sequence start/stop points (now using clustaW instead of sim4)
+
+      TO DO: Update funnybase10 and karenia2 with new start/stop points (now running).
+
+    1. dbEST submission
+
+       TO DO: Slow download of Expt 159
+
+    2. Crawford Lab website
+
+       TO DO: Bios for Doug, Margie, Amy, Jeff, Dean, Meredith, Stuart, Tim
+
+    3. Funnybase website
+
+       95% DONE - add bookmark function
+
+       TO DO: add Pathway results to search output (requires results from task 4 - see below)
+
+    4. Pathways annotation
+
+       90% DONE: Pathway annotation (by building synonym tables) using fuzzy matches of GO descriptions with swissprot annotations
+
+    5. Thesis research
+
+       - TO DO: Decision Trees and Naive Bayes classifiers using orthologues data
+
+
+    Stuart.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Mar 12 16:39:32 EDT 2007
+BLASTED funnybase10 AGAINST arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6, LOADED INTO MYSQL AND CREATED DOWNLOAD FILE
+
+sudo ./collectionarrayblast.pl -d funnybase10 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Mar 12 09:27:25 EDT 2007
+MSG: dcrawford@rsmas.miami.edu, jvanwye@rsmas.miami.edu, moleksiak@rsmas.miami.edu,tmclean@rsmas.miami.edu
+SJT: Download reads TSV file
+
+Hi all,
+
+This is just a reminder of how download all of the reads in both databases (funnybase10 and karenia2):
+
+http://genomics.rsmas.miami.edu/sandbox11/sandbox11.html
+
+To select the database (default is 'funnybase10'), do: File --> Open --> Database
+
+To download the TSV file, do: File --> Save --> Collection sequences
+
+then open in Excel.
+
+Cheers,
+
+Stuart.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+select assemblyname, sequencetype, count(*), min(sequencenumber), max(sequencenumber) from assemblysequences group by assemblyname, sequencetype ;
++--------------+--------------+----------+---------------------+---------------------+
+| assemblyname | sequencetype | count(*) | min(sequencenumber) | max(sequencenumber) |
++--------------+--------------+----------+---------------------+---------------------+
+| funnybase10  | contig       |     1758 |               21545 |               23302 |
+| funnybase10  | singlet      |    20088 |                1457 |               21544 |
+| supercraw0   | contig       |      749 |               24010 |               24758 |
+| supercraw0   | singlet      |      707 |               23303 |               24009 |
++--------------+--------------+----------+---------------------+---------------------+
+
+
+mysql> select count(*) from assemblyreads where assemblyname = 'funnybase10';
++----------+
+| count(*) |
++----------+
+|    25941 |
++----------+
+1 row in set (0.08 sec)
+
+mysql> select count(*) from reads;
++----------+
+| count(*) |
++----------+
+|    28863 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from assemblyreads, reads where assemblyname = 'funnybase10' and assemblyreads.experiment=reads.experiment  and assemblyreads.plate=reads.plate and assemblyreads.well=reads.well;
++----------+
+| count(*) |
++----------+
+|    17649 |
++----------+
+1 row in set (0.26 sec)
+
+mysql> select count(*) from reads;
++----------+
+| count(*) |
++----------+
+|    28863 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from assemblyreads, reads where assemblyname = 'supercraw0' and assemblyreads.experiment=reads.experiment  and assemblyreads.plate=reads.plate and assemblyreads.well=reads.well;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+1 row in set (0.06 sec)
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Feb 22 14:23:33 EST 2007
+REDID funnybase10
+
+        stage 2. Input read information (from '.phd.1' files) into the database 
+        stage 3. Input assembly reads information (from the '.ace' file) into the database
+        stage 4. Input assembly sequences information (from the '.ace' file) into the database
+        stage 5. Calculate read coverage and depth of assembly sequences
+        stage 6. Insert SNP predictions into database
+        stage 7. Initialise the database or BLAST new sequences against existing database
+        stage 8. Update existing accessions by comparing them with the new assembly
+        stage 9. BLAST the database against external databases
+
+0. CREATE DATABASE
+
+./create_database.pl -d funnybase10
+
+1. LOAD READS
+=============
+
+./reads.pl -d funnybase10
+
+2. SCREEN READS
+===============
+
+ON gems:
+
+./readsarrayscreen.pl -d funnybase10
+
+3. LOAD SCREENED READS
+======================
+
+ON genomics:
+
+./readsarrayscreenloaddata.pl -d funnybase10
+
+4. LOAD ASSEMBLYSEQUENCES FROM UNIQUE SEQUENCES OF supercraw0 THAT DON'T SHARE ANNOTATION WITH funnybase7
+=========================================================================================================
+
+EXTRACT supercraw0 SEQUENCES THAT DON'T MATCH funnybase7 SEQUENCES:
+
+ ./comparemultiplecollectionannotation.pl -d supercraw0 -t funnybase
+ 
+./comparemultipleextractassemblysequences.pl -d supercraw0 -m funnybase7 -t comparemultipleannotation_supercraw0_funnybase7
+
+
+MYSQL:
+
+delete from assemblyreads;
+delete from assemblysequences;
+
+
+
+CREATE .extract.contigs.qual FILE:
+
+./readsfastacontigsqualfile.pl -d supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs -t contigs
+
+
+CREATE .extract.singlets.qual FILE:
+
+./readsfastasingletsqualfile.pl -d supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.singlets
+
+
+CREATE .TSV FILES FOR assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+    732 out of 733 singlets added to 'assemblysequences' table
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.singlets.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.singlets.assemblyreads.tsv
+    
+    Doing contigs file: /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblyreads.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblysequences.tsv
+
+    1052 out of 1052 contigs added to 'assemblysequences' table
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/supercraw0.cap.contigs.assemblyreads.tsv
+    
+    Completed ./assemblyreadsassemblysequences.pl
+    Run time: 00:00:25
+    4:45PM, 12 June 2007
+    ****************************************
+
+
+LOAD supercraw0 .TSV FILES INTO assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequencesloaddata.pl -d funnybase10 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs
+
+
+use funnybase10
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
+
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
+
+    +--------------+----------------+--------------+----------+
+    | assemblyname | assemblynumber | sequencetype | count(*) |
+    +--------------+----------------+--------------+----------+
+    | supercraw0   |              1 | contig       |     1052 |
+    | supercraw0   |              1 | singlet      |      732 |
+    +--------------+----------------+--------------+----------+
+
+PREVIOUSLY:
+
+    +--------------+----------------+--------------+----------+
+    | assemblyname | assemblynumber | sequencetype | count(*) |
+    +--------------+----------------+--------------+----------+
+    | supercraw0   |              1 | contig       |      749 |
+    | supercraw0   |              1 | singlet      |      707 |
+    +--------------+----------------+--------------+----------+
+
+5. LOAD ASSEMBLY SEQUENCES FROM funnybase10
+===========================================
+
+
+CREATE funnybase10.fasta.qual FILE:
+
+cd /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir
+phd2fasta  -id ../phd_dir  -os funnybase10.fasta -oq funnybase10.fasta.qual
+
+
+CREATE .extract.singlets.qual FILE:
+
+./readsfastasingletsqualfile.pl -d funnybase10
+
+
+    24100
+    Singlets quality file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+    
+    Completed ./readsfastasingletsqualfile.pl
+    Run time: 00:00:21
+    6:17PM, 12 June 2007
+    ****************************************
+
+    ll /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+    56M Jun 12 18:17 /Users/young/FUNNYBASE/pipeline/funnybase10/edit_dir/funnybase10.fasta.cap.singlets.qual
+
+
+CREATE .TSV FILES FOR assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -q 10
+
+    ...
+    24187 out of 24187 singlets added to 'assemblysequences' table
+    
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.singlets.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.singlets.assemblyreads.tsv
+    
+    1779 out of 1779 contigs added to 'assemblysequences' table
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.contigs.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase10/collection/funnybase10.cap.contigs.assemblyreads.tsv
+    
+    Completed ./assemblyreadsassemblysequences.pl
+    Run time: 00:01:28
+    5:14PM, 12 June 2007
+
+LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES:
+
+./assemblyreadsassemblysequencesloaddata.pl -d funnybase10
+
+
+select assemblyname, sequencetype, count(*) from assemblysequences where assemblyquality='' group by assemblyname, sequencetype; 
++--------------+--------------+----------+
+| assemblyname | sequencetype | count(*) |
++--------------+--------------+----------+
+| funnybase10  | singlet      |    24187 |
+| supercraw0   | singlet      |      732 |
++--------------+--------------+----------+
+
+select assemblyname, sequencetype, count(*) from assemblysequences group by assemblyname, sequencetype;
++--------------+--------------+----------+
+| assemblyname | sequencetype | count(*) |
++--------------+--------------+----------+
+| funnybase10  | contig       |     1779 |
+| funnybase10  | singlet      |    24187 |
+| supercraw0   | contig       |     1052 |
+| supercraw0   | singlet      |      732 |
++--------------+--------------+----------+
+
+    PREVIOUSLY:
+
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
++--------------+----------------+--------------+----------+
+| assemblyname | assemblynumber | sequencetype | count(*) |
++--------------+----------------+--------------+----------+
+| funnybase10  |              2 | contig       |     1758 |
+| funnybase10  |              2 | singlet      |    20088 |
+| supercraw0   |              1 | contig       |      749 |
+| supercraw0   |              1 | singlet      |      707 |
++--------------+----------------+--------------+----------+
+
+select assemblyname, sequencetype, count(*), min(sequencenumber), max(sequencenumber) from assemblysequences group by assemblyname, sequencetype ;
++--------------+--------------+----------+---------------------+---------------------+
+| assemblyname | sequencetype | count(*) | min(sequencenumber) | max(sequencenumber) |
++--------------+--------------+----------+---------------------+---------------------+
+| funnybase10  | contig       |     1758 |               21545 |               23302 |
+| funnybase10  | singlet      |    20088 |                1457 |               21544 |
+| supercraw0   | contig       |      749 |                 708 |                1456 |
+| supercraw0   | singlet      |      707 |                   1 |                 707 |
++--------------+--------------+----------+---------------------+---------------------+
+
+6. CALCULATE READ COVERAGE
+==========================
+
+./assemblysequencesreadcoverage.pl -d funnybase10
+...
+Total 21846 coverages added (total sequences 21846)
+Completed ./assemblysequencesreadcoverage.pl
+
+Run time: 00:22:23
+0:22AM, 24 February 2007
+****************************************
+
+7. POPULATE collectionsequences
+===============================
+
+MYSQL:
+
+delete from collectionsequences;
+
+./collectionsequences.pl -d funnybase10 -n supercraw0
+./collectionsequences.pl -d funnybase10
+
+select assemblyname, count(*) from collectionsequences group by assemblyname;
++--------------+----------+
+| assemblyname | count(*) |
++--------------+----------+
+| funnybase10  |    21845 |
+| supercraw0   |     1455 |
++--------------+----------+
+
+8. BLAST COLLECTION SEQUENCES
+=============================
+sudo ./collectionarrayblast.pl -d funnybase10
+sudo ./collectionblastloaddata.pl -d funnybase10
+
+select targetsource, count(distinct targetid) from collectionblast group by targetsource;
++--------------+--------------------------+
+| targetsource | count(distinct targetid) |
++--------------+--------------------------+
+| refseq-dog   |                    18989 |
+| refseq-human |                    13438 |
+| refseq-mouse |                    12061 |
+| refseq-rat   |                    10389 |
+| swissprot    |                    57587 |
++--------------+--------------------------+
+
+9. POPULATE collectionsequencesannotation
+=========================================
+
+./collectionsequencesannotation.pl -d funnybase10
+
+
+10. CALCULATE DIVS
+==================
+
+FOR ASSEMBLED SEQUENCE VIEW:
+./collectionsequencesdiv.pl -d funnybase10
+./assemblyreadsdiv.pl -d funnybase10
+
+./assemblysequencesdiv.pl -d funnybase10
+
+FOR blastdiv OF collectionsequencesdiv TABLE:
+./collectionsequencesblastdiv.pl -d funnybase10
+
+FOR selectexperiment HTML OF platesinfo TABLE:
+./experimentplatesdiv.pl
+
+FOR HTML divs OF ALL PLATES IN THE MYSQL TABLE 'plates'
+./platesdiv.pl
+
+11. CALCULATE STATS
+===================
+
+./collectionstats.pl -d funnybase10
+
+12. DO PATHWAYS
+==============
+
+./collectionsequencespathways.pl -d funnybase10
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Feb 21 12:34:13 EST 2007
+CHECK READS FOR ALL EXPERIMENTS
+
+select experiment, count(*) from reads group by experiment;
++------------+----------+
+| experiment | count(*) |
++------------+----------+
+|        126 |     5947 |
+|        130 |     8995 |
+|        151 |      959 |
+|        152 |      959 |
+|        153 |     1152 |
+|        154 |      768 |
+|        155 |      942 |
+|        156 |      954 |
+|        157 |      945 |
+|        158 |      956 |
+|        159 |    12233 |
++------------+----------+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Feb 14 15:31:38 EST 2007
+FUNNYBASE PRIMERS
+
+PucF		CGCCAGGGTTTTCCCAGTCACG
+PucR		GAGCGGATAACAATTTCACACAGGAAACAG
+SK20		CGCTCTAGAACTAGTGGATC
+Sf			GTGAGTTGATTGCAGTCCAGTTACGCT
+Sr			GGTCAGGTATGATTTAAATGGTCAGTA
+T7smart		TATAGAAGGGGATATCACTCAGCATAAT
+SF22		TTAATACGACTCACTATAAGGGGTGTGG
+SR22		GCCTCCGGTCGGAGGCTTTTGACTTTCTGCTATGGAGG
+SF20		TTCACACAGGAAACAGCCATGGGC
+SF25		GAGCGGATAACAATTTCACACAGG
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Feb 14 15:28:54 EST 2007
+PHD2FASTA AND CROSSMATCH COMMANDS
+
+PHD2FASTA
+
+/Users/young/FUNNYBASE/apps/phred/phd2fasta/phd2fasta  -id ../phd_dir  -os funnybase7.fasta -oq funnybase7.fasta.qual
+
+CROSS_MATCH
+
+/Users/young/FUNNYBASE/apps/phrap/cross_match funnybase7.fasta /Users/young/FUNNYBASE/pipeline/vector.seq -minmatch 12 -penalty -2 -minscore 20 -screen 
+
+cross_match version 0.990329
+Reading parameters ... 0.504 Mbytes allocated -- total 0.504 Mbytes
+
+COLLECT_ASSEMBLE
+
+ ./collectassemble.pl -d /Users/young/FUNNYBASE/pipeline/funnybase7 -s 3. -e 126,128,130,150-159 
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Feb 14 15:25:25 EST 2007
+TESTED BLAST DATABASES
+
+NUCLEOTIDE SEQUENCES (blastn)
+ensembl-chimp
+ensembl-elegans
+ensembl-fugu
+ensembl-human
+ensembl-mouse
+ensembl-tetraodon
+ensembl-yeast
+ensembl-zebrafish
+genbank
+unigene-anopheles
+unigene-dog
+unigene-drosophila
+unigene-elegans
+unigene-fugu
+unigene-human
+unigene-hydra
+unigene-mouse
+unigene-pig
+unigene-pine
+unigene-rat
+unigene-rice
+unigene-zebrafish
+
+PEPTIDE SEQUENCES (blastx)
+swissprot
+refseq-dog
+refseq-human
+refseq-mouse
+refseq-rat
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+funnybase10 STATS:
+
+
+ select min(collectionid), max(collectionid), sequencetype, assemblyname from collectionsequences group by assemblyname, sequencetype;
++-------------------+-------------------+--------------+--------------+
+| min(collectionid) | max(collectionid) | sequencetype | assemblyname |
++-------------------+-------------------+--------------+--------------+
+|              1456 |              3213 | contig       | funnybase10  |
+|              3214 |             23301 | singlet      | funnybase10  |
+|                 1 |               749 | contig       | supercraw0   |
+|               750 |              1455 | singlet      | supercraw0   |
++-------------------+-------------------+--------------+--------------+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+funnybase10 BLAST STATS:
+
+select count(distinct collectionid) from collectionblast;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        13081 |
++------------------------------+
+
+select targetsource, count(distinct targetid) from collectionblast group by targetsource;
++--------------+--------------------------+
+| targetsource | count(distinct targetid) |
++--------------+--------------------------+
+| refseq-dog   |                    19357 |
+| refseq-human |                     7630 |
+| refseq-mouse |                     6474 |
+| refseq-rat   |                    11915 |
+| swissprot    |                    27314 |
++--------------+--------------------------+
+
+
+COMPARED TO funnybase9:
+Fri Nov 10 08:16:18 EST 2006
+
+1. INSERTED BLAST RESULTS FOR supercraw0 (experiments: 1 123 124 125 189 190 199 999) INTO funnybaseblast TABLE:
+
+BREAKDOWN BY BLAST TARGET SOURCE:
++--------------+--------------------------+
+| targetsource | count(distinct targetid) |
++--------------+--------------------------+
+| refseq-dog   |                    14888 |
+| refseq-human |                    10813 |
+| refseq-mouse |                     9547 |
+| refseq-rat   |                     9098 |
+| swissprot    |                    44341 |
++--------------+--------------------------+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MSG: Doug
+
+Mon Jan 29 04:27:40 EST 2007
+Hi Doug,
+
+Crawford Lab website
+
+    - I've completed the basic structure and most of the pages
+      TO DO: Introduction for welcome page, protocols, publications, etc.
+
+Funnybase website
+
+    - 95% completed 
+    - Rearranged the pipeline so that the stages are annotated, and it can be reconstructed or added to easily. It's now a fairly generic structure so I can be adapted to any additional analyses. 
+    - TO DO: Complete the upload so that it can upload to specific user-specified directories, add GO and EC numbers (Monday's task)
+
+Thesis research
+
+    - The cluster is also working okay now but I'm fine-tuning the performance
+    - I'm currently running iprscan on the orthologues from unigene (based on hits for the 100 human unigenes)
+    - TO DO: Once the orthologues iprscans are done, I'll try Decision Trees and Naive Bayes classifiers
+
+Stuart.
+
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Sun Jan 28 23:34:26 EST 2007
+REDOING funnybase9 AS funnybase10 (USING pipeline4)
+
+1. COPIED LINKS TO FILES IN funnybase7 USING mirror.pl
+
+./mirror.pl -s funnybase7 -t funnybase10
+
+NO NEED TO RUN stages 1 TO 6
+
+stage 1. Collect all of the chromat files from the user-specified experiment
+        (option -e) and place them within the 'chromat_dir' inside the user-
+        specified directory (option -d)
+stage 2. Create '.phd' files using phred
+stage 3. Create a single .fasta file from the .phd files
+stage 4. Screen for vector
+stage 5. Assemble with CAP3 or phrap
+stage 6. Predict SNPs with polyphred
+
+2. LOAD ASSEMBLYSEQUENCES (CONTIGS THEN SINGLETS) FROM UNIQUE SEQUENCES OF supercraw0 THAT DON'T SHARE ANNOTATION WITH funnybase7:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase7.extract.contigs -w
+
+use funnybase10
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
++--------------+----------------+--------------+----------+
+| assemblyname | assemblynumber | sequencetype | count(*) |
++--------------+----------------+--------------+----------+
+| supercraw0   |              1 | contig       |      749 |
+| supercraw0   |              1 | singlet      |      707 |
++--------------+----------------+--------------+----------+
+
+3. LOAD ASSEMBLY SEQUENCES FROM supercraw10:
+
+./assemblyreadsassemblysequences.pl -d funnybase10 -q 10
+
+select assemblyname, assemblynumber, sequencetype, count(*) from assemblysequences group by assemblyname , sequencetype;
++--------------+----------------+--------------+----------+
+| assemblyname | assemblynumber | sequencetype | count(*) |
++--------------+----------------+--------------+----------+
+| funnybase10  |              2 | contig       |     1758 |
+| supercraw0   |              1 | contig       |      749 |
+| supercraw0   |              1 | singlet      |      707 |
++--------------+----------------+--------------+----------+
+
+
+select assemblyname, sequencetype , count(*), min(sequencenumber), max(sequencenumber) from assemblysequences group by assemblyname, sequencetype ;
++--------------+--------------+----------+---------------------+---------------------+
+| assemblyname | sequencetype | count(*) | min(sequencenumber) | max(sequencenumber) |
++--------------+--------------+----------+---------------------+---------------------+
+| funnybase10  | contig       |     1758 |                1457 |                3214 |
+| supercraw0   | contig       |      749 |                 708 |                1456 |
+| supercraw0   | singlet      |      707 |                   1 |                 707 |
++--------------+--------------+----------+---------------------+---------------------+
+
+4. TO DO:
+    
+    4.1 readnames FOR assemblyreads TABLE
+
+    AS PART OF assemblyreadsassemblysequences.pl
+
+    4.2 ASSEMBLY SEQUENCES READ COVERAGE
+
+    ./assemblysequencesreadcoverage.pl -d funnybase10
+
+
+5. CALCULATE DIVS
+
+    ./
+
+
+6. POPULATE collectionsequences AND collectionsequencesannotation
+
+
+./collectionsequences.pl -d funnybase10 -n supercraw0
+./collectionsequences.pl -d funnybase10
+
+./collectionsequencesannotation.pl -d funnybase10
+
+7. DO PATHWAYS
+
+./collectionsequencespathways.pl -d funnybase10
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Jan 23 15:18:24 EST 2007
+DATABASE SIZES
+
+DATABASE        RECORDS
+Swissprot       188477
+refseq-dog      33740
+refseq-mouse    26916
+refseq-rat      24085
+refseq-human    29528
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Jan  8 14:06:07 EST 2007
+ANNOTATION USING HMMs
+
+title: Hidden Markov Models (TIGR)
+authors: Michelle Gwinn, TIGR curators
+year: 2003
+abstract: A Hidden Markov Model (HMM) is a statistical representation of patterns found in a data set. When using HMMs with proteins, the HMM is a statistical model of the patterns of the amino acids found in a multiple alignment of a set of proteins called the "seed". Seed proteins are chosen based on sequence similarity to each other. Seed members can be chosen with different levels of relationship to each other. They can be members of a superfamily (ex. ABC transporter, ATP-binding proteins), they can all share the same exact specific function (ex. biotin synthase) or they could share another type of relationship of intermediate specificity (ex. subfamily, domain). New proteins can be scored against the model generated from the seed according to how closely the patterns of amino acids in the new proteins match those in the seed. There are two scores assigned to the HMM which allow annotators to judge how well any new protein scores to the model. Proteins scoring above the "trusted cutoff" score can be assumed to be part of the group defined by the seed. Proteins scoring below the "noise cutoff" score can be assumed to NOT be a part of the group. Proteins scoring between the trusted and noise cutoffs may be part of the group but may not. One of the important features of HMMs is that they are built from a multiple alignment of protein sequences, not a pairwise alignment. This is significant, since shared similarity between many proteins is much more likely to indicate shared functional relationship than sequence similarity between just two proteins. The usefulness of an HMM is directly related to the amount of care that is taken in chosing the seed members, building a good multiple alignment of the seed members, assessing the level of specificity of the model, and choosing the cutoff scores correctly.
+
+
+
+

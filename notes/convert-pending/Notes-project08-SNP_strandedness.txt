@@ -1,0 +1,691 @@
+Notes-project-08_SNP_strandedness.txt
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 14:23:13 EDT 2008] UNINSTALLED SQL-SERVER>
+
+
+
+Uninstalled sql-server and c++ components.
+
+
+
+</entry>
+
+
+
+<entry [Mon Jul 28 14:38:33 EDT 2008] CONNECT TO TCLINIC ON allele.med.miami.edu>
+
+
+
+
+1. GOT CONNECT DETAILS
+
+    From: Cabrera, Joe 
+    Sent: Friday, July 25, 2008 2:31 PM
+    To: Young, Stuart
+    Cc: McCauley, Jacob L; Slifer, Susan; Gurnani, Girish
+    Subject: FW: CCS
+    
+    Stuart, 
+    
+    I have setup your account on TCLINIC.  Your username is syoung.  Please call me so I can give you the password.  It will expire immediately.  Here is the tnsnames.ora entry to connect:
+    
+    
+    TCLINIC.WORLD =
+      (DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = allele.med.miami.edu)(PORT = 1556))
+        (CONNECT_DATA =
+          (SID = tclinic)
+        )
+    )
+    
+    Thanks, 
+    
+    Joe Cabrera
+    
+
+2. DOWNLOAD ORACLE 10g CLIENT RELEASE FOR WINDOWS
+
+http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/10201winsoft.html
+
+TAKE Oracle Database 10g Client Release 2 (10.2.0.1.0):
+
+    10201_client_win32.zip (475,090,051 bytes) (cksum - 946434250)
+
+
+3. COPY .ora DETAILS TO HERE
+
+C:\oracle\product\10.2.0\client_1\NETWORK\ADMIN\tsanames.org
+
+
+4. CONNECT WITH SQL_Plus
+
+Start-->Run-->'cmd' --> 'sqlplusw syoung@tclinic.world' 
+
+LOGIN WINDOW POPS UP, INPUT ID AND PASS AND GO!
+
+    #PATH=C:\DATA\SNP.orientation\instantclient_10_2
+    #sqlplus syoung/welcome08@allele.med.miami.edu:1556/TCLINIC.WORLD
+
+
+4. INSTALL perl
+
+www.activestate.com
+
+
+5. DOWNLOAD nmake
+
+http://download.microsoft.com/download/vc15/patch/1.52/w95/en-us/nmake15.exe
+AT
+http://support.microsoft.com/default.aspx?scid=kb;en-us;Q132084
+
+COPY TO PERL BIN:
+
+c:\Perl\bin\nmake.exe
+
+
+6. UNZIP DBD-Oracle AND cd TO INSIDE FOLDER, AND MAKE
+
+(ALTERNATELY ppm install DBD-Oracle BUT DBD-Oracle NOT AVAILABLE FOR perl 5.10 YET)
+
+
+c:
+cd C:\DATA\08-SNP.strandedness\DBD-Oracle\DBD-Oracle-1.21
+
+INSTALL LIBOCI.A USING DLLTOOL:
+
+dlltool --input-def oci.def --output-lib liboci.a
+
+
+C:\DATA\08-SNP.strandedness\DBD-Oracle\DBD-Oracle-1.21>perl Makefile.PL
+
+    You're using Microsoft Visual C++ compiler or similar but
+    the LIB and INCLUDE environment variables are not both set.
+
+    You need to run the VCVARS32.BAT batch file that was supplied
+    with the compiler before you can use it.
+
+    A copy of vcvars32.bat can typically be found in the following
+    directories under your Visual Studio install directory:
+
+        Visual C++ 6.0:     vc98\bin
+        Visual Studio .NET: vc7\bin
+
+    Find it, run it, then retry this.
+
+    If you think this error is not correct then just set the LIB and
+    INCLUDE environment variables to some value to disable the check.
+
+
+
+
+Compiling and installing DBD::Oracle 1.18 or later on a windows 2000 professional or XP OS for use 
+with Oracle instantClient ver 10.2.0.1 & 10.1.0.5 or Oracle XE requires only a few downloads and 
+a minimal number of environment setting.  The procedures below were tested on a clean 
+Windows platform having no Oracle or other development environment installed.
+
+1) The first part of the process is to download and install the latest version of 
+   Active Perl from http://www.activeperl.com/.
+
+2) Use the PPM application to get the latest version of DBI
+
+3) Download the latest DBD::Oracle from http://svn.perl.org/modules/dbd-oracle/trunk/
+
+4) Download and unzip the Oracle Instant Client (10.2.0.1 or 10.1.0.5) 32 bit from 
+   http://www.oracle.com/technology/tech/oci/instantclient/instantclient.html 
+   You will need all three of these products
+	i.	Instant Client Package - Basic
+	ii.	Instant Client Package - SQL*Plus:
+	iii.	Instant Client Package - SDK:
+   or 
+   
+   install oracle 10XE http://www.oracle.com/technology/products/database/xe/index.html 
+
+5) You will now need the Microsoft Visual C++ toolkit 2003. Unfortunately this product is no longer available from Microsoft.  
+   The file name was VCToolkitSetup.exe  and is available at this mirror site
+   
+   http://www.filewatcher.com/m/VCToolkitSetup.exe.32952488.0.0.html
+   
+   at the time of writing.
+   Microsoft's replacement for this tool kit is Visual C++ 2005 Express Edition and all attempts to compile DBD::Oracle with this product fail. It has been successfully compiled
+   using a complete edition of Microsoft Visual Studio 2005. 
+   Download and then install this product.
+
+6) You will also need the Windows SDK. Which can be found at 
+
+   http://www.microsoft.com/downloads/details.aspx?FamilyId=A55B6B43-E24F-4EA3-A93E-40C0EC4F68E5&displaylang=en
+
+
+   You have the choice to of either to download the entire SDK and install or run an online install from the page.  
+   Both have been tested and proven to work. 
+
+7) Next download and install the Microsoft .net framework 1.1 SDK from 
+
+
+   http://www.microsoft.com/downloads/details.aspx?FamilyID=9b3a2ca6-3647-4070-9f41-a333c6b9181d&displaylang=en 
+
+OK
+
+
+8) You will also need a copy of nmake.exe which you can download here http://download.microsoft.com/download/vc15/patch/1.52/w95/en-us/nmake15.exe
+
+9) Enough Downloading and installing go have a coffee.
+
+
+10) You should at this time attempt to connect to an Oracle database with the version SQL*Plus that 
+   you installed in step 4.  If you are unable to connect at this stage then any problems you encounter 
+   later may have nothing to do with DBD::Oracle
+
+
+11) On the path where you installed Visual C++ find and edit the vcvars32.bat file as follows.  You may have to modify 
+    these path values depending where you installed the products on you computer, 
+
+	i.   Add  the local path to the windows platform SDK include directory to the Set INCLUDE 
+             Command Line to include the needed files from the Windows SDK. 
+             
+             e.g.  "C:\Program Files\Microsoft Platform SDK\Include;" 
+             
+	ii.  Add the local path to the .net Vc7 lib directory to the Set LIB command
+             to include the needed library file from the .Net SKD
+             
+             e.g. C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\lib;
+             
+        iii. Add the local path to the windows platform SDK Lib directory to the Set Lib command 
+             to include the needed library files from the Windows SDK
+             
+	     e.g. C:\Program Files\Microsoft Platform SDK\Lib;
+
+
+        GO TO 
+        C:\Program Files\Microsoft Visual C++ Toolkit 2003
+        
+        EDIT vcvars32.bat 
+        >>>
+        @echo off
+        
+        Set PATH=C:\Program Files\Microsoft Visual C++ Toolkit 2003\bin;%PATH%
+        Set INCLUDE=C:\Program Files\Microsoft Visual C++ Toolkit 2003\include;%INCLUDE%
+        Set LIB=C:\Program Files\Microsoft Visual C++ Toolkit 2003\lib;%LIB%
+        
+        echo Setting environment for using Microsoft Visual C++ 2003 Toolkit.
+        echo (If you have another version of Visual Studio or Visual C++ installed and wish
+        echo to use its tools from the command line, run vcvars32.bat for that version.)
+        echo.
+        echo Thank you for choosing the Visual C++ Toolkit 2003!  Get started quickly by
+        echo building the code samples included in the "Samples" directory.  Each sample
+        echo includes a short whitepaper discussing the Visual C++ features, and a batch
+        echo file for building the code.
+        echo.
+        echo Type "cl /?" for brief documentaion on compiler options.
+        echo.
+        echo Visit http://msdn.microsoft.com/visualc/using/documentation/default.aspx for
+        echo complete compiler documentation.
+        <<<
+
+
+        ADD:
+        
+        C:\Program Files\Microsoft SDKs\Windows\v6.1\Include        
+        C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\lib
+        C:\Program Files\Microsoft SDKs\Windows\v6.1\Lib
+
+
+        SO NOW vcvars32.bat CONTAINS:
+
+        Set PATH=C:\Program Files\Microsoft Visual C++ Toolkit 2003\bin;%PATH%
+        Set INCLUDE=C:\Program Files\Microsoft Visual C++ Toolkit 2003\include;C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\lib;%INCLUDE%
+        Set LIB=C:\Program Files\Microsoft Visual C++ Toolkit 2003\lib;C:\Program Files\Microsoft SDKs\Windows\v6.1\Lib;C:\Program Files\Microsoft SDKs\Windows\v6.1\Lib;%LIB%
+        
+        echo Setting environment for using Microsoft Visual C++ 2003 Toolkit.
+        echo (If you have another version of Visual Studio or Visual C++ installed and wish
+        echo to use its tools from the command line, run vcvars32.bat for that version.)
+        echo.
+        echo Thank you for choosing the Visual C++ Toolkit 2003!  Get started quickly by
+        echo building the code samples included in the "Samples" directory.  Each sample
+        echo includes a short whitepaper discussing the Visual C++ features, and a batch
+        echo file for building the code.
+        echo.
+        echo Type "cl /?" for brief documentaion on compiler options.
+        echo.
+        echo Visit http://msdn.microsoft.com/visualc/using/documentation/default.aspx for
+        echo complete compiler documentation.
+
+
+12) Open a Windows Visual C++ command window from the start menu.
+
+
+OR CLICK C:\Program Files\Microsoft Visual C++ Toolkit 2003\Visual C++ Toolkit 2003 Command Prompt
+
+
+
+13) Add the path to the instant client to the Path command. If you are compiling aginst a 10XE db/client then you can skip steps 
+    12 to 14. 
+    e.g.  PATH = C:/Oracle/instantclient;%PATH%
+   
+    
+    PATH = C:\oracle\product\10.2.0\client_1;%PATH%
+    
+
+14) Using the "Set" command add "ORACLE_HOME=path to Instant client" to the environment variables.
+    e.g. Set ORACLE_HOME=C:\Oracle\instantclient
+   
+    
+    set ORACLE_HOME=C:\oracle\product\10.2.0\client_1
+
+
+15) Using the "Set" command add "NLS_LANG=.WE8ISO8859P15" to the environment variables. The globalization variable is required, 
+    with this or another compatible value, by Oracle instantclient in order for it to compile correctly.
+    e.g. Set NLS_LANG=.WE8ISO8859P15
+
+    
+    Set NLS_LANG=.WE8ISO8859P15
+
+
+16) Using the "Set" command add "ORACLE_USERID=test/test@test" substituting test with the username/password@database 
+    you wish to run the make test files against. 
+        Note: it is not necessary to do this step for the compile and install to work. 
+     However: The self-test programs included with Oracle-DBD will mostly fail.
+
+
+    set "ORACLE_USERID=syoung/<password>@test"
+
+17) Move to the DBD-Oracle directory in the Visual C++ window DOS prompt and enter the following.
+
+    		c:\oracle-dbd\>perl Makefile.PL  
+
+     The Makefile should then run and compile Oracle-dbd without reporting any errors.
+
+
+    cd C:\DATA\08-SNP.strandedness\DBD-Oracle\DBD-Oracle-1.21
+
+OK
+
+
+
+
+    TO AVOID "Cannot open file: 'windows.h'" ERROR, REINSTALL Visual C++ 2005 Express, Windows SDK AND NET SDK.
+    
+    
+    NB: FOUND windows.h HERE AFTER REINSTALL OF Windows SDK (NOT SURE IF IT WASN'T THERE BEFORE):
+    
+        C:\Program Files\Microsoft SDKs\Windows\v6.1\Include
+
+    COPY windows.h FROM C:\Program Files\Microsoft SDKs\Windows\v6.1\Include TO C:\Perl\lib\CORE:
+    
+    ALSO COPIED:
+    
+        sdkddkver.sh
+        windef.h
+        winnt.h
+        specstrings.h
+    
+    BUT COULDN'T FIND sal.h
+    
+    SO CONTACTED Sebastian TO ACCESS A LINUX SERVER WITH ORACLE INSTALLED...
+    
+    
+    
+    
+    
+    
+    
+    
+    #EDIT Makefile, CHANGE LINE FROM:
+    #
+    #INC = -IC:/oracle/product/10.2.0/client_1/oci/include -IC:/oracle/product/10.2.0/client_1/rdbms/demo -IC:\Perl\lib\auto\DBI
+    #
+    #TO:
+    #
+    #INC = -IC:/oracle/product/10.2.0/client_1/oci/include -IC:/oracle/product/10.2.0/client_1/rdbms/demo -IC:\Perl\lib\auto\DBI -IC:\Program Files\Microsoft SDKs\Windows\v6.1\Include
+
+    
+    
+    If you search your c: drive for the windows.h file you'll probably find it somewhere like c:\program files\Microsoft Visual Studio XX\VC\PlatformSDK\Include.  Adding that path to the directory list will make the compiler look there for it.
+    
+    (*** NB: didn't work: 
+    SET BCCDIR ENVIRONMENT VARIABLE AS PATH TO INSTALLATION
+    set BCCDIR=C:\oracle\product\10.2.0\client_1
+    )
+
+18) From this DOS prompt enter the following command
+
+		c:\oracle-dbd\>nmake
+
+    The Visual C++ make executable will then build you DBD-execuable. There should be no errors at this point.
+
+19) You can test the compile by either entering
+
+		c:\oracle-dbd\>nmake test
+
+    As long as you have given a valid user name, password and database name in step 15 you will see some results.  If it appears to
+    run but you do not get a connection check the following.
+
+		i.   User name password and DB Name 
+		ii.  Ensure the a valid TNSNAMES.ORA file is in the Instantclient directory
+		iii. Attempt to log into the version of SQLPLUS that comes with Instantclient.  
+                     If you manage to log on use the username password and TNS name with 
+                     the Set ORACLE_USERID = and rerun the tests.
+                iv   If you are compiling against 10XE and have skiped steps 12 to 14 try again bu this time carry out these steps
+
+20) You can now install DBD-Oracle into you system by entering the following command from the Visual C++ window dos prompt;
+
+    		c:\oracle-dbd\>nmake install
+
+21) You should now be able to run DBD-Oracle on you system
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Jul 25 16:29:11 EDT 2008
+
+LINUX CLIENT OR DATABASE INSTALL DIDN'T WORK BECAUSE OF JAVA ERROR WHEN RUNNING ./runInstaller
+(SEE BELOW)
+
+3. DOWNLOAD ORACLE 10g CLIENT RELEASE FOR LINUX
+
+http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/linuxsoft.html
+
+ship.client.lnx32.cpio.gz
+
+
+DOWNLOAD INSTANT CLIENT FOR LINUX X86-64
+
+http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxx86_64soft.html
+
+cd "/store/home/syoung/oracle.client"
+
+unzip basic-10.2.0.4.0-linux-x86_64.zip 
+    Archive:  basic-10.2.0.4.0-linux-x86_64.zip
+      inflating: instantclient_10_2/BASIC_README  
+      inflating: instantclient_10_2/classes12.jar  
+      inflating: instantclient_10_2/genezi  
+      inflating: instantclient_10_2/libclntsh.so.10.1  
+      inflating: instantclient_10_2/libnnz10.so  
+      inflating: instantclient_10_2/libocci.so.10.1  
+      inflating: instantclient_10_2/libociei.so  
+      inflating: instantclient_10_2/libocijdbc10.so  
+      inflating: instantclient_10_2/ojdbc14.jar  
+
+
+unzip sqlplus-10.2.0.4.0-linux-x86_64.zip 
+
+    Archive:  sqlplus-10.2.0.4.0-linux-x86_64.zip
+      inflating: instantclient_10_2/SQLPLUS_README  
+      inflating: instantclient_10_2/glogin.sql  
+      inflating: instantclient_10_2/libsqlplus.so  
+      inflating: instantclient_10_2/libsqlplusic.so  
+      inflating: instantclient_10_2/sqlplus  
+    
+ll instantclient_10_2/
+
+    -rw-rw-r-- 1 syoung users  228 Mar 12 02:37 BASIC_README
+    -r--r--r-- 1 syoung users 1.6M Mar 12 02:37 classes12.jar
+    -rwxrwxr-x 1 syoung users  66K Mar 12 02:37 genezi
+    -r--r--r-- 1 syoung users 1.5K Mar 12 02:37 glogin.sql
+    -rwxrwxr-x 1 syoung users  21M Mar 12 02:37 libclntsh.so.10.1
+    -r-xr-xr-x 1 syoung users 3.7M Mar 12 02:37 libnnz10.so
+    -rwxrwxr-x 1 syoung users 1.6M Mar 12 02:37 libocci.so.10.1
+    -rwxrwxr-x 1 syoung users  70M Mar 12 02:37 libociei.so
+    -r-xr-xr-x 1 syoung users 135K Mar 12 02:37 libocijdbc10.so
+    -r-xr-xr-x 1 syoung users 1.4M Mar 12 02:37 libsqlplusic.so
+    -r-xr-xr-x 1 syoung users 975K Mar 12 02:37 libsqlplus.so
+    -r--r--r-- 1 syoung users 1.5M Mar 12 02:37 ojdbc14.jar
+    -r-xr-xr-x 1 syoung users 7.6K Mar 12 02:37 sqlplus
+    -rw-rw-r-- 1 syoung users  232 Mar 12 02:37 SQLPLUS_README
+
+
+
+    INSTALL DIRECTIONS:
+    
+  	  	1. Run "gunzip <filename>" on all the files.   Eg.: ship.db.lnx32.cpio.gz
+
+            gunzip 10201_database_linux_x86_64.cpio.gz
+
+
+  	  	2. Extract the cpio archives with the command "cpio -idmv < <filename>"
+ 
+            cpio -idmv < 10201_database_linux_x86_64.cpio
+
+
+            ALTERNATELY:
+            
+                To extract make a tempdir to be safe, cd into it and then "zcat /path/to/name.cpio.gz | cpio -idv".
+
+                To compress (asserting you're in the tempdir) "find ../tempdir | cpio -o | gzip > /path/to/newname.cpio.gz"
+
+                If you need full path names or none play with the "find ../tempdir" path part or look in cpio's man page.
+
+        3.
+        
+        ll database/stage/Components/oracle.rdbms.oci/10.2.0.1.0/1/DataFiles/include.jar
+        ll database/stage/Components/oracle.rsf.rdbms_rsf/10.2.0.1.0/1/DataFiles/lib.jar
+        ll database/stage/Components/oracle.rdbms/10.2.0.1.0/1/DataFiles/lib.jar
+        ll database/stage/Components/oracle.rsf.clntsh_rsf/10.2.0.1.0/1/DataFiles/lib.jar 
+
+
+
+        THE 32-64bit VERSION DOES NOT HAVE THE ABOVE FILES...
+
+
+
+
+
+
+
+
+
+        4. INSTALL ONLY A PORTION OF ORACLE - ENOUGH TO INSTALL DBD::Oracle
+        
+        Once the cpio-archive is unpacked, you'll have many files jar files in a
+        directory tree in the directory Disk1. The Oracle installer is a Java
+        application that works itself through all Java packages installing
+        whatever necessary on the way. Fortunately, the files necessary to
+        compile DBD can easy extracted with a normal unzip from these archives:
+        
+        MAKE THE ORACLE_HOME DIRECTORY
+        
+        mkdir /home/syoung/oracle
+
+        COPY AND UNZIP .jar FILES IN ORACLE_HOME DIRECTORY
+        
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rdbms.oci/10.1.0.3.0/1/DataFiles/include.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip include.jar
+
+        [syoung@solexa01 oracle]$ ll
+            total 5.2M
+            drwxr-xr-x  5 syoung users 4.0K Jul 25 20:08 .
+            drwxr-x--- 13 syoung users 4.0K Jul 25 20:02 ..
+            -rwxr-xr-x  1 syoung users 249K Jul 25 20:04 include.jar
+            -rwxr-xr-x  1 syoung users 4.8M Jul 25 20:07 lib.jar
+            drwxr-xr-x  6 syoung users 4.0K Jul 25 20:08 rdbms
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rsf.rdbms_rsf/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+        [syoung@solexa01 oracle]$ ll
+            total 5.2M
+            drwxr-xr-x  5 syoung users 4.0K Jul 25 20:08 .
+            drwxr-x--- 13 syoung users 4.0K Jul 25 20:02 ..
+            -rwxr-xr-x  1 syoung users 249K Jul 25 20:04 include.jar
+            drwxr-xr-x  2 syoung users 4.0K Jul 25 20:08 jlib
+            drwxr-xr-x  2 syoung users 4.0K Jul 25 20:08 lib
+            -rwxr-xr-x  1 syoung users 4.8M Jul 25 20:07 lib.jar
+            drwxr-xr-x  6 syoung users 4.0K Jul 25 20:08 rdbms
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rdbms/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+
+        #### COULD NOT FIND oracle.rdbms DIRECTORY
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rsf.clntsh_rsf/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+
+        NB: COPIES OVER EXISTING DIRECTORY
+        
+            
+            [syoung@solexa01 oracle]$         unzip lib.jar
+            Archive:  lib.jar
+            replace lib/libagent10.a? [y]es, [n]o, [A]ll, [N]one, [r]ename: A
+              inflating: lib/libagent10.a        
+              inflating: lib/libskgxpu.a         
+              inflating: lib/libskgxpu.so        
+              inflating: rdbms/lib/wpspldrv.o    
+              inflating: lib/libclient10.a       
+              inflating: lib/libcommon10.a       
+              inflating: lib/libgeneric10.a      
+              inflating: lib/libmm.a             
+              inflating: rdbms/lib/kpudfo.o      
+              inflating: rdbms/lib/kpundf.o      
+              inflating: rdbms/lib/xaonsl.o      
+              inflating: rdbms/lib/xaondy.o      
+              inflating: rdbms/lib/defopt.o      
+              inflating: rdbms/lib/ins_rdbms.mk  
+              inflating: rdbms/lib/env_rdbms.mk  
+              inflating: lib/libskgxpd.so        
+              inflating: lib/libskgxpd.a         
+              inflating: lib/libskgxp10.so       
+              inflating: lib/libskgxp10.a        
+              inflating: rdbms/lib/kgupc.o       
+              inflating: rdbms/lib/kgutc.o       
+              inflating: rdbms/jlib/qsma.jar     
+              inflating: jlib/opm.jar            
+              inflating: lib/libnnetd10.a        
+              inflating: lib/libnnet10.a         
+              inflating: rdbms/lib/sjsex.o       
+              inflating: lib/libxdb.so           
+              inflating: rdbms/jlib/xdb.jar      
+              inflating: rdbms/lib/genezi.o      
+              inflating: rdbms/public/xa.h
+              
+
+        
+        5. INSTALL DBD::Oracle
+        
+        export ORACLE_HOME=/home/syoung/oracle
+        echo $ORACLE_HOME
+            /home/syoung/oracle
+
+
+        cd /home/syoung/SNP.orientation/DBD-Oracle-1.21
+        perl Makefile.PL
+
+        OK
+        
+        make
+        
+            ERROR: i386 architecture of input file `/home/syoung/oracle/rdbms/lib/defopt.o' is incompatible with i386:x86-64 output
+
+        
+        
+        
+              
+        #4. CONNECT USING xAXE
+        #
+        #    Start X-session, rightclick icon in taskbar --> Run --> Telnet, select SSH2
+
+
+        #4. SET ENVIRONMENT VARIABLES AND GO
+        #
+        #   DISPLAY=192.168.1.128:0.0; export DISPLAY
+        #   echo $DISPLAY
+        #       192.168.1.128:0.0
+        #
+        #    xclock
+        #        Error: Can't open display: 192.168.1.128:0.0
+        #
+        #
+        #    I often run into this when I forget to install xorg-x11-xauth on the
+        #    server. I'd suggest you check that with 'rpmquery xorg-x11-xauth' and
+        #    otherwise install it, then try a new ssh -Y login
+        #
+        #        [root@solexa01 Disk1]# rpmquery xorg-x11-xauth
+        #        xorg-x11-xauth-1.0.1-2.1
+
+
+    
+        #5. GO TO UNZIPPED ORACLE INSTALL DIRECTORY
+        #
+        #cd /store/home/syoung/oracle/Disk1
+        #./runInstaller -ignoreSysPrereqs   
+        #
+        #GIVES JAVA ERROR AND FAILS TO OPEN X-WINDOW
+        
+        
+
+4. INSTALL DBD::Oracle
+
+DOWNLOAD AND UNTAR DBD-Oracle-1.21.tar.gz
+
+SET ORACLE_HOME ENVIRONMENT VARIABLE
+
+export ORACLE_HOME=/store/home/syoung/SNP.orientation/DBD-Oracle-1.21
+
+
+
+desc all_tables
+
+    IOT_NAME                                           VARCHAR2(30)
+    PCT_FREE                                           NUMBER
+    PCT_USED                                           NUMBER
+    INI_TRANS                                          NUMBER
+    MAX_TRANS                                          NUMBER
+    INITIAL_EXTENT                                     NUMBER
+    NEXT_EXTENT                                        NUMBER
+    MIN_EXTENTS                                        NUMBER
+    MAX_EXTENTS                                        NUMBER
+    PCT_INCREASE                                       NUMBER
+    FREELISTS                                          NUMBER
+    FREELIST_GROUPS                                    NUMBER
+    LOGGING                                            VARCHAR2(3)
+    BACKED_UP                                          VARCHAR2(1)
+    NUM_ROWS                                           NUMBER
+    BLOCKS                                             NUMBER
+    EMPTY_BLOCKS                                       NUMBER
+    AVG_SPACE                                          NUMBER
+    CHAIN_CNT                                          NUMBER
+    AVG_ROW_LEN                                        NUMBER
+    AVG_SPACE_FREELIST_BLOCKS                          NUMBER
+    NUM_FREELIST_BLOCKS                                NUMBER
+    DEGREE                                             VARCHAR2(10)
+    INSTANCES                                          VARCHAR2(10)
+    CACHE                                              VARCHAR2(5)
+    TABLE_LOCK                                         VARCHAR2(8)
+    SAMPLE_SIZE                                        NUMBER
+    LAST_ANALYZED                                      DATE
+    PARTITIONED                                        VARCHAR2(3)
+    IOT_TYPE                                           VARCHAR2(12)
+    TEMPORARY                                          VARCHAR2(1)
+    SECONDARY                                          VARCHAR2(1)
+    NESTED                                             VARCHAR2(3)
+    BUFFER_POOL                                        VARCHAR2(7)
+    ROW_MOVEMENT                                       VARCHAR2(8)
+    GLOBAL_STATS                                       VARCHAR2(3)
+    USER_STATS                                         VARCHAR2(3)
+    DURATION                                           VARCHAR2(15)
+    SKIP_CORRUPT                                       VARCHAR2(8)
+    MONITORING                                         VARCHAR2(3)
+    CLUSTER_OWNER                                      VARCHAR2(30)
+    DEPENDENCIES                                       VARCHAR2(8)
+    COMPRESSION                                        VARCHAR2(8)
+
+
+select table_name_2 from all_tables;
+
+
+desc bio_info;
+
+

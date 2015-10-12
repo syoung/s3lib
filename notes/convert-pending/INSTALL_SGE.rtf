@@ -1,0 +1,511 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf100
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fswiss\fcharset77 Helvetica-Oblique;
+}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww13820\viewh18880\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+
+
+SET PORTS\
+# SUN GRID ENGINE REQUIRED ENTRIES\
+sge_commd 700/tcp       # sge, grid engine 5.3 variants\
+sge_qmaster 701/tcp     # necessary for sge 6.0-beta\
+sge_execd 702/tcp       # necessary for sge 6.0-beta\
+
+
+\f0\fs28 \cf0 INSTALL_SGE\
+============\
+\
+1. DOWNLOAD FROM:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 http://gridengine.sunsource.net/project/gridengine/23o701rb60.html\
+
+\fs28 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 BOTH THE BINARY AND THE common FILES\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\fs24 \cf0 http://gridengine.sunsource.net/download/SGE60/sge-6.0u4-common.tar.gz
+\fs28 \
+
+\fs24 http://gridengine.sunsource.net/download/SGE60/sge-6.0u4-bin-darwin.tar.gz\
+
+\fs28 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 tar xvfz 
+\fs24 sge-6.0u4-common.tar.gz
+\fs28 \
+tar xvfz 
+\fs24 sge-6.0u4-bin-darwin.tar.gz
+\fs28 \
+\
+2. START THE BERKELEY DB SERVER:\
+/Users/douglascrawford/apps/berkeleydb/db-4.3.28/build_unix/berkeley_db_svc\
+\
+cd 
+\fs24 sge-6.0u4-bin-darwin\
+./inst_sge -db # THIS INSTALLS THE BERKELEY DB \
+\
+ \
+
+\fs28 3. INSTALL SGE:\
+sudo ./inst_sge\
+\
+CHOOSE TO INSTALL AS gridman:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+Do you want to install Grid Engine as admin user >gridman< (y/n) [y] >> y\
+
+\f1\b \
+(NOTE: The daemons still have to be started by user >root<)\
+
+\f0\b0 \
+INSTALLS   \
+sge_qmaster - for communication with Grid Engine.\
+sge_execd - for communication with Grid Engine.\
+\
+Enter cell name [default] >> crawfordlab\
+\
+[/Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/qmaster]\
+will be used as qmaster spool directory by default!\
+Do you want to select another qmaster spool directory (y/n) [n] >> n\
+\
+[/Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/qmaster]\
+will be used as qmaster spool directory by default!\
+Do you want to select another qmaster spool directory (y/n) [n] >> n\
+\
+(The qmaster spool directory is the place where the qmaster daemon stores\
+the configuration and the state of the queuing system. The admin user >gridman< \
+must have read/write access to the qmaster spool directory. \
+\
+
+\f1\b If you will install shadow master hosts
+\f0\b0  or if you want to be able to start\
+the qmaster daemon on other hosts (see the corresponding sectionin the\
+Grid Engine Installation and Administration Manual for details) 
+\f1\b the account\
+on the shadow master hosts also needs read/write access to this directory.\
+
+\f0\b0 )\
+\
+Are you going to install Windows Execution Hosts? (y/n) [n] >> y\
+\
+Did you install this version with >pkgadd< or did you already\
+verify and set the file permissions of your distribution (enter: y)\
+\
+In some cases, eg: the binaries are stored on a NTFS or on any other\
+filesystem, which provides additional file permissions, the UNIX file\
+permissions can be wrong. In this case we would advise to verfiy and\
+to set the file permissions (enter: n) (y/n) [n] >> n\
+\
+Do you want to verify and set your file permissions (y/n) [y] >> y\
+\
+Are all hosts of your cluster in a single DNS domain (y/n) [y] >> y\
+\
+creating directory: crawfordlab\
+creating directory: crawfordlab/common\
+creating directory: /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/qmaster\
+creating directory: /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/qmaster/job_scripts\
+Hit <RETURN> to continue >>\
+\
+CHOICE A (RECOMMENDED)\
+Do you want to use a Berkeley DB Spooling Server? (y/n) [n] >> n\
+Please enter the Database Directory now, even if you want to spool locally,\
+it is necessary to enter this Database Directory. \
+\
+Default: [/Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/spooldb] >> \
+\
++++++++++++++++\
+CHOICE B (HASSLE BUT CAN USE SHADOW MASTER):\
+\
+Do you want to use a Berkeley DB Spooling Server? (y/n) [n] >> y\
+Please choose a spooling method (berkeleydb|classic) [berkeleydb] >> berkeleydb\
+Please enter the name of your Berkeley DB Spooling Server! >> dlc-mac.rsmas.miami.edu\
+\
+Default: [/Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spooldb] >> \
+Dumping bootstrapping information\
+Initializing spooling database\
+\
+critical error: cannot startup spooling context\
+error: couldn't set rpc server in database environment: (-30993) DB_NOSERVER: Fatal error, no RPC server\
+error: startup of rule "default rule" in context "berkeleydb spooling" failed\
+error: couldn't set rpc server in database environment: (-30993) DB_NOSERVER: Fatal error, no RPC server\
+error: trigger function of rule "default rule" in context "berkeleydb spooling" failed\
+error: no connection open to berkeley database "dlc-mac.rsmas.miami.edu:spooldb"\
+error: shutdown of rule "default rule" in context "berkeleydb spooling" failed\
+\
+Command failed: ./utilbin/darwin/spoolinit berkeleydb libspoolb dlc-mac.rsmas.miami.edu:spooldb init\
+\
+Probably a permission problem. Please check file access permissions.\
+Check read/write permission. Check if SGE daemons are running.\
+\
+TRIED STARTING THE SGE DB SERVER:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\fs26 \cf0 /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/common/sgebdb start\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\fs28 \cf0 ++++++++++++++\
+\
+Grid Engine group id range\
+Please enter a range >> 20000-20100\
+\
+(The range must be big enough to provide enough numbers for the maximum number\
+of Grid Engine jobs running at a single moment on a single host. E.g. a range\
+like >20000-20100< means, that Grid Engine will use the group ids from\
+20000-20100 and provides a range for 100 Grid Engine jobs at the same time\
+on a single host. 
+\f1\b You can change at any time the group id range in your cluster configuration.
+\f0\b0 )\
+\
+<administrator_mail>\
+The email address of the administrator to whom problem reports are sent.\
+Default: [none] >> spyoung2@ncsu.edu\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 The following parameters for the cluster configuration were configured:\
+   execd_spool_dir        /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool\
+   administrator_mail     spyoung2@ncsu.edu\
+Do you want to change the configuration parameters (y/n) [n] >> n\
+\
+
+\fs24 Creating CA certificate and private key\
+---------------------------------------\
+Please give some basic parameters to create the distinguished name (DN)\
+for the certificates.\
+\
+We will ask for\
+   - the two letter country code\
+   - the state\
+   - the location, e.g city or your buildingcode\
+   - the organization (e.g. your company name)\
+   - the organizational unit, e.g. your department\
+   - the email address of the CA administrator (you!)
+\fs28 \
+\
+\
+Hit <RETURN> to continue >> \
+\
+Please enter your two letter country code, e.g. 'US' >> US\
+Please enter your state >> FL\
+Please enter your location, e.g city or buildingcode >> Key Biscayne\
+Please enter the name of your organization >> RSMAS\
+Please enter your organizational unit, e.g. your department >> Crawford Lab\
+Please enter the email address of the CA administrator >> spyoung2@ncsu.edu\
+\
+Do you want to use these data (y/n) [y] >> y   \
+\
+
+\f2\i\fs24 Creating RANDFILE from '/dev/urandom' in '/var/sgeCA/sge_qmaster/crawfordlab/private/rand.seed'\
+2048 semi-random bytes loaded\
+Creating CA certificate and private key\
+Generating a 1024 bit RSA private key\
+..++++++\
+........++++++\
+writing new private key to '/var/sgeCA/sge_qmaster/crawfordlab/private/cakey.pem'\
+-----\
+\
+\
+Creating 'SGE Daemon' certificate and key\
+-----------------------------------------\
+Creating RANDFILE from '/dev/urandom' in '/var/sgeCA/sge_qmaster/crawfordlab/private/rand.seed'\
+2048 semi-random bytes loaded\
+Generating a 1024 bit RSA private key\
+.++++++\
+.......................................................................................................++++++\
+writing new private key to '/var/sgeCA/sge_qmaster/crawfordlab/private/key.pem'\
+-----\
+Using configuration from /tmp/sge_ca17904.tmp\
+Check that the request matches the signature\
+Signature ok\
+The Subject's Distinguished Name is as follows\
+countryName           :PRINTABLE:'US'\
+stateOrProvinceName   :PRINTABLE:'FL'\
+localityName          :PRINTABLE:'Key Biscayne'\
+organizationName      :PRINTABLE:'RSMAS'\
+organizationalUnitName:PRINTABLE:'Crawford Lab'\
+userId                :PRINTABLE:'root'\
+commonName            :PRINTABLE:'SGE Daemon'\
+emailAddress          :IA5STRING:'none'\
+Certificate is to be certified until Jul 21 00:58:05 2006 GMT (365 days)\
+\
+Write out database with 1 new entries\
+Data Base Updated\
+created and signed certificate for SGE daemons\
+\
+
+Creating 'SGE install user' certificate and key\
+-----------------------------------------------\
+Creating RANDFILE from '/dev/urandom' in '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/root/rand.seed'\
+2048 semi-random bytes loaded\
+Generating a 1024 bit RSA private key\
+..++++++\
+.................................++++++\
+writing new private key to '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/root/key.pem'\
+-----\
+Using configuration from /tmp/sge_ca17904.tmp\
+DEBUG[load_index]: unique_subject = "yes"\
+Check that the request matches the signature\
+Signature ok\
+The Subject's Distinguished Name is as follows\
+countryName           :PRINTABLE:'US'\
+stateOrProvinceName   :PRINTABLE:'FL'\
+localityName          :PRINTABLE:'Key Biscayne'\
+organizationName      :PRINTABLE:'RSMAS'\
+organizationalUnitName:PRINTABLE:'Crawford Lab'\
+userId                :PRINTABLE:'root'\
+commonName            :PRINTABLE:'SGE install user'\
+emailAddress          :IA5STRING:'none'\
+Certificate is to be certified until Jul 21 00:58:07 2006 GMT (365 days)\
+\
+Write out database with 1 new entries\
+Data Base Updated\
+created and signed certificate for user 'root' in '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/root'\
+\
+Creating 'SGE admin user' certificate and key\
+---------------------------------------------\
+Creating RANDFILE from '/dev/urandom' in '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/gridman/rand.seed'\
+2048 semi-random bytes loaded\
+Generating a 1024 bit RSA private key\
+.........................................................++++++\
+..........++++++\
+writing new private key to '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/gridman/key.pem'\
+-----\
+Using configuration from /tmp/sge_ca17904.tmp\
+DEBUG[load_index]: unique_subject = "yes"\
+Check that the request matches the signature\
+Signature ok\
+The Subject's Distinguished Name is as follows\
+countryName           :PRINTABLE:'US'\
+stateOrProvinceName   :PRINTABLE:'FL'\
+localityName          :PRINTABLE:'Key Biscayne'\
+organizationName      :PRINTABLE:'RSMAS'\
+organizationalUnitName:PRINTABLE:'Crawford Lab'\
+userId                :PRINTABLE:'gridman'\
+commonName            :PRINTABLE:'SGE admin user'\
+emailAddress          :IA5STRING:'none'\
+Certificate is to be certified until Jul 21 00:58:09 2006 GMT (365 days)\
+\
+Write out database with 1 new entries\
+Data Base Updated\
+created and signed certificate for user 'gridman' in '/var/sgeCA/sge_qmaster/crawfordlab/userkeys/gridman'\
+
+\f0\i0\fs28 \
+\
+qmaster/scheduler startup script\
+--------------------------------\
+\
+We can install the startup script that will\
+start qmaster/scheduler at machine boot (y/n) [y] >> y\
+\
+Grid Engine qmaster and scheduler startup\
+-----------------------------------------\
+\
+Starting qmaster and scheduler daemon. Please wait ...\
+   starting sge_qmaster\
+   starting sge_schedd\
+Hit <RETURN> to continue >> \
+\
+\
+Windows Administrator Name\
+--------------------------\
+\
+For a later execution host installation it is recommended to add the\
+Windows Administrator name to the SGE manager list\
+\
+Please, enter the Windows Administrator name [Default: Administrator] >> \
+root@dlc-mac.rsmas.miami.edu added "Administrator" to manager list\
+Hit <RETURN> to continue >> \
+\
+\
+\
+\
+\
+Adding admin and submit hosts\
+-----------------------------\
+\
+Please enter a blank seperated list of hosts.\
+\
+Stop by entering <RETURN>. You may repeat this step until you are\
+entering an empty list. You will see messages from Grid Engine\
+when the hosts are added.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+Host(s): dlc-genomics.rsmas.miami.edu dlcg4.rsmas.miami.edu dlc-scanarray.rsmas.miami.edu\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 dlc-genomics.rsmas.miami.edu added to administrative host list\
+dlc-genomics.rsmas.miami.edu added to submit host list\
+dlcg4.rsmas.miami.edu added to administrative host list\
+dlcg4.rsmas.miami.edu added to submit host list\
+dlc-scanarray.rsmas.miami.edu added to administrative host list\
+dlc-scanarray.rsmas.miami.edu added to submit host list\
+Host(s): \
+Finished adding hosts. Hit <RETURN> to continue >> \
+\
+\
+If you want to use a shadow host, it is recommended to add this host\
+to the list of administrative hosts.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f1\b \cf0 If you are not sure, it is also possible to add or remove hosts after the\
+installation with <qconf -ah hostname> for adding and <qconf -dh hostname>\
+for removing this host\
+Attention: This is not the shadow host installationprocedure.\
+You still have to install the shadow host separately\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\b0 \cf0 Do you want to add your shadow host(s) now? (y/n) [y] >> n\
+\
+Creating the default <all.q> queue and <allhosts> hostgroup\
+-----------------------------------------------------------\
+\
+root@dlc-mac.rsmas.miami.edu added "@allhosts" to host group list\
+root@dlc-mac.rsmas.miami.edu added "all.q" to cluster queue list\
+\
+Hit <RETURN> to continue >> \
+\
+\
+Scheduler Tuning\
+----------------\
+\
+The details on the different options are described in the manual. \
+\
+Configurations\
+--------------\
+1) Normal\
+          Fixed interval scheduling, report scheduling information,\
+          actual + assumed load\
+\
+2) High\
+          Fixed interval scheduling, report limited scheduling information,\
+          actual load\
+\
+3) Max\
+          Immediate Scheduling, report no scheduling information,\
+          actual load\
+\
+Enter the number of your prefered configuration and hit <RETURN>! \
+Default configuration is [1] >> 2\
+\
+We're configuring the scheduler with >High< settings!\
+Do you agree? (y/n) [y] >> y\
+\
+\
+\
+sing Grid Engine\
+-----------------\
+\
+You should now enter the command:\
+\
+   source /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/common/settings.csh\
+\
+if you are a csh/tcsh user or\
+\
+   # . /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/common/settings.sh\
+\
+if you are a sh/ksh user.\
+\
+This will set or expand the following environment variables:\
+\
+   - $SGE_ROOT         (always necessary)\
+   - $SGE_CELL         (if you are using a cell other than >default<)\
+   - $SGE_QMASTER_PORT (if you haven't added the service >sge_qmaster<)\
+   - $SGE_EXECD_PORT   (if you haven't added the service >sge_execd<)\
+   - $PATH/$path       (to find the Grid Engine binaries)\
+   - $MANPATH          (to access the manual pages)\
+\
+Hit <RETURN> to see where Grid Engine logs messages >> \
+\
+\
+Grid Engine messages\
+--------------------\
+\
+Grid Engine messages can be found at:\
+\
+   /tmp/qmaster_messages (during qmaster startup)\
+   /tmp/execd_messages   (during execution daemon startup)\
+\
+After startup the daemons log their messages in their spool directories.\
+\
+   Qmaster:     /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/spool/qmaster/messages\
+   Exec daemon: <execd_spool_dir>/<hostname>/messages\
+\
+\
+Grid Engine startup scripts\
+---------------------------\
+\
+Grid Engine startup scripts can be found at:\
+\
+   /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/common/sgemaster (qmaster and scheduler)\
+   /Users/douglascrawford/apps/gridengine/sge6.04/crawfordlab/common/sgeexecd (execd)\
+\
+Do you want to see previous screen about using Grid Engine again (y/n) [n] >> \
+\
+\
+Your Grid Engine qmaster installation is now completed\
+------------------------------------------------------\
+\
+Please now login to all hosts where you want to run an execution daemon\
+and start the execution host installation procedure.\
+\
+If you want to run an execution daemon on this host, please do not forget\
+to make the execution host installation in this host as well.\
+\
+All execution hosts must be administrative hosts during the installation.\
+All hosts which you added to the list of administrative hosts during this\
+installation procedure can now be installed.\
+\
+You may verify your administrative hosts with the command\
+\
+   # qconf -sh\
+\
+and you may add new administrative hosts with the command\
+\
+   # qconf -ah <hostname>\
+\
+Please hit <RETURN> >> \
+dlc-mac:~/apps/gridengine/sge6.04 douglascrawford$ \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+4. ADD TO CRONTAB OF gridman USER :\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 crontab -u gridman -e\
+\
+* * * * * /Users/douglascrawford/apps/gridengine/sge6.04/util/bdb_checkpoint.sh\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+(AFTER INSTALLATION, THIS MESSAGE APPEARS:\
+If you are using a Berkely DB Server, please add the script to your crontab. This script is used for transaction checkpointing and cleanup in SGE installations with a\
+Berkeley DB RPC Server. You will find this script in:\
+/Users/douglascrawford/apps/gridengine/sge6.04/util/\
+\
+It must be added to the crontab of the user (gridman), who runs the\
+berkeley_db_svc on the server host. \
+e.g. \
+* * * * * <full path to scripts> <sge-root dir> <sge-cell> <bdb-dir>\
+)\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
+\
+}

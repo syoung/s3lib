@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns:app="http://www.appcelerator.org" xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+
+  <title>Skribit Blog Widget</title>
+  <noscript><meta http-equiv="Refresh" content="0;upgrade_script.html"/></noscript>
+  <script src="widget_data/appcelerator.js" type="text/javascript"></script>
+  <script src="widget_data/widget.js" type="text/javascript"></script>
+
+  <link href="widget_data/widget.css" media="screen" rel="stylesheet" type="text/css">
+<script src="widget_data/app_iterator.js" type="text/javascript"></script><script src="widget_data/app_statemachine.js" type="text/javascript"></script><script src="widget_data/app_script.js" type="text/javascript"></script><script src="widget_data/app_message.js" type="text/javascript"></script><link href="widget_data/styles.css" media="screen" rel="stylesheet" type="text/css"></head><div methodName="info" FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body id="app_body" style="visibility: visible;" on="l:app.compiled then visible and script[Skribit.loadStyle()]">
+<div id="container">
+  <div id="header" on="click then l:suggest if expr[$('articles').visible()] or 
+      click then l:article.list if expr[!$('articles').visible()]">
+    <span id="app_0" on="l:articles.fetch.response[success=true] then value[header_text]">What do you want IT<br> to blog about?</span>
+    <div id="header_indicator" style="display: none;" on="indicator[on] then show else hide"></div>
+  </div>
+  
+  <div id="message" style="display: none;" on="l:message.show then effect[blind-down]
+          or l:message.show then effect[blind-up] after 5s
+          or click then effect[blind-up] after 1s">
+    <div id="app_1" on="l:message.show then value[message]"></div>
+  </div>
+
+  <div id="body">
+    <!-- SUGGESTION LIST -->
+    <div id="articles" on="mainwindow[list] then show else hide">
+      <div id="app_2" style="margin: 0pt; padding: 0pt;">        <div id="app_75" class="article_container">          <div id="app_76" class="article row_even">            <div id="app_77" class="vote_false" on="click then r:suggestion.vote.request[blog_id=$blogid,suggestion_id='1674']                    or r:suggestion.vote.response[success=true,suggestion_id=1674] then set[class=vote_true]">            </div>            <a id="app_78" class="title" title="Submitted by amitry" href="http://skribit.com/suggestions/best-practices-when-using-media-in-drupal" target="_BLANK">Best practices when using media in Drupal.</a>            <div id="app_79" class="clear"></div>          </div>        </div>              <div id="app_80" class="article_container">          <div id="app_81" class="article row_odd">            <div id="app_82" class="vote_false" on="click then r:suggestion.vote.request[blog_id=$blogid,suggestion_id='3678']                    or r:suggestion.vote.response[success=true,suggestion_id=3678] then set[class=vote_true]">            </div>            <a id="app_83" class="title" title="Submitted by anonymous" href="http://skribit.com/suggestions/drupal-cck-for-dummies" target="_BLANK">Drupal CCK for dummies.</a>            <div id="app_84" class="clear"></div>          </div>        </div>              <div id="app_85" class="article_container">          <div id="app_86" class="article row_even">            <div id="app_87" class="vote_false" on="click then r:suggestion.vote.request[blog_id=$blogid,suggestion_id='1766']                    or r:suggestion.vote.response[success=true,suggestion_id=1766] then set[class=vote_true]">            </div>            <a id="app_88" class="title" title="Submitted by flickerfly" href="http://skribit.com/suggestions/merging-blogs-as-discussed-on-gg-episode-84-fshbwl-case-study" target="_BLANK">merging blogs as discussed on G&amp;G episode 84 (fshbwl case study)</a>            <div id="app_89" class="clear"></div>          </div>        </div>              <div id="app_90" class="article_container">          <div id="app_91" class="article row_odd">            <div id="app_92" class="vote_false" on="click then r:suggestion.vote.request[blog_id=$blogid,suggestion_id='1491']                    or r:suggestion.vote.response[success=true,suggestion_id=1491] then set[class=vote_true]">            </div>            <a id="app_93" class="title" title="Submitted by anonymous" href="http://skribit.com/suggestions/how-can-you-create-skribit-with-drupal" target="_BLANK">How can you create skribit with drupal</a>            <div id="app_94" class="clear"></div>          </div>        </div>              <div id="app_95" class="article_container">          <div id="app_96" class="article row_even">            <div id="app_97" class="vote_false" on="click then r:suggestion.vote.request[blog_id=$blogid,suggestion_id='9035']                    or r:suggestion.vote.response[success=true,suggestion_id=9035] then set[class=vote_true]">            </div>            <a id="app_98" class="title" title="Submitted by kepford" href="http://skribit.com/suggestions/jquery-beautytips-plugin-how-can-i-get-this-to-work-in-ie-explorercanvas-is-not-working" target="_BLANK">jQuery BeautyTips Plugin. How can I get this to work in IE? ExplorerCanvas is not working.</a>            <div id="app_99" class="clear"></div>          </div>        </div>      </div>
+      <div id="app_3" class="footer">
+        <a id="app_4" href="http://skribit.com/signup" target="_BLANK">Get Skribit</a> |
+        <a id="app_5" on="l:moreLink.update then value[label] or l:articles.fetch.response[success=true] then set[href=profile_url]" href="http://skribit.com/blogs/innovating-tomorrow" target="_BLANK">5 of 7 suggestions</a>
+      </div>
+    </div>
+    <!-- LOGIN FORM -->
+    <div id="app_6" on="mainwindow[login] then show else hide" style="display: none;">
+      <form id="app_7" on="mainwindow[login] then clear or r:login.response[success=true] then clear" onsubmit="return false;">
+      <ul id="app_8">
+        <li id="app_9">
+          <label id="app_10" for="login_username">Login:</label>
+          <div id="app_11"><div id="app_12" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Username</div><input autocomplete="off" class="text" value="" id="login_username" validator="required" name="username" fieldset="login" type="text"></div>
+        </li>
+        <li id="app_13">
+          <div id="app_14"><div id="app_15" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Password</div><input autocomplete="off" class="text" value="" id="login_password" validator="required" name="password" fieldset="login" type="password"></div>
+        </li>
+        <li id="app_16" class="buttons">
+          <input autocomplete="off" disabled="disabled" id="app_17" value="Login" fieldset="login" on="click then r:login.request" activators="login_username,login_password" type="button">
+          or <a id="app_18" href="javascript:void(0);" on="click then l:screen.register">Sign Up</a>
+        </li>
+        <li id="app_19" class="note" on="mainwindow[login] then hide if expr[!Skribit.allowAnonymous]
+            or mainwindow[login] then show if expr[Skribit.allowAnonymous]">
+          <a id="app_20" href="javascript:void(0);" on="click then l:screen.suggest">No thanks, I'll post anonymously</a>
+        </li>
+      </ul>
+      </form>
+    </div>
+    <!-- REGISTER FORM -->
+    <div id="app_21" on="mainwindow[register] then show else hide" style="display: none;">
+      <form id="app_22" on="mainwindow[register] then clear or r:registration.response[sucess=true] then clear" onsubmit="return false;">
+        <ul id="app_23">
+          <li id="app_24">
+            <label id="app_25" for="register_fullname">Sign Up:</label>
+            <div id="app_26"><div id="app_27" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Full Name</div><input autocomplete="off" class="text" value="" id="register_fullname" validator="required" name="fullname" fieldset="register" type="text"></div>
+          </li>
+          <li id="app_28">
+            <div id="app_29"><div id="app_30" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Username</div><input autocomplete="off" class="text" value="" id="register_username" validator="required" validatorminlength="3" validatormaxlength="40" name="username" fieldset="register" type="text"></div>
+          </li>
+          <li id="app_31">
+            <div id="app_32"><div id="app_33" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Email</div><input autocomplete="off" class="text" value="" id="register_email" validator="email" name="email" fieldset="register" type="text"></div>
+          </li>
+          <li id="app_34">
+            <div id="app_35"><div id="app_36" style="font-size: 12px; font-family: Tahoma;" class="input-overlay">Password</div><input autocomplete="off" class="text" value="" id="register_password" validator="length" validatorminlength="4" validatormaxlength="40" name="password" fieldset="register" type="password"></div>
+          </li>
+          <li id="app_37">
+            <label id="app_38" for="register_toc">
+              <input id="register_toc" validator="required" type="checkbox">
+              I agree to <a id="app_39" href="http://skribit.com/static/terms" target="_BLANK">terms and conditions</a>
+            </label>
+          </li>
+          <li id="app_40" class="buttons">
+            <input autocomplete="off" disabled="disabled" id="app_41" value="Sign Up" fieldset="register" on="click then r:registration.request" activators="register_fullname,register_email,register_username,register_password,register_toc" type="button">
+            or <a id="app_42" href="javascript:void(0);" on="click then l:screen.login">Login</a>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <!-- SUGGEST FROM -->
+    <div id="app_43" on="mainwindow[suggest] then show else hide" style="display: none;">
+      <form id="app_44" on="r:suggestion.submit.request then disable
+          or r:suggestion.submit.response then enable and script[Skribit.suggestionBox.reset()]
+          or mainwindow[suggest] then script[Skribit.suggestionBox.reset()]" onsubmit="return false;">
+        <ul id="app_45">
+          <li id="app_46">
+            <div style="visibility: hidden;" id="topic-status">100</div>
+            <div id="app_47"><div id="app_48" style="font-size: 16px; font-family: Tahoma;" class="input-overlay">Your suggestion in 100 characters or less</div><textarea autocomplete="off" rows="3" id="topic" validator="required" fieldset="suggestion" name="title"></textarea></div>
+          </li>
+          <li id="buttons">
+            <input autocomplete="off" id="post_button" disabled="disabled" activators="topic" value="Submit" fieldset="suggestion" on="click then r:suggestion.submit.request[blogid=$blogid] or l:show.post.button then show or
+                    l:hide.post.button then hide or r:logout.response then disable" type="button">
+          </li>
+          <li id="app_49" class="note">
+            <div id="app_50" on="logged[out] then show else hide">
+              Your post will be anonymous<br id="app_51"> until you
+              <a id="app_52" href="javascript:void(0);" on="click then l:screen.register">sign up</a>
+              or <a id="app_53" href="javascript:void(0);" on="click then l:screen.login">login</a>.
+            </div>
+            <div style="display: none;" id="app_54" on="logged[in] then show else hide">
+              Welcome back,
+             <span id="app_55" on="l:articles.fetch.response then value[name]
+                 or r:login.response[success=true] then value[username]">Anonymous</span>
+             <div id="app_56"><a id="app_57" href="javascript:void(0);" on="click then r:logout.request">Sign out</a></div>
+            </div>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="banner">
+  <a id="app_58" href="http://skribit.com/" target="_top"></a>
+</div>
+
+<div id="app_59" style="display: none;">
+  <div id="mainwindow" style="margin: 0pt; padding: 0pt;"></div>
+	
+  <div id="logged" style="margin: 0pt; padding: 0pt;"></div>
+	
+  <div id="indicator" style="margin: 0pt; padding: 0pt;"></div>
+  
+  <input value="d4012900d2f8ef27e86227f173db0b14" name="blogid" id="blogid" type="hidden">
+  <input id="logged_hidden" value="out" on="logged[in] then value['in'] or logged[out] then value['out']" type="hidden">
+
+  
+  
+  
+
+  
+	
+  
+  
+  <!-- temporary iphone list workaround, need to fix bug where list width is not maintained on list display toggle -->
+  
+         
+  
+
+  
+      
+  
+      
+  
+  
+  
+
+  
+
+  
+</div>
+
+<script id="app_72" type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script id="app_73" src="widget_data/ga.js" type="text/javascript"></script>
+<script id="app_74" type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-6899477-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body></html>

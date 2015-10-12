@@ -1,0 +1,236 @@
+Notes-apps-genomatix.txt
+
+
+
+
+
+
+FAQ QUESTIONS (ANSWERS BELOW)
+
+1. General questions
+   1. Which elements may be involved in regulation of gene transcription?
+
+2. Promoter identification
+
+   1. How can I identify the promoter sequence of a gene?
+   2. What is the length of a promoter?
+   3. I have the complete coding sequence (CDS) of a gene. Can I use this information to identify the promoter?
+   4. I know that my sequence functions as a promoter, but PromoterInspector does not identify a promoter region in this sequence!
+   5. PromoterInspector predicted a promoter region in my sequence at position 650 to 985. Does this mean that the transcription start site is located at position 985?
+   6. Does PromoterInspector locate known promoter elements like CCAAT and TATA boxes?
+
+3. Genomic mapping and extraction of promoters / genes
+
+   1. I know that my input sequence is from a human gene! Why is there no mapping in ElDorado?
+   2. I get overlapping (+) and (-) strand primary transcripts for my input in ElDorado. How do I know which is the right one?
+   3. I get a perfect mapping of my sequence onto a human chromosome, but why does "Literature based results" only offer information for other genes?
+   4. How can I be sure to get the correct promoter sequences from Gene2Promoter?
+   5. What is the exact meaning of gold, silver, and bronze transcripts?
+   6. Shall I trust an extracted upstream region as a promoter (from a bronze transcript)?
+   7. Gene2Promoter extracts more than one promoter sequence for my input. How can I find out the right one?
+   8. Why did Gene2Promoter extract a promoter of less than 600 bp?
+   9. Why are my ESTs not mapped? Why is no promoter found for my ESTs? They must be within some mRNA!
+
+4. Identification of transcription factor binding sites
+
+   1. How do I search for transcription factor binding sites?
+   2. I have a promoter sequence, but GEMS Launcher did not find the TATA box!
+   3. There is a known transcription factor binding site in my promoter, however, it is not found by GEMS Launcher!
+   4. GEMS Launcher also found transcription factor binding sites on the (-)-strand of my promoter sequence. What is the difference between (+)- and (-)-strand matches?
+   5. GEMS Launcher found a transcription factor binding site with a matrix similarity of 0.81. Is this a good match?
+   6. How are matrix families defined in GEMS Launcher?
+   7. Why are there different matrices for the same factor? Which one should I use?
+   8. What is the difference between core and matrix similarity?
+   9. I have several different binding sites (e.g. footprints, oligos) for a transcription factor. How can I define a pattern description for all these sites?
+  10. How can I identify the functional transcription factor binding sites in a promoter? Are all transcription factor binding sites found by GEMS Launcher functional?
+
+5. Identification of promoter models
+
+   1. What is comparative sequence analysis?
+   2. What can I do with a promoter model?
+   3. I only have a single promoter sequence. How to perform a functional sequence analysis?
+   4. I have a promoter/ a CDS/ expression array data. How to identify other target genes?
+   5. I have a set of co-regulated genes found by expression array data. I have the database accession numbers of all these genes. Can I use these database entries directly for a comparative promoter analysis?
+   6. Is it possible to generate a generic promoter model with GEMS Launcher?
+
+6. Design of mutation experiments
+
+
+
+
+1. General questions
+
+   1. Which elements may be involved in regulation of gene transcription?
+
+      Control of gene transcription is commonly used in biological systems to regulate protein expression. Transcriptional regulation in eukaryotes depends upon a series of complex signal transduction networks that ultimately control gene promoter activity via cis-acting elements like enhancers, matrix attachment regions (MARs), locus control regions (LCRs), and trans-acting elements (transcription factors).
+
+2. Promoter identification
+
+   1. How can I identify the promoter sequence of a gene?
+
+      Polymerase II promoters are generally defined as the region of a few hundred basepairs located directly upstream of the site of initiation of transcription. (More distal regions and parts of the 5' UTR may also contain regulatory elements and may be part of the promoter). Therefore, identification of the transcription start site directly leads to the location of the promoter of a gene.
+          * With access to Genomatix' ElDorado you can directly map an mRNA to the human genome and extract the promoter. The task of promoter extraction is even more convenient with Gene2Promoter if you can provide accession numbers for the mRNA sequences.
+          * The transcription start site can be defined by mapping a 5' full length mRNA/cDNA (including the complete 5' UTR) to the genomic sequence. If both sequences are available in the databases you can use the GEMS Launcher task "Exon mapping" in the category "Analyze your sequences".
+          * The second possibility is to use PromoterInspector, a tool that is able to predict promoter regions in genomic sequences. All promoter regions predicted by PromoterInspector in the complete human genome draft are included in ElDorado
+
+   2. What is the length of a promoter?
+
+      Polymerase II promoters are generally defined as the region of a few hundred basepairs located directly upstream of the site of initiation of transcription. More distal regions and parts of the 5' UTR may also contain regulatory elements and may be part of the promoter. The exact length of a promoter can often only be defined experimentally. However, for an initial in silico analysis it may be sufficient (and also necessary) to restrict the region to about 300 to 1000 bp upstream of the transcription start site.
+
+   3. I have the complete coding sequence (CDS) of a gene. Can I use this information to identify the promoter?
+
+      The start of the CDS only corresponds to the translation start site and gives no hint on the localization of the promoter. Eukaryotic genes usually have 5' untranslated regions (5' UTRs) of variable length in a range of a few base pairs up to several kb. The 5' UTR may be split over several exons. Only the identification of the transcription start site defines the location of the promoter.
+      However, if your gene is annotated within the human genome sequence you can use the CDS nucleotide sequence to map it onto the genome sequence with ElDorado. This will directly provide you with information about a promoter for that gene.
+
+   4. I know that my sequence functions as a promoter, but PromoterInspector does not identify a promoter region in this sequence!
+
+      Genomatix' PromoterInspector is a tool to predict promoter regions in unannotated genomic sequences. PromoterInspector has a high specificity of about 85 %. The sensitivity of PromoterInspector is about 50 % which means that the current version predicts about every second promoter in the genome. Therefore, your promoter may not be found.
+
+   5. PromoterInspector predicted a promoter region in my sequence at position 650 to 985. Does this mean that the transcription start site is located at position 985?
+
+      PromoterInspector predicts the approximate location of a promoter region and not the exact location of the TSS. The predicted regions may contain the promoter or overlap with the promoter. The strand orientation of the predicted promoter region can only be derived from the location of the corresponding gene.
+
+   6. Does PromoterInspector locate known promoter elements like CCAAT and TATA boxes?
+
+      PromoterInspector predicts promoter regions by identification of the conserved promoter context independently of the occurrence of specific elements like CCAAT or TATA boxes.
+
+      To identify transcription factor binding sites in a promoter you can use GEMS Launcher as described in 4.1.
+
+3. Genomic mapping and extraction of promoters / genes
+
+   1. I know that my input sequence is from a human gene! Why is there no mapping in ElDorado?
+
+      There are several reasons why this may occur. Mapping depends on the quality of the input sequence. E.g. EST sequences may pose problems because they are derived from single sequencing runs which may contain sequence errors or artifacts.
+      In addition the assembly and annotation of the human genome is an ongoing process. Your gene may not yet be contained within the currently assembled sequences.
+
+   2. I get overlapping (+) and (-) strand primary transcripts for my input in ElDorado. How do I know which is the right one?
+
+      There are cases where indeed overlapping transcripts exist on both DNA strands. You must have additional knowledge about your input to assign it to a transcript. However, there are also cases where a transcript was mislocated by automated genome annotation. Many of the automated locus annotations (LOC ... entries) still await qualified human review.
+
+   3. I get a perfect mapping of my sequence onto a human chromosome, but why does "Literature based results" only offer information for other genes?
+
+      The ElDorado output gives an overview of the region where a mapping for your input was found. This includes annotated sequences that were found within 5 kb upstream and downstream of the annotated sequence to which the input was mapped. It may be that your input mapped to a provisional gene annotation (i.e. locus ID with LOC... signature) or to a region without annotation with a well annotated gene nearby.
+      ElDorado can provide additional information for the annotated gene but not for a provisional result from automated genome annotation.
+      Generally, it is advisable that before starting additional analysis you go to the ElDorado graphical output and identify your input in that map.
+
+   4. How can I be sure to get the correct promoter sequences from Gene2Promoter?
+
+      This depends on several factors: the current state of the human genome sequence and its annotation, the knowledge about your input sequence, and the quality of your input sequences. If Gene2Promoter finds a promoter for your input it also gives you a quality assessment for it (see question 3.5).
+
+   5. What is the exact meaning of gold, silver, and bronze transcripts?
+
+      gold = experimentally verified (transcript derived from mapping of full length cDNAs)
+      silver = supported by PromoterInspector prediction at the 5' end of the transcript
+      bronze = transcripts without additional evidence for their completeness
+
+   6. Shall I trust an extracted upstream region as a promoter (from a bronze transcript)?
+
+      This is up to you and your knowledge about the mapped mRNA. The crucial question is whether the underlying cDNA sequence is 5' complete. Many entries in EMBL/GenBank only focus on coding regions and are probably 5' incomplete.
+
+   7. Gene2Promoter extracts more than one promoter sequence for my input. How can I find out the right one?
+
+      This depends on your knowledge about the mapped input sequence. If you map a known gene you almost always should find the gene name in the output. If you used an unknown sequence fragment first look for named genes in the output and see how those genes fit to your initial questions or experimental conditions. The Gene2Promoter output has links to ElDorado where you can get an overview and additional information of the loci where your input was mapped.
+
+   8. Why did Gene2Promoter extract a promoter of less than 600 bp?
+
+      The sequencing of the human genome is not yet complete. There are still gaps within the assembled sequences which are annotated as runs of 100 Ns. Gene2Promoter avoids extracting those runs of Ns and only extracts putative promoters up to that point. You also should get a warning telling you that promoter extraction was incomplete.
+
+   9. Why are my ESTs not mapped? Why is no promoter found for my ESTs? They must be within some mRNA!
+
+      ESTs are derived from mRNAs. However, ESTs are generated by high throughput methods and the sequence information obtained is often erroneous. It may happen that the EST contains too many errors to allow a quality alignment to a genomic sequence. It may also happen that an EST does not overlap with a known annotated transcript. In that case Gene2Promoter cannot extract a promoter.
+
+4. Identification of transcription factor binding sites
+
+   1. How do I search for transcription factor binding sites?
+
+      GEMS Launcher comes with a large library of weight matrices representing transcription factor binding sites which can be searched in DNA sequences. Choose the task "Search for TF sites" in the GEMS Launcher category "Analyze your sequences".
+   2. I have a promoter sequence, but GEMS Launcher did not find the TATA box!
+
+      There are different possibilities:
+          * Only part of the eukaryotic gene promoters contain a TATA box, nearly one half of all known promoters are TATA-less.
+          * The TATA box may be degenerated and is therefore not found when using default matrix thresholds. However, the TATA box may be found using a relaxed matrix similarity (use the interactive mode of GEMS Launcher).
+          * The GEMS Launcher matrix library contains matrices for several subgroups of TATA boxes. There may be no matrix available for the subgroup your TATA box belongs to.
+
+   3. There is a known transcription factor binding site in my promoter, however, it is not found by GEMS Launcher!
+
+          * Check if a weight matrix for your transcription factor binding site is available in the library.
+                o Although the library contains a weight matrix for your transcription factor binding site, the site may not be found when using default matrix thresholds. Try to relax the matrix similarity in the interactive mode of GEMS Launcher.
+                o It is also possible that the known binding site in your promoter is not represented by the matrix. In this case you can use a IUPAC string representing the site using GEMS Launcher task "Scan sequence with IUPAC-patterns" in the category "Analyze your sequences".
+          * Your transcription factor binding site may not be included in the current matrix library. One reason may be that for your factor no DNA binding sites are available, yet, or that a weight matrix does not meet Genomatix' quality standards. However, if you have information about binding sites you can generate a new weight matrix representing your factor using GEMS Launcher task "Definition of weight matrices" in the category "Patterns/libraries".
+
+   4. GEMS Launcher also found transcription factor binding sites on the (-)-strand of my promoter sequence. What is the difference between (+)- and (-)-strand matches?
+
+      Transcription factors usually bind in a defined orientation to the DNA double helix. This orientation depends on the orientation of the DNA sequence they recognize, i.e. their transcription factor binding site. An exception are factors that recognize symmetric or palindromic sites. In this case the factor can bind principally in both orientations.
+
+      Some transcription factor binding sites must have a defined orientation relative to the promoter or the transcription start site, an example is the TATA-box. Most transcription factor binding sites can occur in both orientations in promoters or enhancers.
+
+      Therefore, for the TATA-box only the (+)-strand matches of GEMS Launcher should be considered as true positives (if the strand orientation of the promoter sequence analyzed is known and is in 5'-->3' orientation relative to the gene). For most other transcription factor binding sites both, (+)- and (-)-strand matches of GEMS Launcher should be considered equally.
+
+      In addition, there is a technical aspect that has to be considered. Transcription factor binding sites are represented by weight matrices (or IUPAC strings). Each matrix has a strand orientation which depends on the strand orientation of its training sequences used. Therefore, a matrix match on the (+)-strand only means that the matching sequence has the same strand orientation relative to the training sequences used for the matrix generation (and vice versa).
+
+   5. GEMS Launcher found a transcription factor binding site with a matrix similarity of 0.81. Is this a good match?
+
+      You have to compare the value of 0.81 to the optimized matrix similarity defined for the weight matrix that represents the transcription factor binding site. Highly specific or relatively long (more than 25 bp) matrices usually have a lower value for the optimized matrix similarity (e.g. 0.77) than less specific or shorter matrices (which may have an optimized matrix similarity of e.g. 0.93). Therefore, if your value of 0.81 is higher than the defined optimized matrix similarity you have a good match (and vice versa).
+          * On average, for most matches a matrix similarity of 0.85 will imply a good match.
+          * If you scan your sequence with GEMS Launcher using "optimized thresholds" (default) you will get only matches exceeding the defined optimized matrix similarities.
+          * Please note that a good match does not necessarily mean that the identified transcription factor binding site will also be functional!
+
+   6. How are matrix families defined in GEMS Launcher?
+
+      One feature of the matrix library is the integration of individual matrices into matrix families. A family consists of matrices that represent similar DNA patterns or transcription factor binding sites with a similar biological function. The family concept leads to a significantly reduced output. Redundant matches are eliminated, because only the best match within a family is listed. If you are interested in individual sites for a factor select "matches to individual matrices".
+
+   7. Why are there different matrices for the same factor? Which one should I use?
+
+          * Some transcription factors possess different binding domains each having its own DNA binding site.
+          * There may be different weight matrices describing the same site. One reason is that those matrices are based on different training data sets originating from independent publications. Usually, those matrices belong to the same matrix family and can be used together.
+
+   8. What is the difference between core and matrix similarity?
+
+      The matrix similarity is the score of the complete matrix match (the more important value), the core similarity is the score of the highest conserved positions of a matrix match (keep the default core similarities unless for special cases and you are an expert). Both threshold have to be reached for a matrix match.
+
+   9. I have several different binding sites (e.g. footprints, oligos) for a transcription factor. How can I define a pattern description for all these sites?
+
+      Choose GEMS Launcher task "Definition of weight matrices" in the category "Patterns/libraries".
+
+  10. How can I identify the functional transcription factor binding sites in a promoter? Are all transcription factor binding sites found by GEMS Launcher functional?
+
+      The occurrence of a single transcription factor binding site found by GEMS Launcher does not give you any hint that this site may also be functional. Functionality is determined by the sequence context. If a binding site is part of a framework of two or more sites there is a stronger evidence that the individual sites may be functional. Therefore, identification of single matrix matches is usually only a first step in promoter analysis, the subsequent aim will be the identification of more complex promoter models.
+
+5. Identification of promoter models
+
+   1. What is comparative sequence analysis?
+
+      Comparative sequence analysis is based on the hypothesis that functional sites are preserved during evolution and therefore higher conserved than the sequence context. This provides an opportunity to identify the functional sites directly from a training data set of at least two (seven to twenty would be better) different but functionally related sequences. A suitable training data set may contain orthologous or homologous promoters or, for instance, promoters from co-regulated genes found by expression array analysis.
+
+   2. What can I do with a promoter model?
+
+      A promoter model represents a framework of two or more conserved elements (e.g. transcription factor binding sites) with a defined distance (and strand orientation).
+          * Usually, promoter models are much more specific than single elements like transcription factor binding sites. Therefore, a promoter model can give a higher evidence that the matching sites are functional.
+          * A model may be specific enough to scan whole databases in order to identify genes which show a similar organization of regulatory elements. These genes are candidates for new co-regulated genes or new potential target genes. To focus on model matches located in regulatory sequences you can scan a promoter database or filter your results for annotated promoter sequences using the GEMS Launcher option "restrict your search".
+
+   3. I only have a single promoter sequence. How to perform a functional sequence analysis?
+
+      If you have only one promoter sequence you can use GEMS Launcher to scan for matches to the transcription factor binding site matrix library and the promoter module library. However, if you are able to find additional orthologous or co-regulated promoters you can expand the training data set which opens the way to more sophisticated strategies like comparative sequence analysis.
+
+   4. I have a promoter/ a CDS/ expression array data. How to identify other target genes?
+
+      The basic hypothesis is that co-regulated promoters consist of a similar framework of two or more functionally conserved elements (e.g. transcription factor binding sites). One of our strategies to identify new target genes is the generation of models that specifically describe those frameworks.
+
+      If biological data about transcription factors involved in regulation of the genes are available you can directly generate models using GEMS Launcher task "Definition of models". Alternatively, you can start with a training data set consisting of two or more co-regulated (or orthologous) promoters to perform the GEMS Launcher analysis "Definition of common framework". (Note: if you start with a CDS or expression array data you have to identify the promoter of the genes, first). The new model can be used to scan the databases for potential new target genes.
+
+   5. I have a set of co-regulated genes found by expression array data. I have the database accession numbers of all these genes. Can I use these database entries for a comparative promoter analysis?
+
+      You can use the database entries only if the promoters or the transcription start sites are annotated to generate a training data set consisting of the gene promoters. How to identify promoters in unannotated sequences is described in 2.1.
+          * If the sequences are not annotated you can map the respective 5' full length mRNAs/cDNAs (if available) to the genomic sequences to identify the transcription start site and the location of the promoter. Choose the GEMS Launcher task "Exon mapping" in the category "Analyze your sequences".
+          * The second possibility is to use PromoterInspector, a tool that is able to predict promoter regions in genomic sequences. All promoter regions predicted by PromoterInspector in the complete human genome draft are included in ElDorado.
+
+   6. Is it possible to generate a generic promoter model with GEMS Launcher?
+
+      No, the existence of a generic promoter model is impossible due to biology. Regulation of gene expression is a highly specific task that requires highly specific promoters and, therefore, specific promoter models.
+
+6. Design of mutation experiments
+
+   1. How can I specifically delete/insert/modify a transcription factor binding site in my promoter sequence?
+
+      Choose the GEMS Launcher task "Design of regulatory sequences (SequenceShaper)".
+

@@ -1,0 +1,214 @@
+[workflow elandsnp]
+2011-01-18 02:40:27
+
+
+Workflow:
+name           elandsnp
+owner          anonymous
+outputdir      /nethome/syoung/0.5/bin/workflows/apps/cluster/eland/run
+wkfile         /nethome/syoung/0.5/bin/workflows/apps/cluster/eland/elandsnp.wk
+outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/eland/run/elandsnp.wk.bkp
+start          1
+stop           1
+	
+  Application:
+  name           splitfiles
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Split input files into subfiles and print list of subfiles to file splitfile.txt in target directory
+  ordinal        1
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/aligners/splitFiles.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    label          eland-%REPLICATE%
+    maxjobs        2000
+    walltime       24
+    queue          small
+    cluster        LSF
+    cpus           1
+    reads          250000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/splitfiles.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-splitfiles.out
+
+	
+  Application:
+  name           eland
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through 1-33 files doing ELAND alignment with split read input files
+  ordinal        2
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/aligners/ELAND.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chr22
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    inputtype      fastq
+    species        human
+    label          eland-%REPLICATE%
+    maxjobs        2000
+    walltime       24
+    queue          small
+    cluster        LSF
+    cpus           1
+    reads          250000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/eland.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/eland.loop.out
+
+	
+  Application:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        3
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    binlevel       500000
+    reference      chr22
+    maxjobs        2000
+    walltime       48
+    queue          small
+    cluster        LSF
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/binbam.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-binbam.out
+
+	
+  Application:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively merge .bam files, can use UCSC bins or user-defined genomic intervals
+  ordinal        4
+
+    Parameters:
+    binlevel       500000
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/33
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative
+    species        human
+    label          eland-cumulative
+    walltime       48
+    cluster        LSF
+    queue          small
+    cpus           1
+    maxjobs        2000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/cumulative.out
+
+	
+  Application:
+  name           bamtosnp
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Call SNPs from .bam files using samtools
+  ordinal        5
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/snp/bamToSnp.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22
+    binlevel       500000
+    filename       hit.bam
+    species        human
+    maxjobs        2000
+    walltime       48
+    queue          small
+    cluster        LSF
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/bamtosnp.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-bamtosnp.out
+
+	
+  Application:
+  name           snptosav
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+  ordinal        6
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    binlevel       500000
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/snp130
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    dbsnp          snp130
+    species        human
+    maxjobs        2000
+    queue          small
+    cluster        LSF
+    walltime       24
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/sav-%REPLICATE%.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/loop-sav.out
+
+
+
+[app splitfiles]
+2011-01-18 02:40:28
+
+  Application:
+  name           splitfiles
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Split input files into subfiles and print list of subfiles to file splitfile.txt in target directory
+  ordinal        1
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/eland/run/1-splitfiles.app.bkp
+
+    Parameters:
+    replicates     1-33
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/aligners/splitFiles.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    label          eland-%REPLICATE%
+    maxjobs        2000
+    walltime       24
+    queue          small
+    cluster        LSF
+    cpus           1
+    reads          250000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/splitfiles.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-splitfiles.out
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/splitFiles.pl \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+ --matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE% \
+ --label eland-%REPLICATE% \
+ --maxjobs 2000 \
+ --walltime 24 \
+ --queue small \
+ --cluster LSF \
+ --cpus 1 \
+ --reads 250000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/splitfiles.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-splitfiles.out 
+
+

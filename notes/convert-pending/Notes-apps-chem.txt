@@ -1,0 +1,788 @@
+
+</entry>
+
+
+
+<entry [Wed Feb 28 18:12:58 EST 2007] MSG: pounds_aj@mercer.edu>
+
+
+
+Hi Andy,
+
+How much memory per node and scratch/permanent disk space do you think you'd need to run your jobs? I'll look into the availability of more resources.
+
+Stuart. 
+
+>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>Reply-To: pounds_aj@mercer.edu
+>To: stuart young <youngstuart@hotmail.com>
+>Subject: Re: Computational Chemistry Applications at Miami
+>Date: Wed, 28 Feb 2007 17:43:37 -0500
+>
+>Stuart -- I'm  tweaking a few things now with NWCHEM -- trying to 
+>transpose basis set coefficients between Gaussian and NWCHEM.  It 
+>will be a few days before I am ready to really roll anything out -- 
+>and based on memory and disk limitations at Miami, it still may not 
+>be possible to run down there (I'm generating integral 
+>transformation scratch files in the hundreds of gigabytes range).
+>
+>Anyway -- thanks for looking into this.
+>
+>I'll definitely try out the sun grid engine.  I've been wanting to 
+>experiment with that.  I run PBS here.
+>
+>Andy
+>
+>
+
+</entry>
+
+
+
+<entry [Wed Feb 28 16:56:34 EST 2007] MSG: pounds_aj@mercer.edu>
+
+
+CC: thynes@rsmas.miami.edu
+
+
+Hi Andy,
+
+I've almost finished a 2-week run of calculations on the cluster but you're welcome to try running some jobs on it. I've probably got about four more days left of this set but you can run test jobs in the meantime and email me when you're ready to do some large-scale crunching.
+
+Your username and password are as before (my earlier message). If you haven't got them, do let me know and I'll send them to you again.
+
+I guess most of your work will be using parallelised software like NWCHEM but if you need to use sun grid engine for batch job submission and control, you can test submitting jobs with:
+
+qsub /common/sge/examples/jobs/simple.sh
+
+which will leave output and error logs in your home directory (/Users/pounds).
+
+You can view the queue with 'qstat -f' or using an updating queue view:
+
+qs
+
+or
+
+qs 5 
+
+where the latter will update the queue view every 5 seconds (default = 10 secs).
+
+Let me know if there's anything you need to know or need me to do.
+
+Cheers,
+
+Stuart.
+
+
+
+>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>Reply-To: pounds_aj@mercer.edu
+>To: stuart young <youngstuart@hotmail.com>
+>Subject: Re: Computational Chemistry Applications at Miami
+>Date: Wed, 28 Feb 2007 07:34:27 -0500
+>
+>Stuart -- any luck with getting this resolved.  I have been having 
+>some success with NWCHEM here on my Intel cluster and think I might 
+>be able to use the mac cluster for some of my larger cases.
+>
+>stuart young wrote:
+>
+>>Hi Andy,
+>>
+>>Sorry I've not been in touch sooner. I've been troubleshooting some 
+>>problems on the cluster and haven't reached a resolution yet. It 
+>>seems related to the NetInfo database - the user I created for you 
+>>on the cluster can't log in. I'm working on it with some tech help 
+>>from Apple's bioteam and hopefully will have it resolved in the 
+>>next few days.
+>>
+>>In the meantime, if you want to just test out GAMESS or NWCHEM on a 
+>>Mac OSX environment, I've created an account for you on my 
+>>workstation:
+>>
+>>Host: genomics.rsmas.miami.edu
+>>User: pounds
+>>Pass: <Tony's surname> (please change with passwd)
+>>
+>>I'll keep you posted about the cluster developments.
+>>
+>>Stuart.
+>>
+>>_________________________________________________________________
+>>FREE pop-up blocking with the new MSN Toolbar - get it now! 
+>>http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
+>
+>
+>
+>--
+>Andrew J. Pounds, Ph.D.  (pounds@theochem.mercer.edu)
+>Associate Professor of Chemistry and Computer Science
+>Mercer University,  Macon, GA 31207   (478) 301-5627
+>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MSG: pounds_aj@mercer.edu,pounds@theochem.mercer.edu
+
+
+Hi Andy,
+
+Sorry I've not been in touch sooner. I've been troubleshooting some problems on the cluster and haven't reached a resolution yet. It seems related to the NetInfo database - the user I created for you on the cluster can't log in. I'm working on it with some tech help from Apple's bioteam and hopefully will have it resolved in the next few days.
+
+In the meantime, if you want to just test out GAMESS or NWCHEM on a Mac OSX environment, I've created an account for you on my workstation:
+
+Host: genomics.rsmas.miami.edu
+User: pounds
+Pass: <Tony's surname> (please change with passwd)
+
+I'll keep you posted about the cluster developments.
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Mon Jan  8 18:09:26 PST 2007] PROBLEM WITH /Users EXPORT FROM gems>
+
+
+
+MOST LIKELY DUE TO THE CREATION OF THE pounds USER AND THE PRESENCE OF THE
+/Users/pounds FOLDER IN /Users.
+
+ON gems:
+
+showmount -e
+Exports list on localhost:
+/opt                                Everyone
+/Library/Perl                      192.168.2.0 
+/Volumes/gemshd4/common            129.171.101.233 node001.cluster.private node002.cluster.private node004.cluster.private node005.cluster.private node006.cluster.private node007.cluster.private node008.cluster.private node009.cluster.private node010.cluster.private node011.cluster.private node012.cluster.private node013.cluster.private node014.cluster.private node015.cluster.private node016.cluster.private
+
+I.E., NO /Volumes/gemshd4/Users EXPORTED!
+
+SO DELETED ALL TRACES OF USER pounds:
+
+1. REMOVE USER pounds
+=====================
+
+sudo dscl . delete /users/pounds
+
+CHECK IT WORKED:
+
+sudo nireport . /users name | grep pounds
+<NOTHING>
+
+nireport . /users name uid
+<NO pounds USER>
+
+2. REMOVE GID FOR pounds
+========================
+nireport / /groups name gid
+>>>...
+netboot 120
+com.apple.access_all_services   500
+pounds  #NoValue#
+<<<
+
+CHECK IT WORKED:
+
+sudo dscl . delete /groups/pounds
+<NO pounds GROUP>
+
+3. REMOVE THE HOME DIRECTORY FOR pounds
+=======================================
+
+sudo rm -fr /Users/pounds
+
+AND REBOOTED
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jan  7 17:25:58 PST 2007] PROBLEM SSH:ING INTO gems WITH NEW USER pounds>
+
+
+
+ssh -v pounds@129.171.101.102
+OpenSSH_3.8.1p1, OpenSSL 0.9.7i 14 Oct 2005
+debug1: Reading configuration data /etc/ssh_config
+debug1: Applying options for *
+debug1: Connecting to 129.171.101.102 [129.171.101.102] port 22.
+debug1: Connection established.
+debug1: identity file /Users/pounds/.ssh/identity type -1
+debug1: identity file /Users/pounds/.ssh/id_rsa type -1
+debug1: identity file /Users/pounds/.ssh/id_dsa type -1
+debug1: Remote protocol version 2.0, remote software version OpenSSH_3.8.1p1
+debug1: match: OpenSSH_3.8.1p1 pat OpenSSH*
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_3.8.1p1
+debug1: Miscellaneous failure
+No credentials cache found
+
+debug1: Miscellaneous failure
+No credentials cache found
+
+debug1: SSH2_MSG_KEXINIT sent
+...
+Password:
+Disconnecting: Bad packet length 3441616725.
+<<<
+
+FOUND NO ~/.ssh FOLDER AND NO ~/.ssh/known_hosts FILE ON genomics SO CREATED THEM.
+
+TRIED AGAIN AS pounds:
+
+dlc-genomics:~ pounds$ ssh -v pounds@129.171.101.102
+OpenSSH_4.2p1, OpenSSL 0.9.7i 14 Oct 2005
+debug1: Reading configuration data /etc/ssh_config
+debug1: Applying options for *
+debug1: Connecting to 129.171.101.102 [129.171.101.102] port 22.
+debug1: Connection established.
+debug1: identity file /Users/pounds/.ssh/identity type -1
+debug1: identity file /Users/pounds/.ssh/id_rsa type -1
+debug1: identity file /Users/pounds/.ssh/id_dsa type -1
+debug1: Remote protocol version 2.0, remote software version OpenSSH_3.8.1p1
+debug1: match: OpenSSH_3.8.1p1 pat OpenSSH_3.*
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_4.2
+debug1: Miscellaneous failure
+No credentials cache found
+
+debug1: Miscellaneous failure
+No credentials cache found
+
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: server->client aes128-cbc hmac-md5 none
+debug1: kex: client->server aes128-cbc hmac-md5 none
+debug1: SSH2_MSG_KEX_DH_GEX_REQUEST(1024<1024<8192) sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_GROUP
+debug1: SSH2_MSG_KEX_DH_GEX_INIT sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_REPLY
+Failed to add the host to the list of known hosts (/Users/pounds/.ssh/known_hosts).
+debug1: ssh_rsa_verify: signature correct
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: gssapi-with-mic,publickey,gssapi,password,keyboard-interactive
+debug1: Next authentication method: gssapi-with-mic
+debug1: Authentications that can continue: gssapi-with-mic,publickey,gssapi,password,keyboard-interactive
+debug1: Authentications that can continue: gssapi-with-mic,publickey,gssapi,password,keyboard-interactive
+debug1: Next authentication method: publickey
+debug1: Trying private key: /Users/pounds/.ssh/identity
+debug1: Trying private key: /Users/pounds/.ssh/id_rsa
+debug1: Trying private key: /Users/pounds/.ssh/id_dsa
+debug1: Next authentication method: keyboard-interactive
+
+
+BUT AS young:
+
+dlc-genomics:/Users/pounds young$ ssh -v pounds@129.171.101.102
+OpenSSH_3.9p1, OpenSSL 0.9.7d 17 Mar 2004
+debug1: Reading configuration data /Users/young/.ssh/config
+debug1: Reading configuration data /sw/etc/ssh/ssh_config
+debug1: Connecting to 129.171.101.102 [129.171.101.102] port 22.
+debug1: Connection established.
+debug1: identity file /Users/young/.ssh/identity type -1
+debug1: identity file /Users/young/.ssh/id_rsa type 1
+debug1: identity file /Users/young/.ssh/id_dsa type -1
+debug1: Remote protocol version 2.0, remote software version OpenSSH_3.8.1p1
+debug1: match: OpenSSH_3.8.1p1 pat OpenSSH*
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_3.9p1
+debug1: SSH2_MSG_KEXINIT sent
+debug1: SSH2_MSG_KEXINIT received
+debug1: kex: server->client aes128-cbc hmac-md5 none
+debug1: kex: client->server aes128-cbc hmac-md5 none
+debug1: SSH2_MSG_KEX_DH_GEX_REQUEST(1024<1024<8192) sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_GROUP
+debug1: SSH2_MSG_KEX_DH_GEX_INIT sent
+debug1: expecting SSH2_MSG_KEX_DH_GEX_REPLY
+debug1: Host '129.171.101.102' is known and matches the RSA host key.
+debug1: Found key in /Users/young/.ssh/known_hosts:15
+debug1: ssh_rsa_verify: signature correct
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug1: SSH2_MSG_NEWKEYS received
+debug1: SSH2_MSG_SERVICE_REQUEST sent
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug1: Authentications that can continue: gssapi-with-mic,publickey,gssapi,password,keyboard-interactive
+debug1: Next authentication method: publickey
+debug1: Trying private key: /Users/young/.ssh/identity
+debug1: Offering public key: /Users/young/.ssh/id_rsa
+debug1: Authentications that can continue: gssapi-with-mic,publickey,gssapi,password,keyboard-interactive
+debug1: Trying private key: /Users/young/.ssh/id_dsa
+debug1: Next authentication method: keyboard-interactive
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+0. LIST EXISTING USERS
+======================
+
+sudo nireport . /users name
+
+1. ADD NEW USER
+===============
+sudo dscl . create /Users/pounds
+
+OR
+
+sudo niutil -create / /users/pounds
+
+CHECK USER HAS BEEN ADDED:
+sudo nireport . /users name | grep pounds
+>>>
+pounds
+<<<
+
+2. SET UID, INCREMENTED FROM EXISTING TOP UID
+=============================================
+
+CHECK FOR HIGHEST UID:
+nireport . /users name uid
+>>>...
+local   501
+sge     1001
+pounds  #NoValue#
+<<<
+
+sudo niutil -createprop / /users/pounds uid 504
+
+CHECK IT WORKED:
+nireport . /users name uid
+>>>...
+local   501
+sge     1001
+pounds  504
+<<<
+
+3. SET GID, INCREMENTED FROM EXISTING TOP GID
+=============================================
+CHECK FOR HIGHEST UID AND GID:
+nireport / /groups name gid
+>>>...
+local   501
+netboot 120
+com.apple.access_all_services   500
+<<<
+
+sudo niutil -create / /groups/pounds
+sudo niutil -createprop / /groups/pounds name pounds
+sudo niutil -createprop / /users/pounds gid 504
+
+**** BUT DIDN'T WORK (NOT SURE IF THIS AFFECTS THE OUTCOME...):
+
+nireport / /groups name gid
+>>>...
+local   501
+netboot 120
+com.apple.access_all_services   500
+pounds  #NoValue#
+<<<
+
+4. SET REALNAME
+===============
+sudo niutil -createprop / /users/pounds realname "Andy Pounds"
+
+CHECK IT WORKED:
+nireport . /users realname uid
+
+>>>...
+local admin     501
+#NoValue#       1001
+Andy Pounds     502
+<<<
+
+sudo niutil -createprop / /users/pounds home "/Users/pounds"
+
+CHECK IT WORKED:
+nireport . /users home uid
+BEFORE:
+>>>...
+/Users/local    501
+/var/empty      1001
+#NoValue#       502
+<<<
+
+AFTER:
+>>>...
+/Users/local    501
+/var/empty      1001
+/Users/pounds   502
+<<<
+
+sudo niutil -createprop / /users/pounds shell "/dev/null"
+
+5. ADD NEW SHELL
+================
+sudo dscl . create /users/pounds shell /bin/bash
+
+CHECK IT WORKED:
+nireport . /users shell uid
+
+>>>...
+/bin/bash       501
+/usr/bin/false  1001
+/bin/bash       502
+<<<
+
+6. CHECK WHAT GROUPS pounds IS IN
+=================================
+groups pounds
+
+BEFORE:
+>>>
+nobody wheel
+<<<
+
+AFTER:
+>>>
+504
+<<<
+
+7. CREATE A PASSWORD
+====================
+sudo niutil -createprop / /users/pounds passwd "*" 
+sudo passwd pounds
+<TYPE IN PASSWORD>
+
+8. CREATE THE HOME DIRECTORY AND ASSOCIATED SUBDIRS AND FILES
+=============================================================
+
+sudo mkdir /Users/pounds
+sudo cp -R /System/Library/User\ Template/English.lproj/* /Users/pounds
+sudo chown -R pounds:wheel /Users/pounds
+
+
+BUT STILL CAN'T LOGIN BY SSH...
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+MSG: pounds_aj@mercer.edu,pounds@theochem.mercer.edu
+
+
+Hi Andy,
+
+I've created a temporary account you can use to access the servers. 
+
+User: pounds
+Pass: <Tony's surname>
+
+You'll have to go through this machine:
+
+genomics.rsmas.miami.edu
+
+and then ssh to:
+
+gems.rsmas.miami.edu
+
+
+
+Cheers,
+
+Stuart.
+
+
+>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>Reply-To: pounds_aj@mercer.edu
+>To: stuart young <youngstuart@hotmail.com>
+>Subject: Re: Computational Chemistry Applications at Miami
+>Date: Thu, 04 Jan 2007 18:42:57 -0500
+>
+>
+>Hi Stuart -- I just got back in town!  Anyway, the most pertinent 
+>question I have is can you open a route so that I can log into the 
+>system from off campus (like to the machine in my office here at 
+>Mercer).   The version of Gaussian  I have is licensed only for our 
+>campus -- so I cannot really move it to your machine.   The other 
+>problem is that to run the largest calculations on Gaussian I need a 
+>64 bit machine (32 bit integeers are not large enough to address all 
+>of the disk space needed to store the configuration interactions 
+>transformations -- and that includes utilizing semi-direct 
+>transformations!)   I am experimenting with NWCHEM myself and have 
+>used serial versions of GAMESS in the past.
+>
+>Anyway, all of this is moot if there is no way for me to get on the 
+>system.
+>
+>Any help would be appreciated
+>
+>Andy
+>
+>
+>stuart young wrote:
+>
+>>Hi Andy,
+>>
+>>Sorry I only got your message this morning as it had been diverted 
+>>into my junk mail. I've fixed that now so you should be able to get 
+>>me easily at this email address.
+>>
+>>>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>>>Reply-To: pounds_aj@mercer.edu
+>>>To: youngstuart@hotmail.com
+>>>Subject: Computational Chemistry Applications at Miami
+>>>Date: Fri, 29 Dec 2006 13:19:22 -0500
+>>>
+>>>Hi Stuart,
+>>>
+>>>  Tony Hynes gave me your name as a person to contact about 
+>>>possibly running some computational chemistry codes at Miami.  He 
+>>>says you have a large multiprocessor mac system that could might 
+>>>handle some of our larger calculations.
+>>>
+>>>Here are a few questions I have for you about the hardware:
+>>>1. Is this a 64 bit machine
+>>
+>>
+>>32-bit.
+>>
+>>>2. How much memory to you have
+>>
+>>
+>>16 nodes (racks) each with:
+>>    - 1GB DDR SDRAM memory
+>>    - two CPUs (PowerPC G5 3.1, 2.3GHz)
+>>    - L2 cache (per CPU) 512KB
+>>    - Bus speed 1.15GHz
+>>
+>>>3. How much scratch/temporary disk space is available
+>>
+>>
+>>Up to 500GB
+>>
+>>>4. Is your system and network configured to allow off-campus 
+>>>connections
+>>
+>>
+>>The cluster itself does not allow off-campus connections.
+>>
+>>
+>>>Regarding software:
+>>>1. Do you have any of the following software loaded on the 
+>>>machine:  Gaussian, NWCHEM, or GAMESS?
+>>
+>>
+>>Gaussian is not on the system but it could be loaded if you have a 
+>>copy.
+>>I've just applied for a NWCHEM licence and GAMESS licence so should 
+>>be able to download them in a few days time.
+>>
+>>
+>>>2. Do you have a Fortran and C/C++ compiler on the machine?
+>>
+>>Yes.
+>>
+>>>3. Do you have Python and Perl loaded?
+>>
+>>Yes.
+>>
+>>>4. Is the "make" facility available for building software?
+>>
+>>Yes.
+>>
+>>I hope that answers all of your questions. If you need to know 
+>>anything else, just drop me a line.
+>>
+>>Btw, how much volume/time were you thinking of using? And what kind 
+>>of research is it related to?
+>>
+>>Cheers,
+>>
+>>Stuart.
+>>
+>>
+>>
+>>
+>>>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>>>Reply-To: pounds_aj@mercer.edu
+>>>To: youngstuart@hotmail.com
+>>>Subject: Computational Chemistry Applications at Miami
+>>>Date: Fri, 29 Dec 2006 13:19:22 -0500
+>>>
+>>>Hi Stuart,
+>>>
+>>>  Tony Hynes gave me your name as a person to contact about 
+>>>possibly running some computational chemistry codes at Miami.  He 
+>>>says you have a large multiprocessor mac system that could might 
+>>>handle some of our larger calculations.
+>>>
+>>>Here are a few questions I have for you about the hardware:
+>>>
+>>>1. Is this a 64 bit machine
+>>>2. How much memory to you have
+>>>3. How much scratch/temporary disk space is available
+>>>4. Is your system and network configured to allow off-campus 
+>>>connections
+>>>
+>>>Regarding software:
+>>>
+>>>1. Do you have any of the following software loaded on the 
+>>>machine:  Gaussian, NWCHEM, or GAMESS?
+>>>2. Do you have a Fortran and C/C++ compiler on the machine?
+>>>3. Do you have Python and Perl loaded?
+>>>4. Is the "make" facility available for building software?
+>>>
+>>>Thanks for the help,
+>>>
+>>>Andy
+>>>
+>>>--
+>>>Andrew J. Pounds, Ph.D.  (pounds@theochem.mercer.edu)
+>>>Associate Professor of Chemistry and Computer Science
+>>>Mercer University,  Macon, GA 31207   (478) 301-5627
+>>>
+>>
+>>_________________________________________________________________
+>>Express yourself instantly with MSN Messenger! Download today it's 
+>>FREE! 
+>>http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+>
+>
+>
+>--
+>Andrew J. Pounds, Ph.D.  (pounds@theochem.mercer.edu)
+>Associate Professor of Chemistry and Computer Science
+>Mercer University,  Macon, GA 31207   (478) 301-5627
+>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Hi Andy,
+
+Sorry I only got your message this morning as it had been diverted into my junk mail. I've fixed that now so you should be able to get me easily at this email address.
+
+>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>Reply-To: pounds_aj@mercer.edu
+>To: youngstuart@hotmail.com
+>Subject: Computational Chemistry Applications at Miami
+>Date: Fri, 29 Dec 2006 13:19:22 -0500
+>
+>Hi Stuart,
+>
+>  Tony Hynes gave me your name as a person to contact about possibly 
+>running some computational chemistry codes at Miami.  He says you 
+>have a large multiprocessor mac system that could might handle some 
+>of our larger calculations.
+>
+>Here are a few questions I have for you about the hardware:
+>1. Is this a 64 bit machine
+
+32-bit.
+
+>2. How much memory to you have
+
+16 nodes (racks) each with:
+    - 1GB DDR SDRAM memory
+    - two CPUs (PowerPC G5 3.1, 2.3GHz)
+    - L2 cache (per CPU) 512KB
+    - Bus speed 1.15GHz
+
+>3. How much scratch/temporary disk space is available
+
+Up to 500GB
+
+>4. Is your system and network configured to allow off-campus connections
+
+The cluster itself does not allow off-campus connections.
+
+
+>Regarding software:
+>1. Do you have any of the following software loaded on the machine:  
+>Gaussian, NWCHEM, or GAMESS?
+
+Gaussian is not on the system but it could be loaded if you have a copy.
+I've just applied for a NWCHEM licence and GAMESS licence so should be able to download them in a few days time.
+
+
+>2. Do you have a Fortran and C/C++ compiler on the machine?
+Yes.
+
+>3. Do you have Python and Perl loaded?
+Yes.
+
+>4. Is the "make" facility available for building software?
+Yes.
+
+I hope that answers all of your questions. If you need to know anything else, just drop me a line.
+
+Btw, how much volume/time were you thinking of using? And what kind of research is it related to?
+
+Cheers,
+
+Stuart.
+ 
+
+
+>From: "Andrew J. Pounds" <pounds@theochem.mercer.edu>
+>Reply-To: pounds_aj@mercer.edu
+>To: youngstuart@hotmail.com
+>Subject: Computational Chemistry Applications at Miami
+>Date: Fri, 29 Dec 2006 13:19:22 -0500
+>
+>Hi Stuart,
+>
+>  Tony Hynes gave me your name as a person to contact about possibly 
+>running some computational chemistry codes at Miami.  He says you 
+>have a large multiprocessor mac system that could might handle some 
+>of our larger calculations.
+>
+>Here are a few questions I have for you about the hardware:
+>
+>1. Is this a 64 bit machine
+>2. How much memory to you have
+>3. How much scratch/temporary disk space is available
+>4. Is your system and network configured to allow off-campus 
+>connections
+>
+>Regarding software:
+>
+>1. Do you have any of the following software loaded on the machine:  
+>Gaussian, NWCHEM, or GAMESS?
+>2. Do you have a Fortran and C/C++ compiler on the machine?
+>3. Do you have Python and Perl loaded?
+>4. Is the "make" facility available for building software?
+>
+>Thanks for the help,
+>
+>Andy
+>
+>--
+>Andrew J. Pounds, Ph.D.  (pounds@theochem.mercer.edu)
+>Associate Professor of Chemistry and Computer Science
+>Mercer University,  Macon, GA 31207   (478) 301-5627
+>
+
+
+NOTE:
+
+1. Gaussian
+Revision C.02
+Gaussian is a computational chemistry package that has become the standard code for fast electronic structure calculations. It is able to utilize shared-memory multi-processor architectures. Gaussian has been developed over the course of several decades by a host of people, and is now distributed by Gaussian, Inc., Pittsburgh PA.
+
+2. GAMESS
+The "General Atomic and Molecular Electronic Structure System" (GAMESS) is a quantum chemistry software package that was assembled from various older codes (in particular, HONDO) by M. Dupuis, D. Spangler, and J. J. Wendoloski of the National Resources for Computations in Chemistry (NRCC). The code has undergone great changes since then and is maintained now by the Ameslab at Iowa State University.
+Gamess performs a great many of standard quantum chemical calculations. These include:
+
+         1. RHF, UHF, ROHF, GVB, or MCSCF self-consistent calculations.
+         2. CI or MP2 corrections to the energy.
+         3. Semi-empirical MNDO, AM1, or PM3 methods.
+         4. Analytic energy gradients for SCF, MP2 or CI.
+         5. Geometry optimizations, saddle point searches, and vibrational frequencies.
+         6. Intrinsic reaction paths, gradient extremal curves, and dynmic reaction coordinates.
+         7. Many molecular properties, such as densities, electrostatic potentials, dipole moments, etc.
+         8. Modelling of solvent effects and electric fields.
+
+3. NWCHEM
+NWChem is a computational chemistry package that is designed to run on high-performance parallel supercomputers as well as conventional workstation clusters. It aims to be scalable both in its ability to treat large problems efficiently, and in its usage of available parallel computing resources. NWChem has been developed by the High-performance Computational Chemistry group of the Environmental Molecular Sciences Laboratory (EMSL) at the Pacific Northwest National Laboratory (PNNL).
+
+

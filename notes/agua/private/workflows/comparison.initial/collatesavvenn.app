@@ -1,0 +1,81 @@
+{
+   "parameters" : [
+      {
+         "value" : "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/eland-maq/eland-vs-maq.tsv",
+         "args" : "",
+         "discretion" : "",
+         "description" : "",
+         "params" : "",
+         "ordinal" : "",
+         "argument" : "--outputfile",
+         "format" : "",
+         "type" : "",
+         "category" : "",
+         "param" : "outputfile",
+         "paramFunction" : ""
+      },
+      {
+         "value" : "eland-%REPLICATE%",
+         "args" : "",
+         "discretion" : "",
+         "description" : "",
+         "argument" : "--querylabel",
+         "ordinal" : "",
+         "params" : "",
+         "format" : "",
+         "category" : "",
+         "type" : "",
+         "param" : "querylabel",
+         "paramFunction" : ""
+      },
+      {
+         "value" : "1-33",
+         "args" : "",
+         "discretion" : "",
+         "description" : "",
+         "argument" : "--replicates",
+         "ordinal" : "",
+         "params" : "",
+         "format" : "",
+         "category" : "",
+         "type" : "",
+         "param" : "replicates",
+         "paramFunction" : ""
+      },
+      {
+         "value" : "sav",
+         "args" : "",
+         "discretion" : "",
+         "description" : "",
+         "argument" : "--suffix",
+         "ordinal" : "",
+         "params" : "",
+         "format" : "",
+         "category" : "",
+         "type" : "",
+         "param" : "suffix",
+         "paramFunction" : ""
+      },
+      {
+         "value" : "maq-%REPLICATE%",
+         "args" : "",
+         "discretion" : "",
+         "description" : "",
+         "argument" : "--targetlabel",
+         "ordinal" : "",
+         "params" : "",
+         "format" : "",
+         "category" : "",
+         "type" : "",
+         "param" : "targetlabel",
+         "paramFunction" : ""
+      }
+   ],
+   "owner" : "anonymous",
+   "location" : "/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl",
+   "notes" : "",
+   "executor" : 0,
+   "name" : "collatesavvenn",
+   "type" : "cluster",
+   "description" : ""
+}

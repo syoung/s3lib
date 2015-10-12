@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="jsumlDiagramBuilder"
+         name="JS/UML Diagram Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run class="org.jsuml.diagram.builder.JsUMLDiagramBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="jsumlDiagramNature"
+         name="JS/UML Diagram Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.jsuml.diagram.builder.JsUMLDiagramNature">
+         </run>
+      </runtime>
+      <builder
+            id="org.jsuml.diagram.jsumlDiagramBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="org.jsuml.diagram.contribution1">
+         <action
+               label="Add/Remove JS/UML Diagram Nature"
+               class="org.jsuml.diagram.builder.ToggleNatureAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="org.jsuml.diagram.addRemoveNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="jsumlDiagramProblem"
+         name="JS/UML Diagram Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+
+</plugin>

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export login=syoung
+export password=rst2github
+export token=ded526622a10cfaaea0134662696b748ff666696
+export keyfile=/root/.ssh/id_rsa
+#export keyfile=/agua/conf/aguadev/id_rsa
+export curlfile=/agua/conf/curl.txt
+export installdir=/agua

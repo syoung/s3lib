@@ -1,0 +1,75 @@
+ERROR LOG
++++++++++
+/Library/Logs/tivoli/tsm/TSM Error Log
+
+Mon 23 Oct 2006 HAS ERROR:
+
+10/22/2006 23:56:09 Scheduler has been started by Dsmcad.
+10/22/2006 23:56:09 Querying server for next scheduled event.
+10/22/2006 23:56:09 Node Name: DLC-GENOMICS
+10/22/2006 23:56:09 ANS2050E TSM needs to prompt for the password but cannot prompt  because the process is running in the background.
+10/22/2006 23:56:09 ANS2050E TSM needs to prompt for the password but cannot prompt  because the process is running in the background.
+10/22/2006 23:56:09 ANS1029E Communication with the  TSM server is lost.
+10/22/2006 23:56:09 Scheduler has been stopped.
+
+ANS2050ETSM needs to prompt for the password but cannot prompt because the process is running in the background.Explanation:If PASSWORDACCESS is PROMPT or the password stored locally is incorrect, the user should be prompted for the password. But when the process is runnning in the background, prompting is not allowed and the process cannot proceed without authentication.System action:Processing stopped.User response:You may use RUNASSERVICE option with PASSWORDACCESS PROMPT. Turn off RUNASSERVICE to be able to get prompted
+
+INTERPRETATION:
+
+/Library/Preferences/Tivoli\ Storage\ Manager/TSM\ System\ Preferences
+
+CONTAINS
+
+SERVERNAME 129.171.46.88
+TCPSERVERADDRESS 129.171.46.88
+SERVERNAME aixtsm
+PASSWORDACCESS GENERATE
+MANAGEDSERVICES  SCHEDULE
+NODENAME DLC-GENOMICS
+TCPSERVERADDRESS 129.171.46.88
+
+AND 
+/Library/Preferences/Tivoli\ Storage\ Manager/TSM\ User\ Preferences
+CONTAINS
+
+SERVERNAME aixtsm
+DOMAIN "-/Volumes/TSMInstaller"
+DOMAIN "-/Volumes/PSP7000"
+DOMAIN "-/Volumes/Backup"
+DOMAIN "/"
+
+
+
+TIVOLI UNINSTALL
+++++++++++++++++
+
+To uninstall the Tivoli 5.1.5.13 client, delete the following folders (by dragging them from the Finder window to the Trash icon):    * /Applications/Tivoli Storage Manager v5.1    * (if necessary) /System/Library/PreferencePanes/Tivoli Storage Manager
+
+TIVOLI USERS
+++++++++++++
+USER: Genomics
+USER: Gems
+(passwords are the same respectively)
+
+BUT DOESN'T ACCEPT node ID...
+
+
+Taumel CONTACTS
++++++++++++++++
+taumel vega 305-284-3922
+
+single user - 10G or so
+1.5 TB is doable
+martha garcia - manager
+backups 6pm - 8am
+
+TIVOLI DOWNLOAD
++++++++++++++++
+
+ftp://129.171.46.29
+user: tsmpass: client
+
+
+CORRESPONDENCE
+++++++++++++++
+Stewart:Yes you need two accounts but as you will see there is no need to typethe account ID and password every time.  This information is cached bythe backup client and you only enter it the first time.I've created the ID's Genomics and Gems, the passwords are the samerespectively. The rsync I don't believe will be necessary because your system willnever back up to tape. The files will be backed up to disk first andlater during the day our server will move them from disk to tape. Thisis done to ensure the highest transfer rate possible.regardsTom VegaInformation Technology - OperationsUniversity of MiamiPh: 305-284-3922-----Original Message-----From: stuart young [mailto:youngstuart@hotmail.com] Sent: Thursday, July 27, 2006 4:37 PMTo: Vega, TaumelCc: dcrawford@rsmas.miami.eduSubject: RE: backupHi Taumel,I'd like to install it first on two machines:129.171.101.233 (genomics.rsmas.miami.edu)129.171.101.102 (gems.rsmas.miami.edu)As for backup start times, anytime between 2AM and 4AM would be fine.I'm not sure about the bandwidth from RSMAS to your centerDo I need two users or can I access the same backup location with justone user from both computers?I was also wondering if I can use rsync with your system to synchronise filesystems on your front-end server before they are transferred totape?Best regards,Stuart.>From: "Vega, Taumel" <tvega@miami.edu>>To: "stuart young" <youngstuart@hotmail.com>>CC: <dcrawford@rsmas.miami.edu>>Subject: RE: backup>Date: Thu, 27 Jul 2006 16:23:33 -0400>>Stewart:>>>>You may download the TSM Backup client from the following location:>>ftp://129.171.46.29  (if the link doesn't work then copy and paste it>into your browser)>>>>user: tsm>>pass: client>>>>download the folder "Mac v5.3" to your computer and read the file>TSM532C_MAC.README.FTP for Installation Instructions>>I've attached a set of detailed installation instructions for windows>which can serve you as a guide for installing it in your Mac>environment.>>>>Once you're ready to install this client we will need to know the>machine name so that we can create an account for you. And just to>clarify the schedule time is set on our side(server side). If you'dlike>a specific time between 6PM and 8AM let us know and we will accommodate>your request.>>>>Let me know if you have any questions.>>>>Regards>

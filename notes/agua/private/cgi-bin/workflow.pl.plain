@@ -1,0 +1,148 @@
+#!/usr/bin/perl -w
+
+=head2
+
+	APPLICATION     workflow.pl
+	
+	PURPOSE
+
+		RESPOND TO CLIENT QUERIES:
+			
+			1. SAVE WORKFLOW JSON SENT BY CLIENT
+		
+    		2. RUN WORKFLOWS ON REQUEST
+            
+	USAGE
+		
+		./workflow.pl <mode> <database> [additional_arguments]
+		
+    EXAMPLES
+
+			THE Workflow OBJECT PERFORMS THE FOLLOWING TASKS:
+			
+				1. SAVE WORKFLOWS
+                
+                2. RUN WORKFLOWS
+				
+                3. PROVIDE WORKFLOW STATUS
+
+        SEE Workflow.pm FOR EXAMPLES
+
+=cut
+
+use strict;
+
+
+my $begintime;
+
+use lib "/agua/lib";
+
+use FCGI; # Imports the library; required line
+
+BEGIN {
+
+    my $BEGIN = time();
+    $begintime = $BEGIN;
+    
+    warn "BEGIN: $BEGIN\n";
+}
+
+
+#### USE LIBS
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use lib "/agua/lib";
+
+#### INTERNAL MODULES
+use Agua::Workflow;
+use Agua::DBaseFactory;
+use Conf::Agua;
+
+#### EXTERNAL MODULES
+use DBI;
+use DBD::SQLite;
+use Data::Dumper;
+
+#### SET LOG
+my $SHOWLOG     =   2;
+my $PRINTLOG    =   5;
+
+#### GET CONF
+my $conf = Conf::Agua->new(
+	inputfile	=>	"$Bin/conf/default.conf",
+	backup		=>	1,
+    SHOWLOG     =>  2,
+    PRINTLOG    =>  4
+);
+
+my $object = Agua::Workflow->new({
+    conf        =>  $conf,
+    #SHOWLOG     =>  4,
+    SHOWLOG     =>  $SHOWLOG,
+    PRINTLOG    =>  $PRINTLOG
+});
+
+while (FCGI::accept >= 0) {
+
+
+#### FLUSH STDOUT SO HEADER GETS OUT BEFORE ANY ERRORS
+$| = 1;
+
+#### PRINT HEADER
+print "Content-type: text/html\n\n";
+
+    print "BEGIN time: $begintime\n";
+    my $starttime = time() - $begintime;
+    print "START time: $starttime\n";
+
+    #### TIME BEFORE    
+	use Devel::Peek;
+	use Time::HiRes qw[gettimeofday tv_interval];
+	my $time = [gettimeofday()];	
+
+
+### GET PUTDATA
+my $input	= $ARGV[0];
+
+#print "{ error: 'workflow.pl    input not defined' }" and exit if not defined $input or not $input or $input =~ /^\s*$/;
+
+#### GET JSON
+use JSON;
+my $jsonParser = JSON->new();
+#my $json = $jsonParser->allow_nonref->jsonToObj($input);
+my $json = $jsonParser->allow_nonref->decode($input);
+#print "{ 'error' : 'workflow.pl   JSON not defined' }" and exit if not defined $json;
+
+warn "JSON Parser: ", tv_interval($time), "\n";
+
+
+#### GET MODE
+my $mode = $json->{mode};
+#print "{ error: 'workflow.pl    mode not defined' }" and exit if not defined $mode;
+
+#### GET USERNAME
+my $username = $json->{username};
+#print "{ error: 'view.cgi    username not defined' }" and exit if not defined $username;
+
+warn "Instantiate Conf::Agua: ", tv_interval($time), "\n";
+
+my $logfile     =   "$Bin/log/agua-$username.workflow.log";
+$conf->logfile($logfile);
+$object->logfile($logfile);
+$object->initialise($json);
+
+
+warn "Instantiate Agua::Workflow: ", tv_interval($time), "\n";
+
+#### RUN QUERY
+no strict;
+$object->$mode();
+use strict;
+
+warn "workflow->$mode(): ", tv_interval($time), "\n";
+
+my $endtime = time();
+print "total: " . ($endtime - $begintime) . "\n";
+
+} #### while (FCGI::accept >= 0) {
+

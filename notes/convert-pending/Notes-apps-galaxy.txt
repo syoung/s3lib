@@ -1,0 +1,122 @@
+Notes-apps-galaxy.txt
+
+</entry>
+
+
+
+<entry [Tue Sep 23 21:51:14 EDT 2008] INSTALL GALAXY>
+
+
+
+
+1. DOWNLOAD
+
+http://g2.trac.bx.psu.edu/wiki/HowToInstall
+
+tip.tar.gz
+
+UNZIPS TO:
+
+galaxy-dabed25dfbaf
+mv galaxy-dabed25dfbaf galaxy
+
+
+2. CREATE DIRECTORY:
+ 
+cd /var/www/html/galaxy
+mkdir -p database/files
+mkdir -p database/job_working_directory
+
+
+
+3. EDIT universe_wsgi.ini FILE:
+
+cp universe_wsgi.ini.sample universe_wsgi.ini 
+cp tool_conf.xml.sample tool_conf.xml
+cp datatypes_conf.xml.sample datatypes_conf.xml 
+
+emacs universe_wsgi.ini
+>>>...
+
+use = egg:Paste#http
+port = 8090
+host = 204.68.94.166
+use_threadpool = true
+threadpool_workers = 10
+
+...<<<
+
+
+
+
+4. At this point GALAXY is ready to run. Simply type the following command:
+
+
+cd galaxy
+sh run.sh
+
+RUNNING ON http://204.68.94.166:8090
+
+
+This will start up the server on localhost and port 8080, so type http://localhost:8080 in your web browser.
+
+Here GALAXY is run locally showing that developers do not need any special environment for running and developing its code. To make GALAXY available to other users on the network simply modify the universe_wsgi.ini file to specify the IP address of the machine GALAXY is installed on and restart the instance. No other configuration is necessary. If GALAXY needs to be run in a distributed computing environment the same universe_wsgi.ini file contains options for taking advantage of the PBS and Sun Grid Engine queue management systems (for more information, see ClusteringGalaxy).
+
+
+
+
+    File "/var/www/html/galaxy/lib/galaxy/tools/parameters/basic.py", line 133, in build
+      return parameter_types[param_type]( tool, param )
+    File "/var/www/html/galaxy/lib/galaxy/tools/parameters/basic.py", line 445, in __init__
+      self.options = dynamic_options.DynamicOptions( options, self )
+    File "/var/www/html/galaxy/lib/galaxy/tools/parameters/dynamic_options.py", line 320, in __init__
+      self.file_fields = self.parse_file_fields( open( data_file ) )
+  IOError: [Errno 2] No such file or directory: '/var/www/html/galaxy/tool-data/blastdb.loc'
+  galaxy.tools DEBUG 2008-09-23 22:03:45,164 Loaded tool: megablast_xml_parser 1.0.0
+  galaxy.tools DEBUG 2008-09-23 22:03:45,280 Loaded tool: blat_wrapper 1.0.0
+  galaxy.tools DEBUG 2008-09-23 22:03:45,304 Loaded tool: mapToUCSC 1.0.0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,312 Loaded converter: CONVERTER_bed_to_gff_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,319 Loaded converter: CONVERTER_fasta_to_tabular
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,326 Loaded converter: CONVERTER_fastqsolexa_to_fasta_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,334 Loaded converter: CONVERTER_fastqsolexa_to_qual_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,341 Loaded converter: CONVERTER_gff_to_bed_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,348 Loaded converter: CONVERTER_interval_to_bed_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,356 Loaded converter: CONVERTER_maf_to_fasta_0
+  galaxy.datatypes.registry DEBUG 2008-09-23 22:03:45,363 Loaded converter: CONVERTER_maf_to_interval_0
+  galaxy.jobs.runners.local INFO 2008-09-23 22:03:45,366 starting workers
+  galaxy.jobs.runners.local DEBUG 2008-09-23 22:03:45,371 5 workers ready
+  galaxy.jobs.schedulingpolicy.roundrobin INFO 2008-09-23 22:03:45,374 RoundRobin policy: initialized 
+  galaxy.jobs INFO 2008-09-23 22:03:45,374 job scheduler policy is galaxy.jobs.schedulingpolicy.roundrobin:UserRoundRobin
+  galaxy.jobs INFO 2008-09-23 22:03:45,374 job manager started
+  galaxy.jobs INFO 2008-09-23 22:03:45,480 job stopper started
+  galaxy.eggs DEBUG 2008-09-23 22:03:46,177 Fetched http://eggs.g2.bx.psu.edu/py2.4-linux-x86_64-ucs4/pycrypto-2.0.1-py2.4-linux-x86_64.egg
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,223 Enabling 'root' controller, class: RootController
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,285 Enabling 'dataset' controller, class: DatasetInterface
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,288 Enabling 'async' controller, class: ASync
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,290 Enabling 'ucsc_proxy' controller, class: UCSCProxy
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,291 Enabling 'tool_runner' controller, class: ToolRunner
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,292 Enabling 'admin' controller, class: Admin
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,295 Enabling 'user' controller, class: User
+  galaxy.web.framework.base DEBUG 2008-09-23 22:03:46,295 Enabling 'error' controller, class: Error
+  galaxy.datatypes.registry WARNING 2008-09-23 22:03:46,312 unknown extension in data factory data
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:46,316 Enabling 'httpexceptions' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:46,320 Enabling 'recursive' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:46,332 Enabling 'beaker session' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:46,337 Enabling 'print debug' middleware
+  galaxy.eggs DEBUG 2008-09-23 22:03:46,880 Fetched http://eggs.g2.bx.psu.edu/py2.4-noplatform/WebError-0.8a-py2.4.egg
+  galaxy.eggs DEBUG 2008-09-23 22:03:47,273 Fetched http://eggs.g2.bx.psu.edu/py2.4-noplatform/Tempita-0.1-py2.4.egg
+  galaxy.eggs DEBUG 2008-09-23 22:03:47,668 Fetched http://eggs.g2.bx.psu.edu/py2.4-noplatform/wsgiref-0.1.2-py2.4.egg
+  galaxy.eggs DEBUG 2008-09-23 22:03:48,214 Fetched http://eggs.g2.bx.psu.edu/py2.4-noplatform/WebOb-0.8.5-py2.4.egg
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:48,419 Enabling 'eval exceptions' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:48,421 Enabling 'trans logger' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:48,421 Enabling 'config' middleware
+  galaxy.web.buildapp DEBUG 2008-09-23 22:03:48,422 Enabling 'x-forwarded-host' middleware
+  Starting server in PID 13391.
+  serving on http://204.68.94.166:8090
+  
+  
+
+
+
+
+

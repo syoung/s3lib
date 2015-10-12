@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+	<extension id="jsUMLBuilder" name="JS/UML Project Builder"
+		point="org.eclipse.core.resources.builders">
+		<builder hasNature="true">
+			<run class="org.jsuml.eclipse.builder.JsUMLBuilder" />
+		</builder>
+	</extension>
+	<extension id="jsUMLNature" name="JS/UML Project Nature"
+		point="org.eclipse.core.resources.natures">
+		<runtime>
+			<run class="org.jsuml.eclipse.builder.JsUMLNature" />
+		</runtime>
+		<builder id="org.jsuml.plugin.jsUMLBuilder" />
+	</extension>
+	
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution adaptable="true" id="contribution1"
+			nameFilter="*" objectClass="org.eclipse.core.resources.IProject">
+			<action class="org.jsuml.eclipse.builder.ToggleNatureAction"
+				enablesFor="+" id="addRemoveNatureAction"
+				label="Add/Remove JS/UML Nature" menubarPath="additions" />
+		</objectContribution>
+	</extension>
+	
+	<extension id="jsUMLProblem" name="JS/UML Problem"
+		point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.core.resources.problemmarker" />
+		<persistent value="true" />
+	</extension>
+
+  <extension point="org.eclipse.emf.ecore.uri_mapping">
+    <mapping source="pathmap://JSUML_LIBRARIES/"
+       target="platform:/plugin/org.jsuml.plugin/libraries/">
+    </mapping>
+  </extension>
+  <extension
+        point="org.eclipse.ui.propertyPages">
+     <page
+           class="org.jsuml.eclipse.properties.JsUMLPropertyPage"
+           id="org.jsuml.eclipse.properties.jsUMLPropertyPage"
+           name="JS/UML">
+     </page>
+  </extension>
+
+</plugin>

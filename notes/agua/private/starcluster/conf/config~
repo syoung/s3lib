@@ -1,0 +1,53 @@
+[global]
+DEFAULT_TEMPLATE=smallcluster
+ENABLE_EXPERIMENTAL=True
+
+[aws info]
+AWS_ACCESS_KEY_ID="AKIAJWZIAB2ZZB7FHJIQ"
+aws_access_key_id="AKIAJWZIAB2ZZB7FHJIQ"
+AWS_SECRET_ACCESS_KEY=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
+AWS_USER_ID=558277860346
+
+[key id_rsa-admin-key]
+KEYNAME=id_rsa-admin-key
+KEY_LOCATION=/nethome/admin/.starcluster/id_rsa-admin-key
+
+[cluster smallcluster]
+
+# availability zone to launch the cluster in (OPTIONAL)
+# (automatically determined based on volumes (if any) or
+# selected by Amazon if not specified)
+AVAILABILITY_ZONE=us-east-1a
+
+# number of ec2 instances to launch
+CLUSTER_SIZE=2
+
+# create the following user on the cluster
+CLUSTER_USER=sgeadmin
+KEYNAME=id_rsa-admin-key
+
+# AMI for cluster nodes.
+# The base i386 StarCluster AMI is ami-d1c42db8
+# The base x86_64 StarCluster AMI is ami-a5c42dcc
+NODE_IMAGE_ID=ami-a5c42dcc
+
+# instance type for all cluster nodes
+# (options: m1.large, c1.xlarge, m1.small, c1.medium, m1.xlarge, m2.4xlarge, m2.2xlarge)
+NODE_INSTANCE_TYPE=m1.large
+#VOLUMES=data
+
+[cluster mediumcluster]
+CLUSTER_SIZE=8
+EXTENDS=smallcluster
+
+[cluster largecluster]
+CLUSTER_SIZE=16
+EXTENDS=mediumcluster
+
+#[volume data]
+#DEVICE=/dev/sdj
+#MOUNT_PATH=/data
+#PARTITION=1
+#VOLUME_ID=vol-fc5af194
+
+

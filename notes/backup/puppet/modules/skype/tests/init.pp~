@@ -1,0 +1,2 @@
+# include fingerprintgui
+class { 'fingerprintgui': }

@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head profile="http://gmpg.org/xfn/11">
+
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+	<title>rc3.org —   Design documents for small teams</title>	
+	<link rel="stylesheet" href="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/style.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/custom.htm" type="text/css" media="screen">
+	<!--[if lte IE 7]>
+	<link rel="stylesheet" type="text/css" href="http://rc3.org/wp-content/themes/rc3.org-2.2/ie7.css" media="screen" />
+	<![endif]-->
+	<!--[if lte IE 6]>
+	<link rel="stylesheet" type="text/css" href="http://rc3.org/wp-content/themes/rc3.org-2.2/ie6.css" media="screen" />
+	<![endif]-->
+	<link rel="alternate" type="application/rss+xml" title="rc3.org Feed" href="http://rc3.org/feed/">
+	<link rel="pingback" href="http://rc3.org/xmlrpc.php">
+		<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://rc3.org/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://rc3.org/wp-includes/wlwmanifest.xml"> 
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/comment-reply.js"></script>
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/jquery_002.js"></script>
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/jquery.js"></script>
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/jquery_003.js"></script>
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/openid.js"></script>
+<script type="text/javascript">
+/* <![CDATA[ */
+	AJAXCommentPreview = {
+		loading: "Loading&#8230;",
+		error: "Prevew error",
+		emptyString: "Click the &quot;Preview&quot; button to preview your comment.",
+		url: "http://rc3.org/wp-content/plugins/ajax-comment-preview/ajax-comment-preview.php"
+	}
+/* ]]> */
+</script>
+<script type="text/javascript" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/ajax-comment-preview.js"></script>
+<meta name="generator" content="WordPress 2.7">
+
+
+		<link rel="stylesheet" type="text/css" href="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/openid.css"></head><div FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body>
+<div id="container">
+	<div id="masthead">
+		<h1><a href="http://rc3.org/">rc3.org</a></h1>
+		<h3>Strong opinions weakly held</h3>
+	</div>	
+	<div id="header_img">
+				<img src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/header_2.jpg" alt="rc3.org header image 2" height="163" width="896">
+			</div>
+	<ul id="nav">
+		<li><a href="http://rc3.org/">Front Page</a></li>
+		<li><a class="current" href="http://rc3.org/archives/">archives</a></li>	
+		<li><a href="http://rc3.org/about/">about</a></li>
+		<li class="rss"><a href="http://rc3.org/feed/" title="Subscribe">Feed</a></li>
+	</ul>	
+	<div id="content_box">
+		<div id="content" class="posts">
+					<div id="post-7867" class="post hentry category-uncategorized">
+				<h2 class="entry-title">Design documents for small teams</h2>
+				<h4 class="meta">July 9th, 2007 by <span class="author"><a class="url vcard fn" href="http://rc3.org/">Rafe</a></span><br></h4>
+				<div class="entry entry-content">
+					<p>I
+read that at Google, engineers create a design document for just about
+every project they work on. It led me to think about how I might
+incorporate design documents into my usual work practices. I’m looking
+for processes for teams of one or a few people. Here’s what I hope to
+get out of a design document:</p>
+
+<ul>
+<li>Describe the requirements for the feature (or set of features) described by the design document.</li>
+<li>Enable the writer to clarify their own thinking on the design of the feature being described.</li>
+<li>Enable the person who’s requested the feature to be able to review the design to make sure their requirements are being met.</li>
+<li>Enable other developers to review the design document to find flaws and suggest improvements.</li>
+<li>Enable anybody who’s going to be working on the product a year down
+the road to review the design document and figure out what the code
+they’re working on is actually supposed to do.</li>
+</ul>
+
+<h2>UML</h2>
+
+<p>So what goes into a design document and how do you structure it?  For a bit of guidance, I looked at the types of <a href="http://en.wikipedia.org/wiki/Unified_Modeling_Language">UML diagrams</a>
+that are available. I’m not a huge fan of UML, but the theory behind it
+is that a full suite of diagrams models a system in its entirety.
+Here’s how I rate the various diagrams in terms of their conceptual
+utility. There may be better ways to represent the concepts in the
+diagrams that UML.</p>
+
+<table>
+<tbody><tr>
+<td><a href="http://en.wikipedia.org/wiki/Class_diagram">Class diagram</a></td>
+<td>Describes the objects in an object-oriented system and their relationships to one another. Indispensable.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/componentDiagram.htm">Component diagram</a></td>
+<td>Basically a higher level class diagram</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/compositeStructureDiagram.htm">Composite structure diagram</a></td>
+<td>Not even the guy who documented it found it useful</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/deploymentDiagram.htm">Deployment diagram</a></td>
+<td>Describes the actual deployment environment for an application.
+Useful if you are speccing out deployment (or recommended deployment).</td>
+</tr>
+<tr>
+<td><a href="http://en.wikipedia.org/wiki/Object_diagram">Object diagram</a></td>
+<td>Basically a class diagram with actual data filled in. A fancy word for “example”.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/packageDiagram.htm">Package diagram</a></td>
+<td>Shows the components of a system at a higher level than the class diagram. Utility is marginal at best.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/useCaseDiagram.htm">Use case diagram</a></td>
+<td>I’m not in love with these diagrams, but the concept behind them is essential to design.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/activityDiagram.htm">Activity diagram</a></td>
+<td>Some call it a flow chart. It’s hard to describe any complex design without something along these lines.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/stateMachineDiagram.htm">State Machine diagram</a></td>
+<td>More specific than an activity diagram, which is more specific than
+a use case diagram. Useful when you’re modeling something too complex
+to be captured in the activity diagram.</td>
+</tr>
+<tr>
+<td><a href="http://en.wikipedia.org/wiki/Sequence_diagram">Sequence diagram</a></td>
+<td>Shows how messages are passed within a system. Only useful if generated from code. Too granular otherwise.</td>
+</tr>
+<tr>
+<td><a href="http://www.agilemodeling.com/artifacts/communicationDiagram.htm">Communication diagram</a></td>
+<td>Describes relationships between objects in a system in terms of the
+messages they pass. Again, very granular, but a nice thing to have if
+you can generate it.</td>
+</tr>
+</tbody></table>
+
+<p>I don’t want to dig too deeply into UML, but I did want to bring it
+up because it’s somebody’s idea of how to describe a system. It’s
+important to remember that the ideal use case for UML is in a system
+where the diagrams are coupled with the code itself, so altering your
+code updates the diagrams and vice versa. No programmer has enough time
+to create all of those diagrams by hand and keep the diagrams in sync
+with code as the system evolves over time. That’s not how UML is used,
+ideally. Unfortunately, the UML tools that are out there have never
+been compelling enough to me to bother with them.</p>
+
+<h2>The Wikipedia Definition</h2>
+
+<p>Wikipedia’s page on <a href="http://en.wikipedia.org/wiki/Design_document">design documents</a> is short and nominated for deletion. It lists four sections for such a document:</p>
+
+<ul>
+<li>Data design</li>
+<li>Architecture design</li>
+<li>Interface design</li>
+<li>Procedural design</li>
+</ul>
+
+<p>I don’t think that’s quite right either because it leaves out use
+cases, which are necessary if you are serious about user experience. If
+you don’t how who’s going to use your application and what they hope to
+accomplish, you’re never going to get the interface right. So here’s a
+stab at what I think a design document ought to contain.</p>
+
+<h2>A Rough Draft</h2>
+
+<p>So here are the elements that I think should appear in a design
+document, even for a relatively small project. I don’t care whether
+they are diagrams or narrative. Some things are better described in
+pictures, but at the same time, some of us are better writers than
+illustrators.</p>
+
+<p><strong>What’s the value?</strong> Persuade the reader that the
+feature is worth implementing in the first place. What’s the purpose?
+Why are you writing it instead of using something that already exists?</p>
+
+<p><strong>Use case analysis.</strong> Who will be using this feature
+and why? If you’re writing a library, the users will be developers who
+incorporate it into their own code. If you’re writing a Web
+application, the user may be a customer who wants to buy something, or
+a back office employee who’s fulfilling an order, or a writer who’s
+trying to publish an article. Will this application be used by the same
+people on a daily basis or will it be used only occasionally by a large
+group of people? How knowledgeable are these users? UML provides a use
+case diagram, but this is probably a section I’d prefer to write out.</p>
+
+<p><strong>How is it supposed to work?</strong> A high level technical
+overview of how the feature will be implemented. I’m not looking for
+extreme detail here, just a high level overview of how the feature will
+work in a technical sense. Are you writing this in Java, PHP, or Ruby
+on Rails? Will you be using a relational database or flat files for
+data storage? Are you going to integrate the components via a Web
+service or are they parts of a single application? If it’s a Web
+application, will you be using an MVC framework? Will you be using a
+library to handle the persistence layer? The purpose of this section is
+to give an idea of the scope of the project and what the risks are in
+terms of completing it successfully. I can also use it to figure out
+which members of the team might be able to apply their expertise to
+this problem.</p>
+
+<p><strong>What are the dependencies?</strong> You can figure out some
+of the dependencies from the technical overview, but this section makes
+the dependencies explicit. Is this project going to introduce a
+dependency that we can’t rely on in the future? Are we about to build
+something that the infrastructure people aren’t comfortable deploying?
+Does anyone in the office know anything about the tools you’ve chosen
+to implement this feature?</p>
+
+<p><strong>What will be affected?</strong> Closely related to the
+dependency question, this seeks to help everyone figure out what impact
+this feature will have. Are we going to need to add more RAM to the
+database server? Is it going to increase our bandwidth requirements?
+Does it make our reports obsolete? This is one of those questions with
+no authoritative answer, but the developer should try to anticipate the
+impact of the feature they want to implement.</p>
+
+<p><strong>Class diagram.</strong> If you’re not building an object-oriented system, then an <a href="http://en.wikipedia.org/wiki/Entity-relationship_diagram">entity-relationship diagram</a>
+may make more sense. Either way, this diagram describes the structure
+of your system at a low level. It documents which classes you need to
+create, how they are represented in the database, and the relationships
+between them.</p>
+
+<p>How does that sound for a first draft for a design document?  What would you add? I expect to revisit this topic soon.</p>
+						
+					<p class="tagged"><strong>Tag<span class="flickr_pink">s</span>:</strong> <span class="add_comment"><a href="#comments">5 Comments</a></span></p>
+				</div>
+			</div>			<div id="comments">
+	<div id="respond">	
+		<h3 class="respond">Leave a Comment <span id="cancel-comment-reply"><a rel="nofollow" id="cancel-comment-reply-link" href="http://rc3.org/2007/07/09/design-documents-for-small-teams/#respond" style="display: none;">(Cancel)</a></span></h3>
+					<form action="http://rc3.org/wp-comments-post.php" method="post" id="comment_form">
+										<div class="add-comment"><label for="author"><span class="label">Name</span></label><div><input class="text_input" name="author" id="author" value="" tabindex="1" type="text"></div></div>
+				<div class="add-comment"><label for="email">Mail</label><div><input class="text_input" name="email" id="email" value="" tabindex="2" type="text"></div></div>
+				<div class="add-comment"><label for="url">Website</label><div><input class="text_input" name="url" id="url" value="" tabindex="3" type="text"></div></div>
+							<!--<p><small><strong>XHTML:</strong> You can use these tags: &lt;a href=&quot;&quot; title=&quot;&quot;&gt; &lt;abbr title=&quot;&quot;&gt; &lt;acronym title=&quot;&quot;&gt; &lt;b&gt; &lt;blockquote cite=&quot;&quot;&gt; &lt;cite&gt; &lt;code&gt; &lt;del datetime=&quot;&quot;&gt; &lt;em&gt; &lt;i&gt; &lt;q cite=&quot;&quot;&gt; &lt;strike&gt; &lt;strong&gt; </small></p>-->			
+				<div class="add-comment"><label for="comment">Your Comment</label><div><textarea class="text_input text_area" name="comment" id="comment" rows="7" tabindex="4" cols="100"></textarea></div></div>			
+							
+				<p><input name="comment_post_ID" value="7867" id="comment_post_ID" type="hidden">
+<input name="comment_parent" id="comment_parent" value="0" type="hidden">
+<input name="submit" class="form_submit" id="submit" tabindex="5" value="Submit" type="submit"></p>		
+				<input name="acp-preview" id="acp-preview" tabindex="6" value="Preview Comment" type="button"><div id="ajax-comment-preview">Click the "Preview" button to preview your comment.</div>	
+			</form>
+				
+	</div><h3 class="comments_headers">5 responses so far ↓</h3>	
+	<ul class="commentlist" id="comment_list">
+		<li class="comment even thread-even depth-1 comment" id="comment-1846"><div id="div-comment-1846" class="comment-wrapper">
+		<div class="comment-meta">
+			<a class="url vcard fn" href="">Jacob Davies</a>
+			<div class="comment-time"><a class="date" href="#comment-1846" title="Permanent Link to this comment">Jul 10, 2007 at 4:26 pm</a> </div>
+			<div class="comment_avatar"><img alt="" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/f4044086264f2949981d155dbc92ea83.jpg" class="avatar avatar-48 photo" height="48" width="48"></div>
+		</div>
+		<div class="entry">
+			<p>Even
+if you are building an OO system, you probably have a database, and you
+probably want to document the schema with an ERD. Objects come and go,
+but databases are forever…</p>
+
+<p>I’ll give you an example: the Java application I wrote a couple of
+years ago that interoperates with COBOL programs written 10-15 years
+earlier does all of its communication through the database. There’s no
+RPC of any kind between the two systems - one runs deep in the bowels
+of an IBM mainframe, the other runs on a Windows PC server in
+Websphere. Works great. The schema diagram from the previous system was
+an important part of being able to write it (as was the ability to get
+the database to describe the tables, and the ability to ask questions
+of people knowledgeable about the previous system, but the schema
+diagram was the main reference).</p>
+
+<p>Other than that, I think you make sensible points. One of the nice
+things about having a design document is that 2 weeks into a complex
+set of changes you can look back and see what it is you’re really
+trying to accomplish. This happens to me a depressingly large amount of
+the time, that I’ll be deep in the guts of things making changes and
+have lost track to some extent of what the goal is. Software is such a
+malleable thing, knowing when to stop hammering it into a different
+shape can be very hard.</p> 
+					</div>
+		<div class="reply"></div>
+	</div></li>
+	<li class="comment odd alt thread-odd thread-alt depth-1 comment" id="comment-1847"><div id="div-comment-1847" class="comment-wrapper">
+		<div class="comment-meta">
+			<a class="url vcard fn" href="http://www.d-riven.com/">Howard Berkey</a>
+			<div class="comment-time"><a class="date" href="#comment-1847" title="Permanent Link to this comment">Jul 10, 2007 at 11:41 pm</a> </div>
+			<div class="comment_avatar"><img alt="" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/292f27f5a185b3b339b3c5dbec93a87f.jpg" class="avatar avatar-48 photo" height="48" width="48"></div>
+		</div>
+		<div class="entry">
+			<p>Wow.  A lot here.  I’m not a huge fan of UML either.  But I have two comments about your take.</p>
+
+<p>First, you are too lenient about Use Case diagrams. They are
+completely useless; more than that, they are almost harmful. The same
+amount of paper with actual descriptions about the use cases (in text)
+is much more helpful in my opinion. We’re all adults and can read; we
+don’t need little stick figure people pointing at boxes to indicate a
+“use” relationship. I believe these exist just to encourage people to
+get <em>something</em> down for use cases.</p>
+
+<p>And, I <em>completely disagree</em> about Sequence Diagrams. They
+may be the most useful diagrams of the bunch. Any time there is a
+temporal dependency between subsystems it is useful to model the
+messaging using the sequence diagrams. While this may not be so common
+for web apps, for distributed systems it is often crucial. Sequence
+Diagrams are one of the few parts of UML that exist in every design doc
+we do. They are very good at describing sequenced relationships, and
+have been used a lot longer than UML has been around.</p> 
+					</div>
+		<div class="reply"></div>
+	</div></li>
+	<li class="comment even thread-even depth-1 comment" id="comment-1848"><div id="div-comment-1848" class="comment-wrapper">
+		<div class="comment-meta">
+			<a class="url vcard fn" href="">andrew</a>
+			<div class="comment-time"><a class="date" href="#comment-1848" title="Permanent Link to this comment">Jul 11, 2007 at 6:12 pm</a> </div>
+			<div class="comment_avatar"><img alt="" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/930f7b96e40c9e69fac56da449045a10.jpg" class="avatar avatar-48 photo" height="48" width="48"></div>
+		</div>
+		<div class="entry">
+			<p>a link to the article you read about google would be interesting…</p> 
+					</div>
+		<div class="reply"></div>
+	</div></li>
+	<li class="comment odd alt thread-odd thread-alt depth-1 comment" id="comment-1849"><div id="div-comment-1849" class="comment-wrapper">
+		<div class="comment-meta">
+			<a class="url vcard fn" href="http://rc3.org/">Rafe</a>
+			<div class="comment-time"><a class="date" href="#comment-1849" title="Permanent Link to this comment">Jul 11, 2007 at 7:27 pm</a> </div>
+			<div class="comment_avatar"><img alt="" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/1e99e09ed5cd6d30bdd963ad4813fcdb.jpg" class="avatar avatar-48 photo" height="48" width="48"></div>
+		</div>
+		<div class="entry">
+			<p>The Google thing was a passing reference in this Steve Yegge blog post:</p>
+
+<p><a href="http://steve-yegge.blogspot.com/2007/06/rhino-on-rails.html" rel="nofollow">http://steve-yegge.blogspot.com/2007/06/rhino-on-rails.html</a></p> 
+					</div>
+		<div class="reply"></div>
+	</div></li>
+	<li class="comment even thread-even depth-1 comment" id="comment-2298"><div id="div-comment-2298" class="comment-wrapper">
+		<div class="comment-meta">
+			<a class="url vcard fn" href="">Daniel Horton</a>
+			<div class="comment-time"><a class="date" href="#comment-2298" title="Permanent Link to this comment">Jan 22, 2008 at 11:15 pm</a> </div>
+			<div class="comment_avatar"><img alt="" src="rc3.org%20%E2%80%94%20Design%20documents%20for%20small%20teams_files/3ce14fa239fde62a8c888ceefcd36dd3.jpg" class="avatar avatar-48 photo" height="48" width="48"></div>
+		</div>
+		<div class="entry">
+			<p>Hello,
+my name is Daniel and I’m a nineteen year old sophmore at the Ira A.
+Fulton School of Engineering at Arizona State University. I find your
+blogs quite fasinating and was wondering if you could send me an e-mail
+of the name of your books.</p> 
+					</div>
+		<div class="reply"></div>
+	</div></li>
+	</ul>
+	<div class="navigation">
+		<div class="alignleft">&nbsp;</div>
+		<div class="alignright">&nbsp;</div>
+	</div>
+	</div><div class="clear"></div>
+			<ul id="post-navigation">
+	<li><a href="http://rc3.org/2007/07/09/you-never-know-who-might-be-paying-attention/">« Previous</a></li>
+	<li><a href="http://rc3.org/2007/07/10/israel-is-pondering-internet-censorship/">Next »</a></li>
+	<li><a href="http://rc3.org/">Front Page</a></li>
+	<li><a href="http://rc3.org/2007/07/09/design-documents-for-small-teams/#content">Top</a></li>
+	<li class="respond"><a href="#respond">Respond</a></li>
+</ul>
+<div class="clear"></div>	
+				</div>
+		<div id="sidebar">
+	<ul class="sidebar_list">
+		<li id="search" class="widget widget_search"><form method="get" id="searchform" action="http://rc3.org/">
+	<input class="search_input" value="To search, type and hit enter" name="s" id="s" onfocus="if (this.value == 'To search, type and hit enter') {this.value = '';}" onblur="if (this.value == '') {this.value = 'To search, type and hit enter';}" type="text">
+	<input id="searchsubmit" value="Search" type="hidden">
+</form>
+</li>
+		<li id="text-1" class="widget widget_text">			<h2 class="widgettitle">About</h2>
+			<div class="textwidget">rc3.org is the weblog of Rafe Colburn. I've been blogging about software development and other topics here since 1998.</div>
+		</li>
+		<li id="recent-posts" class="widget widget_recent_entries">			<h2 class="widgettitle">Recent Posts</h2>
+			<ul>
+						<li><a href="http://rc3.org/2009/04/07/becoming-a-designer/">Becoming a designer </a></li>
+						<li><a href="http://rc3.org/2009/04/06/identifying-people-based-on-their-social-graph/">Identifying people based on their social graph </a></li>
+						<li><a href="http://rc3.org/2009/04/06/quotable-alex-payne/">Quotable: Alex Payne </a></li>
+						<li><a href="http://rc3.org/2009/04/05/roger-eberts-love-letter-to-newspapers/">Roger Ebert’s love letter to newspapers </a></li>
+						<li><a href="http://rc3.org/2009/04/04/inside-the-job-numbers/">Inside the job numbers </a></li>
+						</ul>
+		</li>
+
+		<li id="recent-comments" class="widget widget_recent_comments">			<h2 class="widgettitle">Recent Comments</h2>
+			<ul id="recentcomments"><li class="recentcomments"><a href="http://jacksonfox.org/" rel="external nofollow" class="url">Jackson Fox</a> on <a href="http://rc3.org/2009/04/07/becoming-a-designer/comment-page-1/#comment-5192">Becoming a designer</a></li><li class="recentcomments"><a href="http://jacksonfox.org/" rel="external nofollow" class="url">Jackson Fox</a> on <a href="http://rc3.org/2009/04/07/becoming-a-designer/comment-page-1/#comment-5191">Becoming a designer</a></li><li class="recentcomments">Yoav on <a href="http://rc3.org/2009/04/07/becoming-a-designer/comment-page-1/#comment-5190">Becoming a designer</a></li><li class="recentcomments"><a href="http://plasmasturm.org/" rel="external nofollow" class="openid_link url">Aristotle Pagaltzis</a> on <a href="http://rc3.org/2009/04/07/becoming-a-designer/comment-page-1/#comment-5187">Becoming a designer</a></li><li class="recentcomments"><a href="http://www.notio.com/" rel="external nofollow" class="url">Michael J.</a> on <a href="http://rc3.org/2009/04/07/becoming-a-designer/comment-page-1/#comment-5185">Becoming a designer</a></li></ul>
+		</li>
+	</ul>
+</div>	</div>
+	<div id="footer">
+		<p>© 2006–2009 rc3.org — <a href="http://rc3.org/sitemap/">Sitemap</a> — <a title="Cutline" href="http://cutline.tubetorial.com/">Cutline</a> by <a title="Pearson" href="http://www.tubetorial.com/">Chris Pearson</a>.</p>
+		<script type="text/javascript">add_openid_to_comment_form()</script>		
+	</div>
+</div>
+</body></html>

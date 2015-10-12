@@ -1,0 +1,706 @@
+Notes-database-pfalagam.txt
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+pfalagam DATABASE WORKFLOWS
+
+Workflow 0: Create orthologues
+==============================
+
+1. CREATE orthologues TABLE
+
+./inparanoidorthologues.pl -d pfalagam
+
+
+Workflow 1: Annotation Verification
+===================================
+
+1. Create orthologues BLAST query file
+
+./orthologuesarrayblastquery.pl -d pfalagam
+
+2. Get BLAST orthologues
+
+sudo ./arrayblast.pl -q pfalagam -d pfalagam -t swissprot
+
+
+    Merging output files... ++++ Alignment::Blast::merge_files(self, files, outputfile)
+    done.
+    Output file printed:
+    
+    /common/pipeline/pfalagam/blast/pfalagam-swissprot.blast.tsv
+    
+    Run time: 00:10:47
+    Completed ./arrayblast.pl
+    8:02PM, 14 October 2007
+    ****************************************
+
+sudo ./arrayblast.pl -q pfalagam -d pfalagam -t refseq-human,refseq-mouse,refseq-rat,refseq-dog
+
+    
+    Run time: 00:11:06
+    Completed ./arrayblast.pl
+    1:38AM, 15 October 2007
+    ****************************************
+
+
+
+3. Load BLAST results into orthologuesblast table
+
+./arrayblastloaddata.pl -d pfalagam -t swissprot,refseq-human,refseq-mouse,refseq-rat,refseq-dog
+    
+    Run time: 00:01:04
+    Completed ./arrayblastloaddata.pl
+    4:40AM, 15 October 2007
+    ****************************************
+    
+     select count(*), targetsource from orthologuesblast group by targetsource ;
+    +----------+--------------+
+    | count(*) | targetsource |
+    +----------+--------------+
+    |   214968 | refseq-dog   |
+    |   145800 | refseq-human |
+    |   128570 | refseq-mouse |
+    |   124915 | refseq-rat   |
+    |   360871 | swissprot    |
+    +----------+--------------+
+
+4. DO BEST EVALUE HITS
+    
+./blastbestevalue.pl -d pfalagam
+
+    3400
+    Output .TSV file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/pfalagam/collection/pfalagam.blastbestevalue.tsv
+    
+    Loading data into table 'blastbestevalue'... done.
+    
+    Run time: 00:01:15
+    Completed ./blastbestevalue.pl
+    4:44AM, 15 October 2007
+    ****************************************
+
+5. DO BLAST EVALUE ANNOTATION
+
+./blastevalueannotation.pl -d pfalagam
+
+    (...1 hour? Machine froze...)
+    
+    select count(*) from blastevalueannotation;
+    +----------+
+    | count(*) |
+    +----------+
+    |     3301 |
+    +----------+
+
+6. DO blastcoverage IN PREPARATION FOR correctannotation
+
+./blastcoverage.pl -d pfalagam
+    
+    Doing annotations for collection sequences (total 3496)
+
+    /Users/young/FUNNYBASE/pipeline/pfalagam/collection/pfalagam.blastcoverage.tsv
+    
+    Run time: 01:30:07 (ish)
+    Completed ./blastcoverage.pl
+    9:19PM, 15 November 2007
+    ****************************************
+
+
+
+
+Workflow 2: Get Iprscan motifs
+==============================
+
+1. RUN IPRSCAN
+
+sudo ./arrayiprscandaemon.pl -d pfalagam
+
+
+2. LOAD DATA
+
+./arrayiprscanloaddata.pl -d pfalagam
+
+
+
+
+
+Workflow 3: Do Naive Bayes and Decision Tree models
+===================================================
+
+1. LOAD THE collection, collectioniprscan TABLE TO THE CLUSTER
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d pfalagam -t collection
+
+ON gems:
+sudo chmod 755 /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d pfalagam -t collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+2. POPULATE iprscanset
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscansetdaemon.pl -d pfalagam -t 24
+
+    
+
+3. POPULATE iprscansetsequence
+
+(NB: NOT NECESSARILY A BALANCED SET BECAUSE WE WANT TO USE THE ONES WITH THE HIGHEST NUMBER OF MOTIFS IN COMMON TO CREATE THE MULTIPLE ALIGNMENT IN THE NEXT STEP.)
+
+./iprscansetsequence.pl -d pfalagam
+
+
+6. CREATE IPRSCAN SET ALIGNMENT
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d pfalagam -n 24
+
+(Cluster::Herder::Termite)
+
+    Run time: 00:26:35
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    10:18PM, 19 January 2008
+    ****************************************
+
+
+7. LOAD ALIGNMENTS
+
+./arrayiprscansetalignmentloaddata.pl -d pfalagam
+    
+
+    Run time: 00:00:28
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    10:48PM, 19 January 2008
+    ****************************************
+
+8. CREATE SUPERDOMAINS: 
+
+./iprscansuperdomain.pl -d pfalagam 
+
+    RUN TIME: 00:12:09
+    Completed ./iprscansuperdomain.pl
+    11:01PM, 19 January 2008
+    ****************************************
+
+    select count(*) from iprscansuperdomain;
+    +----------+
+    | count(*) |
+    +----------+
+    |     4445 |
+    +----------+
+    1 row in set (0.00 sec)
+    
+    mysql>     select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                         1164 |
+    +------------------------------+
+    
+    select collectionid , count(*) as count from iprscansuperdomain group by collectionid order by count;
+    
+    |         1333 |    19 |
+    |         1357 |    21 |
+    |            7 |    22 |
+    |          558 |    23 |
+    |         1236 |    24 |
+    |         1165 |    26 |
+    |          959 |    28 |
+    |          746 |    29 |
+    |         1189 |    32 |
+    |          787 |    37 |
+    |            6 |    38 |
+    |          696 |    39 |
+    |         1095 |    39 |
+    |         1121 |    46 |
+    +--------------+-------+
+    1164 rows in set (0.02 sec)
+
+10. DO IPRSCAN ATTRIBUTES FOR NAIVE BAYES
+
+./iprscanattributebayes.pl -d pfalagam
+
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:02:35
+    0:03AM, 20 January 2008
+    ****************************************
+
+
+11. DO N-FOLD PERMUTATIONS:
+
+./nfoldbayes.pl -d pfalagam
+    
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:29
+    0:15AM, 20 January 2008
+    ****************************************
+
+
+
+
+12. Load tables onto cluster to run 'iprscanattribute'
+======================================================
+
+TABLES: iprscanset, iprscansetsequence, iprscansetalignment, iprscansuperdomain, iprscanattributebayes
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d pfalagam -t iprscanset,iprscansetsequence,iprscansetalignment,iprscansuperdomain,iprscanattributebayes
+    
+    Run time: 00:00:34
+    Completed ./clusterloadtable.pl
+    1:31AM, 20 January 2008
+    ****************************************
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo /common/pipeline/pfalagam/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+ON node002 CHECK TABLES:
+
+    +-----------------------+
+    | Tables_in_pfalagam    |
+    +-----------------------+
+    | collection            |
+    | collectioniprscan     |
+    | evalueannotation      |
+    | iprscanattributebayes |
+    | iprscanset            |
+    | iprscansetalignment   |
+    | iprscansetsequence    |
+    | iprscansuperdomain    |
+    +-----------------------+
+    8 rows in set (0.02 sec)
+
+
+select count(distinct collectionid) from iprscansuperdomain;
+select count(distinct collectionid) from iprscanset;
+select count(distinct collectionid) from iprscansetsequence;
+select count(distinct collectionid) from iprscansetalignment;
+select count(distinct collectionid) from iprscanattributebayes;
+
+
+mysql> use pfalagam;
+Database changed
+mysql> select count(distinct collectionid) from iprscansuperdomain;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1164 |
++------------------------------+
+1 row in set (0.02 sec)
+
+mysql> select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1164 |
++------------------------------+
+1 row in set (2.32 sec)
+
+mysql> select count(distinct collectionid) from iprscansetsequence;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1164 |
++------------------------------+
+1 row in set (0.07 sec)
+
+mysql> select count(distinct collectionid) from iprscansetalignment;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1164 |
++------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct collectionid) from iprscanattributebayes;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1164 |
++------------------------------+
+1 row in set (0.35 sec)
+
+
+
+10. For each orthologue, create attributes for each member of 'iprscanset'
+==========================================================================
+
+
+ select count(*) from iprscanattribute;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+
+
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+    
+GROUP BY IPRSCAN
+    
+sudo ./arrayiprscanattributedaemon.pl -d pfalagam -g iprscan -t 24
+    
+    Run time: 00:04:56
+    Completed ./arrayiprscanattributedaemon.pl
+    1:48AM, 20 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d pfalagam -t 24
+
+    Run time: 00:00:21
+    Completed ./loadiprscanattribute.pl
+    2:12AM, 20 January 2008
+    ****************************************
+
+    use pfalagam;
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | iprscan |          0 |          1144 |   124226 |
+    +---------+------------+---------------+----------+
+
+    
+GROUP BY SIZE
+
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 150 -t 24 
+
+    Run time: 00:04:27
+    Completed ./arrayiprscanattributedaemon.pl
+    2:20AM, 20 January 2008
+    ****************************************
+
+
+./loadiprscanattribute.pl -d pfalagam -t 24
+
+    Run time: 00:00:29
+    Completed ./loadiprscanattribute.pl
+    12:48AM, 20 January 2008
+    ****************************************
+    
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | iprscan |          0 |          1144 |   124226 |
+    | size    |        150 |          1144 |   105472 |
+    +---------+------------+---------------+----------+
+        
+
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 300 -t 24
+
+    Run time: 00:05:04
+    Completed ./arrayiprscanattributedaemon.pl
+    1:10PM, 20 January 2008
+    ****************************************
+    
+./loadiprscanattribute.pl -d pfalagam -t 24
+    
+    Run time: 00:00:34
+    Completed ./loadiprscanattribute.pl
+    1:22PM, 20 January 2008
+    ****************************************
+    
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | iprscan |          0 |          1144 |   124226 |
+    | size    |        150 |          1144 |   105472 |
+    | size    |        300 |          1154 |    61115 |
+    +---------+------------+---------------+----------+
+    
+
+./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 150 -t 24
+    
+    Run time: 00:04:51
+    Completed ./arrayiprscanattributedaemon.pl
+    1:28PM, 20 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d pfalagam -t 24
+    
+    Run time: 00:00:51
+    Completed ./loadiprscanattribute.pl
+    0:23AM, 21 January 2008
+    ****************************************
+
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        150 |          1144 |   109517 |
+    | iprscan |          0 |          1144 |   124226 |
+    | size    |        150 |          1144 |   105472 |
+    | size    |        300 |          1154 |    61115 |
+    +---------+------------+---------------+----------+
+
+sudo ./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 300 -t 24
+
+    Run time: 00:04:52
+    Completed ./arrayiprscanattributedaemon.pl
+    0:29AM, 21 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d pfalagam -t 24
+    
+    Run time: 00:01:02
+    Completed ./loadiprscanattribute.pl
+    0:48AM, 21 January 2008
+    ****************************************
+
+    select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        150 |           853 |   243652 |
+    | both    |        300 |           853 |   213530 |
+    | iprscan |          0 |           853 |   230296 |
+    | size    |        150 |           853 |   271520 |
+    | size    |        300 |           853 |   140034 |
+    +---------+------------+---------------+----------+
+
+
+sudo ./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 100 -t 24
+
+    Run time: 00:04:53
+    Completed ./arrayiprscanattributedaemon.pl
+    8:03PM, 21 January 2008
+    ****************************************
+
+./loadiprscanattribute.pl -d pfalagam -t 24
+
+    Run time: 00:01:35
+    Completed ./loadiprscanattribute.pl
+    8:11PM, 21 January 2008
+    ****************************************
+
+    
+      select groupby, domainsize, count(distinct collectionid) as collectionids, count(*) from iprscanattribute group by groupby, domainsize;
+    +---------+------------+---------------+----------+
+    | groupby | domainsize | collectionids | count(*) |
+    +---------+------------+---------------+----------+
+    | both    |        100 |          1164 |   114433 |
+    | both    |        150 |          1144 |   109517 |
+    | both    |        300 |          1144 |   105256 |
+    | iprscan |          0 |          1144 |   124226 |
+    | size    |        100 |          1144 |   153413 |
+    | size    |        150 |          1144 |   105472 |
+    | size    |        300 |          1154 |    61115 |
+    +---------+------------+---------------+----------+
+    
+    
+
+GROUP BY SIZE
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 200
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 250
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 400
+./arrayiprscanattributedaemon.pl -d pfalagam -g size -s 500
+
+
+GROUP BY BOTH IPRSCAN AND SIZE
+./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 200
+./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 250
+./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 400
+./arrayiprscanattributedaemon.pl -d pfalagam -g both -s 500
+
+
+11. TEST THE NAIVE BAYES MODELS
+
+INPUTS:
+
+nfoldbayes TABLE
+iprscanattributebayes TABLE
+
+
+./learningbayes.pl -d pfalagam
+    
+
+
+12. TEST THE DECISION TREE MODELS
+
+INPUTS:
+
+nfoldbayes TABLE
+iprscanattribute TABLE
+
+   
+GROUP BY IPRSCAN
+
+./learningtrees.pl -d pfalagam
+
+    /Users/young/FUNNYBASE/pipeline/pfalagam/collection/pfalagam.learningtrees.tsv
+    
+    Completed ./learningtrees.pl
+    Run time: 00:00:45
+    11:00AM, 5 November 2007
+    ****************************************
+
+
+    select avg(correct) from learningtrees;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8686 |
+    +--------------+
+
+
+./learningtrees.pl -d pfalagam -g size -s 100
+
+
+
+
+./learningtrees.pl -d pfalagam -g size -s 150
+
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8226 |
+    +--------------+
+
+./learningtrees.pl -d pfalagam -g size -s 100
+
+    Completed /Users/young/FUNNYBASE/bin/signature/learningtrees.pl
+    Run time: 00:08:47
+    3:47PM, 21 January 2008
+    ****************************************
+
+    select avg(correct) from learningtrees where groupby = 'size' and domainsize = 100;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8164 |
+    +--------------+
+
+./learningtrees.pl -d pfalagam -g size -s 300
+    
+    Completed /Users/young/FUNNYBASE/bin/signature/learningtrees.pl
+    Run time: 00:07:32
+    4:02PM, 21 January 2008
+    ****************************************
+
+    select avg(correct) from learningtrees where groupby = 'size' and domainsize = 300;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.8486 |
+    +--------------+
+
+
+./learningtrees.pl -d pfalagam -g both -s 100
+    
+    Completed ./learningtrees.pl
+    Run time: 00:09:44
+    8:49PM, 21 January 2008
+    ****************************************
+    
+    select avg(correct) from learningtrees where groupby = 'both' and domainsize = 100;
+   +--------------+
+   | avg(correct) |
+   +--------------+
+   |       0.7405 |
+   +--------------+
+
+
+./learningtrees.pl -d pfalagam -g both -s 150
+
+    select avg(correct) from learningtrees where groupby = 'both' and domainsize = 150;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7375 |
+    +--------------+
+
+
+
+./learningtrees.pl -d pfalagam -g both -s 300
+
+
+    select avg(correct) from learningtrees where groupby = 'both' and domainsize = 300;
+   +--------------+
+   | avg(correct) |
+   +--------------+
+   |       0.7383 |
+   +--------------+
+   
+    
+    select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
+    +---------+------------+--------------+
+    | groupby | domainsize | avg(correct) |
+    +---------+------------+--------------+
+    | both    |        100 |       0.7405 |
+    | both    |        150 |       0.7375 |
+    | both    |        300 |       0.7383 |
+    | iprscan |          0 |       0.8154 |
+    | size    |        100 |       0.8164 |
+    | size    |        150 |       0.8226 |
+    | size    |        300 |       0.8486 |
+    +---------+------------+--------------+   
+
+
+GROUP BY SIZE
+./learningtrees.pl -d pfalagam -g size -s 200
+./learningtrees.pl -d pfalagam -g size -s 250
+./learningtrees.pl -d pfalagam -g size -s 400
+./learningtrees.pl -d pfalagam -g size -s 500
+
+GROUP BY BOTH IPRSCAN AND SIZE
+./learningtrees.pl -d pfalagam -g both -s 200
+./learningtrees.pl -d pfalagam -g both -s 250
+./learningtrees.pl -d pfalagam -g both -s 400
+./learningtrees.pl -d pfalagam -g both -s 500
+
+
+
+
+SOLUTION: FINE TUNING WITH DOMAIN SIZE TO GET GREATER RESOLUTION.
+
+
+12. GET OPTIMUM GROUPINGS FOR EACH SEQUENCE
+
+./learningtreesharvest.pl -d unigene
+
+
+
+
+
+13. DO DECISION TREES WITH UNBALANCED DATA SETS
+
+./nfold.pl -d pfalagam
+
+    *** NB: ONLY 50 ORTHOLOGUE GROUPS OUT OF 1375
+    
+    /Users/young/FUNNYBASE/pipeline/pfalagam/collection/pfalagam.nfold.tsv
+    
+    Completed ./nfold.pl
+    Run time: 00:00:03
+    10:57AM, 5 November 2007
+    ****************************************
+
+

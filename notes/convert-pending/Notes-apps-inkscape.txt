@@ -1,0 +1,759 @@
+INSTALL WITH FINK
+
+ 
+1. UPDATE FINK
+sudo apt-get update ; sudo apt-get install fink
+
+
+(2)      cvs
+(3)      Stick to point releases
+
+Choose an update method [1] 1
+rsync -az -q  rsync://master.us.finkmirrors.net/finkinfo//TIMESTAMP /sw/fink/TIMESTAMP.tmp
+I will now run the rsync command to retrieve the latest package descriptions. 
+...
+
+
+2. ENABLE unstable PACKAGES:
+
+    To configure Fink to use unstable, edit:
+    
+    sudo emacs /sw/etc/fink.conf
+    
+    add to the 'Trees:' line:
+    
+    unstable/main unstable/crypto
+    
+    and then run:
+    
+    fink selfupdate; fink index; fink scanpackages
+    
+    If you don't want to install any more from unstable than your specific packages and their dependencies command, turn the unstable tree back off and do:
+    
+    fink update-all
+    
+    NB: Packages in the unstable tree are not in stable for any number of reasons. It could be because there are known issues, validation errors, or just not enough people giving feedback that the package works for them. For that reason, Fink doesn't search the unstable tree by default.
+    
+    If you do enable unstable, please remember to e-mail the maintainer if something works (or even if it doesn't). Feedback from users like you is what we use to determine if something is ready for stable! To find out the maintainer of a package, run:
+    
+    fink info packagename
+
+3. CHECK inkscape DEPENDENCIES:
+
+fink show-deps inkscape
+
+fink show-deps inkscape
+Information about 5846 packages read in 1 seconds.
+
+Package: inkscape (0.41-22)
+To install the compiled package...
+  The following other packages (and their dependencies) must be installed:
+    atk1-shlibs
+    gc-shlibs (>= 6.4-1)
+    glibmm2.4-shlibs
+    gtk+2-shlibs
+    gtkmm2.4-shlibs
+    libart2-shlibs
+    libpng3-shlibs
+    libsigc++2-shlibs
+    libxml2-shlibs
+    libxslt-shlibs
+    pango1-xft2-shlibs
+    popt-shlibs
+  The following other packages must not be installed:
+    [none]
+To compile this package from source...
+  The following packages are also compiled at the same time:
+    [none]
+  The following other packages (and their dependencies) must be installed:
+    atk1
+    atk1-shlibs
+    gc (>= 6.4-1)
+    gc-shlibs (>= 6.4-1)
+    gettext-bin
+    gettext-dev
+    gettext-tools
+    glib2-dev
+    glibmm2.4-dev
+    glibmm2.4-shlibs
+    gtk+2-dev
+    gtk+2-shlibs
+    gtkmm2.4-dev
+    gtkmm2.4-shlibs
+    intltool
+    libart2
+    libart2-shlibs
+    libiconv-dev
+    libpng3
+    libpng3-shlibs
+    libsigc++2
+    libsigc++2-shlibs
+    libxml2
+    libxml2-shlibs
+    libxslt
+    libxslt-shlibs
+    pango1-xft2-dev
+    pango1-xft2-shlibs
+    pkgconfig
+    popt
+    popt-shlibs
+  The following other packages must not be installed:
+    [none]
+
+4. INSTALL MANDATORY PACKAGES:
+
+fink install gtkmm2.4-dev  gconf2-dev gnome-vfs2-dev\
+   gtkspell2-dev intltool lcms libbonobo2-dev libxslt gc
+
+5. INSTALL AUTOMAKE:
+
+fink install automake1.8
+
+
+6. SET ENVIRONMENT VARIABLES
+
+CREATE AND EXECUTE set_env_variables.sh WITH THIS INSIDE (source set_env_variables.sh) OR PASTE INTO COMMAND LINE:
+
+#!/bin/bash
+FINK="/sw"
+export CFLAGS="-O3 -Wall"
+export CXXFLAGS="$CFLAGS"
+export CPPFLAGS="-I$FINK/include"
+export LDFLAGS="-L$FINK/lib"
+export CPATH="$FINK/include"
+export PATH="/usr/X11R6/bin:$PATH"
+export LIBRARY_PATH="/usr/X11R6/lib:$FINK/lib"
+export PKG_CONFIG_PATH="$FINK/lib/pkgconfig"
+
+
+7. MAKE SURE THAT Inkscape is compiled with the compiler version that Fink uses, otherwise Inkscape will not link properly. To determine which compiler to use type:
+
+    head -n 5 $FINK/etc/fink.conf | grep "Distribution"
+
+    If your fink distribution is 10.4 add:
+    
+    export CC="gcc-4.0"
+    export CXX="g++-4.0"
+    
+    to set_env_variables.sh, else (10.3, 10.4-transitional) add:
+    
+    export CC="gcc-3.3"
+    export CXX="g++-3.3"
+
+head -n 5 $FINK/etc/fink.conf | grep "Distribution"
+
+Distribution: 10.4-transitional
+
+SO PASTED INTO COMMAND LINE:
+
+    export CC="gcc-3.3"
+    export CXX="g++-3.3"
+
+8. SOURCE THE ENVIRONMENT VARIABLES FILE (AGAIN):
+source FINK.INSTALL/set_env_variables.sh
+
+
+9. CONFIGURE inkscape:
+
+cd /Users/young/apps/inkscape/inkscape-0.44.1
+sudo ./configure 
+
+BUT COULD NOT FIND THE DEPENDENCIES ALREADY INSTALLED BY fink IN STEP 4, SO SET THE ENVIRONMENT VARIABLE:
+
+export PKG_CONFIG_PATH=/sw/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+
+THEN COMPILED AGAIN BUT GOT
+
+configure: error: libpopt is required
+dlc-genomics:~/apps/inkscape/inkscape-0.44.1 young$ fink install libpopt
+Information about 5846 packages read in 2 seconds.
+Failed: no package found for specification 'libpopt'!
+Failed: no package found for specification 'opt'!
+Failed: no package found for specification 'libpopt-dev'!
+
+SO DOWNLOADED lipopt:
+http://packages.debian.org/unstable/source/popt
+
+cd /Users/young/apps/inkscape/popt-1.10 
+./configure --prefix=/sw
+make
+sudo make install
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /sw/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `DYLD_LIBRARY_PATH' environment variable
+     during execution
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+
+
+THEN RECOMPILED inkscape AGAIN:
+export PKG_CONFIG_PATH=/sw/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+cd /Users/young/apps/inkscape/inkscape-0.44.1
+sudo ./configure --prefix=/sw
+
+
+BUT STILL COULDN'T FIND libpopt SO RECOMPILED popt IN THE /usr/lib DIRECTORY:
+
+cd /Users/young/apps/inkscape/popt-1.10 
+./configure --prefix=/usr
+make
+sudo make install
+...
+chmod 644 /usr/lib/lib/libpopt.a
+libtool: install: warning: remember to run `libtool --finish /sw/lib'
+
+THEN RECOMPILED inkscape:
+export PKG_CONFIG_PATH=/sw/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+sudo ./configure
+
+=== OKAY!!!
+
+Configuration:
+
+        Source code location:     .
+        Destination path prefix:  /usr/local
+        Compiler:                 g++
+        CPPFLAGS:                 
+        CXXFLAGS:                 -Wall -W -Wpointer-arith -Wcast-align -Wsign-compare -Woverloaded-virtual -Wswitch  -Wno-unused-parameter -g -O2
+        CFLAGS:                   -Wall -W -Wno-pointer-sign -g -O2
+        LDFLAGS:                  
+
+        Use Xft font database:    no
+        Use gnome-vfs:            yes
+        Use openoffice files:     yes
+        Use MMX optimizations:    no
+        Use relocation support:   no
+        Use boost graph library:  no
+        Enable LittleCms:         yes
+        Enable Inkboard:          no
+
+
+
+sudo make
+...
+  -c -o conn-avoid-ref.o `test -f 'conn-avoid-ref.cpp' || echo './'`conn-avoid-ref.cpp; \
+then mv -f ".deps/conn-avoid-ref.Tpo" ".deps/conn-avoid-ref.Po"; \
+else rm -f ".deps/conn-avoid-ref.Tpo"; exit 1; \
+fi
+./util/share.h:34: error: declaration of 'Inkscape::Util::ptr_shared<T>::operator bool() const'
+./util/share.h:32: error: conflicts with previous declaration 'Inkscape::Util::ptr_shared<T>::operator const T1*() const'
+./util/share.h: In instantiation of `Inkscape::Util::ptr_shared<char>':
+./util/share.h:116:   instantiated from here
+./util/share.h:22: error: declaration of 'Inkscape::Util::ptr_shared<T>::operator bool() const [with T = char]'
+./util/share.h:32: error: conflicts with previous declaration 'Inkscape::Util::ptr_shared<T>::operator const T1*() const [with T1 = T1, T = char]'
+make[2]: *** [conn-avoid-ref.o] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
+
+
+
+SO TRIED:
+
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+sudo ./configure
+
+AND GOT ERROR (LESS THAN BEFORE!):
+
+checking for INKSCAPE... configure: error: Package requirements (gdkmm-2.4  glibmm-2.4  gtkmm-2.4  gtk+-2.0 >= 2.4.0  libxml-2.0 >= 2.6.11  libxslt >= 1.0.15  sigc++-2.0 >= 2.0.12    gthread-2.0 >= 2.0 libpng >= 1.2) were not met:
+
+No package 'gdkmm-2.4' found
+No package 'gtkmm-2.4' found
+No package 'gtk+-2.0' found
+Requested 'sigc++-2.0 >= 2.0.12' but version of libsigc++ 2 is 2.0.0
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables INKSCAPE_CFLAGS
+and INKSCAPE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+(NB: IN inkscape README:
+
+Please see
+
+http://wiki.inkscape.org/wiki/index.php/CompilingInkscape
+
+for the most current dependencies, including links to the source tarballs. )
+
+
+INSTALLED libsigc-2.0.12 == ok
+
+RECOMPILED inkscape AND GOT ONE LESS ERROR:
+
+checking for INKSCAPE... configure: error: Package requirements (gdkmm-2.4  glibmm-2.4  gtkmm-2.4  gtk+-2.0 >= 2.4.0  libxml-2.0 >= 2.6.11  libxslt >= 1.0.15  sigc++-2.0 >= 2.0.12    gthread-2.0 >= 2.0 libpng >= 1.2) were not met:
+
+No package 'gdkmm-2.4' found
+No package 'gtkmm-2.4' found
+No package 'gtk+-2.0' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables INKSCAPE_CFLAGS
+and INKSCAPE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+THOUGH THEY ARE INSTALLED IN /usr/lib
+
+SO RECOMPILED gtkmm-2.10.0:
+
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+./configure --prefix=/usr
+
+BUT GOT ERROR:
+
+    checking for PANGOMM... configure: error: Package requirements (glibmm-2.4 >= 2.11.3 cairomm-1.0 >= 1.1.12 pango >= 1.5.2) were not met:
+    
+    No package 'cairomm-1.0' found
+    No package 'pango' found
+    
+    Consider adjusting the PKG_CONFIG_PATH environment variable if you
+    installed software in a non-standard prefix.
+    
+    Alternatively, you may set the environment variables PANGOMM_CFLAGS
+    and PANGOMM_LIBS to avoid the need to call pkg-config.
+    See the pkg-config man page for more details.
+
+ALREADY INSTALLED pango (libpango) AND cairomm (libcairomm) WITH DARWINPORTS IN /opt/local/lib, SO
+TRIED SETTING THE ENVIRONMENT VARIABLES:
+
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+./configure PANGOMM_CFLAGS=/opt/local/include/pangomm-1.4 PANGOMM_LIBS=/opt/local/lib/pango/1.5.0/modules
+
+PANGOMM_CFLAGS=/opt/local/include/pangomm-1.4
+PANGOMM_LIBS=/opt/local/lib/pango/1.5.0/modules
+
+GTKMM_CFLAGS=/opt/local/include/gtkmm-2.4
+GTKMM_LIBS=/opt/local/lib/gtkmm-2.4
+
+( NB: CAN USE GTKMM ENVIRONMENT VARIABLES TOO:
+GTKMM_CFLAGS... -I/sw/include/glibmm-2.4 ...
+GTKMM_LIBS... -L/sw/lib -L/usr/X11R6/lib ... )
+
+FOUND pango!!
+
+>>>
+...
+checking for PANGOMM... yes
+checking for GDKMM... configure: error: Package requirements (glibmm-2.4 >= 2.11.3 cairomm-1.0 >= 1.1.12 gtk+-2.0 >= 2.10.0) were not met:
+
+No package 'cairomm-1.0' found
+No package 'gtk+-2.0' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables GDKMM_CFLAGS
+and GDKMM_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+<<<
+
+
+SO SET THE ENVIRONMENT VARIABLES 'GDKMM_CFLAGS' AND 'GDKMM_LIBS':
+
+./configure PANGOMM_CFLAGS=/opt/local/include/pangomm-1.4 PANGOMM_LIBS=/opt/local/lib/pango/1.5.0/modules GDKMM_CFLAGS=/opt/local/include/cairomm-1.0 GDKMM_LIBS=/opt/local/lib
+
+cairomm FOUND HERE:
+/opt/local/include/cairomm-1.0
+/opt/local/lib
+ls /opt/local/lib
+>>>
+libcairomm-1.0.1.0.0.dylib
+libcairomm-1.0.1.dylib
+libcairomm-1.0.a
+libcairomm-1.0.dylib
+libcairomm-1.0.la
+<<<
+
+BUT GOT THE SAME ERROR, EXCEPT ANOTHER gtk+ FILE WAS NOT FOUND!:
+
+>>>
+checking for GTKMM... configure: error: Package requirements (glibmm-2.4 >= 2.11.3 cairomm-1.0 >= 1.1.12 gtk+-2.0 >= 2.10.0 gtk+-unix-print-2.0 >= 2.10.0) were not met:
+
+No package 'cairomm-1.0' found
+No package 'gtk+-2.0' found
+No package 'gtk+-unix-print-2.0' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables GTKMM_CFLAGS
+and GTKMM_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+<<<
+
+
+SO WENT TO INSTALL gtk+:
+
+cd /Users/young/apps/inkscape/gtk+-2.10.0
+./configure PANGOMM_CFLAGS=/opt/local/include/pangomm-1.4 PANGOMM_LIBS=/opt/local/lib 
+OR
+./configure PKG_CONFIG_PATH=/opt/local/lib 
+
+>>>...
+checking for BASE_DEPENDENCIES... configure: error: Package requirements (glib-2.0 >= 2.12.0    atk >= 1.9.0    pango >= 1.13.0    cairo >= 1.2.0) were not met:
+
+No package 'pango' found
+No package 'cairo' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables BASE_DEPENDENCIES_CFLAGS
+and BASE_DEPENDENCIES_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+<<<
+
+
+
+
+BUT STILL COULDN'T FIND PANGO SO WENT TO RECOMPILE PANGO TO /usr/lib:
+
+cd /Users/young/apps/inkscape/pango-1.5.0
+./configure --prefix=/usr
+
+OKAY, BUT MAKE GAVE ERROR.
+make == ERROR
+
+SO TRIED TO COMPILE gtk+ USING FINK LIBRARY:
+
+cd /Users/young/apps/inkscape/gtk+-2.10.0
+./configure PKG_CONFIG_PATH=/sw/lib
+
+
+
+
+INSTALLING gtkmm:
+
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+./configure PANGOMM_CFLAGS=/opt/local/include/pangomm-1.4 PANGOMM_LIBS=/opt/local/lib/pango/1.5.0/module:/opt/local/lib PKG_CONFIG_PATH=/opt/local/include/cairomm-1.0:/opt/local/lib
+
+checking for PANGOMM... configure: error: Package requirements (glibmm-2.4 >= 2.11.3 cairomm-1.0 >= 1.1.12 pango >= 1.5.2) were not met:
+
+No package 'cairomm-1.0' found
+No package 'gtk+-2.0' found
+
+
+SO INSTALLED AN EARLIER VERSION OF PANGO:
+
+./configure == ok
+make        == ok
+sudo make install == ok
+>>> ...
+make[2]: Nothing to be done for `install-exec-am'.test -z "/usr/local/lib/pkgconfig" || /Users/young/apps/inkscape/pango-1.14.8/install-sh -d "/usr/local/lib/pkgconfig" /usr/bin/install -c -m 644 'pango.pc' '/usr/local/lib/pkgconfig/pango.pc' /usr/bin/install -c -m 644 'pangox.pc' '/usr/local/lib/pkgconfig/pangox.pc'
+cd /Users/young/apps/inkscape/pango-1.14.8
+<<<
+
+
+AND TRIED COMPILING gtkmm WITH PKG_CONFIG_PATH=/usr/local/lib/pkgconfig :
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+./configure PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+FOUND PANGO!!!
+
+BUT 
+No package 'cairomm-1.0' found
+
+SO ADDED /opt/local/include/cairomm-1.0 AND /opt/local/lib
+
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+./configure PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/include/cairomm-1.0:/opt/local/lib
+
+
+DIDN'T WORK BUT REALISED THAT cairomm SHOULD BE VERSION cairomm-1.0 >= 1.1.12, SO INSTALLED cairomm-1.2.2:
+
+./configure --prefix=/opt/local
+
+WHICH THEN REQUIRED cairo, SO WENT TO INSTALL cairo:
+
+cd /Users/young/apps/inkscape/cairo-1.2.6
+./configure
+
+COULDN'T FIND freetype AND fontconfig, SO TRIED:
+./configure PKG_CONFIG_PATH=/opt/local
+
+DIDN'T WORK:
+
+>>> ...
+config.status: src/cairo-features.h is unchangedcairo will be compiled with the following surface backends:  image:         yes (always builtin)  Xlib:          yes  Xlib Xrender:  yes  Quartz:        no (disabled, use --enable-quartz to enable)  XCB:           no (disabled, use --enable-xcb to enable)  Win32:         no (requires a Win32 platform)  PostScript:    yes  PDF:           yes  SVG:           yes  glitz:         no (disabled, use --enable-glitz to enable)  BeOS:          no (disabled, use --enable-beos to enable)  DirectFB:      no (disabled, use --enable-directfb to enable)the following font backends:  FreeType:      no (requires fontconfig  Win32:         no (requires a Win32 platform)  ATSUI:         no (disabled, use --enable-atsui to enable)the following features:  PNG functions: yesand the following debug options:  gcov support:  no  test surfaces: no  pdf testing:   no (requires poppler-glib >= 0.4.1)  svg testing:   no (requires librsvg-2.0 >= 2.14.0)using CFLAGS:-I/usr/local/include/libpng12 -I/usr/X11R6/include -Wall -Wextra -Wsign-compare -Werror-implicit-function-declaration -Wpointer-arith -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wpacked -Wswitch-enum -Wmissing-format-attribute -Wstrict-aliasing=2 -Winit-self -Wdeclaration-after-statement -Wold-style-definition -Wno-missing-field-initializers -Wno-unused-parameter -fno-strict-aliasingconfigure: error: Cairo requires at least one font backend.                  Please install freetype and fontconfig, then try again:                  http://freetype.org/  http://fontconfig.org/
+<<<
+
+
+TRIED TO INSTALL freetype TO /usr/lib
+
+cd /Users/young/apps/inkscape/freetype-2.1.10
+./configure --prefix=/usr --mandir=/usr/local/share/man
+make
+sudo make install
+ls /usr/lib | grep free
+>>>
+libfreetype.6.3.8.dylib
+libfreetype.6.dylib
+libfreetype.a
+libfreetype.dylib
+libfreetype.la
+<<<
+
+THEN TRIED AGAIN TO COMPILE cairo:
+
+cd /Users/young/apps/inkscape/cairo-1.2.6
+./configure
+
+DIDN'T WORK AND GOT THIS AMONGST THE OUTPUT OF ./configure:
+
+>>> ...
+checking for cairo's FreeType font backend... 
+checking for FONTCONFIG... checking whether cairo's FreeType font backend could be enabled... no (requires fontconfig
+... <<<
+
+SO TRIED TO INSTALL fontconfig TO /usr/lib:
+
+cd /Users/young/FUNNYBASE/NOTES/gui/SVG/svg2png/fontconfig-2.3.2
+./configure --prefix=/usr
+make
+sudo make install
+ls /usr/lib | grep font
+>>>
+libfontconfig.1.0.4.dylib
+libfontconfig.1.dylib
+libfontconfig.a
+libfontconfig.dylib
+libfontconfig.la
+<<<
+
+
+
+THEN TRIED AGAIN TO COMPILE cairo:
+
+cd /Users/young/apps/inkscape/cairo-1.2.6
+./configure PKG_CONFIG_PATH=/usr/lib/pkgconfig
+make
+sudo make install
+
+BINGO!
+
+THEN TRIED TO COMPILE cairomm-1.2.2:
+
+cd /Users/young/apps/inkscape/cairomm-1.2.2
+./configure --prefix=/opt/local
+
+BUT IT COULDN'T FIND cairo OR fontconfig:
+
+>>> ...
+checking for CAIROMM... configure: error: Package requirements (cairo >= 1.2.0) were not met:
+
+Package fontconfig was not found in the pkg-config search path.
+Perhaps you should add the directory containing `fontconfig.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'fontconfig', required by 'cairo', not found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables CAIROMM_CFLAGS
+and CAIROMM_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+<<<
+
+SO TRIED AGAIN USING PKG_CONFIG_PATH=/usr/lib/pkgconfig:
+
+./configure --prefix=/usr PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+OKAY!
+
+make        # ok
+sudo make install   # ok 
+
+SO WENT TO COMPILE gtk+:
+
+cd /Users/young/apps/inkscape/gtk+-2.10.0
+./configure --prefix=/usr PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+WHICH COMPLAINED ABOUT libtiff BUT OFFERED TO COMPILE WITHOUT IT USING --without-libtiff:
+
+./configure --prefix=/usr PKG_CONFIG_PATH=/usr/lib/pkgconfig --without-libtiff --without-libjpeg
+
+./configure --prefix=/usr PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+./configure --prefix=/usr --without-libtiff --without-libjpeg
+
+BUT DIDN'T FIND pango:
+
+>>> ...
+*** Pango not found. Pango built with Cairo support is required
+*** to build GTK+. See http://www.pango.org for Pango information.
+<<<
+
+
+SO TRIED USING pango IN /opt/local/lib AS PART OF PKG_CONFIG_PATH:
+
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib
+echo $PKG_CONFIG_PATH
+
+export PKG_CONFIG=/usr/lib/pkgconfig:/opt/local/lib
+echo $PKG_CONFIG
+./configure --prefix=/usr --without-libtiff --without-libjpeg
+
+
+export PKG_CONFIG=/usr/lib/pkgconfig
+echo $PKG_CONFIG
+./configure --prefix=/usr --without-libtiff --without-libjpeg
+
+
+BUT GOT THIS ERROR:
+
+>>> ...
+checking pkg-config is at least version 0.9.0... ./configure: line 20194: /usr/lib/pkgconfig: is a directory
+no
+checking for BASE_DEPENDENCIES... configure: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables BASE_DEPENDENCIES_CFLAGS
+and BASE_DEPENDENCIES_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see
+
+http://www.freedesktop.org/software/pkgconfig
+
+See `config.log' for more details.
+<<<
+
+pkg-config --version
+0.21
+
+pkg-config IS TOO OLD SO INSTALLED NEWER VERSION 
+ 
+cd /Users/young/apps/inkscape/pkgconfig-0.9.0
+./configure --prefix=/usr
+
+>>> ...
+ltconfig: you must specify a host type if you use `--no-verify'
+Try `ltconfig --help' for more information.
+configure: error: libtool configure failed
+configure: error: /bin/sh './configure' failed for glib-1.2.8
+<<<
+
+
+SEEMS LIKE IT REQUIRED glib 1.2.8, SO INSTALLED glib-1.2.10:
+
+
+cd /Users/young/apps/inkscape/glib-1.2.10
+./configure --prefix=/usr --host=ppc --build=ppc
+
+make    # ok
+sudo make install
+
+ERROR ON make install:
+>>> ...
+gstrfuncs.c: In function 'g_strchug':
+gstrfuncs.c:1314: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c:1317: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness
+make[2]: *** [gstrfuncs.lo] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all-recursive-am] Error 2
+dlc-genomics:~/apps/inkscape/glib-1.2.10 young$ sudo make install
+Making install in .
+/bin/sh ./libtool --mode=compile gcc -DHAVE_CONFIG_H -I. -I. -I. -DG_LOG_DOMAIN=g_log_domain_glib     -g -O2 -Wall  -D_REENTRANT -c gstrfuncs.c
+gcc -DHAVE_CONFIG_H -I. -I. -I. -DG_LOG_DOMAIN=g_log_domain_glib -g -O2 -Wall -D_REENTRANT -c gstrfuncs.c -o gstrfuncs.o
+gstrfuncs.c: In function 'g_printf_string_upper_bound':
+gstrfuncs.c:870: error: parse error before string constant
+gstrfuncs.c:1037: error: parse error before string constant
+gstrfuncs.c:1080: error: parse error before string constant
+gstrfuncs.c:1111: error: parse error before string constant
+gstrfuncs.c: In function 'g_strdown':
+gstrfuncs.c:1139: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c: In function 'g_strup':
+gstrfuncs.c:1155: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c: In function 'g_strchug':
+gstrfuncs.c:1314: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c:1317: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness
+make[1]: *** [gstrfuncs.lo] Error 1
+make: *** [install-recursive] Error 1
+<<<
+
+cd /Users/young/apps/inkscape/glib-2.12.0
+./configure --prefix=/usr --host=ppc --build=ppc
+
+BUT GOT ERROR:
+>>>...
+checking for pkg-config... /usr/lib/pkgconfig
+./configure: line 4833: /usr/lib/pkgconfig: is a directory
+configure: error: *** pkg-config too old; version 0.14 or better required.
+<<<
+
+CHECKED VERSION AND LOCATION OF pkg-config:
+pkg-config --version
+>>>0.21
+which pkg-config
+>>>/usr/local/bin/pkg-config
+
+SO TRIED REINSTALLING pkg-config TO /usr/local (HAD TO SPECIFY HOST TYPE):
+
+cd /Users/young/apps/inkscape/pkgconfig-0.9.0
+ ./configure --prefix=/usr/local --host=ppc
+make    # ok
+sudo make install  #ok
+which pkg-config
+>>>/usr/local/bin/pkg-config
+pkg-config --version
+>>>0.9.0
+
+BUT TRIED INSTALLING
+
+cd /Users/young/apps/inkscape/glib-1.2.10
+ ./configure PKG_CONFIG_PATH=/usr/lib/pkgconfig --host=ppc  #OK
+ make
+>>> ...
+gstrfuncs.c: In function 'g_printf_string_upper_bound':
+gstrfuncs.c:870: error: parse error before string constant
+gstrfuncs.c:1037: error: parse error before string constant
+gstrfuncs.c:1080: error: parse error before string constant
+gstrfuncs.c:1111: error: parse error before string constant
+gstrfuncs.c: In function 'g_strdown':
+gstrfuncs.c:1139: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c: In function 'g_strup':
+gstrfuncs.c:1155: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c: In function 'g_strchug':
+gstrfuncs.c:1314: warning: pointer targets in assignment differ in signedness
+gstrfuncs.c:1317: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness
+make[2]: *** [gstrfuncs.lo] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all-recursive-am] Error 2
+<<<
+
+
+cd /Users/young/apps/inkscape/glib-2.12.0
+./configure --prefix=/usr --host=ppc --build=ppc PKG_CONFIG=/usr/local/bin/pkg-config
+>>> ...
+checking for pkg-config... /usr/local/bin/pkg-config
+configure: error: *** pkg-config too old; version 0.14 or better required.
+<<<
+
+./configure --prefix=/usr --host=ppc --build=ppc PKG_CONFIG_PATH=/usr/local/lib
+
+
+
+THEN WENT TO COMPILE gtkmm:
+
+cd /Users/young/apps/inkscape/gtkmm-2.10.0
+
+
+
+

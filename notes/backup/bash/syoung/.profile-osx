@@ -1,0 +1,53 @@
+#### PROMPT
+export PS1="\u@\h\w $ "
+
+#### MYSQL
+alias mysqlstart='sudo /usr/local/mysql/support-files/mysql.server start'
+alias mysqlstop='sudo /usr/local/mysql/support-files/mysql.server stop'
+export DYLD_LIBRARY_PATH=/usr/local/mysql/lib:$DYLD_LIBRARY_PATH
+
+#### GENERAL
+if [[ -d /Users ]]; then 
+    ARCH="osx"; 
+elif [[ $SHELL == "/bin/bash" ]]; then 
+    ARCH="ubuntu"; 
+else 
+    echo "neither ubuntu nor osx"; 
+fi
+#echo $ARCH
+
+if [[ $ARCH == "osx" ]]; then
+    USERDIR="/Users"
+else
+    USERDIR="/home"
+fi
+
+#echo "USERDIR: $USERDIR"
+
+
+alias suu='sudo su'
+alias sgi='ssh youngst@192.168.248.10'
+alias repo='cd $USERDIR/syoung/repos'
+
+#### AWS
+export SLES=54.166.190.72
+alias sles='echo "ssh -i ~/.ssh/bioinfo1.pem ec2-user@$SLES"; ssh -i ~/.ssh/bioinfo1.pem ec2-user@$SLES'
+export SUMA=54.161.94.121
+#54.92.164.123
+alias suma='echo "ssh -i ~/.ssh/bioinfo1.pem ubuntu@$SUMA"; ssh -i ~/.ssh/bioinfo1.pem ubuntu@$SUMA'
+export DZUNG=54.92.148.67
+alias dzung='echo "ssh -i ~/.ssh/bioinfo1.pem ubuntu@$DZUNG"; ssh -i ~/.ssh/bioinfo1.pem ubuntu@$DZUNG'
+export STUART=54.144.21.248
+alias stuart='echo "ssh -i ~/.ssh/bioinfo1.pem ubuntu@$STUART"; ssh -i ~/.ssh/bioinfo1.pem ubuntu@$STUART'
+
+
+#### EDIT
+alias gobash='emacs -nw ~/.profile'
+alias sobash='source ~/.profile'
+alias em='emacs -nw'
+alias ll='ls -al'
+
+#### mysql
+export PATH=/usr/local/mysql/bin:$PATH
+
+

@@ -1,0 +1,251 @@
+// Copyright © Hanover Capital Management Corp. 2001. All Rights Reserved.
+
+//
+// Color semantics.
+//
+// Note! Works only under IE for now.
+//
+// $Author: mflorence $
+// $Date: 2005-02-03 13:13:06 $
+// $Revision: 1.5 $
+//
+
+// Convert integer BGR color to RGB
+//
+// @param color
+//
+// @return normalized #RRGGBB
+//
+function Color_BGRToRGB(color) {
+  var bgr = color.toString(16).toUpperCase();
+  bgr = "000000".substr(0, 6 - bgr.length) + bgr;
+  return "#" + bgr.substr(4, 2) + bgr.substr(2, 2) + bgr.substr(0, 2);
+}
+
+// Choose a new color
+//
+// @param id of color
+// @param page of dialog
+// @param getter method
+// @param setter method
+//
+function Color_choose(id, page, getter, setter) {
+  // show the color selector
+  var color = window.showModalDialog(page,
+                                     new Array(window, eval(getter + "('" + id + "')")),
+                                     "dialogWidth:260px;dialogHeight:440px;center:yes;scroll:no;status:no;");
+  if (color)
+    eval(setter + "('" + id + "','" + color + "')");
+}
+
+// Determine contrasting color
+//
+// @param #RRGGBB
+//
+// @return true if white, false if black
+//
+function Color_contrast(color) {
+  return (Color_grayscale(color) < 160);
+}
+
+// Access a color value
+//
+// @param id of field
+//
+// @return color
+//
+function Color_getColor(id) {
+  var object = eval("document.forms[0]." + id);
+  if (object)
+    return object.value;
+  else return "";
+}
+
+// Convert RGB color to grayscale
+//
+// @param #RRGGBB
+//
+// @return gray scale value
+//
+function Color_grayscale(color) {
+  var r = 0;
+  var g = 0;
+  var b = 0;
+  if (color) {
+    if (color.length >= 3)
+      r = eval("0x" + color.substr(1, 2));
+    if (color.length >= 5)
+      g = eval("0x" + color.substr(3, 2));
+    if (color.length >= 7)
+      b = eval("0x" + color.substr(5, 2));
+  }
+  return ((r + g + b) / 3);
+}
+
+// Convert HSB color to RGB
+//
+// @param h
+// @param s
+// @param b
+//
+// @return #RRGGBB
+//
+function Color_HSBtoRGB(h, s, b) {
+  var r, g, b;
+  var m1 = 0;
+  var m2 = 0;
+  if (h < 0.0)
+    h = 0.0;
+  if (h > 360.0)
+    h = 360.0 - h;
+  if (b < 0.0)
+    b = 0.0;
+  if (b > 1.0)
+    b = 1.0;
+  if (s < 0.0)
+    s = 0.0;
+  if (s > 1.0)
+    s = 1.0;
+  if (b <= 0.5)
+    m2 = b * (s + 1.0);
+  else
+    m2 = b + s - (b * s);
+  m1 = (2 * b) - m2;
+  if (s <= 0.005) {
+    r = Math.round(255 * b);
+    g = r;
+    b = r;
+  }
+  else {
+    r = Color_HSBtoRGBClamp(m1, m2, h + 120);
+    g = Color_HSBtoRGBClamp(m1, m2, h);
+    b = Color_HSBtoRGBClamp(m1, m2, h - 120);
+    if (r < 0.0)
+      r = 0.0;
+    if (r > 1.0)
+      r = 1.0;
+    if (g < 0.0)
+      g = 0.0;
+    if (g > 1.0)
+      g = 1.0;
+    if (b < 0.0)
+      b = 0.0;
+    if (b > 1.0)
+      b = 1.0;
+    r = Math.round(255 * r);
+    g = Math.round(255 * g);
+    b = Math.round(255 * b);
+  }
+  return "#"+ Color_HSBtoRGBPad(r) + Color_HSBtoRGBPad(g) + Color_HSBtoRGBPad(b);
+}
+
+// HSBtoRGB helper method
+//
+function Color_HSBtoRGBClamp(n1, n2, h) {
+  if (h > 360)
+    h = h - 360;
+  if (h < 0)
+    h = h + 360;
+  if (h < 60)
+    return n1 + (n2 - n1) * h / 60;
+  else if (h < 180)
+    return n2;
+  else if (h < 240)
+    return n1 + (n2 - n1) * (240 - h) / 60;
+  else return n1;
+}
+
+// HSBtoRGB helper method
+//
+function Color_HSBtoRGBPad(val) {
+  var val = val.toString(16)
+  while (val.length < 2)
+    val = "0" + val;
+  return val;
+}
+
+// Normalize RGB color form
+//
+// @param color
+//
+// @return normalized #RRGGBB
+//
+function Color_normalize(color) {
+  if (color.length) {
+    // must begin with #
+    if (color.charAt(0) != "#")
+      color = "#" + color;
+    // can't be longer than #RRGGBB
+    if (color.length > 7)
+      color = color.substr(0, 7);
+    // must be in hex
+    for (var i = 1; i < color.length; i++)
+      if ("0123456789abcdefABCDEF".indexOf(color.charAt(i)) == -1)
+        return "#000000";
+    // pad remaining length
+    color += "000000".substr(0, 7 - color.length);
+  }
+  return color;
+}
+
+// Reflect a color value
+//
+// @param id of field
+// @param color
+//
+function Color_reflectColor(id, color) {
+  var object = eval("document.forms[0]." + id);
+  if (object) {
+    object.value = color;
+    var c = Color_normalize(color);
+    object.style.backgroundColor = c;
+    object.style.color = Color_contrast(c)? "#FFFFFF" : "#000000";
+  }
+}
+
+// Convert RGB color to HSB
+//
+// @param color in #RRGGBB format
+//
+// @return array[0] = hue
+//         array[1] = saturation
+//         array[2] = brightness
+//
+function Color_RGBtoHSB(color) {
+  var hsb = new Array(0, 0, 0);
+  var r = 0;
+  var g = 0;
+  var b = 0;
+  if (color) {
+    if (color.length >= 3)
+      r = eval("0x" + color.substr(1, 2)) / 255;
+    if (color.length >= 5)
+      g = eval("0x" + color.substr(3, 2)) / 255;
+    if (color.length >= 7)
+      b = eval("0x" + color.substr(5, 2)) / 255;
+  }
+  var x = Math.min(r, Math.min(g, b));
+  var v = Math.max(r, Math.max(g, b));
+  if (x != v) {
+    var f = (r == x)? g - b : ((g == x)? b - r : r - g);
+    var i = (r == x)? 3 : ((g == x)? 5 : 1);
+    hsb[0] = (i - f / (v - x)) / 6;
+    hsb[1] = (v - x) / v;
+  }
+  hsb[2] = v;
+  return hsb;
+}
+
+// Mutate a color value
+//
+// @param id of field
+// @param color
+//
+function Color_setColor(id, color) {
+  var object = eval("document.forms[0]." + id);
+  if (object) {
+    Color_reflectColor(id, color);
+    if (object._onSelect)
+      eval(object._onSelect + "('" + id + "','" + color + "')");
+  }
+}

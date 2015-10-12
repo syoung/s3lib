@@ -1,0 +1,71 @@
+Tue Jan 23 14:00:40 EST 2007
+
+
+gems:~ local$ sudo dsh -w node016 SystemStarter start SGE
+Password:
+executing 'SystemStarter start SGE'
+node016:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node016:        @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+node016:        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+node016:        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+node016:        Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+node016:        It is also possible that the RSA host key has just been changed.
+node016:        The fingerprint for the RSA key sent by the remote host is
+node016:        71:4a:c4:fd:f3:11:8f:91:ad:e7:30:aa:17:01:d3:45.
+node016:        Please contact your system administrator.
+node016:        Add correct host key in /private/var/root/.ssh/known_hosts to get rid of this message.
+node016:        Offending key in /private/var/root/.ssh/known_hosts:30
+node016:        Password authentication is disabled to avoid man-in-the-middle attacks.
+node016:        Keyboard-interactive authentication is disabled to avoid man-in-the-middle attacks.
+node016:        Checking disks
+node016:        ipfilter:state = "STOPPED"
+node016:        ipfilter:status = 0
+
+
+ALSO GOT THIS ERROR WHEN RUNNINIG qstat -f ON node016:
+
+node002:~ vanwye$ qstat -f
+error: commlib error: access denied (client IP resolved to host name "node016.cluster.private". This is not identical to clients host name "node002.cluster.private")
+unable to contact qmaster using port 701 on host "gems.rsmas.miami.edu"
+node002:~ vanwye$ sudo em /etc/hostconfig
+
+SO EDITED /etc/hostconfig AND CHANGED FROM HOSTNAME=-AUTOMATIC- TO HOSTNAME=node016 AND REBOOTED, AFTER WHICH node016 APPEARED AS STATUS 'd' WITH qstat -f ON gems:
+
+
+gems:~ local$ qstat -f 
+queuename                      qtype used/tot. load_avg arch          states
+----------------------------------------------------------------------------
+all.q@gems.rsmas.miami.edu     BIP   0/2       0.06     darwin        d
+----------------------------------------------------------------------------
+all.q@node001.cluster.private  BIP   0/2       0.03     darwin        
+----------------------------------------------------------------------------
+all.q@node002.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node004.cluster.private  BIP   0/2       0.01     darwin        
+----------------------------------------------------------------------------
+all.q@node005.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node006.cluster.private  BIP   0/2       0.06     darwin        
+----------------------------------------------------------------------------
+all.q@node007.cluster.private  BIP   0/2       0.15     darwin        
+----------------------------------------------------------------------------
+all.q@node008.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node009.cluster.private  BIP   0/2       0.01     darwin        
+----------------------------------------------------------------------------
+all.q@node010.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node011.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node012.cluster.private  BIP   0/2       0.02     darwin        d
+----------------------------------------------------------------------------
+all.q@node013.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node014.cluster.private  BIP   0/2       0.02     darwin        
+----------------------------------------------------------------------------
+all.q@node015.cluster.private  BIP   0/2       0.00     darwin        
+----------------------------------------------------------------------------
+all.q@node016.cluster.private  BIP   0/2       0.04     darwin        d
+
+
+

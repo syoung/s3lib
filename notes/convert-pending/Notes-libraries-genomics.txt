@@ -1,0 +1,107 @@
+Notes-Libraries-genomics
++++++++++++++++++++++++++
+
+
+Libraries in super_craw5 master_seq2:
+
+1
+123
+124
+125
+126
+127
+128
+129
+130
+151
+152
+153
+154
+155
+156
+157
+158
+159
+189
+190
+199
+999
+
+
+
+VECTORS FOR EACH EXPERIMENT (libraries.txt)
++++++++++++++++++++++++++++
+
+(from LibrarySummation.doc)
+
+Libraries	Vector	Description
+
+1,123,124 BJ	"Made in UMKC by DLC and MFO.  These are in pBSII SK-.  The 5Õ end was cloned in the EcoRI site and the 3Õ end is cloned into XhoI. To amplify use PucF and PucR and the Libamp program.  For printing use PucF and Amino-PucR and the Libamp program. To sequence use the SK20 primer and the Seq program."
+125	SM "Made by Lucigen from liver mRNA.  This is in pSmart. Cloned into EcoRI (5Õ end) and XhoI(3Õ end).  To amplify use SF1 and SR1 primers and the Llib program.  They are also known as Sforward and Sreverse.  To print use Amino-SF and SR and the Llib program.  This Library is sequenced with T7smart and the Seq program.
+126 SM Cherry picked from all previous libraries.  Plates 1 to 35 were picked from libraries 1 to 123.  Plates 101 to 115 were from the 125 library.
+127 SM/BJ Small arrary or 384 arrary.  Plate 1,2 & 4 are in BSII SK- and are cherry picked from Libraries 1 - 124.  Plate 3 is in pSmart was cherry picked from Lib125.  For printing use PucF and Amino-PucR and the Libamp program.
+130	SM2	Stress Liver Library made by JDV in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.
+151	SM2	Heart. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+152 SM1 Liver. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+153	SM2 Development. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+154	SM2 Brain, Bone & Eye. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+155	SM2	Spleen, Gall, Kidneys & Fat. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+156	SM2	Skin, Muscle & Fin. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+157	SM2	Gut. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+158	SM2	Gill. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+159	SM2 Libraries 151 to 158 pooled together. They are made in cSmartSS AKA pSS101 and cloned into the HincII  (5Õ end) and NotI (3Õ end) sites.  The tissues were isolated by the MFO lab and libraries made by JDV.  These can be amplified by using the SF22 and SR22 primers and the A program.  They were sequenced with SR25 and the Seq2 program.
+200	SM	Gill made by Bill Marshall etal in pSmart.
+
+CREATE TABLE vectors (library int(6), vector varchar(10), description text, primary key(library) );
+
+
+PROTOCOL (protocols.txt)
++++++++
+
+Libamp	1	80ûC 30 sec
+Libamp	2	93ûC 25 sec
+Libamp	3	70ûC 15 sec
+Libamp	4	70 ûC 4 min
+Libamp	5	Goto step 2 35 times
+Libamp	6	70ûC 10 min
+Libamp	7	4ûC forever
+Llib	1	80ûC 30 sec
+Llib	2	93ûC 25 sec
+Llib	3	65ûC 15 sec
+Llib	4	70 ûC 4 min
+Llib	5	Goto step 2 35 times
+Llib	6	70ûC 10 min
+Llib	7	4ûC forever
+A	1	93ûC 25 sec
+A	2	65ûC 15 sec
+A	3	70 ûC 2 min
+A	4	Goto step 1 29 times
+A	5	70ûC 10 min, 6: 4ûC forever
+Seq	1	94ûC 15 sec
+Seq	2	50ûC 20 sec
+Seq	3	60û 4 min
+Seq	4	Goto step 1 39 times
+Seq	5	4ûû forever
+Seq2	1	94ûC 15 sec
+Seq2	2	60ûC 4 min
+Seq2	3	Goto step 1 39 times
+Seq2	4	4ûC forever
+
+
+CREATE TABLE protocols (protocol varchar(16), step int(2), description varchar(255), primary key(protocol) );
+
+PRIMERS (primers.txt)
++++++++
+
+PucF		CGCCAGGGTTTTCCCAGTCACG
+PucR		GAGCGGATAACAATTTCACACAGGAAACAG
+SK20		CGCTCTAGAACTAGTGGATC
+Sf			GTGAGTTGATTGCAGTCCAGTTACGCT
+Sr			GGTCAGGTATGATTTAAATGGTCAGTA
+T7smart		TATAGAAGGGGATATCACTCAGCATAAT
+SF22		TTAATACGACTCACTATAAGGGGTGTGG
+SR22		GCCTCCGGTCGGAGGCTTTTGACTTTCTGCTATGGAGG
+SF20		TTCACACAGGAAACAGCCATGGGC
+SF25		GAGCGGATAACAATTTCACACAGG
+
+CREATE TABLE primers (primer varchar(10) NOT NULL, sequence varchar(255), primary key(primer) );

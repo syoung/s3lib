@@ -1,0 +1,58 @@
+// Copyright © Hanover Capital Management Corp. 2004. All Rights Reserved.
+
+//
+// SelectableRow semantics
+//
+// $Author: mflorence $
+// $Date: 2010-11-08 10:47:07 $
+// $Revision: 1.11 $
+//
+
+var SelectableRow_highlightColor = '#F0FFFF';
+var SelectableRow_selectedColor = '#FFFFF0';
+
+// mousedown
+//
+// Note: selection doesn't change if an interior object is clicked
+//
+SelectableRow_mousedown = function(obj, e) {
+  var changeit = true;
+  var srcEl = e.srcElement? e.srcElement : e.target;
+  if ((srcEl != null) && (srcEl.form || srcEl.href)) {
+    for (var parent = srcEl; parent != null; parent = parent.parentElement) {
+      if (obj == parent) {
+        // TODO: experiment -- they want the selection to change EVEN IF an interior object was clicked
+        // let's see how this works
+        //changeit = false;
+        changeit = true;
+        break;
+      }
+    }
+  }
+  if (changeit) {
+    if (obj.getAttribute("_selectedRow") == "true") {
+      obj.style.backgroundColor = obj.getAttribute("_backgroundColor");
+      obj.setAttribute("_selectedRow", "false");
+    }
+    else {
+      obj.style.backgroundColor = SelectableRow_selectedColor;
+      obj.setAttribute("_selectedRow", "true");
+    }
+  }
+}
+
+// mouseover
+//
+SelectableRow_mouseover = function(obj) {
+  if (obj.getAttribute("_selectedRow") != "true") {
+    obj.setAttribute("_backgroundColor", obj.style.backgroundColor);
+    obj.style.backgroundColor = SelectableRow_highlightColor;
+  }
+}
+
+// mouseout
+//
+SelectableRow_mouseout = function(obj) {
+  if (obj.getAttribute("_selectedRow") != "true")
+    obj.style.backgroundColor = obj.getAttribute("_backgroundColor");
+}

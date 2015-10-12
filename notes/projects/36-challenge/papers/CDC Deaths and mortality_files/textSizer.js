@@ -1,0 +1,17 @@
+if(typeof CDC=="undefined"){var CDC=new Object();}CDC.TextSizer=function(){var sizesArray=new Array("100%","102%","103%","105%");
+var boxSizeArray=new Array("14px","16px","18px","20px");var sizePointer;var CDC_SIZER_COOKIE_NAME="sizePrefv2v2";
+function loadTextSize(){if(getCookie(CDC_SIZER_COOKIE_NAME)!=""&&document.styleSheets&&document.styleSheets.length>0){sizePointer=Number(getCookie(CDC_SIZER_COOKIE_NAME));
+if(sizePointer>3){sizePointer=3;}if(sizePointer<0){sizePointer=0;}if(document.styleSheets&&document.styleSheets.length>0){for(var i=0;
+i<document.styleSheets.length;i++){var styleSheet=document.styleSheets[i];if(styleSheet.insertRule){styleSheet.insertRule("* {font-size: "+sizesArray[sizePointer]+";}",styleSheet.cssRules.length);
+}else{if(styleSheet.addRule){styleSheet.addRule("*","font-size: "+sizesArray[sizePointer]);
+}}}}}else{sizePointer=0;}$("#Size"+sizePointer).removeClass("default");$("#Size"+sizePointer).addClass("selected");
+sizeBoxes();}function sizeBoxes(){for(var i=0;i<boxSizeArray.length;i++){$("#Size"+i).css("fontSize","11px");
+$("#text-sizer").css("fontSize","11px");}}return{render:function(){$("#text-sizer").css("display","block");
+loadTextSize();},resize:function(newSize){$("#Size"+sizePointer).removeClass("selected");
+$("#Size"+sizePointer).addClass("default");if(document.styleSheets&&document.styleSheets.length>0&&newSize>=0&&newSize<4){sizePointer=newSize;
+document.cookie=CDC_SIZER_COOKIE_NAME+"="+sizePointer+"; path=/; domain=.cdc.gov";
+for(var i=0;i<document.styleSheets.length;i++){var styleSheet=document.styleSheets[i];
+if(styleSheet.insertRule){styleSheet.insertRule("* {font-size: "+sizesArray[sizePointer]+";}",styleSheet.cssRules.length);
+}else{if(styleSheet.addRule){styleSheet.addRule("*","font-size: "+sizesArray[sizePointer]);
+}}}}$("#Size"+sizePointer).removeClass("default");$("#Size"+sizePointer).addClass("selected");
+sizeBoxes();}};}();

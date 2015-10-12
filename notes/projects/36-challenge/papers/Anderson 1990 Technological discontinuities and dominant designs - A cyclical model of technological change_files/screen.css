@@ -1,0 +1,4392 @@
+/*-------Table of Contents-------*/
+/*
+1. Element Styles
+2. Link Styles
+3. Universal Classes
+4. Form Styles
+5. Content Styles
+6. Global Nav
+7. Auth Section
+8. PPV/PSS Section
+9. MyJSTOR / Portals
+   9.1 Register Pages
+   9.2 Citations Pages
+10. Search
+   10.1 Advanced Search
+11. Info Pages
+   11.1 Publisher Portal
+12. Dynamic Info
+13. Others (System Errors, Take the Tour, Feedback Forms)
+14. Admin Portal
+15. ARTstor
+16. Hacks
+*/
+
+/*==IE6 CSS also== [this is a style that denotes a style that has a variation within the IE6 Stylesheet] */
+
+
+/*---------------------------------*/
+
+
+/*----------------------------------------------------------------------------*/
+/* ------------------------------1. Element Styles--------------------------- */
+/*----------------------------------------------------------------------------*/
+
+* {
+	margin: 0; 
+	padding: 0;	
+	color: #3c3d46;
+}
+
+body {
+	font: 62.5%/1.3 Verdana, Arial, sans-serif;
+}
+
+h1, h2 {
+	font-weight: bold;
+	color: #333;
+}
+
+h1 {
+	font-size: 1.4em;
+	padding: .8em 0;
+}
+
+h2, h3, h4 {font-size: 1em;}
+
+li h2, li h3 {display: inline;}
+
+p {
+	margin: 10px 0;
+}
+
+img, a img {
+	border: none;
+}
+
+/*=====img with border=====*/
+#journalImage img, #pageImageContainer img, #thumbs img, #hqImagesContainer img, img.border, #results img 
+{
+	border: 1px solid #bdb888;
+}
+/*=========================*/
+
+dt {font-weight: bold;}
+
+ul li, ol li, dd {
+	margin-left: 15px;
+	padding: 5px 0;
+}
+
+fieldset {
+	border: none;
+}
+
+fieldset, legend {margin: 0; padding: 0;}
+
+input, label, select, legend {
+	color: #333;
+	font: 1em Verdana, Arial, Helvetica, sans-serif;
+}
+
+input, select {
+vertical-align: middle;
+}
+
+	body.register input, body.register select, form#articleLocator input, form#articleLocator select {
+	margin-top: 2px;
+	}
+
+	.hasDrop input, .hasDrop select { /*used in adminPortal section for selects that need to be lined up with radio button inputs */
+	vertical-align: baseline;
+	}
+	
+input {
+padding: 2.5px;
+}
+
+textarea, input
+{font-family: Verdana, Arial, sans-serif; font-size: 1em;}
+
+select {
+	background-color:#fff; 
+	border-top: 2px solid #b7b387; 
+	border-left: 2px solid #b7b387;
+	border-right: 2px solid #e5e3cb;
+	border-bottom: 2px solid #e5e3cb;
+	padding: 2px;
+	font-size: 1em;
+}
+
+	select.selectSortBy {
+		width: 13em;
+	}
+	
+	select.selectLanguage, .selectResults {
+		width: 11em;
+	}
+	
+	select.selectNumber {
+		width: 5.5em;
+	}
+	
+/* based on width of inputs/selects in myJSTOR registration section */
+	select.selectInstitution {
+	width: 400px;
+	}
+	
+	.selectPub {  /*used in adminPortal section */
+	width: 25.1em;
+	}
+	
+	.selectCol {  /*used in adminPortal section */
+	width: 21.9em;
+	}
+	.selectYears {width: 8.5em;}
+	
+caption {
+text-align: left;
+font-weight: bold;
+font-size: 1.1em;
+margin: 1em 0;
+}	
+
+sub, sup {line-height: 2em;}
+	
+/*----------------------------------------------------------------------------*/	
+/*-------------------------------2. Link Styles-------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+a {
+	color: #71672d;
+	font-size: 1em;
+	/*outline: none !important;*/
+}
+
+a:hover, a:focus, a:active {
+	color: #9c8400;
+}
+
+#mainContent a, #publisherInfo a, #searchLinkNav a, #reportNav a, #issueNav a, body.home a.seeAll, #popUpContent a, body.urp #subContent a, #pubNote a {
+	color: #761e20;
+	/*text-decoration: none;*/
+}
+
+#mainContent a:hover, #mainContent a:focus, #mainContent a:active, #publisherInfo a:hover, #publisherInfo a:focus, #publisherInfo a:active, #searchLinkNav a:hover, #searchLinkNav a:focus, #searchLinkNav a:active, #reportNav a:hover, #reportNav a:focus, #reportNav a:active, #issueNav a:hover, #issueNav a:focus, #issueNav a:active, body.home a.seeAll:hover, body.home a.seeAll:focus, body.home a.seeAll:active, #popUpContent a:hover, #popUpContent a:focus, #popUpContent a:active, body.urp #subContent a:hover, body.urp #subContent a:focus, body.urp #subContent a:active, #pubNote a:hover, #pubNote a:focus, #pubNote a:active {
+	color: #a71216;
+	text-decoration: underline;
+} 
+
+#mainContent .articleLinks a, #mainContent li.button a, #mainContent .saveCiteContainer a, #mainContent .errorMessage a, #mainContent a.author, #mainContent .sourceInfo a, #popUpContent .articleLinks a {
+	color: #71672d;
+	font-size: 1em;
+	text-decoration: underline;
+}
+
+#mainContent li.button a, #mainContent .saveCiteContainer a {
+text-decoration: none;
+}
+
+#mainContent .articleLinks a:hover, #mainContent .articleLinks a:focus, #mainContent .articleLinks a:active, #mainContent li.button a:hover, #mainContent li.button a:focus, #mainContent li.button a:active, #mainContent .saveCiteContainer a:hover, #mainContent .saveCiteContainer a:focus, #mainContent .errorMessage a:hover, #mainContent .errorMessage a:focus, #mainContent .errorMessage a:active, #mainContent a.author:hover, #mainContent a.author:focus, #mainContent a.author:active, #mainContent .sourceInfo a:hover, #mainContent .sourceInfo a:focus, #mainContent .sourceInfo a:active, #popUpContent .articleLinks a:hover, #popUpContent .articleLinks a:focus, #popUpContent .articleLinks a:active {
+	color: #9c8400;
+}
+
+a:hover sup, a:active sup, a:hover sub, a:active sub {text-decoration: none;}
+
+a cite {
+color: inherit;
+}
+
+/*----------------------------------------------------------------------------*/
+/* --------------------------3. Universal Classes---------------------------- */
+/*----------------------------------------------------------------------------*/
+
+.hasNextTo {float: left; margin-right: 1em;} /* This is for a h1 that has items next to it */
+
+.clear {
+	clear: both;
+}
+
+.lastUpdated {
+	font-size: 1em;
+	color: #635d3f;
+}
+
+a.help {
+	font-size: 1em;
+	color: #761e20;
+	/*text-decoration: none;*/
+}
+
+a.help:hover, a.help:focus, a.help:active {
+	color: #a71216;
+	text-decoration: underline; 
+}
+
+a.backtoTop {
+	padding-left: 1em;
+	font-size: .9em;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+input.border, textarea.border {border: 1px solid #b7b387;}
+
+.title {
+	font-weight: bold;
+}
+
+.underline, span.underline {text-decoration: underline;}
+
+.collapsed {
+display: none;
+}
+
+/* This is used in info pages to make OL's line up flush with <p> text */
+.listLineUp {margin-left: 4px;}
+
+
+.italic {font-style: italic;}
+
+.hidden, label.hidden {
+position: absolute;
+top: -999999em;
+}
+
+.button, #content #mainContent a.button {
+color: #71672d;
+background-color: #e5e3cb;
+border: 1px solid #cac594;
+border-width: 0 1px 1px 0;
+font-size: 1em;
+padding: .2em; 
+margin: 4px 0px;
+text-decoration: none;
+}
+
+.underConstruction {color: orange; font-size: 1.33em; font-weight: bold; border-bottom: 2px solid orange; padding-bottom: 5px; width: 260px;}
+
+
+/*=====fix for IE's wide button issues=====*/
+input.button {
+    width: 0;  /* IE table-cell margin fix */
+    overflow: visible;
+}
+
+input.button[class] {  /* IE < 7 ignores [class] */
+    width: auto;  /* cancel margin fix for other browsers */
+}
+
+/*=====end wide button fix=====*/
+
+#mainContent .callout {
+	padding: 1em;
+	margin: 1em 0 1em 1em;
+	border: 1px solid #879daa;
+	border-width: 1px 0;
+	background: #e0e9ec;
+	float: right;
+}
+
+	#mainContent .callout h2{
+	margin: 2px 0px;
+	padding: 0px;
+}
+
+.tip {
+border-left: 1px solid #57788c;
+padding: .1em 0 .2em .5em;
+}
+
+body.register .callout {
+width: 290px;
+float: right;
+margin-top: -2em;
+margin-left: 1em;
+}
+
+.errorText {
+	color: #c2021d;
+	font-weight: bold;
+	/* margin: 5px 5px 5px 0px; */
+} /*==IE6 CSS also==*/
+
+.success {margin: 1em 0; padding: .5em; color: #000; font-weight: bold; border: 2px solid #6c8e75; border-width: 2px 0; background:#f7f2d8; clear: both;}
+
+.errorMessage, .noJS  {margin: 1em 0; padding: .5em; color: #000; font-weight: bold; border: 2px solid #c2021d; border-width: 2px 0; background:#f7f2d8; clear: both;}
+
+.errorMessage.smallest {width: 300px;} /* MyJSTOR */
+
+.errorMessage.smallerSize {width: 375px;} /* Search */
+
+.errorMessage.mediumSize {width: 425px;} /* Auth*/
+
+.errorMessage #reportName, .errorMessage #reportDate {
+color: #c2021d;
+}
+
+.alertBlue {color: #57788c;}
+
+input.errorTextInput, label.errorText {
+	font-weight: normal;
+	color: #c2021d;
+	margin: 0;
+}
+
+.floatLeft {float: left;}
+
+.floatRight {float: right;}
+
+.center {text-align: center;}
+
+img.noBorder {border: none;}
+
+.consortia {
+	font-style: italic;
+}
+
+.noBorder {
+	border: none;
+}
+
+.noStyleList, .noStyleList li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.alphaAnchors {
+	clear: both;
+	margin: 30px 0 10px 0;
+	padding: 5px 0;
+	border-top: 1px solid #e9e6d1; 
+}
+	
+.alphaAnchors  li {
+	margin: 0;
+	padding-right: .5em;
+	display: inline;
+	list-style: none;
+}
+
+#availJournals .alphaAnchors {
+border: none;
+margin: 0;
+padding: .5em;
+border: 1px solid #b7b387;
+border-width: 0 1px;
+}
+
+.listHeader {
+	border-top: 1px solid #a39d68;
+	border-bottom: 1px solid #dcd9bf; 
+	background: #f4f2e7; 
+	padding: 4px;	
+	font-weight: bold; 
+	text-align: left;
+	font-size: 1em;	
+	vertical-align: bottom;
+	}
+	
+body.ppv .listHeader {text-transform: uppercase; letter-spacing: 1px; font-size: .9em;}
+
+.articleLinks {
+	display: inline;
+	}
+
+.articleLinks a {
+border-left: 1px solid #3c3d46;
+padding-left: .5em;
+margin-left: .5em;
+}
+
+.articleLinks a.first {
+border-left: none;
+padding-left: 0;
+margin-left: 0;
+}
+
+span.articleLinks a {
+margin-left: .5em;
+}
+
+#footnotes {
+	margin: 0 0 0 .5em;
+}
+
+#footnotes li, .footNote {
+	font-size: .9em;
+	color: #635d3f;
+}
+
+.textCenter {text-align: center;}
+
+.highlight {
+   position: absolute; 
+   display: block;
+   background-color: #ffcc00;       /* the background              */
+   filter:alpha(opacity=25);
+   -moz-opacity:0.25;
+   opacity: 0.25 ;
+   overflow: hidden;
+   
+
+}
+
+.additionalInfo {
+margin-top: 1.5em;
+padding-top: .5em;
+border-top: 1px solid #e5e3cb;
+}
+
+.callout .additionalInfo {
+border-color: #879daa;
+}
+
+.buttonForm {float: left; margin-right: .3em;}
+
+.decorative { 
+list-style-image: url("../images/decorative_bullet.jpg");
+list-style-type: square;
+}
+
+
+.lowerRoman {list-style: lower-roman;}
+.lowerAlpha {list-style: lower-alpha;}
+
+/* for use in upcoming ltm-1416 
+.footerAnchor
+{border-right: 1px solid #3c3d46; padding: 0 .5em; }
+
+#footer a {padding-left: .5em;}
+
+#footerLinks
+{margin-left: -5px;}
+*/
+/*----------------------------------------------------------------------------*/
+/* ----------------------------4. Form Styles---------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+form ol {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+form ol li {
+margin: 2em 0 1em;
+padding: 0;
+}
+
+body.adminPortal fieldset {
+clear: both;
+}
+
+form#articleLocator ol li {
+margin-top: 1em;}
+
+form ul li {
+margin: 1em 0;
+padding: 0;
+list-style: none;
+}
+
+form ul li span {
+font-weight: normal;
+}
+
+	form.citeForm ul li {
+	margin: 3px 0;
+	}
+
+body.adminPortal form ol select {
+margin: 1em 0 0 1.5em;
+}
+
+form.feedback {
+width: 500px;
+}
+
+form.feedback h2 {
+margin: 1em 0;
+font-size: 1.2em;
+color: #54656b;
+}
+
+#profile legend {
+color: #54656b;
+font-weight: bold;
+font-size: 1.2em;
+}
+
+form#profile ol li {
+border-bottom: 1px solid #e5e3cb;
+}
+
+form#profile li li, form#profile li.noBorder  {
+border: none;
+}
+
+/* this additional padding is to fix a display issue in FF 1.5 and Safari */
+body.adminPortal form ul {
+padding-top: 1px;
+}
+
+
+form#rptSchedulePop ul {
+margin: 0;
+padding: 0;
+}
+
+body.adminPortal legend, body.adminPortal label, form.feedback legend, form.feedback label, body.citations label, form#availJournals label, body.auth label, body.register label, #popUpContent label, form#articleLocator legend, form#articleLocator label, form#rptSchedulePop legend {
+font-weight: bold;
+}
+
+body.adminPortal ul label, form.feedback ul label, body.register label span, form#articleLocator ul label, form#rptSchedulePop label {
+font-weight: normal;
+}
+
+body.register label span {
+font-size: .9em;
+}
+
+body.register label span a {
+font-size: 1.1em;
+}
+
+form#articleLocator ul {
+margin: 0;
+padding: 0;
+}
+
+body.adminPortal input.button {
+color: #71672d;
+border: 1px solid #cac594;
+border-width: 0 1px 1px 0;
+font-size: 1em;
+}
+
+form#articleLocator li {
+clear: left;
+}
+
+form#articleLocator li ol li {
+clear: none;
+}
+
+form .example {margin-left: 1em;}
+
+.searchHorz {
+float: left;
+margin: 0 0 1em;
+padding: 0;
+}
+
+.searchHorz li {
+float: left;
+margin: 0 2em 0 0;
+padding: 0;
+}
+
+.infoPageNav {
+clear: both;
+list-style: none;
+margin: 0;
+padding: 1em 0;
+font-size: 1em;
+}
+
+.infoPageNav li {
+float: left;
+margin: 0 .7em 0 0;
+padding: 0;
+padding-left: .7em;
+border-left: 1px solid #3c3d46;	
+}
+
+.infoPageNav li.first {
+border: none; padding-left: 0px;
+}
+
+
+#mainContent.tutorials p.infoPageNav {
+clear: both;
+list-style: none;
+margin: 0;
+padding: 1em 0;
+font-size: 1em;
+}
+
+#mainContent.tutorials p.infoPageNav a {
+float: left;
+margin: 0 .7em 0 0;
+padding: 0;
+padding-left: .7em;
+border-left: 1px solid #3c3d46;	
+}
+
+#mainContent.tutorials p.infoPageNav a.first {
+border: none; padding-left: 0px;
+}
+
+body.about .infoPageNav {width: 760px;}
+
+body.about .tutorials .infoPageNav {
+width: 780px;
+clear: none; 
+padding: 0; 
+margin: 0;
+}
+
+body.about .tutorials .infoPageNav li.first {
+margin-left: 1em;
+}
+
+body.about .tutorials span {
+clear: left;
+float: left;
+margin: 0 .5em 0 0;
+}
+
+.infoPageNav a img {
+padding-bottom: 2px;
+border-bottom: 1px solid #ce0000;
+}
+
+
+
+
+
+
+/*----------------------------------------------------------------------------*/
+/* ----------------------------5. Content Styles----------------------------- */
+/*----------------------------------------------------------------------------*/
+
+#wrapper {
+	width: auto;
+	min-width: 995px;
+	border: 1px solid #e9e6d1;
+	border-width: 0 1px 1px 1px;
+	margin: 4px 3px 1px 3px;
+} /*==IE6 CSS also==*/
+
+	body.articleImage #wrapper {
+	min-width: 995px;
+} /*==IE6 CSS also==*/
+
+#content {
+	position: relative;
+	min-width: 934px;
+	background: #f4f2e7;
+	padding: 0 10px;
+	clear: left;
+	font-size: 1.1em;
+}
+
+	body.articleImage #content {
+		border-bottom: 1px solid #e9e6d1;
+		padding-bottom: 1em;
+	} /*==IE6 CSS also==*/
+
+	body.home #content {
+		padding: 0;
+	}
+	
+	body.auth #content {
+		min-width: 700px;
+	} /*==IE6 CSS also==*/
+
+	body.adminPortal #content {
+		padding-top: 2em;
+	}
+
+#contentContainer {
+	float: left;
+	width: 661px;
+	background: #f4f2e7;
+}
+
+#contentContainer .pubNote
+{float: right; width: 13em; position: relative; top: -1em;}
+
+
+	body.citations #contentContainer {
+		width: 790px;}
+
+#mainContent, #citeContent {
+	clear: left;
+	float: left;
+	width: 800px; 
+	margin: 1em 0 0 0;
+	padding: 0 1em 1em;
+	background: #fff;
+	border: 1px solid #b7b387;
+	border-right: 1px solid #e5e3cb;
+	border-bottom: 1px solid #e5e3cb;
+}
+
+#citeContent, body.hasSideContent #mainContent, body.articleInfo #mainContent {
+width: 620px;
+}
+
+<!--	body.search #mainContent, body.auth #mainContent, body.adminPortal #mainContent, body.ppv #mainContent, body.register #mainContent, #mainContent.hasBrowseTabs, body.search #mainContent.hasSearchTabs, #mainContent.pubInfo { width: 800px; } -->
+	
+	body.auth #mainContent {
+		min-width: 785px;
+	} /*==IE6 CSS also==*/
+		
+	body.articleInfo #mainContent, body.searchResults #mainContent {
+		margin: 0;
+		border-width: 0 1px 1px 1px;
+	}
+	
+	#mainContent.hasBrowseTabs, body.search #mainContent.hasSearchTabs {
+		margin-top: 2em;
+	}
+	
+	body.articleImage #mainContent, #mainContent.urp {
+		width: auto;
+		min-width: 995px;
+		padding: 1em 0 1em 1em;
+		margin: 0;
+		border: none;
+		font-size: 1.1em;
+	}
+	
+	body.home #mainContent {
+		background: #9dafb9 url("../images/homepage/blue-repeater.gif") repeat-x top left;
+		width: 100%;
+		height: 71px;
+		margin: 0;
+		padding: 0;
+		border: none;
+		border-top: 3px solid #fff;
+	}
+
+#citeContent {
+	margin-bottom: 10px;
+	position: relative;
+}
+
+	#citeContent h1 {
+		font-size: 1.1em;
+		padding: 0;
+	}
+	
+	#citeContent #journalInfo {
+		margin: .3em 0 10px 130px;
+	}
+	
+	#citeContent #journalInfo span a {color: #761e20;}
+	#citeContent #journalInfo span a:hover, #citeContent #journalInfo span a:focus, #citeContent #journalInfo span a:active {color: #a71216;}
+	
+	#citeContent #journalInfo.noCover {
+		margin-left: 0;
+	}
+	
+	#citeContent #journalImage {
+		margin-right: 0;
+		padding-bottom: 0;
+		margin-bottom: 0;
+	}
+	/*Ltm-2197 added margin-top */
+#citeContent #pubNote
+{position: absolute; left: 13em; margin-top: 10px;}
+
+#mainContent #pubNote {
+float: right; 
+width: 130px; 
+position: relative; 
+top: -10px;
+}
+
+#mainContent.pubInfo #pubNote {
+	position: absolute; 
+	top: 120px; 
+	left: 562px; 
+	width: 200px;
+}
+
+#citeContent #issueNav
+{position: absolute; bottom: 1em; left: 13em;}
+
+	body.articleImage #citeContent {
+		margin-bottom: 0;
+		}
+		
+#subContent {
+	float: left;
+	width: 230px;
+	margin-top: 36px;
+	padding: .8em 1em;
+	background: #fff;
+	border: 1px solid #b7b387;
+	border-right: 1px solid #e5e3cb;
+	border-bottom: 1px solid #e5e3cb;
+}
+
+/*	#subContent h2 {
+		color: #696018;
+		padding-bottom: 3px;
+	}
+*/	/* Maya changes - confirm that this can be deleted entirely */
+
+	body.home #subContent{
+		clear: left;
+		background: #cac594 url("../images/homepage/tan-repeater.gif") repeat-x top left;
+		width: 100%;		
+		height: auto;
+		min-height: 116px;
+		margin: 0;
+		padding: 0;		
+		padding-bottom: 1em;
+		border: none;
+		border-top: 3px solid #fff;
+		border-bottom: 3px solid #f4f2e7;
+	}
+	
+	body.home #subContent ul li {
+		margin: 0 0 .5em 1.8em;
+		padding: 0;
+	}
+	
+	body.browse #subContent {
+		float: none;
+		position: absolute;
+		left: 670px;
+		top: 0;
+	}
+	
+	body.logIn #subContent {
+		width: 258px;
+		position: absolute;
+		top: 10px;
+		left: 350px;
+		border: none;
+		border-left: 1px solid #e5e3cb;
+		padding-left: 25px;
+	} /*==IE6 CSS also==*/
+	
+	body.register #subContent {
+		margin: 11px 0 0 15px;
+		}
+		
+	body.articleImage #subContent, body.articleInfo #subContent {
+		background: #f4f2e7;
+		border: none;
+		padding: 0;
+		}
+		
+#popUpContent, #closeWindow {
+margin: 1em;
+font-size: 1.1em;
+}
+
+#popUpContent h1 {
+margin: 1em 0;
+padding: 0;
+font-size: 1.25em;
+color: #333;
+}
+
+#popUpContent h2 {
+color: #54656b;
+margin: 1em 0 .5em;
+font-size: 1.2em;
+}
+
+.popUp #branding img {padding: 0; margin-top: -5px;}
+
+.popUp #branding-logo {background: #fff; border-right: 1px solid #e9e6d1; height: 80px; width: 68px;}
+
+.popUp #branding {margin-top: .4em;}
+
+#inPageTabs {
+	clear: both;
+	margin: 2em 0 0 0;
+	border-bottom: 1px solid #b7b387;
+	padding: 1em 0 4px 0;
+	list-style: none;
+	text-align: left;
+}
+
+/* was used on Available Journal page, but may not be needed --
+#availJournals #inPageTabs {
+padding-bottom: 3px;
+}*/
+
+body.articleInfo #inPageTabs {
+line-height: 1.2;
+width: 644px;
+}
+
+#inPageTabs li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+#inPageTabs li.active {
+	background: #fff;
+	border-bottom: 1px solid #fff;
+	padding-top: 6px;
+} /*==IE6 CSS also==*/
+
+#inPageTabs li.active a, #mainContent #inPageTabs li.active a {
+	background: #fff;
+	color: #427390;
+	position: relative;
+	top: 1px;
+} 
+
+#inPageTabs li a, #mainContent #inPageTabs li a {
+	background: #e5e3cb;
+	font-size: 1em;
+	font-weight: bold;
+	margin-right: 2px;
+	text-decoration: none;
+	padding: 6px 9px 4.5px 5px;
+	border: 1px solid #b7b387;
+	border-bottom: none;
+	color: #71672d;
+}
+
+#inPageTabs li a:hover, #inPageTabs li a:focus, #inPageTabs li a:active, #mainContent #inPageTabs li a:hover, #mainContent #inPageTabs li a:focus, #mainContent #inPageTabs li a:active {
+	 color: #9c8400;
+}
+
+#inPageTabs li.inactive a {
+	background: #eae8e8;
+	color: #c0bebe;
+	border-color: #ccc;
+} /*==IE6 CSS also==*/
+
+/*new tab styles and over-rides */ 
+
+#tabsContainer {
+float: left;
+clear: left;
+	  width: 824px;
+      background:#f4f2e7 url("../images/tabs/bg.gif") repeat-x bottom;
+      line-height:normal;
+      }
+	  
+	
+	body.about #tabsContainer {background: url("../images/tabs/bg.gif") repeat-x bottom; width:700px; margin-bottom: 0px;}
+	
+    
+	body.articleInfo #tabsContainer {width: 643px; clear: none;}
+	 
+	#tabsContainer ul {
+      margin:0;
+      padding:10px 0px 0px;
+      list-style:none;
+      }
+    #tabsContainer li {
+      float:left;
+      background:url("../images/tabs/norm_left.gif") no-repeat left top;
+      margin:0;
+      padding:0 5px 0 9px;
+      }
+    #tabsContainer a {
+      display:block;
+      background:url("../images/tabs/norm_right.gif") no-repeat right top;
+      padding:5px 15px 4px 6px;
+      }
+	 #tabsContainer li a, body.about #tabsContainer li a {
+	 font-size: 1em;
+	font-weight: bold;
+      color: #71672d;
+	  text-decoration: none;
+      } 
+	  
+	  #tabsContainer li a:hover, #tabsContainer li.active a:hover, body.about #tabsContainer li a:hover, body.about #tabsContainer li.active a:hover, #tabsContainer li a:focus, #tabsContainer li.active a:focus, body.about #tabsContainer li a:focus, body.about #tabsContainer li.active a:focus   {
+	  color: #9c8400;
+text-decoration: none;
+      }
+	  
+    #tabsContainer .active {
+      background-image:url("../images/tabs/norm_left_on.gif");
+      }
+    #tabsContainer li.active  a {
+	  color: #427390;
+      background-image:url("../images/tabs/norm_right_on2.gif");
+      padding-bottom:5px;
+      }
+
+/*added to style citation links in announcement archive*/
+body.announceArchive cite 
+{font-weight: bold; font-style: normal;}
+
+/*----------------------------------------------------------------------------*/
+/*--------------------------6. Global Nav-------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+#skipNav a, #skipNav a:visited, #skipNav a:hover {
+	position:absolute;
+	left:0px;
+	top:-500px;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
+
+#skipNav a:active, #skipNav a:focus {
+	position:absolute;
+	z-index:100;
+	left:70px;
+	top:44px;
+	width:auto;
+	height:auto;
+}
+
+#branding {
+	position: relative;
+	height: auto;
+	min-height: 80px;
+	margin-top: 0px;
+	background: #f4f2e7 url("../images/repeat_header.gif") top left repeat-x;
+	border-bottom: 3px solid #fff;
+	z-index: 5;
+} /*==IE6 CSS also==*/
+
+#branding a {
+	text-decoration: none;
+}
+
+#branding-logo {
+	position: absolute;
+	top: 0;
+	display: block;
+	float: left; 
+	height: auto;
+	min-height: 80px;
+	width: 60px;
+	/*text-indent: -9999px;
+	background: url("../images/jstor_logo.gif") top left no-repeat;*/
+	border-right: 3px solid #fff;
+} /*==IE6 CSS also==*/
+
+#branding-logo img {margin: 0; padding: 0;}
+
+body.pubPortal #branding-logo {background: url("../images/pub-portal/pp_jstor_logo.jpg") top left no-repeat;}
+
+/*ltm-2275*/
+.popUp #branding-logo img {padding: .5em;}
+
+.popUp #branding {margin-top: .5em;}
+
+#branding-tagline {
+	position: absolute;
+	top: 20px;
+	left: 70px;
+	z-index:7;
+	background: url("../images/tag-line.gif") top left no-repeat;
+	width: 191px; 
+	height: 19px;
+	text-indent: -9999px;
+}
+
+
+#supportNav {
+	float: right;
+	margin: 3px 3px 0px;
+	padding: 0;
+	z-index: 15;	
+	}
+
+#supportNav li {
+	float: left;
+	margin: 0;
+	padding: 0 5px;
+	font-size: 1.1em;
+	color: #57788c;
+	list-style: none;
+}
+
+#supportNav li li {
+	font-size: 1em;
+}
+
+#supportNav li a {
+	font-size: 1em;
+	padding-left: 8px;
+	background: url("../images/icon_header_bullet.gif") 2px 5px no-repeat;
+}
+
+	body.pubPortal #supportNav li {font-size: 1.1em; font-weight: bold;}
+
+#supportNav li #citationsSaved {
+	position: relative;
+	float: left;
+	text-align: right;
+}
+
+#supportNav li #citationsSaved a {
+	text-decoration: underline;
+	background-image: none;
+	padding: 0;
+	position: relative;
+	text-align: right;
+} 
+
+#globalNavContainer {
+	position: absolute;
+	left: 63px;
+	height: 57px;
+	width: 585px;
+	border-left: 1px solid #e9e6d1;
+	z-index:6;
+}
+
+body.pubPortal #globalNavContainer {
+width: 700px;
+}
+
+#globalNav {
+	position: absolute;
+	top: 57px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+} /*==IE6 CSS also==*/
+
+#globalNav li {
+	float: left;
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+#globalNav li a {
+	font-size: 0px;
+	background-position: top left; 
+	background-repeat: no-repeat;
+	text-indent: -9999px;
+	display: block;
+	height: 23px !important;
+}
+
+#browse {
+	width: 71px;
+	background-image: url("../images/globalNav/browse.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#browse a:hover, #browse a:active, #browse a:focus {
+	background-image: url("../images/globalNav/browse_over.gif");
+}
+
+body.browse #browse {
+	background-image: url("../images/globalNav/browse_active.gif");
+}
+
+#search {
+	width: 87px;
+	background-image: url("../images/globalNav/search.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#search a:hover, #search a:active, #search a:focus {
+	background-image: url("../images/globalNav/search_over.gif");
+}
+
+body.search #search {
+	background-image: url("../images/globalNav/search_active.gif");
+}
+
+#about {
+	width: 61px;
+	background-image: url("../images/globalNav/about.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#about a:hover, #about a:active, #about a:focus {
+	background-image: url("../images/globalNav/about_over.gif");
+}
+
+body.about #about {
+	background-image: url("../images/globalNav/about_active.gif");
+}
+
+#participate {
+	width: 103px;
+	background-image: url("../images/globalNav/participate.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#participate a:hover, #participate a:active, #participate a:focus {
+	background-image: url("../images/globalNav/participate_over.gif");
+}
+
+body.participate #participate {
+	background-image: url("../images/globalNav/participate_active.gif");
+}
+
+#resources {
+	width: 95px;
+	background-image: url("../images/globalNav/resources.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#resources a:hover, #resources a:active, #resources a:focus {
+	background-image: url("../images/globalNav/resources_over.gif");
+}
+
+body.resources #resources {
+	background-image: url("../images/globalNav/resources_active.gif");
+}
+
+#myJSTOR {
+	width: 76px;
+	background-image: url("../images/globalNav/myJSTOR.gif");
+	border-right: 3px solid #f4f2e7;
+}
+
+#myJSTOR a:hover, #myJSTOR a:active, #myJSTOR a:focus {
+	background-image: url("../images/globalNav/myJSTOR_over.gif");
+}
+
+body.myJSTOR #myJSTOR {
+	background-image: url("../images/globalNav/myJSTOR_active.gif");
+}
+
+/*navigation drop downs*/
+#globalNav li ul {
+	position: absolute;
+	top: 23px;
+	left: -3000px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #a29a65;
+	border-width: 3px 1px 0px 1px;
+}
+
+#globalNav li ul li {
+	display: inline;
+	float: none;
+	border: none;
+	background: none !important;
+}
+
+#globalNav li ul li a {
+	width: 210px !important;
+	color: #595115;
+	display: block;
+	border-bottom: 1px solid #bab380;
+	background: #CAC695;
+	padding: 4px 0 4px 7px;
+	font-size: 1.1em;
+	text-indent: 0;
+	height: auto !important;
+}
+
+#globalNav li ul li a:hover, #globalNav li ul li a:active, #globalNav li ul li a:focus {
+	background: #b0a873;
+	color: #fff;
+	background: #b0a873;
+	background-image: none !important;
+}
+
+#globalNav li:hover, #globalNav.over {position: static;}
+
+#globalNav li:hover ul, ul#globalNav li.over ul {
+	left: 0px;
+}
+
+#globalNav #browse ul {margin-left: 90px;} /*==IE6 CSS also==*/
+#globalNav #about ul {margin-left: 164px;} /*==IE6 CSS also==*/
+#globalNav #participate ul {margin-left: 228px;} /*==IE6 CSS also==*/
+#globalNav #resources ul {margin-left: 334px;} /*==IE6 CSS also==*/
+#globalNav #myJSTOR ul {margin-left: 432px;} /*==IE6 CSS also==*/
+
+/***homepage specific styles****/
+#desc {
+	margin: 0;
+	background: #fff url("../images/homepage/mainContent-BG.jpg") top left no-repeat;
+	min-height: 181px;
+	height: auto;
+} /*==IE6 CSS also==*/
+
+#desc h1, #desc strong {
+	text-indent: -9999px;
+}
+
+#desc strong {
+	margin: 4px 4px 0 0;
+	padding: 0;
+	display: block;	
+	float: left;
+	width: 155px;
+	height: 38px;
+	background: url("../images/homepage/home_jstor.gif") top left no-repeat;
+} 
+
+#desc p {
+	color: #696018;
+	margin: 0 0 0 243px;
+	width: 510px;
+}
+
+#welcome {
+	margin: 4px 0 0 7px;
+	border: none;
+	vertical-align: top;
+	}
+
+#homeSearch {
+	float: left;
+	position: relative;
+	border-right: 3px solid #fff;
+	height: auto;
+	min-height: 71px;
+	width: 533px;
+	background: url("../images/homepage/search_the_collections.jpg") top left no-repeat;
+} /*==IE6 CSS also==*/
+
+#homeSearch2 {
+	float: left;
+	position: relative;
+	border-right: 3px solid #fff;
+	height: auto;
+	min-height: 71px;
+	width: 533px;
+	background: url("../images/homepage/welcome-to-the-archives.jpg") top left no-repeat;
+} /*==IE6 CSS also==*/
+
+#homeSearch2 a{
+text-indent: -9999px;
+display: block;
+width: 531px;
+background: url("../images/homepage/welcome-to-the-archives.jpg") no-repeat left top;
+min-height: 71px;
+height: auto;
+} /*==IE6 CSS also==*/
+
+#homeSearch label {
+	text-indent: -9999px;
+	display: block;
+}
+
+#homeSearchBox {
+	border: 1px solid #dedcbf;
+	margin-top: 23px;
+	width: 213px;
+}
+
+#homeAdvSearch {
+	font: 1em Verdana, Arial, Helvetica, sans-serif;
+}
+
+#tour {
+	float: left;
+	width: 231px;
+	border-right: 3px solid #fff;
+}
+
+#tour a {
+	text-indent: -9999px;
+	display: block;
+	width: 231px;
+	background: url("../images/homepage/take-the-tour.jpg") top left no-repeat;
+	min-height: 71px;
+	height: auto;
+} /*==IE6 CSS also==*/
+
+#tour a:hover, #tour a:active, #tour a:focus  {
+	background: url("../images/homepage/take-the-tour_over.jpg") top left no-repeat;
+}
+
+#didYouKnow {
+	float: left;
+	margin: 1em 1em 0 3.5em;
+	width: 295px;
+}
+
+#didYouKnow h2 {
+	text-indent: -9999px;
+	background: url("../images/homepage/didyouknow.gif") 20px 0 no-repeat;
+}
+
+#newsAndNotices {
+	float: left;
+	margin: 1em 1em 0 3.5em;
+	width: 295px;
+} /*==IE6 CSS also==*/
+
+#newsAndNotices h2 {
+	text-indent: -9999px;
+	background: url("../images/homepage/news-and-notices.gif") 20px 0 no-repeat;
+}
+
+
+#fromTheArchives h2 {
+	text-indent: -9999px;
+	background: url("../images/homepage/from-the-archives.gif") 20px 0 no-repeat;
+}
+
+#fromTheArchives {
+	float: left;
+	margin: 1em 0 0 0;
+	width: 450px;
+} /*==IE6 CSS also==*/
+
+#fromTheArchives ul li {
+	padding-right: 0;
+}
+
+#langNav {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background: #e1debf url("../images/homepage/nav-repeater.gif") top left repeat-x;
+}
+
+#langNav li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#langNav li a {
+	display: block;
+	text-indent: -9999px;
+	width: 93px;
+	height: 23px;
+	float: left;
+	border-right: 3px solid #f4f2e7;
+}
+
+#langNav li a img {
+	border: none;
+}
+
+#langNav li a#simplified-chinese {
+	background: url("../images/homepage/language-nav/simplified-chinese.gif") top left no-repeat;
+}
+
+#langNav li a#traditional-chinese {
+	background: url("../images/homepage/language-nav/traditional-chinese.gif") top left no-repeat;
+}
+
+#langNav li a#german {
+	background: url("../images/homepage/language-nav/german.gif") top left no-repeat;
+}
+
+#langNav li a#french {
+	background: url("../images/homepage/language-nav/french.gif") top left no-repeat;
+}
+
+#langNav li a#russian {
+	background: url("../images/homepage/language-nav/russian.gif") top left no-repeat;
+}
+
+#langNav li a#italian {
+	background: url("../images/homepage/language-nav/italian.gif") top left no-repeat;
+}
+
+#langNav li a#japanese {
+	background: url("../images/homepage/language-nav/japanese.gif") top left no-repeat;
+}
+
+#langNav li a#spanish {
+	background: url("../images/homepage/language-nav/spanish.gif") top left no-repeat;
+}
+
+#langNav li a#korean {
+	background: url("../images/homepage/language-nav/korean.gif") top left no-repeat;
+}
+
+#langNav li a#korean:hover, #langNav li a#korean:active, #langNav li a#korean:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/korean-over.gif") top left no-repeat;
+}
+
+#langNav li a#simplified-chinese:hover, #langNav li a#simplified-chinese:active, #langNav li a#simplified-chinese:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/simplified-chinese-over.gif") top left no-repeat;
+}
+
+#langNav li a#traditional-chinese:hover, #langNav li a#traditional-chinese:active, #langNav li a#traditional-chinese:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/traditional-chinese-over.gif") top left no-repeat;
+}
+
+#langNav li a#german:hover, #langNav li a#german:active, #langNav li a#german:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/german-over.gif") top left no-repeat;
+}
+
+#langNav li a#french:hover, #langNav li a#french:active, #langNav li a#french:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/french-over.gif") top left no-repeat;
+}
+
+#langNav li a#russian:hover, #langNav li a#russian:active, #langNav li a#russian:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/russian-over.gif") top left no-repeat;
+}
+
+#langNav li a#italian:hover, #langNav li a#italian:active, #langNav li a#italian:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/italian-over.gif") top left no-repeat;
+}
+
+#langNav li a#japanese:hover, #langNav li a#japanese:active, #langNav li a#japanese:focus {
+	background: #d2cfa5 url("../images/homepage/language-nav/japanese-over.gif") top left no-repeat;
+}
+
+#langNav li a#spanish:hover, #langNav li a#spanish:active, #langNav li a#spanish:focus{
+	background: #d2cfa5 url("../images/homepage/language-nav/spanish-over.gif") top left no-repeat;
+}
+/*** end of homepage specific styles****/
+
+#subheader {
+	padding: 10px 10px 0;
+	background: #97b0b7 url("../images/announceGradient.jpg");
+	height: auto; 
+	min-height: 50px;
+} /*==IE6 CSS also==*/
+
+body.pubPortal #subheader {
+	background: #6F9E74 url("../images/pub-portal/ppannounceGradient.jpg");
+}
+
+#subheader a {
+	font-size: 1em;
+}
+
+span#announcementOverlay {
+background: url("../images/rightBarOverlay.jpg") top right no-repeat;
+width: 340px;
+height: 60px;
+margin-top: -10px;
+float: right;
+}
+
+body.pubPortal span#announcementOverlay {
+background: url("../images/pub-portal/pprightBarOverlay.jpg") top right no-repeat;
+}
+
+#announcement {
+	float: left;
+	font-size: 1.1em;
+}
+
+#announcement, #announcement a, #provider a {	
+	color: #000000;
+}
+
+#provider {
+	padding: 10px 0 0 0;
+	float: right;
+	clear: none;
+	color: #000000;
+	font-size: 1.1em;
+	text-align: right;
+}
+
+
+
+/*The style above this comment will be replaced
+by the one below when the global nav section is
+approved.  Currently the one above is needed for the frozen browse section */
+
+#provider-shortVers {
+	padding: 10px 0 0 0;
+	float: right;
+	color: #000000;
+	font-size: 1.1em;
+	text-align: right;
+}
+
+#provider-longVers {
+	font-size: 1em;
+	float: right;
+	text-align: right;
+	padding: 10px 10px 0 10px;
+}
+
+#provider-logo {
+	margin-top: 5px;
+}
+
+#subNav {
+	clear: left;
+	float: left;
+	min-width: 450px;
+	margin: 10px 0 0 0;
+	padding: 0;
+	font-size: 1.1em;
+	list-style: none;
+} /*==IE6 CSS also==*/
+
+#subNav li {
+	float: left;
+	margin: 0 3px 0 0;
+	padding: 0;
+	background: #d3d1af url("../images/tabs/leftside.gif") top left no-repeat;
+}
+
+#subNav li a {
+	float: left;
+	font-size: 1em;
+	font-weight: bold;
+	display: block;
+	margin-left: 4px;
+	padding: 6px 9px 6px 5px;
+	background: #d3d1af url("../images/tabs/rightside.gif") top right no-repeat;
+	text-decoration: none;
+}
+
+#subNav li.active {
+	background: #f4f2e7 url("../images/tabs/leftside_active.gif") top left no-repeat;
+}
+
+#subNav li.active a {
+	background: #f4f2e7 url("../images/tabs/rightside_active.gif") top right no-repeat;
+}
+
+
+#breadcrumb, #authMsg {
+	float: left;
+	margin: 0;
+	padding: 1em 0 0 0;
+}
+
+#breadcrumb li {
+	display:inline;
+	margin: 0;
+	padding: 0 2px 2px 12px;
+	background: url("../images/breadcrumb2.gif") left center no-repeat;	
+	font-size: .9em;
+}
+
+#breadcrumb a {
+	font-size: .9em;
+}
+
+#thirdLevBreadcrumb {
+background: url("../images/thirdLevBreadcrumb.gif") left center no-repeat;	
+padding: 0 2px 2px 12px;
+}
+
+#footerContainer {
+	clear: both;
+	background: #f4f2e7;
+	padding: 10px 10px 91px 10px;
+	color: #71672d;
+}
+
+	body.articleImage #footerContainer {
+	border-top: 1px solid #e9e6d1;
+}
+
+#footer {
+	padding-top: 0;
+}
+
+#footer p, #footer a {
+	font-size: 1em;
+}
+
+/*----------------------------------------------------------------------------*/
+/* ----------------------------x. Browse ------------------------------------ */
+/*----------------------------------------------------------------------------*/
+
+#browseBy {
+	margin: 0;
+	margin-bottom: 10px;
+	padding: 0;
+}
+	
+#browseBy li {
+	margin: 0;
+	padding-right: .5em;
+	display: inline;
+	list-style: none;
+}
+
+.browseTable {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid #e5e3cb;
+	border-top: 1px solid #a39d68;
+	border-left: 1px solid #b7b387;
+	vertical-align: top;
+	font-size: 1em; 
+}
+
+.browseTable a {
+	font-size: 1em;
+}
+
+.browseTable th, .browseTable td {
+	font-size: 1em;
+}
+
+.browseTable th, #mainContent.byPub .browseTable thead td {
+	border-top: 1px solid #a39d68;
+	background: #f4f2e7;
+	padding: .5em 1em;
+	font-weight: bold;
+	text-align: left;
+	font-size: 1em;
+	vertical-align: bottom;
+}
+
+.browseTable tbody th {
+	background: #fff;
+	border-top: 1px solid #dcd9bf;
+}
+
+.browseTable tr th.title.notReleased  {
+	color: #666;
+	font-weight: bold;
+}
+
+.browseTable tr th.title .notReleased-note {
+   font-weight: normal;
+   font-style:italic;
+   font-size: .9em;
+}
+
+.browseTable th.titleCol {
+	width: 57%;
+}
+
+.browseTable th.coverageCol {
+	width: 20%;
+}
+
+.browseTable th.cilCol {
+	width: 23%;
+}
+
+.browseTable tr {
+	border-top: 1px solid #dcd9bf;
+}
+
+.browseTable tr td, .browseTable th.title {
+	border-top: 1px solid #dcd9bf;
+	background: #fff;
+	padding: .5em .8em;
+	font-weight: normal;
+}
+
+.browseTable th.title img {
+	float: left;
+}
+
+.browseTable th.title a {
+	float: left;
+	/*width: 425px;*/
+	font-weight: bold;
+}
+
+#mainContent.byPub th.title a {
+	color: #71672d;
+	font-weight: normal;
+}
+
+#mainContent.byPub th.title a:hover, #mainContent.byPub th.title a:active, #mainContent.byPub th.title a:focus {
+	color: #9c8400;
+    text-decoration: underline;
+}
+
+#mainContent th.title a.publisher {
+/*	color: #71672d;
+	font-size: 1em;
+	font-weight: normal;
+    text-decoration: none;
+    display: block;
+	padding: 0 0 .3em 14px;
+	clear: left; */
+display: none;
+}
+
+/* #mainContent th.title a.publisher:hover {
+	color: #9c8400;
+    text-decoration: underline;
+} */
+
+.browseTable th.sub {
+	font-weight: normal;
+	padding-left: 20px;
+}
+
+.numberTitles {
+	font-weight: normal;
+	font-size: 1em;
+	padding-left: 1em;
+}
+
+h2 span.numberTitles {
+font-size: .9em;
+}
+
+.pubLogo {
+	float: left;
+	margin-left: 2em;
+}
+
+#publisherInfo {
+	float: left;
+	width: 529px;
+	margin-bottom: 15px;
+	padding-right: 2em;
+}
+
+#publisherInfo span {
+	display: block;
+	margin-bottom: 1em;
+}
+
+/*#publisherInfo ul, #publisherInfo li {
+	list-style: none;
+	margin: 0;
+	margin-top: .5em;
+	padding: 0;
+}*/
+
+.accessNote, .ppvNote {
+	clear: left;
+	float: left;
+	border: 1px solid #57788c;
+	padding: .5em;
+	margin: 1em 0;
+	width: 200px;
+}
+
+.access {
+	margin: 2px 3px 0px 2px;
+	border: none;
+	
+}
+
+.noAccess {
+	margin: 2px 3px 0 2px;
+	border: none;
+	}
+
+#journalImage {
+	float: left;
+	margin-right: 1.5em;
+	margin-bottom: 2em; 
+	padding: .6em .3em 0 0;
+	}
+
+#journalInfo
+{padding-top: .5em; margin-bottom: 1em;}
+
+#journalInfo h2, #journalDesc h2{
+	display: inline;
+	padding-right: 3px;
+	}
+
+#journalInfo li {
+	list-style: none;
+	margin: 0;	
+	margin-bottom: 3px;
+	padding: 0;
+	}
+
+#journalDesc {
+	clear: left;
+	border-top: 1px solid #e5e3cb;
+	padding-top: .8em;
+	}
+
+#browseJournal {
+
+	clear: left;
+	}
+
+#browseJournal h2 {
+	font-size: 1em;
+	letter-spacing: 1px;
+	margin: 1em 0;
+	padding: 4px;
+	border: 1px solid #e5e3cb;
+	border-width: 1px 0;
+	background: #f4f2e7;
+	text-transform: uppercase;
+	}
+
+#browseJournal h3 {
+	font-size: 1.2em;
+	margin: 12px 0 10px;
+	font-weight: bold;
+	color: #696018;
+	}
+
+#lop h3 {
+margin-bottom: -1em;
+}
+
+#browseJournal h4 {
+	font-size: 1.1em;
+	font-weight: bold;
+	color: #3c3d46;
+	}
+
+#browseJournal p {
+	margin: 4px 0 10px;
+}
+
+#browseJournal ul {
+	margin-bottom: 1.5em;
+	margin-left: 0;
+}
+
+#browseJournal li {
+	list-style: none;
+	margin: 3px 0;
+	padding: 0;
+}
+
+#browseJournal li.note {
+	margin: 10px 0;
+}
+
+#browseJournal .issueNeeded p {
+	margin: 0;
+}
+
+#toc {
+margin: 1em 0;}
+
+#lop toc {
+margin-top: 0;
+}
+
+#toc ul#issueTools {
+margin-bottom: 0;
+}
+
+#toc .checkBox {
+float: left;
+margin-right: .5em;
+}
+
+#toc ol li {
+clear: left;
+margin: 0;
+margin-bottom: 1em;
+padding-top: 1em;
+}
+
+#toc ol ol {
+margin-left: 2em;
+}
+
+#toc ol ul {
+float: left;
+margin: 0;
+padding: 0;
+width: 45em;
+}
+
+#toc ul li {
+padding: 0;
+margin-bottom: 3px;
+}
+
+.pampDate {
+	float: left;
+	padding-right: .5em;
+}
+
+#subContent .pubLogo {
+	float: none;
+	padding-top: 3px;
+}
+
+#subContent #publisherInfo {
+	width: auto;
+	margin-top: .5em;
+}
+
+#subContent #publisherInfo img{
+	margin: .5em 0;
+}
+
+#subContent #publisherInfo h2, #subContent #searchBoxContainer h2{
+	font-weight: normal;
+	font-size: 1em;
+}
+
+#subContent .accessNote, #subContent .ppvNote {
+	border: none;
+	border-top: 1px solid #e5e3cb;
+	margin: 0;
+	padding: 0;
+}
+
+#subContent #searchBoxContainer {
+	margin: 2px 0 10px 0;
+}
+
+#searchBoxContainer input {
+	margin: 0;
+}
+
+	body.home #searchBoxContainer {
+		margin: 8px 0 0 250px;
+	}
+	
+	#searchBox {
+		width: 17.5em; 
+	}
+	
+.searchBox {
+	border: 1px solid #dedcbf;
+	color: #635d3f;
+	font-size: 1.2em;
+	width: 142px;
+}
+
+#subContent .searchBox {
+	padding: 2px 4px 3px;
+}
+
+#issueTools, #issueTools li, #journalTools, #journalTools li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#issueTools {
+	margin-top: 1.5em;
+	margin-left: 20px;
+	float: left;
+}
+
+#issueTools label {
+width: auto;
+}
+
+#issueTools li {
+	float: left;
+	margin-right: 0;
+}
+
+#issueTools li.saveCiteContainer {
+	background: #e5e3cb;
+	padding: .2em;
+	padding-left: 0;
+	margin-left: 1em;
+	position: relative;
+	top: -.2em;
+}
+
+#issueTools li a {
+	display: inline-block;
+	padding: 3px 0 3px 26px;
+	font-size: 1em;
+	text-decoration: none;
+}
+
+#issueTools input, #results input {
+vertical-align: bottom;
+}
+
+#selectUnselect {
+vertical-align: top;
+}
+
+.searchResults #selectUnselect {
+margin-right: .2em;
+}
+
+form.citeForm #selectUnselect { 
+vertical-align: middle;
+}
+
+form.citeForm #delete {
+margin: 0 1em;
+}
+
+
+
+#results {
+	clear: left;
+}
+
+#results ul li ul {margin-left: 20px; width: 90%}
+
+#journalTools li {
+	margin-bottom: 3px;
+	background: #e5e3cb;
+	list-style: none;
+}
+
+#journalTools li a {
+	display: block;
+	padding: 3px 0 3px 26px;
+	font-size: 1em;
+	text-decoration: none;
+}
+
+#journalTools #favorites, #issueTools .saveCite {
+	background: url("../images/icon_tools_favorites.gif") 8px 1px no-repeat;
+}
+
+#journalTools li #view {
+	background:url("../images/icon_tools_view.gif") 8px 4px no-repeat;
+}
+
+#journalTools li #info {
+	background:url("../images/icon_tools_info.gif") 8px 4px no-repeat;
+}
+
+#journalTools li #pdf {
+	background: url("../images/icon_tools_print.gif") 8px 5px no-repeat;
+}
+
+#journalTools li #export {
+	background: url("../images/icon_tools_export.gif") 8px 3px no-repeat;
+}
+
+/* 2nd half of Browse styles - View Article, Article Information ----*/
+/* Browse, Part 2 styles */
+
+
+body.articleInfo #mainContent h2 {
+	display: none;
+}
+
+body.articleInfo h3, body.articleInfo h3 .dynaNum {
+	font-size: 1.1em;
+	margin: 1em 0 .5em;
+	color: #427390;
+	}
+		
+body.articleInfo h4 {
+	margin-bottom: -.4em;
+	font-size: 1.1em;
+}
+
+body.articleInfo h5 {
+	font-size: 1em;
+} 
+
+body.articleInfo #mainContent p {
+	margin-top: .5em;
+}
+
+
+body.articleImage #articleHead {
+	clear: both;
+	width: 814px;
+	padding: 2em 0 1em;
+}
+
+body.articleImage #mainContent a, body.articleInfo #mainContent a {
+	color: #761e20;
+	/*text-decoration: none;*/
+}
+
+body.articleImage #mainContent a:hover, body.articleImage #mainContent a:active, body.articleImage #mainContent a:focus, body.articleInfo #mainContent a:hover, body.articleInfo #mainContent a:active, body.articleInfo #mainContent a:focus{
+	color: #a71216;
+	text-decoration: underline;
+}
+
+body.articleImage #mainContent a.button, body.articleImage #mainContent .buttons a, #searchTools.buttons li a {
+color: #71672d;
+	border: 1px solid #cac594;
+	border-top: none;
+	border-left: none;
+display: block;
+text-decoration: none;
+}
+
+body.articleImage #mainContent a:hover.button, body.articleImage #mainContent a:active.button, body.articleImage #mainContent a:hover.focus, body.articleImage #mainContent .buttons a:hover, body.articleImage #mainContent .buttons a:active, body.articleImage #mainContent .buttons a:focus {
+color: #9c8400;
+}
+
+#journalTools li {
+	border: 1px solid #cac594;
+	border-top: none;
+	border-left: none;
+	width: 196px;
+}
+
+#searchTerms, #linkingOptions {
+	width: 640px;
+	float: left;
+}
+
+#searchTerms span {
+font-weight: bold;
+color: #4c606b;
+}
+
+#searchTerms img {
+border: none;
+vertical-align: middle;
+padding-left: 1em;
+}
+
+#searchTerms span a {
+font-weight: normal;
+}
+
+#searchTerms span a.noHover {
+padding-right: 3px;
+}
+
+#searchTerms ul, #searchTerms li {
+	float: left;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#searchTerms ul {
+margin-top: .8em;
+margin-left: 4em;
+}
+
+#searchTerms li {
+width: 15em;
+margin: 1em 1.5em;
+}
+
+#articleNav {
+	color: #696018;
+	font-size: 1em;
+}
+
+#searchTools {
+	float: left;
+	margin: 0 0 0 20px;
+	padding: 0;
+	list-style: none;
+}
+
+#searchTools li {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+#searchTools li.inactive {
+ 	color: #ccc;
+}
+
+#searchTools li.next a,  #searchTools li.next.inactive {
+	border-left: 1px solid #3c3d46;
+	padding-left: 5px;
+	margin-left: 5px;
+}
+ 
+#searchTools li.search {
+	float: none;
+	margin-bottom: 10px;	
+}
+
+body.articleInfo #content #searchTools a {
+color: #761e20;
+}
+
+body.articleInfo #content #searchTools a:hover, 
+body.articleInfo #content #searchTools a:active, 
+body.articleInfo #content #searchTools a:focus {
+color: #a71216;
+text-decoration: underline;
+}
+
+#issueNav {
+	float: left;
+	margin: 0;
+	padding: .5em 0 0 0;
+	list-style: none;
+}
+
+#issueNav li {
+	font-size: 1em;
+	float: left;
+	margin: 4px 4px 0 0;
+	padding: 0;
+}
+
+#issueNav li.inactive a {
+	color: #ccc; 
+}
+
+#issueNav li.next {
+	border-left: 1px solid #3c3d46;
+	padding: 0 4px 0 ;
+}
+
+#selectPageTop {
+float: left;
+width: 640px;
+}
+
+#selectPage h2, #linkingOptions h2 {
+	font-size: 1.2em;
+	margin-bottom: 1em;
+	}
+
+#selectPage #thumbs, #selectPage #links {
+	clear: left;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#selectPage #links span {
+	width: 5em;
+	margin: 1em 2em 1em 4em;
+	float: left;
+}
+
+#selectPage #thumbs div {
+clear: left;
+}
+
+#selectPage #thumbs span {
+	width: auto;
+	margin: 1em;
+	float: left;
+}
+
+#selectPage #thumbs span a {
+display: block;
+text-align: center;
+}
+
+.selectPageOptions {
+float: left;
+padding-top: .2em;
+margin: 0 2em 0 3em;
+}
+
+.selectPageNav {
+padding-top: 1em;
+clear: left;
+}
+
+.resultsNav {
+margin-left: 1em;
+}
+
+.selectPageNav span, .selectPageOptions span, .resultsNav span {
+color: #ccc;
+}
+
+/* this style wraps the page image, bars, and linking container change for ltm-350 and ltm-1800; this may be a temporary solution until a more appropriate solution can be found */
+
+#journalInfoContainer
+{width: 110%;}
+
+/*this style goes around the page bars and the page image*/	
+#journalImageContainer {
+	float: left; overflow: visible;
+}
+
+
+/*this style goes only around the page image and is used for search term highlighting and reference links*/	
+#pageImageContainer {
+	position: relative; 
+}  
+
+.pageBar {
+	float: left;
+	/*height is dynamically generated and inserted into code as inline style*/
+	width: 26px;
+	padding: 1px 0;
+	background: #e9e6d1;
+}
+
+a.pageBar:hover {
+background: #cac695;
+cursor: pointer;
+}
+
+a.pageBar:active, a.pageBar:focus {
+background: #cac695;
+}
+
+.noPageBar {
+	float: left;
+	width: 26px;
+	padding: 1px 0;
+	background: #e9e6d1;
+	/*height is dynamically generated and inserted into code as inline style*/
+}
+
+.pageBar .previous {
+display: block;
+	background: url("../images/left.gif") 50% 1% no-repeat;
+	text-indent: -99999em; 
+}
+
+.pageBar .previousBottom {
+display: block;
+	background: url("../images/left.gif") 50% 99% no-repeat; 
+	text-indent: -99999em;
+}
+
+.pageBar .next {
+display: block;
+	background:  url("../images/right.gif") 50% 1% no-repeat;
+	text-indent: -99999em;
+}
+
+.pageBar .nextBottom {
+display: block;
+	background: url("../images/right.gif") 50% 99%  no-repeat; 
+	text-indent: -99999em;
+}
+
+#articleFoot {
+	clear: both;
+	width: 762px;
+	padding: .5em 0 2em;
+}
+
+	body.articleImage #articleFoot {
+	width: 812px;
+}
+
+#articleFoot p, #articleFoot a, #articleFoot cite {
+	margin: .5em 0 0 0;
+	font-size: 1em;
+}
+
+#articleFoot h3 {
+margin-top: 2em;
+}
+
+/* Changes for ltm-2283, ltm-310 pamphlet branding*/
+
+#funder {margin: 2em 0 ;}
+
+#funder span {margin: 0 0 0 2em; vertical-align: top;}
+
+ 
+#hqImagesContainer {
+	margin: .5em 0 1em;
+}
+
+#hqImagesContainer strong {
+	display: block;
+	margin-bottom: .5em;
+}
+
+#citeList {
+	clear: both;
+	width: 620px;
+}
+
+#citeList h2 {
+	font-size: 1.2em;
+}
+
+#citeList h2, h3 {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+#citeList h3, #mainContent.urp #articleFoot h2 {
+margin-top: 1em;
+	font-size: 1.1em;
+	font-weight: bold;
+	}
+
+#citeList ul, #citeList li, #refList, #refList ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#citeList ul {
+	margin-bottom: 1em;
+}
+
+#citeInfo, #citeInfo li {
+	list-style: none;
+	margin: 0;	
+	margin-bottom: 3px;
+	padding: 0;
+}
+
+#refList ul {
+margin: 1em 0;
+}
+
+#refList li {
+margin: 1em 0;
+padding: 0;
+}
+
+#refList ul.multiCite {  /* note: .multiCite is also used on reference links in the article image -AB */
+margin-left: 2.5em;
+}
+
+.refNbr {font-weight: bold;}
+
+#linkingContainer {
+	float: left;
+	margin-left: 1em;
+	padding: 0;
+	width: 0px;
+}
+
+.relatedHeading {
+	display: block;
+	margin: 0; 
+	padding: 0 0 0 .5em;
+	width: 150px;
+	background: #879daa;
+	border: 1px solid #879daa;
+}
+
+.relatedHeading h2 {
+	font-size: 1em;
+	font-weight: bold;
+	color: #fff;
+	display: inline;
+}
+
+.relatedHeading img {
+	border: none;
+	padding-right: 4px;
+}
+
+.relatedLinks {
+	margin: 0; 
+	padding: .5em 0 0 .5em;
+	border: 1px solid #879daa;
+	border-top: none;
+	background: #fff;
+	font-size: 1em;
+	width: 150px;
+	overflow: hidden;
+}
+
+.relatedLinks li {
+	list-style: none;
+	margin: 0;
+	padding: 0 .5em 1em;
+}
+
+#linkingOptions {
+clear: left;
+}
+
+#linkingOptions ul {
+list-style: none;
+margin: 0;
+padding: 0;
+}
+
+#linkingOptions li {
+margin-bottom: 2em;
+}
+
+#linkingOptions li img {
+vertical-align: middle;
+margin-left: 1.5em;
+}
+
+#linkingProviders {
+border-top: 1px solid #e5e3cb;
+}
+
+a.noHover {
+text-decoration: none;
+}
+
+.seeAlso {
+padding-left: 1.5em;
+}
+
+.refLink, .refArrow {
+    position: absolute; 
+	cursor: pointer;
+	display: block;
+	overflow: hidden;
+}
+
+.refLink {
+background: url("../images/clear.gif");
+}
+
+.refArrow {
+	width: 20px; 
+	height: 13px; 
+	background: url("../images/refLinks/reference-pointer.gif") no-repeat; 
+}
+
+a.refArrow:hover, a.refArrow:active, a.refArrow:focus, .refhover { 
+	background: url("../images/refLinks/reference-pointer-over.gif") no-repeat; 
+	width: 39px;
+}
+
+
+
+/*----------------------------------------------------------------------------*/
+/*-------------------------7. Auth Section------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+body.auth h3 {font-size: 1em; margin-bottom: 5px;}
+
+body.auth #leftLogin {width: 220px; float: left; margin-right: 5px; margin-bottom: 1em;}
+
+body.auth #rightLogin {width: 180px; float: left; margin: 0 2em 1em 0;}
+
+#sideBarAuth {
+	width: 400px; 
+	float: right; 
+	margin-top: 1em;
+	} /*==IE6 CSS also==*/
+ 
+.registerMe {
+	font-size: 1.1em;
+	font-weight: bold;
+	}
+
+#accessSubInfo {clear: left; width: 300px; padding: 1.5em 0 0 0;} /*==IE6 CSS also==*/
+
+#formElements {width: auto; float: left; margin: 1em 0 0; padding-right: 2em;} /*==IE6 CSS also==*/
+
+body.auth #countryList, #uname, #pw, body.auth #orgList, body.auth #usernameLogin, body.auth #passwordLogin {margin: 5px 0px; width: 19em;}
+
+#indivLogin #uname, #indivLogin #pw {width: 22em;}
+
+body.auth #recentlySelected {width:300px; margin: .5em 0 1em; list-style: none; padding: 0 .8em;}
+
+body.auth h2 {color:#54656b; font-size: 1.1em;}
+
+#registeredList {margin: 0 0 1em 15px;}
+
+#registeredList li {list-style: disc;}
+
+body.auth .athensLink {margin: auto; padding: 0 10px;}
+
+body.auth #loginBox {width:350px; border: 1px solid #57788c; padding: 10px;}
+
+body.auth #loginUsername, #loginPassword {clear: right; width: 174px; margin: 10px;}
+
+body.auth #loginButton {margin-top: 10px;}
+
+#mainLogin div.loginContainer {border: 1px solid #e5e3cb;}
+
+#mainLogin h2 {
+	clear: left;	
+	font-size: 1em;
+	letter-spacing: 1px;
+	margin: 0;
+	padding: 4px;
+	border-bottom: 1px solid #e5e3cb;
+	background: #f4f2e7;
+	text-transform: uppercase;
+	}
+
+#mainLogin h2 span {
+	letter-spacing: normal;
+	text-transform: none;
+	padding-left: 3em;
+}
+
+#mainLogin h3 {
+font-size: 1.1em;
+color: #54656b;
+}
+
+#indivLoginForm, #loginInfo, #countryLogin, #institutionLogin {
+	float: left;
+	width: 27em;
+	padding: 1em;
+}
+
+#loginInfo {margin-top: 1em;}
+#mainLogin .additionalInfo {padding-top: 1em;}
+#mainLogin #email {margin: 3px 0;}
+#accessLogin p {clear: left; padding-left: 1em;}
+
+#loginHelp {
+font-weight: bold;
+}
+
+#loginHelp img {padding-top: .3em}
+
+
+
+/*----------------------------------------------------------------------------*/
+/*------------------------8. PPV/PSS Section----------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+body.ppv .errorMessage.smallerSize {width: 475px;}
+
+#personalInfoForm, #billingInfoForm, #creditInfoForm {margin: 20px 0px;}
+
+body.ppv legend {font-weight: bold;	margin: 0; margin-bottom: 1em; padding: 0;}
+
+body.ppv #accessSubInfo {margin: 20px 0 0;}
+
+#billingInfoContainer {width: 750px; clear: right; margin-right: 50px;}
+#billingInfoContainer span {float: left; width:11em; text-align: right; margin-right: 1em; color: #999;}
+#downloadFiles {width: 380px; margin: 10px 0px; padding: 0 .5em; background:#e0e9ec; border: 1px solid #879daa; border-width: 1px 0;}
+
+#enterToken {margin-bottom: 2em;}
+#enterToken p {font-weight: bold;}
+
+h2.loginHeaders {display: inline;}
+
+#journalInfo {margin-left: 0; }
+
+
+#loginOrContinue {width: 750px; margin: 10px 0 0;}
+
+#loginMyJstor {width: 322px; float: left; border-right: 1px solid #e5e3cb; margin: 10px 53px 0 0;}
+
+#middleOR {width: 50px; margin: 0 38px 0 205px;}
+
+#nonRegisterPurchase {margin: 15px 0 0;}
+
+.ppvHeader {border-bottom: solid thin #333333; padding-bottom: 5px; margin-bottom: 10px;}
+
+#purchaseArticle {margin: 10px 0 15px; clear: both;}
+
+.publisherLogo {padding: 5px 20px 20px; border: none;}
+
+#purchasePrice {font-size: 1.4em; font-weight: bold; margin: 1em 0; color: #57788c;}
+#purchasePrice span {font-size: .7em; color: #57788c;}
+
+#purchaseTotal {clear: left; border: 1px solid #e5e3cb;
+	border-width: 1px 0; padding: 5px 2em; margin: 10px 0px; font-size: 1.2em; font-weight: bold;}
+
+#purchaseTotal p, #purchaseTotal span {color: #879daa; width: 150px; text-align: right;}
+
+#purchaseTotal span {font-weight: normal;}
+
+#total {
+border-top: 1px solid;
+padding-top: 3px;
+}
+
+select#expirationDate, select#expirationYear {width: 6em;}
+
+select#expirationDate, select#expirationYear, select#cardType, select#countryName {margin: 0;}
+select#countryName {width: 30em;}
+
+#vatIdentification {width: 525px; float: right; margin: 4.5em 55px 0 0;}
+#vatIdentification .errorMessage {margin-top: -3em; }
+
+.licensor {margin: .5em 0; display: block;} 
+
+img.securityCode {
+float: left;
+margin-right: 1em;
+}
+
+#otherOptions {
+margin: 1em 0 0 .5em;
+padding: 0;
+}
+
+#otherOptions h3 {
+font-size: 1em;
+margin: 0;
+}
+
+#otherOptions p {
+margin: 0.1em;
+}
+
+#receiptInfo li{
+clear: both;
+margin: 0;
+padding: 1px;
+list-style: none;
+}
+
+#termsCheckbox, #termsLabel {float: left;}
+
+#termsLabel {padding-left: .5em; padding-bottom: 1.5em;}
+
+#verisign {display: block; clear: left;}
+
+body.urp #content {
+min-width: 1250px;
+background: #fff;
+}
+
+body.urp h1 {
+padding: 0;
+margin: .5em 0 0;
+}
+
+body.urp #mainContent {
+border: none;
+margin: 1em 1em 0 0;
+padding: 0;
+width: auto;
+}
+
+body.urp #subContent {
+float: left;
+margin-top: 1em;
+border: none;
+padding: 0;
+}
+
+body.urp #subContent .callout {
+padding: 1em;
+border: 1px solid #879daa;
+background: #e0e9ec;
+margin-bottom: 1em;
+}
+
+#subContent #urpPSS {
+border-top: 1px solid #879daa;
+padding-top: .5em;
+}
+
+body.urp #citeContent {
+margin-top: 0;
+width: 738px;
+padding: .5em 1em;
+}
+
+body.urp #citeContent.hidden {
+display: none;
+}
+
+body.urp #citeContent #journalInfo {
+margin: 0;
+}
+
+#citeToggleContainer, #articleFoot {
+width: 762px;
+}
+
+#reviewNote {
+width: 760px;
+padding: 0 1px;
+clear: left;
+}
+
+#citeToggleContainer {
+position: relative;
+padding: 0 0 .5em;
+margin-top: -1em;
+}
+
+#citeToggle {
+position: absolute;
+right: 0;
+}
+
+#ppvErrorMessage {margin: 0; width: auto;}
+
+#urpPurchase strong {
+font-size: 1.4em;
+display: block;
+}
+
+/*----------------------------------------------------------------------------*/
+/*-----------------------9. MyJSTOR/Portals-----------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+		/*--------------------------------------------*/
+		/*--------------9.1 Register Pages------------*/
+		/*--------------------------------------------*/
+
+body.register h1 {padding-bottom: 0;}
+
+body.register h2, body.register legend {color: #54656b; font-size: 1.2em; font-weight: bold;}
+body.register #subContent h2 {margin: .3em 0px;}
+body.register #subContent h3 {font-size: 1.1em; margin-top: .5em;}
+
+/*body.register label.errorText  {font-weight: bold; color: #c2021d;}*/
+
+body.register .errorTextInputRight {margin-left: 5.5em; color: #c2021d;}
+
+body.register .myJstorDropDown {width: 32em;}
+
+body.register .myJstorInputLong {width: 31.3em;}
+
+body.register .myJstorInput, body.ppv .myJstorInput {width:14em; margin-bottom: 10px;}
+body.register .myJstorInput {width: 19em;}
+
+body.register #success {font-weight: bold; margin-bottom: 1em; width: 375px; color:#006600;}
+
+body.register .labelPassword {width: 15em; float: left; margin-top: 3px;}
+
+body.register .hrule {margin: 1.5em 0em;}
+	
+body.register .errorText {color: #c2021d; font-weight: bold; margin: 0px 5px 0px 0px;}
+
+body.register .positionRight {position: absolute; left: 24em; width: 15em;}
+	
+body.register #institution, body.register #email {margin-left: .75em;}
+
+.required, .required em {color: #900;}
+
+.required em {font-size: .9em;}
+
+#login p {padding-bottom: 10px;}
+
+.spaceLeft {margin-right: 2em; width: 10em;}
+
+		/*--------------------------------------------*/
+		/*--------9.2  Citations Pages----------------*/
+		/*--------------------------------------------*/
+
+body.citations .floatLeft {margin-right: 7em; width: 10em;}
+
+body.citations .myJstorInput {width:14em;}
+
+body.citations .myJstorInputLong {width:25em;}
+
+.myJstorTable {
+	width: 100%;
+	border-collapse: collapse;
+	border-top: 1px solid #a39d68;
+	}
+
+.myJstorTable th, .myJstorTable td {
+	font-size: 1em; padding: .5em .8em; vertical-align: top;
+} /*==IE6 CSS also==*/
+
+.myJstorTable th {
+	border-bottom: 1px solid #dcd9bf;
+	background: #f4f2e7;
+	padding: .5em;
+	text-align: left;
+}
+
+#citations {width: 50em;}
+
+#dateSaved {width: 8em;}
+
+body.citations #sortBy {width: 22em;}
+
+.myJstorTable #selectUnselect { margin-right: .5em;}
+
+#citeMgr .myJstorTable ul {
+	margin-left: 2.2em;
+} /* this style is for the saved citations table */
+
+
+/* the below stlyes are for the export citiations and email citations lists */
+ol#myJstorCiteList {clear: both; list-style: decimal; margin: 0; padding-left: 2em;}
+
+
+/* LTM-1914 */
+ol#myJstorCiteList li ul li { display: block; } 
+
+
+#citeMgr ol li {
+clear: left;
+margin: 0;
+padding-top: 1em;
+}
+
+#citeMgr ol ul {
+margin: 0;
+padding: 0;
+}
+
+#citeMgr li li {
+padding: 0;
+}
+
+.myJstorDropDown {width: 21em;}
+
+body.citations .myJstorDropDown {width: 15em;}
+
+body.citations .myJstorDropDownLong {width: 20em;}
+
+body.citations .myJstorInput {width:14em;}
+
+body.citations .myJstorInputLong {width:25em;}
+
+.support {float: left; padding-top: 1.25em;}
+
+#selectCheckbox {width: 165px;float: left;}	
+
+/* LTM-1196 changed padding-right: 2em; added margin: 0;*/
+.checkBox {float: left; padding-right: 0em; margin: 0;}
+
+#checkboxText {vertical-align: middle; margin-left: .5em;}
+
+ul#exportOptions {margin: 0px; padding: 0px;}
+
+.positionRight {position: absolute; left: 25.5em; width: 15em;}
+
+.indent {margin-left: 4em;}
+
+.firstButton {margin: 10px 0px;
+	padding: 3px 5px 3px 5px;}
+	
+.secondButton {margin: 10px 0px;
+	padding: 3px 5px 3px 5px;}
+
+.thirdButton{margin: 10px 0px;
+	padding: 3px 5px 3px 5px;}
+	
+#exportArticles {margin: 0 0 0 20px;}
+	
+	
+	
+/*----------------------------------------------------------------------------*/	
+/*----------------------------10. Search--------------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+body.search label {font-size: 1em;}
+
+body.search h2 {font-size: 1.1em;}
+
+#recentSearches {width: 52.5em;}
+
+.questionIcon {border: none; vertical-align: bottom; padding-left: .2em;}
+.ppv .questionIcon {vertical-align: top;}
+
+.cilStatement {clear: left; margin: 3px;} /*==IE6 CSS also==*/
+
+.cilStatement label, .cilStatement .questionIcon {vertical-align: middle;}
+
+#basicSearch {float: left;}
+
+#basicSearch label, #limitDisci label {position: absolute; top: -99999em;}
+
+#basicSearchForm, #advSearchForm {clear: left;}
+
+#basicSearch .mainSearchBox {width:24em; font-size:1.1em; padding: 2px; margin: .5em 0;}
+
+body.search .floatLabel {float: left; width: 10em; text-align: right;}
+
+body.search .floatText {margin-left: 10em;}
+
+body.search .floatDOI {margin-left: 4.5em;}
+
+.searchHeader {float: left;	margin: 1em 0;}
+
+.searchHeader h1 {padding-right: .5em;	display: inline;}
+
+.searchHeader a {font-size: 1em; display: inline;}
+
+#searchLinkNav {float: right; margin-top: 1em;}
+
+#searchLinkNav ul{display: inline;	list-style: none; margin-left: 0px;}
+
+#searchLinkNav ul li{display: inline; list-style: none;	padding: 0px; margin: 0px;}
+
+#searchContainer {width: 715px;	margin: 10px 0px; float: left;}
+
+#searchRecent {width: 400px; float: left; padding-top: 15px; margin-top: 15px; border-top: 1px #000000 solid;}
+
+#quickTips {float: right; width: 335px; margin-top: 1em;}
+
+#quickTips h2 {font-weight: bold;}
+
+#quickTips ul {padding: 0; margin: 0em 1.2em;}
+
+#quickTips li {padding: 0; margin: 1em 0em;}
+
+#emphasisBox {margin: 0 0 1em 0; padding: .8em; border-top: 1px #879daa solid; border-bottom: 1px #879daa solid; background: #e0e9ec;}
+
+#emphasisBox h2{ padding-bottom: 1em;}
+
+#limitDisci {width: 400px; margin-top: 1em; float: left; clear: both;} /*==IE6 CSS also==*/
+
+#limitFav {width: 400px; float: left; margin: 10px 0px;}
+
+#limitFav h2 {display:inline; padding-right: 4px;}
+
+.inactive {color:#999999;}
+
+.inactive p {font-size: 9px; color:#333333;	display: inline;}
+
+#loadMessage {margin: 20px;}
+
+#loadMessage img {border: none;}
+
+.journalDropdown {width: 600px;}
+
+.day-picker {width: 4.5em;}
+
+.month-picker {width: 11em;}
+
+.searchResultsSubNav {display: inline;}
+
+.resultsAccessIcons {float: left; margin-right: 10px; margin-top: 2px;}
+
+.resultsAccessIconsCIL {float: left; margin-right: 4px; margin-top: 4px;}
+
+.suppressed {margin-left: 22px;}
+
+#resultsMessage {font-size: 1.4em; font-weight: bold; padding: 10px 0px;}
+
+#recentSearchContainer {clear: both;}
+
+#recentSearchContainer h2 label {font-size: 1em; font-weight: bold;}
+
+
+
+		/*--------------------------------------------*/
+		/*--------10.1 Advanced Search pages----------*/
+		/*--------------------------------------------*/
+
+#advSearchBoxes input {width: 29em;}
+#advSearchBoxes .cilStatement input {width: auto;}
+#advSearchBoxes input.errorText {margin-right: 0;}
+
+.advSearchBoxes {font-size: 1.2em; padding: 2px; clear: left;}
+
+.dateSearchBoxes {font-size: 1.2em; padding: 2px; margin: 0px 2px;}
+.dateSearchBoxes, #articleLocator #ISSN, #articleLocator #Volume, #articleLocator #Issue, #articleLocator #StartPage, #articleLocator #year {width: 7em;}
+
+.journalSearchBox {font-size: 1.2em; padding: 2px;}
+.journalSearchBox, #articleLocator #articleTitle, #articleLocator #author, #articleLocator #jo {width: 46em;}
+
+#disciplineDropdown{width: 22em;}
+
+.boolean-picker {width: 8em;}
+
+.field-picker {width: 9.5em;}
+
+.lang-picker {width: 11em;}
+
+.pageResultsNavFooter {margin: 1em 0 0 0; padding:.5em 0 1em 0; border-top: 1px solid #b7b387;}
+.pageResultsNavFooter .resultsNav {float: left; margin-top: 8px;}
+
+#date p.infoNote {margin-left: 12em;}
+
+#type li {display: inline; list-style-type: none;}
+
+#type label {padding: 0 10px 0 0;}
+
+#type input {display: inline;}
+
+#type h2 {float: left; padding-right: 10px;}
+
+#date h2 {display:inline; padding: 4px 5px 4px 0;}
+
+#selectJournal label {font-weight: bold;}
+
+#lang h2{display:inline; padding: 4px 5px 4px 0;}
+
+#lang label {font-weight: bold;}
+
+#myFavorites h2{display:inline;	padding:4px 0px;}
+
+#myFavorites label {width: 1em;	overflow: hidden;}
+
+.advSearchSubmit {position: absolute;left: 42em;margin-top: -2em;}
+
+#Submit2.advSearchSubmit {margin-top: 1em;}
+
+#tree img {border: 0;vertical-align: middle;}
+
+.treeExpandButton {vertical-align: middle;	border: none;}
+
+#disciplineTree label {font-weight: bold; vertical-align: bottom;}
+
+#disciplineTree input {margin: 0; margin-left: 2px; padding: 0;}
+
+#disciplineTree ul ul li label {font-weight: normal;}
+
+#disciplineTree ul {margin: 0; padding-top: .5em; list-style: none;}
+
+#disciplineTree ul li {border-bottom: 1px solid #e5e3cb; padding-bottom: 1em;}
+
+#disciplineTree ul ul {margin: 0; padding: 0 0 0 3.3em;}
+
+#disciplineTree ul ul li {border: none; margin-bottom: .5em; padding-bottom: 0;}
+
+#disciplineTree ul ul ul li {margin: 2px 0;}
+
+/*----------------------------------------------------------------------------*/
+/* ---------------------------11. Info Pages----------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+#mastHead {
+	margin-top: 4px;
+	margin-left: -7px; 
+	background: #ffffff no-repeat scroll left top;
+	min-height: 163px;
+	height: auto;
+} /* style tweak for IE6 in iestyles.css */
+
+body.about #mastHead{background-image: url("../images/about.jpg");}
+body.participate #mastHead{background-image: url("../images/participate.jpg");}
+body.resources #mastHead{background-image: url("../images/resources.jpg");}
+
+#mastHead h1 {text-indent: -9999em;}
+
+ul#interestLevel div {margin: -15px  0 0 25px; display: block;}
+
+.jstorFacts, .movingWallTable, .surveyTable {
+	clear: both;
+	border-collapse: collapse;
+	border: 1px solid #b7b387;
+	vertical-align: top;
+	table-layout: fixed; 
+	font-size: 1em;
+}
+
+.movingWallTable th, .surveyTable th {
+	border-bottom: 1px solid #a39d68;
+	border-top: 1px solid #a39d68;
+	background: #f4f2e7;
+	padding: 4px;
+	font-weight: bold;
+	text-align: left;
+	font-size: 1em;
+	vertical-align: bottom;
+}
+
+.staffTable th, .confTable th, .jstorFacts th {
+	border-bottom: 1px solid #a39d68;	
+	background: #f4f2e7;	
+	padding: 4px;	
+	text-align: left;	
+	font-size: 1em;	
+	vertical-align: bottom; 
+}
+
+.staffTable, .confTable {
+	clear: left;
+	border-top: 1px solid #b7b387;
+	border-left: 1px solid #b7b387;
+	border-right: 1px solid #b7b387;
+	border-collapse: collapse;
+	margin: 1em 0;
+}
+
+.staffTable {width: 750px;}
+
+.confTable {width: 600px;}
+
+.staffTable td, .confTable td {
+	border-bottom: 1px solid #b7b387;
+	padding: .5em .8em;
+}
+
+.staffTable th, .confTable th {
+	text-indent: .5em;
+}
+
+.officeCol {width: 250px;}
+.posCol {width: 400px;}
+.locCol {width: 100px;}
+
+.jstorFacts td {padding: 3px;}
+
+.classificationTable.hasTableTabs {
+	margin-left: 1px;
+}
+
+.classificationTable a, .classificationTable strong  {
+	font-size: 1em;
+}
+
+.movingWallTable td , .surveyTable td {padding: .5em .8em;}
+
+.movingWallTable td {border-bottom: #b7b387 1px solid;}
+
+.classificationTable.hasTableTabs thead th {
+	background: #fff;
+	border-bottom: 3px solid #a39d68;
+}
+
+.classificationTable.hasTableTabs thead th  {
+border-top: 1px solid #dcd9bf;
+}
+
+th#sizeClassifictation {width: 196px;}
+
+table.twoColumn {
+width: 675px;
+}
+
+th.mainCol {
+width 75%;
+}
+
+th.secondaryCol {
+width: 25%;
+}
+
+table.jstorFacts {margin: 10px 0px;}
+
+th.classifyCol {width: 95px;}
+
+.linkList {
+list-style: none;
+}
+
+.linkList li {
+margin: .5em 0;
+}
+
+.participateNav {width: auto; height: 26px; overflow: visible; }
+.participateNav ul { list-style: none; margin: 0; padding: 0; clear: right;}
+.participateNav li {float: left;border: #bea976 solid 1px; background: #e0d8be; display: block;font-size: .9em; list-style: none; margin: 0; padding: 5px 10px; overflow: visible;}
+.participateNav li.leftBorder {font-size: .9em; border-left:solid 1px #bea976;}
+.participateNav li.active {background-color: #cac695; font-weight: bold; color: #FFF;}
+
+
+#mainContent ol.infoPolicies {margin-left: 5px; padding-left: 5px;}
+
+.completedDate {float: left; margin-top: 12px; padding: 0px;} /* Works with .hasNextTo h1s */
+
+
+th#numPeriodicals, th#totalStaff, th#totalResearchers, th#operatingBudget, th#libraryBudget {width: 405px;}
+
+.hiddenFees {display: none;}
+
+.activeFees {display: inherit;}
+
+
+ul.trusteeListStyle, .trusteeListStyle li {
+	list-style: none;
+	padding: 0;
+}
+
+ul.trusteeListStyle {margin: 10px;}
+
+.leftTrustees {width: 300px; float: left;}
+
+.rightTrustees{width: 350px; float: right;}
+
+#topHalf {width: 650px;}
+
+#bottomHalf {clear: both; width: 650px;}
+
+#contactLists {margin: 10px 0 20px 0; clear: right;}
+
+#contactLists ul.noStyleList {width: 200px; float: left; margin: 0 0 20px 0;} 
+
+#anchorLinksNav {width: 675px; margin: 0 0 25px 0; clear: both;} /*I removed this id from the staff office page, if it is not used anywhere else, it can be removed -AB */
+
+a.surveyLink {display: block; float: left; width: 150px; height: 50px; margin: 5px 0 0 0;}
+
+select#chooseYear  {width: 70px;}
+
+li.journalTitleSub {margin: 0 0 0 25px;}
+
+h2.headerBar, body.help h2  {
+	clear: left;	
+	font-size: 1em;
+	margin: 0;
+	padding: 4px;
+	background: #f4f2e7;
+	border-top: 1px solid #dcd9bf;
+	border-bottom: 1px solid #dcd9bf;
+	}
+	
+body.help h2 {margin-bottom: 1em;}
+body.help h3 {margin-top: 1em;}
+body.help ul, ol {margin-left: 2em;}
+body.help ul.linkList {margin-left: 0;}
+body.help .backtoTop {padding-left: 0; font-size: 1em;}
+body.help h2 .backtoTop, #newFeatures .backtoTop {padding-left: 2em; font-size: .9em;}
+
+body.help table, table.classificationTable, #savings table {
+	clear: left;
+	border-top: 1px solid #b7b387;
+	border-left: 1px solid #b7b387;
+	border-collapse: collapse;
+	margin: 1em 0;
+}
+
+#savings table {width: 100%;}
+#savings table th {width: 50%;}
+
+body.help th, .classificationTable th, #savings table th {
+	background: #f4f2e7;	
+	text-align: left;	
+	font-size: 1em;	
+	vertical-align: top; 
+}
+
+body.help td, body.help th, .classificationTable td, .classificationTable th, #savings table td, #savings table th {
+	border-bottom: 1px solid #b7b387;
+	border-right: 1px solid #b7b387;	
+	padding: .5em .8em;
+}
+
+#newFeatures h3 {font-size: 1.1em;}
+#newFeatures h3, #newFeatures h4 {margin-top: 1.2em;}
+#newFeatures ul {margin-left: 1em;}
+#newFeatures ul.linkList {margin-left: 0;}
+#newFeatures .linkList li li {list-style: none; margin: .3em 0;}
+
+select#chooseCollection {width: 19em;}
+		/*---------------------------------------*/
+		/*--------11.1 Publisher Portal----------*/
+		/*---------------------------------------*/
+#ppDid {
+	width: 124px;
+	background-image: url("../images/pub-portal/ppDid.jpg");
+	border-right: 3px solid #f4f2e7;
+}
+
+#ppDid a:hover, #ppDid a:active, #ppDid a:focus {
+	background-image: url("../images/pub-portal/ppDid_over.jpg");
+}
+
+body.ppDid #ppDid {
+	background-image: url("../images/pub-portal/ppDid_active.jpg");
+}	
+
+#ppAbout {
+	width: 97px;
+	background-image: url("../images/pub-portal/ppAbout.jpg");
+	border-right: 3px solid #f4f2e7;
+}
+
+#ppAbout a:hover, #ppAbout a:active, #ppAbout a:focus {
+	background-image: url("../images/pub-portal/ppAbout_over.jpg");
+}
+
+body.ppAbout #ppAbout {
+	background-image: url("../images/pub-portal/ppAbout_active.jpg");
+}	
+
+#ppParticipation {
+	width: 149px;
+	background-image: url("../images/pub-portal/ppParticipation.jpg");
+	border-right: 3px solid #f4f2e7;
+}
+
+#ppParticipation a:hover, #ppParticipation a:active, #ppParticipation a:focus {
+	background-image: url("../images/pub-portal/ppParticipation_over.jpg");
+}
+
+body.ppParticipation #ppParticipation {
+	background-image: url("../images/pub-portal/ppParticipation_active.jpg");
+}	
+
+#ppCollections {
+	width: 138px;
+	background-image: url("../images/pub-portal/ppCollections.jpg");
+	border-right: 3px solid #f4f2e7;
+}
+
+#ppCollections a:hover, #ppCollections a:active, #ppCollections a:focus {
+	background-image: url("../images/pub-portal/ppCollection_over.jpg");
+}	
+
+body.ppCollections #ppCollections {
+	background-image: url("../images/pub-portal/ppCollections_active.jpg");
+}	
+
+#ppNews {
+	width: 158px;
+	background-image: url("../images/pub-portal/ppNews.jpg");
+	border-right: 3px solid #f4f2e7;
+}
+
+#ppNews a:hover, #ppNews a:active, #ppNews a:focus {
+	background-image: url("../images/pub-portal/ppNews_over.jpg");
+}
+
+body.ppNews #ppNews {	
+	background-image: url("../images/pub-portal/ppNews_active.jpg");
+}				
+
+.org {margin: 0 0 10px 0;}
+
+.person {margin: 5px 0 0 0;}
+
+#pp_sidenav {float: right; width: 200px; border: solid 1px #e9e6d1; margin: 10px; padding: 10px;}
+
+#pp_sidenav ul {list-style: none;}  
+
+#pp_sidenav li {margin: 0px; padding: 2px 0px;}
+
+.time {width: 100px; float: left;}
+
+.event {width: 400px; float: left; }
+
+.timeEventWrapper {width: 500px;}
+
+body.hasLocalNav.pubPortal.pub2008 #mainContent, body.hasLocalNav.pubPortal.pub2007 #mainContent, body.hasLocalNav.pubPortal.pub2006 #mainContent, body.hasLocalNav.pubPortal.pub2005 #mainContent, body.hasLocalNav.pubPortal.pub2004 #mainContent, body.hasLocalNav.pubPortal.pub2003 #mainContent, body.hasLocalNav.pubPortal.pub2002 #mainContent {width: 450px;}
+
+body.termsConditions ul {list-style: none;}
+
+body.termsConditions ul li ol {list-style:  lower-alpha;}
+
+body.termsConditions ul li ol li ol {list-style: lower-roman;}
+
+body.hasLocalNav.pubPortal #localNavTitle a img{width: 158px;}
+
+/*----------------------------------------------------------------------------*/
+/* ------------------------12. Dynamic Info Pages-----------------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+body.hasLocalNav h1 {
+	padding-bottom: 0;
+	margin-bottom: 1em;
+}
+
+body.hasLocalNav h2 {
+	margin-top: 1em;
+	font-size: 1.1em;
+}
+
+body.hasLocalNav h1.hasNextTo+p {
+	float: left;	
+	padding-top: .6em;
+}
+
+body.hasLocalNav h1.hasNextTo+a.delimitedLink, body.hasLocalNav h1.hasNextTo+a.nextToLink {
+padding-top: 1.5em;
+	padding-left: 0;
+}
+
+body.hasLocalNav #subContent {
+	position: absolute;
+	top: 0;
+	left: 0;	
+	margin: 0;
+	padding: 0;
+	border: none;
+	border-left: 1px solid #e9e6d1;
+	background: #f4f2e7;
+} /*==IE6 CSS also==*/
+
+body.hasLocalNav #content {
+	padding: 0;
+}
+
+body.hasLocalNav #contentContainer {
+	width: auto;
+	float: none;
+	background: #fff;
+	margin-left: 231px;
+	border: 1px solid #e9e6d1;
+	border-width: 0 0 1px 1px;
+}
+
+body.hasLocalNav #mainContent {
+	width: 700px;
+	min-height: 350px;
+	border: none;
+	margin-top: 0;
+} /*==IE6 CSS also==*/
+
+	body.pubPortal #mainContent {
+		min-height: 500px;
+	} /*==IE6 CSS also==*/
+
+body.hasLocalNav #mainContent a {
+	color: #761e20;
+	/*text-decoration: none;*/
+}
+
+body.hasLocalNav #mainContent a:hover, body.hasLocalNav #mainContent a:active, body.hasLocalNav #mainContent a:focus {
+	color: #a71216;
+	text-decoration: underline;
+}
+
+#mainContent #subNav a, #mainContent .noStyleList a:link, #mainContent .noStyleList a:visited, #mainContent .noStyleList a:hover, #mainContent .noStyleList a:active 
+{
+	color: #71672d;
+}
+
+#mainContent #subNav a:hover, #mainContent #subNav a:active, #mainContent #subNav a:focus {
+	color: #9c8400;
+}
+
+body.hasLocalNav #footer {
+	border: none;
+	}
+
+body.hasLocalNav #searchBoxContainer {
+	padding-left: 7px;
+	margin-bottom: 20px;
+}
+
+body.hasLocalNav #searchBoxContainer label {
+	color: #635d3f;
+	font-size: 1em;
+	margin-top: 1.5em;
+}
+
+body.hasLocalNav #searchBox {
+	padding: 4px 4px 4px 4px;
+	color: #635d3f;
+	font-size: 1.1em;
+	border: 1px solid #dedcbf;
+	width: 172px;
+}
+
+#localNavTitle {
+	background: #879daa;
+	text-align: center;
+	height: 23px;
+}
+
+body.pubPortal #localNavTitle {
+	background: #6F9E74;
+}
+
+#localNavTitle a {
+display: block;
+}
+
+#localNavTitle img {
+	border: none;
+}
+	
+#localNav {
+	margin-top: 2.5em;
+	border-top: 1px solid #bab380;
+	margin-bottom: 20px;
+}
+
+#localNav ul, #localNav li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#localNav li {
+	border-bottom: 1px solid #bab380;
+}
+
+#localNav li p {
+margin: .3em .5em;
+}
+
+#localNav li a {
+	font-size: 1em;
+	font-weight: bold;
+	color: #002241;
+	display: block;
+	padding: 4px 0 4px 9px;
+	background: #cdcdbe;
+	text-decoration: none;
+} /*==IE6 CSS also==*/
+
+
+#localNav li a:hover, #localNav li a.active, #localNav li a:active, #localNav li a:focus {
+	background: #b0a873;
+	color: #fff;
+}
+
+#localNav li a.active, #localNav li a:active, #localNav li a:focus {
+font-weight: bold;
+}
+	
+#localNav li ul {
+	border-top: 1px solid #bab380;
+	background: #cdcdbe;
+}
+#localNav li ul li a {background: #dcd9b5; font-weight: normal;}
+
+#localNav li ul li.noBorder {
+border: none;
+}
+
+/*Third Level*/
+#localNav li ul li a {
+/*	background: url("../images/icon_local_bullet.gif") 20px 10px no-repeat;*/
+	padding-left: 20px;
+}
+
+/* #localNav li ul li a:hover {} inherit first level hover style */
+
+#localNav li ul li a.active  {
+	/* background: #fff url("../images/secondLevel.gif") right center no-repeat; */
+	background: #fff;
+	color: #595115;
+}
+
+body.pubPromo #localNav li ul li.pubPromo a, body.pubIndiv #localNav li ul li.pubIndiv a, body.pubLinking #localNav li ul li.pubLinking a, body.pubCrossref #localNav li ul li.pubCrossref a, body.pubRevenue #localNav li ul li.pubRevenue a, body.pubSales #localNav li ul li.pubSales a, body.pubSpecial #localNav li ul li.pubSpecial a, body.pubJournal #localNav li ul li.pubJournal a, body.pub2008 #localNav li ul li.pub2008 a, body.pub2007 #localNav li ul li.pub2007 a, body.pub2006 #localNav li ul li.pub2006 a, body.pub2005 #localNav li ul li.pub2005 a, body.pub2004 #localNav li ul li.pub2004 a, body.pub2003 #localNav li ul li.pub2003 a, body.pub2002 #localNav li ul li.pub2002 a {
+	padding-left: 20px;
+	background: #bab380;
+	color: #fff;
+	font-weight: bold;
+
+}
+
+.dynaInfoTable {
+	width: 100%;
+	clear: both;
+	border-collapse: collapse;
+	border: 1px solid #b7b387;
+	vertical-align: top;
+	font-size: 1em;
+}
+
+
+.dynaInfoTable.hasTableTabs {
+border-collapse: separate;
+margin-left: 0;
+border-top: none;
+table-layout: fixed;
+}
+
+.dynaInfoTable a, .dynaInfoTable strong  {
+	font-size: 1em;
+}
+
+.dynaInfoTable th, .participantList .listHeader {
+	border-top: 1px solid #a39d68;
+	background: #f4f2e7;
+	padding: 4px;
+	font-weight: bold;
+	text-align: left;
+	font-size: 1em;
+	vertical-align: bottom;
+}
+
+
+.dynaInfoTable.hasTableTabs thead th {
+background: #fff;
+border-bottom: 3px solid #a39d68;
+border-top: none; /* Tabs! */
+}
+
+#availJournals .dynaInfoTable.hasTableTabs thead th  {
+border-top: none;
+}
+
+#mainContent .dynaInfoTable a.sortLink {
+color: #71672d;
+text-decoration: underline;
+}
+
+
+#mainContent .dynaInfoTable a.sortLink:hover, #mainContent .dynaInfoTable a.sortLink:active, #mainContent .dynaInfoTable a.sortLink:focus {
+	color: #9c8400;
+}
+
+.dynaInfoTable th.title, .dynaInfoTable td {
+	font-size: 1em;
+	vertical-align: top;
+}
+
+	.dynaInfoTable th.titleCol {
+		width: 35%;
+		
+	}
+	
+	.dynaInfoTable th.coverageCol {
+		width: 21%;
+		
+	}
+	
+	.dynaInfoTable th.mwCol {
+		width: 16%;
+		
+	}
+	
+	.dynaInfoTable th.collectionCol {
+		width: 21%;
+		
+	}
+	
+	.dynaInfoTable th.letterCol {
+		width: 533px;
+	}
+	
+	.dynaInfoTable th.countryCol {
+		width: 125px;
+	}
+	
+	.dynaInfoTable th.pubCol {
+		width: 207px;
+	}
+	
+	.dynaInfoTable th.logoCol {
+		width: 233px;
+	}
+	
+	.dynaInfoTable th.missingCol {
+		width: 270px;
+	}
+
+	.dynaInfoTable th.issueCol {
+		width: 270px;
+	}
+	
+	.dynaInfoTable th.ppvCol {
+		width: 350px;
+	}
+	
+/* the following classes used for indicating when the column is in a sorting state */
+	.dynaInfoTable th.missingCol.active, .dynaInfoTable th.collectionCol.active  {
+		background: #bdb888;
+	}
+	
+	.dynaInfoTable th.missingCol.active img, .dynaInfoTable th.collectionCol.active img  {
+		border: none;
+	}	
+	
+.dynaInfoTable tr {
+	border-top: 1px solid #dcd9bf;
+}
+
+.dynaInfoTable tr.sub {
+	border: none;
+}
+
+.dynaInfoTable tr td, .dynaInfoTable th.title {
+	border-top: 1px solid #dcd9bf;
+	background: #fff;
+	padding: .5em .8em;
+	font-weight: normal;
+}
+
+.dynaInfoTable.byPub tr td, .dynaInfoTable.byPub th.title, .participantTable tr td {
+	background: #fff;
+}
+
+.dynaInfoTable th.title a {
+	font-weight: bold;
+}
+
+.dynaInfoTable th.title .note {
+	margin-top: .75em;
+}
+
+.dynaInfoTable .alphaHeader {
+	border-bottom: 1px solid #cac69e;
+	background: #e3e1c4;
+	padding: .5em .8em;
+	font-weight: bold;
+}
+
+.dynaInfoTable .collection {
+	padding-bottom: .5em;
+}
+
+.dynaInfoTable .note {
+	font-size: .9em;
+}
+
+.dynaInfoTable a.backtoTop, .participantList a.backtoTop {
+	padding-left: 1em;
+	font-size: .9em;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+#mainContent .dynaInfoTable th.title a.publisher {
+	color: #71672d;
+	font-size: 1em;
+	font-weight: normal;
+    text-decoration: none;
+    display: inline; /* this needs to be here as long as .publisher is defined as display: hidden above */
+	padding: 0 0 .3em;
+}
+
+#mainContent .dynaInfoTable th.title a.publisher:hover, #mainContent .dynaInfoTable th.title a.publisher:active, #mainContent .dynaInfoTable th.title a.publisher:focus {
+	color: #9c8400;
+    text-decoration: underline;
+}
+
+.dynaInfoTable th.sub {
+	padding-left: 30px;
+	border-top: none;
+}
+
+.dynaInfoTable td.sub {
+	border-top: none;
+}
+
+#availCollections {
+padding-top: .5em;
+}
+
+#availCollections h2 {
+margin-top: 3em;
+}
+
+#availCollections h3 {
+clear: both;
+padding-top: 1.5em;
+margin-bottom: -.6em;
+}
+
+#availCollections h3 span {
+font-weight: normal;
+font-size: 90%;
+}
+
+#availCollections h3 span a {
+font-weight: bold;
+font-size: 1.1em;
+padding-left: 1em;
+}
+
+#availCollections a.backToTop {
+clear: both;
+display: block;
+padding-top: 1.2em;
+}
+
+#collectionTitleListTop {
+margin: -1em 0 2.5em;
+}
+
+.collectionList {
+	margin-bottom: 1em;
+}
+
+.collectionList ul {
+	list-style: none;
+}
+
+.participantList {
+	margin: 0;
+	padding-bottom: 1em;
+	border: 1px solid #b7b387;
+	border-top: none;
+}
+
+.participantList li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+}
+
+body.auth .participantList li li {
+font-weight: normal;
+}
+
+.participantList li ul  {
+	margin-left: 0;
+	margin-bottom: .8em;
+	padding-left: .8em;
+}
+
+.participantList li ul li {
+	padding-top: .5em;
+}
+
+.participantList li ul li ul li {
+	margin-left: 20px;
+}
+
+.participantList li ul li ul li {
+	font-weight: normal;
+}
+
+.delimitedLink, .nextToLink {
+	float: left;
+	font-size: 1em;
+	padding: .8em 0 0 2em;
+}
+
+.recentContent {
+	margin-top: 1em;
+	font-size: .9em;
+	/*color: #635d3f;*/
+}
+
+.titleHistory {
+	margin: .5em 0 0 -1.2em;
+	font-size: 1em;
+	font-weight: bold;
+}
+
+#mainContent .dynaInfoTable .titleHistory a {
+	background: url("../images/expand.gif") 12px 6px no-repeat;
+	color: #3c3d46;
+	padding: 3px 0 3px 26px;
+	text-decoration: underline;
+	cursor: pointer;
+} /*==IE6 CSS also==*/
+
+#mainContent .dynaInfoTable .titleHistory a.expanded {
+	background: url("../images/collapse.gif") 12px 6px no-repeat;
+	}
+
+#mainContent .dynaInfoTable .titleHistory a:hover, #mainContent .dynaInfoTable .titleHistory a:active, #mainContent .dynaInfoTable .titleHistory a:focus {
+	color: #3c3d46;
+}
+/*used in dynamic Info Pages for styling dynamically generated numbers (e.g. # of titles, # of participants*/
+span.dynaNum {
+	font-weight: bold;
+}
+
+#mainContent #exportTitleList {color: #71672d; text-decoration: none; padding: .3em;}
+
+.exportButton {color: #71672d; background-color: #e5e3cb; border: 1px solid #cac594; border-width: 0 1px 1px 0; font-size: 1em; padding: .2em; margin: 2px 20px; float: left;}
+
+.noBulletsList {list-style: none; margin: 0px; padding: 0px;}
+
+
+
+/*----------------------------------------------------------------------------*/
+/* ----13. Others section (System Errors, Take the Tour, Feedback Forms-------*/
+/*----------------------------------------------------------------------------*/
+
+
+body.other label {font-size: 1.1em;}
+
+body.other .myJstorInput {width: 14em;}
+
+#contactUsList li {
+list-style: none;
+margin-left: 0;
+}
+
+#contactUsList li a {
+background: url("../images/decorative_bullet.jpg") left center no-repeat;
+padding-left: 15px;
+}
+
+#collectionCheckboxes {
+margin-left: 1.6em;
+}
+
+#collectionCheckboxes legend {padding-top: .5em;}
+
+#collectionCheckboxes input {vertical-align: middle;}
+
+form #collectionCheckboxes ol li {
+margin: 0;
+padding: 0;
+}
+
+form #collectionCheckboxes ol li li {
+margin: 1em 0;
+}
+
+/* Form stuff */
+
+#nameInfo, #institutionInfo1, #institutionInfo2, #additionalComments, #subjectRequest, #accessInfoForm {border: 1px solid #333333; padding: 10px; width: 550px; margin-bottom: 1em;}
+
+#multiCol, #disciCol, #accessInfo {list-style: none;}
+
+#accessInfo, #accessInfo li {margin: 0px;}
+
+#messageInfo {
+border-top: 1px solid #a39d68;
+border-collapse: collapse;
+}
+
+#messageInfo thead tr {
+background: #f4f2e7;
+border-bottom: 1px solid #dcd9bf;
+}
+
+#messageInfo td {
+padding: 5px;
+}
+
+#messageInfo th {
+padding-right: 1em;
+color: #666; 
+text-align: right;
+font-weight: normal; }
+
+#messageInfo th, #messageInfo td {
+padding-bottom: 1em;
+vertical-align: baseline;
+} 
+
+#messageInfo #formHead {
+color: #3c3d46;
+}
+
+#subjectRequest label.errorText {
+	font-weight: normal;
+	color: #c2021d;
+	margin: 0px;
+}
+.feedbackFormInput {width: 30em;} 
+
+textarea.feedbackFormInput {width: 26em;}
+
+.inputSpacing, span.inputSpacing {margin: 4px 0px;}
+
+/* Form drop down stuff */
+
+#titleSelector {width: 7em;}
+#professionSelector, #staticIp, #sharedIp, #proxyServe {width: 20em;} 
+
+#institutionSelect {width: 31em;} 
+ 
+.confirmHead {font-weight: bold;}
+
+ul#languageSelection {margin: 1em 0 2em 0;}
+
+ul#languageSelection  li {display: inline; list-style: none; margin: 0 20px 0 0;}
+
+.langIcon {border: none; margin: 0; padding: 0; line-height: inherit;}
+
+a.linkSpace {width: 13.5em; float: left; text-align: right; margin-right: 10px;}
+
+.exclamationError {margin-left: 5px;}
+
+#mainContent.tour h1 {
+margin-bottom: 0;
+padding-bottom: 0;
+}
+
+#mainContent.tour ul, #mainContent.tour li {
+margin: 1em 0  0 .8em;
+padding: 0;
+list-style: none;
+}
+
+.tourTips {
+margin-top: 2em;
+}
+
+#trial {margin-right: .3em;}
+
+
+
+/*----------------------------------------------------------------------------*/
+/*-------------------------------14. Admin Portal-----------------------------*/
+/*----------------------------------------------------------------------------*/
+
+body.adminPortal h1{
+margin: .5em 0 0 0;
+padding: 0;
+}
+
+body.adminPortal #content a, body.adminPortal #mainContent a {
+	color: #761e20;
+	/*text-decoration: none;*/
+}
+
+body.adminPortal #content a:hover, body.adminPortal #content a:active, body.adminPortal #content a:focus, body.adminPortal #mainContent a:hover, body.adminPortal #mainContent a:active, body.adminPortal #mainContent a:focus {
+	color: #a71216;
+	text-decoration: underline;
+}
+
+#reportNav {
+width: 826px;
+}
+
+#reportNav ul {
+padding: 0;
+margin: 0;
+float: left;
+list-style: none;
+}
+
+#reportNav li {
+margin: 0 0 0 .5em;
+padding: 0 0 .2em .5em;
+border-left: 1px solid #a29a65;
+float: left;
+}
+
+#reportNav li.active {
+font-weight: bold;
+}
+
+#reportNav li.noBorder {
+border: none;
+margin: 0;
+padding: 0 0 .2em 0;
+}
+
+#dateRange ul {
+width: 21.5em;
+margin-left: 0;
+}
+
+#dateRange li {
+float: right;
+margin: 1em 0 0;
+}
+
+#dateRange select {
+margin: 0 3px;
+}
+
+#dateRange label {
+	position: absolute;
+	top: -99999em;
+}
+
+#selectInstitutionDetailedRpt {
+width: 300px;
+margin: 0 .5em;
+}
+
+#adv {
+	margin: 1em 0 0 0;
+}
+
+#adv a {
+font-weight: bold;
+	background: url("../images/expand.gif") 8px 1px no-repeat;
+	padding: 3px 0 3px 30px;
+margin-left: -13px;
+}
+
+#adv a.expanded {
+	background: url("../images/collapse.gif") 8px 1px no-repeat;
+	}
+
+#adv ul, li {
+margin: 0;
+padding: 0;
+}
+
+#schedRpt {
+border-collapse: collapse;
+}
+
+#schedRpt th {
+text-align: left;
+}
+
+body.adminPortal #mainContent #schedRpt th a {
+color: #71672d;
+text-decoration: underline;
+}
+
+body.adminPortal #mainContent #schedRpt th a:hover, body.adminPortal #mainContent #schedRpt th a:active, body.adminPortal #mainContent #schedRpt th a:focus {
+color: #9c8400;
+}
+
+#schedRpt thead th {
+vertical-align: bottom;
+}
+
+#schedRpt th, #schedRpt td {
+padding: .5em 1em;
+}
+
+#schedRpt tbody th, #schedRpt td {
+border-top: 1px solid #333;
+font-weight: normal;
+}
+
+select#begMonth, select#endMonth  {width: 9em;}
+
+#reportHeader {border-bottom: 1px solid #e5e3cb; padding-bottom: 1em; margin-bottom: 1em;}
+
+#reportHeader ul, #reportHeader li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+
+
+/*----------------------------------------------------------------------------*/
+/*--------------------------------15. ARTstor---------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+
+
+#searchResultsHead {
+width: 820px;
+}
+
+#resultsSearchForm fieldset, #resultsSearchForm2 fieldset {float: left;}
+#resultsSearchForm2 fieldset {padding-left: 4px;}
+
+body.searchResults #results {
+margin-left: 0; padding-left:0px;
+}
+
+#results ul, ul#issueTools {
+margin-left: 0;
+} /*apply to both search results and TOC or just Search Results? */
+
+body.searchResults #results li {
+list-style: none;
+display: block;
+width: 100%;
+margin-top: 15px;
+margin-left: 0px; 
+padding-left:0px; 
+display: block; 
+float: left; 
+clear: left;
+}
+
+body.searchResults #results li ul {
+margin: 0;
+padding: 0;
+float: left;
+max-width: 620px; /*need to hack this in IE stylesheet for IE6 */
+}
+
+body.searchResults #results li li {
+margin: 0;
+padding: 0 0 4px 0;
+}
+
+body.searchResults #results input, body.searchResults #results label 
+{float: left; margin-right: .5em;}
+
+#accessOptions {border-bottom: 1px solid #b7b387; padding: 0px 0px 10px 0px; margin-bottom: 5px;}
+
+#artstorLogo {border-bottom: 1px solid #b7b387; padding: 10px 0px 10px 0px; text-align: left; margin-bottom: 5px;}
+
+.artstorThumbContainer {float: left; margin:0px 10px 0 0; width: 98px;}
+
+#basicSearchBox {padding: 2px 0px; float: left; margin: 4px 10px 0 0;}
+
+.cil {margin: 2px 4px 0 2px;}
+
+.checkBoxContainer {float: left; width: auto; padding-right: 1em; vertical-align: top;}
+
+.goToPage {float: left; margin: 5px 15px;} 
+
+	body.searchResults #inPageTabs {width:823px;}
+
+#pageResultsNav {float: left; margin: 5px 0 10px 0; padding-top: 4px;} 
+
+img.artstorThumbnail {margin: 3px 0 0 0; vertical-align: top; float: left;}
+
+.matchingImages img {float: left; margin-right: 10px; margin-bottom: 10px;}
+
+.caption {max-width: 450px; float: left;}
+
+.matchingImages img, .caption {padding-top: 1em;}
+
+#searchWithinContainer {float: left; clear: both; margin: 0px;}
+
+.rightSpace {margin: 0 20px 0 0;}
+
+#totalResults {border-bottom: 1px solid #b7b387; padding:.5em 0 1em 0;}
+
+
+.resultsMsg {
+margin: 1em 0;
+font-weight: bold;
+}
+
+/*----------------------------------------------------------------------------*/
+/* ----------------------------------16. Hacks------------------------------- */
+/*----------------------------------------------------------------------------*/
+
+/*This is the easy clearing hack (this was updated by Anj for IE7)*/
+
+.clearfix:after {
+	content: ".";
+	display: block; 
+	clear: both;
+	height: 0; 
+	visibility: hidden;
+}
+
+.clearfix {display: inline-block;} /*==IE6 CSS also==*/
+
+/* Hide from IE Mac \*/
+.clearfix {display: block;}
+/* End hide from IE Mac */
+
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+#profile legend {padding-bottom: 5px;}
+#profile li ul li {padding-top: 5px;}
+}
+/* added to achieve opacity control in IE8 for ltm-2240*/
+.highlight {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)"; 
+         filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=25);
+         opacity: .25;		 
+}

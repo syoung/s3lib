@@ -1,0 +1,170 @@
+Notes-apps-sra.txt
+
+
+</entry>
+
+
+
+<entry [Fri Oct  1 14:45:51 EDT 2010] USE fastq-dump TO PRINT FASTQ AND abi-dump TO PRINT CSFASTA>
+
+
+
+abi-dump
+--------
+
+/nethome/syoung/base/apps/sra/sra_toolkit-1.0.0-b10/glibc.6/x86_64/abi-dump
+
+    Usage:
+         /nethome/syoung/base/apps/sra/sra_toolkit-1.0.0-b10/glibc.6/x86_64/abi-dump
+         -path <path-to-run>
+         [-outdir <outdir>] [-minSpotId <minSpotId>] [-maxSpotId <maxSpotId>] 
+         [-minReadLen <minReadLen>] [-noclip] [-origfmt] [-noDotReads]
+         <accession>
+    
+    Where:
+         -accession     Run accession - top level directory for SRA format either downloaded or locally generated
+         -path          Path to (but not including) accession
+         -outdir        Output directory (defaults to current directory)
+         -minSpotId     Minimum spot id to output
+         -maxSpotId     Maximum spot id to output
+         -minReadLen    Minimum read length to output (defaults is 25)
+         -noclip        Indicates don't apply clip quality right
+         -origfmt       Excludes SRR accession & length on defline
+         -noDotReads    No reads consisting only of dots are output
+     
+     
+fastq-dump
+----------
+     
+/nethome/syoung/base/apps/sra/sra_toolkit-1.0.0-b10/glibc.6/x86_64/fastq-dump
+    
+    Version: 1.2.0    Usage:
+
+      ./fastq-dump [options] [ -A ] <accession>
+      ./fastq-dump [options] <path>
+    
+        -A, --accession             Accession.
+
+Options:
+
+        -D, --table-path            Path to accession data.
+        -O, --outdir                Output directory. Default: '.'
+        -N, --minSpotId             Minimum spot id to output.
+        -X, --maxSpotId             Maximum spot id to output.
+        -G, --spot-group            Split into files by SPOT_GROUP (member).
+        -T, --group-in-dirs         Split into subdirectories instead of files.
+        -K, --keep-empty-files      Do not delete empty files.
+        -L, --log-level             Logging level: 0-13 or fatal|sys|int|err|warn|info|debug[1-10]. Default:  info
+        -H, --help                  Prints this message.
+
+Format options:
+
+        -M, --minReadLen            Minimum read length to output. Default: 25
+        -W, --noclip                Do not clip quality right for spot.
+        -F, --origfmt               Excludes SRR accession & length on defline.
+        -C, --dumpcs [cskey]        Dump color space sequence (default for ABI SOLID), single letter color space key is optional.
+        -B, --dumpbase              Dump base sequence (default for other than ABI SOLID).
+        -Q, --offset                Offset to use for quality conversion. Default: 33
+        -I, --readids               Append read id after spot id as 'accession.spot.readid' on defline.
+        -E, --no-qual-filter        Disable filtering by leading/trailng low quality.
+        -SF, --complete              Dump ALL reads in a single file.
+        -DB, --defline-seq           sequence defline format specification. String of characters and/or variables.
+
+            Variables are one of:
+              $ac - accession, $si - spot id, $sn - spot name, $sg - spot group (barcode),
+              $sl - spot length in bases, $ri - read id, $rn - read name, $rl - read length in bases.
+            '[]' could be used for an optional output: if all variables in [] yield empty values whole group is not printed.
+            Empty value is empty string or 0 for numeric variables.
+            Ex: @$sn[_$rn]/$ri - '_$rn' is omitted if name is empty
+
+        -DQ, --defline-qual          quailty defline format specification. If -DB is provided but -DQ ommitted, -DB value is used.
+        -alt [n]                    alternative formatting version [1].
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Oct  1 14:44:51 EDT 2010] INSTALL SRA TOOLKIT>
+
+
+
+mkdir -p /nethome/syoung/base/apps/sra/1.0.0-b10
+cd /nethome/syoung/base/apps/sra
+wget http://trace.ncbi.nlm.nih.gov/Traces/sra/static/sra_toolkit-1.0.0-b10-glibc.6-x86_64.tar.gz
+tar xvf s*
+
+
+APPLICATIONS:
+
+  abi-dump              # dump to ABI-native format
+  abi-load              # load from ABI-native format
+  fastq-dump            # dump to FASTQ format
+  fastq-load            # load from FASTQ format
+  illumina-dump         # dump to Illumina-native format
+  illumina-load         # load from Illumina-native format
+  kar                   # tool to create or extract single-file archives
+  kdbmeta               # access db, table or column metadata
+  rcexplain             # internal return code display utility
+  sff-dump              # dumps 454 runs in SFF format
+  sra-dbcc              # SRA db consistency checker
+  srf-load              # ABI and Illumina SRF capable loader
+
+
+
+NOTES
+-----
+
+http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=show&f=software&m=software&s=software
+
+
+
+-----Original Message-----
+From: Stine, Adam [mailto:stineaj@ncbi.nlm.nih.gov] 
+Sent: Friday, October 01, 2010 2:35 PM
+To: Young, Stuart; tkt-trace@ncbi.nlm.nih.gov
+Subject: (TR-5462) NA18507 original CSFASTA read files
+
+
+    [ http://jira.be-md.ncbi.nlm.nih.gov/browse/TR-5462?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel&focusedCommentId=1047158#action_1047158 ] 
+
+Stine, Adam commented on TR-5462:
+---------------------------------
+
+Dear Stuart,
+
+SRA does not provide the original csfasta files for archived samples.  To output csfasta, the sra formatted data can be downloaded from the FTP by SRR accession, then converted using the dumpers in our toolkit.
+http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=show&f=software&m=software&s=software
+
+Please let me know if you have any questions.
+
+Adam Stine
+
+http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=show&f=software&m=software&s=software
+
+
+
+-----Original Message-----
+From: Stine, Adam [mailto:stineaj@ncbi.nlm.nih.gov] 
+Sent: Friday, October 01, 2010 2:35 PM
+To: Young, Stuart; tkt-trace@ncbi.nlm.nih.gov
+Subject: (TR-5462) NA18507 original CSFASTA read files
+
+
+    [ http://jira.be-md.ncbi.nlm.nih.gov/browse/TR-5462?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel&focusedCommentId=1047158#action_1047158 ] 
+
+
+Stine, Adam commented on TR-5462:
+---------------------------------
+
+Dear Stuart,
+
+SRA does not provide the original csfasta files for archived samples.  To output csfasta, the sra formatted data can be downloaded from the FTP by SRR accession, then converted using the dumpers in our toolkit.
+http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=show&f=software&m=software&s=software
+
+Please let me know if you have any questions.
+
+Adam Stine
+

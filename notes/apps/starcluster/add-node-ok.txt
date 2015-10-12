@@ -1,0 +1,122 @@
+StarCluster - (http://web.mit.edu/starcluster) (v. 0.92rc1)
+Software Tools for Academics and Researchers (STAR)
+Please submit bug reports to starcluster@mit.edu
+
+>>> Importing module config
+>>> Importing module static
+>>> Importing module cluster
+>>> Importing module clustersetup
+>>> Importing module node
+>>> Importing module ssh
+>>> Importing module plugins
+>>> Importing module balancers
+>>> Importing module managers
+>>> Importing module image
+>>> Importing module volume
+>>> Importing module awsutils
+>>> Importing module cli
+>>> Importing module commands
+>>> Importing module logger
+>>> Importing module utils
+>>> Importing module iptools
+>>> Importing module threadpool
+>>> Importing module templates
+>>> Importing module exception
+>>> Importing module tests
+>>> Importing module optcomplete
+>>> Importing module progressbar
+>>> Importing module spinner
+>>> Importing module boto
+>>> Importing module paramiko
+
+
+In [1]: cfg.get_plugin('sge')
+Out[1]: 
+{'__name__': 'sge',
+ 'cell': 'syoung-smallcluster',
+ 'execdport': '36252',
+ 'head_ip': '10.122.13.145',
+ 'head_long_ip': 'ip-10-122-13-145.ec2.internal',
+ 'qmasterport': '36251',
+ 'root': '/opt/sge6',
+ 'setup_class': 'sge.CreateCell',
+ 'slots': '1'}
+
+In [2]: clus = cluster.ClusterManager(cfg)
+
+In [3]: clus.add_node("syoung-smallcluster")
+>>> Loaded plugin: automount.NfsShares
+>>> Loaded plugin: sge.CreateCell
+>>> Launching node(s): node001
+Reservation:r-b7b09cdb
+>>> Waiting for node(s) to come up... (updating every 30s)
+>>> Waiting for all nodes to be in a 'running' state...
+2/2 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Waiting for SSH to come up on all nodes...
+2/2 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Configuring hostnames...
+1/1 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Configuring /etc/hosts on each node
+2/2 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Configuring NFS...
+>>> Mounting shares for node node001
+1/1 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> _setup_nfs took 0.034 mins
+1/1 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Configuring scratch space for user: sgeadmin
+1/1 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| 100%  
+>>> Configuring passwordless ssh for root
+>>> Using existing key: /root/.ssh/id_rsa
+>>> Configuring passwordless ssh for sgeadmin
+>>> Using existing key: /home/sgeadmin/.ssh/id_rsa
+>>> Adding node001 to SGE
+!!! ERROR - command 'cd /opt/sge6 && TERM=rxvt ./inst_sge -x -noremote -auto ./ec2_sge.conf' failed with status 1
+>>> Running plugin automount
+>>> Doing 'on_add_node' for plugin: automount.NfsShares
+>>> Adding node node001
+>>> Adding /etc/fstab entry (/agua on node001)
+>>> Adding /etc/fstab entry (/data on node001)
+>>> Adding /etc/fstab entry (/nethome on node001)
+>>> Adding /etc/exports entry (/agua to node001)
+portmap start/running, process 285
+ * Stopping NFS kernel daemon                                                [ OK ] 
+ * Unexporting directories for NFS kernel daemon...                          [ OK ] 
+ * Exporting directories for NFS kernel daemon...                            [ OK ] 
+ * Starting NFS kernel daemon                                                [ OK ] 
+>>> Adding /etc/exports entry (/data to node001)
+portmap start/running, process 285
+ * Stopping NFS kernel daemon                                                [ OK ] 
+ * Unexporting directories for NFS kernel daemon...                          [ OK ] 
+ * Exporting directories for NFS kernel daemon...                            [ OK ] 
+ * Starting NFS kernel daemon                                                [ OK ] 
+>>> Adding /etc/exports entry (/nethome to node001)
+portmap start/running, process 285
+ * Stopping NFS kernel daemon                                                [ OK ] 
+ * Unexporting directories for NFS kernel daemon...                          [ OK ] 
+ * Exporting directories for NFS kernel daemon...                            [ OK ] 
+ * Starting NFS kernel daemon                                                [ OK ] 
+>>> Setting mountd port on node001
+portmap start/running, process 285
+ * Stopping NFS kernel daemon                                                [ OK ] 
+ * Unexporting directories for NFS kernel daemon...                          [ OK ] 
+ * Exporting directories for NFS kernel daemon...                            [ OK ] 
+ * Starting NFS kernel daemon                                                [ OK ] 
+>>> Mounting NFS shares on node001
+>>> mount -t nfs 10.122.13.145:/agua /agua
+>>> Mounting NFS shares on node001
+>>> mount -t nfs 10.122.13.145:/data /data
+>>> Mounting NFS shares on node001
+>>> mount -t nfs 10.122.13.145:/nethome /nethome
+>>> Completed 'on_add_node' for plugin: automount.NfsShares
+>>> Running plugin sge
+>>> Doing 'on_add_node' for plugin: sge.CreateCell
+>>> Adding node001
+>>> Copying cell directory on node001
+>>> mkdir /opt/sge6/syoung-smallcluster &> /dev/null
+>>> rsync -a /opt/sge6/default/* /opt/sge6/syoung-smallcluster --exclude *tar.gz
+>>> chown -R sgeadmin:sgeadmin /opt/sge6/syoung-smallcluster
+>>> Restarting SGE qmaster and execd daemons
+>>> /bin/ps aux | grep sgeadmin | cut -c9-14 | xargs -n1 -iPID /bin/kill -9 PID &> /dev/null
+>>> Add node001 to @allhosts group
+>>> sge.addToAllhosts    command: /opt/sge6/bin/lx24-amd64/qconf -aattr hostgroup hostlist node001 @allhosts >> /tmp/allhosts.out; 
+>>> Completed 'on_add_node' for plugin: sge.CreateCell

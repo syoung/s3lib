@@ -1,0 +1,595 @@
+Notes-database-funnybase11
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+</entry>
+
+
+
+<entry [Thu Jun 28 23:56:13 EDT 2007] funnybase11 IPRSCAN FINISHED (8 DAYS)>
+
+
+
+CHECK THIS LATER: ONE MINOR ERROR WITH coils - CHECK coils.conf FILE
+
+========================================================================
+Chunk: 1
+Jobid: iprscan-20070628-06124851-coils-cnk1
+Application: coils
+Please fix error(s) if necessary or check 'coils.conf' file.
+Errors :
+
+       2 sequences      202 aas        0 in coil
+
+
+========================================================================
+
+em /common/iprscan/conf/coils.conf
+
+>>>
+# generic definitions
+queue=sge6
+usergroup=
+toolgroup=iprscan
+jobname=[%jobid]
+
+# queue/local definitions
+resource=
+queue.name=
+host.exec=
+
+# application name used with InterProScan
+applname=Coil
+
+# matrix
+matrix=[%env IPRSCAN_HOME]/data/new_coil.mat
+
+# work directory, depends on search type
+date=[%YYYY][%MM][%DD]
+sworkdir=[%env IPRSCAN_HOME]/tmp/[%date]/[%session]/[%chunk]
+aworkdir=[%env IPRSCAN_HOME]/tmp/[%date]/[%session]/[%chunk]
+workdir=[%if %srchtype eq email ? %aworkdir : %sworkdir]
+
+# work files
+tooloutput=[%workdir]/[%jobid].output
+toolrunning=[%workdir]/[%jobid].running
+toolerrors=[%workdir]/[%jobid].errors
+toolexitcode=[%workdir]/[%jobid].exitcode
+uniquefiles=toolrunning,toolerrors
+
+# command line
+binary=[%env IPRSCAN_HOME]/bin/binaries/ncoils
+cmdline=  -c -m [%matrix]
+
+#template configuration for queue and local
+template=[%env IPRSCAN_HOME]/bin/executor.pl
+
+# other
+recdel=%newline>
+htmlerror=Error in Coils job submission
+adminaddr=nobody@localhost.com
+mailerrorsubject=Error in Coils submission [%jobid]
+mailfromaddr=nobody@localhost.com
+mailerrorto=
+<<<
+
+CHECKED THAT new_coil.mat IS IN THE DATA DIRECTORY (YES):
+
+ls /common/iprscan/data
+
+FingerPRINTSparser.db   confirm.patterns        prints.pval.inx         sf_hmm
+Gene3D.hmm              formatdb.log            prodom.ipr              sf_hmm.bin
+Gene3D.hmm.bin          interpro.dtd            prodom.ipr.phr          sf_hmm.inx
+Gene3D.hmm.inx          interpro.xml            prodom.ipr.pin          sf_hmm_sub
+Panther                 interpro.xml.inx        prodom.ipr.psd          sf_hmm_sub.bin
+Pfam                    match.dtd               prodom.ipr.psi          smart.HMMs
+Pfam-A.seed             match.xml               prodom.ipr.psq          smart.HMMs.bin
+Pfam-A.seed.inx         match.xml.inx           prosite.dat             smart.HMMs.inx
+Pfam-C                  match_complete.dtd      prosite.patterns        superfamily.acc
+Pfam-C.inx              match_complete.xml      prosite_prerelease.prf  superfamily.hmm
+Pfam.bin                match_complete.xml.bkp1 sf.seq                  superfamily.hmm.bin
+Pfam.inx                match_complete.xml.inx  sf.seq.phr              superfamily.hmm.inx
+TIGRFAMs_HMM.LIB        new_coil.mat            sf.seq.pin              superfamily.tab
+TIGRFAMs_HMM.LIB.bin    pirsf.dat               sf.seq.psq
+TIGRFAMs_HMM.LIB.inx    prints.pval             sf.tb
+
+AND THAT THE coils BINARY IS PRESENT (YES):
+
+ll /common/iprscan/bin/binaries/ncoils
+
+-rwxr-xr-x   1 www  admin    19K May 13  2003 /common/iprscan/bin/binaries/ncoils
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jun 27 20:12:48 EDT 2007] MSG: Doug ON 384funnybase11.collectionsequencesdownload.tsv>
+
+
+CC: Margie, Jeff
+SUBJECT: 384 reads (384funnybase11) vs funnybase11 reads DOWNLOAD
+
+Hi Doug,
+
+I've created a download file for the 384 genes similar to the funnybase11.collectionsequencesdownload.tsv file.
+
+It's available at:
+
+http://genomics.rsmas.miami.edu/sandbox18/downloads/384funnybase11.collectionsequencesdownload.tsv
+
+There may be some discrepancies between the original 384 annotation and the annotation of the funnybase11 reads they are paired up with in the file. You can check that these alignments are correct using the BLAST function on sandbox18 (NEW: you can now 'Add' swissprot and refseq sequences, and 384funnybase11 reads).
+
+Here is some quality control information:
+
+321 OUT OF THE 384 HAD HITS AGAINST funnybase11 ASSEMBLY READS (~30,000 SEQUENCES):
+
+SELECT count(distinct experiment, plate, well) from readsblast where targetsource ='funnybase11_assembly';
++-----------------------------------------+
+| count(distinct experiment, plate, well) |
++-----------------------------------------+
+|                                     321 |
++-----------------------------------------+
+
+ONLY A FEW MORE HAD HITS AGAINST ALL OF THE funnybase11 READS (~60,000 SEQUENCES):
+
+SELECT count(distinct experiment, plate, well) from readsblast where targetsource ='funnybase11_reads';
++-----------------------------------------+
+| count(distinct experiment, plate, well) |
++-----------------------------------------+
+|                                     330 |
++-----------------------------------------+
+
+372 OUT OF 384 OF THE FILTERED SEQUENCES WERE LONGER THAN 75 BP:
+
+select count(*) from reads where length(filteredsequence) > 75;
++----------+
+| count(*) |
++----------+
+|      372 |
++----------+
+
+THE SHORT ( < 75 BP ) FILTERED SEQUENCES:
+
+select experiment,plate,well from reads where length(filteredsequence) < 75; 
++------------+-------+------+
+| experiment | plate | well |
++------------+-------+------+
+|        127 |     1 | F07  |
+|        127 |     1 | F10  |
+|        127 |     2 | E02  |
+|        127 |     2 | G07  |
+|        127 |     3 | C06  |
+|        127 |     3 | C07  |
+|        127 |     4 | B01  |
+|        127 |     4 | E12  |
+|        127 |     4 | F05  |
+|        127 |     4 | F12  |
+|        127 |     4 | G08  |
+|        127 |     4 | H06  |
++------------+-------+------+
+
+MOST HAVE THIS KIND OF SEQUENCE:
+
+screenedsequence: TAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCACGAGGAGAGAACTAGTCTCGAGTTTTTTTTTTTTTTTTTTTTTTTTTTTGGGCCCCCCCCCCAACAAAAACTTTTTGGGTTTTCAAACCAAATTTTCCCCCCAAACCCGGGGGTTTCAAAGGGCCCAAAACCCTTCAAACCCCCTTTTTTTTTTCTTTAAAATTAAAAAAAATTTTCAAAAATCAAAAATTTCCCGGGAACGGGGGTTCCCCCCCCCGGCCCCCCTGGTTTTTTTTTTTCAAAACCAGGGGTTTTAATTGTTCTTTGCCCCCCCCGGGGAACCAAAAAAAAAAAACCTTTAACCCCCCAAAAAAAGTCCCCCCCGGGGGCCCATTTTCCCCCCCTTTTTTTTTAGGCAAAAAAAACCCCCTTGCCCAAAAAAAAAAAAAAAAAAACCCCGGGGGGGGCGCGCGGACCAAATTCCCCCCAAAAGGGGGGGTAAATAAATTTCCCGGCGCCCTTTTTTTAA
+filteredsequence: TA
+
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Wed Jun 27 17:48:48 EDT 2007] TEST 384collectionsequencesdownload.pl>
+
+
+
+select targetexperiment, targetplate, targetwell, hitevalueexp, hitevaluedec from readsblast where experiment =127 and plate =1 and well='A01' and targetsource='funnybase11_assembly' order by hitevalueexp , hitevaluedec ;
++------------------+-------------+------------+--------------+--------------+
+| targetexperiment | targetplate | targetwell | hitevalueexp | hitevaluedec |
++------------------+-------------+------------+--------------+--------------+
+|              126 |          37 | F07        |         -139 |         4.88 |
+|              126 |          47 | H03        |          -17 |         6.60 |
+|              126 |          47 | G09        |          -16 |         2.21 |
+|              126 |          47 | A02        |          -14 |         7.31 |
++------------------+-------------+------------+--------------+--------------+
+
+BUT APPEARS TO HAVE A HIGHER E-VALUE WHEN BLAST USING sandbox18:
+
+Sequence 127-001-A01 (query 0) hits against sequence 126-037-F07 (target 0) (Evalue: 1.79e-263)
+ 
+Sequence 126-037-F07 (query 0) hits against sequence 127-001-A01 (target 0) (Evalue: 1.79e-263) 
+
+
+
+</entry>
+
+
+
+<entry [Wed Jun 27 12:53:50 EDT 2007] COMPLETED BLAST OF 384funnybase11 AGAINST funnybase11 ASSEMBLY READS>
+
+
+
+sudo ./readsarrayblast.pl -d 384funnybase11 -t funnybase11_assemblyreads
+
+	Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+	
+	Merging output files into single outputfile: /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_assemblyreads.blast.tsv... done.
+	Cleaning up... rm: /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_assemblyreads.sh*: No such file or directory
+	done.
+	Output file printed:
+	
+	/common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_assemblyreads.blast.tsv
+	
+	
+	Run time: 00:00:18
+	Completed ./readsarrayblast.pl
+	12:32AM, 27 June 2007
+	****************************************
+
+
+sudo ./readsarrayblastloaddata.pl -d 384funnybase11 -t funnybase11_assemblyreads
+
+	Using default conf file: conf/default.conf
+	Creating table 'readsblast' if not exists... done.
+	Directory: /common/pipeline/384funnybase11/blast
+	
+	Doing target database: funnybase11_assemblyreads
+	TSV file: /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_assemblyreads.blast.tsv
+	Deleting from readsblast WHERE targetsource='funnybase11_assemblyreads'...done.
+	Loading 'funnybase11_assemblyreads' hits data into table 'readsblast'...done.
+
+	Run time: 00:00:01
+    Completed ./readsarrayblastloaddata.pl
+	12:51AM, 27 June 2007
+	****************************************
+
+select targetsource, count(*) from readsblast group by targetsource ;
++----------------------+----------+                                                                                                           
+| targetsource         | count(*) |
++----------------------+----------+
+| funnybase11_assembly |     9130 |
+| funnybase11_reads    |    14046 |
++----------------------+----------+
+
+ SELECT count(distinct experiment, plate, well) from readsblast where targetsource ='funnybase11_assembly';
++-----------------------------------------+
+| count(distinct experiment, plate, well) |
++-----------------------------------------+
+|                                     321 |
++-----------------------------------------+
+
+
+</entry>
+
+
+
+<entry [Mon Jun 25 13:55:38 EDT 2007] PROCESS 384 READS AND BLAST AGAINST funnybase11 READS>
+
+
+
+COPIED 127 RESEQ READS TO 127 LIBRARY:
+
+   NAME     384reseq.pl
+
+   PURPOSE
+   
+        GET ALL THE 127reseq READS, RENAME THEM TO NORMAL READ NAME
+		
+		FORMAT AND COPY OVER INTO THE 127-X-111104 DIRECTORY OF
+		
+		THE 127Library
+
+    INPUT
+    
+        1. THE 127 RESEQ LIBRARY:
+		
+        /Users/vanwye/Sequencing_Data/127reseq
+        
+        2. THE 127Library:
+        
+        /Users/vanwye/Sequencing_Data/126,130,151-159/127Library
+        
+
+
+SCREENED READS AND LOADED INTO screenedread TABLE
+
+   NAME     384screenedreads.pl
+
+   PURPOSE
+   
+		SCREEN THE 384 READS AND LOAD INTO THE 384funnybase11 DATABASE
+		
+		screenedreads TABLE
+		
+    INPUT
+    
+		1. LIST OF 384 READS - /Users/young/FUNNYBASE/dev/384/New_SmArray_JV.tsv 
+	
+        2. SEQUENCE LIBRARY - 127library
+        
+        3. RESEQUENCE LIBRARY - 127reseq
+        
+    NOTES
+
+        ALGORITHM:
+    
+        1. FOR EACH READ IN THE '/Users/young/FUNNYBASE/dev/384/New_SmArray_JV.tsv'
+		
+		FILE, GET THE READ SEQUENCE FROM THE 384 LIBRARY:
+        
+        /Users/vanwye/Sequencing_Data/126,130,151-159/127Library
+
+        (ANY MISSING READS HAVE ALREADY BEEN COPIED OVER FROM
+		
+		THE 384 RESEQUENCE LIBRARY:	/Users/vanwye/Sequencing_Data/127reseq )
+
+		2. SCREEN FOR VECTOR
+		
+		3. PRINT TO .TSV FILE
+		
+		4. LOAD .TSV FILE INTO screenedreads TABLE
+		
+
+   USAGE
+
+        ./384screenedreads.pl [-c configfile] [-h]
+
+        -c config_file          : /full/path/to/configuration_file (see example below)
+        -h help                 : print this help message
+
+    EXAMPLES
+    
+./384screenedreads.pl
+
+
+FILTER 384funnybase11 SCREENED READS AND LOAD INTO reads TABLE:
+
+	NAME	reads.pl
+	
+	PURPOSE
+	
+		USE THE screenedread TABLE TO CREATE THE reads TABLE:
+
+			- FILTER 'XXX' FROM SCREENED READS
+
+			- OUTPUT A .TSV FILE TO CREATE THE reads TABLE
+
+	NOTES
+	
+		ALGORITHM:
+
+			1. FOR EACH screenedsequence IN screenedreads TABLE:
+
+			2. USE Pipeline::remove_vector() TO
+
+				- REMOVE 'XXX'+ FROM SEQUENCE START
+			
+				- REMOVE 'XXXXXXXXXX' AND DOWNSTREAM SEQUENCE
+							
+				- REMOVE CORRESPONDING PORTIONS OF QUALITY RECORD FROM READSFASTA.QUAL FILE
+
+					
+			3. USE Pipeline::remove_polyA() TO
+			
+				- REMOVE poly-A/poly-T TAIL AND DOWNSTREAM SEQUENCE
+
+			4. TRIM RESULTING SEQUENCE USING Annotation::trim_sequence
+			
+			5. PRINT TO .TSV FILE
+
+	USAGE
+
+		./reads.pl -d karenia3
+
+	INPUT
+	
+		1. screenedreads TABLE
+			
+	OUTPUT
+	
+		1. .TSV FILE CONTAINING FILTERED reads
+
+		2. LOAD .TSV FILE INTO reads TABLE
+
+
+./reads.pl -d 384funnybase11
+
+    ...    
+    380
+    Output .tsv file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/384funnybase11/collection/384funnybase11.exp127.reads.tsv
+    
+    Deleting from table 'reads'... done.
+    Loading data from experiment '127' into table 'reads'... done.
+    
+    RUN TIME: 00:00:09
+    Completed ./reads.pl
+    2:09PM, 25 June 2007
+    ****************************************
+
+
+NB: ONLY 316 PASSED THE 75 BP CUTOFF:
+
+select count(*) from reads where length(trimmedsequence) > 75;
++----------+
+| count(*) |
++----------+
+|      316 |
++----------+
+
+BUT THIS DOES NOT AFFECT THE FILTERED SEQUENCES:
+
+select count(*) from reads where length(filteredsequence) > 75;
++----------+
+| count(*) |
++----------+
+|      372 |
++----------+
+
+THE SHORT ( < 75 BP ) FILTERED SEQUENCES:
+
+select experiment,plate,well from reads where length(filteredsequence) < 75; 
++------------+-------+------+
+| experiment | plate | well |
++------------+-------+------+
+|        127 |     1 | F07  |
+|        127 |     1 | F10  |
+|        127 |     2 | E02  |
+|        127 |     2 | G07  |
+|        127 |     3 | C06  |
+|        127 |     3 | C07  |
+|        127 |     4 | B01  |
+|        127 |     4 | E12  |
+|        127 |     4 | F05  |
+|        127 |     4 | F12  |
+|        127 |     4 | G08  |
+|        127 |     4 | H06  |
++------------+-------+------+
+
+MOST HAVE THIS KIND OF SEQUENCE:
+
+screenedsequence: TAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXGCACGAGGAGAGAACTAGTCTCGAGTTTTTTTTTTTTTTTTTTTTTTTTTTTGGGCCCCCCCCCCAACAAAAACTTTTTGGGTTTTCAAACCAAATTTTCCCCCCAAACCCGGGGGTTTCAAAGGGCCCAAAACCCTTCAAACCCCCTTTTTTTTTTCTTTAAAATTAAAAAAAATTTTCAAAAATCAAAAATTTCCCGGGAACGGGGGTTCCCCCCCCCGGCCCCCCTGGTTTTTTTTTTTCAAAACCAGGGGTTTTAATTGTTCTTTGCCCCCCCCGGGGAACCAAAAAAAAAAAACCTTTAACCCCCCAAAAAAAGTCCCCCCCGGGGGCCCATTTTCCCCCCCTTTTTTTTTAGGCAAAAAAAACCCCCTTGCCCAAAAAAAAAAAAAAAAAAACCCCGGGGGGGGCGCGCGGACCAAATTCCCCCCAAAAGGGGGGGTAAATAAATTTCCCGGCGCCCTTTTTTTAA
+filteredsequence: TA
+
+
+CREATE READS.FASTA FILE:
+
+
+./readsfasta.pl -d 384funnybase11
+
+    Experiment: 127
+    No. reads: 384
+    0
+    100
+    200
+    300
+    Fasta file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/384funnybase11/edit_dir/384funnybase11.fasta
+    
+    Qual file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/384funnybase11/edit_dir/384funnybase11.fasta.qual
+    
+    
+    RUN TIME: 00:00:00
+    Completed ./readsfasta.pl
+    9:33PM, 25 June 2007
+    ****************************************
+
+
+BLAST 384funnybase11 READS AGAINST funnybase11 READS:
+
+	NAME		readsarrayblast.pl
+
+	PURPOSE
+	
+		BLAST THE LATEST ASSEMBLY AGAINST THE LATEST collection_sequence ACCESSIONS
+
+		USING sge ARRAY JOBS AND STORE THE RESULTS IN THE collectionblast TABLE
+
+	USAGE
+	
+		./readsarrayblast.pl [-b database_name] [-e evalue_cutoff] [-h]
+		
+   EXAMPLE
+   
+sudo ./readsarrayblast.pl -d 384funnybase11 -t funnybase11_reads
+
+    Doing BLAST against these databases: funnybase11_reads
+    ...
+    Printing shellscript '/common/pipeline/384funnybase11/blast/funnybase11-384-funnybase11_reads.sh'... done.
+    ...
+    Doing ARRAYBLAST of database '384funnybase11' (total sequences 384) against funnybase11_reads (E-value cutoff: 1e-05)
+    qsub command: qsub -sync y -t 1-30 /common/pipeline/384funnybase11/blast/funnybase11-384-funnybase11_reads.sh
+    Completed qsub. Job output:
+    
+    Your job-array 833745.1-30:1 ("funnybase11-384-funnybase11_reads.sh") has been submitted
+    Job 833745.16 exited with exit code 0.
+    ...
+    Cleaning up... rm: /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_reads.sh*: No such file or directory
+    done.
+    Output file printed:
+    
+    /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_reads.blast.tsv
+        
+    Run time: 00:00:22
+    Completed ./readsarrayblast.pl
+    3:09AM, 26 June 2007
+    ****************************************
+
+LOAD DATA INTO readsblast TABLE:
+
+sudo ./readsarrayblastloaddata.pl -d 384funnybase11 -t funnybase11_reads
+
+    Using default conf file: conf/default.conf
+    Creating table 'readsblast' if not exists... done.
+    Directory: /common/pipeline/384funnybase11/blast
+    
+    Doing target database: funnybase11_reads
+    TSV file: /common/pipeline/384funnybase11/blast/384funnybase11-funnybase11_reads.blast.tsv
+    Deleting from readsblast WHERE targetsource='funnybase11_reads'...done.
+    Loading 'funnybase11_reads' hits data into table 'readsblast'...done.
+    
+    Run time: 00:00:02
+    Completed ./readsarrayblastloaddata.pl
+    3:16AM, 26 June 2007
+    ****************************************
+
+CHECK RESULTS:
+
+select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=99;
++-----------------------------------------+
+| count(distinct experiment, plate, well) |
++-----------------------------------------+
+|                                     245 |
++-----------------------------------------+
+1 row in set (0.05 sec)
+
+mysql> select count(distinct experiment, plate, well, targetexperiment, targetplate, targetwell) from readsblast where hspnumber = 1 and identity>=99;
++------------------------------------------------------------------------------------+
+| count(distinct experiment, plate, well, targetexperiment, targetplate, targetwell) |
++------------------------------------------------------------------------------------+
+|                                                                               1982 |
++------------------------------------------------------------------------------------+
+
+
+</entry>
+
+
+
+<entry [Sat Jun 23 17:35:09 EDT 2007] RENAME 127Library SUBDIRECTORIES AND FILES>
+
+
+
+rename 127-001-040904 s/001_/001-/
+rename  127-001-062206 s/001_/001-/
+rename  127-001-092304 s/001_/001-/
+rename  127-001-111104 s/001_/001-/
+rename  127-002-040904 s/002_/002-/
+rename  127-002-062206 s/002_/002-/
+rename  127-002-092304 s/002_/002-/
+rename  127-002-111104 s/002_/002-/
+rename  127-003-031404 s/003_/003-/
+rename  127-003-040504 s/003_/003-/
+rename  127-003-040904 s/003_/003-/
+rename  127-003-062206 s/003_/003-/
+rename  127-003-092304 s/003_/003-/
+rename  127-003-111104 s/003_/003-/
+rename  127-004-040504 s/004_/004-/
+rename  127-004-040904 s/004_/004-/
+rename  127-004-062206 s/004_/004-/
+rename  127-004-092304 s/004_/004-/
+rename  127-004-111104 s/004_/004-/
+
+

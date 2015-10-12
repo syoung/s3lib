@@ -1,0 +1,1819 @@
+Notes-project14-human_mitochondria-test.txt
+
+
+</entry>
+
+
+
+<entry [Wed Sep 17 22:11:10 EDT 2008] CONVERT CA ASSEMBLY TO AMOS>
+
+
+
+http://www.mirrorservice.org/sites/download.sourceforge.net/pub/sourceforge/t/ti/tigr-closure/cavalidate.amos
+
+#!/usr/local/packages/amos/bin/runAmos -C
+#? Convert a CA assembly to AMOS, run validation steps
+#? Copy of the distribution script
+
+INPUTS = $(PREFIX).asm $(PREFIX).frg
+BINDIR=/usr/local/packages/amos/bin
+
+###########################################################
+
+## test input files
+0:
+test -f $(PREFIX).frg
+test -f $(PREFIX).asm
+.
+
+## toAmos & bank-transact
+10: $(BINDIR)/toAmos -f $(PREFIX).frg -a $(PREFIX).asm -o - -S | $(BINDIR)/bank-transact -m - -b $(PREFIX).bnk -c
+
+## asmQC
+30: $(BINDIR)/asmQC -b $(PREFIX).bnk -feat -numsd 2
+
+## analyzeSNPs
+40: $(BINDIR)/analyzeSNPs -b $(PREFIX).bnk -S -cumqv 40 -minsnps 2 -r -e -H > $(PREFIX).snps
+
+## ClusterSnps
+50: $(BINDIR)/clusterSnps $(PREFIX).snps > $(PREFIX).snp.feat
+
+## Load SNP Features
+80: $(BINDIR)/loadFeatures $(PREFIX).bnk $(PREFIX).snp.feat
+
+## Find Surrogates
+90: $(BINDIR)/listSurrogates $(PREFIX).asm > $(PREFIX).surrogate.feat
+
+## Load Surrogates
+100: $(BINDIR)/loadFeatures $(PREFIX).bnk $(PREFIX).surrogate.feat
+
+## Find High Read Coveage
+110: $(BINDIR)/analyze-read-depth $(PREFIX).bnk -c 1000 -x 3 > $(PREFIX).depth.feat
+
+## Load Coverage Features
+120: $(BINDIR)/loadFeatures $(PREFIX).bnk $(PREFIX).depth.feat
+
+## Dump Features
+1000: $(BINDIR)/dumpFeatures $(PREFIX).bnk > $(PREFIX).all.feat
+
+## Get Suspicious Features
+1010: egrep "HIGH_SNP|HIGH_SHORT" $(PREFIX).all.feat | sort -k1 -nk3 > $(PREFIX).suspicious.feat
+
+## Create Suspicious Regions
+1020: $(BINDIR)/suspiciousfeat2region $(PREFIX).suspicious.feat > $(PREFIX).suspicious.regions
+
+## Create Fasta
+1030: $(BINDIR)/bank2fasta -e -b $(PREFIX).bnk > $(PREFIX).fasta
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TROUBLESHOOTING
+
+AMOS
+====
+
+PROBLEM:
+
+    Failed to open library account in bank run2-lane6-paired.bnk: 
+    WHAT: Could not open bank for reading, locked by 'w 511 syoung'
+    LINE: 955
+    FILE: Bank_AMOS.cc
+
+DIAGNOSIS:
+
+Bank is locked because previous run was killed before it completed.
+
+SOLUTION:
+
+    bank-unlock run2-lane6-paired.bnk
+    
+    Entering 'run2-lane6-paired.bnk'
+    Found CTG bank
+      unlocking 'r 511 syoung'
+    Found FRG bank
+    Found LAY bank
+    Found LIB bank
+      unlocking 'w 511 syoung'
+    Found RED bank
+      unlocking 'r 511 syoung'
+    Found SCF bank
+    Found UNV bank
+    
+    IFOs found: 7
+    File locks: 0
+    Bank locks: 3
+
+
+
+</entry>
+
+
+
+<entry [Thu Sep 18 01:42:22 EDT 2008] MESSAGE TO AMOS MAILING LIST    >
+
+
+
+http://sourceforge.net/forum/forum.php?thread_id=2257248&forum_id=454727
+
+
+Hi there,
+
+I’m using Amos version 2.0.8. and when I run ‘amosvalidate’ it fails at stage 710 with this repeated error message:
+
+AFG ERROR: Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+
+ Here’s the related section from my *.log file:
+
+…
+!!! 2008-09-17 19:42:24  Doing step 700:  Analyzing singleton alignment breakpoints
+!!! 2008-09-17 19:42:24  Running: /machine/home/ngenuser /apps/amos/bin/casm-breaks -b run2-lane6-paired.bnk -t 100 -c 2 -F run2-lane6-paired.break.fea run2-lane6-paired.delta
+Building alignment graph
+  build
+  flag score
+  flag QLIS
+  clean
+Fetching read and mate information
+  getting mate info from bank
+  getting read info from bank
+  looks like alignment uses IIDs
+Placing unique reads
+Placing repetitive reads
+Outputting read paths
+!!! 2008-09-17 19:46:36  Done! Elapsed time:0d 0h 4m 12s
+
+!!! 2008-09-17 19:46:36  Doing step 710
+!!! 2008-09-17 19:46:36  Running: /machine/home/ngenuser /apps/amos/bin/bank-transact -b run2-lane6-paired.bnk -m run2-lane6-paired.break.fea
+START DATE: Wed Sep 17 19:46:36 2008
+Bank is: run2-lane6-paired.bnk
+    0%                                            100%
+AFG ERROR: Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+ERROR:Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+…
+ (ERROR MESSAGE IS REPEATED A TOTAL OF 3320 TIMES)
+…
+Messages read: 3320
+Objects added: 0
+Objects deleted: 0
+Objects replaced: 0
+END DATE:   Wed Sep 17 19:46:36 2008
+!!! 2008-09-17 19:46:36  Command: /machine/home/ngenuser /apps/amos/bin/bank-transact -b run2-lane6-paired.bnk -m run2-lane6-paired.break.fea exited with status: 1
+!!! END - Elapsed time: 0d 0h 22m 52s
+
+
+The feature file does indeed contain no iid entries:
+
+head run2-lane6-paired.break.fea
+
+{FEA
+typ:B
+src:gi|115315570|ref|AC_000021.2|,CTG
+com:60 (60,0) B <-[gi|115315570|ref|AC_000021.2|]- 8294
+clr:8295,8294
+}
+{FEA
+typ:B
+src:gi|115315570|ref|AC_000021.2|,CTG
+com:136 (136,0) B <-[gi|115315570|ref|AC_000021.2|]- 7169
+…
+(TOTAL 3320 FEATURE ENTRIES IN FILE)
+
+
+Inserting 'iid:1' into a dummy *.fea file gave the error:
+
+ERROR: Invalid source format
+  could not parse 'FEA' message with iid:1, message ignored
+
+It appears that there should not normally be an 'iid' entry in the *.fea file:
+
+    FORMAT OF .fea FILE http://amos.sourceforge.net/forensics):
+    
+    casm-breaks output file: asm.break.fea
+    The singleton reads are then aligned to the consensus sequences of the contigs and then analyzed for shared breakpoints. casm-breaks reports positions where there are multiple reads that all have the same breakpoint pattern. Unlike some of the other pipeline tools, casm-breaks writes an XML like message file:
+    
+    {FEA 	Feature message
+    typ:B 	Breakpoint feature
+    src:N,CTG 	The breakpoint occurs in contig N
+    com: <string> 	string linking all of the breakpoint features for a set of reads
+    clr:X,Y 	Range the contig where the read aligns
+    } 	End of feature
+
+
+This is the section of bank-transact.cc responsible for the error message: 
+
+
+        //-- Parse the message
+        try {
+          op -> readMessage (msg);
+        }
+      catch (const Exception_t & e) {
+          cerr << "ERROR: " << e . what( ) << endl
+               << "  could not parse '" << Decode (ncode)
+               << "' message with iid:"
+               << (msg . exists (F_IID) ? msg . getField (F_IID) : "NULL")
+               << ", message ignored" << endl;
+          exitcode = EXIT_FAILURE;
+
+
+I'm not sure where the call to op->readMessage() goes to but is the format of my *.fea file correct? Or is there anything else I'm missing?
+
+Thanks for your help.
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Thu Sep 11 18:23:38 EDT 2008] RUN AMOS ASSEMBLY WITH ALL READS FROM s_6_1_sequence.txt AND s_6_2_sequence.txt (NB: WITHOUT QUALITY)>
+
+
+
+SEE http://amos.sourceforge.net/forensics/
+SEE file:///C:/DATA/02-ng.assembly/amos/AMOScmp-short-reads-assembly-tutorial.html
+
+1. CREATE DIRECTORY AND COPY FILES
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+
+fastq2fasta.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data/run2-lane6-1.txt -o run2-lane6-1
+fastq2fasta.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data/run2-lane6-2.txt -o run2-lane6-2
+
+ll
+    total 1.0G
+    drwxr-xr-x 3 syoung users 4.0K Sep 17 15:07 .
+    drwxr-xr-x 7 syoung users 4.0K Sep 13 00:17 ..
+    -rw-r--r-- 1 syoung users  17K Sep 11 18:27 human-mtDNA-AC_000021.fasta
+    -rw-rw-rw- 1 syoung users 226M Sep 12 01:01 run2-lane6-1.fasta
+    -rw-rw-rw- 1 syoung users 335M Sep 12 01:01 run2-lane6-1.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-1.txt
+    -rw-rw-rw- 1 syoung users 226M Sep 12 00:53 run2-lane6-2.fasta
+    -rw-rw-rw- 1 syoung users 338M Sep 12 00:53 run2-lane6-2.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-2.txt
+
+
+2. SHUFFLE FASTA FILES AND MERGE INTO ONE .seq FILE
+
+/home/syoung/base/apps/velvet/shuffleSequences.pl run2-lane6-1.fasta run2-lane6-2.fasta run2-lane6-paired.seq
+
+head run2-lane6-paired.seq
+
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:340:969/1
+    AATCAGGAAAAGTAAATAACCACATAA
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:340:969/2
+    TAAAGCAACTTCCTTTATCTCTTAAGT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:302:970/1
+    TGGGAGTGTTGTAGAAGATAGTCAGTC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:302:970/2
+    ACTTCATCAAATACCAGGCTGTCTTGT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:490:940/1
+    CAGTAAGAGAGGTGAGAGTTCATCATT
+
+
+2. CREATE .mates FILE
+
+    emacs run2-lane6.mates
+    
+    >>>
+    pair	(.*)\/1$	(.*)\/2$
+    <<<
+
+
+4. CHANGE REFERENCE SEQUENCE FILE NAME
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+mv human-mtDNA-AC_000021.fasta run2-lane6-paired.1con
+
+
+5. CONVERT FASTA FILE TO AMOS MESSAGE FILE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+time toAmos -map run2-lane6.mates -s run2-lane6-paired.seq -o run2-lane6-paired.afg
+
+    Max ID: 13458051
+    
+    real    7m53.244s
+    user    7m36.699s
+    sys     0m15.947s
+
+ll
+    total 2.5G
+    drwxr-xr-x 3 syoung users 4.0K Sep 17 15:25 .
+    drwxr-xr-x 6 syoung users 4.0K Sep 17 15:39 ..
+    -rw-rw-rw- 1 syoung users 226M Sep 12 01:01 run2-lane6-1.fasta
+    -rw-rw-rw- 1 syoung users 335M Sep 12 01:01 run2-lane6-1.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-1.txt
+    -rw-rw-rw- 1 syoung users 226M Sep 12 00:53 run2-lane6-2.fasta
+    -rw-rw-rw- 1 syoung users 338M Sep 12 00:53 run2-lane6-2.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-2.txt
+    -rw-r--r-- 1 syoung users   22 Sep 17 15:15 run2-lane6.mates
+    -rw-r--r-- 1 syoung users  17K Sep 11 18:27 run2-lane6-paired.1con
+    -rw-r--r-- 1 syoung users 1.1G Sep 17 15:25 run2-lane6-paired.afg
+    -rw-r--r-- 1 syoung users 452M Sep 17 15:14 run2-lane6-paired.seq
+
+
+6. RUN ALIGNMENT
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+time AMOScmp-shortReads-alignmentTrimmed run2-lane6-paired
+
+    The log file is: run2-lane6-paired.runAmos.log
+    Doing step 10:  Building AMOS bank
+    Doing step 20:  Collecting clear range sequences
+    Doing step 30:  Running nucmer on all reads
+    Doing step 31:  Filter align file
+    Doing step 32
+    Doing step 33:  Getting zero coverage regions
+    Doing step 34:  Getting aligned read iid's and clear ranges
+    Doing step 35:  Updating bank read clear ranges
+    Doing step 36:  Updating align file clear ranges
+    Doing step 37
+    Doing step 40:  Running layout
+    Doing step 50:  Running consensus
+    Doing step 60:  Outputting contigs 
+    Doing step 70:  Outputting contig fasta
+    Doing step 80:  Outputting scaff
+    Doing step 90:  Outputting scaff fasta
+    
+    real    23m18.921s
+    user    9m48.441s
+    sys     5m22.087s
+
+
+CHECKED LOG FILE, ALL OKAY:
+
+emacs run2-lane6-paired.runAmos.log
+
+OK
+
+CHECKED FILES IN .bnk DIRECTORY:
+
+ll run2-lane6-paired.bnk
+    total 1.1G
+    drwxr-xr-x 2 syoung users 4.0K Sep 17 16:04 .
+    drwxr-xr-x 4 syoung users 4.0K Sep 17 16:06 ..
+    -rw-r--r-- 1 syoung users   22 Sep 17 16:04 CTG.0.fix
+    -rw-r--r-- 1 syoung users 4.9M Sep 17 16:04 CTG.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 17 16:04 CTG.ifo
+    -rw-r--r-- 1 syoung users   42 Sep 17 16:04 CTG.map
+    -rw-r--r-- 1 syoung users  38M Sep 17 15:42 FRG.0.fix
+    -rw-r--r-- 1 syoung users 977K Sep 17 15:42 FRG.0.var
+    -rw-r--r-- 1 syoung users  38M Sep 17 15:43 FRG.1.fix
+    -rw-r--r-- 1 syoung users 977K Sep 17 15:43 FRG.1.var
+    -rw-r--r-- 1 syoung users  38M Sep 17 15:43 FRG.2.fix
+    -rw-r--r-- 1 syoung users 977K Sep 17 15:43 FRG.2.var
+    -rw-r--r-- 1 syoung users  38M Sep 17 15:44 FRG.3.fix
+    -rw-r--r-- 1 syoung users 977K Sep 17 15:44 FRG.3.var
+    -rw-r--r-- 1 syoung users  19M Sep 17 15:45 FRG.4.fix
+    -rw-r--r-- 1 syoung users 475K Sep 17 15:45 FRG.4.var
+    -rw-r--r-- 1 syoung users  173 Sep 17 16:03 FRG.ifo
+    -rw-r--r-- 1 syoung users 105M Sep 17 15:51 FRG.map
+    -rw-r--r-- 1 syoung users   18 Sep 17 16:03 LAY.0.fix
+    -rw-r--r-- 1 syoung users 4.8M Sep 17 16:03 LAY.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 17 16:04 LAY.ifo
+    -rw-r--r-- 1 syoung users   42 Sep 17 16:04 LAY.map
+    -rw-r--r-- 1 syoung users   14 Sep 17 15:41 LIB.0.fix
+    -rw-r--r-- 1 syoung users    9 Sep 17 15:41 LIB.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 17 16:03 LIB.ifo
+    -rw-r--r-- 1 syoung users   24 Sep 17 15:50 LIB.map
+    -rw-r--r-- 1 syoung users  53M Sep 17 16:02 RED.0.fix
+    -rw-r--r-- 1 syoung users  27M Sep 17 16:02 RED.0.var
+    -rw-r--r-- 1 syoung users  53M Sep 17 16:02 RED.1.fix
+    -rw-r--r-- 1 syoung users  27M Sep 17 16:02 RED.1.var
+    -rw-r--r-- 1 syoung users  53M Sep 17 16:02 RED.2.fix
+    -rw-r--r-- 1 syoung users  27M Sep 17 16:02 RED.2.var
+    -rw-r--r-- 1 syoung users  53M Sep 17 16:02 RED.3.fix
+    -rw-r--r-- 1 syoung users  27M Sep 17 16:02 RED.3.var
+    -rw-r--r-- 1 syoung users  26M Sep 17 16:02 RED.4.fix
+    -rw-r--r-- 1 syoung users  13M Sep 17 16:02 RED.4.var
+    -rw-r--r-- 1 syoung users  173 Sep 17 16:04 RED.ifo
+    -rw-r--r-- 1 syoung users 394M Sep 17 16:02 RED.map
+    -rw-r--r-- 1 syoung users   22 Sep 17 16:03 SCF.0.fix
+    -rw-r--r-- 1 syoung users   21 Sep 17 16:03 SCF.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 17 16:04 SCF.ifo
+    -rw-r--r-- 1 syoung users   40 Sep 17 16:03 SCF.map
+    -rw-r--r-- 1 syoung users   14 Sep 17 15:41 UNV.0.fix
+    -rw-r--r-- 1 syoung users   78 Sep 17 15:41 UNV.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 17 15:50 UNV.ifo
+    -rw-r--r-- 1 syoung users   14 Sep 17 15:50 UNV.map
+
+
+7. FEATURE: COUNT K-MERS
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+time count-kmers -r run2-lane6-paired.bnk > run2-lane6-paired.22mers
+
+    Processing reads in run2-lane6-paired.bnk...
+    4486016 sequences processed, 121086389 bp scanned
+    WARNING: Input had 398748 non-DNA (ACGT) characters
+    21502721 total distinct mers
+    21502721 mers occur at least 1 times
+    Skipped 0
+    
+    real    2m19.839s
+    user    1m59.792s
+    sys     0m19.875s
+
+
+THE OUTPUT FILES AMOUNT TO 2.8 GB:
+
+    ll    
+    total 2.8G
+    drwxr-xr-x 4 syoung users 4.0K Sep 17 16:11 .
+    drwxr-xr-x 6 syoung users 4.0K Sep 17 15:39 ..
+    -rw-rw-rw- 1 syoung users 226M Sep 12 01:01 run2-lane6-1.fasta
+    -rw-rw-rw- 1 syoung users 335M Sep 12 01:01 run2-lane6-1.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-1.txt
+    -rw-rw-rw- 1 syoung users 226M Sep 12 00:53 run2-lane6-2.fasta
+    -rw-rw-rw- 1 syoung users 338M Sep 12 00:53 run2-lane6-2.fasta.qual
+    -rwxr-xr-x 1 syoung users 456M Sep 11 18:25 run2-lane6-2.txt
+    -rw-r--r-- 1 syoung users   22 Sep 17 15:15 run2-lane6.mates
+    -rw-r--r-- 1 syoung users    0 Sep 17 15:54 run2-lane6-paired.0cvg
+    -rw-r--r-- 1 syoung users  17K Sep 11 18:27 run2-lane6-paired.1con
+    -rw-r--r-- 1 syoung users 534M Sep 17 16:10 run2-lane6-paired.22mers
+    -rw-r--r-- 1 syoung users 1.1G Sep 17 15:25 run2-lane6-paired.afg
+    drwxr-xr-x 2 syoung users 4.0K Sep 17 16:10 run2-lane6-paired.bnk
+    -rw-r--r-- 1 syoung users 3.1M Sep 17 15:54 run2-lane6-paired.clr
+    -rw-r--r-- 1 syoung users  23M Sep 17 15:54 run2-lane6-paired.cluster
+    -rw-r--r-- 1 syoung users   31 Sep 17 16:03 run2-lane6-paired.conflict
+    -rw-r--r-- 1 syoung users  40M Sep 17 16:04 run2-lane6-paired.contig
+    -rw-r--r-- 1 syoung users  18M Sep 17 16:02 run2-lane6-paired.delta
+    -rw-r--r-- 1 syoung users 8.1K Sep 17 16:04 run2-lane6-paired.exclude.seqs
+    -rw-r--r-- 1 syoung users  17K Sep 17 16:04 run2-lane6-paired.fasta
+    -rw-r--r-- 1 syoung users 6.5M Sep 17 16:03 run2-lane6-paired.layout
+    -rw-r--r-- 1 syoung users 6.1K Sep 17 16:04 run2-lane6-paired.runAmos.log
+    -rw-r--r-- 1 syoung users   88 Sep 17 16:04 run2-lane6-paired.scaff
+    -rw-r--r-- 1 syoung users  17K Sep 17 16:04 run2-lane6-paired.scaffold.fasta
+    -rw-r--r-- 1 syoung users 158M Sep 17 15:53 run2-lane6-paired.seq
+
+    
+
+
+MAKE BACKUP .bnk DIRECTORY
+
+cp -r run2-lane6-paired.bnk run2-lane6-paired.1.kmer.bnk
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+hawkeye run2-lane6-paired.bnk
+    
+    Opening run2-lane6-paired.bnk... [16.27s]                                      
+    Indexing Contigs   .......... [1.72s] 248925 reads in 1 contigs                
+    Indexing Scaffolds .......... [0.00s] 1 contigs in 1 scaffolds                 
+    Indexing Libraries .......... [0.00s] 1 libraries                              
+    Indexing Mates     .......... [8.58s] 0 mated reads in 4486016 fragments       
+    Indexing Reads     .......... [9.56s] 4486017 reads                            
+    Features not available                                                         
+    Initialize Display .......... [0.31s]                                          
+    Loading Contig 1... [0.20s] 248925 reads                                       
+    Total Load Time: [59.76s]                                                      
+    Mapping read tiling for 1 contigs... done. [0.34s]                             
+    Loading mates ..................................................               
+    inserts: 248925 mated: 0 matelisted: 0 unmated: 248925 happy: 0 unhappy: 0     
+    Paint: coverage contigs features inserts                                       
+    width: 16604 swidth: 1037 height: 22394..                                      
+    Paint: coverage contigs features inserts                                       
+    width: 16604 swidth: 1037 height: 22394..                                      
+    Paint: coverage contigs features inserts                                       
+    width: 16604 swidth: 1037 height: 22381..                                      
+    Paint: coverage contigs features inserts                                       
+    width: 16604 swidth: 1037 height: 22381..                                      
+    Load Positions [0] (load from trace) load trace                                
+    Trace Not Found                                                                
+
+
+ERROR WHEN RUNNING hawkeye -K run2-lane6-short-paired.22mers run2-lane6-paired.bnk:
+    
+    [syoung@solexa01 data]$ hawkeye -K run2-lane6-short-paired.22mers run2-lane6-p
+    ired.bnk                                                                      
+    QSettings::sync: filename is null/empty                                       
+    QSettings::sync: filename is null/empty                                       
+    Loading mers... ERROR:  Could not open file  run2-lane6-short-paired.22mers   
+                                                                                  
+      in file  DataStore.cc  at line  877  errno = 2                              
+
+
+8. FEATURE: Analyzing mate-pairs 
+    
+(NB: added -feat: write contig features to bank)
+
+    asmQC -b run2-lane6-paired.bnk -scaff -feat -recompute -update -numsd 2
+
+    Will update libraries in bank
+    Will write features in bank
+    Mates within 2 standard deviations from mean considered good
+    Reporting regions with less than 0 good mate coverage
+    Will recompute library sizes
+    Libraries whose mean changes by less than 50
+    and whose std. dev. changes by less than 10 are considered to not have changed
+    Minimum number of observations required to change library size: 100
+    Reporting regions with more than 2 short mate coverage
+    Reporting regions with more than 2 long mate coverage
+    Reporting regions with more than 3 coverage by mates oriented the same way
+    Reporting regions with more than 3 coverage by outie mates
+    Reporting regions with more than 3 coverage by outie mates
+    Reporting regions with more than 3 coverage by linking mates
+    Reporting regions with more than 3 coverage by singleton mates
+    
+    
+    Reporting results by scaffold.  In this mode linking clones connect different scaffolds.
+    
+    
+    >Scaffold_1 16569 bases
+    >Scaffold_1 16569 bases
+    Regions of 0X clone coverage
+    0       16569
+    
+    real    0m51.798s
+    user    0m42.395s
+    sys     0m9.390s
+
+
+MAKE BACKUP .bnk DIRECTORY
+
+time cp -r run2-lane6-paired.bnk run2-lane6-paired.2.asmQC.bnk
+
+    real    0m7.091s
+    user    0m0.267s
+    sys     0m5.745s
+    
+
+    VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+hawkeye run2-lane6-paired.bnk
+
+
+9. DO amosvalidate (CREATE ADDITIONAL FEATURES FOR HAWKEYE)
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+time amosvalidate run2-lane6-paired
+
+    The log file is: run2-lane6-paired.runAmos.log
+    Doing step 100:  Creating FastA
+    Doing step 300:  Analyzing mate-pairs
+    Doing step 310
+    Doing step 320
+    Doing step 330
+    Doing step 340
+    Doing step 400:  Analyzing SNPs
+    Doing step 410
+    Doing step 420
+    Doing step 500:  Analyzing read coverage
+    Doing step 510
+    Doing step 600:  Align singleton reads
+    Doing step 610
+    Doing step 620
+    Doing step 700:  Analyzing singleton alignment breakpoints
+    Doing step 710
+    Command: /store/home/syoung/base/apps/amos/bin/bank-transact -b run2-lane6-paired.bnk -m run2-lane6-paired.break.fea exited with status: 1
+    
+    real    22m52.763s
+    user    16m23.386s
+    sys     2m44.672s
+
+
+## Creating FastA
+100: bank2fasta -b run2-lane6-paired.bnk > run2-lane6-paired.fasta
+
+## Analyzing mate-pairs
+300: asmQC -b run2-lane6-paired.bnk -scaff -recompute -update -numsd 2
+310: asmQC -b run2-lane6-paired.bnk -scaff -recompute -update -numsd 2
+320: asmQC -b run2-lane6-paired.bnk -scaff -feat -numsd 3 -shortcvg -1 -longcvg -1
+330: cestat-cov -i -f 4 run2-lane6-paired.bnk > run2-lane6-paired.ce.feat
+340: loadFeatures -i run2-lane6-paired.bnk run2-lane6-paired.ce.feat
+
+## Analyzing SNPs
+400: analyzeSNPs -i -b run2-lane6-paired.bnk -S -cumqv 40 -minsnps 2 -r -H > run2-lane6-paired.snps
+410: clusterSnps run2-lane6-paired.snps > run2-lane6-paired.snp.feat
+420: loadFeatures -i run2-lane6-paired.bnk run2-lane6-paired.snp.feat
+
+## Analyzing read coverage
+500: analyze-read-depth -i run2-lane6-paired.bnk -c 1000 -x 3 > run2-lane6-paired.depth.feat
+510: loadFeatures -i run2-lane6-paired.bnk run2-lane6-paired.depth.feat
+
+## Align singleton reads
+600: listReadPlacedStatus -S -E run2-lane6-paired.bnk > run2-lane6-paired.singletons
+610: dumpreads -E run2-lane6-paired.singletons run2-lane6-paired.bnk > run2-lane6-paired.singletons.seq
+620: $(NUCMER) --prefix=run2-lane6-paired run2-lane6-paired.fasta run2-lane6-paired.singletons.seq
+
+## Analyzing singleton alignment breakpoints
+700: casm-breaks -b run2-lane6-paired.bnk -t 100 -c 2 -F run2-lane6-paired.break.fea run2-lane6-paired.delta
+710: bank-transact -b run2-lane6-paired.bnk -m run2-lane6-paired.break.fea
+
+
+**** FAILED:
+
+        0%                                            100%
+    AFG ERROR: Invalid source format
+      could not parse 'FEA' message with iid:NULL, message ignored
+
+    head run2-lane6-paired.break.fea
+    
+    {FEA
+    typ:B
+    src:gi|115315570|ref|AC_000021.2|,CTG
+    com:60 (60,0) B <-[gi|115315570|ref|AC_000021.2|]- 8294
+    clr:8295,8294
+    }
+    {FEA
+    typ:B
+    src:gi|115315570|ref|AC_000021.2|,CTG
+    com:136 (136,0) B <-[gi|115315570|ref|AC_000021.2|]- 7169
+    …
+    (TOTAL 3320 FEATURE ENTRIES IN FILE)
+
+
+## Analyzing kmer-coverage
+800: time count-kmers -n run2-lane6-paired.bnk -m 22 > run2-lane6-paired.22.n22mers
+810: time kmer-cov -A -F -L 1000 run2-lane6-paired.22.n22mers < run2-lane6-paired.fasta > run2-lane6-paired.nkmer.feat
+820: time loadFeatures -u -i run2-lane6-paired.bnk run2-lane6-paired.nkmer.feat
+
+## Combine features
+1000: time dumpFeatures -i run2-lane6-paired.bnk | sort -k1 -nk3 > run2-lane6-paired.all.feat
+1010: time suspiciousfeat2region run2-lane6-paired.all.feat > run2-lane6-paired.suspicious.feat
+1020: time loadFeatures -i run2-lane6-paired.bnk run2-lane6-paired.suspicious.feat
+
+
+    FILES CREATED:
+
+    ll -t *paired.bnk
+    
+    total 1.1G
+    drwxr-xr-x 2 syoung users 4.0K Sep 18 01:51 .
+    -rw-r--r-- 1 syoung users  161 Sep 18 01:51 CTG.ifo
+    -rw-r--r-- 1 syoung users   42 Sep 18 01:51 CTG.map
+    -rw-r--r-- 1 syoung users  155 Sep 18 01:51 FEA.0.fix
+    -rw-r--r-- 1 syoung users  198 Sep 18 01:51 FEA.0.var
+    -rw-r--r-- 1 syoung users  161 Sep 18 01:51 FEA.ifo
+    -rw-r--r-- 1 syoung users    6 Sep 18 01:51 FEA.map
+    drwxr-xr-x 6 syoung users 4.0K Sep 18 01:51 ..
+    -rw-r--r-- 1 syoung users  161 Sep 18 01:51 SCF.ifo
+    -rw-r--r-- 1 syoung users  173 Sep 18 01:43 RED.ifo
+
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+hawkeye run2-lane6-paired.bnk
+
+
+
+PROBE REASON FOR FAILURE:
+=========================
+
+    0%                                            100%
+AFG ERROR: Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+
+
+casm-breaks <deltafile>
+
+Comparative assembly layout
+
+.OPTIONS.
+
+-b string     Bank for mate/read info and layout/scaffold output
+-c int        Number of concurring signatures required, default 3
+-f uint       Set the fuzzy equals tolerance for break positions,
+              default 3
+-F file       Output read paths to file as AMOS features
+-h            Display help information
+-i float      Set the minimum alignment identity, default 0
+-P file       Output read paths to file in wacky format
+-s uint       Set random generator seed to unsigned int, default
+              seed is generated by the system clock
+-t uint       Set maximum ignorable trim length, default 500
+
+
+bank-transact  [options]  -b <bank path> -m <message path>
+
+  Takes an AMOS bank directory and message file as input. Alters the
+  banks as directed by the message file. Messages without an act field
+  will, by default, be added to the bank. All object links must
+  reference IIDs. If an object has a non-unique ID, the user will be
+  warned and the object will be ignored. To retrieve information from
+  a bank in message format, please use the bank-report utility.
+
+.OPTIONS.
+  -b path       The directory path of the banks to open or create
+  -c            Create new bank directory if path does not exist
+  -f            Forcibly create new bank by destroying existing
+  -h            Display help information
+  -m path       The file path of the input message
+  -z            Compress sequence and quality values for SEQ and RED
+                (only allows [ACGTN] sequence and [0,63] quality)
+  -v            Display the compatible bank version
+
+
+
+
+cd /home/syoung/base/apps/amos/src/Bank
+
+emacs bank-transact.cc
+======================
+
+LINE 167:
+
+        bp = & (bnks [ncode]);
+        op = & (objs [ncode]);
+        if ( bp -> getStatus( ) )
+          return; // skip objects missing a bank
+
+        //-- Parse the message
+        try {
+          op -> readMessage (msg);
+        }
+      catch (const Exception_t & e) {
+          cerr << "ERROR: " << e . what( ) << endl
+               << "  could not parse '" << Decode (ncode)
+               << "' message with iid:"
+               << (msg . exists (F_IID) ? msg . getField (F_IID) : "NULL")
+               << ", message ignored" << endl;
+          exitcode = EXIT_FAILURE;
+
+WHICH GIVES THIS ERROR:
+
+    START DATE: Wed Sep 17 19:46:36 2008
+    Bank is: run2-lane6-paired.bnk
+        0%       d                                    100%
+    AFG ERROR: Invalid source format
+      could not parse 'FEA' message with iid:NULL, message ignored
+
+
+NOTE THAT casm-breaks HANDLES iid AS FOLLOWS:
+
+
+emacs /home/syoung/base/apps/amos/src/Casm/casm-breaks.cc
+=========================================================
+
+LINE 61:
+
+struct Placement_t
+//!< placement of a read on the reference
+{
+  ID_t iid;                           // iid of the read
+  const DeltaNode_t * read;           // read alignment info
+  const DeltaEdgelet_t * chain;       // head of the alignment chain
+  Placement_t * mate;                 // mated read's placement
+
+  Placement_t() { iid = NULL_ID; read = NULL; chain = NULL; mate = NULL; }
+};
+
+
+LINE 421:
+
+    //-- Read info
+      cerr << "  getting read info from bank\n";
+      try {
+        red_bank.open (OPT_BankName, B_READ);
+
+        //-- Check if alignment file uses IIDs or EIDs
+        bool isIID = true;
+        if ( ! graph.qrynodes.empty() )
+          {
+            ID_t tempid;
+            string tempstr (*(graph.qrynodes.begin()->second.id));
+            istringstream ss (tempstr);
+            ss >> tempid;
+            if ( ! ss || ! red_bank.existsIID (tempid) )
+              {
+                if ( red_bank.existsEID (tempstr) )
+                  isIID = false;
+                else
+                  AMOS_THROW ("Query IDs do not match the read bank");
+              }
+          }
+        if ( isIID )
+          cerr << "  looks like alignment uses IIDs\n";
+        else
+
+
+
+TEST ADDING iid ENTRIES TO *.fea FILE
+=====================================
+
+1. COPIED CHUNK OF *.fea FILE:
+
+    cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+    head -n 100 run2-lane6-paired.break.fea > test.fea
+
+2. ADDED iid:1, iid:2 ... iid:10 TO test.fea FILE
+
+    emacs test.fea
+    head test.fea
+
+    {FEA
+    typ:B
+    iid:1
+    src:gi|115315570|ref|AC_000021.2|,CTG
+    com:60 (60,0) B <-[gi|115315570|ref|AC_000021.2|]- 8294
+    clr:8295,8294
+    }
+    ...
+
+    FORMAT OF .fea FILE:
+    
+    http://amos.sourceforge.net/forensics/
+    
+    casm-breaks output file: asm.break.fea
+    The singleton reads are then aligned to the consensus sequences of the contigs and then analyzed for shared breakpoints. casm-breaks reports positions where there are multiple reads that all have the same breakpoint pattern. Unlike some of the other pipeline tools, casm-breaks writes an XML like message file:
+    
+    {FEA 	Feature message
+    typ:B 	Breakpoint feature
+    src:N,CTG 	The breakpoint occurs in contig N
+    com: <string> 	string linking all of the breakpoint features for a set of reads
+    clr:X,Y 	Range the contig where the read aligns
+    } 	End of feature
+
+
+3. COPIED .bnk DIRECTORY:
+
+cp -r run2-lane6-paired.bnk test.bnk
+
+
+4. RAN bank-transact
+
+    cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/data
+    bank-transact -b test.bnk -m test.fea
+
+(SEE MESSAGE TO MAILING LIST ABOVE)
+
+
+MANUAL
+======
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+
+
+## Analyzing kmer-coverage
+800: $(BINDIR)/count-kmers -n $(PREF).bnk -m 22 > $(PREF).22.n22mers
+810: $(BINDIR)/kmer-cov -A -F -L 1000 $(PREF).22.n22mers < $(PREF).fasta > $(PREF).nkmer.feat
+820: $(BINDIR)/loadFeatures -u -i $(PREF).bnk $(PREF).nkmer.feat
+
+
+#count-kmers -r run2-lane6-short-paired.bnk > run2-lane6-short-paired.22mers
+count-kmers -n run2-lane6-short-paired.bnk -m 22 > run2-lane6-short-paired.22mers
+
+    Processing reads in run2-lane6-short-paired.bnk...
+    Processing contigs in run2-lane6-short-paired.bnk...
+    Normalizing counts
+    50085 sequences processed, 1365558 bp scanned
+    WARNING: Input had 3472 non-DNA (ACGT) characters
+    282684 total distinct mers
+    0 mers occur at least 22 times
+    Skipped 282684
+
+#kmer-cov -A -F -L 1000 run2-lane6-short-paired.22.n22mers < run2-lane6-short-paired.fasta > run2-lane6-short-paired.nkmer.feat
+kmer-cov -A -F -L 1000 run2-lane6-short-paired.22mers < run2-lane6-short-paired.fasta > run2-lane6-short-paired.nkmer.feat
+
+    Repeat_Cutoff set to 90.00%
+    Unique_Cutoff set to 50.00%
+
+
+loadFeatures -u -i run2-lane6-short-paired.bnk run2-lane6-short-paired.nkmer.feat
+
+    Loading features from run2-lane6-short-paired.nkmer.feat into run2-lane6-short-paired.bnk
+    
+    Loaded 0 features
+
+
+
+## Combine features
+1000: $(BINDIR)/dumpFeatures -i $(PREF).bnk | sort -k1 -nk3 > $(PREF).all.feat
+1010: $(BINDIR)/suspiciousfeat2region $(PREF).all.feat > $(PREF).suspicious.feat
+1020: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).suspicious.feat
+
+
+dumpFeatures -i run2-lane6-short-paired.bnk | sort -k1 -nk3 > run2-lane6-short-paired.all.feat
+
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 03:23:41 2008
+    Printed 3 features
+
+suspiciousfeat2region run2-lane6-short-paired.all.feat > run2-lane6-short-paired.suspicious.feat
+
+loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.suspicious.feat
+
+    Loading features from run2-lane6-short-paired.suspicious.feat into run2-lane6-short-paired.bnk
+    ...
+    Loaded 3 features
+
+
+
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+hawkeye run2-lane6-short-paired.bnk
+    
+    QSettings::sync: filename is null/empty                                      
+    QSettings::sync: filename is null/empty                                      
+    Opening run2-lane6-short-paired.bnk... [0.14s]                               
+    Indexing Contigs   .......... [0.01s] 2677 reads in 85 contigs               
+    Indexing Scaffolds .......... [0.00s] 85 contigs in 1 scaffolds              
+    Indexing Libraries .......... [0.00s] 1 libraries                            
+    Indexing Mates     .......... [0.07s] 0 mated reads in 50000 fragments       
+    Indexing Reads     .......... [0.09s] 50001 reads                            
+    Initialize Display .......... [0.03s]                                        
+    Loading Contig 1... [0.00s] 14 reads                                         
+    Total Load Time: [0.40s]                                                     
+
+    
+</entry>
+
+
+
+<entry [Thu Sep 11 18:23:38 EDT 2008] TEST AMOS ASSEMBLY WITH 10,000 READS EACH FROM s_6_1_sequence.txt AND s_6_2_sequence.txt>
+
+
+
+SEE http://amos.sourceforge.net/forensics/
+SEE file:///C:/DATA/02-ng.assembly/amos/AMOScmp-short-reads-assembly-tutorial.html
+
+1. CREATE DIRECTORY AND COPY FILES
+
+    cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos
+    
+        [syoung@solexa01 run2-lane6-mtdna-amos]$ cp -pr test/ test-short
+        [syoung@solexa01 test]$ ll test-short
+        total 1.1G
+        drwxr-xr-x 3 syoung users 4.0K Sep 13 00:16 .
+        drwxr-xr-x 6 syoung users 4.0K Sep 12 22:49 ..
+        -rw-r--r-- 1 syoung users  17K Sep 12 22:41 human-mtDNA-AC_000021.fasta
+        -rw-r--r-- 1 syoung users  31M Sep 12 22:41 outfile.tmp
+        -rw-r--r-- 1 syoung users    0 Sep 12 22:41 run2-lane6.0cvg
+        -rw-r--r-- 1 syoung users  17K Sep 12 22:42 run2-lane6.1con
+        -rw-r--r-- 1 syoung users 814M Sep 12 22:42 run2-lane6.afg
+        drwxr-xr-x 2 syoung users 4.0K Sep 12 23:36 run2-lane6.bnk
+        -rw-r--r-- 1 syoung users 3.1M Sep 12 22:41 run2-lane6.clr
+        -rw-r--r-- 1 syoung users  23M Sep 12 22:41 run2-lane6.cluster
+        -rw-r--r-- 1 syoung users   31 Sep 12 23:36 run2-lane6.conflict
+        -rw-r--r-- 1 syoung users  40M Sep 12 22:41 run2-lane6.contig
+        -rw-r--r-- 1 syoung users  18M Sep 12 22:41 run2-lane6.delta
+        -rw-r--r-- 1 syoung users 8.2K Sep 12 22:41 run2-lane6.exclude.seqs
+        -rw-r--r-- 1 syoung users  17K Sep 12 22:42 run2-lane6.fasta
+        -rw-r--r-- 1 syoung users 6.5M Sep 12 23:36 run2-lane6.layout
+        -rw-r--r-- 1 syoung users   23 Sep 12 22:41 run2-lane6.mates
+        -rw-r--r-- 1 syoung users 9.9K Sep 12 22:41 run2-lane6.runAmos.log
+        -rw-r--r-- 1 syoung users   88 Sep 12 22:41 run2-lane6.scaff
+        -rw-r--r-- 1 syoung users 158M Sep 12 22:41 run2-lane6.seq
+        [syoung@solexa01 test]$ cd ..
+
+
+2. CHOP FILES TO 25,000 SEQUENCS AND CONVERT FASTQ FILES TO FASTA
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+chopfile s_6_1_sequence.txt run2-lan6-short-1.txt 100000
+chopfile s_6_2_sequence.txt run2-lane6-short-2.txt 100000
+
+fastq2fasta.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short/run2-lane6-short-1.txt -o run2-lane6-short-1
+fastq2fasta.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short/run2-lane6-short-2.txt -o run2-lane6-short-2
+
+OK
+
+
+3. SHUFFLE FASTA FILES AND MERGE INTO ONE .seq FILE
+
+/home/syoung/base/apps/velvet/shuffleSequences.pl run2-lane6-short-1.fasta run2-lane6-short-2.fasta run2-lane6-short-paired.seq
+
+head run2-lane6-short-paired.seq
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:340:969/1
+    AATCAGGAAAAGTAAATAACCACATAA
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:340:969/2
+    TAAAGCAACTTCCTTTATCTCTTAAGT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:302:970/1
+    TGGGAGTGTTGTAGAAGATAGTCAGTC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:302:970/2
+    ACTTCATCAAATACCAGGCTGTCTTGT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:6:1:490:940/1
+    CAGTAAGAGAGGTGAGAGTTCATCATT
+
+3. CREATE .mates FILE
+
+    emacs run2-lane6-short.mates
+    
+    >>>
+    pair	(.*)\/1$	(.*)\/2$
+    <<<
+
+
+4. CHANGE REFERENCE SEQUENCE FILE NAME
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+mv human-mtDNA-AC_000021.fasta run2-lane6-short-paired.1con
+
+
+5. CONVERT FASTA FILE TO AMOS MESSAGE FILE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+time toAmos -map run2-lane6-short.mates -s run2-lane6-short-paired.seq -o run2-lane6-short-paired.afg
+
+    Max ID: 150003
+    
+    real    0m4.841s
+    user    0m4.658s
+    sys     0m0.182s
+    
+NO toAmos.error FILE!!
+
+[syoung@solexa01 test-short]$ ll
+    total 976724
+    -rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-1.fasta
+    -rw-rw-rw- 1 syoung users   3831063 Sep 13 00:46 run2-lane6-short-1.fasta.qual
+    -rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-1.txt
+    -rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-2.fasta
+    -rw-rw-rw- 1 syoung users   3888623 Sep 13 00:46 run2-lane6-short-2.fasta.qual
+    -rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-2.txt
+    -rw-r--r-- 1 syoung users        23 Sep 13 00:48 run2-lane6-short.mates
+    -rw-r--r-- 1 syoung users     16880 Sep 13 00:52 run2-lane6-short-paired.1con
+    -rw-r--r-- 1 syoung users  11532456 Sep 13 01:15 run2-lane6-short-paired.afg
+    -rw-r--r-- 1 syoung users   5193412 Sep 13 00:47 run2-lane6-short-paired.seq
+    -rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_1_sequence.txt
+    -rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_2_sequence.txt
+    -rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.ctg
+    -rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.scf
+    -rw-r--r-- 1 syoung users   3338894 Sep 13 01:15 tmp.22795.seq
+
+
+6. RUN ALIGNMENT
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+time AMOScmp-shortReads-alignmentTrimmed run2-lane6-short-paired
+    
+    The log file is: run2-lane6-short-paired.runAmos.log
+    Doing step 10:  Building AMOS bank
+    Doing step 20:  Collecting clear range sequences
+    Doing step 30:  Running nucmer on all reads
+    Doing step 31:  Filter align file
+    Doing step 32
+    Doing step 33:  Getting zero coverage regions
+    Doing step 34:  Getting aligned read iid's and clear ranges
+    Doing step 35:  Updating bank read clear ranges
+    Doing step 36:  Updating align file clear ranges
+    Doing step 37
+    Doing step 40:  Running layout
+    Doing step 50:  Running consensus
+    Doing step 60:  Outputting contigs 
+    Doing step 70:  Outputting contig fasta
+    Doing step 80:  Outputting scaff
+    Doing step 90:  Outputting scaff fasta
+    
+    real    0m10.074s
+    user    0m6.604s
+    sys     0m3.495s
+
+
+
+CHECKED LOG FILE, ALL OKAY:
+
+emacs run2-lane6-short-paired.runAmos.log
+
+
+    !!! 2008-09-13 01:17:41  Started by syoung@solexa01 on Sat Sep 13 01:17:41 2008
+    
+    !!! 2008-09-13 01:17:41  Doing step 10:  Building AMOS bank
+    !!! 2008-09-13 01:17:41  Running: /store/home/syoung/base/apps/amos/bin/bank-transact -c -z -b run2-lane6-short-paired.bnk -m run2-lane6-short-paired.afg
+    START DATE: Sat Sep 13 01:17:41 2008
+    Bank is: run2-lane6-short-paired.bnk
+        0%                                            100%
+    AFG ..................................................
+    Messages read: 100002
+    Objects added: 100002
+    Objects deleted: 0
+    Objects replaced: 0
+    END DATE:   Sat Sep 13 01:17:45 2008
+    !!! 2008-09-13 01:17:45  Done! Elapsed time:0d 0h 0m 4s
+    
+    !!! 2008-09-13 01:17:45  Doing step 20:  Collecting clear range sequences
+    !!! 2008-09-13 01:17:45  Running: /store/home/syoung/base/apps/amos/bin/dumpreads run2-lane6-short-paired.bnk > run2-lane6-short-paired.seq
+    Objects seen: 50000
+    Objects written: 50000
+    !!! 2008-09-13 01:17:46  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:46  Doing step 30:  Running nucmer on all reads
+    !!! 2008-09-13 01:17:46  Running: /store/home/syoung/base/apps/mummer/nucmer --maxmatch --prefix=run2-lane6-short-paired -l 16 -c 16 run2-lane6-short-paired.1con run2-lane6-short-paired.seq
+    1: PREPARING DATA
+    2,3: RUNNING mummer AND CREATING CLUSTERS
+    # reading input file "run2-lane6-short-paired.ntref" of length 16570
+    # construct suffix tree for sequence of length 16570
+    # (maximum input length is 536870908)
+    # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer run2-lane6-short-paired.ntref 0.00
+    # reading input file "/store/home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short/run2-lane6-short-paired.seq" of length 1399999
+    # matching query-file "/store/home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short/run2-lane6-short-paired.seq"
+    # against subject-file "run2-lane6-short-paired.ntref"
+    # COMPLETETIME /store/home/syoung/base/apps/mummer/mummer run2-lane6-short-paired.ntref 0.37
+    # SPACE /store/home/syoung/base/apps/mummer/mummer run2-lane6-short-paired.ntref 1.67
+    4: FINISHING DATA
+    !!! 2008-09-13 01:17:47  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:47  Doing step 31:  Filter align file
+    !!! 2008-09-13 01:17:47  Running: /store/home/syoung/base/apps/mummer/delta-filter -l 24 run2-lane6-short-paired.delta > run2-lane6-short-paired.delta.tmp
+    !!! 2008-09-13 01:17:47  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:47  Doing step 32
+    !!! 2008-09-13 01:17:47  Running: mv run2-lane6-short-paired.delta.tmp run2-lane6-short-paired.delta
+    !!! 2008-09-13 01:17:47  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:47  Doing step 33:  Getting zero coverage regions
+    !!! 2008-09-13 01:17:47  Running: /store/home/syoung/base/apps/amos/bin/delta2cvg -M 0 < run2-lane6-short-paired.delta > run2-lane6-short-paired.0cvg
+    !!! 2008-09-13 01:17:48  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:48  Doing step 34:  Getting aligned read iid's and clear ranges
+    !!! 2008-09-13 01:17:48  Running: /store/home/syoung/base/apps/amos/bin/delta2clr -zero_cvg run2-lane6-short-paired.0cvg  < run2-lane6-short-paired.delta > run2-lane6-short-paired.clr
+    !!! 2008-09-13 01:17:48  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:48  Doing step 35:  Updating bank read clear ranges
+    !!! 2008-09-13 01:17:48  Running: /store/home/syoung/base/apps/amos/bin/updateClrRanges -i run2-lane6-short-paired.bnk run2-lane6-short-paired.clr
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 01:17:48 2008
+    Loaded 2727 records.
+    Cleaning Bank
+    End: Sat Sep 13 01:17:49 2008
+    !!! 2008-09-13 01:17:49  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:49  Doing step 36:  Updating align file clear ranges
+    !!! 2008-09-13 01:17:49  Running: /store/home/syoung/base/apps/amos/bin/updateDeltaClr run2-lane6-short-paired.delta run2-lane6-short-paired.clr > run2-lane6-short-paired.delta.tmp
+    !!! 2008-09-13 01:17:49  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:49  Doing step 37
+    !!! 2008-09-13 01:17:49  Running: mv run2-lane6-short-paired.delta.tmp run2-lane6-short-paired.delta
+    !!! 2008-09-13 01:17:49  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:49  Doing step 40:  Running layout
+    !!! 2008-09-13 01:17:49  Running: /store/home/syoung/base/apps/amos/bin/casm-layout -r -t 10 -o 5 -m 50  -U run2-lane6-short-paired.layout -C run2-lane6-short-paired.conflict -b run2-lane6-short-paired.bnk run2-lane6-short-paired.delta
+    INPUT
+     reads
+     lis
+     mates
+    PLACEMENT
+    CONFLICT
+    ASSEMBLY
+    OUTPUT
+    !!! 2008-09-13 01:17:49  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:49  Doing step 50:  Running consensus
+    !!! 2008-09-13 01:17:49  Running: /store/home/syoung/base/apps/amos/bin/make-consensus -B -e 0.06 -b run2-lane6-short-paired.bnk -w 2 -x run2-lane6-short-paired.exclude.seqs
+    Starting on Sat Sep 13 01:17:49 2008
+    
+    Expelled reads listed in file run2-lane6-short-paired.exclude.seqs
+    Read bank is run2-lane6-short-paired.bnk
+    Alignment error rate is 0.06
+    Minimum overlap bases is 5
+    Output will be written to the bank
+    Input is being read from the bank 
+    In contig 9 forced alignment of 8 bases of string 31687 subscript 1 to 8 bases of consensus
+      with 1 errors (12.50% error)
+    In contig 19 forced alignment of 21 bases of string 23287 subscript 6 to 21 bases of consensus
+      with 10 errors (47.62% error)
+    In contig 19 forced alignment of 10 bases of string 21370 subscript 7 to 12 bases of consensus
+      with 5 errors (41.67% error)
+    In contig 22 forced alignment of 8 bases of string 40878 subscript 20 to 8 bases of consensus
+      with 1 errors (12.50% error)
+    In contig 23 forced alignment of 11 bases of string 35299 subscript 30 to 25 bases of consensus
+      with 15 errors (60.00% error)
+    In contig 24 forced alignment of 9 bases of string 32561 subscript 22 to 11 bases of consensus
+      with 3 errors (27.27% error)
+    In contig 25 forced alignment of 24 bases of string 47975 subscript 21 to 19 bases of consensus
+      with 13 errors (54.17% error)
+    In contig 30 forced alignment of 12 bases of string 13378 subscript 32 to 12 bases of consensus
+      with 1 errors (8.33% error)
+    In contig 41 forced alignment of 14 bases of string 35 subscript 4 to 16 bases of consensus
+      with 4 errors (25.00% error)
+    In contig 55 forced alignment of 18 bases of string 21863 subscript 32 to 18 bases of consensus
+      with 3 errors (16.67% error)
+    In contig 55 forced alignment of 13 bases of string 18041 subscript 33 to 14 bases of consensus
+      with 7 errors (50.00% error)
+    In contig 55 forced alignment of 18 bases of string 5857 subscript 34 to 20 bases of consensus
+      with 4 errors (20.00% error)
+    In contig 60 forced alignment of 24 bases of string 7631 subscript 52 to 24 bases of consensus
+      with 2 errors (8.33% error)
+    In contig 60 forced alignment of 15 bases of string 17074 subscript 58 to 15 bases of consensus
+      with 2 errors (13.33% error)
+    In contig 61 forced alignment of 24 bases of string 35043 subscript 48 to 24 bases of consensus
+      with 2 errors (8.33% error)
+    Processed 85 layouts
+    !!! 2008-09-13 01:17:50  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:50  Doing step 60:  Outputting contigs 
+    !!! 2008-09-13 01:17:50  Running: /store/home/syoung/base/apps/amos/bin/bank2contig run2-lane6-short-paired.bnk > run2-lane6-short-paired.contig
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 01:17:50 2008
+    End: Sat Sep 13 01:17:51 2008
+    !!! 2008-09-13 01:17:51  Done! Elapsed time:0d 0h 0m 1s
+    
+    !!! 2008-09-13 01:17:51  Doing step 70:  Outputting contig fasta
+    !!! 2008-09-13 01:17:51  Running: /store/home/syoung/base/apps/amos/bin/bank2fasta -e -b run2-lane6-short-paired.bnk > run2-lane6-short-paired.fasta
+    !!! 2008-09-13 01:17:51  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:51  Doing step 80:  Outputting scaff
+    !!! 2008-09-13 01:17:51  Running: /store/home/syoung/base/apps/amos/bin/bank2scaff run2-lane6-short-paired.bnk > run2-lane6-short-paired.scaff
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 01:17:51 2008
+    End: Sat Sep 13 01:17:51 2008
+    !!! 2008-09-13 01:17:51  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! 2008-09-13 01:17:51  Doing step 90:  Outputting scaff fasta
+    !!! 2008-09-13 01:17:51  Running: /store/home/syoung/base/apps/amos/bin/bank2scaff -g run2-lane6-short-paired.bnk > run2-lane6-short-paired.scaffold.fasta
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 01:17:51 2008
+    End: Sat Sep 13 01:17:51 2008
+    !!! 2008-09-13 01:17:51  Done! Elapsed time:0d 0h 0m 0s
+    
+    !!! END - Elapsed time: 0d 0h 0m 10s
+
+
+FRG.ifo FILE FOUND IN .bnk DIRECTORY:
+
+ll run2-lane6-short*bnk
+    total 11528
+    -rw-r--r-- 1 syoung users    1870 Sep 13 01:17 CTG.0.fix
+    -rw-r--r-- 1 syoung users   85901 Sep 13 01:17 CTG.0.var
+    -rw-r--r-- 1 syoung users     163 Sep 13 01:17 CTG.ifo
+    -rw-r--r-- 1 syoung users    3295 Sep 13 01:17 CTG.map
+    -rw-r--r-- 1 syoung users 1950000 Sep 13 01:17 FRG.0.fix
+    -rw-r--r-- 1 syoung users   50000 Sep 13 01:17 FRG.0.var
+    -rw-r--r-- 1 syoung users     169 Sep 13 01:17 FRG.ifo
+    -rw-r--r-- 1 syoung users  938906 Sep 13 01:17 FRG.map
+    -rw-r--r-- 1 syoung users    1530 Sep 13 01:17 LAY.0.fix
+    -rw-r--r-- 1 syoung users   54525 Sep 13 01:17 LAY.0.var
+    -rw-r--r-- 1 syoung users     163 Sep 13 01:17 LAY.ifo
+    -rw-r--r-- 1 syoung users    3295 Sep 13 01:17 LAY.map
+    -rw-r--r-- 1 syoung users      14 Sep 13 01:17 LIB.0.fix
+    -rw-r--r-- 1 syoung users       9 Sep 13 01:17 LIB.0.var
+    -rw-r--r-- 1 syoung users     161 Sep 13 01:17 LIB.ifo
+    -rw-r--r-- 1 syoung users      23 Sep 13 01:17 LIB.map
+    -rw-r--r-- 1 syoung users 2750000 Sep 13 01:17 RED.0.fix
+    -rw-r--r-- 1 syoung users 1400000 Sep 13 01:17 RED.0.var
+    -rw-r--r-- 1 syoung users     169 Sep 13 01:17 RED.ifo
+    -rw-r--r-- 1 syoung users 4321210 Sep 13 01:17 RED.map
+    -rw-r--r-- 1 syoung users      22 Sep 13 01:17 SCF.0.fix
+    -rw-r--r-- 1 syoung users    1701 Sep 13 01:17 SCF.0.var
+    -rw-r--r-- 1 syoung users     161 Sep 13 01:17 SCF.ifo
+    -rw-r--r-- 1 syoung users      40 Sep 13 01:17 SCF.map
+    -rw-r--r-- 1 syoung users      14 Sep 13 01:17 UNV.0.fix
+    -rw-r--r-- 1 syoung users      78 Sep 13 01:17 UNV.0.var
+    -rw-r--r-- 1 syoung users     161 Sep 13 01:17 UNV.ifo
+    -rw-r--r-- 1 syoung users      14 Sep 13 01:17 UNV.map
+
+
+7. FEATURE: COUNT K-MERS
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+count-kmers -r run2-lane6-short-paired.bnk > run2-lane6-short-paired.22mers
+
+    Processing reads in run2-lane6-short-paired.bnk...
+    50000 sequences processed, 1349455 bp scanned
+    WARNING: Input had 3472 non-DNA (ACGT) characters
+    282684 total distinct mers
+    282684 mers occur at least 1 times
+    Skipped 0
+
+ll
+[syoung@solexa01 test-short]$ ll
+total 981656
+-rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-1.fasta
+-rw-rw-rw- 1 syoung users   3831063 Sep 13 00:46 run2-lane6-short-1.fasta.qual
+-rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-1.txt
+-rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-2.fasta
+-rw-rw-rw- 1 syoung users   3888623 Sep 13 00:46 run2-lane6-short-2.fasta.qual
+-rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-2.txt
+-rw-r--r-- 1 syoung users        23 Sep 13 00:48 run2-lane6-short.mates
+-rw-r--r-- 1 syoung users      2683 Sep 13 01:17 run2-lane6-short-paired.0cvg
+-rw-r--r-- 1 syoung users     16880 Sep 13 00:52 run2-lane6-short-paired.1con
+-rw-r--r-- 1 syoung users   7349841 Sep 13 02:01 run2-lane6-short-paired.22mers
+-rw-r--r-- 1 syoung users  11532456 Sep 13 01:15 run2-lane6-short-paired.afg
+drwxr-xr-x 2 syoung users      4096 Sep 13 02:01 run2-lane6-short-paired.bnk
+-rw-r--r-- 1 syoung users     29358 Sep 13 01:17 run2-lane6-short-paired.clr
+-rw-r--r-- 1 syoung users    251412 Sep 13 01:17 run2-lane6-short-paired.cluster
+-rw-r--r-- 1 syoung users        31 Sep 13 01:17 run2-lane6-short-paired.conflict
+-rw-r--r-- 1 syoung users    443231 Sep 13 01:17 run2-lane6-short-paired.contig
+-rw-r--r-- 1 syoung users    189964 Sep 13 01:17 run2-lane6-short-paired.delta
+-rw-r--r-- 1 syoung users       711 Sep 13 01:17 run2-lane6-short-paired.exclude.seqs
+-rw-r--r-- 1 syoung users     19293 Sep 13 01:17 run2-lane6-short-paired.fasta
+-rw-r--r-- 1 syoung users     62628 Sep 13 01:17 run2-lane6-short-paired.layout
+-rw-r--r-- 1 syoung users      8377 Sep 13 01:17 run2-lane6-short-paired.runAmos.log
+-rw-r--r-- 1 syoung users      3614 Sep 13 01:17 run2-lane6-short-paired.scaff
+-rw-r--r-- 1 syoung users     24958 Sep 13 01:17 run2-lane6-short-paired.scaffold.fasta
+-rw-r--r-- 1 syoung users   1738894 Sep 13 01:17 run2-lane6-short-paired.seq
+-rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_1_sequence.txt
+-rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_2_sequence.txt
+-rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.ctg
+-rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.scf
+-rw-r--r-- 1 syoung users   3338894 Sep 13 01:15 tmp.22795.seq
+
+
+MAKE BACKUP .bnk DIRECTORY
+
+cp -r run2-lane6-short-paired.bnk run2-lane6-short-paired.1.kmer.bnk
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+hawkeye -K run2-lane6-short-paired.22mersrun2-lane6-short-paired.bnk
+
+
+8. FEATURE: Analyzing mate-pairs 
+    
+(NB: added -feat: write contig features to bank)
+
+/store/home/syoung/base/apps/amos/bin/asmQC -b run2-lane6-short-paired.bnk -scaff -feat -recompute -update -numsd 2
+
+    Invocation: /store/home/syoung/base/apps/amos/bin/asmQC -b run2-lane6-short-paired.bnk -scaff -feat -recompute -update -numsd 2 
+    
+    Will update libraries in bank
+    Will write features in bank
+    Mates within 2 standard deviations from mean considered good
+    Reporting regions with less than 0 good mate coverage
+    Will recompute library sizes
+    Libraries whose mean changes by less than 50
+    and whose std. dev. changes by less than 10 are considered to not have changed
+    Minimum number of observations required to change library size: 100
+    Reporting regions with more than 2 short mate coverage
+    Reporting regions with more than 2 long mate coverage
+    Reporting regions with more than 3 coverage by mates oriented the same way
+    Reporting regions with more than 3 coverage by outie mates
+    Reporting regions with more than 3 coverage by outie mates
+    Reporting regions with more than 3 coverage by linking mates
+    Reporting regions with more than 3 coverage by singleton mates
+    
+    
+    Reporting results by scaffold.  In this mode linking clones connect different scaffolds.
+    
+    
+    >Scaffold_1 16569 bases
+    >Scaffold_1 16569 bases
+    Regions of 0X clone coverage
+    0       16569
+    
+
+
+MAKE BACKUP .bnk DIRECTORY
+
+cp -r run2-lane6-short-paired.bnk run2-lane6-short-paired.2.asmQC.bnk
+
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+hawkeye -K run2-lane6-short-paired.22mers run2-lane6-short-paired.bnk
+
+
+
+9. FEATURE: DO MULTIPLE CHECKS
+
+amosvalidate 
+
+## Creating FastA
+100: $(BINDIR)/bank2fasta -b $(PREF).bnk > $(PREF).fasta
+
+## Analyzing mate-pairs
+300: $(BINDIR)/asmQC -b $(PREF).bnk -scaff -recompute -update -numsd 2
+310: $(BINDIR)/asmQC -b $(PREF).bnk -scaff -recompute -update -numsd 2
+320: $(BINDIR)/asmQC -b $(PREF).bnk -scaff -feat -numsd 3 -shortcvg -1 -longcvg -1
+330: $(BINDIR)/cestat-cov -i -f 4 $(PREF).bnk > $(PREF).ce.feat
+340: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).ce.feat
+
+## Analyzing SNPs
+400: $(BINDIR)/analyzeSNPs -i -b $(PREF).bnk -S -cumqv 40 -minsnps 2 -r -H > $(PREF).snps
+410: $(BINDIR)/clusterSnps $(PREF).snps > $(PREF).snp.feat
+420: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).snp.feat
+
+## Analyzing read coverage
+500: $(BINDIR)/analyze-read-depth -i $(PREF).bnk -c 1000 -x 3 > $(PREF).depth.feat
+510: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).depth.feat
+
+## Align singleton reads
+600: $(BINDIR)/listReadPlacedStatus -S -E $(PREF).bnk > $(PREF).singletons
+610: $(BINDIR)/dumpreads -E $(PREF).singletons $(PREF).bnk > $(PREF).singletons.seq
+620: $(NUCMER) --prefix=$(PREF) $(PREF).fasta $(PREF).singletons.seq
+
+## Analyzing singleton alignment breakpoints
+700: $(BINDIR)/casm-breaks -b $(PREF).bnk -t 100 -c 2 -F $(PREF).break.fea $(PREF).delta
+710: $(BINDIR)/bank-transact -b $(PREF).bnk -m $(PREF).break.fea
+
+## Analyzing kmer-coverage
+800: $(BINDIR)/count-kmers -n $(PREF).bnk -m 22 > $(PREF).22.n22mers
+810: $(BINDIR)/kmer-cov -A -F -L 1000 $(PREF).22.n22mers < $(PREF).fasta > $(PREF).nkmer.feat
+820: $(BINDIR)/loadFeatures -u -i $(PREF).bnk $(PREF).nkmer.feat
+
+## Combine features
+1000: $(BINDIR)/dumpFeatures -i $(PREF).bnk | sort -k1 -nk3 > $(PREF).all.feat
+1010: $(BINDIR)/suspiciousfeat2region $(PREF).all.feat > $(PREF).suspicious.feat
+1020: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).suspicious.feat
+
+
+bank2fasta      fasta file
+
+asmQC           mate pairs
+/store/home/syoung/base/apps/amos/bin/asmQC -b run2-lane6-short-paired.bnk -scaff -recompute -update -numsd 2
+
+cestat-cov      CE value
+/store/home/syoung/base/apps/amos/bin/cestat-cov -i -f 4 run2-lane6-short-paired.bnk > run2-lane6-short-paired.ce.feat
+
+loadFeatures
+/store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.ce.feat
+
+analyseSNPs     SNPs
+/store/home/syoung/base/apps/amos/bin/analyzeSNPs -i -b run2-lane6-short-paired.bnk -S -cumqv 40 -minsnps 2 -r -H > run2-lane6-short-paired.snps
+
+/store/home/syoung/base/apps/amos/bin/clusterSnps run2-lane6-short-paired.snps > run2-lane6-short-paired.snp.feat
+
+/store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.snp.feat
+
+read depth
+/store/home/syoung/base/apps/amos/bin/analyze-read-depth -i run2-lane6-short-paired.bnk -c 1000 -x 3 > run2-lane6-short-paired.depth.feat
+
+/store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.depth.feat
+
+
+listReadPlacedStatus
+/store/home/syoung/base/apps/amos/bin/listReadPlacedStatus -S -E run2-lane6-short-paired.bnk > run2-lane6-short-paired.singletons
+
+dumpreads
+/store/home/syoung/base/apps/amos/bin/dumpreads -E run2-lane6-short-paired.singletons run2-lane6-short-paired.bnk > run2-lane6-short-paired.singletons.seq
+
+casm-breaks
+/store/home/syoung/base/apps/amos/bin/casm-breaks -b run2-lane6-short-paired.bnk -t 100 -c 2 -F run2-lane6-short-paired.break.fea run2-lane6-short-paired.delta
+
+**** FAILED
+
+bank
+/store/home/syoung/base/apps/amos/bin/bank-transact -b run2-lane6-short-paired.bnk -m run2-lane6-short-paired.break.fea
+
+
+MANUAL
+======
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+
+
+## Analyzing kmer-coverage
+800: $(BINDIR)/count-kmers -n $(PREF).bnk -m 22 > $(PREF).22.n22mers
+810: $(BINDIR)/kmer-cov -A -F -L 1000 $(PREF).22.n22mers < $(PREF).fasta > $(PREF).nkmer.feat
+820: $(BINDIR)/loadFeatures -u -i $(PREF).bnk $(PREF).nkmer.feat
+
+
+#count-kmers -r run2-lane6-short-paired.bnk > run2-lane6-short-paired.22mers
+count-kmers -n run2-lane6-short-paired.bnk -m 22 > run2-lane6-short-paired.22mers
+
+    Processing reads in run2-lane6-short-paired.bnk...
+    Processing contigs in run2-lane6-short-paired.bnk...
+    Normalizing counts
+    50085 sequences processed, 1365558 bp scanned
+    WARNING: Input had 3472 non-DNA (ACGT) characters
+    282684 total distinct mers
+    0 mers occur at least 22 times
+    Skipped 282684
+
+#kmer-cov -A -F -L 1000 run2-lane6-short-paired.22.n22mers < run2-lane6-short-paired.fasta > run2-lane6-short-paired.nkmer.feat
+kmer-cov -A -F -L 1000 run2-lane6-short-paired.22mers < run2-lane6-short-paired.fasta > run2-lane6-short-paired.nkmer.feat
+
+    Repeat_Cutoff set to 90.00%
+    Unique_Cutoff set to 50.00%
+
+
+loadFeatures -u -i run2-lane6-short-paired.bnk run2-lane6-short-paired.nkmer.feat
+
+    Loading features from run2-lane6-short-paired.nkmer.feat into run2-lane6-short-paired.bnk
+    
+    Loaded 0 features
+
+
+
+## Combine features
+1000: $(BINDIR)/dumpFeatures -i $(PREF).bnk | sort -k1 -nk3 > $(PREF).all.feat
+1010: $(BINDIR)/suspiciousfeat2region $(PREF).all.feat > $(PREF).suspicious.feat
+1020: $(BINDIR)/loadFeatures -i $(PREF).bnk $(PREF).suspicious.feat
+
+
+dumpFeatures -i run2-lane6-short-paired.bnk | sort -k1 -nk3 > run2-lane6-short-paired.all.feat
+
+    Processing run2-lane6-short-paired.bnk at Sat Sep 13 03:23:41 2008
+    Printed 3 features
+
+suspiciousfeat2region run2-lane6-short-paired.all.feat > run2-lane6-short-paired.suspicious.feat
+
+loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.suspicious.feat
+
+    Loading features from run2-lane6-short-paired.suspicious.feat into run2-lane6-short-paired.bnk
+    ...
+    Loaded 3 features
+
+
+
+
+VIEW WITH HAWKEYE
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+hawkeye run2-lane6-short-paired.bnk
+    
+    QSettings::sync: filename is null/empty                                      
+    QSettings::sync: filename is null/empty                                      
+    Opening run2-lane6-short-paired.bnk... [0.14s]                               
+    Indexing Contigs   .......... [0.01s] 2677 reads in 85 contigs               
+    Indexing Scaffolds .......... [0.00s] 85 contigs in 1 scaffolds              
+    Indexing Libraries .......... [0.00s] 1 libraries                            
+    Indexing Mates     .......... [0.07s] 0 mated reads in 50000 fragments       
+    Indexing Reads     .......... [0.09s] 50001 reads                            
+    Initialize Display .......... [0.03s]                                        
+    Loading Contig 1... [0.00s] 14 reads                                         
+    Total Load Time: [0.40s]                                                     
+
+
+
+
+
+
+AFTER:
+
+[syoung@solexa01 test-short]$ ll -t
+total 957M
+drwxr-xr-x 2 syoung users 4.0K Sep 13 03:26 run2-lane6-short-paired.bnk
+drwxr-xr-x 6 syoung users 4.0K Sep 13 03:23 .
+-rw-r--r-- 1 syoung users  410 Sep 13 03:23 run2-lane6-short-paired.suspicious.feat
+-rw-r--r-- 1 syoung users 5.0K Sep 13 03:23 run2-lane6-short-paired.all.feat
+-rw-r--r-- 1 syoung users    0 Sep 13 03:21 run2-lane6-short-paired.22mers
+-rw-r--r-- 1 syoung users    0 Sep 13 03:20 run2-lane6-short-paired.nkmer.feat
+-rw-r--r-- 1 syoung users  82K Sep 13 02:42 run2-lane6-short-paired.break.fea
+-rw-r--r-- 1 syoung users  80K Sep 13 02:42 run2-lane6-short-paired.runAmos.log
+-rw-r--r-- 1 syoung users 1.6M Sep 13 02:42 run2-lane6-short-paired.singletons.seq
+-rw-r--r-- 1 syoung users 3.4M Sep 13 02:42 run2-lane6-short-paired.singletons
+-rw-r--r-- 1 syoung users    0 Sep 13 02:42 run2-lane6-short-paired.ce.feat
+-rw-r--r-- 1 syoung users  104 Sep 13 02:42 run2-lane6-short-paired.depth.feat
+-rw-r--r-- 1 syoung users    0 Sep 13 02:42 run2-lane6-short-paired.snp.feat
+-rw-r--r-- 1 syoung users  218 Sep 13 02:42 run2-lane6-short-paired.snps
+-rw-r--r-- 1 syoung users  17K Sep 13 02:42 run2-lane6-short-paired.fasta
+drwxr-xr-x 2 syoung users 4.0K Sep 13 02:15 run2-lane6-short-paired.2.asmQC.bnk
+drwxr-xr-x 2 syoung users 4.0K Sep 13 02:13 run2-lane6-short-paired.1.kmer.bnk
+drwxr-xr-x 2 syoung users 4.0K Sep 13 02:12 run2-lane6-short-paired.kmer.bnk
+-rw-r--r-- 1 syoung users 433K Sep 13 01:17 run2-lane6-short-paired.contig
+-rw-r--r-- 1 syoung users 3.6K Sep 13 01:17 run2-lane6-short-paired.scaff
+-rw-r--r-- 1 syoung users  25K Sep 13 01:17 run2-lane6-short-paired.scaffold.fasta
+-rw-r--r-- 1 syoung users  711 Sep 13 01:17 run2-lane6-short-paired.exclude.seqs
+-rw-r--r-- 1 syoung users   31 Sep 13 01:17 run2-lane6-short-paired.conflict
+-rw-r--r-- 1 syoung users 186K Sep 13 01:17 run2-lane6-short-paired.delta
+-rw-r--r-- 1 syoung users  62K Sep 13 01:17 run2-lane6-short-paired.layout
+-rw-r--r-- 1 syoung users 2.7K Sep 13 01:17 run2-lane6-short-paired.0cvg
+-rw-r--r-- 1 syoung users  29K Sep 13 01:17 run2-lane6-short-paired.clr
+-rw-r--r-- 1 syoung users 246K Sep 13 01:17 run2-lane6-short-paired.cluster
+-rw-r--r-- 1 syoung users 1.7M Sep 13 01:17 run2-lane6-short-paired.seq
+-rw-r--r-- 1 syoung users  11M Sep 13 01:15 run2-lane6-short-paired.afg
+-rw-r--r-- 1 syoung users 3.2M Sep 13 01:15 tmp.22795.seq
+-rw-r--r-- 1 syoung users    0 Sep 13 01:15 tmp.22795.ctg
+-rw-r--r-- 1 syoung users    0 Sep 13 01:15 tmp.22795.scf
+-rw-r--r-- 1 syoung users  17K Sep 13 00:52 run2-lane6-short-paired.1con
+-rw-r--r-- 1 syoung users   23 Sep 13 00:48 run2-lane6-short.mates
+-rw-rw-rw- 1 syoung users 2.5M Sep 13 00:46 run2-lane6-short-2.fasta
+-rw-rw-rw- 1 syoung users 3.8M Sep 13 00:46 run2-lane6-short-2.fasta.qual
+-rw-rw-rw- 1 syoung users 2.5M Sep 13 00:46 run2-lane6-short-1.fasta
+-rw-rw-rw- 1 syoung users 3.7M Sep 13 00:46 run2-lane6-short-1.fasta.qual
+-rw-r--r-- 1 syoung users 5.1M Sep 13 00:23 run2-lane6-short-2.txt
+-rw-r--r-- 1 syoung users 5.1M Sep 13 00:23 run2-lane6-short-1.txt
+-rwxr-xr-x 1 syoung users 456M Sep 13 00:23 s_6_2_sequence.txt
+-rwxr-xr-x 1 syoung users 456M Sep 13 00:23 s_6_1_sequence.txt
+drwxr-xr-x 7 syoung users 4.0K Sep 13 00:17 ..
+
+
+BEFORE:
+
+
+[syoung@solexa01 test-short]$ ll -t
+total 986952
+drwxr-xr-x 2 syoung users      4096 Sep 13 02:42 run2-lane6-short-paired.bnk
+-rw-r--r-- 1 syoung users     83301 Sep 13 02:42 run2-lane6-short-paired.break.fea
+-rw-r--r-- 1 syoung users     81775 Sep 13 02:42 run2-lane6-short-paired.runAmos.log
+-rw-r--r-- 1 syoung users   1645807 Sep 13 02:42 run2-lane6-short-paired.singletons.seq
+-rw-r--r-- 1 syoung users   3542962 Sep 13 02:42 run2-lane6-short-paired.singletons
+-rw-r--r-- 1 syoung users         0 Sep 13 02:42 run2-lane6-short-paired.ce.feat
+-rw-r--r-- 1 syoung users       104 Sep 13 02:42 run2-lane6-short-paired.depth.feat
+-rw-r--r-- 1 syoung users         0 Sep 13 02:42 run2-lane6-short-paired.snp.feat
+-rw-r--r-- 1 syoung users       218 Sep 13 02:42 run2-lane6-short-paired.snps
+-rw-r--r-- 1 syoung users     16743 Sep 13 02:42 run2-lane6-short-paired.fasta
+drwxr-xr-x 2 syoung users      4096 Sep 13 02:15 run2-lane6-short-paired.2.asmQC.bnk
+drwxr-xr-x 2 syoung users      4096 Sep 13 02:13 run2-lane6-short-paired.1.kmer.bnk
+drwxr-xr-x 2 syoung users      4096 Sep 13 02:12 run2-lane6-short-paired.kmer.bnk
+-rw-r--r-- 1 syoung users   7349841 Sep 13 02:01 run2-lane6-short-paired.22mers
+-rw-r--r-- 1 syoung users    443231 Sep 13 01:17 run2-lane6-short-paired.contig
+-rw-r--r-- 1 syoung users      3614 Sep 13 01:17 run2-lane6-short-paired.scaff
+-rw-r--r-- 1 syoung users     24958 Sep 13 01:17 run2-lane6-short-paired.scaffold.fasta
+-rw-r--r-- 1 syoung users       711 Sep 13 01:17 run2-lane6-short-paired.exclude.seqs
+-rw-r--r-- 1 syoung users        31 Sep 13 01:17 run2-lane6-short-paired.conflict
+-rw-r--r-- 1 syoung users    189964 Sep 13 01:17 run2-lane6-short-paired.delta
+-rw-r--r-- 1 syoung users     62628 Sep 13 01:17 run2-lane6-short-paired.layout
+-rw-r--r-- 1 syoung users      2683 Sep 13 01:17 run2-lane6-short-paired.0cvg
+-rw-r--r-- 1 syoung users     29358 Sep 13 01:17 run2-lane6-short-paired.clr
+-rw-r--r-- 1 syoung users    251412 Sep 13 01:17 run2-lane6-short-paired.cluster
+-rw-r--r-- 1 syoung users   1738894 Sep 13 01:17 run2-lane6-short-paired.seq
+-rw-r--r-- 1 syoung users  11532456 Sep 13 01:15 run2-lane6-short-paired.afg
+-rw-r--r-- 1 syoung users   3338894 Sep 13 01:15 tmp.22795.seq
+-rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.ctg
+-rw-r--r-- 1 syoung users         0 Sep 13 01:15 tmp.22795.scf
+-rw-r--r-- 1 syoung users     16880 Sep 13 00:52 run2-lane6-short-paired.1con
+-rw-r--r-- 1 syoung users        23 Sep 13 00:48 run2-lane6-short.mates
+-rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-2.fasta
+-rw-rw-rw- 1 syoung users   3888623 Sep 13 00:46 run2-lane6-short-2.fasta.qual
+-rw-rw-rw- 1 syoung users   2596706 Sep 13 00:46 run2-lane6-short-1.fasta
+-rw-rw-rw- 1 syoung users   3831063 Sep 13 00:46 run2-lane6-short-1.fasta.qual
+-rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-2.txt
+-rw-r--r-- 1 syoung users   5243412 Sep 13 00:23 run2-lane6-short-1.txt
+-rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_2_sequence.txt
+-rwxr-xr-x 1 syoung users 477788034 Sep 13 00:23 s_6_1_sequence.txt
+
+
+
+
+ Creating FastA
+!!! 2008-09-13 02:42:18  Running: /store/home/syoung/base/apps/amos/bin/bank2fasta -b run2-lane6-short-paired.bnk > run2-lane6-short-paired.fasta
+!!! 2008-09-13 02:42:18  Done! Elapsed time:0d 0h 0m 0s
+
+OK
+
+/store/home/syoung/base/apps/amos/bin/asmQC -b run2-lane6-short-paired.bnk -scaff -recompute -update -numsd 2
+>Scaffold_1 16569 bases
+
+OK
+
+/store/home/syoung/base/apps/amos/bin/cestat-cov -i -f 4 run2-lane6-short-paired.bnk > run2-lane6-short-paired.ce.feat
+Opening run2-lane6-short-paired.bnk... [0.15s]
+Indexing Contigs   .......... [0.01s] 2677 reads in 85 contigs
+Indexing Scaffolds .......... [0.00s] 85 contigs in 1 scaffolds
+Indexing Libraries .......... [0.00s] 1 libraries
+Indexing Mates     .......... [0.08s] 0 mated reads in 50000 fragments
+Indexing Reads     .......... [0.11s] 50001 reads
+Processing scaffolds... Mapping reads to scaffold gi|115315570|ref|AC_000021.2|... 2677 reads mapped
+Loading mates ..................................................
+inserts: 2677 mated: 0 matelisted: 0 unmated: 2677 happy: 0 unhappy: 0
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+!!! 2008-09-13 02:42:20  Doing step 340
+!!! 2008-09-13 02:42:20  Running:
+
+/store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.ce.feat
+Loading features from run2-lane6-short-paired.ce.feat into run2-lane6-short-paired.bnk
+
+Loaded 0 features
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+
+/store/home/syoung/base/apps/amos/bin/analyzeSNPs -i -b run2-lane6-short-paired.bnk -S -cumqv 40 -minsnps 2 -r -H > run2-lane6-short-paired.snps
+Searching 85 contigs..................................................
+
+3 positions reported of 322 total SNPs found.
+Searched 16106 positions in 85 contigs.
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+!!! 2008-09-13 02:42:20  Doing step 410
+!!! 2008-09-13 02:42:20  Running: /store/home/syoung/base/apps/amos/bin/clusterSnps run2-lane6-short-paired.snps > run2-lane6-short-paired.snp.feat
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+!!! 2008-09-13 02:42:20  Doing step 420
+!!! 2008-09-13 02:42:20  Running: /store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.snp.feat
+Loading features from run2-lane6-short-paired.snp.feat into run2-lane6-short-paired.bnk
+
+Loaded 0 features
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+
+/store/home/syoung/base/apps/amos/bin/analyze-read-depth -i run2-lane6-short-paired.bnk -c 1000 -x 3 > run2-lane6-short-paired.depth.feat
+Processing run2-lane6-short-paired.bnk at Sat Sep 13 02:42:20 2008
+Processed contigs >= 0bp.
+Processed reads: 2677 contigs: 85
+Global average contig depth: 4.45623 [71772/16106]
+Global ungapped average contig depth: 4.45606 [71756/16103]
+Flagging regions above: 13.3687
+End: Sat Sep 13 02:42:20 2008
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+
+
+/store/home/syoung/base/apps/amos/bin/loadFeatures -i run2-lane6-short-paired.bnk run2-lane6-short-paired.depth.feat
+Loading features from run2-lane6-short-paired.depth.feat into run2-lane6-short-paired.bnk
+...
+Loaded 3 features
+!!! 2008-09-13 02:42:20  Done! Elapsed time:0d 0h 0m 0s
+
+
+
+/store/home/syoung/base/apps/amos/bin/listReadPlacedStatus -S -E run2-lane6-short-paired.bnk > run2-lane6-short-paired.singletons
+!!! 2008-09-13 02:42:21  Done! Elapsed time:0d 0h 0m 1s
+
+
+/store/home/syoung/base/apps/amos/bin/dumpreads -E run2-lane6-short-paired.singletons run2-lane6-short-paired.bnk > run2-lane6-short-paired.sin\
+gletons.seq
+Objects seen: 47323
+Objects written: 47323
+!!! 2008-09-13 02:42:22  Done! Elapsed time:0d 0h 0m 1s
+
+
+
+/store/home/syoung/base/apps/amos/bin/casm-breaks -b run2-lane6-short-paired.bnk -t 100 -c 2 -F run2-lane6-short-paired.break.fea run2-lane6-short-paired.delta
+Building alignment graph
+  build
+  flag score
+  flag QLIS
+  clean
+Fetching read and mate information
+  getting mate info from bank
+  getting read info from bank
+  looks like alignment uses IIDs
+Placing unique reads
+Placing repetitive reads
+Outputting read paths
+!!! 2008-09-13 02:42:24  Done! Elapsed time:0d 0h 0m 2s
+
+
+/store/home/syoung/base/apps/amos/bin/bank-transact -b run2-lane6-short-paired.bnk -m run2-lane6-short-paired.break.fea
+
+
+START DATE: Sat Sep 13 02:42:24 2008
+Bank is: run2-lane6-short-paired.bnk
+    0%                                            100%
+AFG ERROR: Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+ERROR: Invalid source format
+  could not parse 'FEA' message with iid:NULL, message ignored
+ERROR: Invalid source format
+
+
+THE .feat FILE DOESN'T HAVE ANY iid VALUES:
+
+em run2-lane6-short-paired.break.fea
+
+    {FEA
+    typ:B
+    src:gi|115315570|ref|AC_000021.2|,CTG
+    com:4 (4,0) B <-[gi|115315570|ref|AC_000021.2|]- 12488
+    clr:12489,12488
+    }
+    {FEA
+    typ:B
+    src:gi|115315570|ref|AC_000021.2|,CTG
+    com:2 (2,0) B -[gi|115315570|ref|AC_000021.2|]-> 3703
+    clr:3703,3704
+    }
+
+
+Loading Features:
+=================
+
+$ loadFeatures bankname featfile
+Featfileformat:
+Contigidtype end5 end3 comment
+
+
+
+Standard Feature Types
+[B] Breakpoint
+Alignment ends at this position
+[C] Coverage
+Location of unusual mate coverage ()
+[S] SNPs
+Location of Correlated SNPs
+[U] Unitig
+Used to report location of surrogate unitigsin CA assemblies
+[X] Other
+All other Features
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-amos/test-short
+hawkeye run2-lane6-short-paired.bnk
+
+
+===============
+
+
+
+/store/home/syoung/base/apps/amos/bin/casm-layout -h
+
+USAGE: /store/home/syoung/base/apps/amos/bin/casm-layout  [options]  [-b amosbank]  <deltafile>
+
+-b path       Set path of the AMOS bank to use
+-C path       Output conflict positions and support counts to file
+-g uint       Set maximum alignment gap length, default 10000
+-h            Display help information
+-i float      Set the minimum alignment identity, default 70
+-I float      Set the identity tolerance between repeats, default 2
+-m float      Set the majority needed to discern a conflict, default 70
+-M path       Output read mappings to file
+-o uint       Set minimum overlap length for assembly, default 10
+-r            Randomly place repetitive reads into one of their copy
+              locations if they cannot be placed via mate-pair info
+-s uint       Set random generator seed to unsigned int, default
+              seed is generated by the system clock
+-S            Include singleton contigs in the output
+-t uint       Set maximum ignorable trim length, default 20
+-T path       Output TIGR contig to file
+-U path       Output UMD contig to file
+-v float      Set the minimum alignment coverage, default 25
+-V float      Set the coverage tolerance between repeats, default 2
+
+Position query sequences on a reference based on the alignment
+information contained in the deltafile. Can utilize mate-pair
+information to place repetitive sequences, or random placement
+to simulate even coverage. If an AMOS bank is provided by the -b
+option, mate-pair info will be retrieved from and final layouts
+will be written to the bank.
+
+
+

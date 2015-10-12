@@ -1,0 +1,161 @@
+Notes-database-funnybase7K.txt
+
+</entry>
+
+
+
+<entry [Sat Jun  7 23:15:34 EDT 2008] CREATION OF funnybase7K DATABASE CONTAINING ALL 7,000 SEQUENCES SELECTED FROM funnybase11 FOR USE IN THE MICROARRAY>
+
+
+
+funnybase7K
+===========
+
+1. EXTRACT TABLES FROM funnybase11 USING extractrows.pl:
+
+TABLES NEEDED FOR SEARCH FUNCTION ON sandbox:
+reads, assemblyreads, assemblysequences, collectionsequences, collectionblastbesthits, collectionsequencesannotation, readsdbest
+
+./extractrows.pl -d funnybase11 -t funnybase7K -b reads -f experiment,plate,well -i /Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.readslist.tsv
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bassemblyreads -fexperiment,plate,well -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.readslist.tsv
+
+./extractrows.pl -d funnybase11 -t funnybase7K -b assemblysequences -f collectionid -i /Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+./extractrows.pl -d funnybase11 -t funnybase7K -b collectionsequences -f collectionid -i /Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv 
+
+./extractrows.pl -d funnybase11 -t funnybase7K -b collectionblastbesthits -f collectionid -i /Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv 
+
+./extractrows.pl -d funnybase11 -t funnybase7K -b collectionsequencesannotation -f collectionid -i /Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv 
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -breadsdbest -fexperiment,plate,well -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.readslist.tsv
+
+
+TABLES NEEDED FOR FULL DISPLAY ON SANDBOX:
+
+show tables like '%div';
++------------------------------+
+| Tables_in_funnybase7k (%div) |
++------------------------------+
+| blastdiv                     |
+| featurediv                   |
+| framediv                     |
+| iprscandiv                   |
+| iprscandomaindiv             |
+| pathwaydiv                   |
+| sequencediv                  |
+| swissprotfeaturediv          |
++------------------------------+
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bswissprotfeaturediv -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+    Completed ./extractrows.pl -dfunnybase11 -tfunnybase7K -bswissprotfeaturediv -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+    Run time: 00:00:10
+    11:55PM, 7 June 2008
+    ****************************************
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bblastdiv -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+    Completed ./extractrows.pl -dfunnybase11 -tfunnybase7K -bblastdiv -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+    Run time: 00:00:36
+    0:09AM, 8 June 2008
+    ****************************************
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bblastdiv -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+
+FRAMEDIV
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bcollectionsequencesorf -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+./framediv.pl -d funnybase7K
+--OK
+
+IPRSCANDIV
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bcollectioniprscan -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+./iprscandiv.pl -d funnybase7K
+
+FEATUREDIV, SWISSPROTFEATUREDIV
+
+cd ~/FUNNYBASE/bin/array
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bcollectionblast -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bswissprotfeature -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+cd ~/FUNNYBASE/bin/pipeline4
+./featurediv.pl -d funnybase7K -s nucleotide
+./swissprotfeaturediv.pl -d funnybase7K -s nucleotide
+./blastdiv.pl -d funnybase7K
+
+
+BLASTDIV
+
+./extractrows.pl -dfunnybase11 -tfunnybase7K -bcollectionblastbesthits -fcollectionid -i/Users/young/FUNNYBASE/pipeline/funnybase7K/data/funnybase7K.collectionsequenceslist.tsv
+
+cd ~/FUNNYBASE/bin/pipeline4
+./featurediv.pl -d funnybase7K
+./swissprotfeaturediv.pl -d funnybase7K -s nucleotide
+./blastdiv.pl -d funnybase7K
+
+
+
+2. CREATE PATHWAY DIVS FOR SEARCH OUTPUT ON SANDBOX
+
+ 
+./collectionsequencesannotationmapping.pl -d funnybase7K -t ec
+    
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:04:54
+    11:28PM, 6 March 2008
+    ****************************************
+    
+./collectionsequencesannotationmapping.pl -d funnybase7K -t kegg
+            
+
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:08:44
+    11:39PM, 6 March 2008
+    ****************************************
+
+./collectionsequencesdownloadpathway.pl -d funnybase7K
+    
+    Run time: 00:00:43
+    Completed ./collectionsequencesdownloadpathway.pl
+    11:43PM, 6 March 2008
+    ****************************************
+
+./pathwaydiv.pl -d funnybase7K
+
+
+
+
+
+ show tables;
++--------------------------------------+
+| Tables_in_funnybase7k                |
++--------------------------------------+
+| assemblyreads                        |
+| assemblyreadstartstop                |
+| assemblysequences                    |
+| blastdiv                             |
+| collection                           |
+| collectionblastbesthits              |
+| collectionsequences                  |
+| collectionsequencesannotation        |
+| collectionsequencesannotationec      |
+| collectionsequencesannotationkegg    |
+| collectionsequencesannotationpathway |
+| featurediv                           |
+| framediv                             |
+| iprscandiv                           |
+| iprscandomaindiv                     |
+| microarrayreads                      |
+| pathwaydiv                           |
+| reads                                |
+| readsdbest                           |
+| sequencediv                          |
+| stage                                |
+| swissprotfeaturediv                  |
++--------------------------------------+

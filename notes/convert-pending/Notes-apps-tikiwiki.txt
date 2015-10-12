@@ -1,0 +1,305 @@
+Notes-apps-tikiwiki.txt
+
+++++++</entry>
+
+
+
+<entry [Fri Jul 18 23:59:26 EDT 2008] INSTALL TIKIWIKI VERSION tikiwiki-1.9.11>
+
+
+
+1. Install LAMP (Apache, PHP and MySQL in Linux) using Yum on CentOS
+
+
+    * yum install httpd and follow on screen instruction to install apache web server
+    * yum install php
+    * yum install mysql-server mysql
+
+    * START APACHE:
+    /usr/sbin/apachectl -k restart
+
+    * Point your browser to http://localhost and you should see a welcome page from CentOS
+    * If you see that welcome page, you just installed everything successfull.
+    * To test if php is running, go to /var/www/html and create an index.php file with the content below
+      <?php phpinfo(); ?>
+    
+      and refresh your browser again. If you see a purple PHP information page showing all the php configuration variables, then php is running now.
+
+    * start your mysql server
+    
+        safe_mysqld &
+
+    * Congratulations, you just successfully installed LAMP in your machine.
+
+
+2. DOWNLOAD AND INSTALL TIKIWIKI
+
+
+    SET MYSQL USER FOR TIKIWIKI
+    
+    mysql
+    CREATE DATABASE tikiwiki;
+    GRANT ALL PRIVILEGES ON tikiwiki.* TO 'tikiadmin'@'localhost' IDENTIFIED BY 'open4tiki';
+
+OK
+
+3. RUN setup.sh
+
+
+cd /var/www/html/tikiwiki
+chmod 775 setup.sh
+./setup.sh root apache
+
+    Creating directory maps
+    Creating directory mods
+
+
+4. USE INSTALL PHP SCRIPT TO CHECK INSTALLATION
+
+http://204.68.94.166/tikiwiki/tiki-install.php
+
+FILL IN DATABASE INFO
+
+Host: 		localhost
+User: 		tikiadmin
+Password: 	*********
+Database name: tikiwiki	
+
+BUT GET BLANK PAGE....
+
+tail /var/log/httpd/error_log
+
+    [Sat Jul 19 00:35:30 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+    [Sat Jul 19 00:35:52 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+    [Sat Jul 19 00:35:56 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+    [Sat Jul 19 00:37:08 2008] [notice] SIGHUP received.  Attempting to restart
+    [Sat Jul 19 00:37:08 2008] [notice] Digest: generating secret for digest authentication ...
+    [Sat Jul 19 00:37:08 2008] [notice] Digest: done
+    [Sat Jul 19 00:37:08 2008] [notice] Apache/2.2.3 (CentOS) configured -- resuming normal operations
+    [Sat Jul 19 00:37:31 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+    [Sat Jul 19 00:37:39 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+    [Sat Jul 19 00:38:44 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160
+    [Sat Jul 19 01:01:49 2008] [error] [client 10.136.90.107] script '/var/www/html/tikiwiki/local.php' not found or unable to stat
+    
+
+
+
+    http://204.68.94.166/tikiwiki/tiki-install.php
+    
+    [Sat Jul 19 18:40:19 2008] [error] [client 10.136.90.107] File does not exist: /var/www/html/favicon.ico
+    [Sat Jul 19 18:40:19 2008] [error] [client 10.136.90.107] File does not exist: /var/www/html/favicon.ico
+    [Sat Jul 19 18:40:46 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var\
+    /www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F34188%%header.tpl.php on line 160, referer: http://204.68.94.166/tikiwiki/
+
+
+THE /var/log/httpd/error_log DOESN'T CHANGE AFTER FILLING IN DATABASE INFO AGAIN EXCEPT FOR THIS ERROR ON PAGE LOAD:
+
+[Sat Jul 26 15:12:19 2008] [error] [client 10.136.90.107] PHP Warning:  asort() expects parameter 1 to be array, null given in /var/www/html/tikiwiki/templates_c/en^%%F7^F7F^F7F\
+
+
+
+Description of Problem
+I got a blank page after a full installation, so I inserted code to show errors, which produced the following. Any ideas?
+
+
+Warning: include_once(lib/init/initlib.php) function.include-once: failed to open stream: Permission denied in /Volumes/DATA/rwsites/climatechangewater.org/www/tikiwiki/tiki-install.php on line 22
+
+Warning: include_once() function.include: Failed opening 'lib/init/initlib.php' for inclusion (include_path='.:/usr/local/php5/lib/php') in /Volumes/DATA/rwsites/climatechangewater.org/www/tikiwiki/tiki-install.php on line 22
+
+Warning: require_once(lib/smarty/libs/Smarty.class.php) function.require-once: failed to open stream: Permission denied in /Volumes/DATA/rwsites/climatechangewater.org/www/tikiwiki/tiki-install.php on line 27
+
+Fatal error: require_once() function.require: Failed opening required 'lib/smarty/libs/Smarty.class.php' (include_path='.:/usr/local/php5/lib/php') in /Volumes/DATA/rwsites/climatechangewater.org/www/tikiwiki/tiki-install.php on line 27
+
+Solution 1
+Possibly a problem with folder permissions on the server. Set folder/file permissions for the files mentioned above to 777, and delete or change perms on tiki-install after setup. This is a common problem, review the installation docs.
+
+Note: please refactor this page to return the blank form.
+
+Solution 2
+
+ All I can see is a blank page
+The most important thing to do here is to add:
+
+ini_set('display_errors','1');
+error_reporting (E_ALL);
+
+to both tiki-install.php and lib/smarty/Smarty.class.php. Add it right after the first <? line. In fact, add this everywhere you can. It will help errors to be show.
+
+
+
+
+
+
+
+
+
+One possibility is that this is a PEAR issue (which is only relevant for Tiki 1.7 or less). See below for help on that issue.
+
+    * I had PEAR and perl issues in my 1.9 setup process on Fedora Core 3. I found that updating via CPAN was the solution since DBD::MySQL and DBI were not acceptable to the latest PEAR crimson 
+
+
+    * This may also be down to not having the php mysql module installed on the target machine. Check this with a phpinfo file. If you are here, tiki-phpinfo.php will not work. Create a simple file called info.php - with
+
+      <?php phpinfo() ?>
+
+      for its content. View this file in your browser. 
+
+
+Another possibility is that this is a directory creation issue; this is likely if you're using a hosting service with only FTP access. For solving that issue, see "FTP-Only Install on shared hosting creates Smarty error" above, even if you're not getting a Smarty error. After adding the lines above, though, you probably will be.
+
+Note : This section is not relevant anymore for Tiki 1.8+ since ADOdb is used instead. Chealer9 20040512
+
+If tiki-index.php fails complining about not being able to include DB.php then PEAR is not visible from your PHP installation, Tiki needs PEAR to use PEAR::DB, the database abstraction layer used in PHP. Find the pear directory included in your PHP installation and make sure that you have that directo ry in the include_path in your php.ini file.
+How to check if not finding PEAR is the problem
+
+    * Edit tiki-db.php and you will see and include('DB.php') directive. Put a die('before'); statement before that line and a die('after'); statement after the line. Reload the page if you see 'before' but not 'after' then PHP is not finding PEAR on your installation.
+    * PEAR is installed by default with all the PHP installations (Windows, Unix, etc) you don't have to change anything to make PEAR work but you do have to change things to break it. Usually the problem is that the PEAR directory is not in the include_path setting in PHP.ini some admins remove it because they don't know what it is.
+    * If you don't want to user PEAR or you really can't make your system administrator make PEAR work you can try the following:
+    * Uncomment line 4 (UNIX) or line 8 (Windows) of db/tiki-db.php and Tiki will use a bundled PEAR::db distribution. It will work. 
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Sat Jul 18 20:11:15 EDT 2008
+
+
+HOW TO INSTALL TIKIWIKI IF YOU CAN'T BE ROOT
+============================================
+3. USE INSTALL PHP SCRIPT TO CHECK INSTALLATION
+
+http://204.68.94.166/tikiwiki/tiki-install.php
+
+
+Tiki Installer cannot proceed
+
+The directory '/var/www/html/tikiwiki/backups/' is not writeable.
+The directory '/var/www/html/tikiwiki/db/' is not writeable.
+The directory '/var/www/html/tikiwiki/dump/' is not writeable.
+The directory '/var/www/html/tikiwiki/img/wiki/' is not writeable.
+The directory '/var/www/html/tikiwiki/img/wiki_up/' is not writeable.
+The directory '/var/www/html/tikiwiki/img/trackers/' is not writeable.
+The directory '/var/www/html/tikiwiki/modules/cache/' is not writeable.
+The directory '/var/www/html/tikiwiki/temp/' is not writeable.
+The directory '/var/www/html/tikiwiki/temp/cache/' is not writeable.
+The directory '/var/www/html/tikiwiki/templates_c/' is not writeable.
+The directory '/var/www/html/tikiwiki/templates/' is not writeable.
+The directory '/var/www/html/tikiwiki/styles/' is not writeable.
+The directory '/var/www/html/tikiwiki/whelp/' is not writeable.
+The directory '/var/www/html/tikiwiki/lib/Galaxia/processes/' is not writeable.
+
+
+Your options:
+
+
+1- With FTP access:
+	a) Change the permissions (chmod) of the directories to 777.
+	b) Create any missing directories
+	c) Execute the Tiki installer again (Once you have executed these commands, this message will disappear!)
+
+or
+
+Run setup.sh and follow the instructions:
+bash
+cd /var/www/html/tikiwiki
+chmod 775 setup.sh
+./setup.sh 
+
+>>>
+This script assigns necessary permissions for the directories that the
+webserver writes files to. It also creates the (initially empty) cache 
+directories, if necessary.
+
+Usage sh ./setup.sh user [group] [rights] [list of virtual host domains]
+
+For example, if apache is running as user apache and group apache (can be found in phpinfo),
+ and if you are running as user root, type:
+
+    #### phpinfo.php SAYS: User/Group 	apache(48)/48 
+
+  su -c 'sh ./setup.sh root apache'
+ 
+This will allow you to delete certain files/directories without becoming root.
+  
+Or, if you can't become root, but are a member of the group apache runs under
+(for example: apache), you can type:
+
+  sh ./setup.sh root apache
+
+Be aware, that you probably have to do a 
+
+  chown -R root *
+
+if your tiki runs in a PHP-safe-mode environment.
+
+If you can't become root, and are not a member of the apache group, but if
+your system uses ACL's (check with "mount | grep acl"), then type:
+
+  sh ./setup.sh -acl root apache
+
+If you can't become root, and are not a member of the apache group, and
+your system does not support ACL's then type:
+
+  sh ./setup.sh root yourgroup 02777
+
+Replace yourgroup with your default group. Tip: You can find your group using the command 'id'.
+
+If you are on a shared hosting account, you can't become root, and your 
+group is probably the same as your user name. The following should work for you:
+
+  sh ./setup.sh root root 02777
+
+
+NOTE: If you do execute one of the three last commands, you will not be able 
+to delete certain files created by apache, and will need to ask your system
+administrator to delete them for you if needed. However, you may still be able to 
+rename (move) them. 
+
+
+---MultiTiki---
+More information here:
+http://doc.tikiwiki.org/MultiTiki
+
+To use Tiki's multi-site capability (virtual hosts from a single DocumentRoot)
+add a list of domains to the command to create all the needed directories.
+For example:
+
+  su -c 'sh ./setup.sh root apache 02775 domain1 domain2 domain3'
+
+or, if you can't become root:
+
+  sh ./setup.sh root apache 02777 domain1 domain2 domain3
+
+
+---Mods----
+More information here:
+http://mods.tikiwiki.org/
+
+special for mods installer
+
+  sh ./setup.sh apache all
+
+will change perms on all tiki files so you can use the tikimods power.
+Remember to run the perms setup again when mods installer use if done.
+  
+        sh ./setup.sh root apache 
+
+[root
+
+
+
+
+
+
+

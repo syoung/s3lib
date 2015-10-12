@@ -1,0 +1,267 @@
+Notes-hardware-macmini.txt
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sept 21 23:59:23 EDT 2009] SETTINGS AND TODO>
+
+
+
+
+TODO: CHECK SET UID
+
+
+UM ip address 
+
+10.136.60.220
+***10.136.60.184
+***10.136.60.84 ?
+
+
+LOCAL
+
+172.16.126.1
+****169.254.138.64
+
+
+HP LAPTOP LOCAL
+
+169.254.18.31
+
+
+OTHER VNC ADDESSES
+
+10.136.60.172
+10.136.60.84
+74.207.235.81
+
+GENOMICS
+
+129.171.101.102
+
+
+
+MONITOR SETTING
+1680 x 1050, 60Hz
+
+
+
+</entry>
+
+
+
+<entry [Mon Sept 21 23:59:23 EDT 2009] FIXED ERROR error: unable to open database file(1) >
+
+
+
+
+PROBLEM
+
+GET THIS ERROR WHEN RUNNING workflow.pl
+
+unable to open database file(1) at dbdimp.c line 402 at /Users/syoung/aqwa/cgi-bin.linux/lib/Workflow.pm line 2115.
+
+
+SOLUTION
+
+chmod 0777 /Users/syoung/aqwa/bin/db/data.dbl
+chmod 0777 /Users/syoung/aqwa/bin/db
+
+
+
+
+ll /Users/syoung/aqwa/bin/db/data.dbl
+
+
+</entry>
+
+
+
+<entry [Mon Sept 14 20:59:23 EDT 2009] THE HTTPD INSTALLATION on OSX Leopard IS HERE:>
+
+
+
+
+/private/etc/apache2/httpd.conf
+
+
+THE ERROR FILE IS HERE:
+
+/private/var/apache2/error_log
+
+
+RUN AS apache:
+
+
+Fix can't sudo to www user on OSX
+
+Try:
+sudo passwd www
+sudo -u www bash
+
+
+Then:
+
+sudo su
+su www
+whoami
+
+   _www
+
+
+NB: CAN ALSO CHANGE THE "User" AND "Group" IN THE httpd.conf FILE
+(User and Group that Apache use to start)
+
+
+**** IN httpd.conf FILE, CHANGED FROM User AND Group 
+
+FROM 
+
+www 
+
+TO 
+
+_www 
+
+BUT NOT SURE IF THIS WAS NECESSARY...
+
+
+
+</entry>
+
+
+
+<entry [Mon Sept 14 19:59:23 EDT 2009] FIXED MACHINE TYPE AND DBI/DBD VERSION PROBLEMS>
+
+
+
+1. FIXED MACHINE TYPE
+
+cd lib/5.8.8
+ln -s x86_64-linux-thread-multi darwin-thread-multi-2level
+
+
+2. FIXED DBI AND DBD VERSION PROBLEMS
+
+PROBLEM
+
+DBI object version 1.52 does not match $DBI::VERSION 1.607 at /System/Library/Perl/5.8.8/darwin-thread-multi-2level/DynaLoader.pm line 253, <DATA> line 225.
+
+
+SOLUTION
+
+REMOVE DBI AND DBD FROM x86_64-linux-thread-multi DIRECTORY
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/
+perl project.cgi 
+
+
+DIAGNOSIS
+
+THE MACHINE HAS AN OLD VERSION OF DBI.pm:
+
+emacs /System/Library/Perl/Extras/5.8.8/darwin-thread-multi-2level/DBI.pm
+
+    ...
+    require 5.006_00;
+
+    BEGIN {
+    $DBI::VERSION = "1.52"; # ==> ALSO update the version in the pod text below!                                                                                                        
+    }
+    ...
+
+WHEREAS AQWA HAS A NEWER VERSION (VERSION 1.607) OF DBI.pm:
+
+emacs /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level/DBI.pm
+
+	...
+	require 5.006_00;
+
+	BEGIN {
+	$DBI::VERSION = "1.607"; # ==> ALSO update the version in the pod text below!                                                                                                     
+	}
+	...
+
+
+AND THE MACHINE'S BINARY FILE DBI.bundle CONTAINS THE REFERENCE TO THE OLD VERSION 1.52
+
+cd /System/Library/Perl/Extras/5.8.8/darwin-thread-multi-2level/auto/DBI
+
+spud-2:DBI syoung$ ll
+total 1312
+drwxr-xr-x  11 root  wheel   374B Feb  9  2009 .
+drwxr-xr-x  63 root  wheel   2.1K Feb  9  2009 ..
+-rw-r--r--   1 root  wheel     0B Sep 24  2007 DBI.bs
+-rwxr-xr-x   1 root  wheel   476K Sep 24  2007 DBI.bundle
+-rw-r--r--   1 root  wheel    20K Mar 27  2006 DBIXS.h
+-rw-r--r--   1 root  wheel    19K Feb  7  2006 Driver.xst
+-rw-r--r--   1 root  wheel   3.3K Feb  7  2006 Driver_xst.h
+-rw-r--r--   1 root  wheel   2.9K Feb  7  2006 dbd_xsh.h
+-rw-r--r--   1 root  wheel   3.7K Feb  7  2006 dbi_sql.h
+-rw-r--r--   1 root  wheel   115K May 10  2006 dbipport.h
+-rw-r--r--   1 root  wheel   2.0K Mar 25  2005 dbivport.h
+
+spud-2:DBI syoung$ grep -n "1.52" *
+
+    Binary file DBI.bundle matches
+
+
+TRIED REMOVING AQWA'S DBI.pm
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level
+mv DBI.pm DBI.pm.old
+
+
+BUT THEN GOT THIS ERROR:
+
+
+spud-2:0.3 syoung$ cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/
+spud-2:0.3 syoung$ perl project.cgi 
+
+
+DBD::SQLite object version 1.13 does not match bootstrap parameter 1.14 at /System/Library/Perl/5.8.8/darwin-thread-multi-2level/DynaLoader.pm line 253, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 32, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 32, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+
+
+NEED TO UPDATE DBD::SQLite
+
+
+
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level
+grep -R -n "1\.52" *
+
+DBD/.svn/text-base/SQLite.pm.svn-base:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBD/SQLite.pm:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+TASKS.pod:11:   http://pjcj.sytes.net/cover/latest/DBI-1.52/coverage.html
+TASKS.pod:15:   http://pjcj.sytes.net/cover/latest/DBI-1.52/blib-lib-DBI-pm--subroutine.html
+auto/DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+auto/DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+bash-3.2$ 
+
+
+
+
+
+NB: CAN USE strace to read the syscalls to get the stat and open:
+
+it always stat the hash.so, and then stat DBI.so installed in the operating system
+(outside par package), and then open and read DBI.so from the operating
+system
+
+

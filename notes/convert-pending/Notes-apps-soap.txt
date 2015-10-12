@@ -1,0 +1,130 @@
+Notes-apps-soap.txt
+
+
+</entry>
+
+
+
+<entry [Mon Oct 11 13:38:54 EDT 2010] INSTALLED SOAP 2.20 ON PEGASUS AT ~/base/apps>
+
+
+
+
+wget http://soap.genomics.org.cn/down/SOAPaligner-v2.20-Linux-x86_64.tar.bz2
+
+cd /nethome/syoung/base/apps/soap/2.20
+ll
+
+    -rwxr-xr-x 1 syoung bioinfo  975K Jul 12  2009 2bwt-builder
+    -rw-r--r-- 1 syoung bioinfo   567 Jul 12  2009 NOTE
+    -rw-r--r-- 1 syoung bioinfo  3.5K Jul 12  2009 release
+    -rwxr-xr-x 1 syoung bioinfo 1016K Aug 13  2009 soap
+    -rw-r--r-- 1 syoung bioinfo  4.5K Jul 14  2009 soap.1
+    -rw-r--r-- 1 syoung bioinfo  5.4K Jul 12  2009 soap.man
+
+Program: SOAPaligner/soap2
+Compile Date: Thu Aug 13 17:05:41 CST 2009
+Author:  BGI shenzhen
+Version: 2.20
+Contact: soap@genomics.org.cn
+
+Usage:  soap [options]
+        -a  <str>   query a file, *.fq, *.fa
+        -b  <str>   query b file
+        -D  <str>   reference sequences indexing table, *.index format
+        -o  <str>   output alignment file(txt)
+        -M  <int>   match mode for each read or the seed part of read, which shouldn't contain more than 2 mismaches, [4]
+                    0: exact match only
+                    1: 1 mismatch match only
+                    2: 2 mismatch match only
+                    4: find the best hits
+        -u  <str>   output unmapped reads file
+        -t          output reads id instead reads name, [none]
+        -l  <int>   align the initial n bps as a seed [256] means whole length of read
+        -n  <int>   filter low-quality reads containing >n Ns before alignment, [5]
+        -r  [0,1,2] how to report repeat hits, 0=none; 1=random one; 2=all, [1]
+        -m  <int>   minimal insert size allowed, [400]
+        -x  <int>   maximal insert size allowed, [600]
+        -2  <str>   output file of unpaired alignment hits
+        -v  <int>   maximum number of mismatches allowed on a read. [5] bp
+        -s  <int>   minimal alignment length (for soft clip) [255] bp
+        -g  <int>   one continuous gap size allowed on a read. [0] bp
+        -R          for long insert size of pair end reads RF. [none](means FR pair)
+        -e  <int>   will not allow gap exist inside n-bp edge of a read, default=5
+        -p  <int>   number of processors to use, [1]
+
+        -h          this help
+        
+
+
+</entry>
+
+
+
+<entry [Fri Aug  8 23:54:34 EDT 2008] DAVID ATTEMPTS TO RUN SOAP:>
+
+
+
+
+    cd 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+    cd Data/
+    ll
+    C1-72_Firecrest1.9.2_12-08-2008_ddittman/
+    cd C1-72_Firecrest1.9.2_12-08-2008_ddittman/
+    make recursive
+    ll
+    rm -r est
+    mkdir est
+    cd est/
+    ll
+    ll
+    gunzip est.fa.gz 
+    ll
+    cd ..
+    cd SOAP/
+    ll
+    cd soap_1.11
+    ll
+    soap -a query.fq -d /store/home/ddittman/est/est.fa -s 12
+    ./soap -a query.fq -d /store/home/ddittman/est/est.fa -s 12
+    ./soap -a query.fq -d /store/home/ddittman/est/est.fa -o test.sop -s 12
+    nano test.sop 
+    cd /store/data/
+    cd pipeline_in
+
+
+</entry>
+
+
+
+<entry [Fri Aug  8 22:54:34 EDT 2008] DOWNLOAD AND INSTALL SOAP>
+
+
+
+cd /store/home/syoung/base/apps/soap_1.11
+
+ll
+    -rwxr-xr-x  1 syoung users  73K Jul 17 22:38 align.cpp
+    -rwxr-xr-x  1 syoung users  13K Jul 18 03:22 align.h
+    -rwxr-xr-x  1 syoung users  11K Jul 17 22:40 dbseq.cpp
+    -rwxr-xr-x  1 syoung users 1.5K Jul 18 03:23 dbseq.h
+    -rwxr-xr-x  1 syoung users  17K Jul 18 03:17 dealign.cpp
+    -rwxr-xr-x  1 syoung users  18K Jul 17 22:36 dealign.cpp.liyr
+    -rwxr-xr-x  1 syoung users 2.2K Jul 18 03:20 dealign.h
+    -rwxr-xr-x  1 syoung users  35K Jul 17 22:36 GPL_3.0.txt
+    -rwxr-xr-x  1 syoung users  16K Jul 17 22:38 main.cpp
+    -rwxr-xr-x  1 syoung users 1.6K Jul 17 22:36 makefile
+    -rwxr-xr-x  1 syoung users  35K Jul 18 01:19 pairs.cpp
+    -rwxr-xr-x  1 syoung users 1.1K Jul 18 03:24 pairs.h
+    -rwxr-xr-x  1 syoung users 8.6K Jul 18 03:06 param.cpp
+    -rwxr-xr-x  1 syoung users 2.4K Jul 18 03:24 param.h
+    -rwxr-xr-x  1 syoung users  16K Jul 17 22:36 README.txt
+    -rwxr-xr-x  1 syoung users 1.4K Jul 17 22:36 reads.cpp
+    -rwxr-xr-x  1 syoung users  549 Jul 18 03:24 reads.h
+    -rwxr-xr-x  1 syoung users 2.6K Jul 18 03:28 RELEASE.txt
+    -rwxr-xr-x  1 syoung users 3.3K Jul 17 22:36 soap_dealign.cpp
+    -rwxr-xr-x  1 syoung users  545 Jul 17 22:36 utilities.cpp
+    -rwxr-xr-x  1 syoung users  298 Jul 18 03:21 utilities.h
+
+
+

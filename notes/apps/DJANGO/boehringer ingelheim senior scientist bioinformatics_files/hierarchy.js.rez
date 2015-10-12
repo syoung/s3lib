@@ -1,0 +1,255 @@
+// Copyright © Hanover Capital Management Corp. 2002. All Rights Reserved.
+
+//
+// Hierarchical type semantics.
+//
+// Note: Hierarchy_delimeter, Hierarchy_filler, Hierarchy_isIE
+// MUST BE DEFINED BY CALLER.
+//
+// $Author: chuck $
+// $Date: 2009-08-21 21:18:47 $
+// $Revision: 1.10 $
+//
+
+// Accumulate to a list of encodings
+//
+// @param t [target list]
+// @param a [accumulator]
+//
+Hierarchy_accumulate = function(t, a) {
+  // locate the target, accumulator
+  var accum = eval("document.forms[0]." + a);
+  var target = eval("document.forms[0]." + t);
+  // accumulate all values
+  if (target.options.length == 0)
+    accum.value = "";
+  else if (target.options.length == 1)
+    accum.value = target.options[0].value;
+  else {
+    accum.value = Hierarchy_delimeter;
+    for (i = 0; i < target.options.length; i++)
+      if (target.options[i].text != Hierarchy_filler)
+        accum.value += target.options[i].value + Hierarchy_delimeter;
+  }
+}
+
+// Add an encoding to a list of encodings
+//
+// @param s [source encoding]
+// @param t [target list]
+// @param a [accumulator]
+//
+Hierarchy_add = function(s, t, a) {
+  // locate the source, target
+  var encoding = eval("document.forms[0]." + s);
+  var decoding = eval("document.forms[0]." + s + "_decoding");
+  var target = eval("document.forms[0]." + t);
+  // nothing to do if no value
+  if (encoding.value && decoding.value) {
+    var opt = new Option(decoding.value, encoding.value);
+    // search for right place to insert in target
+    var i;
+    var ltext = opt.text.toLowerCase();
+    for (i = 0; i < target.options.length; i++) {
+      if (target.options[i].text == Hierarchy_filler)
+        break;
+      var rtext = target.options[i].text.toLowerCase();
+      if (rtext == ltext)
+        return;
+      if (rtext > ltext)
+        break;
+    }
+    // add new option for IE
+    if (Hierarchy_isIE)
+      target.add(opt, i);
+    // add new option for Netscape
+    else {
+      for (var j = target.options.length; j > i; j--)
+        target.options[j] = target.options[j - 1];
+      target.options[i] = opt;
+    }
+    target.selectedIndex = i;
+    Hierarchy_accumulate(t, a);
+  }
+}
+
+// Delete an encoding to a list of encodings
+//
+// @param t [target list]
+// @param a [accumulator]
+//
+Hierarchy_delete = function(t, a) {
+  // locate the target
+  var target = eval("document.forms[0]." + t);
+  // nothing to do if not selected
+  if (target.selectedIndex >= 0) {
+    target.options[target.selectedIndex] = null;
+    Hierarchy_accumulate(t, a);
+  }
+}
+
+// Handle selection of hierarchical type
+//
+// @param obj [select selected]
+// @param delim [type delimeter]
+// @param max [max depth]
+// @param padding [padded to max depth]
+// @param unknown [value to ignore]
+//
+Hierarchy_select = function(obj,
+                            delim,
+                            max,
+                            padding,
+                            unknown) {
+  // extract the name & index of this object
+  var temp = obj.name;
+  var i = temp.lastIndexOf("_");
+  var base = temp.substring(0, i);
+  var x = 1 * temp.substring(i + 1);
+  // accrue value, text
+  var value = "";
+  var text = "";
+  for (var i = 0; i <= x; i++) {
+    var obj = eval("document.forms[0]." + base + "_" + i);
+    var selected = obj.options[obj.selectedIndex];
+    if (selected.value == unknown)
+      break;
+    value += selected.value;
+    text += selected.text;
+    if (i != x) {
+      value += delim;
+      text += delim;
+    }
+  }
+  // pad value
+  if (padding.length > 0)
+    for (; i < max; i++)
+      value += delim + padding;
+  // submit value, text
+  var obj = eval("document.forms[0]." + base);
+  obj.value = value;
+  var obj = eval("document.forms[0]." + base + "_decoding");
+  obj.value = text;
+  document.forms[0].submit();
+}
+
+// new client-side functions
+
+Hierarchy_client_generateValue = function(x,
+                                          base,
+                                          maxDepth,
+                                          unknown,
+                                          unspecified,
+                                          seperator,
+                                          padding) {
+  var value = "";
+  var text = "";
+  var arrayName = base + "_data";
+  // values are already fully-formed so no need to build them up
+  for (var i = 1; i <= x; i++) {
+    var obj = eval("document.forms[0]." + base + "_" + i);
+    if (obj) {
+      var selected = obj.options[obj.selectedIndex];
+      // unknown and unspecified are only used for the first drop-down
+      if ((selected.value == unknown) || (selected.value == unspecified)) {
+        value = selected.value;
+        break;
+      }
+      if (selected.value == "")
+        break;
+    }
+    arrayName += "[" + selected.value + "]";
+    var array = eval(arrayName);
+    value = array["TE_value"];
+    text += array["TE_name"];
+    if (i != x) {
+      text += seperator;
+    }
+  }
+  // submit value, text
+  var obj = eval("document.forms[0]." + base);
+  obj.value = value;
+  var obj = eval("document.forms[0]." + base + "_decoding");
+  obj.value = text;
+
+  return value;
+}
+
+Hierarchy_client_fillNextSelect = function(x,
+                                           base,
+                                           unknown,
+                                           unspecified,
+                                           seperator) {
+  var arrayIndex = "";
+  for (var j = x; j > 0; --j){
+    var ctrl = eval("document.forms[0]." + base + "_" + j);
+    var val = ctrl.options[ctrl.selectedIndex].value;
+    if ((val != unknown) && (val != unspecified) && (val != ""))
+      arrayIndex = "[" + val + "]" + arrayIndex;
+  }
+  var arrayName = base + "_data";
+  var array = eval(arrayName + arrayIndex);
+  var dest = eval("document.forms[0]." + base + "_" + (x+1));
+  if (dest) {
+    dest.options.length = 0;
+    var labelText = null;
+    var count = 0;
+    // always start child options with blank
+    dest.options[0] = new Option("", "");
+    for (var i = 0; i < array.length; ++i) {
+      if (i == 0)
+        labelText = array[i]["TE_label"];
+      var value = i;
+      var text = array[i]["TE_name"];
+      dest.options[dest.options.length] = new Option(text, value);
+      count++;
+    }
+    var block = eval("document.getElementById('" + base + "_block_" + (x+1) + "')");
+    var label = eval("document.getElementById('" + base + "_label_" + (x+1) + "')");
+    if (block) {
+      if (label)
+        label.innerHTML = (labelText != null) ? labelText : "";
+      if (count != 0)
+        block.style.display = '';
+      else
+        block.style.display = 'none';
+    }
+  }
+}
+
+Hierarchy_client_onChange = function(obj,
+                                     startLevel,
+                                     maxDepth,
+                                     seperator,
+                                     padding,
+                                     unknown,
+                                     unspecified,
+                                     callBack) {
+  var temp = obj.name;
+  var i = temp.lastIndexOf("_");
+  var base = temp.substring(0, i);
+  var x = 1 * temp.substring(i + 1);
+
+  var newValue = Hierarchy_client_generateValue(x, base, maxDepth, unknown, unspecified, seperator, padding);
+
+  var display = '';
+  for (var j = startLevel; j <= maxDepth; ++j){
+    var block = eval("document.getElementById('" + base + "_block_" + j + "')");
+    var ctrl = eval("document.forms[0]." + base + "_" + j);
+    block.style.display = display;
+    if ((j > x)
+     || (unknown == ctrl.options[ctrl.selectedIndex].value)
+     || (unspecified == ctrl.options[ctrl.selectedIndex].value)
+     || ("" == ctrl.options[ctrl.selectedIndex].value))
+      display = 'none';
+  }
+  if ((obj.options[obj.selectedIndex].value != unknown)
+   && (obj.options[obj.selectedIndex].value != unspecified)
+   && (obj.options[obj.selectedIndex].value != ""))
+    Hierarchy_client_fillNextSelect(x, base, unknown, unspecified, seperator);
+
+  // do we need to invoke the caller's call-back function?
+  if (callBack) {
+    eval(callBack + "('" + base + "','"+ newValue + "')");
+  }
+}

@@ -1,0 +1,203 @@
+var doIt = function () {
+console.clear();
+
+dojo.reload("plugins.dojox.data.FileStore");
+
+dojo.reload("dojox.widget.RollingList");
+
+dojo.reload("plugins.files.TitlePane");
+
+dojo.reload("plugins.files._GroupDragPane");
+
+dojo.reload("plugins.files.FileDrag");
+
+dojo.reload("plugins.files.FileMenu");
+
+dojo.reload("plugins.files.WorkflowMenu");
+
+dojo.reload("plugins.folders.ProjectFiles");
+
+dojo.reload("plugins.folders.SourceFiles");
+
+dojo.reload("plugins.folders.Folders");
+
+dojo.reload("plugins.core.Data");
+
+dojo.reload("plugins.core.Agua");
+
+dojo.reloadPage();
+};
+
+var openLocation = function (location, username) {
+
+//setTimeout( function(){ 
+
+    console.clear();
+    var projectFiles = Agua.controllers["folders"].tabPanes[0].projectFiles;
+    console.log("projectFiles: ");
+   
+
+projectFiles.openLocation = function (location, username) {
+	console.log("ProjectFiles.openLocation    location: " + location);
+	console.log("ProjectFiles.openLocation    username: " + username);
+	
+	var folders = location.split(/\//);
+	var projectName = folders[0];
+
+	var fileDrag = this.getFileDragByProject(projectName);
+    console.dir({fileDrag:fileDrag});    
+
+    var dragPanes = fileDrag.getChildren();
+    console.log("ProjectFiles.openLocation    dragPanes.length: " + dragPanes.length);
+    console.dir({dragPanes:dragPanes});
+    if ( ! dragPanes )
+        fileDrag.startup();
+    dragPanes = fileDrag.getChildren();
+    console.log("ProjectFiles.openLocation    dragPanes.length: " + dragPanes.length);
+    console.dir({dragPanes:dragPanes});
+
+	if ( folders.length < 2 )	return;
+
+	this.folderRoundRobin(location, 1);
+};
+
+
+projectFiles.folderRoundRobin = function (location, index) {	    
+    
+    console.log("ProjectFiles.folderRoundRobin    location " + location);
+	console.log("ProjectFiles.folderRoundRobin    index " + index);
+	
+	var folders = location.split(/\//);
+	var projectName = folders[0];
+
+	var fileDrag = this.getFileDragByProject(projectName);
+	console.dir({fileDrag:fileDrag});    
+
+        var dragPanes = fileDrag.getChildren();
+	console.log("ProjectFiles.folderRoundRobin    dragPanes.length: " + dragPanes.length);
+
+        // SET CALLBACK
+	//var callback = dojo.hitch(this, "folderRoundRobin", location, index + 1);
+//	var callback = dojo.hitch(this, "testCallback");
+//	var callback = dojo.hitch(this, function() {
+//    console.log("ProjectFiles.folderRoundRobin    CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK CALLBACK");
+//});
+//	var callback = dojo.hitch(this, "folderRoundRobin", location, index + 1);
+	var callback = dojo.hitch(this, "connectRoundRobin", fileDrag, location, index + 1);	
+	
+
+        // OPEN PANE IF NOT OPEN
+        if ( dragPanes.length < index + 1)
+		this.openFolder(dragPanes[index - 1], folders[index], callback);
+
+
+	// REMOVE dojo.connect ON PREVIOUS DRAG PANE
+	var previousDragPane = dragPanes[index - 1];
+	if ( previousDragPane._connection )
+		dojo.disconnect(previousDragPane._connection);
+
+
+        // REOPEN PANE IF WRONG FOLDER IS OPEN
+	var dragPane = dragPanes[index];
+	console.log("ProjectFiles.folderRoundRobin    dragPane " + index + ": " + dragPane);
+
+	var path = dragPane.path;
+	console.log("ProjectFiles.folderRoundRobin    Doing folder " + index + " path: " + path);
+	var folderPath = this.folderPathByIndex(folders, index);
+	console.log("ProjectFiles.folderRoundRobin    Doing folder " + index + " folderPath: " + folderPath);
+	
+	if ( folderPath != path )
+		this.openFolder(dragPanes[index - 1], folders[index], callback);
+};
+
+projectFiles.testCallback = function (dragPane, index, arg1, arg2, arg3) {
+	console.log("ProjectFiles.testCallback    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
+	console.log("ProjectFiles.testCallback    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
+	console.log("ProjectFiles.testCallback    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
+	console.log("ProjectFiles.testCallback    dragPane: " + dragPane);
+        var fileDrag = dragPane.parentWidget;
+	console.log("ProjectFiles.testCallback    fileDrag: " + fileDrag);
+        var dragPanes = fileDrag.getChildren();
+	console.log("ProjectFiles.testCallback    dragPanes.length: " + dragPanes.length);
+        console.dir({dragPanes:dragPanes});
+
+	console.log("ProjectFiles.testCallback    arg1: " + arg1);
+
+};
+
+projectFiles.openFolder = function (dragPane, name, callback) {
+	console.log("ProjectFiles.openFolder    dragPane: " + dragPane);
+	console.log("ProjectFiles.openFolder    name: " + name);
+	console.log("ProjectFiles.openFolder    callback: " + callback.toString());
+	
+	var itemIndex = this.getItemIndexByName(dragPane, name);
+	console.log("ProjectFiles.openFolder    itemIndex: " + itemIndex);
+	
+	var items = dragPane._dragSource.getAllNodes();
+	console.log("ProjectFiles.openFolder    items:");
+	console.dir({items:items});
+	
+    var item = items[itemIndex].item;
+    var event = { target: { item: item } };
+	console.log("ProjectFiles.openFolder    event:");
+	console.dir({event:event});
+
+	console.log("ProjectFiles.openFolder    BEFORE this._connection:");
+	console.dir({this_connection:this._connection});
+	if ( this._connection )
+		dojo.disconnect(this._connection);
+	console.log("ProjectFiles.openFolder    AFTER this._connection:");
+	console.dir({this_connection:this._connection});
+
+	delete this._connection;
+	this._connection = dojo.connect(dragPane.parentWidget, "addChild", dojo.hitch(this, callback));
+
+
+//	this._connection = dojo.connect(dragPane.parentWidget, "addChild", dojo.hitch(this, "testCallback", dragPane.parentWidget));
+
+//	this._connection = dojo.connect(dragPane.parentWidget, "addChild", this, "testCallback", "argument1", "argument2", "argument3");
+//	this._connection = dojo.connect(dragPane.parentWidget, "addChild", this, "testCallback");
+//	this._connection = dojo.connect(dragPane.parentWidget, "addChild", this, callback);
+	
+    dragPane.onclickHandler(event);	
+};
+
+projectFiles.connectRoundRobin = function (fileDrag, location, index) {
+	console.log("ProjectFiles.connectRoundRobin    fileDrag:");
+	console.dir({fileDrag:fileDrag});
+	console.log("ProjectFiles.connectRoundRobin    location: " + location);
+	console.log("ProjectFiles.connectRoundRobin    index: " + index);
+
+	var dragPanes = fileDrag.getChildren();
+	var dragPane = dragPanes[dragPanes.length - 1];
+	console.log("ProjectFiles.connectRoundRobin    dragPane:");
+	console.dir({dragPane:dragPane});
+	
+	dojo.connect(dragPane, "onLoad", dojo.hitch(this, "folderRoundRobin", location, index));
+};
+
+
+   console.dir({projectFiles:projectFiles});
+    projectFiles.openLocation(location, username);
+
+//},10000, this);
+
+};
+
+
+//dojo.reloadCss();
+
+//doIt();
+
+//createTab();
+
+//doOpenFirst();
+
+//openFirst();
+
+openLocation("Project1/babo/hg19", null);
+
+
+
+
+

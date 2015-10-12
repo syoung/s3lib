@@ -1,0 +1,157 @@
+<!--<!DOCTYPdojo/E HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"-->
+<!--"http://www.w3.org/TR/html4/strict.dtd">-->
+<html>
+<head>
+
+<!-- prevent cache -->
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+<!-- declare character set -->
+<!--<meta http-equiv="content-type" content="text/html; charset=utf-8" />-->
+<meta charset="utf-8" />
+
+<title>Agua</title>
+<style type="text/css">
+	/* DOJO STYLES */
+	@import "dojo-1.6.1rc2/dojo/resources/dojo.css";
+	@import "dojo-1.6.1rc2/dijit/themes/dijit.css";
+	@import "dojo-1.6.1rc2/dijit/themes/soria/soria.css";
+	@import "dojo-1.6.1rc2/dijit/themes/tundra/tundra.css";
+	@import "dojo-1.6.1rc2/dojox/widget/Loader/Loader.css";
+	@import "dojo-1.6.1rc2/dijit/themes/claro/document.css";
+</style>
+<link rel="stylesheet" href="plugins/core/css/toolbar.css">
+<script type="text/javascript">
+
+// GLOBAL VARIABLES
+var Agua = {};
+var Data = {};
+var dojoConfig = {
+	isDebug: true,
+	locale: "en-us",
+	//extraLocale: ['ja-jp'],
+	//modulePaths: {"plugins": "../../plugins", "t": "../../t"},
+	debugAtAllCosts: true,
+	useCommentedJson: true
+};
+</script>
+
+<script type="text/javascript"
+	src="dojo/dojo/dojo.js">
+</script>
+
+<script type="text/javascript">
+
+dojo.registerModulePath("plugins", "../../build/dojo/plugins");
+
+	
+var loaded = [];
+var oldLoaded = {};
+
+var getLoaded = function () {
+	loaded = [];
+	if(dojo._loadedModules){
+		for(var m in dojo._loadedModules){
+			//console.log(m);
+			if ( ! oldLoaded[m] )
+				loaded.push(m);
+			oldLoaded[m]= 1;
+		}
+	}
+};
+
+var showLoaded = function () {
+	getLoaded();
+	console.log("Loaded modules:")
+	for( var m in loaded ) {
+		console.log(loaded[m]);
+	}
+
+}
+//console.log("*************************** AFTER  dojo/dojo/dojo.js")
+//showLoaded();
+</script>
+
+<script type="text/javascript"
+	src="build/dojo/agua_dojo_dijit.js.uncompressed.js">
+</script>
+
+<script type="text/javascript">
+console.log("*************************** AFTER  build/dojo/agua_dojo_dijit.js.uncompressed.js")
+getLoaded();
+</script>
+
+<script type="text/javascript">
+//	src="dojo/dojoc/util/loader.js">
+	dojo.require("dojoc.util.loader");
+</script>
+
+<script type="text/javascript">
+console.log("*************************** AFTER  dojo/dojoc/util/loader.js")
+getLoaded();
+</script>
+
+<script type="text/javascript">
+
+// DEBUG LOADER
+//dojo.require("dojoc.util.loader");
+//dojo.require("plugins.core.Agua");
+
+</script>
+
+<script
+	type="text/javascript"
+	src="build/dojo/agua_all.js.uncompressed.js">
+</script>
+
+<script type="text/javascript">
+console.log("*************************** AFTER  build/dojo/agua_all.js.uncompressed.js")
+showLoaded();
+</script>
+
+<!--<script type="text/javascript" src="build/agua_all.js"></script>-->
+
+<!--<script-->
+<!--	type="text/javascript"-->
+<!--	src="build/test.js">-->
+<!--</script>-->
+
+<!--<script type="text/javascript">-->
+<!--console.log("*************************** AFTER  test.js")-->
+<!--getLoaded();-->
+<!--</script>-->
+
+
+
+<script type="text/javascript">
+
+// DEBUG LOADER
+//dojo.require("dojoc.util.loader");
+
+dojo.addOnLoad(function(){
+
+	//console.log("DOING require plugins.core.Common.Array");
+	//dojo.require("plugins.core.Common.Array");
+	//
+	//console.log("DOING require plugins.core.Common.Date");
+	//dojo.require("plugins.core.Common.Date");
+
+	dojo.require("plugins.core.Agua");
+	//dojo.require("plugins.login.Controller");
+	//Agua = new plugins.core.Agua( {
+	//	cgiUrl : "../cgi-bin/agua/"
+	//	//cgiUrl : "../modperl/"
+	//	, htmlUrl : "../agua/"
+	//	//, dataUrl: dojo.moduleUrl("plugins", "../getData.120521.testuser.json")
+	//});
+	//Agua.login = new plugins.login.Login();
+	//console.log("agua.html    Completed");
+});
+
+</script>
+</head>
+<body class="agua tundra">
+	<div id="loginHolder"></div>
+	<div id="attachPoint"></div>
+</body>
+</html>

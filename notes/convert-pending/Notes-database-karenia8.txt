@@ -1,0 +1,528 @@
+Notes-database-karenia8
+
+</entry>
+
+
+
+<entry [Mon Jul  9 16:18:07 EDT 2007] SUBJECT: karenia8 - RESEQUENCED karenia EXPT 531, PLATES 025 AND 026 (WITHOUT FILTER)>
+
+
+
+MSG: Tim
+CC: Doug, Jeff
+
+Hi Tim,
+
+Here are the results of the resequenced reads from karenia expt 531, plates 025 and 026, as 'karenia8' (without the vector and polynucleotide filter):
+
+	SELECT COUNT(*) FROM readsblast;
+		
+	+----------+
+	| COUNT(*) |
+	+----------+
+	|     2353 |
+	+----------+
+		
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=99;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|           27 |
+	+--------------+
+	
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=95;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|           89 |
+	+--------------+	
+
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=90;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|          119 |
+	+--------------+
+
+I'm not sure about the agreement between the original reads and the best BLAST hits of the sequenced reads as I don't have the original-reseq mapping file but here are the BLAST hits attached:
+
+	- karenia8-karenia5_reads.readsblast.distinct.tsv
+		resequenced reads BLAST hits 
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Mon Jul  9 16:18:07 EDT 2007] DO  karenia8 - RESEQUENCED karenia READS FROM EXPERIMENTS 025 AND 026 (WITHOUT FILTER)>
+
+
+
+BASED ON PROCEDURE FOR karenia6 (BELOW)
+
+1. COPY READS
+
+	COPIED .PHD FILES FROM PLATES 7 AND 8 OF EXPERIMENT 531
+
+mkdir /Users/young/FUNNYBASE/pipeline/karenia8
+cd /Users/young/FUNNYBASE/pipeline/karenia8
+mkdir chromat_dir phd_dir edit_dir collection
+ls
+cp /Users/mclean/531-025-070707/*.phd.1 /Users/young/FUNNYBASE/pipeline/karenia8/phd_dir/
+cp /Users/mclean/531-026-070707/*.phd.1 /Users/young/FUNNYBASE/pipeline/karenia8/phd_dir/
+
+sudo cp -r /Users/young/FUNNYBASE/pipeline/karenia8 /common/pipeline
+
+2. SCREEN READS
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+sudo ./readsarrayvectorscreen.pl -d karenia8
+
+	Task file 1:    /common/pipeline/karenia8/collection/karenia8.screenreads.taskfile.1
+	Shell script printed:
+	
+	/common/pipeline/karenia8/collection/readsarrayscreen.karenia8.sh
+	
+	qsub command: qsub -sync y -t 1-1 /common/pipeline/karenia8/collection/readsarrayscreen.karenia8.sh
+	Completed qsub.
+	Job ID: Your job-array 897130.1-1:1 ("readsarrayscreen.karenia8.sh") has been submitted
+	Job 897130 exited with exit code 0.
+	
+	Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+	
+	Expt: 531
+	TSV file: /common/pipeline/karenia8/collection/karenia8.screenreads.out.1.tsv
+	
+	RUN TIME: 00:00:26
+	Completed ./readsarrayvectorscreen.pl
+	9:47PM, 5 July 2007
+	****************************************
+	
+4. CREATE AND REGISTER DATABASE
+
+./collectiondatabase.pl -d karenia8
+
+
+5. LOAD SCREENED READS INTO screenedreads TABLE
+
+
+./arrayreadsloadscreenedreads.pl -d karenia8
+
+	use karenia8;
+	select count(*) from screenedreads;
+	+----------+
+	| count(*) |
+	+----------+
+	|      175 |
+	+----------+
+	
+6. FILTER SCREENED READS AND LOAD INTO reads TABLE:
+
+./reads.pl -d karenia8 -f # NO FILTER
+
+	Database: karenia8
+	Filters: NONE
+	Creating database 'karenia8' if not exists... done.
+	Creating table 'reads'... done.
+	No. experiments: 1
+	531 
+	Experiment: 531
+	No. reads: 178
+	0
+	10
+	20
+	30
+	40
+	50
+	60
+	70
+	80
+	90
+	100
+	110
+	120
+	130
+	140
+	150
+	160
+	170
+	Output .tsv file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia8/collection/karenia8.exp531.reads.tsv
+	
+	Deleting from table 'reads'... done.
+	Loading data from experiment '531' into table 'reads'... done.
+	
+	RUN TIME: 00:00:02
+	Completed ./reads.pl
+	2:40PM, 6 July 2007
+	****************************************
+
+	
+	ALL screenedreads (total 178) TRANSFERRED TO reads TABLE UNFILTERED: 
+
+	use karenia8;
+	select count(*) from reads where length(filteredsequence) > 75;
+	+----------+
+	| count(*) |
+	+----------+
+	|      175 |
+	+----------+
+
+
+6. CREATE READS.FASTA FILE:
+
+
+./readsfasta.pl -d karenia8
+
+	Experiment: 531
+	No. reads: 178
+	0
+	100
+	Fasta file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia8/edit_dir/karenia8.fasta
+	
+	Qual file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia8/edit_dir/karenia8.fasta.qual
+	
+	
+	RUN TIME: 00:00:00
+	Completed ./readsfasta.pl
+	2:42PM, 6 July 2007
+	****************************************
+	
+
+7. BLAST karenia8 READS AGAINST karenia5 READS
+
+sudo ./readsarrayblast.pl -d karenia8 -t karenia5_reads
+
+	...
+	Output file printed:
+	
+	/common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.tsv
+	
+	
+	Run time: 00:00:20
+	Completed ./readsarrayblast.pl
+	3:11PM, 6 July 2007
+	****************************************
+	TEST:
+
+sudo /Users/local/FUNNYBASE/bin/pipeline4/readsblast2tsv.pl -i /common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.1 -t karenia5_reads
+
+
+8. LOAD DATA INTO readsblast TABLE:
+
+sudo ./readsarrayblastloaddata.pl -d karenia8 -t karenia5_reads
+
+	Doing target database: karenia5_reads
+	TSV file: /common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.tsv
+	Deleting from readsblast WHERE targetsource='karenia5_reads'...done.
+	Loading 'karenia5_reads' hits data into table 'readsblast'...done.
+	
+	Run time: 00:00:01
+	Completed ./readsarrayblastloaddata.pl
+	3:11PM, 6 July 2007
+	****************************************	
+
+9. CHECK RESULTS
+
+	SELECT COUNT(*) FROM readsblast;
+		
+	+----------+
+	| COUNT(*) |
+	+----------+
+	|     2353 |
+	+----------+
+		
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=99;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|           27 |
+	+--------------+
+	
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=95;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|           89 |
+	+--------------+	
+
+	select count(distinct experiment, plate, well) as unique_reads from readsblast where hspnumber = 1 and identity>=90;
+	+--------------+
+	| unique_reads |
+	+--------------+
+	|          119 |
+	+--------------+
+
+	select distinct experiment, plate, well, identity, targetexperiment, targetplate, targetwell from readsblast order by identity desc into outfile '/private/tmp/karenia8-karenia5_reads.readsblast.distinct.tsv';
+Query OK, 839 rows affected (0.01 sec)
+
+sudo mv /private/tmp/karenia8-karenia5_reads.readsblast.distinct.tsv /Users/young/FUNNYBASE/pipeline/karenia8/collection
+
+cp /Users/young/FUNNYBASE/pipeline/karenia8/collection/karenia8-karenia5_reads.readsblast.distinct.tsv /Users/young/FUNNYBASE/dev/karenia/tim
+
+
+
+
+
+
+ACTUAL OUTPUT FOLLOWS:
+
+
+
+pp4
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ sudo ./readsarrayvectorscreen.pl -d karenia8
+Task file 1:    /common/pipeline/karenia8/collection/karenia8.screenreads.taskfile.1
+Shell script printed:
+
+/common/pipeline/karenia8/collection/readsarrayscreen.karenia8.sh
+
+qsub command: qsub -sync y -t 1-1 /common/pipeline/karenia8/collection/readsarrayscreen.karenia8.sh
+Completed qsub.
+Job ID: Your job-array 897142.1-1:1 ("readsarrayscreen.karenia8.sh") has been submitted
+Job 897142 exited with exit code 0.
+
+Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+
+Expt: 531
+TSV file: /common/pipeline/karenia8/collection/karenia8.screenreads.out.1.tsv
+
+RUN TIME: 00:01:07
+Completed ./readsarrayvectorscreen.pl
+4:23PM, 9 July 2007
+****************************************
+
+
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ ./collectiondatabase.pl -d karenia8
+Creating tables... 
+create_assemblyblast.sql
+create_assemblyblastinfo.sql
+create_assemblyinfo.sql
+create_assemblyreads.sql
+create_assemblyreadsdiv.sql
+create_assemblyreadstartstop.sql
+create_assemblysequences.sql
+create_collectionbesthit.sql
+create_collectionblast.sql
+create_collectionblastbesthits.sql
+create_collectiondatabase.sql
+create_collectioninfo.sql
+create_collectionsequences.sql
+create_collectionsequencesalignment.sql
+create_collectionsequencesannotation.sql
+create_collectionsequencesblastdiv.sql
+create_collectionsequencesdiv.sql
+create_collectionsequencesiprscan.bkp1.sql
+create_collectionsequencesiprscan.sql
+create_collectionsequencesiprscandomain.sql
+create_collectionsequencesiprscandomain.sql.bkp2.sql
+create_collectionsequencesiprscandomainsvg.sql
+create_collectionsequencesiprscansvg.sql
+create_collectionsequencesorf.sql
+create_collectionsequencespathways.sql
+create_collectionupdate.sql
+create_compare.sql
+create_compareannotation.sql
+create_comparemultipleannotation.sql
+create_comparereads.sql
+create_dbest.sql
+create_funnybaseblast.sql
+create_funnybasesequences.sql
+create_funnybasesequencesannotation.sql
+create_funnybasesequencesdiv.sql
+create_funnybaseupdate.sql
+create_indices.sql
+create_iprscan.sql
+create_libraries.sql
+create_orthologues.sql
+create_orthologuesannotation.sql
+create_orthologuesbesthit.sql
+create_orthologuesblast.sql
+create_orthologuesiprscan.sql
+create_orthologuesiprscandomain.sql
+create_orthologuesiprscandomainplussvg.sql
+create_orthologuesiprscandomainsvg.sql
+create_orthologuesiprscansvg.sql
+create_orthologuesorf.sql
+create_pipeline.sql
+create_plates.sql
+create_platesinfo.sql
+create_primers.sql
+create_protocols.sql
+create_query.sql
+create_querycache.sql
+create_reads.sql
+create_readsannotation.sql
+create_readsblast.sql
+create_readsequences.sql
+create_readsinfo.sql
+create_screenedreads.sql
+create_sequencenumbersmapping.sql
+create_stats.sql
+Create tables done.
+Creating directories... done.
+Registering database 'karenia8'... Creating table 'collectiondatabase' if not exists... done.
+done.
+Completed ./collectiondatabase.pl
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ ./arrayreadsloadscreenedreads.pl -d karenia8
+Creating table 'screenedreads'... done.
+Experiments: 531
+
+Loading /common/pipeline/karenia8/collection/karenia8.screenreads.out.1.tsv... done.
+
+RUN TIME: 00:00:00
+Completed ./arrayreadsloadscreenedreads.pl
+4:23PM, 9 July 2007
+****************************************
+
+
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ ./reads.pl -d karenia8 -f # NO FILTER
+Database: karenia8
+Filters: NONE
+Creating database 'karenia8' if not exists... done.
+Creating table 'reads'... done.
+No. experiments: 1
+531 
+Experiment: 531
+No. reads: 175
+0
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+110
+120
+130
+140
+150
+160
+170
+Output .tsv file printed:
+
+/Users/young/FUNNYBASE/pipeline/karenia8/collection/karenia8.exp531.reads.tsv
+
+Deleting from table 'reads'... done.
+Loading data from experiment '531' into table 'reads'... done.
+
+RUN TIME: 00:00:02
+Completed ./reads.pl
+4:24PM, 9 July 2007
+****************************************
+
+
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ ./readsfasta.pl -d karenia8
+Experiment: 531
+No. reads: 175
+0
+100
+Fasta file printed:
+
+/Users/young/FUNNYBASE/pipeline/karenia8/edit_dir/karenia8.fasta
+
+Qual file printed:
+
+/Users/young/FUNNYBASE/pipeline/karenia8/edit_dir/karenia8.fasta.qual
+
+
+RUN TIME: 00:00:00
+Completed ./readsfasta.pl
+4:24PM, 9 July 2007
+****************************************
+
+
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ sudo ./readsarrayblast.pl -d karenia8 -t karenia5_reads
+
+Doing BLAST against these databases: karenia5_reads
+
+Mon Jul  9 16:24:14 EDT 2007
+
+Doing target database: karenia5_reads
+Collection sequences fastafile: /common/data/karenia8_reads
+Target type: nucleotide
+Query type: nucleotide
+Blast type: blastn
+BLAST: /common/apps/wublast/blastn
+++++ format_database()
+/common/data/karenia5_reads nucleotide /Users/young/FUNNYBASE/apps/blast/xdformat
+Printing shellscript '/common/pipeline/karenia8/blast/karenia8-karenia5_reads.sh'... done.
+
+
+Doing ARRAYBLAST of database 'karenia8' (total sequences 175) against karenia5_reads (E-value cutoff: 1e-05)
+qsub command: qsub -sync y -t 1-30 /common/pipeline/karenia8/blast/karenia8-karenia5_reads.sh
+Completed qsub. Job output:
+
+Your job-array 897143.1-30:1 ("karenia8-karenia5_reads.sh") has been submitted
+Job 897143.30 exited with exit code 0.
+Job 897143.25 exited with exit code 0.
+Job 897143.28 exited with exit code 0.
+Job 897143.8 exited with exit code 0.
+Job 897143.23 exited with exit code 0.
+Job 897143.6 exited with exit code 0.
+Job 897143.15 exited with exit code 0.
+Job 897143.1 exited with exit code 0.
+Job 897143.16 exited with exit code 0.
+Job 897143.9 exited with exit code 0.
+Job 897143.24 exited with exit code 0.
+Job 897143.22 exited with exit code 0.
+Job 897143.11 exited with exit code 0.
+Job 897143.17 exited with exit code 0.
+Job 897143.2 exited with exit code 0.
+Job 897143.12 exited with exit code 0.
+Job 897143.18 exited with exit code 0.
+Job 897143.10 exited with exit code 0.
+Job 897143.7 exited with exit code 0.
+Job 897143.13 exited with exit code 0.
+Job 897143.20 exited with exit code 0.
+Job 897143.19 exited with exit code 0.
+Job 897143.21 exited with exit code 0.
+Job 897143.29 exited with exit code 0.
+Job 897143.3 exited with exit code 0.
+Job 897143.4 exited with exit code 0.
+Job 897143.5 exited with exit code 0.
+Job 897143.14 exited with exit code 0.
+Job 897143.27 exited with exit code 0.
+Job 897143.26 exited with exit code 0.
+
+Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+
+Merging output files into single outputfile: /common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.tsv... done.
+Output file printed:
+
+/common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.tsv
+
+
+Run time: 00:00:16
+Completed ./readsarrayblast.pl
+4:24PM, 9 July 2007
+****************************************
+
+
+dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ sudo ./readsarrayblastloaddata.pl -d karenia8 -t karenia5_reads
+
+Using default conf file: conf/default.conf
+Creating table 'readsblast' if not exists... done.
+Directory: /common/pipeline/karenia8/blast
+
+Doing target database: karenia5_reads
+TSV file: /common/pipeline/karenia8/blast/karenia8-karenia5_reads.blast.tsv
+Deleting from readsblast WHERE targetsource='karenia5_reads'...done.
+Loading 'karenia5_reads' hits data into table 'readsblast'...done.
+
+Run time: 00:00:00
+Completed ./readsarrayblastloaddata.pl
+4:24PM, 9 July 2007
+****************************************

@@ -1,0 +1,25 @@
+// Copyright © Hanover Capital Management Corp. 2006. All Rights Reserved.
+
+//
+// Combobox semantics
+//
+// $Author: mflorence $
+// $Date: 2006-03-24 16:32:20 $
+// $Revision: 1.2 $
+//
+
+function Combobox_overlay(nm_typein, nm_button, nm_list) {
+  var cell = document.getElementsByName(nm_typein)[0];
+  var typein = document.forms[0].elements(nm_typein, 0);
+  var button = document.images[nm_button];
+  var dropdown = document.forms[0].elements(nm_list, 0);
+  typein.style.position = 'relative';
+  typein.style.posHeight = button.offsetHeight;
+  button.style.posLeft = typein.offsetLeft + typein.offsetWidth + 2;
+  button.style.posTop = typein.offsetTop ;
+  button.style.visibility = "visible";
+  dropdown.style.posLeft = typein.offsetLeft;
+  dropdown.style.posTop = typein.offsetTop + typein.offsetHeight + 2;
+  dropdown.style.posWidth = button.offsetLeft + button.offsetWidth - typein.offsetLeft;
+  cell.style.posWidth = dropdown.style.posWidth;
+}

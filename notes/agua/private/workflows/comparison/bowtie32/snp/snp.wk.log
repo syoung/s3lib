@@ -1,0 +1,86 @@
+[workflow snp]
+2011-02-01 11:07:55
+
+Workflow:	snp
+Started: 2011-02-01 09:55:38
+Stopped: 2011-02-01 09:57:07
+Duration: 0 hrs 1 mins 29 secs
+
+
+	Application	1	samtobam
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl 
+	status: unknown
+	locked: 0
+	started: 2011-02-01 09:55:38
+	stopped: 2011-02-01 09:57:07
+	duration: 0 hrs 1 mins 29 secs
+
+
+
+	Application	2	binbam
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+	Application	3	cumulativebam
+	perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+	locked: 0
+
+
+
+	Application	4	bamtosnp
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+	Application	5	snpvenn
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+
+[app 2 binbam]
+2011-02-01 11:07:55
+
+  Application:
+  name           binbam
+  owner          anonymous
+  ordinal        2
+  locked         0
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-binbam.out
+    maxjobs        2000
+    queue          small
+    reference      chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/binbam.out
+    walltime       48
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/binBam.pl \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE% \
+ --binlevel 500000 \
+ --reference chr22 \
+ --maxjobs 2000 \
+ --walltime 48 \
+ --queue small \
+ --cluster LSF \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/binbam.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-binbam.out 
+
+

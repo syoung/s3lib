@@ -1,0 +1,36 @@
+// Copyright © Hanover Capital Management Corp. 2002. All Rights Reserved.
+
+//
+// Form semantics.
+//
+// Note! Works only under IE for now.
+//
+// $Author: mflorence $
+// $Date: 2011-11-14 14:47:56 $
+// $Revision: 1.6 $
+//
+
+// Submit a form
+//
+// @param id of form
+// @param prefix of shadow objects
+//
+function Form_onsubmit(id, prefix) {
+  // copy all editable content into shadow objects
+  var spans = document.getElementsByTagName("SPAN");
+  for (var i = 0; i < spans.length; i++) {
+    if (spans[i].contentEditable == "true") {
+      var editable = spans[i];
+      if (editable.innerText.length > 0) {
+        var name = editable.id.substr(prefix.length);
+        eval("document.forms[0]." + name + ".value = editable.innerHTML");
+      }
+    }
+  }
+  // clean up all Word inputs
+  try {
+    var inputs = document.forms[id].elements;
+    Functions_correctWordFields(inputs);
+  }
+  catch (ignored) { }
+}

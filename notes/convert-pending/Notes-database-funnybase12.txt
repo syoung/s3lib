@@ -1,0 +1,183 @@
+Notes-database-funnybase12
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jun 20 19:24:11 EDT 2007
+RAN collectionsequencesannotation WITHOUT IPRSCAN INPUT:
+
+	Annotated sequences: 12826
+	Unknown sequences: 10475
+	Swissprot defined: 12364
+	Refseq defined: 12170
+	Both defined: 11708
+	Either defined: 12826
+
+./collectionsequencesannotation.pl -d funnybase12
+
+	23300
+	Output .TSV file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase12/collection/collectionsequencesannotation.tsv
+	
+	Annotated sequences: 12826
+	Unknown sequences: 10475
+	Swissprot defined: 12364
+	Refseq defined: 12170
+	Both defined: 11708
+	Either defined: 12826
+	Deleting from table 'collectionsequencesannotation'
+	Loading data into table 'collectionsequencesannotation'... done.
+	Updating FULLTEXT targetannotation (targetannotation, targetsource, targetid, targetname)... done.
+	
+	Run time: 00:08:05
+	Completed ./collectionsequencesannotation.pl
+	7:23PM, 20 June 2007
+	****************************************
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jun 20 16:13:35 EDT 2007
+LOADED 1e-10 BLAST INTO funnybase12
+
+select targetsource, count(*) from collectionblast group by targetsource ;
++--------------+----------+
+| targetsource | count(*) |
++--------------+----------+
+| refseq-dog   |   762191 |
+| refseq-human |   571111 |
+| refseq-mouse |   491361 |
+| refseq-rat   |   430969 |
+| swissprot    |  2116550 |
++--------------+----------+
+5 rows in set (15.06 sec)
+
+sudo ./collectionblastloaddata.pl -d funnybase12
+	
+	Using default conf file: conf/default.conf
+	Directory: /common/pipeline/funnybase12/blast
+	
+	Doing target database: refseq-human
+	TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-human.blast.tsv
+	Deleting from collectionblast WHERE targetsource='refseq-human'...done.
+	Loading 'refseq-human' hits data into table 'collectionblast'...done.
+	
+	Doing target database: refseq-mouse
+	TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-mouse.blast.tsv
+	Deleting from collectionblast WHERE targetsource='refseq-mouse'...done.
+	Loading 'refseq-mouse' hits data into table 'collectionblast'...done.
+	
+	Doing target database: refseq-rat
+	TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-rat.blast.tsv
+	Deleting from collectionblast WHERE targetsource='refseq-rat'...done.
+	Loading 'refseq-rat' hits data into table 'collectionblast'...done.
+	
+	Doing target database: swissprot
+	TSV file: /common/pipeline/funnybase12/blast/funnybase12-swissprot.blast.tsv
+	Deleting from collectionblast WHERE targetsource='swissprot'...done.
+	Loading 'swissprot' hits data into table 'collectionblast'...done.
+	
+	Run time: 00:04:06
+	Completed ./collectionblastloaddata.pl
+	11:31AM, 20 June 2007
+****************************************
+
+AND RENAMED refseq-dog BLAST FILE:
+
+
+sudo ./collectionblastloaddata.pl -d funnybase12 -t refseq-dog
+	
+	Using default conf file: conf/default.conf
+	Directory: /common/pipeline/funnybase12/blast
+	
+	Doing target database: refseq-dog
+	TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-dog.blast.tsv
+	Deleting from collectionblast WHERE targetsource='refseq-dog'...done.
+	Loading 'refseq-dog' hits data into table 'collectionblast'...done.
+	
+	Run time: 00:02:38
+	Completed ./collectionblastloaddata.pl
+	6:52PM, 20 June 2007
+	****************************************
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Jun 18 02:40:13 EDT 2007
+TABLE IS FULL
+
+./collectionblastloaddata.pl -d funnybase12
+
+...
+Doing target database: refseq-rat
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-rat.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-rat'...done.
+DBD::mysql::db do failed: The table 'collectionblast' is full at /Users/young/FUNNYBASE/lib/Database.pm line 590.
+Query failed: The table 'collectionblast' is full (1114)
+Loading 'refseq-rat' hits data into table 'collectionblast'...DID NOT LOAD!
+done.
+...
+
+
+
+show table status from funnybase12 like 'collectionblast'\G
+*************************** 1. row ***************************
+           Name: collectionblast
+           Type: MyISAM
+     Row_format: Dynamic
+           Rows: 7564201
+ Avg_row_length: 567
+    Data_length: 4294966856
+Max_data_length: 4294967295
+   Index_length: 128234496
+      Data_free: 0
+ Auto_increment: NULL
+    Create_time: 2007-06-15 00:00:05
+    Update_time: 2007-06-15 23:55:22
+     Check_time: NULL
+ Create_options: 
+        Comment: 
+1 row in set (0.00 sec)
+
+
+DO ALTER TABLE AND SET MAX_ROWS TO 2 BILLION:
+
+
+ALTER TABLE collectionblast  MAX_ROWS = 2000000000 AVG_ROW_LENGTH = 600;
+Query OK, 7564201 rows affected (7 min 28.48 sec)
+Records: 7564201  Duplicates: 0  Warnings: 0
+
+
+THEN RELOADED:
+
+sudo ./collectionblastloaddata.pl -d funnybase12
+Password:
+
+Using default conf file: conf/default.conf
+Directory: /common/pipeline/funnybase12/blast
+
+Doing target database: refseq-human
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-human.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-human'...done.
+Loading 'refseq-human' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-mouse
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-mouse.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-mouse'...done.
+Loading 'refseq-mouse' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-dog
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-dog.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-dog'...done.
+Loading 'refseq-dog' hits data into table 'collectionblast'...done.
+
+Doing target database: refseq-rat
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-refseq-rat.blast.tsv
+Deleting from collectionblast WHERE targetsource='refseq-rat'...done.
+Loading 'refseq-rat' hits data into table 'collectionblast'...done.
+
+Doing target database: swissprot
+TSV file: /common/pipeline/funnybase12/blast/funnybase12-swissprot.blast.tsv
+Deleting from collectionblast WHERE targetsource='swissprot'...done.
+Loading 'swissprot' hits data into table 'collectionblast'...done.
+
+Run time: 00:55:07
+Completed ./collectionblastloaddata.pl
+2:12AM, 19 June 2007
+
+

@@ -1,0 +1,80 @@
+Notes-install-AI
+
+ISSUE: MACOSX_DEPLOYMENT_TARGET in install of Algorithm::SVM
+SOLUTION: SET MACOSX_DEPLOYMENT_TARGET ENVIRONMENT VARIABLE TO 10.4 (SEE BELOW)
+
+install Algorithm::NaiveBayes
+============================
+cd /Users/young/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03 young$ ls
+Build.PL    Changes     INSTALL     MANIFEST    META.yml    Makefile    Makefile.PL blib        lib         pm_to_blib  t
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03 young$ perl Makefile.PL 
+Writing Makefile for Algorithm::NaiveBayes
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03 young$ make
+Manifying blib/man3/Algorithm::NaiveBayes.3pm
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03 young$ make test
+PERL_DL_NONLAZY=1 /usr/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'blib/lib', 'blib/arch')" t/*.t
+t/01-basic.......ok                                                          
+t/02-discrete....ok                                                          
+All tests successful.
+Files=2, Tests=17,  0 wallclock secs ( 0.08 cusr +  0.03 csys =  0.11 CPU)
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-NaiveBayes-0.03 young$ sudo make install
+Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Algorithm/NaiveBayes/.packlist
+Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+
+
+install Algorithm::SVM
+======================
+
+TO AVOID THIS PROBLEM:
+
+ /usr/bin/ld: flag: -undefined dynamic_lookup can't be used with MACOSX_DEPLOYMENT_TARGET environment variable set to: 10.1
+collect2: ld returned 1 exit status
+make: *** [blib/arch/auto/Algorithm/SVM/SVM.bundle] E
+
+Set the MACOSX_DEPLOYMENT_TARGET environment variable to  10.4 instead of 10.1:
+(dyld didn't support runtime lookup until 10.3.)
+
+export MACOSX_DEPLOYMENT_TARGET=10.4
+echo $MACOSX_DEPLOYMENT_TARGET
+
+cd /Users/youngFUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-SVM-0.11
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-SVM-0.11 young$ ls
+Changes             Makefile.PL.solaris SVM.xs              bindings.h          libsvm.h            typemap
+MANIFEST            README              TODO                lib                 sample.model
+Makefile.PL         README.solaris      bindings.cpp        libsvm.cpp          test.pl
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-SVM-0.11 young$ perl Makefile.PL
+Checking if your kit is complete...
+Looks good
+Writing Makefile for Algorithm::SVM
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-SVM-0.11 young$ make
+c++ -c   -g -pipe -fno-common -DPERL_DARWIN -no-cpp-precomp -fno-strict-aliasing -I/usr/local/include -O3   -DVERSION=\"0.10\" -DXS_VERSION=\"0.10\"  "-I/System/Library/Perl/5.8.6/darwin-thread-multi-2level/CORE"   SVM.c
+SVM.xs: In function `void XS_Algorithm__SVM__getSVRProbability(PerlInterpreter*, CV*)':
+SVM.xs:156: warning: converting to 'int' from 'double'
+c++ -c   -g -pipe -fno-common -DPERL_DARWIN -no-cpp-precomp -fno-strict-aliasing -I/usr/local/include -O3   -DVERSION=\"0.10\" -DXS_VERSION=\"0.10\"  "-I/System/Library/Perl/5.8.6/darwin-thread-multi-2level/CORE"   libsvm.cpp
+c++ -c   -g -pipe -fno-common -DPERL_DARWIN -no-cpp-precomp -fno-strict-aliasing -I/usr/local/include -O3   -DVERSION=\"0.10\" -DXS_VERSION=\"0.10\"  "-I/System/Library/Perl/5.8.6/darwin-thread-multi-2level/CORE"   bindings.cpp
+Running Mkbootstrap for Algorithm::SVM ()
+chmod 644 SVM.bs
+rm -f blib/arch/auto/Algorithm/SVM/SVM.bundle
+LD_RUN_PATH="" c++  -bundle -undefined dynamic_lookup -L/usr/local/lib SVM.o libsvm.o bindings.o  -o blib/arch/auto/Algorithm/SVM/SVM.bundle   -lm   
+chmod 755 blib/arch/auto/Algorithm/SVM/SVM.bundle
+cp SVM.bs blib/arch/auto/Algorithm/SVM/SVM.bs
+chmod 644 blib/arch/auto/Algorithm/SVM/SVM.bs
+Manifying blib/man3/Algorithm::SVM::DataSet.3pm
+Manifying blib/man3/Algorithm::SVM.3pm
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/AI-Categorizer/Algorithm-SVM-0.11 young$ sudo make install
+Password:
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Algorithm/SVM/SVM.bs
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Algorithm/SVM/SVM.bundle
+Files found in blib/arch: installing files in blib/lib into architecture dependent library tree
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/Algorithm/SVM.pm
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/Algorithm/SVM/DataSet.pm
+Installing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Algorithm/SVM/autosplit.ix
+Installing /usr/local/man/man3/Algorithm::SVM.3pm
+Installing /usr/local/man/man3/Algorithm::SVM::DataSet.3pm
+Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Algorithm/SVM/.packlist
+Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+

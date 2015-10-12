@@ -1,0 +1,169 @@
+Notes-apps-picard.txt
+
+
+</entry>
+
+
+
+<entry [Wed Oct 20 16:45:04 EDT 2010] RUN compareSAMs EXECUTABLE>
+
+
+
+
+1. INPUT FILES
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/eland/chr22/hit.sam
+
+    -rw-rw-r--  1 syoung root 279K Oct 20 16:54 hit.sam
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/maq/chr22/hit.sam
+
+    -rw-rw-r--  1 syoung root 2.1M Oct 20 16:55 hit.sam
+
+
+
+2. CREATE OUTPUT DIR
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/picard
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/picard
+
+
+
+
+3. RUN compareSAMs
+
+export PATH=/nethome/syoung/base/apps/picard/1.33:$PATH
+
+
+/usr/local/java/bin/java -jar /nethome/syoung/base/apps/picard/1.33/CompareSAMs.jar \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/eland/chr22/hit.sam \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/maq/chr22/hit.sam
+
+
+FAILED WITH ERROR:
+
+    [Wed Oct 20 17:50:06 EDT 2010] net.sf.picard.sam.CompareSAMs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/eland/chr22/hit.sam /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/maq/chr22/hit.sam    TMP_DIR=/tmp/syoung VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+    [Wed Oct 20 17:50:10 EDT 2010] net.sf.picard.sam.CompareSAMs done.
+    Runtime.totalMemory()=123011072
+    Exception in thread "main" net.sf.samtools.SAMFormatException: Error parsing text SAM file. Empty sequence dictionary.; File /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/2000bp/autogenome/1/bowtie-test/eland/chr22/hit.sam; Line 1
+    Line: SRR005718.28461:1:2:355:145       153     chr22   16066809        6       36M     *     GGATGATTGTATTTTGCAATGTGAGAAGGACATGAG     +'++++++++++++++++++++++++++++++++++    MD:Z:36 SM:i:6
+            at net.sf.samtools.SAMTextReader.reportErrorParsingLine(SAMTextReader.java:220)
+            at net.sf.samtools.SAMTextReader.access$500(SAMTextReader.java:40)
+            at net.sf.samtools.SAMTextReader$RecordIterator.parseLine(SAMTextReader.java:424)
+            at net.sf.samtools.SAMTextReader$RecordIterator.next(SAMTextReader.java:268)
+            at net.sf.samtools.SAMTextReader$RecordIterator.next(SAMTextReader.java:240)
+            at net.sf.samtools.SAMFileReader$AssertableIterator.next(SAMFileReader.java:604)
+            at net.sf.samtools.SAMFileReader$AssertableIterator.next(SAMFileReader.java:582)
+            at net.sf.samtools.util.PeekIterator.peek(PeekIterator.java:67)
+            at net.sf.samtools.NotPrimarySkippingIterator.skipAnyNotprimary(NotPrimarySkippingIterator.java:58)
+            at net.sf.samtools.NotPrimarySkippingIterator.<init>(NotPrimarySkippingIterator.java:39)
+            at net.sf.picard.sam.CompareSAMs.compareUnsortedAlignments(CompareSAMs.java:281)
+            at net.sf.picard.sam.CompareSAMs.compareAlignments(CompareSAMs.java:117)
+            at net.sf.picard.sam.CompareSAMs.doWork(CompareSAMs.java:81)
+            at net.sf.picard.cmdline.CommandLineProgram.instanceMain(CommandLineProgram.java:165)
+            at net.sf.picard.cmdline.CommandLineProgram.instanceMainWithExit(CommandLineProgram.java:126)
+            at net.sf.picard.sam.CompareSAMs.main(CompareSAMs.java:66)
+            
+
+
+NOTES
+-----
+
+http://picard.sourceforge.net/command-line-overview.shtml#CompareSAMs
+
+USAGE: CompareSAMS <SAMFile1> <SAMFile2>
+
+Compares the headers of the two input SAM or BAM files, and, if possible, the SAMRecords. For SAMRecords, compares only the readUnmapped flag, reference name, start position and strand. Reports the number of SAMRecords that match, differ in alignment, are mapped in only one input, or are missing in one of the files
+
+Option	Description
+CREATE_MD5_FILE=Boolean	Whether to create an MD5 digest for any BAM files created. Default value: false. This option can be set to 'null' to clear the default value. Possible values: {true, false}
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 20 16:45:04 EDT 2010] INSTALL PICARD>
+
+
+
+
+INCLUDE THIS IN PATH TO USE PICARD:
+
+export PATH=/nethome/syoung/base/apps/picard/1.33:$PATH
+
+INVOKE AS FOLLOWS:
+
+java jvm-args -jar PicardCommand.jar OPTION1=value1 OPTION2=value2...
+
+
+INSTALLATION
+------------
+
+
+mkdir -p /nethome/syoung/base/apps/picard/1.33
+mkdir -p /nethome/syoung/base/apps/picard/archive
+cd /nethome/syoung/base/apps/picard/archive
+wget http://sourceforge.net/projects/picard/files/picard-tools/1.33/picard-tools-1.33.zip/download
+unzip *
+
+cd /nethome/syoung/base/apps/picard/1.33
+
+    -rw-r--r-- 1 syoung bioinfo 265K Oct 19 07:35 BamIndexStats.jar
+    -rw-r--r-- 1 syoung bioinfo 274K Oct 19 07:35 BamToBfq.jar
+    -rw-r--r-- 1 syoung bioinfo 264K Oct 19 07:35 BuildBamIndex.jar
+    -rw-r--r-- 1 syoung bioinfo 295K Oct 19 07:35 CalculateHsMetrics.jar
+    -rw-r--r-- 1 syoung bioinfo 269K Oct 19 07:35 CleanSam.jar
+    -rw-r--r-- 1 syoung bioinfo 307K Oct 19 07:35 CollectAlignmentSummaryMetrics.jar
+    -rw-r--r-- 1 syoung bioinfo 303K Oct 19 07:35 CollectGcBiasMetrics.jar
+    -rw-r--r-- 1 syoung bioinfo 279K Oct 19 07:35 CollectInsertSizeMetrics.jar
+    -rw-r--r-- 1 syoung bioinfo 265K Oct 19 07:35 CompareSAMs.jar
+    -rw-r--r-- 1 syoung bioinfo 281K Oct 19 07:35 CreateSequenceDictionary.jar
+    -rw-r--r-- 1 syoung bioinfo 288K Oct 19 07:35 EstimateLibraryComplexity.jar
+    -rw-r--r-- 1 syoung bioinfo 274K Oct 19 07:35 FastqToSam.jar
+    -rw-r--r-- 1 syoung bioinfo 297K Oct 19 07:35 FixMateInformation.jar
+    -rw-r--r-- 1 syoung bioinfo 295K Oct 19 07:35 MarkDuplicates.jar
+    -rw-r--r-- 1 syoung bioinfo 273K Oct 19 07:35 MeanQualityByCycle.jar
+    -rw-r--r-- 1 syoung bioinfo 318K Oct 19 07:35 MergeBamAlignment.jar
+    -rw-r--r-- 1 syoung bioinfo 295K Oct 19 07:35 MergeSamFiles.jar
+    -rw-r--r-- 1 syoung bioinfo 280K Oct 19 07:35 NormalizeFasta.jar
+    -rw-r--r-- 1 syoung bioinfo 687K Oct 19 07:35 picard-1.33.jar
+    -rw-r--r-- 1 syoung bioinfo 280K Oct 19 07:35 QualityScoreDistribution.jar
+    -rw-r--r-- 1 syoung bioinfo 263K Oct 19 07:35 ReplaceSamHeader.jar
+    -rw-r--r-- 1 syoung bioinfo 278K Oct 19 07:35 RevertSam.jar
+    -rw-r--r-- 1 syoung bioinfo 500K Oct 19 07:35 sam-1.33.jar
+    -rw-r--r-- 1 syoung bioinfo 263K Oct 19 07:35 SamFormatConverter.jar
+    -rw-r--r-- 1 syoung bioinfo 276K Oct 19 07:35 SamToFastq.jar
+    -rw-r--r-- 1 syoung bioinfo 263K Oct 19 07:35 SortSam.jar
+    -rw-r--r-- 1 syoung bioinfo 305K Oct 19 07:35 ValidateSamFile.jar
+    -rw-r--r-- 1 syoung bioinfo 265K Oct 19 07:35 ViewSam.jar
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct 19 18:40:24 EDT 2010] PICARD compareSAMS FUNCTION>
+
+
+
+
+http://picard.sourceforge.net/command-line-overview.shtml#CompareSAMs
+
+CompareSAMs
+
+USAGE: CompareSAMS <SAMFile1> <SAMFile2>
+
+Compares the headers of the two input SAM or BAM files, and, if possible, the SAMRecords. For SAMRecords, compares only the readUnmapped flag, reference name, start position and strand. Reports the number of SAMRecords that match, differ in alignment, are mapped in only one input, or are missing in one of the files
+
+Option	Description
+CREATE_MD5_FILE=Boolean	Whether to create an MD5 digest for any BAM files created. Default value: false. This option can be set to 'null' to clear the default value. Possible values: {true, false}
+
+
+
+

@@ -1,0 +1,106 @@
+Notes-database-unigenemouse.txt
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jun 11 15:24:21 EDT 2008
+
+1. GET SEED
+===========
+
+./unigeneseed.pl -d unigenemouse -m 1000 -i /common/data/unigene-mouse
+
+/Users/young/FUNNYBASE/pipeline/unigenemouse/data/unigenemouse.seed
+
+    Completed ./unigeneseed.pl
+    Run time: 01:05:415:34PM, 11 June 2008
+    ****************************************
+
+>gnl|UG|Mm#S7117272 mRNA for plakophilin 1 /cds=p(13,2199) /gb=Y07941 /gi=17075\
+93 /ug=Mm.4494 /len=4504
+CCTCCCGCCACCATGAACCACTCTCCGCTCAAGACCGCGCTGGCGTACGAATGCTTCCAG
+GACCAGGACAACTCCACGCTGGCTTTGCCCTCTGACCAAAAGATGAAGACCGGCACGTCG
+
+2. FORMAT FASTA
+===============
+
+./formatfasta.pl -i /Users/young/FUNNYBASE/pipeline/unigenemouse/data/unigenemouse.seed -o /Users/young/FUNNYBASE/pipeline/unigenemouse/data/unigenemouse.fasta -r "\\/gb=(\\w+)" -n "\\/gi=(\\w+)" -a "^gnl\|[^\|]+\|.+?#[^\s)]+\s+([^,]+)" -s unigenemouse
+
+Y07941 1707593|unigenemouse|mRNA for plakophilin 1 /cds=p(13
+CCTCCCGCCACCATGAACCACTCTCCGCTCAAGACCGCGCTGGCGTACGAATGCTTCCAG
+GACCAGGACAACTCCACGCTGGCTTTGCCCTCTGACCAAAAGATGAAGACCGGCACGTCG
+
+
+3. LOAD INTO collection
+=======================
+
+./fasta2collection.pl -d unigenemouse -f /Users/young/FUNNYBASE/pipeline/unigenemouse/data/unigenemouse.fasta
+
+
+4. CREATE FASTA FILE IN /common/data
+====================================
+
+./collectionfasta.pl -d unigenemouse -o /common/data/unigenemouse
+
+5. DO BLAST
+===========
+
+FORMAT DATABASES ON genomics
+
+./formatfasta.pl -i /common/data/unigene-human.original -o /common/data/unigene-human -r "\\/gb=(\\w+)" -n "\\/gi=(\\w+)" -a "^gnl\|[^\|]+\|.+?#[^\s)]+\s+([^,]+)" -s unigene-human
+
+./formatfasta.pl -i /common/data/unigene-dog.original -o /common/data/unigene-dog -r "\\/gb=(\\w+)" -n "\\/gi=(\\w+)" -a "^gnl\|[^\|]+\|.+?#[^\s)]+\s+([^,]+)" -s unigene-dog
+
+./formatfasta.pl -i /common/data/unigene-rat.original -o /common/data/unigene-rat -r "\\/gb=(\\w+)" -n "\\/gi=(\\w+)" -a "^gnl\|[^\|]+\|.+?#[^\s)]+\s+([^,]+)" -s unigene-rat
+
+
+CREATE DATABASES ON genomics
+
+sudo ./arrayblast.pl -d unigenemouse -q unigenemouse -t unigene-human
+sudo ./arrayblast.pl -d unigenemouse -q unigenemouse -t unigene-dog
+sudo ./arrayblast.pl -d unigenemouse -q unigenemouse -t unigene-rat
+
+RUN arrayblast ON gems
+
+sudo ./arrayblast.pl -d unigenemouse -q unigenemouse -t unigene-human,unigene-dog,unigene-rat
+
+    Run time: 00:11:44
+    Completed ./arrayblast.pl
+    10:32PM, 11 June 2008
+    ****************************************
+
+6. LOAD BLAST
+=============
+./arrayblastloaddata.pl -d unigenemouse -t unigene-human
+./arrayblastloaddata.pl -d unigenemouse -t unigene-dog
+./arrayblastloaddata.pl -d unigenemouse -t unigene-rat
+
+select targetsource, count(distinct collectionid) from collectionblast group by targetsource ;
++---------------+------------------------------+
+| targetsource  | count(distinct collectionid) |
++---------------+------------------------------+
+| unigene-dog   |                          946 |
+| unigene-human |                          976 |
+| unigene-rat   |                          985 |
++---------------+------------------------------+
+
+
+
+
+
+
+(NOT YET DONE)
+
+7. TRANSFER TO gems
+===================
+
+gomy
+scp -r unigenemouse local@129.171.101.102:
+
+ON gems
+
+gomy
+sudo mv ~/unigenemouse ./
+sudo chown -R mysql:wheel unigenemouse
+
+util
+sudo ./restartmysql.pl
+

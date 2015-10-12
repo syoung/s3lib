@@ -1,0 +1,603 @@
+Notes-apps-gatk.txt
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 20 23:10:14 EDT 2010] RAN GATK VERSION 1.0.4418>
+
+
+
+
+/usr/local/java/bin/java \
+-jar /nethome/syoung/base/apps/gatk/1.0.4418/GenomeAnalysisTK.jar
+    
+    ---------------------------------------------------------------------------
+    The Genome Analysis Toolkit (GATK) v1.0.4418, Compiled 2010/10/03 21:55:47
+    Copyright (c) 2010 The Broad Institute
+    Please view our documentation at http://www.broadinstitute.org/gsa/wiki
+    For support, please view our support site at http://getsatisfaction.com/gsa
+    ---------------------------------------------------------------------------
+    ---------------------------------------------------------------------------
+    usage: java -jar GenomeAnalysisTK.jar -T <analysis_type> [-I <input_file>] [-im <interval_merging>] [-rbs <read_buffer_size>] 
+           [-U <unsafe>] [-SM <sample_metadata>] [-rf <read_filter>] [-B <rodBind>] [-rgbl <read_group_black_list>] [-log 
+           <log_to_file>] [-l <logging_level>] [-L <intervals>] [-BTIMR <BTI_merge_rule>] [-debug] [-dfrac 
+           <downsample_to_fraction>] [-D <DBSNP>] [-nt <num_threads>] [-quiet] [-BTI <rodToIntervalTrackName>] [-h] [-S 
+           <validation_strictness>] [-dcov <downsample_to_coverage>] [-XL <excludeIntervals>] [-R <reference_sequence>] [-OQ] [-et 
+           <phone_home>] [-dt <downsampling_type>]
+    
+     -T,--analysis_type <analysis_type>                         Type of analysis to run
+     -I,--input_file <input_file>                               SAM or BAM file(s)
+     -im,--interval_merging <interval_merging>                  What interval merging rule should we use. (ALL|
+                                                                OVERLAPPING_ONLY)
+     -rbs,--read_buffer_size <read_buffer_size>                 Number of reads per SAM file to buffer in memory
+     -U,--unsafe <unsafe>                                       If set, enables unsafe operations: nothing will be checked 
+                                                                at runtime.  For expert users only who know what they are 
+                                                                doing.  We do not support usage of this argument. 
+                                                                (ALLOW_UNINDEXED_BAM|ALLOW_EMPTY_INTERVAL_LIST|
+                                                                ALLOW_UNSET_BAM_SORT_ORDER|NO_READ_ORDER_VERIFICATION|
+                                                                ALLOW_SEQ_DICT_INCOMPATIBILITY|ALL)
+     -SM,--sample_metadata <sample_metadata>                    Sample file(s) in JSON format
+     -rf,--read_filter <read_filter>                            Specify filtration criteria to apply to each read 
+                                                                individually.
+     -B,--rodBind <rodBind>                                     Bindings for reference-ordered data, in the form 
+                                                                <name>,<type>,<file>
+     -rgbl,--read_group_black_list <read_group_black_list>      Filters out read groups matching <TAG>:<STRING> or a .txt 
+                                                                file containing the filter strings one per line.
+     -log,--log_to_file <log_to_file>                           Set the logging location
+     -l,--logging_level <logging_level>                         Set the minimum level of logging, i.e. setting INFO get's 
+                                                                you INFO up to FATAL, setting ERROR gets you ERROR and FATAL 
+                                                                level logging.
+     -L,--intervals <intervals>                                 A list of genomic intervals over which to operate. Can be 
+                                                                explicitly specified on the command line or in a file.
+     -BTIMR,--BTI_merge_rule <BTI_merge_rule>                   Indicates the merging approach the interval parser should 
+                                                                use to combine the BTI track with other -L options (UNION|
+                                                                INTERSECTION)
+     -debug,--debug_mode                                        Set the logging file string to include a lot of debugging 
+                                                                information (SLOW!)
+     -dfrac,--downsample_to_fraction <downsample_to_fraction>   Fraction [0.0-1.0] of reads to downsample to
+     -D,--DBSNP <DBSNP>                                         DBSNP file
+     -nt,--num_threads <num_threads>                            How many threads should be allocated to running this 
+                                                                analysis.
+     -quiet,--quiet_output_mode                                 Set the logging to quiet mode, no output to stdout
+     -BTI,--rodToIntervalTrackName <rodToIntervalTrackName>     Indicates that the named track should be converted into an 
+                                                                interval list, to drive the traversal
+     -h,--help                                                  Generate this help message
+     -S,--validation_strictness <validation_strictness>         How strict should we be with validation (STRICT|LENIENT|
+                                                                SILENT)
+     -dcov,--downsample_to_coverage <downsample_to_coverage>    Coverage [integer] to downsample to at any given locus; note 
+                                                                that downsampled reads are randomly selected from all 
+                                                                possible reads at a locus (use max_reads_at_locus to stop 
+                                                                the engine from reading in all reads)
+     -XL,--excludeIntervals <excludeIntervals>                  A list of genomic intervals to exclude from processing. Can 
+                                                                be explicitly specified on the command line or in a file.
+     -R,--reference_sequence <reference_sequence>               Reference sequence file
+     -OQ,--useOriginalQualities                                 If set, use the original base quality scores from the OQ tag 
+                                                                when present instead of the standard scores
+     -et,--phone_home <phone_home>                              What kind of GATK run report should we generate?  Standard 
+                                                                is the default, can be verbose or NO_ET so nothing is posted 
+                                                                to the run repository (NO_ET|STANDARD|DEV|STDOUT)
+     -dt,--downsampling_type <downsampling_type>                Type of reads downsampling to employ at a given locus. 
+                                                                 Reads will be selected randomly to be removed from the pile 
+                                                                based on the method described here. (NONE|ALL_READS|
+                                                                BY_SAMPLE)
+    
+    Available analyses:
+     annotator                      
+       VariantAnnotator             Annotates variant calls with context information.
+                                    
+     coverage                       
+       DepthOfCoverage              A parallelizable walker designed to quickly aggregate relevant coverage statistics 
+                                    across samples in the input file.
+                                    
+     filters                        
+       VariantFiltration            Filters variant calls using a number of user-selectable, parameterizable criteria.
+                                    
+     genotyper                      
+       UnifiedGenotyper             A variant caller which unifies the approaches of several disparate callers.
+                                    
+     indels                         
+       IndelGenotyperV2             This is a simple, counts-and-cutoffs based tool for calling indels from aligned 
+                                    (preferrably MSA cleaned) sequencing data.
+       IndelRealigner               Performs local realignment of reads based on misalignments due to the presence of 
+                                    indels.
+       RealignerTargetCreator       Emits intervals for the Local Indel Realigner to target for cleaning.
+                                    
+     qc                             
+       CountLoci                    Walks over the input data set, calculating the total number of covered loci for 
+                                    diagnostic purposes.
+       CountReads                   Walks over the input data set, calculating the number of reads seen for diagnostic 
+                                    purposes.
+       ValidatingPileup             At every locus in the input set, compares the pileup data (reference base, aligned base 
+                                    from each overlapping read, and quality score) to the reference pileup data generated by 
+                                    samtools.
+                                    
+     recalibration                  
+       CountCovariates              First pass of the recalibration. Generates recalibration table based on various 
+                                    user-specified covariates (such as reported quality score, cycle, and dinucleotide).
+       TableRecalibration           Second pass of the recalibration. Uses the table generated by CountCovariates to update 
+                                    the base quality scores of the input bam file using a sequential table calculation 
+                                    making the base quality scores more accurately reflect the actual quality of the bases 
+                                    as mesaured by reference mismatch rate.
+                                    
+     sequenom                       
+       SequenomValidationConverter  Converts Sequenom files to a VCF annotated with QC metrics (HW-equilibrium, % failed 
+                                    probes)
+                                    
+     varianteval                    
+       VariantEval                  General-purpose tool for variant evaluation (% in dbSNP, genotype concordance, Ts/Tv 
+                                    ratios, and a lot more)
+                                    
+     variantrecalibration           
+       ApplyVariantCuts             Applies cuts to the input vcf file (by adding filter lines) to achieve the desired novel 
+                                    FDR levels which were specified during VariantRecalibration
+       GenerateVariantClusters      Takes variant calls as .vcf files, learns a Gaussian mixture model over the variant 
+                                    annotations producing calibrated variant cluster parameters which can be applied to 
+                                    other datasets
+       VariantRecalibrator          Applies calibrated variant cluster parameters to variant calls to produce an accurate 
+                                    and informative variant quality score
+                                    
+     variantutils                   
+       CombineVariants              Combines VCF records from different sources; supports both full merges and set unions.
+                                    
+     walkers                        Runs the desired analysis on the smallest meaningful subset of the dataset.
+       Pileup                       Prints the alignment in the pileup format.
+       PrintReads                   Renders, in SAM/BAM format, all reads from the input data set in the order in which they 
+                                    appear in the input file.
+       VariantsToVCF                Converts variants from other file formats to VCF format.
+                                    
+    
+    ##### ERROR ------------------------------------------------------------------------------------------
+    ##### ERROR A USER ERROR has occurred (version 1.0.4418): 
+    ##### ERROR The invalid arguments or inputs must be corrected before the GATK can proceed
+    ##### ERROR Please do not post this error to the GATK forum
+    ##### ERROR
+    ##### ERROR See the documentation (rerun with -h) for this tool to view allowable command-line arguments.
+    ##### ERROR Visit our wiki for extensive documentation http://www.broadinstitute.org/gsa/wiki
+    ##### ERROR Visit our forum to view answers to commonly asked questions http://getsatisfaction.com/gsa
+    ##### ERROR
+    ##### ERROR MESSAGE: Argument with name '--analysis_type' (-T) is missing.
+    ##### ERROR ------------------------------------------------------------------------------------------
+
+
+
+NOTES
+-----
+
+Running the GATK for the first time
+Once you've installed the GATK toolkit, whether from the source distribution or from a binary distribution, you can run the various analyses that the GATK supports.
+Test Your Installation
+
+The first step is to test that the GATK is correctly installed, and that the supporting tools like Java are in your path. Type the following command:
+java -jar <path to GenomeAnalysisTK.jar> --help
+replacing the path to GenomeAnalysisTK.jar with the path you have setup.
+You should see usage output similar to the following:
+usage: java -jar GenomeAnalysisTK.jar -T <analysis_type> [-I <input_file>] [-L <intervals>] [-R 
+       <reference_sequence>] [-B <rodBind>] [-D <DBSNP>] [-H <hapmap>] [-hc <hapmap_chip>] [-o <out>] [-e 
+       <err>] [-oe <outerr>] [-A] [-M <maximum_reads>] [-sort <sort_on_the_fly>] [-compress 
+       <bam_compression>] [-fmq0] [-dfrac <downsample_to_fraction>] [-dcov <downsample_to_coverage>] [-S 
+       <validation_strictness>] [-U] [-P] [-dt] [-tblw] [-nt <numthreads>] [-l <logging_level>] [-log 
+       <log_to_file>] [-quiet] [-debug] [-h]
+ -T,--analysis_type <analysis_type>                         Type of analysis to run
+ -I,--input_file <input_file>                               SAM or BAM file(s)
+ -L,--intervals <intervals>                                 A list of genomic intervals over which 
+                                                            to operate. Can be explicitly specified 
+                                                            on the command line or in a file.
+ -R,--reference_sequence <reference_sequence>               Reference sequence file
+ -B,--rodBind <rodBind>                                     Bindings for reference-ordered data, in 
+                                                            the form <name>,<type>,<file>
+ -D,--DBSNP <DBSNP>                                         DBSNP file
+ -H,--hapmap <hapmap>                                       Hapmap file
+ -hc,--hapmap_chip <hapmap_chip>                            Hapmap chip file
+ -o,--out <out>                                             An output file presented to the walker. 
+                                                             Will overwrite contents if file exists.
+ -e,--err <err>                                             An error output file presented to the 
+                                                            walker.  Will overwrite contents if file 
+                                                            exists.
+ -oe,--outerr <outerr>                                      A joint file for 'normal' and error 
+                                                            output presented to the walker.  Will 
+                                                            overwrite contents if file exists.
+
+...
+
+Troubleshooting install
+If you don't see this message, and instead get an error message there are a couple of things that you should check. First, make sure that your Java version is at least 1.6, by typing the following command:
+java -version
+You should see something similar to the following text:
+java version "1.6.0_12"
+Java(TM) SE Runtime Environment (build 1.6.0_12-b04)
+Java HotSpot(TM) 64-Bit Server VM (build 11.2-b01, mixed mode)
+If the version is less then 1.6, install the newest version of Java onto the system. If you instead see something like java: Command not found, make sure that java is installed on your machine, and that your PATH variable contains the path to the java executables. On a Mac running OS X 10.5+, you may need to run /Applications/Utilities/Java Preferences.app and drag Java SE 6 to the top before your machine will default to running version 1.6, even if it has been installed.
+Run the GATK
+
+Now that we have correctly setup GATK, lets run the toolkit on some example data. A common simple analysis that people use the GATK for is getting a count of the reads in a bam file (although the GATK is capable of much more powerful analyses, this will serve as our example).
+First download our sample data, available here, and untar it:
+[Broad Anonymous FTP Server]
+You should now have a exampleBAM.bam, and it's associated files (a bai file), and an exampleFASTA.fasta and it's associated files (a .dict file and a fasta.fai file). This is everything you need to run a basic analysis with the following command:
+java -jar GenomeAnalysisTK.jar -R exampleFASTA.fasta  -I exampleBAM.bam -T CountReads
+After a few seconds you should see output that looks nearly identical to this:
+ Adding rod class GFF
+* Adding rod class dbSNP
+* Adding rod class HapMapAlleleFrequencies
+* Adding rod class SAMPileup
+* Adding rod class RefSeq
+* Adding rod class Table
+* Adding rod class PooledEM
+* Adding rod class 1KGSNPs
+* Adding rod class SangerSNP
+* Adding rod class Intervals
+* Adding rod class Variants
+0 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - plugin directory: /humgen/gsa-scr1/aaron/test/dist/walkers
+... (cut out for clarity) ...
+44 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module VariantFiltration
+INFO  17:27:04,105 CommandLineProgram - ------------------------------------------------------- 
+INFO  17:27:04,109 CommandLineProgram - Program Name: org.broadinstitute.sting.gatk.CommandLineGATK 
+INFO  17:27:04,109 CommandLineProgram - Program Args: -R exampleFASTA.fasta -I exampleBAM.bam -T CountReads  
+INFO  17:27:04,110 CommandLineProgram - Time/Date: 2009/07/01 17:27:04 
+INFO  17:27:04,110 CommandLineProgram - ------------------------------------------------------- 
+[REDUCE RESULT] Traversal result is: 2995
+The results of the traversal indicate that the CountReadsWalker (which you specified with the command line option -T CountReads) counted 2,995 reads in the example BAM file, which is exactly what we expect to see. A full listing of the possible command line options are explained on the command line options page. In the case above we only use three:
+-R for the reference file
+-I for the input bam file
+-T for the analysis name.
+You can play around with changing the analysis type (though be warned, many require input files or arguments beyond what we've gone over). You can see the list of available analysis tools (walkers in GATK lingo) when you start up the GATK, it looks like this:
+9 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CountLoci
+10 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CountReads
+10 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module DepthOfCoverage
+10 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Null
+11 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Pileup
+11 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PileupWithContext
+11 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PrintLocusContext
+12 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PrintReads
+15 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ValidatingPileup
+17 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CountCovariates
+18 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module LogisticRecalibration
+19 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module TableRecalibration
+19 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Aligned_Reads_Histogram
+19 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module AlleleFrequency
+19 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Base_Quality_Dump
+20 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Base_Quality_Histogram
+20 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CoarseCoverage
+20 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CombineDuplicates
+20 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ContrastiveGenotypers
+21 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CoverageBySample
+21 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CoverageHistogram
+21 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module DisplayFourBaseRead
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module FastaReferenceMaker
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module FindNonrandomSecondBestBasePiles
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module FlagStatRead
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module HybSelPerformance
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module IOCrusher
+25 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module InspectIndels
+26 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ListSampleIds
+26 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module MendelianInheritance
+26 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CountMismatches
+26 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Mismatch_Histogram
+26 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module MultiSampleCaller
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module Pilot3Coverage
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PoolCaller
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PoolCallingExperiment
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PopPrior
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module PrintCoverage
+27 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ReadErrorRate
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ReadValidation
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module ReplaceQuals
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SAMToFastqAndSq
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SingleSampleGenotyper
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SomaticCoverage
+28 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SomaticMutationFromGenotype
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SomaticMutation
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CountDuplicates
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module DuplicateQuals
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CleanedReadInjector
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module CoverageGapIntervals
+29 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module IndelGenotyper
+30 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module IndelIntervals
+30 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module IntervalCleaner
+31 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module IntervalMerger
+31 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module MismatchIntervals
+33 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module SNPClusters
+34 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module VariantEval
+34 [main] INFO org.broadinstitute.sting.gatk.WalkerManager  - * Adding module VariantFiltration
+The modules listed are the analysis types that the GATK has found on startup. Try changing the command line option for the analysis to a count locus analysis, which counts bases on the genome that are covered by one or more reads:
+java -jar GenomeAnalysisTK.jar -R exampleFASTA.fasta  -I exampleBAM.bam -T CountLoci
+
+
+</entry>
+
+
+
+<entry [Wed Oct 20 23:09:14 EDT 2010] UPDATED GATK TO VERSION 1.0.4418>
+
+
+
+
+1. DOWNLOAD AND INSTALL
+
+INSTALLED HERE:
+
+/nethome/syoung/base/apps/gatk/1.0.4418/GenomeAnalysisTK.jar
+
+
+mkdir -p /nethome/syoung/base/apps/gatk/archive
+cd /nethome/syoung/base/apps/gatk/archive
+wget ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-latest.tar.bz2
+
+cd /nethome/syoung/base/apps/gatk/1.0.4418
+
+    -rw-r--r-- 1 syoung bioinfo 6.3M Oct  3 21:57 AnalyzeCovariates.jar
+    -rw-r--r-- 1 syoung bioinfo  32M Oct  3 21:56 GenomeAnalysisTK.jar
+    drwxr-xr-x 2 syoung bioinfo 2.0K Oct 20 23:00 resources
+
+
+wget ftp://ftp.broadinstitute.org/pub/gsa/gatk_resources.tgz
+
+
+
+2. TEST
+
+
+/usr/local/java/bin/java -jar /nethome/syoung/base/apps/gatk/1.0.4418/GenomeAnalysisTK.jar --help
+
+    ---------------------------------------------------------------------------
+    The Genome Analysis Toolkit (GATK) v1.0.4418, Compiled 2010/10/03 21:55:47
+    Copyright (c) 2010 The Broad Institute
+    Please view our documentation at http://www.broadinstitute.org/gsa/wiki
+    For support, please view our support site at http://getsatisfaction.com/gsa
+    ---------------------------------------------------------------------------
+    ---------------------------------------------------------------------------
+    usage: java -jar GenomeAnalysisTK.jar -T <analysis_type> [-I <input_file>] [-im <interval_merging>] [-rbs <read_buffer_size>] 
+           [-U <unsafe>] [-SM <sample_metadata>] [-rf <read_filter>] [-B <rodBind>] [-rgbl <read_group_black_list>] [-log 
+           <log_to_file>] [-l <logging_level>] [-L <intervals>] [-BTIMR <BTI_merge_rule>] [-debug] [-dfrac 
+           <downsample_to_fraction>] [-D <DBSNP>] [-nt <num_threads>] [-quiet] [-BTI <rodToIntervalTrackName>] [-h] [-S 
+           <validation_strictness>] [-dcov <downsample_to_coverage>] [-XL <excludeIntervals>] [-R <reference_sequence>] [-OQ] [-et 
+           <phone_home>] [-dt <downsampling_type>]
+    
+     -T,--analysis_type <analysis_type>                         Type of analysis to run
+     -I,--input_file <input_file>                               SAM or BAM file(s)
+     -im,--interval_merging <interval_merging>                  What interval merging rule should we use. (ALL|
+                                                                OVERLAPPING_ONLY)
+     -rbs,--read_buffer_size <read_buffer_size>                 Number of reads per SAM file to buffer in memory
+     -U,--unsafe <unsafe>                                       If set, enables unsafe operations: nothing will be checked 
+                                                                at runtime.  For expert users only who know what they are 
+                                                                doing.  We do not support usage of this argument. 
+                                                                (ALLOW_UNINDEXED_BAM|ALLOW_EMPTY_INTERVAL_LIST|
+                                                                ALLOW_UNSET_BAM_SORT_ORDER|NO_READ_ORDER_VERIFICATION|
+                                                                ALLOW_SEQ_DICT_INCOMPATIBILITY|ALL)
+     -SM,--sample_metadata <sample_metadata>                    Sample file(s) in JSON format
+     -rf,--read_filter <read_filter>                            Specify filtration criteria to apply to each read 
+                                                                individually.
+     -B,--rodBind <rodBind>                                     Bindings for reference-ordered data, in the form 
+                                                                <name>,<type>,<file>
+     -rgbl,--read_group_black_list <read_group_black_list>      Filters out read groups matching <TAG>:<STRING> or a .txt 
+                                                                file containing the filter strings one per line.
+     -log,--log_to_file <log_to_file>                           Set the logging location
+     -l,--logging_level <logging_level>                         Set the minimum level of logging, i.e. setting INFO get's 
+                                                                you INFO up to FATAL, setting ERROR gets you ERROR and FATAL 
+                                                                level logging.
+     -L,--intervals <intervals>                                 A list of genomic intervals over which to operate. Can be 
+                                                                explicitly specified on the command line or in a file.
+     -BTIMR,--BTI_merge_rule <BTI_merge_rule>                   Indicates the merging approach the interval parser should 
+                                                                use to combine the BTI track with other -L options (UNION|
+                                                                INTERSECTION)
+     -debug,--debug_mode                                        Set the logging file string to include a lot of debugging 
+                                                                information (SLOW!)
+     -dfrac,--downsample_to_fraction <downsample_to_fraction>   Fraction [0.0-1.0] of reads to downsample to
+     -D,--DBSNP <DBSNP>                                         DBSNP file
+     -nt,--num_threads <num_threads>                            How many threads should be allocated to running this 
+                                                                analysis.
+     -quiet,--quiet_output_mode                                 Set the logging to quiet mode, no output to stdout
+     -BTI,--rodToIntervalTrackName <rodToIntervalTrackName>     Indicates that the named track should be converted into an 
+                                                                interval list, to drive the traversal
+     -h,--help                                                  Generate this help message
+     -S,--validation_strictness <validation_strictness>         How strict should we be with validation (STRICT|LENIENT|
+                                                                SILENT)
+     -dcov,--downsample_to_coverage <downsample_to_coverage>    Coverage [integer] to downsample to at any given locus; note 
+                                                                that downsampled reads are randomly selected from all 
+                                                                possible reads at a locus (use max_reads_at_locus to stop 
+                                                                the engine from reading in all reads)
+     -XL,--excludeIntervals <excludeIntervals>                  A list of genomic intervals to exclude from processing. Can 
+                                                                be explicitly specified on the command line or in a file.
+     -R,--reference_sequence <reference_sequence>               Reference sequence file
+     -OQ,--useOriginalQualities                                 If set, use the original base quality scores from the OQ tag 
+                                                                when present instead of the standard scores
+     -et,--phone_home <phone_home>                              What kind of GATK run report should we generate?  Standard 
+                                                                is the default, can be verbose or NO_ET so nothing is posted 
+                                                                to the run repository (NO_ET|STANDARD|DEV|STDOUT)
+     -dt,--downsampling_type <downsampling_type>                Type of reads downsampling to employ at a given locus. 
+                                                                 Reads will be selected randomly to be removed from the pile 
+                                                                based on the method described here. (NONE|ALL_READS|
+                                                                BY_SAMPLE)
+    
+    Available analyses:
+     annotator                      
+       VariantAnnotator             Annotates variant calls with context information.
+                                    
+     coverage                       
+       DepthOfCoverage              A parallelizable walker designed to quickly aggregate relevant coverage statistics 
+                                    across samples in the input file.
+                                    
+     filters                        
+       VariantFiltration            Filters variant calls using a number of user-selectable, parameterizable criteria.
+                                    
+     genotyper                      
+       UnifiedGenotyper             A variant caller which unifies the approaches of several disparate callers.
+                                    
+     indels                         
+       IndelGenotyperV2             This is a simple, counts-and-cutoffs based tool for calling indels from aligned 
+                                    (preferrably MSA cleaned) sequencing data.
+       IndelRealigner               Performs local realignment of reads based on misalignments due to the presence of 
+                                    indels.
+       RealignerTargetCreator       Emits intervals for the Local Indel Realigner to target for cleaning.
+                                    
+     qc                             
+       CountLoci                    Walks over the input data set, calculating the total number of covered loci for 
+                                    diagnostic purposes.
+       CountReads                   Walks over the input data set, calculating the number of reads seen for diagnostic 
+                                    purposes.
+       ValidatingPileup             At every locus in the input set, compares the pileup data (reference base, aligned base 
+                                    from each overlapping read, and quality score) to the reference pileup data generated by 
+                                    samtools.
+                                    
+     recalibration                  
+       CountCovariates              First pass of the recalibration. Generates recalibration table based on various 
+                                    user-specified covariates (such as reported quality score, cycle, and dinucleotide).
+       TableRecalibration           Second pass of the recalibration. Uses the table generated by CountCovariates to update 
+                                    the base quality scores of the input bam file using a sequential table calculation 
+                                    making the base quality scores more accurately reflect the actual quality of the bases 
+                                    as mesaured by reference mismatch rate.
+                                    
+     sequenom                       
+       SequenomValidationConverter  Converts Sequenom files to a VCF annotated with QC metrics (HW-equilibrium, % failed 
+                                    probes)
+                                    
+     varianteval                    
+       VariantEval                  General-purpose tool for variant evaluation (% in dbSNP, genotype concordance, Ts/Tv 
+                                    ratios, and a lot more)
+                                    
+     variantrecalibration           
+       ApplyVariantCuts             Applies cuts to the input vcf file (by adding filter lines) to achieve the desired novel 
+                                    FDR levels which were specified during VariantRecalibration
+       GenerateVariantClusters      Takes variant calls as .vcf files, learns a Gaussian mixture model over the variant 
+                                    annotations producing calibrated variant cluster parameters which can be applied to 
+                                    other datasets
+       VariantRecalibrator          Applies calibrated variant cluster parameters to variant calls to produce an accurate 
+                                    and informative variant quality score
+                                    
+     variantutils                   
+       CombineVariants              Combines VCF records from different sources; supports both full merges and set unions.
+                                    
+     walkers                        Runs the desired analysis on the smallest meaningful subset of the dataset.
+       Pileup                       Prints the alignment in the pileup format.
+       PrintReads                   Renders, in SAM/BAM format, all reads from the input data set in the order in which they 
+                                    appear in the input file.
+       VariantsToVCF                Converts variants from other file formats to VCF format.
+                                    
+                                
+
+
+3. TEST DEPTH OF COVERAGE
+
+http://www.broadinstitute.org/gsa/wiki/index.php/Depth_of_Coverage_v3.0
+
+
+INPUT FILE:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/bowtie/1/chr22/hit.bam
+
+-rw-r--r-- 1 syoung root  56M Oct 19 18:08 hit.bam
+
+
+RUN:
+
+/usr/local/java/bin/java \
+-jar /nethome/syoung/base/apps/gatk/1.0.4418/GenomeAnalysisTK.jar \
+-T DepthOfCoverage \
+-I /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/bowtie/1/chr22/hit.sorted.bam \
+-R /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22.fa \
+-o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/bowtie/1/chr22/hit.coverage
+
+    OK
+    
+    INFO  00:16:20,655 HelpFormatter - --------------------------------------------------------------------------- 
+    INFO  00:16:20,658 HelpFormatter - The Genome Analysis Toolkit (GATK) v1.0.4418, Compiled 2010/10/03 21:55:47 
+    INFO  00:16:20,658 HelpFormatter - Copyright (c) 2010 The Broad Institute 
+    INFO  00:16:20,659 HelpFormatter - Please view our documentation at http://www.broadinstitute.org/gsa/wiki 
+    INFO  00:16:20,659 HelpFormatter - For support, please view our support site at http://getsatisfaction.com/gsa 
+    INFO  00:16:20,659 HelpFormatter - Program Args: -T DepthOfCoverage -I /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/bowtie/1/chr22/hit.sorted.bam -R /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22.fa -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/bowtie/1/chr22/hit.coverage  
+    INFO  00:16:20,660 HelpFormatter - Date/Time: 2010/10/21 00:16:20 
+    INFO  00:16:20,660 HelpFormatter - --------------------------------------------------------------------------- 
+    INFO  00:16:20,660 HelpFormatter - --------------------------------------------------------------------------- 
+    INFO  00:16:20,677 AbstractGenomeAnalysisEngine - Strictness is SILENT 
+    INFO  00:16:21,833 TraversalEngine - [PROGRESS] Traversed to chr22:1, processing 1 sites in 0.71 secs (711000.00 secs per 1M sites) 
+    INFO  00:16:51,830 TraversalEngine - [PROGRESS] Traversed to chr22:685387, processing 685,387 sites in 30.71 secs (44.81 secs per 1M sites) 
+    INFO  00:17:05,315 TraversalEngine - [PROGRESS] Traversed to chr22:1000000, processing 1,000,000 sites in 44.20 secs (44.20 secs per 1M sites) 
+    INFO  00:17:35,316 TraversalEngine - [PROGRESS] Traversed to chr22:1696145, processing 1,696,145 sites in 74.20 secs (43.75 secs per 1M sites) 
+    INFO  00:17:47,925 TraversalEngine - [PROGRESS] Traversed to chr22:2000000, processing 2,000,000 sites in 86.81 secs (43.40 secs per 1M sites) 
+    INFO  00:18:17,926 TraversalEngine - [PROGRESS] Traversed to chr22:2712643, processing 2,712,643 sites in 116.81 secs (43.06 secs per 1M sites) 
+    INFO  00:18:29,915 TraversalEngine - [PROGRESS] Traversed to chr22:3000000, processing 3,000,000 sites in 128.80 secs (42.93 secs per 1M sites)
+    ...
+    
+    
+    
+    
+
+
+    usage: java -jar GenomeAnalysisTK.jar -T <analysis_type> [-I <input_file>] [-im <interval_merging>] [-rbs <read_buffer_size>] 
+           [-U <unsafe>] [-SM <sample_metadata>] [-rf <read_filter>] [-B <rodBind>] [-rgbl <read_group_black_list>] [-log 
+           <log_to_file>] [-l <logging_level>] [-L <intervals>] [-BTIMR <BTI_merge_rule>] [-debug] [-dfrac 
+           <downsample_to_fraction>] [-D <DBSNP>] [-nt <num_threads>] [-quiet] [-BTI <rodToIntervalTrackName>] [-h] [-S 
+           <validation_strictness>] [-dcov <downsample_to_coverage>] [-XL <excludeIntervals>] [-R <reference_sequence>] [-OQ] [-et 
+           <phone_home>] [-dt <downsampling_type>]
+    
+     -T,--analysis_type <analysis_type>                         Type of analysis to run
+     -I,--input_file <input_file>                               SAM or BAM file(s)
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Oct 30 13:36:09 EDT 2009] DOWNLOADED AND INSTALLED gatk ON KRONOS:>
+
+
+
+
+DOWNLOAD AND INSTALL:
+
+mkdir -p /nethome/syoung/base/apps/gatk/1.0
+cd /nethome/syoung/base/apps/gatk/1.0
+wget ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-1.0.tar.bz2
+tar xvfj *
+cd *
+
+
+
+mkdir -p /nethome/syoung/base/apps/gatk/1.0+
+cd /nethome/syoung/base/apps/gatk/1.0+
+wget ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-EarlyAccess.tar.bz2
+
+
+
+INFO:
+
+http://www.broadinstitute.org/gsa/wiki/index.php/Downloading_the_GATK
+
+Downloading the GATK
+Getting a Pre-Built Version
+
+A pre-built version of the GATK with basic tools is available from our ftp server.
+
+ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-1.0.tar.bz2
+
+A more cutting edge can be obtained from:
+
+ftp://ftp.broadinstitute.org/pub/gsa/GenomeAnalysisTK/GenomeAnalysisTK-EarlyAccess.tar.bz2
+
+The early access release has not yet been subjected to the same rigorous testing as our final release. However, the early access release comes bundled with the most cutting-edge tools written by our group, including the table recalibrator, indel realigner and single sample genotyper.
+
+
+Building the GATK from source
+
+Make sure you have suitable versions of the JDK and Ant. See the prerequisites section.
+
+Download the source from our subversion repository. Run one of the following commands:
+
+svn co https://svn.broadinstitute.org/Sting/tags/1.0 Sting
+svn co https://svn.broadinstitute.org/Sting/trunk Sting
+
+Use ant to build the source. The GATK uses the Ivy dependency manager to fetch all other dependencies.
+
+cd Sting
+ant
+
+If you are building the latest, unreleased code from the codebase, we've made a few changes that you should be aware of.
+
+
+
+

@@ -1,0 +1,40 @@
+<WORKFLOW>
+	<WORKFLOWNUMBER>1</WORKFLOWNUMBER>
+	<WORKFLOWNAME>Master collection sequences workflow</WORKFLOWNAME>
+	<WORKFLOWDESCRIPTION>Run all component workflows to assemble and annotate the collection</WORKFLOWDESCRIPTION>
+	<DATABASE>%DATABASE%</DATABASE>
+	<USER>%USER%</USER>
+	<PASSWORD>%PASSWORD%</PASSWORD>
+	<STAGES>
+
+		<STAGE>
+			<STAGENAME>Assembler</STAGENAME>
+			<STAGEDESCRIPTION>Collect reads, screen for vector, load into mysql and assemble with CAP3</STAGEDESCRIPTION>
+			<XMLFILE>%ROOTDIR%/bin/pipeline%PIPELINE_GENERATION%/xml/workflow/workflow.xml</XMLFILE>
+			<ARGUMENTS>"-d%DATABASE%", "-f%ROOTDIR%/bin/pipeline%PIPELINE_GENERATION%/xml/workflow/collectionsequences.workflow3.assembler.xml"</ARGUMENTS>
+			<DATABASE>%DATABASE%</DATABASE>
+			<USER>%USER%</USER>
+			<PASSWORD>%PASSWORD%</PASSWORD>
+		</STAGE>
+
+		<STAGE>
+			<STAGENAME>Collection</STAGENAME>
+			<STAGEDESCRIPTION></STAGEDESCRIPTION>
+			<XMLFILE>%ROOTDIR%/bin/pipeline%PIPELINE_GENERATION%/xml/workflow/workflow.xml</XMLFILE>
+			<ARGUMENTS>"-d%DATABASE%", "-f%ROOTDIR%/bin/pipeline%PIPELINE_GENERATION%/xml/workflow/collectionsequences.workflow3.assembler.xml"</ARGUMENTS>
+			<DATABASE>%DATABASE%</DATABASE>
+			<USER>%USER%</USER>
+			<PASSWORD>%PASSWORD%</PASSWORD>
+		</STAGE>
+
+
+	</STAGES>
+	
+	<TYPE>perl</TYPE>
+    <INPUTFILES></INPUTFILES>		
+    <OUTPUTFILES></OUTPUTFILES>
+    <STDOUTFILE>%ROOTDIR%/pipeline/%DATABASE%/collection/%DATABASE%.collectionsequences.workflow3.master.assembler.stdout</STDOUTFILE>
+    <STDERRFILE>%ROOTDIR%/pipeline/%DATABASE%/collection/%DATABASE%.collectionsequences.workflow3.master.stdout</STDERRFILE>
+    <EXECUTABLE>/usr/bin/perl</EXECUTABLE>
+	
+</WORKFLOW>

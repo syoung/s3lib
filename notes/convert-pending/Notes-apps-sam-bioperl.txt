@@ -1,0 +1,328 @@
+Notes-apps-sam-bioperl.txt
+
+</entry>
+
+
+
+<entry [Mon Jul  7 20:24:14 EDT 2008] INSTALLED BioPerl v1.4 TO /home/syoung/base/apps/sam/bioperl>
+
+
+
+
+cd /home/syoung/base/apps/sam/bioperl/bioperl-1.4
+
+perl Makefile.PL  LIB=/home/syoung/base/apps/sam/bioperl
+make
+make test
+sudo make install
+
+
+
+NB: make test HAD SOME FAILED TEST BUT NOT IMPORTANT:
+
+Failed Test        Stat Wstat Total Fail  Failed  List of Failed
+-------------------------------------------------------------------------------
+t/BioFetch_DB.t                  27    4  14.81%  8 20-21 27
+t/DB.t                           78    2   2.56%  30-31
+t/EMBL_DB.t                      15    3  20.00%  6 13-14
+t/Ontology.t          9  2304    50  100 200.00%  1-50
+t/Variation_IO.t                 25    3  12.00%  15 20 25
+t/simpleGOparser.t    9  2304    98  196 200.00%  1-98
+18 subtests skipped.
+Failed 6/179 test scripts, 96.65% okay. 160/8268 subtests failed, 98.06% okay.
+make: *** [test_dynamic] Error 255
+
+
+
+NB: perl Makefile.PL GENERATED A LIST OF DEPENDENCIES ON THE FIRST ATTEMPT.
+ALL DEPENDENCIES WERE INSTALLED:
+
+>>>
+Generated sub tests. go make show_tests to see available subtests
+
+*** Script Install Section ****
+
+Bioperl comes with a number of useful scripts which you may wish to install.
+Install [a]ll Bioperl scripts, [n]one, or choose groups [i]nteractively? [a] a
+
+* Script Directory das *
+This directory is currently empty.  For the Lightweight Distributed
+Annotation System (LDAS) server, see http://www.biodas.org/servers/
+
+* Script Directory tree *
+These are utilities to generate trees from sequence similarity data.
+        Activating bp_blast2tree.pl....
+
+* Script Directory index *
+These are scripts to create and maintain flatfile databases indexed
+with the Bio::Index modules.
+        Activating bp_fetch.pl....
+        Activating bp_index.pl....
+
+* Script Directory popgen *
+        Activating bp_heterogeneity_test.pl....
+        Activating bp_composite_LD.pl....
+
+* Script Directory utilities *
+These are various sequence-related scripts that were difficult to
+classify more specifically but are considered general purpose
+utilities.
+        Activating bp_nrdb.pl....
+        Activating bp_search2tribe.pl....
+        Activating bp_dbsplit.pl....
+        Activating bp_pairwise_kaks.pl....
+        Activating bp_mask_by_search.pl....
+        Activating bp_search2alnblocks.pl....
+        Activating bp_search2BSML.pl....
+        Activating bp_mrtrans.pl....
+        Activating bp_seq_length.pl....
+        Activating bp_mutate.pl....
+        Activating bp_remote_blast.pl....
+        Activating bp_sreformat.pl....
+        Activating bp_search2gff.pl....
+
+* Script Directory graphics *
+These are scripts to generate graphical images from sequence data.
+
+        Activating bp_feature_draw.pl....
+        Activating bp_frend.pl....
+        Activating bp_search_overview.pl....
+
+* Script Directory seq *
+These are scripts to interconvert sequence formats and to perform
+other common sequence manipulations.
+        Activating bp_split_seq.pl....
+        Activating bp_translate_seq.pl....
+        Activating bp_seqconvert.pl....
+        Activating bp_extract_feature_seq.pl....
+
+* Script Directory seqstats *
+These are scripts to generate common statistics on protein and
+nucleotide sequences.
+
+        Activating bp_aacomp.pl....
+        Activating bp_gccalc.pl....
+        Activating bp_chaos_plot.pl....
+        Activating bp_oligo_count.pl....
+
+* Script Directory taxa *
+These are scripts to create and query taxonomic trees.
+        Activating bp_taxid4species.pl....
+        Activating bp_local_taxonomydb_query.pl....
+
+* Script Directory DB *
+These are scripts to fetch sequence data from local and remote
+sequence repositories using the Open Bio Database Access registry
+protocol (http://obda.open-bio.org).
+        Activating bp_biogetseq.pl....
+        Activating bp_biofetch_genbank_proxy.pl....
+        Activating bp_flanks.pl....
+        Activating bp_bioflat_index.pl....
+
+* Script Directory biblio *
+These are scripts to manipulate bibliographic repositories using the
+Bio::Biblio modules.
+        Activating bp_biblio.pl....
+
+* Script Directory Bio-DB-GFF *
+These are scripts that go with the Bio::DB::GFF module, a basic
+seqfeature database.  Install these scripts if you wish to use the
+LDAS distributed annotation server or the Generic Genome Browser.
+
+        Activating bp_process_wormbase.pl....
+        Activating bp_bulk_load_gff.pl....
+        Activating bp_process_gadfly.pl....
+        Activating bp_fast_load_gff.pl....
+        Activating bp_process_sgd.pl....
+        Activating bp_process_ncbi_human.pl....
+        Activating bp_generate_histogram.pl....
+        Activating bp_pg_bulk_load_gff.pl....
+        Activating bp_genbank2gff.pl....
+        Activating bp_load_gff.pl....
+
+* Script Directory searchio *
+        Activating bp_filter_search.pl....
+
+(NOW A LIST OF DEPENDENCIES ... UNNECESSARY ONES ARE COMMENTED OUT)
+
+External Module GD::SVG, Generate optional SVG output,
+ is not installed on this computer.
+  The  in Bioperl needs it for Bio::Graphics
+OK
+
+#External Module Ace, Aceperl,
+# is not installed on this computer.
+#  The Bio::DB::Ace in Bioperl needs it for access of ACeDB database
+
+External Module IO::Scalar, IO handle to read or write to a scalar,
+ is not installed on this computer.
+  The Bio::Tools::Blast::Run::Webblast in Bioperl needs it for remote http Blast jobs
+OK
+
+External Module SOAP::Lite, SOAP protocol,
+ is not installed on this computer.
+  The Bio::DB::XEMBLService in Bioperl needs it for XEMBL Services (also Bibliographic queries in Biblio::) 
+
+External Module GD, Graphical Drawing Toolkit,
+ is not installed on this computer.
+  The Bio::Graphics in Bioperl needs it for Rendering Sequences and Features
+OK
+
+External Module IO::String, IO handle to read or write to a string,
+ is not installed on this computer.
+  The Bio::DB::*,Bio::Variation::*,Bio::Tools::Blast::Run::Webblast, Bio::Index::Blast in Bioperl needs it for GenBank+GenPept sequence retrieval, Variation code
+OK
+
+External Module XML::Twig, Available on CPAN,
+ is not installed on this computer.
+  The Module Bio::Variation::IO::xml.pm in Bioperl needs it for parsing of XML documents
+OK
+
+External Module SVG, Generate optional SVG output,
+ is not installed on this computer.
+  The  in Bioperl needs it for Bio::Graphics
+OK
+
+External Module Text::Shellwords, Execute shell commands,
+ is not installed on this computer.
+  The Bio::Graphics in Bioperl needs it for test scripts
+OK
+
+External Module XML::Parser::PerlSAX, Parsing of XML documents,
+ is not installed on this computer.
+  The Bio::SeqIO::game,Bio::Variation::* in Bioperl needs it for Bio::Variation code, GAME parser
+OK
+
+External Module XML::Writer, Parsing + writing of XML documents,
+ is not installed on this computer.
+  The Bio::SeqIO::game,Bio::Variation::* in Bioperl needs it for Bio::Variation code, GAME parser
+OK
+
+
+*** DBI::DBD INSTALLED OK BUT DBD::mysql DID NOT, SO INSTALLED MANUALLY ***
+
+External Module DBD::mysql, Mysql driver,
+ is not installed on this computer.
+  The Bio::DB::GFF in Bioperl needs it for loading and querying of Mysql-based GFF feature databases
+*** FAILED TO INSTALL ***
+
+    cpan> install DBD::mysql
+    Running install for module DBD::mysql
+    Running make for C/CA/CAPTTOFU/DBD-mysql-4.007.tar.gz
+      Is already unwrapped into directory /root/.cpan/build/DBD-mysql-4.007
+      Makefile.PL returned status 512
+    Running make test
+      Make had some problems, maybe interrupted? Won't test
+    Running make install
+      Make had some problems, maybe interrupted? Won't install
+
+
+External Module Graph::Directed, Generic Graph data stucture and algorithms,
+ is not installed on this computer.
+  The Bio::Ontology::SimpleOntologyEngine in Bioperl needs it for Ontology Engine implementation for the GO parser
+OK
+
+Information:
+
+   There are some external packages and perl modules, listed above, which 
+   bioperl uses. This only effects the functionality which is listed above:
+   the rest of bioperl will work fine, which includes nearly all of the
+   core packages.
+
+   The installation of these external packages is very simple. You
+   can read more about bioperl external dependencies in the INSTALL
+   file or at:
+
+   http://bioperl.org/Core/Latest/INSTALL
+
+   Enjoy the rest of bioperl, which you can use after going 'make install'
+
+Checking if your kit is complete...
+Looks good
+Warning: prerequisite IO::Scalar 0 not found.
+Warning: prerequisite IO::String 0 not found.
+
+
+
+MANUALLY INSTALLED DBD::mysql
+=============================
+
+
+cd /store/home/syoung/base/apps/mysql/mysql-5.0.51a-linux-x86_64-icc-glibc23/lib/libmysqlclient.so.15
+
+
+PATH=$PATH:/usr/local/mysql/bin
+export PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/store/home/syoung/base/apps/mysql/mysql-5.0.51a-linux-x86_64-icc-glibc23/lib
+
+perl Makefile.PL --testuser="root" --testpassword="<ROOT_PASSWORD>" --testdb="test" --testhost=127.0.0.1
+make
+make test
+make install
+
+OK
+
+
+NOTES
+=====
+
+1. MODULES ARE INSTALLED TO:
+/usr/lib/perl5/site_perl/5.8.8
+
+[syoung@solexa01 5.8.8]$ ll
+total 80K
+drwxr-xr-x 8 root root 4.0K Jul  7 20:35 .
+drwxr-xr-x 6 root root 4.0K Feb  5 14:53 ..
+drwxr-xr-x 3 root root 4.0K Jul  7 20:35 Data
+drwxr-xr-x 2 root root 4.0K Jul  7 20:30 GD
+drwxr-xr-x 2 root root 4.0K Jul  7 20:32 IO
+drwxr-xr-x 2 root root 4.0K Jul  7 20:30 SVG
+-r--r--r-- 1 root root 9.8K Apr 21 04:39 SVG.pm
+drwxr-xr-x 2 root root 4.0K Jul  7 20:34 Text
+drwxr-xr-x 8 root root 4.0K Jul  7 20:35 XML
+
+
+[root@solexa01 5.8.8]# ll
+total 260
+drwxr-xr-x 3 root root  4096 Jul  7 20:44 auto
+drwxr-xr-x 3 root root  4096 Jul  7 20:35 Data
+drwxr-xr-x 2 root root  4096 Jul  7 20:30 GD
+drwxr-xr-x 5 root root  4096 Jul  7 20:44 Graph
+-r--r--r-- 1 root root 87074 Aug 13  2007 Graph.pm
+-r--r--r-- 1 root root 68569 Aug 12  2007 Graph.pod
+drwxr-xr-x 2 root root  4096 Jul  7 20:44 Heap071
+drwxr-xr-x 2 root root  4096 Jul  7 20:32 IO
+drwxr-xr-x 2 root root  4096 Jul  7 20:30 SVG
+-r--r--r-- 1 root root  9982 Apr 21 04:39 SVG.pm
+drwxr-xr-x 2 root root  4096 Jul  7 20:34 Text
+drwxr-xr-x 8 root root  4096 Jul  7 20:38 XML
+
+
+2. THIS ERROR REQUIRED PATH AND PERHAPS LD_LIBRARY_PATH ENVIRONMENT VARIABLE TO FIX IT:
+
+    t/utf8...............install_driver(mysql) failed: Can't load '/store/home/syoung/base/apps/sam/bioperl/DBD-mysql-4.005/blib/arch/auto/DBD/mysql/mysql.so' for module DBD::mysql: libmysqlclient.so.15: cannot open shared object file: No such file or directory at /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi/DynaLoader.pm line 230.
+     at (eval 3) line 3
+    Compilation failed in require at (eval 3) line 3.
+    Perhaps a required shared library or dll isn't installed where expected
+     at t/utf8.t line 49
+    
+    locate libmysqlclient.so.15
+    
+    /store/home/syoung/base/apps/mysql/mysql-5.0.51a-linux-x86_64-icc-glibc23/lib/libmysqlclient.so.15
+    /store/home/syoung/base/apps/mysql/mysql-5.0.51a-linux-x86_64-icc-glibc23/lib/libmysqlclient.so.15.0.0
+    
+
+3. GET MORE INFO ON FLAGS FOR perl Makefile.PL USING mysql_config
+    
+    Usage: /usr/local/mysql/bin/mysql_config [OPTIONS]
+    Options:
+            --cflags         [-I/usr/local/mysql/include]
+            --include        [-I/usr/local/mysql/include]
+            --libs           [-L/usr/local/mysql/lib -lmysqlclient -lz -lcrypt -lnsl -lm]
+            --libs_r         [-L/usr/local/mysql/lib -lmysqlclient_r -lz -lpthread -lcrypt -lnsl -lm -lpthread]
+            --socket         [/tmp/mysql.sock]
+            --port           [3306]
+            --version        [5.0.51a]
+            --libmysqld-libs [-L/usr/local/mysql/lib -lmysqld -lz -lpthread -lcrypt -lnsl -lm -lpthread -lrt]
+
+

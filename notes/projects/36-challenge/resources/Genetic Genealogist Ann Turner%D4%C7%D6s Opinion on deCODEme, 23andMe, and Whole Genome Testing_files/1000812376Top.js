@@ -1,0 +1,1 @@
+document.write ('<A HREF="http://oascentral.sciam.com/RealMedia/ads/click_lx.ads/eyeondna.com/912254360/Top/default/empty.gif/6761755769456d2f78796b41446d7965?x" target="_top"><IMG SRC="http://imagec14.247realmedia.com/RealMedia/ads/Creatives/default/empty.gif/0"  WIDTH=1 HEIGHT=1 ALT="" BORDER=0 BORDER="0"></A>');

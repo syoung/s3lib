@@ -1,0 +1,604 @@
+Notes-apps-jira.txt
+
+
+</entry>
+
+
+
+<entry [Wed Apr 14 17:57:36 EDT 2010] INSTALL GreenHopper ON gaia>
+
+
+
+
+Welcome to GreenHopper 101, an introductory guide to the GreenHopper plugin for JIRA and a tour of the most interesting GreenHopper features. Use this page to guide your evaluation process or quickly get up to speed with GreenHopper.
+
+The intended audience for this document is software developers who are familiar with Agile methodologies.
+
+
+1. Installing GreenHopper
+=========================
+
+1. Download GreenHopper
+(If you have a .zip simply rename your file as a .jar — Internet Explorer is playing tricks on you.)
+
+
+2. Shut down JIRA.
+
+bin/shutdown.sh
+
+
+3. Replace or copy the jar into the {JIRA_HOME}/plugins/installed-plugins directory
+(Windows default {JIRA_HOME} is C:\Program Files\Atlassian\Application Data\JIRA)
+
+cp /nethome/syoung/base/apps/jira/jira-greenhopper-plugin-4.4.jar /usr/share/jira/data/4.1/plugins/installed-plugins
+
+
+4. Remove any jira-greenhopper-plugin-*.jar from your {JIRA_INSTALL}/atlassian-jira/WEB-INF/lib directory.
+
+rm -fr /usr/share/jira/4.1/atlassian-jira/WEB-INF/lib/*green*
+
+5. Restart JIRA
+
+bin/startup.sh
+
+
+6. Install license
+
+Obtain GreenHopper license, or generate an evaluation license, via your Atlassian account.
+
+SERVER ID: BEGI-MDKK-EFUA-KNLD
+LICENSE:
+AAABLg0ODAoPeNp1kV1rgzAUhu/zKwK7tmixrBSEOc06V7XF2o3BbjJ7WgOayEks67+f2u6jo7s74
+Q3v8xzOzQtsqd8gdVzqTGf27Ww8pUGY07Ht2CQEXaBojFDSmyOAfFRNA0h3CulTlPnUfZtRduBVy
+/s/JEAYhpAb8PoGy3YtZ0ICJQ0vTMpr8I6qlXttWo7mrlSm5qIaFaom+76/HPpHaVu/Ay53Gw2oP
+cu5CGNRgNSQHxsYCoNlkrAsiPz4i8OSrvRf0I+vZ7CFa91sK4acpTnLVlm0ZqQ6Jc+dUJ+MSceQB
+iSXBbCPRuDx19KTfukl7rkU+kRaDx70tXe6IHa64gAnkzXgATAKvXs2j6wkXCws9rDxrUUah+Ss1
+qVx9P26Tl61WJRcw98zfALYVKfVMCwCFHdwhfwIpPvTvSnOop+UNOchO9VHAhQ1WJGMP89DZUvnq
+9Fx67CW8iQS6w==X02f7
+
+
+Log in as a user with the 'JIRA Administrators' global permission.
+Click the 'Administration' menu in the top navigation bar and select 'JIRA Administration'.
+Click the 'Licence Details' link under the 'GreenHopper' section of the administration menu. This will display the 'GreenHopper License' screen.
+
+Enter your license details and click 'Add'.
+
+OK
+
+***GreenHopper license must match JIRA license***
+***Please note, if you are using a commercial (i.e. not an evaluation) license for GreenHopper, it must match your JIRA license. For example, if you have a JIRA 25 User Commercial license you must have a GreenHopper 25 User Commercial license. GreenHopper evaluation licenses do not need to match JIRA licenses.***
+
+
+7. Install the Labels Plugin: (click to expand)
+
+It is recommended that you install the Labels Plugin so that you can utilise Epics in your GreenHopper projects.
+
+
+1. Download the Labels plugin
+
+/nethome/syoung/base/apps/jira/jira-labels-plugin-2.4.jar
+
+
+2. Shutdown JIRA
+
+bin/shutdown.sh
+
+
+3. Copy the jar to   {JIRA_HOME}/plugins/installed-plugins directory
+
+cp /nethome/syoung/base/apps/jira/jira-labels-plugin-2.4.jar /usr/share/jira/data/4.1/plugins/installed-plugins
+
+
+4. Remove any jira-greenhopper-plugin-*.jar from your {JIRA_INSTALL}/atlassian-jira/WEB-INF/lib directory.
+
+rm -fr /usr/share/jira/4.1/atlassian-jira/WEB-INF/lib/*label*
+* No such file *
+
+
+5. Restart JIRA
+
+bin/startup.sh
+
+
+The JIRA Labels Plugin gives you the ability to tag issues with arbitrary labels. What are tags? They are simple, one word descriptors that help you organize issues. Check out the del.icio.us explanation or the one from Flickr-- JIRA Labels work just like that.
+
+Once installed, you can add a 'Labels' custom field to any project, and you'll be able to add new labels to an issue from the View Issue screen or from the Edit Issue screen. You'll also be able to add tags to lots of issues quickly by using the Issue Navigator.
+
+
+
+
+2. Configuring GreenHopper
+==========================
+
+Before you begin: Note that you will need the 'JIRA Administrators' global permission and the 'Administer Projects' project permission to perform the tasks in this section. You will also need to have created at least one JIRA project.
+
+Configuring GreenHopper for Scrum: (click to expand)
+If you set your GreenHopper projects to use the 'Scrum' template, your projects will automatically be configured to use Stories, Epics, Story Points, Ranking and Flagging.
+
+Tip: You have the flexibility to configure the GreenHopper 'Default' template and/or the GreenHopper 'Scrum' template to your organisation's needs — please see the documentation on Specifying your Project Templates. Further, individual projects can override the templates to suit their requirements — please see Configuring your General Project Settings.
+
+To set a project to use the 'Scrum' template:
+Click the 'Agile' menu in the top navigation bar. The 'Planning Board' (or 'Task Board' or 'Chart Board', depending on the last board you visited) will be displayed.
+Click the 'Tools' menu near the top right, then click 'Configuration' from the dropdown menu provided.
+Select your project from the project dropdown (next to 'PROJECT CONFIGURATION'), if it is not already selected.
+
+In the 'Project Template' dropdown, select 'Scrum'.
+Configuring Constraints: (click to expand)
+You can implement one of the most useful Kanban concepts by simply adding Column Constraints to your Task Board. If the constraints for a column are exceeded, the column will be highlighted in red.
+
+To set constraints based on the number of issues in a given column:
+
+1. Click the 'Agile' menu in the top navigation bar and select 'Task Board'.
+2. Click the 'Views' menu at the right of the screen and select 'Compact (Kanban)' from the drop-down menu.
+3. Select the project for which you wish to set a constraint.
+4. In the appropriate column (e.g. the 'In Progress' column), click the black arrow in the top right of the column.
+5. Click 'Column Constraints'.
+6. Click the 'Edit' link for the 'Standard Issue Count' field, and enter the maximum in the 'Capacity' field. E.g. if your business practice is to have no more than 5 issues 'In Progress' at any one time, you would specify 'Max'=5.'Standard' issues exclude sub-tasks.
+7. Click 'Update'. Your changes will be saved.
+8. Close the 'Column Constraints' window. Your Task Board will refresh with the column constraint applied. If the total number of issues in that column of your Task Board exceeds the maximum capacity, the column will be highlighted in red.
+
+For more information, please see the documentation on Adding Constraints to your Task Board Columns (Kanban).
+
+
+
+3. Configuring JIRA
+===================
+
+Before you begin: Note that you will need the 'JIRA Administrators' global permission and the 'Administer Projects' project permission to perform the tasks in this section. You will also need to have created at least one JIRA project.
+
+  Setting up a Version Hierarchy: (click to expand)
+You may want to create 'master-slave' relationships between versions, e.g. you could group sprints under a release version ('Sprint 1', 'Sprint 2', etc) under the version for the major release ("Version 1").
+
+To set up a version hierarchy, e.g. to break up your major version into sprints:
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' from the drop-down menu.
+In the 'PLANNING BOARD' field, select the project in which you are interested.
+In the column at the right of the screen, click the 'Add' link. The 'Add Version' popup will appear.
+In the 'Version Name' field, type the name of your new sprint version (e.g. 'Sprint 1').
+In the 'Master' field, select your major version (e.g. 'Version 1').
+Enter the 'Start Date', 'Release Date' and 'Decription' for your new sprint version.
+Click the 'Create' button to create the verion and keep the 'Add Version' popup open (so you can create another version, e.g. 'Sprint 2'), or click the 'Create and Close' button to create the version and return to the Planning Board.
+For more information, please see the GreenHopper documentation on Setting Up a Version Hierarchy and the JIRA documentation on Managing Versions.
+
+To force all issues to respect the hierarchy you have set up, you can 'synchronise' versions and components. You can do this either manually or automatically; for more information, please see the documentation.
+
+To synchronise your versions automatically:
+Click the 'Administration' menu in the top navigation bar and select 'JIRA Administration'.
+Click the 'General Configuration' link under the 'GreenHopper' section of the administration menu.
+In the 'GreenHopper Listeners and Services' section, click the 'Versions Synchronizer' check-box.
+  Enabling Time-Tracking: (click to expand)
+If you want to be able to log the amount of time you spend working on issues, you need to first enable time-tracking in JIRA.
+
+To enable time-tracking::
+Click the 'Administration' menu in the top navigation bar and select 'JIRA Administration'.
+Click 'Time Tracking' (under 'Global Settings') in the left navigation column.
+In the 'Hours Per Day' field, enter the number of hours in your organisation's working day (e.g. 8).
+In the 'Days Per Week' field, enter the number of days in your organisation's working week (e.g. 5).
+Leave the 'Time Format' as 'pretty'.
+Change the 'Default Unit' to 'hour'.
+Click the 'Activate' button.
+For more about configuring time-tracking, please see the JIRA documentation.
+  Enabling Sub-tasks: (click to expand)
+If you want to be able to split up a 'parent' issue (e.g. a 'Story') into a number of sub-tasks which can be assigned and tracked separately, you need to first enable sub-tasks in JIRA.
+
+To enable sub-tasks:
+Click the 'Administration' menu in the top navigation bar and select 'JIRA Administration'.
+Click 'Sub-Tasks' (under 'Global Settings') in the left navigation column.
+Click the 'Enable' link.
+For more about configuring sub-tasks, please see the JIRA documentation.
+Working with Issues
+
+4. Viewing the "To Do" List
+  To view the "To Do" list for your project or yourself: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Task Board' from the drop-down menu.
+In the 'TASK BOARD' field, select the project in which you are interested.
+ Tip: the Task Board will not be displayed if you have not yet configured a version for your project.
+In the 'View Version' field, select the version in which you are interested.
+If you wish to see only the issues that are assigned to you, click the 'My Issues' check-box.
+For more information, please see the documentation on Using Task Board Modes to View Issues.
+
+5. Creating an Issue
+  To log one or more new issues/cards: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' (or 'Task Board' or 'Chart Board') from the drop-down menu.
+In the 'PLANNING BOARD' (or 'TASK BOARD' or 'CHART BOARD') field, select the project in which you wish to create an issue.
+Click the 'New card' button (next to the project dropdown).
+Fill out the 'New issue' form (this is similar to creating a new issue directly in JIRA).
+Click the 'Create' button to create the issue and keep the 'New issue' window open (so you can create another issue), or click the 'Create and close' button to create the issue and return to your board.
+For more information, please see the documentation on Creating an Issue in GreenHopper and Creating an Issue in JIRA.
+
+6. Flagging an Issue
+Flagging a card/issue indicates that it requires special attention.
+
+  To flag an issue: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' (or 'Task Board' or 'Chart Board') from the drop-down menu.
+In the 'PLANNING BOARD' (or 'TASK BOARD' or 'CHART BOARD') field, select the project containing the issue you wish to flag.
+Find the issue and double-click it to display it as a 'Detailed Card'.
+Click the black triangle in the top right corner of the card and select 'Flag' from the drop-down menu.
+For more information, please see the documentation on Flagging an Issue in GreenHopper
+
+7. Ranking Issues
+Ranking your issues/cards helps you organise and prioritise tasks in your product/sprint backlog more effectively.
+
+  To rank issues in your project: (click to expand)
+ Tip: If the currently selected project is using the 'Scrum' Project Template you may skip the steps below as it sets the 'Sort by' field of the Default context to 'Rank' automatically.
+
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' from the drop-down menu.
+In the 'PLANNING BOARD -' field, select the project in which you are interested.
+In the 'View' field, select 'Project Overview'.
+In the 'Context' field, select 'On the fly'.
+Click the 'Tools' menu at the right of the screen and select 'Context' from the drop-down menu.
+In the 'Sort by' field, select 'Rank' (i.e. the Ranking field that you set up in 'Configuring JIRA and GreenHopper' above).
+You can now rank your issues by dragging and dropping the cards/rows on your Planning Board as desired.
+For more information, please see the documentation on Ranking Issues in GreenHopper.
+
+8. Scheduling and Assigning Issues
+  To schedule and assign issues/cards: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' from the drop-down menu.
+In the 'PLANNING BOARD' field, select the project in which you are interested.
+In the 'View' field, select 'Version' (or 'Component' or 'Assignee' or 'Project Overview'--- whichever is most relevant to the issues you need to schedule/assign).
+If you have selected 'Version', 'Component' or 'Assignee', a second dropdown will display that you can select the desired version, component or assignee from.
+Drag and drop the desired card(s)/row(s) to the version (or component or assignee) to which you want to assign the issue(s).
+ You can select multiple cards by using the <Control> (or <Command>) key.
+For more information, please see the documentation on Scheduling and Assigning Issues in GreenHopper.
+
+9. Transitioning Issues through Statuses
+  To move an issue from one JIRA status to another: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Task Board' from the drop-down menu.
+In the 'TASK BOARD' field, select the project in which you are interested.
+In the 'View Version' field, select the version in which you are interested. Please note, you will not be able to select 'Unscheduled' or any released versions in this dropdown.
+Drag and drop the desired card(s)/row(s) to the column that matches the status to which you want to assign the issue(s).
+For more information, please see the documentation on Transitioning Issues in GreenHopper.
+
+ Note for Kanban users: if moving an issue causes a constraint to be exceeded, the affected column will be displayed in red.
+
+Searching and Reporting
+
+10. Viewing a Project's Backlog
+  To view the issues assigned to unreleased versions of a project: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' from the drop-down menu.
+In the 'PLANNING BOARD' field, select the project in which you are interested.
+In the 'View' field, select either:
+'Project Overview' to view issues assigned to all unreleased versions of a project.
+'Component' to view issues assigned to a particular component of all unreleased versions of a project.
+'Version' to view issues assigned to a particular unreleased versions of a project.
+'Assignee' to view issues assigned to a particular person for all unreleased versions of a project.
+For more information, please see the documentation on Using Planning Board Modes to View Issues.
+
+11. Viewing a Burndown Chart
+  To view the hour burndown chart for an unreleased version: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Chart Board' from the drop-down menu.
+In the 'CHART BOARD' field, select the project in which you are interested.
+In the 'View Version' field, select the version in which you are interested.
+In the 'BURNDOWN CHART' field, select "HOUR BURNDOWN CHART".
+For more information, please see the documentation on Using the Chart Board.
+
+  To view the issue burndown chart for an unreleased version: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Chart Board' from the drop-down menu.
+In the 'CHART BOARD' field, select the project in which you are interested.
+In the 'View Version' field, select the version in which you are interested.
+In the 'BURNDOWN CHART' field, select "ISSUE BURNDOWN CHART".
+For more information, please see the documentation on Using the Chart Board.
+
+  To view the hour burndown chart for a released version: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Released Board' from the drop-down menu.
+In the 'RELEASED BOARD' field, select the project in which you are interested.
+In the 'RELEASE' field, select "RELEASE CHARTS".
+In the 'View' field, select the version in which you are interested.
+For more information, please see the documentation on Using the Released Board.
+
+12. Searching for Issues
+  To search for issues/cards in a particular project: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' (or 'Task Board' or 'Chart Board' or 'Released Board') from the drop-down menu.
+In the 'PLANNING BOARD' (or 'TASK BOARD' or 'CHART BOARD' or 'RELEASED BOARD') field, select the project in which you wish to search.
+Type your search criteria in the 'Board Search' box and press the <Enter> key. Your search criteria can be any of the following:
+The complete issue key.
+The numeric part of the issue key.
+Plain text contained in the comments, description or summary field of the issue.
+For more information, please see the documentation on Searching for Issues in GreenHopper and Searching for Issues in JIRA.
+
+13. Filtering Issues
+A Context is a filter that you apply to a board, e.g. enabling you to only see issues of a particular type.
+
+  To create a new Context showing Bugs only: (click to expand)
+Click the 'Agile' menu in the top navigation bar and select 'Planning Board' (or 'Task Board' or 'Chart Board') from the drop-down menu.
+Select the project in which you are interested.
+Click the 'New' link next to the 'Context' field.
+In the 'Context name' field, type 'Bugs'.
+In the 'Issue Type' field, select 'Bugs'.
+Click the 'Save and Apply' button.
+The Planning Board (or 'Task Board' or 'Chart Board') will now only display Bugs.
+You can create Contexts that use many different fields, or a JIRA issue filter. For details, see the documentation on Creating a New Context.
+
+14. Using the "Agile" Gadget
+This is particularly useful for Scrum users.
+
+  To display GreenHopper data on your JIRA dashboard: (click to expand)
+Click the 'Dashboards' link in the top navigation bar.
+Click the 'Add Gadget' link at the top right of your dashboard. The 'Gadget Directory' screen will display.
+Find the 'Agile Gadget' in the list of gadgets and click the 'Add it now' button.
+Click the 'Finished' button at the bottom right of the Gadget Directory.
+The 'Agile Gadget' gadget will display on your dashboard. Enter the following setup details for your gadget:
+'Project or Saved Filter' — the JIRA project or saved filter for which you want to display GreenHopper data.
+'Display chart values' — whether or not you want to display the plot values on the chart.
+'Display chart legend' — whether or not you want to display the legend at the bottom of the chart.
+'Refresh Interval' — how often the data in the gadget will refresh.
+Click the 'Save' button.
+For more information, please see the documentation on the Agile Gadget and the JIRA Dashboard.
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 14 15:14:31 EDT 2010] INSTALL JIRA ON gaia>
+
+
+
+http://confluence.atlassian.com/display/JIRA/Installing+JIRA+Standalone+on+Unix+or+Linux
+
+1. CHECK JAVA VERSION 
+
+[root@gaia syoung]# java --version
+
+    java version "1.4.2"
+    gij (GNU libgcj) version 4.1.2 20070626 (Red Hat 4.1.2-14)
+
+
+UPDATE JAVA
+
+http://java.sun.com/javase/downloads/widget/jdk6.jsp
+
+DOWNLOADED AND UNZIPPED TO /nethome/syoung/base/apps/jira
+
+cp -r /nethome/syoung/base/apps/jira/jre1.6.0_19 /usr/lib/jvm
+cp -r /nethome/syoung/base/apps/jira/jdk1.6.0_19 /usr/lib/jvm
+
+ll /usr/lib/jvm
+
+cd /home/syoung/base/apps/jira/jre1.6.0_19/bin
+./java -version
+
+	java version "1.6.0_19"
+	Java(TM) SE Runtime Environment (build 1.6.0_19-b04)
+	Java HotSpot(TM) 64-Bit Server VM (build 16.2-b04, mixed mode)
+
+
+SET JAVA_HOME 
+
+
+export JAVA_HOME=/usr/lib/jvm/jre1.6.0_19
+
+cp -r 
+
+
+OK
+
+#export JAVA_HOME=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0
+#export JAVA_HOME=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0
+
+
+EDIT conf/server.xml
+
+
+emacs conf/server.xml
+
+
+#####PUT THE JAVA_HOME ENVIRONMENT VARIABLE IN /etc/environment
+#####
+#####	sudo bash -c "echo JAVA_HOME=/usr/lib/jvm/java-6-sun/ >> /etc/environment"
+#####
+#####Log out and log back in again and you can see that JAVA_HOME is set by executing:
+#####
+#####     $echo $JAVA_HOME
+#####
+
+
+2. CREATE jira USER
+
+A dedicated user should be created to run JIRA, as JIRA runs as the user it is invoked under and therefore can potentially be abused.
+
+
+/usr/sbin/useradd --create-home --home-dir /usr/local/jira --shell /bin/bash jira
+
+OK
+
+
+
+
+3. DOWNLOAD JIRA TO INSTALLATION DIRECTORY
+
+cd /usr/share/jira
+
+wget http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-enterprise-4.1-standalone.tar.gz
+
+
+
+
+4. SET jira.home IN jira-application.properties FILE
+
+CREATE JIRA HOME DIRECTORY
+
+mkdir -p /usr/share/jira/data/4.1
+cd /usr/share/jira/4.1
+chown jira:jira /usr/share/jira/data/4.1
+
+
+FIND AND EDIT jira-application.properties 
+
+find ./ -name jira-application.properties
+
+	./atlassian-jira/WEB-INF/classes/jira-application.properties
+
+emacs /usr/share/jira/4.1/atlassian-jira/WEB-INF/classes/jira-application.properties
+
+ADD
+
+	jira.home	/usr/share/jira/data/4.1
+
+
+*** Please note that you cannot use the same JIRA home directory for multiple instances of JIRA. We recommend that you do not specify your JIRA home directory to be inside your installation directory, to prevent information from being accidentally lost during major operations (e.g. backing up and restoring instances). ***
+
+
+
+
+
+5. RUN startup.sh
+
+
+ln -s atlassian* 4.1
+cd 4.1/bin
+./startup.sh
+
+
+	JIRA Standalone Edition
+	   Version : 4.1
+					  
+	Detecting JVM PermGen support...
+	PermGen switch is supported. Setting to 256m
+	If you encounter issues starting or stopping JIRA Standalone Edition, please see the Troubleshooting guide at http://confluence.atlassian.com/display/JIRA/Installation+Troubleshooting+Guide
+	
+	Using CATALINA_BASE:   /usr/share/jira/4.1
+	Using CATALINA_HOME:   /usr/share/jira/4.1
+	Using CATALINA_TMPDIR: /usr/share/jira/4.1/temp
+	Using JRE_HOME:       /home/syoung/base/apps/jira/jre1.6.0_19
+
+
+CHECK THE PROCESS IS RUNNING:
+
+[root@gaia 4.1]# ps aux  | grep jira
+root      2776  0.0  0.0 111440  7212 pts/1    T    16:03   0:00 emacs /usr/share/jira/4.1/atlassian-jira/WEB-INF/classes/jira-application.properties
+root      2778  0.0  0.0 111556  8324 pts/1    T    16:03   0:00 emacs /usr/share/jira/4.1/atlassian-jira/WEB-INF/classes/jira-application.properties
+root      2955  0.0  0.0 111224  6876 pts/1    T    16:33   0:00 emacs /usr/share/jira/4.1/atlassian-jira/WEB-INF/classes/jira-application.properties
+syoung    3480  0.0  0.0  58112  2744 ?        Ss   17:07   0:00 scp -t /home/syoung/base/apps/jira/
+syoung    3641  0.0  0.0  58116  2748 ?        Ss   17:07   0:00 scp -t /home/syoung/base/apps/jira/
+syoung    3826  0.0  0.0  58112  2748 ?        Ss   17:10   0:00 scp -t /home/syoung/base/apps/jira/
+root      5079 30.9  0.6 1146688 433192 pts/1  Sl   17:25   1:52 /home/syoung/base/apps/jira/jre1.6.0_19/bin/java -Djava.util.logging.config.file=/usr/share/jira/4.1/conf/logging.properties -XX:MaxPermSize=256m -Xms256m -Xmx384m -Djava.awt.headless=true -Datlassian.standalone=JIRA -Dorg.apache.jasper.runtime.BodyContentImpl.LIMIT_BUFFER=true -Dmail.mime.decodeparameters=true -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/usr/share/jira/4.1/endorsed -classpath :/usr/share/jira/4.1/bin/bootstrap.jar -Dcatalina.base=/usr/share/jira/4.1 -Dcatalina.home=/usr/share/jira/4.1 -Djava.io.tmpdir=/usr/share/jira/4.1/temp org.apache.catalina.startup.Bootstrap start
+root      5213  5.7  0.2 986184 177792 pts/1   Sl   17:27   0:16 /home/syoung/base/apps/jira/jre1.6.0_19/bin/java -Djava.util.logging.config.file=/usr/share/jira/4.1/conf/logging.properties -XX:MaxPermSize=256m -Xms256m -Xmx384m -Djava.awt.headless=true -Datlassian.standalone=JIRA -Dorg.apache.jasper.runtime.BodyContentImpl.LIMIT_BUFFER=true -Dmail.mime.decodeparameters=true -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/usr/share/jira/4.1/endorsed -classpath :/usr/share/jira/4.1/bin/bootstrap.jar -Dcatalina.base=/usr/share/jira/4.1 -Dcatalina.home=/usr/share/jira/4.1 -Djava.io.tmpdir=/usr/share/jira/4.1/temp org.apache.catalina.startup.Bootstrap start
+
+OK
+
+BROWSE TO http://gaia.ccs.miami.edu:8080
+
+OK
+
+
+
+6. INSTALL JIRA EVALUATION LICENSE
+
+SERVER ID: BEGI-MDKK-EFUA-KNLD
+ORGANISATION NAME: Stuart Young
+LICENSE:
+AAABHw0ODAoPeNp1kElPwzAQhe/+FZY4p0q6CClSJEJsUGiWKmlBSFxMOrRGjRONnYj8e7KUVXDze
+N58781cPMCe+jVSZ0mdS3dpu4sFDdiWzm3HJgx0gbI2slLeXZj5Ty7lrTg1YvghAcL4YMKAN+gte
+2k5KxJUyojCJKIEr6saddCmEWiujpUphTzNiqokrxLFLJIFKA18L0cHnmx5tsnCnH8geNzr/2V8R
+fEMNvCDue1qGAMEaRzzLAj9aOr3VNnCNHCatPeAeoDMSW+nDCihCuBvtcTu22qrYbUUD0JJPZnmY
+yT6OMSb4ElTPgOmLzvdIz3LITlgCxgy75rfhlbM1muL3+x8a51EjJyj9t0o/Kz+9t00WByFht+nf
+gcdVpWvMCwCFFiHiIulD4C+expoQHyLUaRVz4wdAhRrWapRrrEmVcLq63MGfZuPkq9oAg==X02ei
+
+
+7. CREATE ADMIN USER
+
+NAME: admin
+PASS: ngsopen
+
+
+
+
+TROUBLESHOOTING
+===============
+
+ERROR
+
+	WARNING: error instantiating 'org.apache.juli.ClassLoaderLogManager' referenced by java.util.logging.manager, class not found
+	java.lang.ClassNotFoundException: org.apache.juli.ClassLoaderLogManager not found
+	   <<No stacktrace available>>
+	WARNING: error instantiating '1catalina.org.apache.juli.FileHandler,' referenced by handlers, class not found
+
+
+DIAGNOSIS
+
+	JAVA 1.5 OR HIGHER IS NOT INSTALLED
+
+	NB: CHECK LOGFILE:
+
+		logs/catalina.out
+
+SOLUTION:
+
+	INSTALL JAVA 1.6
+
+
+
+ERROR:
+
+http://gaia.ccs.miami.edu:8080
+
+JIRA Startup Failed
+You cannot access JIRA at present. Look at the table below to identify the reasons
+
+Description
+The jira.home directory '/usr/share/jira/data/4.1' is already locked. Please see the JIRA documentation for more information on locked jira.home directories.
+
+DIAGNOSIS
+
+jira.home WAS LOCKED IN PREVIOUS ABORTED INSTALL ATTEMPT
+
+Your JIRA home directory can become locked if you accidentally configure two JIRA instances to use the same directory or your JIRA instance terminates abnormally and fails to unlock the JIRA home directory. This will prevent your JIRA instance from running.
+
+
+SOLUTION:
+
+1. CD to the JIRA Home directory
+
+cd /usr/share/jira/data/4.1
+
+2. Run ls -al
+	
+	[root@gaia 4.1]# ls -al
+		drwxr-xr-x 3 root root 4096 Apr 14 17:25 caches
+		drwxr-xr-x 3 root root 4096 Apr 14 17:25 data
+		drwxr-xr-x 2 root root 4096 Apr 14 17:25 export
+		-rw-r--r-- 1 root root    0 Apr 14 17:25 .jira-home.lock
+		drwxr-xr-x 2 root root 4096 Apr 14 17:25 log
+		drwxr-xr-x 5 root root 4096 Apr 14 17:25 plugins
+
+3. Run rm .jira-home.lock
+
+	[root@gaia 4.1]# rm -fr .jira-home.lock 
+
+
+
+</entry>
+
+
+
+<entry [Sun Sep 14 12:15:06 EDT 2008] INSTALL JIRA>
+
+
+	
+    
+1. CREATE A jira USER
+
+A dedicated user should be created to run JIRA, as JIRA runs as the user it is invoked under and therefore can potentially be abused.
+
+    sudo /usr/sbin/useradd --create-home --home-dir /usr/local/jira --shell /bin/bash jira
+
+2. DOWNLOAD jira
+
+http://www.atlassian.com/software/jira/JIRADownloadCenter.jspa
+
+
+3. UNZIP AND RUN bin/startup.sh
+
+cd /home/syoung/19-jira/
+ll
+    -rw-r--r-- 1 syoung syoung  36M Sep 14 12:05 atlassian-jira-enterprise-3.13-standalone.tar.gz
+
+
+
+Neither the JAVA_HOME nor the JRE_HOME environment variable is defined
+At least one of these environment variable is needed to run this program

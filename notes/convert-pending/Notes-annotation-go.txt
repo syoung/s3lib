@@ -1,0 +1,689 @@
+Notes-annotation-go.txt
+=======================
+
+</entry>
+
+
+
+<entry [Thu Feb 22 10:56:05 EST 2007] MSG: Doug, Jeff>
+
+
+CC: Margie
+
+Hi Doug/Jeff,I've almost completed the dbEST submission page. It's at:http://genomics.rsmas.miami.edu/sandbox11/sandbox11.htmlFile --> Open --> dbEST submitYou can update/change the details about each experiment at:File --> Open --> Experiment infoThe last remaining part is the annotation of the ESTs before sending them (we have 10,000 unannotated assembled sequences, each containing one or more EST, and 14,000 annotated sequences in funnybase10). I'm still working on the pathway terms (GO, KEGG, EC) for the annotated sequences.For the unannotated ESTs, I'll leave this field blank:PUT_ID:    Putative identification of sequence by submitter.Otherwise, if there are any other fields you'd like to add, just let me know (see list below).Stuart.+++++++++++++++++++++++++++++++++++++++++++++++++++++++++4. EST Files============These are the valid tags and a short description:TYPE:      Entry type - must be "EST" for EST entries.           **Obligatory field**STATUS:    Status of EST entry - "New" or "Update".           **Obligatory field**CONT_NAME: Name of contact            (must be identical string to the contact entry)           **Obligatory field**CITATION:  Journal citation.            (Must be identical string to the publication title)           Begins on line below tag - use continuation lines            if necessary.           **Obligatory field**LIBRARY:   Library name.             (Must be identical string to library name entry.)           **Obligatory field**EST#:      EST id assigned by contact lab.           For EST updates, this is the string we match on.           **Obligatory field**GB#:       GenBank accession numberGB_SEC:    Secondary GenBank accessionsGDB#:      Genome database accession numberGDB_DSEG:  Genome database Dsegment numberCLONE:     Clone id.SOURCE:    Source providing clone e.g. ATCCSOURCE_DNA:   Source id number for the clone as pure DNASOURCE_INHOST:  Source id number for the clone stored in the host.OTHER_EST:    Other ESTs on this clone.DBNAME:    Database name for cross-reference to another databaseDBXREF:    Database cross-reference accessionPCR_F:     Forward PCR primer sequencePCR_B:     Backward PCR primer sequenceINSERT:    Insert length (in bases)ERROR:     Estimated error in insert length (bases)PLATE:     Plate number or codeROW:       Row number or letterCOLUMN:    Column number or letterSEQ_PRIMER:   Sequencing primer description or sequence.P_END:     Which end sequenced e.g. 5'HIQUAL_START:  Base position of start of highest quality sequence                 (default=1)HIQUAL_STOP:  Base position of last base of highest quality               sequence.DNA_TYPE:  cDNA (default), Genomic, Viral, Synthetic, OtherPUBLIC:    Date of public release.            Leave blank for immediate release.           Format:  9/11/1994 (MM/DD/YYYY)            **Obligatory field**PUT_ID:    Putative identification of sequence by submitter.TAG_LIB:   Name of library whose tag is found in this sequence.TAG_TISSUE:  Tissue that was source for the tagged library, if             a library tag was found.TAG_SEQ:   The actual sequence of the library tag found in the EST           read. If the tag was searched for and not found, put           'Not found' in this field.POLYA:     Y or N to indicate if a polyA tail was or was not found            in the EST sequence.COMMENT:   Comments about EST.            Starts on line below COMMENT: tag.SEQUENCE:  Sequence string.            Starts on line below SEQUENCE: tag.           **Obligatory field**||Examples:TYPE: ESTSTATUS:  NewCONT_NAME: Kerlavage AREST#: EST00001CLONE: HHC189SOURCE: ATCCSOURCE_INHOST: 65128OTHER_EST:  EST00093, EST000101CITATION: Complementary DNA sequencing: expressed sequence tags and human genome projectSEQ_PRIMER: M13 ForwardP_END: 5'HIQUAL_START: 1HIQUAL_STOP: 285DNA_TYPE: cDNALIBRARY: Hippocampus, Stratagene (cat. #936205)PUBLIC: PUT_ID: Actin, gamma, skeletalCOMMENT:This is a comment about the sequence.It may span several lines.SEQUENCE:AATCAGCCTGCAAGCAAAAGATAGGAATATTCACCTACAGTGGGCACCTCCTTAAGAAGCTGATAGCTTGTTACACAGTAATTAGATTGAAGATAATGGACACGAAACATATTCCGGGATTAAACATTCTTGTCAAGAAAGGGGGAGAGAAGTCTGTTGTGCAAGTTTCAAAGAAAAAGGGTACCAGCAAAAGTGATAATGATTTGAGGATTTCTGTCTCTAATTGGAGGATGATTCTCATGTAAGGTTGTTAGGAAATGGCAAAGTATTGATGATTGTGTGCTATGTGATTGGTGCTAGATACTTTAACTGAGTATACGAGTGAAATACTTGAGACTCGTGTCACTT||EST data template with required and most often used fields:TYPE:      ESTSTATUS:  CONT_NAME: CITATION:  publication titleLIBRARY:  EST#:    CLONE:  SOURCE:SOURCE_DNA:   SOURCE_INHOST:PCR_F:     PCR_B:    INSERT:  ERROR:  PLATE: ROW:  COLUMN:   SEQ_PRIMER: P_END:     HIQUAL_START: HIQUAL_STOP: DNA_TYPE: PUBLIC: PUT_ID:  POLYA:    COMMENT:   commentsSEQUENCE: sequence||Stuart.</entry>
+
+
+
+<entry [Mon Feb 12 11:59:22 EST 2007] ENZYME COMMISSION DESCRIPTIONS>
+
+
+
+
+EC .dat FILE WITH EC NUMBERS AND DESCRIPTIONS DOWNLOADED FROM:
+ftp://ftp.ebi.ac.uk/pub/databases/enzyme/enzyme.dat
+
+FILE FORMAT INFO FOUND HERE:
+ftp://ftp.ebi.ac.uk/pub/databases/enzyme/enzclass.txt
+ftp://ftp.ebi.ac.uk/pub/databases/enzyme/enzuser.txt
+
+CONTENTS OF FTP DIRECTORY:
+ftp://ftp.ebi.ac.uk/pub/databases/enzyme/README
+********************************
+* ENZYME nomenclature database *
+********************************
+
+FTP site:
+
+   Organization   Swiss Institute of Bioinformatics
+   Address        ftp.expasy.org
+   Directory      /databases/enzyme
+
+
+This directory contains the following files: 
+
+
+File name       Description                                  
+------------    ------------------------------------------------------------
+enzyme  .dat    ENZYME database data file
+enzclass.txt    Definition of enzymes classes, subclasses and sub-subclasses
+enzuser .txt    User manual for ENZYME
+enzyme  .get    How to obtain ENZYME
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb  6 14:22:55 EST 2007] MSG: Doug>
+
+
+CC: Margie
+
+Hi Doug,
+
+I've done the analysis of three different ways of allocating annotations based on BLAST results from swissprot and the refseq databases (human, mouse, rat, dog):
+
+1. Take the swissprot hit first
+2. Take the refseq hit only if (refseq_evalue / swissprot_evalue) > 1.5
+3. Take the refseq hit only if (refseq_evalue / swissprot_evalue) > 1.2
+
+The ratio test will mean that refseq is preferred for hits with less negative E-values. 
+
+I.e., given a 1e-05  difference between the 1e-15 refseq and 1e10 swissprot best BLAST hits for a sequence, refseq will be chosen. 
+
+But if the refseq hit is 1e-105 and the swissprot hit is 1e-100, then swissprot will be chosen.
+
+Here's a table showing the different results we get using:
+
+http://genomics.rsmas.miami.edu/downloads/pathwayannotations.png
+
+Sequence pathway annotations at Ratio 1.2
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv.ratio1.2
+
+Sequence pathway annotations at Ratio 1.2
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv.ratio1.5
+
+Sequence pathway annotations for Swissprot first
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv.swissprot.first
+
+Sequence pathway annotations for Swissprot only
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv.swissprot.only
+
+Stuart.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+PATHWAY ANNOTATION BASED ONLY ON swissprot HITS:
+
+
+select count(*) as goids from collectionsequencespathways where goids!='';
++-------+
+| goids |
++-------+
+|   222 |
++-------+
+
+select count(*) as ec from collectionsequencespathways where ec!='';
++-----+
+| ec  |
++-----+
+| 220 |
++-----+
+
+
+select count(*) as kegg from collectionsequencespathways where kegg!='';
++------+
+| kegg |
++------+
+|  173 |
++------+
+
+
+select count(*) as kegg from collectionsequencespathways where kegg!='' and goids!='';
++------+
+| kegg |
++------+
+|   49 |
++------+
+
+
+select count(*) as kegg_or_go from collectionsequencespathways where kegg!='' or goids!='';
++-------------+
+| kegg4_or_go |
++-------------+
+|         346 |
++-------------+
+
+
+select count(*) as kegg_and_go from collectionsequencespathways where kegg!='' and goids!='';
++--------------+
+| kegg4_and_go |
++--------------+
+|           49 |
++--------------+
+
+
+select count(*) as ec_and_go from collectionsequencespathways where ec!='' and goids!='';
++-----------+
+| ec_and_go |
++-----------+
+|        66 |
++-----------+
+
+
+select count(*) as ec_or_go from collectionsequencespathways where ec!='' or goids!='';
++----------+
+| ec_or_go |
++----------+
+|      376 |
++----------+
+
+
+select count(*) as ec_or_kegg from collectionsequencespathways where ec!='' or kegg!='';
++------------+
+| ec_or_kegg |
++------------+
+|        220 |
++------------+
+
+
+select count(*) as ec_and_kegg from collectionsequencespathways where ec!='' and kegg!='';
++-------------+
+| ec_and_kegg |
++-------------+
+|         173 |
++-------------+
+
+
+select count(*) as ec_and_kegg from collectionsequencespathways where ec!='' and kegg!='' and goids!='';
++-------------+
+| ec_and_kegg |
++-------------+
+|          49 |
++-------------+
+
+
+select count(*) as go_ec_and_kegg from collectionsequencespathways where ec!='' and kegg!='' and goids!='';
++----------------+
+| go_ec_and_kegg |
++----------------+
+|             49 |
++----------------+
+
+
+select count(*) as go_and_ec_and_kegg from collectionsequencespathways where ec!='' and kegg!='' and goids!='';
++--------------------+
+| go_and_ec_and_kegg |
++--------------------+
+|                 49 |
++--------------------+
+
+
+select count(*) as go_or_ec_or_kegg from collectionsequencespathways where ec!='' or kegg!='' or goids!='';
++------------------+
+| go_or_ec_or_kegg |
++------------------+
+|              376 |
++------------------+
+
+select count(*) as go_ids,targetsource from collectionsequencespathways where goids!='' group by targetsource; 
++--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|    222 | swissprot    |
++--------+--------------+
+
+select count(*) as kegg_ids,targetsource from collectionsequencespathways where kegg!='' group by targetsource; 
++----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|      173 | swissprot    |
++----------+--------------+
+
+
+select count(*) as ec_ids,targetsource from collectionsequencespathways where ec!='' group by targetsource; 
++--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|    220 | swissprot    |
++--------+--------------+
+
+
+SUMMARY USING SWISSPROT FIRST (AFTER REFSEQ HITS ARE ADDED):
+
+select count(*) as go_ids,targetsource from collectionsequencespathways where goids!='' group by targetsource; 
++--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|     30 | refseq-human |
+|     69 | refseq-mouse |
+|    222 | swissprot    |
++--------+--------------+
+
+select count(*) as kegg_ids,targetsource from collectionsequencespathways where kegg!='' group by targetsource; 
++----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|        1 | refseq-human |
+|        6 | refseq-mouse |
+|      173 | swissprot    |
++----------+--------------+
+
+select count(*) as ec_ids,targetsource from collectionsequencespathways where ec!='' group by targetsource; 
++--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|      2 | refseq-human |
+|     44 | refseq-mouse |
+|    220 | swissprot    |
++--------+--------------+
+
+select count(*) as go_or_ec_or_kegg from collectionsequencespathways where ec!='' or kegg!='' or goids!='';
++------------------+
+| go_or_ec_or_kegg |
++------------------+
+|              475 |
++------------------+
+
+
+USING REFSEQ_EVALUE/ SWISSPROT_EVALUE > 1.5 CUTOFF:
+
+select count(*) as go_ids,targetsource from collectionsequencespathways where goids!='' group by targetsource; 
++--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|     30 | refseq-human |
+|     70 | refseq-mouse |
+|    171 | swissprot    |
++--------+--------------+
+
+select count(*) as kegg_ids,targetsource from collectionsequencespathways where kegg!='' group by targetsource; 
++----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|        1 | refseq-human |
+|        6 | refseq-mouse |
+|      148 | swissprot    |
++----------+--------------+
+
+select count(*) as ec_ids,targetsource from collectionsequencespathways where ec!='' group by targetsource; 
++--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|      2 | refseq-human |
+|     44 | refseq-mouse |
+|    186 | swissprot    |
++--------+--------------+
+
+select count(*) as go_or_ec_or_kegg from collectionsequencespathways where ec!='' or kegg!='' or goids!='';
++------------------+
+| go_or_ec_or_kegg |
++------------------+
+|              399 |
++------------------+
+
+
+USING REFSEQ_EVALUE/ SWISSPROT_EVALUE > 1.2 CUTOFF:
+
+
+select count(*) as go_ids,targetsource from collectionsequencespathways where goids!='' group by targetsource; +--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|     31 | refseq-human |
+|     70 | refseq-mouse |
+|    164 | swissprot    |
++--------+--------------+
+3 rows in set (0.02 sec)
+
+select count(*) as ec_ids,targetsource from collectionsequencespathways where ec!='' group by targetsource; +--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|      2 | refseq-human |
+|     44 | refseq-mouse |
+|    178 | swissprot    |
++--------+--------------+
+3 rows in set (0.02 sec)
+
+select count(*) as kegg_ids,targetsource from collectionsequencespathways where kegg!='' group by targetsource; +----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|        1 | refseq-human |
+|        6 | refseq-mouse |
+|      141 | swissprot    |
++----------+--------------+
+
+
+select count(*) as go_or_ec_or_kegg from collectionsequencespathways where ec!='' or kegg!='' or goids!='';+------------------+
+| go_or_ec_or_kegg |
++------------------+
+|              385 |
++------------------+
+
+
+
+</entry>
+
+
+
+<entry [Mon Feb  5 04:33:12 EST 2007] MSG: DOUG>
+
+
+CC: JEFF
+
+Hi Doug,
+
+Here's the updated annotation with all the GO, EC and KEGG ids I could get for Refseq, using the IPI (International Protein Identifier) mappings and the GO ec2go mappings.
+
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv
+
+Here's the breakdown:
+
++--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|     31 | refseq-human |
+|     70 | refseq-mouse |
+|     81 | swissprot    |
++--------+--------------+
++----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|        1 | refseq-human |
+|        6 | refseq-mouse |
+|      102 | swissprot    |
++----------+--------------+
++--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|      2 | refseq-human |
+|     44 | refseq-mouse |
+|    129 | swissprot    |
++--------+--------------+
+
+TOTAL NUMBER OF SEQUENCES WITH PATHWAY ANNOTATIONS:
++----------+
+| count(*) |
++----------+
+|      277 |
++----------+
+
+
+Stuart.
+
+
+select count(*) as go_ids,targetsource from collectionsequencespathways where goids!='' group by targetsource; 
++--------+--------------+
+| go_ids | targetsource |
++--------+--------------+
+|     31 | refseq-human |
+|     70 | refseq-mouse |
+|     81 | swissprot    |
++--------+--------------+
+3 rows in set (0.02 sec)
+
+select count(*) as kegg_ids,targetsource from collectionsequencespathways where kegg!='' group by targetsource; 
++----------+--------------+
+| kegg_ids | targetsource |
++----------+--------------+
+|        1 | refseq-human |
+|        6 | refseq-mouse |
+|      102 | swissprot    |
++----------+--------------+
+3 rows in set (0.04 sec)
+
+select count(*) as ec_ids,targetsource from collectionsequencespathways where ec!='' group by targetsource; 
++--------+--------------+
+| ec_ids | targetsource |
++--------+--------------+
+|      2 | refseq-human |
+|     44 | refseq-mouse |
+|    129 | swissprot    |
++--------+--------------+
+
+select count(*) from collectionsequencespathways where ec!='' or kegg!='' or goids!='';
++----------+
+| count(*) |
++----------+
+|      277 |
++----------+
+
+</entry>
+
+
+
+<entry [Mon Feb  5 01:50:16 EST 2007] MAPPINGS FILES>
+
+
+
+DOWNLOAD
+http://www.geneontology.org/GO.indices.shtml
+
+FTP
+ftp://ftp.geneontology.org/pub/go/external2go/
+
+ec2go
+cog2go
+
+etc.
+
+
+</entry>
+
+
+
+<entry [Fri Feb  2 13:12:26 EST 2007] SWISSPROT TO GO MAPPINGS>
+
+
+
+The Gene Ontology Annotation (GOA) Project: Implementation of GO in SWISS-PROT, TrEMBL, and InterPro
+ Vol 13, Issue 4, 662-672, April 2003
+http://www.genome.org/cgi/content/full/13/4/662
+
+Manual annotation produces reliable GO annotation but is an inefficient approach to tackling the vast amounts of data already accumulated in SWISS-PROT and TrEMBL from the various genome projects. On the other hand, electronic techniques offer a much quicker approach to the assignment of GO terms to new data while enabling a retrofit of GO annotation to previously curated data.
+
+To date, 64% of all proteins stored in the SWISS-PROT and TrEMBL databases have been annotated with GO terms using electronic methods.
+
+This represents 2.5 million associations covering 544,362 proteins out of a total of 850,795 (http://www.ebi.ac.uk/GOA/SPTR_release.html).
+
+In contrast, GO associations generated by biologists cover just 1% of SWISS-PROT and TrEMBL entries.
+
+The electronic methods are responsible for assigning GO terms to entries from almost 50,000 different species while manual methods have assigned GO terms to entries from 182 different species. By annotating GO terms to such a wide variety of species, the SWISS-PROT group makes a substantial contribution to the GO Consortium efforts.
+
+Of the electronic techniques, the InterPro to GO mapping (Interpro2go) has generated the most associations followed closely by the application of SWISS-PROT keywords to GO (spkw2go).
+
+GO annotation by electronic techniques assigned GO terms unevenly across the three ontologies (Fig. 5).
+
+Interestingly, InterPro associations showed a strong bias toward the assignment of function (92%) and process (81%) terms, whereas the use of SWISS-PROT keyword mappings assigned much fewer function terms (33%) but was a little better than InterPro at assigning component terms (52%).
+
+EC numbers have been mapped only to terms from the function ontology so no comment can be made on the success of this method in assigning terms from the process or component ontologies. However, the average depth of terms assigned based on mappings of EC numbers to GO is higher than that of either of the other two electronic methods.
+
+The depth of a term is used here to mean the number of terms from the parent term to the assigned term.
+
+The average depth of predictions based on EC numbers is 10.54 whereas for InterPro, it is 5.94 and for SWISS-PROT keywords, 4.67.
+
+The average overall depth of terms assigned using electronic methods is 5.73.
+
+Manual annotation assigned GO terms more evenly across the three ontologies (data not shown) and provided literature references and information about the type of experiments used through GO evidence codes. These results indicate that different methods have their merits and limitations and that combining multiple techniques to assign GO terms increases annotation coverage, an observation also reported by others (Schug et al. 2002Go).
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Feb  2 00:40:08 EST 2007
+
+select distinct collectionid, targetsource, targetannotation, hitevalueexp, hitevaluedec from collectionblast where targetsource like '%refseq%' and targetannotation like '%(EC %' order by hitevalueexp, hitevaluedec limit 1000;
+362 rows in set (4.73 sec)
+
+select count(distinct targetannotation) from collectionblast where targetsource like '%refseq%';
+41122
+
+
+MSG: Doug
+CC: Jeff
+SUBJECT: Refseq -> GO/EC/KEGG
+
+Hi Doug,
+
+I've searched for EC numbers associated with Refseq hits in 'funnybase10' but there are only 362 out of 41,122 unique refseq sequence BLAST hits that contain EC numbers in their annotation. The vast majority are from refseq-rat, with a few from refseq-human and none from refseq-mouse or refseq-dog.
+
+I've also been searching for a suitable mapping between refseq and GO/EC/KEGG numbers. The closest I've investigated so far is the IPI (International Protein Index) which seems to be an emerging standard index that ties together all the major databases:
+
+http://www.ebi.ac.uk/IPI/IPIhelp.html
+ftp://ftp.ebi.ac.uk/pub/databases/IPI/current/
+
+Unfortunately, though there are only ~4,000 lines of human refseq sequences (of which some are multi-id lines) in the IPI database so far so it may be a while before this has grown large enough to be useful to us.
+
+I'll keep looking for ways to extract the refseq-related info but in the meantime, I've put the pathway (GO, EC, KEGG) annotation for the swissprot sequences that have these annotations (422 in all) along with all the other (~11,000) annotated sequences in this file:
+
+http://genomics.rsmas.miami.edu/downloads/funnybase10.collectionsequencespathways.tsv
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Thu Feb  1 22:05:29 EST 2007] EBI GO-REFSEQ MAPPINGS SOURCES>
+
+
+
+http://www.ebi.ac.uk/GOA/downloads.html
+
+From here you can download the following files from the GOA ftp site;
+Gene Association File; A tab-delimited file of associations between gene products and GO terms. It is the most common form of data transfer within the GO Consortium.
+GOA xref File; Every release a file of cross references is distributed that displays the relationship between the entries in the GOA dataset with other databases, such as EMBL/Genbank/DDBJ databases, HUGO and LocusLink and RefSeq
+External database to GO mapping file; Transitive assignment of InterPro match, Swiss-Prot keyword, Enzyme Commission number or HAMAP match to GO terms.
+GO-Slim Gene Association File; This is a tab-delimited file of associations between gene products and GO-slim terms.
+
+For more information on these files read the GOA Readme file. 
+
+IPI DOWNLOAD SITE
+
+ftp://ftp.ebi.ac.uk/pub/databases/IPI/current/
+
+IPI README
+>>>
+Last modified: 23 Jan 2007
+General Information:
+
+IPI provides a top level guide to some of the main databases that describe
+the proteomes of higher eukaryotic organisms, such as UniProt, Vega, Ensembl,
+RefSeq and TAIR. IPI:
+
+   1. effectively maintains a database of cross references between the primary 
+   data sources
+   2. provides minimally redundant yet maximally complete sets of proteins for
+   featured species (one sequence per transcript)
+   3. maintains stable identifiers (with incremental versioning) to allow the
+   tracking of sequences between IPI releases.
+
+IPI is updated monthly in accordance with the latest data released by the 
+primary data sources.
+...<<<
+
+
+
+BUT THE human.xrefs FILE CONTAINS ONLY ~4,000 LINES WITH REFSEQ SEQUENCES...!!
+
+
+
+
+
+</entry>
+
+
+
+<entry [REFSEQ CAVEATS] ftp://ftp.ncbi.nih.gov/refseq/release/release-notes/RefSeq-release21.txt>
+
+
+
+>>>...
+
+Known Data inconsistencies:
+
+	[1] RefSeq status codes are not consistently provided for some species. 
+	The goal is to consistently provide a status code for all RefSeq
+	records. The release catalog indicates "UNKNOWN" if a status code
+	was expected but not detected and "na" if a status code is not
+	expected based on the original project plan for provision of this type
+	of information. Status codes will be more consistently applied to all 
+	records in the future.
+
+	[2] The genomic, transcript, and protein collection is known to be 
+	incomplete for many species. This is particularly true for those
+	genomes for which a complete genome assembly is not yet available, 
+	such as Danio rerio (zebrafish), Bos taurus (cow), and Leishmania 
+	major. As additional sequence data becomes available, the RefSeq 
+	representation for these, and other, organisms will increase. 
+	
+	[3] Although the goal is to provide a non-redundant collection, some
+	redundancy is included in this release as follows:	
+
+	Redundant Protein records:
+	    Alternate Splicing		When additional transcripts are provided
+					to represent alternate splicing products, 
+					and the alternate splice site occurs in 
+					the UTR, then the protein is redundantly 
+					provided.
+
+	    Paralogs			The goal is to provide a RefSeq record 
+					for each naturally occuring molecule. 
+					Therefore, records are provided for all 
+					genes identified including those produced 
+					by more recent gene duplication events in 
+					which the genes are nearly identical.
+	
+	Redundant Genomic records:				
+	   Intermediate records		For some species, intermediate genomic 
+					records are provided to support the 
+					assembly and/or annotation of the genome.
+	
+					For example, for human, a chromosome may 
+					be represented by a chromosome RefSeq 
+					record with a NC_ accession prefix.
+					The chromosome record may consist of 
+					many contigs, each represented as a 
+					separate record with a NT_ accession
+					prefix. In addition, some curated gene
+					region records, with NG_ accession
+					prefix, may also be provided to support
+					annotation of complex regions.
+					 
+					
+	   Alternate assemblies		Genomic records are provided to represent 
+					alternate assemblies of genomic sequence
+					derived from different populations. These 
+					records will have varying levels of 
+					redundancy and represent polymorphic and
+					haplotype differences in terms of the
+					sequence and annotation.
+
+					For example, alternate assemblies are
+					provided for different mouse strains and
+					for regions of the human major
+					histocompatibility complex (MHC). The MHC
+					is a highly variable region of chromosome
+					6 which exhibits variation at the level 
+					of both sequence polymorphism and gene 
+					content. The alternate assemblies make it
+					possible to represent this alternate gene
+					content. 					
+	
+
+	Microbial strains		We are evaluating how to best represent 
+					microbial genome sequence data derived from
+					different strains in the RefSeq collection.
+					At this time, sequence from different strains
+					may be represented as additional RefSeq records.
+					This introduces redundancy but may also add
+					representation for some proteins that are unique 
+					to a strain.  We are planning to introduce a new
+					identifier, a 'project ID', in the near future. 
+					The project ID will facilitate identification of
+					this known redundancy.
+...<<<
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+DOWNLOAD GOA MAPPINGS:
+
+ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CAN USE DAG-edit TO GET TOP LEVEL GO TERMS
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GO urls
+
+http://www.ebi.ac.uk/ego/DisplayGoTerm?id=GO:0005887&selected=GO:0005887&viz=
+http://www.ebi.ac.uk/ego/DisplayGoTerm?id=GO:0005887&selected=GO:0005887&viz=tree
+http://www.ebi.ac.uk/ego/DisplayGoTerm?id=GO:0005887&selected=GO:0005887&viz=graph
+http://www.ebi.ac.uk/ego/gohierarchy?code=GO:0005887,GO:0005887
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+
+
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>Gaggle and Firegoose Oxygen Analysis</title>
+
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Language" content="en-us">
+
+	<style type="text/css">
+	.hidden {
+		display: none;
+	}
+	.gaggle-matrix-tsv {
+		color: red;
+	}
+	#output {
+		color: #0033AA;
+		font-size: smaller;
+	}
+	body {
+		width: 600px;
+		margin-left: 3em;
+	}
+	h2, h3 {
+	}
+	pre {
+		padding: 1ex;
+		border: 1px dashed #CCCCCC;
+		background: #EEEEEE;
+	}
+	code .r {
+		color: #666666;
+	}
+	.genes {
+		color: #666666;
+		font-size: smaller;
+	}
+	h3 {
+		color: #294A93;
+	}
+	li {
+		margin-top: 6px;
+		margin-bottom: 6px;
+	}
+	a:link    {color: #fc7907;}
+	a:visited {color: #fc7907;}
+	a:active  {color: #f7931d;}
+	a:hover   {color: #f7931d;}
+	
+	a img {
+		border: 0;
+	}
+
+	a.ghosted:link    {color: #eeeeee;}
+	a.ghosted:visited {color: #eeeeee;}
+	a.ghosted:active  {color: #3333ff;}
+	a.ghosted:hover   {color: #3333ff;}
+	
+	#header {
+	}
+
+	#header h1 {
+		font-family: verdana, helvetica, sans-serif;
+		font-size: 20pt;
+		color: #ffffff;
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+		padding-top: 1em;
+		padding-bottom: 1em;
+		background-image: url(../microarray.png);
+	}
+
+	</style>
+
+	<script type="text/javascript">
+		function toggleVisible(id){
+			if (document.getElementById){
+				var obj = document.getElementById(id);
+				if (obj) {
+					if (obj.style.display == 'none'){
+						obj.style.display = 'block';
+					}
+					else {
+						obj.style.display = 'none';
+					}
+				}
+			}
+		}
+
+		toggleVisible('diff_expr_genes');
+		toggleVisible('cluster_1');
+	</script>
+
+</head><div FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body>
+<div id="header">
+<h1>Gaggle and Firegoose Oxygen Analysis</h1>
+<h2>Quick demonstration of Firegoose</h2>
+</div>
+
+<p>[<a href="http://gaggle.systemsbiology.net/">Gaggle home</a> | <a href="http://gaggle.systemsbiology.net/docs/geese/firegoose/">Firegoose home</a> | <a href="http://gaggle.systemsbiology.net/projects/demos/halo_oxygen_analysis/">contents</a>]</p>
+
+<h3>Getting started</h3>
+
+<p>Here we quickly demonstrate some of the capabilities of the
+<a href="http://gaggle.systemsbiology.org/docs/geese/firegoose/">Firegoose</a> toolbar for Firefox by retrieving
+data from three popular web sites - KEGG, STRING, and DAVID.</p>
+
+<p>If you haven't <a href="http://gaggle.systemsbiology.net/docs/geese/firegoose/install/">installed the Firegoose</a>, do so now. It's easy to install and uninstall.</p>
+
+<p>This page contains data embedded in the <a href="http://gaggle.systemsbiology.net/docs/geese/firegoose/microformat/">Gaggle microformat</a>.
+For demonstration
+purposes, a few genes were selected from a larger set of genes found in
+microarray experiments to be upregulated in the presence of oxygen in
+the organism <em>Halobacterium sp. NRC-1</em>. There are two
+data elements, one list of gene names in the VNG nomenclature, and a second list of the same genes using
+the GI naming system.</p>
+
+<h4>Aerobic genes (VNG gene names)</h4>
+<p>Genes found in microarray experiments to be activated under aerobic conditions.</p>
+
+ <p><a href="#aerobicGenes" onclick="toggleVisible('aerobicGenes'); return false;">[+]</a> Show/hide</p>
+
+ <div id="aerobicGenes" style="display: none;" class="gaggle-data genes">
+  <p>name=<span class="gaggle-name">aerobic genes (VNG)</span><br>
+     size=<span class="gaggle-size">27</span><br>
+     species=<span class="gaggle-species">Halobacterium sp. NRC-1</span></p>
+  <div class="gaggle-namelist">
+   <ol>
+    <li>VNG0330G</li>
+    <li>VNG0473G</li>
+    <li>VNG0635G</li>
+    <li>VNG0636G</li>
+    <li>VNG0647G</li>
+    <li>VNG0665G</li>
+    <li>VNG0681G</li>
+    <li>VNG1125G</li>
+    <li>VNG1128G</li>
+    <li>VNG1142G</li>
+    <li>VNG1306G</li>
+    <li>VNG1308G</li>
+    <li>VNG1310G</li>
+    <li>VNG1541G</li>
+    <li>VNG1542G</li>
+    <li>VNG1624G</li>
+    <li>VNG1926G</li>
+    <li>VNG2135G</li>
+    <li>VNG2138G</li>
+    <li>VNG2140G</li>
+    <li>VNG2141G</li>
+    <li>VNG2144G</li>
+    <li>VNG2146H</li>
+    <li>VNG2217G</li>
+    <li>VNG2218G</li>
+    <li>VNG2219G</li>
+    <li>VNG2220G</li>
+   </ol>
+  </div>
+ </div>
+
+ <h4>Aerobic genes (GI numbers)</h4>
+ <p>Genes found in microarray experiments to be activated under aerobic conditions.</p>
+
+ <p><a href="#" onclick="toggleVisible('aerobicGenesGI'); return false;">[+]</a> Show/hide</p>
+
+ <div id="aerobicGenesGI" style="display: none;" class="gaggle-data genes">
+  <p>name=<span class="gaggle-name">aerobic genes (GI)</span><br>
+     size=<span class="gaggle-size">27</span><br>
+     species=<span class="gaggle-species">Halobacterium sp. NRC-1</span></p>
+  <div class="gaggle-namelist">
+   <ol>
+    <li>15789602</li>
+    <li>15789708</li>
+    <li>15789833</li>
+    <li>15789834</li>
+    <li>15789842</li>
+    <li>15789855</li>
+    <li>15789870</li>
+    <li>15790209</li>
+    <li>15790210</li>
+    <li>15790222</li>
+    <li>15790347</li>
+    <li>15790348</li>
+    <li>15790350</li>
+    <li>15790522</li>
+    <li>15790523</li>
+    <li>15790581</li>
+    <li>15790810</li>
+    <li>15790969</li>
+    <li>15790972</li>
+    <li>15790974</li>
+    <li>15790975</li>
+    <li>15790978</li>
+    <li>15790979</li>
+    <li>15791040</li>
+    <li>15791041</li>
+    <li>15791042</li>
+    <li>15791043</li>
+   </ol>
+  </div>
+ </div>
+
+<h3>Broadcasting</h3>
+
+<p><a href="http://gaggle.systemsbiology.net/projects/demos/halo_oxygen_analysis/2007-04/quick/firegoose.png"><img src="Firegoose%20-%20demo%20-%20Oxygen%20Analysis_files/firegoose_small.png" height="100" width="500"></a></p>
+
+<p>Broadcasting data from Firegoose to a target web site or desktop application is a simple three step process. (1) Select the <b>data</b> to be
+sent. (2) Select the <b>target</b> - where the message will be sent. (3) Click the “<b>Broadcast</b>” button.</p>
+
+<h3>KEGG</h3>
+
+<ol>
+<li>Select “<b>aerobic genes (VNG): Namelist(27)</b>” in the Gaggle Data menu</li>
+<li>Select “<b>KEGG Pathway</b>” in the target menu</li>
+<li>Click “<b>Broadcast</b>”</li>
+</ol>
+
+<p><img src="Firegoose%20-%20demo%20-%20Oxygen%20Analysis_files/kegg_small.png" height="290" width="500"></p>
+
+<p>Kegg should open in a new tab as shown above. Click on some of the pathways to view the diagrams. Notice that genes and
+networks can be captured from KEGG and retrieved as Gaggle data types.</p>
+
+<h3>STRING</h3>
+
+<ol>
+<li>Return to this tutorial page. The source document must be showing to perform a broadcast.</li>
+<li>Make sure “<b>aerobic genes (VNG): Namelist(27)</b>” is still selected in the Gaggle Data menu</li>
+<li>Select “<b>EMBL STRING</b>” in the target menu</li>
+<li>Click “<b>Broadcast</b>”</li>
+</ol>
+
+<p>Wait for the script to fill in and submit the search form. There will be a pause while STRING searches its database then
+a list of matching genes will appear. Click “<b>Continue -&gt;</b>” to see STRING's interaction network.</p>
+
+<p><img src="Firegoose%20-%20demo%20-%20Oxygen%20Analysis_files/string.png" height="398" width="500"></p>
+
+<p>At this point, one option would be to bring the STRING network into Cytoscape. To do this:</p>
+
+<ol>
+<li>Start <a href="http://gaggle.systemsbiology.net/2007-04/cy/blankSlate/cy25.jnlp">Cytoscape with the CyGoose plugin</a>.
+  This webstart will automatically start Cytoscape and then the Gaggle Boss.</li>
+<li>Make sure Firegoose is connected to the Boss. Press the multicolored Gaggle button at the left end of the Firegoose
+  toolbar. The status bar in the bottom right of the browser window should say “<b>Firegoose: Connected</b>”.</li>
+<li>With the STRING tab showing in Firefox, select the Gaggle Data item “Protein interactions from STRING XML”.</li>
+<li>Select the “Cytoscape” target.</li>
+<li>Click “<b>Broadcast</b>”</li>
+<li>Wait ~10 seconds while Firegoose accesses STRING's web service.</li>
+<li>A network should appear in the Cytoscape window. Select "Layout | yFiles | Organic" to display a nicely formatted network.</li>
+</ol>
+
+<h3>DAVID</h3>
+
+<ol>
+<li>Return again to this tutorial page.</li>
+<li>This time we need <em>GI numbers</em> so select “<b>aerobic genes (GI): Namelist(27)</b>” in the Data menu</li>
+<li>Select “<b>DAVID</b>” in the target menu</li>
+<li>Click “<b>Broadcast</b>”</li>
+<li>When DAVID comes up in a new tab, find “<b>Step 2: Select Identifier</b>” in the left panel.
+ Select “<b>GI_ACCESSION</b>”.</li>
+<li>Click “<b>Submit List</b>”</li>
+<li>Try the various features of DAVID, including <b>Functional Annotation Clustering</b>.</li>
+</ol>
+
+
+<p><img src="Firegoose%20-%20demo%20-%20Oxygen%20Analysis_files/isblogo.gif" alt="Institute for Systems Biology"></p>
+
+<p><a href="http://validator.w3.org/check?uri=referer" class="ghosted">validate</a></p>
+
+</body></html>

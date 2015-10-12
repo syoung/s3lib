@@ -1,0 +1,335 @@
+</entry>
+
+
+
+<entry [Wed Apr 11 19:22:40 EDT 2007] REFACTORED reads.pl>
+
+
+
+MOTIVATION:
+
+SINCE THE INTRODUCTION OF THE screenedread TABLE, NEED TO CHANGE reads.pl SO THAT IT:
+
+	- FILTERS 'XXX' FROM SCREENED READS
+	- TRIMS THE FILTERED READS BASED ON QUALITY VALUES AND WINDOW SIZE
+	- OUTPUTS A .TSV FILE TO CREATE THE reads TABLE
+
+NOTE:
+
+	PREVIOUSLY, reads.pl WOULD USED THE .PHD FILES TO GET THE SEQUENCE INFO, SCREEN
+	FOR VECTOR AND THEN TRIM THE SCREENED (BUT NOT FILTERED) READ
+
+
+
+./reads.pl -d karenia3
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 11 19:21:57 EDT 2007] CREATED temp.cleanscreenedreadstsv.pl TO FIX SCREENED READ .TSV FILES>
+
+
+
+	NAME
+	
+		temp.cleanscreenedreadstsv.pl
+		
+	PURPOSE	
+	
+		REMOVE EXTRANEOUS '\n' FOUND IN screenedread ENTRY BECAUSE OF BUG IN
+		
+		SCREENING PROGRAM readsvectorscreen.pl (SINCE FIXED).
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 11 16:28:19 EDT 2007] CREATED tsv2tsv.pl>
+
+
+
+MOTIVATION: 
+
+REFACTORED readsarrayscreen.pl (USING screenreads.pl) TO OUTPUT reads FORMAT .TSV DATA
+
+INTO readsarrayvectorscreen.pl (USING readsvectorscreen.pl) TO OUTPUT screenreads FORMAT .TSV DATA
+
+SO CREATED tsv2tsv.pl ON .TSV FILES CREATED WITH readsarrayscreen.pl TO CONVERT TO screenreads FORMAT:
+
+./tsv2tsv.pl -d karenia3 -s reads -t screenedreads -f /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.22.tsv
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ CREATE karenia3
++-+-+-+-+-+-+-+-+
+
+0. MIRROR FILES AND DELETE UNNEEDED PHD AND CHROMAT FILES
+=========================================================
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./mirrorassembly.pl -s karenia2 -t karenia3
+
+cd /Users/young/FUNNYBASE/pipeline/karenia3/chromat_dir
+rm -fr  500-010*
+rm -fr  500-011*
+rm -fr  500-012*
+rm -fr  500-013*
+rm -fr  500-014*
+rm -fr  500-500*
+
+cd /Users/young/FUNNYBASE/pipeline/karenia3/phd_dir
+rm -fr  500-010*
+rm -fr  500-011*
+rm -fr  500-012*
+rm -fr  500-013*
+rm -fr  500-014*
+rm -fr  500-500*
+
+(LEAVING PLATE 500-001 INTACT)
+
+
+2. CREATE DATABASE AND TABLES
+=============================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./create_database.pl -d karenia3
+
+
+3. SCREEN .PHD READS FOR VECTOR SEQUENCE
+========================================
+
+COPY karenia3 TO /common/pipeline
+
+sudo mkdir /common/pipeline/karenia3
+sudo cp -r /Users/young/FUNNYBASE/pipeline/karenia3/phd_dir /common/pipeline/karenia3
+
+ON gems:
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+sudo ./readsarrayscreen.pl -d karenia3
+
+WHICH CREATES .TSV FILES WITH SCREENED SEQUENCE AND TRIMMED SEQUENCE.
+
+
+4. COPY screenedread .TSV FILES TO genomics HOME DIRECTORY
+==========================================================
+
+ON genomics:
+
+cd /Users/young/FUNNYBASE/pipeline/karenia3/collection
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.*.tsv ./
+
+OR:
+
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.1.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.2.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.3.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.4.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.5.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.6.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.7.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.8.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.9.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.10.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.11.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.12.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.13.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.14.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.15.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.16.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.17.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.18.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.19.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.20.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.21.tsv ./
+cp /common/pipeline/karenia3/collection/karenia3.screenreads.out.22.tsv ./
+
+
+5. LOAD SCREENED READS INTO screenedreads TABLE
+===============================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readsloadscreenreads.pl -d karenia3         
+Creating table 'screenedreads'... done.
+Experiments: 500 501 505 506 507 508 509 510 511 516 517 518 519 520 521 522 525 526 527 528 529 530
+
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.1.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.2.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.3.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.4.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.5.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.6.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.7.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.8.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.9.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.10.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.11.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.12.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.13.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.14.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.15.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.16.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.17.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.18.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.19.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.20.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.21.tsv... done.
+Loading /Users/young/FUNNYBASE/pipeline/karenia3/collection/karenia3.screenreads.out.22.tsv... done.
+
+RUN TIME: 00:00:02
+Completed ./readsloadscreenreads.pl
+7:23PM, 11 April 2007
+****************************************
+
+6. FILTER 'XXX' FROM SCREENED READS AND THEN TRIM BASED ON QUALITY VALUES AND WINDOW SIZE
+=========================================================================================
+
+(USING REFACTORED VERSION OF reads.pl WHICH USES screenedreads TABLE TO CREATE reads TABLE)
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./reads.pl -d karenia3
+
+7. CREATE READS .FASTA FILE AND .QUAL FILE FOR ASSEMBLY
+=======================================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readssingletsqualfile.pl -d karenia3
+
+8. DO cap3 ASSEMBLY
+===================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./assemblypipeline.pl -s 5 -d karenia3
+
+9. LOAD SINGLETS AND CONTIGS INTO assemblyreads AND assemblysequences
+=====================================================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./assemblyreadsassemblysequences.pl -d karenia3
+
+
+10. DO COLLECTION SEQUENCES
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./collectionsequences.pl -d karenia3
+
+
+11. BLAST AGAINST DATABASES
+===========================
+
+ON genomics:
+
+1. DO BLAST
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+sudo ./collectionarrayblast.pl -d karenia3 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6,swissprot,refseq-human,refseq-mouse,refseq-dog,refseq-rat
+
+NB: REDID blast2tsv.pl TO IGNORE HITS WITH NO DEFINITION LINE (CHECK LATER THE CAUSE OF THIS...)
+
+2. LOAD BLAST .TSV FILES INTO collectionblast
+
+sudo ./collectionblastloaddata.pl -d karenia3 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6,swissprot,refseq-human,refseq-mouse,refseq-dog,refseq-rat
+
+12. DO COLLECTION SEQUENCES ANNOTATION
+======================================
+
+./collectionsequencesannotation.pl -d karenia3
+
+
+12. DO HTML DIVS
+================
+
+POPULATE collectionsequencesdiv TABLE
+
+1. RUN collectionsequencesdiv.pl
+
+./collectionsequencesdiv.pl -d karenia3
+
+2. RUN collectionsequencesblastdiv.pl
+
+./collectionsequencesblastdiv.pl -d karenia3
+
+13. DO SNP PREDICTION AND ANNOTATION
+====================================
+
+NB: SEEMS TO REQUIRE THAT phd_dir IS NOT LINKED (I.E., AN ACTUAL DIRECTORY)
+
+1. PREDICT SNPs WITH polyphred
+
+./assemblypipeline.pl -d karenia3 -s 6
+
+2. CONDENSE .poly FILE INTO .stats FILE
+
+./SNPassemblysequences.pl -d karenia3
+
+3. UPDATE snp_stats FIELD OF stats TABLE
+
+./SNPstats.pl -d karenia3
+
+
+14. DO QUALITY DISTRIBUTION GRAPHS
+==================================
+
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s contig
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a annotated -s both
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s contig
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a unknown -s both
+./sequencequalitybargraph.pl -d karenia3 -a both -s contig
+./sequencequalitybargraph.pl -d karenia3 -a both -s singlet
+./sequencequalitybargraph.pl -d karenia3 -a both -s both
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 10 12:49:08 EDT 2007] REDID sandbox13 QUALITY CUTOFF>
+
+
+
+1. FIXED XMLHTTPREQUEST ERROR (DUE TO 'this' REFERRING TO THE NEWLY-INTRODUCED
+NAMESPACE OBJECT)
+
+2. FIXED PARTIAL-DOWNLOAD PROBLEM (NOT ALL SEQUENCES APPEAR IN DOWNLOADS)
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 10 12:46:58 EDT 2007] pSMART SEQUENCES FROM TIM>
+
+
+
+ADDED THE FOLLOWING SEQUENCES FROM TIM TO THE 'vector.seq' FILE IN THE 'pipeline'
+DIRECTORY:
+
+
+From : 	Tim McLean <tmclean@rsmas.miami.edu>
+Sent : 	Tuesday, April 10, 2007 4:27 PM
+To : 	"stuart young" <youngstuart@hotmail.com>
+Subject : 	pSS101 aka pSMART sequences
+	
+	
+Go to previous message	|	Go to next message	|	Delete	|	Inbox
+Attachment :  	LucigenpSMARTseq.doc (< 0.01 MB), LucigenpSMARTseq.doc (0.02 MB), verifiedpSMARTseq.doc (< 0.01 MB), verifiedpSMARTseq.doc (0.02 MB)
+
+Stuart,
+
+Here are two files with the sequence as furnished from the company, Lucigen, and the sequence that I determined from sequencing. 
+
+>pSmart-Lucigen
+CCCGTGAAGGTGAGCCAGTGAGTTGATTGCAGTCCAGTTACGCTAGTGACCCCGGTTGATAATCAGAAAAGCCCCAAAAACAGGAAGATTGTATAAGCAAATATTTAAATTGTAAGCGTTAATATTTTGTTAAAATTCGCGTTAAATTTTTGTTAAATCAGCTCATTTTTTAACCAATAGGCCGAAATCGGCAAAATCCCTTATAAATCAAAAGAATAGACCGAGATAGGGTTGAGTGTTGTTCCAGTTTGGAACAAGAGTCCACTATTAAAGAACGTGGACTCCAACGTCAAAGGGCGAAAAACCGTCTATCAGGGCGATGGCCCACTACGTGAACCATCACCCTAATCAAGTTTTTTGGGGTCGAGGTGCCGTAAAGCACTAAATCGGAACCCTAAAGGGAGCCCCCGATTTAGAGCTTGACGGGGAAAGCCGGCGAACGTGGCGAGAAAGGAAGGGAAGAAAGCGAAAGGAGCGGGCGCTAGGGCGCTGGCAAGTGTAGCGGTCACGCTGCGCGTAACCACCACACCCGCCGCGCTTAATGCGCCGCTACAGGGCGCGTCACTAAATTAATACGACTCACTATAAGGGGTGTGGAATTGTGAGCGGATAACAATTTCACACAAATATTTGTGGAATTGTGAGCGGATAACAATTTCACACAGGAAACAGCCATGGGCATGCGTCGACGAATTCGGATCCGCGGCCGCAAGCTGACTACGAGGATACACTGACCATTTAAATCATACCTGACCTCCATAGCAGAAAGTCAAAAGCCTCCGACCGGAGGCTTTTGACTTGATCGGCACGTAAGAGGTTCCAACTTTCACCATAATGAAATAAGATCACTACCGGGCGTATTTTTTGAGTTATCGAGATTTTCAGGAGCTAAGGAAGCTAAAATGAGCCATATTCAACGGGAAACGTCTTGCTCGAGGCCGCGATTAAATTCCAACATGGATGCTGATTTATATGGGTATAAATGGGCTCGCGATAATGTCGGGCAATCAGGTGCGACAATCTATCGATTGTATGGGAAGCCCGATGCGCCAGAGTTGTTTCTGAAACATGGCAAAGGTAGCGTTGCCAATGATGTTACAGATGAGATGGTCAGGCTAAACTGGCTGACGGAATTTATGCCTCTTCCGACCATCAAGCATTTTATCCGTACTCCTGATGATGCATGGTTACTCACCACTGCGATCCCAGGGAAAACAGCATTCCAGGTATTAGAAGAATATCCTGATTCAGGTGAAAATATTGTTGATGCGCTGGCAGTGTTCCTGCGCCGGTTGCATTCGATTCCTGTTTGTAATTGTCCTTTTAACGGCGATCGCGTATTTCGTCTCGCTCAGGCGCAATCACGAATGAATAACGGTTTGGTTGGTGCGAGTGATTTTGATGACGAGCGTAATGGCTGGCCTGTTGAACAAGTCTGGAAAGAAATGCATAAACTTTTGCCATTCTCACCGGATTCAGTCGTCACTCATGGTGATTTCTCACTTGATAACCTTATTTTTGACGAGGGGAAATTAATAGGTTGTATTGATGTTGGACGAGTCGGAATCGCAGACCGATACCAGGATCTTGCCATCCTATGGAACTGCCTCGGTGAGTTTTCTCCTTCATTACAGAAACGGCTTTTTCAAAAATATGGTATTGATAATCCTGATATGAATAAATTGCAGTTTCACTTGATGCTCGATGAGTTTTTCTAATGAGGGCCCAAATGTAATCACCTGGCTCACCTTCGGGTGGGCCTTTCTGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGATGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTCGGAAAAAGAGTTGGTAGCTCTTGATCCGGCAAACAAACCACCGCTGGTAGCGGTGGTTTTTTTGTTTGCAAGCAGCAGATTACGCGCAGAAAAAAAGGATCTCAAGAAGATCCTTTGATTTTCTACCGAAGAAAGGCCCA
+
+>pSmart-verified
+CCCGTGAAGGTGAGCCAGTGAGTTGATTGCAGTCCAGTTACGCTAGTGACCCCGGTTGATAATCAGAAAAGCCCCAAAAACAGGAAGATTGTATAAGCAAATATTTAAATTGTAAGCGTTAATATTTTGTTAAAATTCGCGTTAAATTTTTGTTAAATCAGCTCATTTTTTAACCAATAGGCCGAAATCGGCAAAATCCCTTATAAATCAAAAGAATAGACCGAGATAGGGTTGAGTGTTGTTCCAGTTTGGAACAAGAGTCCACTATTAAAGAACGTGGACTCCAACGTCAAAGGGCGAAAAACCGTCTATCAGGGCGATGGCCCACTACGTGAACCATCACCCTAATCAAGTTTTTTGGGGTCGAGGTGCCGTAAAGCACTAAATCGGAACCCTAAAGGGAGCCCCCGATTTAGAGCTTGACGGGGAAAGCCGGCGAACGTGGCGAGAAAGGAAGGGAAGAAAGCGAAAGGAGCGGGCGCTAGGGCGCTGGCAAGTGTAGCGGTCACGCTGCGCGTAACCACCACACCCGCCGCGCTTAATGCGCCGCTACAGGGCGCGTCACTAAATTAATACGACTCACTATAAGGGGTGTGGAATTGTGAGCGGATAACAATTTCACACAAATATTTGTGGAATTGTGAGCGGATAACAATTTCACACAGGAAACAGCCATGGGCATGCGTCGACGAATTCACGGATCCGCGGCCGCAAGCTTCTCGAGGATATCACTGACCATTTAAATCATACCTGACCTCCATAGCAGAAAGTCAAAAGCCTCCGACCGGAGGCTTTTGACTTGATCGGCACGTAAGAGGTTCCAACTTTCACCATAATGAAATAAGATCACTACCGGGCGTATTTTTTGAGTTATCGAGATTTTCAGGAGCTAAGGAAGCTAAAATGAGCCATATTCAACGGGAAACGTCTTGCTCGAGGCCGCGATTAAATTCCAACATGGATGCTGATTTATATGGGTATAAATGGGCTCGCGATAATGTCGGGCAATCAGGTGCGACAATCTATCGATTGTATGGGAAGCCCGATGCGCCAGAGTTGTTTCTGAAACATGGCAAAGGTAGCGTTGCCAATGATGTTACAGATGAGATGGTCAGGCTAAACTGGCTGACGGAATTTATGCCTCTTCCGACCATCAAGCATTTTATCCGTACTCCTGATGATGCATGGTTACTCACCACTGCGATCCCAGGGAAAACAGCATTCCAGGTATTAGAAGAATATCCTGATTCAGGTGAAAATATTGTTGATGCGCTGGCAGTGTTCCTGCGCCGGTTGCATTCGATTCCTGTTTGTAATTGTCCTTTTAACGGCGATCGCGTATTTCGTCTCGCTCAGGCGCAATCACGAATGAATAACGGTTTGGTTGGTGCGAGTGATTTTGATGACGAGCGTAATGGCTGGCCTGTTGAACAAGTCTGGAAAGAAATGCATAAACTTTTGCCATTCTCACCGGATTCAGTCGTCACTCATGGTGATTTCTCACTTGATAACCTTATTTTTGACGAGGGGAAATTAATAGGTTGTATTGATGTTGGACGAGTCGGAATCGCAGACCGATACCAGGATCTTGCCATCCTATGGAACTGCCTCGGTGAGTTTTCTCCTTCATTACAGAAACGGCTTTTTCAAAAATATGGTATTGATAATCCTGATATGAATAAATTGCAGTTTCACTTGATGCTCGATGAGTTTTTCTAATGAGGGCCCAAATGTAATCACCTGGCTCACCTTCGGGTGGGCCTTTCTGCGTTGCTGGCGTTTTTCCATAGGCTCCGCCCCCCTGACGAGCATCACAAAAATCGATGCTCAAGTCAGAGGTGGCGAAACCCGACAGGACTATAAAGATACCAGGCGTTTCCCCCTGGAAGCTCCCTCGTGCGCTCTCCTGTTCCGACCCTGCCGCTTACCGGATACCTGTCCGCCTTTCTCCCTTCGGGAAGCGTGGCGCTTTCTCATAGCTCACGCTGTAGGTATCTCAGTTCGGTGTAGGTCGTTCGCTCCAAGCTGGGCTGTGTGCACGAACCCCCCGTTCAGCCCGACCGCTGCGCCTTATCCGGTAACTATCGTCTTGAGTCCAACCCGGTAAGACACGACTTATCGCCACTGGCAGCAGCCACTGGTAACAGGATTAGCAGAGCGAGGTATGTAGGCGGTGCTACAGAGTTCTTGAAGTGGTGGCCTAACTACGGCTACACTAGAAGAACAGTATTTGGTATCTGCGCTCTGCTGAAGCCAGTTACCTCGGAAAAAGAGTTGGTAGCTCTTGATCCGGCAAACAAACCACCGCTGGTAGCGGTGGTTTTTTTGTTTGCAAGCAGCAGATTACGCGCAGAAAAAAAGGATCTCAAGAAGATCCTTTGATTTTCTACCGAAGAAAGGCCCA

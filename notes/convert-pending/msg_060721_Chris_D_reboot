@@ -1,0 +1,49 @@
+From : 	Chris Dwan via RT <inquiry-support@bioteam.net>
+Reply-To : 	inquiry-support@bioteam.net
+Sent : 	Friday, July 21, 2006 2:21 PM
+To : 	youngstuart@hotmail.com
+Subject : 	Re: [bioteam.net #11122] Can't find SGE_O_MAIL
+	
+	
+Go to previous message	|	Go to next message	|	Delete	|	Inbox
+
+The "directory not found" error is saying that the shared NFS  
+directories failed to mount for some reason.  There are lots of  
+possible causes for this.  The most common one is that the portal  
+rebooted, and the nodes were not rebooted after that.  The simplest  
+thing to do is to reboot the node in question.  If that doesn't  
+resolve things, we can debug along the following lines:
+
+* Verify that the node can actually mount the directories:
+
+mkdir test_mount
+mount portal2net:/Users test_mount
+
+The most common reasons I've seen for this to fail are if a node  
+cannot resolve "portal2net" (a name provided by the DNS server on the  
+portal), or if the portal is not properly exporting the directories.
+
+Reading through your email, it sounds like this is exactly what is  
+happening?
+
+ > I've managed to configure postfix so that the server nodes will  
+email the
+ > head node but this requires turning on DNS on the head node and  
+setting it's
+ > hostname as gems and domain as rsmas.miami.edu. This allows the  
+server nodes
+ > to email the head node successfully but somehow, during the  
+process, SGE on
+ > the server nodes has lost the information that allows the server  
+nodes to
+ > identify the head node.
+
+If you've turned off DNS on the portal, you will need to either re- 
+activate it or provide some other way for the nodes and the portal to  
+identify themselves on the private network.  iNquiry sets this up by  
+default.  Did you deactivate it?
+
+-Chris Dwan
+  The BioTeam
+
+

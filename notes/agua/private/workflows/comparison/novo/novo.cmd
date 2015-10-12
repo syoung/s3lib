@@ -1,0 +1,21 @@
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--executable /nethome/syoung/0.5/bin/apps/aligners/NOVOALIGN.pl \
+--replicates 1-33 \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+--reference /nethome/bioinfo/data/sequence/chromosomes/human/hg19/novoalign/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+--loop parallel \
+--params "-r All 1" \
+--distance 200 \
+--deviation 50 \
+--species human \
+--label novoalign-%REPLICATE% \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+--reads 250000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/novoalign.out \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-novoalign.out

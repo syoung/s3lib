@@ -1,0 +1,81 @@
+Notes-project03-ng_viewers.txt
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+</entry>
+
+
+
+<entry [Thurs Sep  4 14:10:38 EDT 2008] INSTALLED hawkeye AND PUT INSTRUCTIONS ON WIKI>
+
+
+
+
+====== View .ace files with Hawkeye ======
+
+This help page is based on [[http://amos.sourceforge.net/hawkeye/index.html#launching|Hawkeye homepage]]
+[[http://genomebiology.com/2007/8/3/R34|Hawkeye paper]]
+
+
+------
+Hawkeye is launched on the Linux command line application so to open it on Windows you have to install an X-windows emulator, such as WinAXE:
+
+[[winaxe|How to connect with WinAXE]]   
+
+------
+
+**Launching Hawkeye**
+
+
+1. On the command line in your X-window emulator, type the following to copy a demo .ace file to your current folder:
+
+    cp /home/syoung/base/apps/amos/demos/demo1.ace ./
+
+2. Convert this .ace file into a .bnk directory for input into Hawkeye:
+
+    toAmos -ace demo1.ace -o - | bank-transact -m - -b demo1.bnk -c
+
+3. View the .bnk directory with Hawkeye (click 'Contig View' once the X-window opens)
+
+    hawkeye demo1.bnk
+
+{{:hawkeye:hawkeye_contig.png|}}
+
+
+======
+
+You can see the complete list of Hawkeye command Line options using the -h option:
+
+    hawkeye -h
+
+
+    Usage: hawkeye [options] [bankname [contigid [position]]]
+    Options:
+      -c <path>   Add a chromatogram path
+      -D <DB>     Set the chromatogram DB
+      -T          Enable Trace Fetch cmd
+      -p <port>   Initialize Server on this port
+      -K <kmer>   Load File of kmers
+      -h          Display this help
+
+
+A typical execution will be "hawkeye prefix.bnk" which will load the assembly from the bank named prefix.bnk. Specifying a path with -c allows you to set a location for the viewer to find the chromatograms for the project. You may set multiple paths, and hawkeye will search each one. Similiarily, the -d option also specifies locations for the chromatograms, but this is for "TIGR style" naming schemes to be used in conjunction with the -D option. More work is under development to simplify chromatogram access. The -p option allows you to set a TCP port for Hawkeye to accept commands from, especially for integration with [[http://mummer.sourceforge.net/manual/#mummerplot|mummerplot]].
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 29 16:03:30 EDT 2008] SUBMITTED MESSAGE AT HT BLIS SITE REQUESTING DEMO>
+
+
+
+http://www.biotiquesystems.com/Contact/confirm.asp
+
+
+

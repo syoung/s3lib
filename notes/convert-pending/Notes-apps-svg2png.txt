@@ -1,0 +1,411 @@
+svg2png INSTALL
++++++++++++++++
+
+INSTALLED ACCORDING TO THE FOLLOWING INSTRUCTIONS:
+
+Carl Worth cworth at cworth.org
+Fri Mar 4 05:22:05 PST 2005
+
+    * Previous message: [Clipart] Mac osX version
+    * Next message: [Clipart] Mac osX version
+    * Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+On Thu, 03 Mar 2005 21:23:54 -0500, "Jonadab the Unsightly One" wrote:
+> * There are various command-line programs available for converting SVG
+>   to PNG or other formats.  Some folks here were recently talking
+>   about librsvg or something like that, and also I think there was
+>   another one too, the name of which I have forgotten. 
+
+At least one other one is svg2png. I've used it on Mac OS X just
+fine. You can find it at:
+
+	http://cairographics.org/snapshots/
+
+We don't yet have pre-compiled packages for Mac OS X available, so to
+make it work, one would need to grab the following tar files:
+
+	libpixman
+	cairo
+	libsvg
+	libsvg-cairo
+	svg2png
+
+and compile each in turn.
+
+If someone wanted to maintain OS X binary packages for any of the
+above, I'd be glad to host them, (we already have binary packages for
+Debian i386 here: http://cairographics.org/packages/debian/).
+
+-Carl
+
+INSTALL libpixman:
+
+/Users/young/FUNNYBASE/NOTES/gui/SVG/svg2png/libpixman-0.1.6
+$ sudo make install
+Password:
+Making install in .
+make[2]: Nothing to be done for `install-exec-am'.
+test -z "/usr/local/lib/pkgconfig" || /bin/sh ./mkinstalldirs "/usr/local/lib/pkgconfig"
+ /usr/bin/install -c -m 644 'libpixman.pc' '/usr/local/lib/pkgconfig/libpixman.pc'
+Making install in src
+test -z "/usr/local/lib" || /bin/sh ../mkinstalldirs "/usr/local/lib"
+ /bin/sh ../libtool --mode=install /usr/bin/install -c  'libpixman.la' '/usr/local/lib/libpixman.la'
+/usr/bin/install -c .libs/libpixman.1.0.0.dylib /usr/local/lib/libpixman.1.0.0.dylib
+(cd /usr/local/lib && rm -f libpixman.1.dylib && ln -s libpixman.1.0.0.dylib libpixman.1.dylib)
+(cd /usr/local/lib && rm -f libpixman.dylib && ln -s libpixman.1.0.0.dylib libpixman.dylib)
+/usr/bin/install -c .libs/libpixman.lai /usr/local/lib/libpixman.la
+/usr/bin/install -c .libs/libpixman.a /usr/local/lib/libpixman.a
+ranlib /usr/local/lib/libpixman.a
+chmod 644 /usr/local/lib/libpixman.a
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /usr/local/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `DYLD_LIBRARY_PATH' environment variable
+     during execution
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+test -z "/usr/local/include" || /bin/sh ../mkinstalldirs "/usr/local/include"
+ /usr/bin/install -c -m 644 'pixman.h' '/usr/local/include/pixman.h'
+dlc-genomics:~/FUNNYBASE/NOTES/gui/SVG/svg2png/libpixman-0.1.6 young$
+
+
+INSTALL cairo:
+    cd /Users/young/FUNNYBASE/NOTES/gui/SVG/svg2png/cairo-1.3.4
+    ./configure
+
+GOT ERROR:
+
+configure: error: pkg-config >= 0.19 required but not found (http://pkgconfig.freedesktop.org/)
+
+INSTALLED DEPENDENCY pkg-config:
+
+INTALLED DEPENDENCY libpng
+
+PROBLEM:
+
+configure: error: Cairo requires at least one font backend.
+                  Please install freetype and fontconfig, then try again:
+                  http://freetype.org/  http://fontconfig.org/
+
+PROBLEM CONFIGURING fontconfig:
+
+Please update fcarch.tmpl.h and rebuild
+make[3]: *** [fcarch.h] Error 1
+make[2]: *** [all] Error 2
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
+
+1. POSSIBLE SOLUTION:
+
+./configure --with-arch=PPC
+DIDN'T WORK
+
+2. POSSIBLE SOLUTION:
+CONFIGURE_ARGS+=--with-arch=ppc BUT COULD NOT FIND FILE mk.conf
+
+===============================================================
+Subject: fonts/fontconfig 2.4.0 on OS X 10.4.7 build failure
+To: None <pkgsrc-users@netbsd.org>
+From: Mark E. Perkins <perkinsm@bway.net>
+List: pkgsrc-users
+Date: 09/13/2006 16:38:15
+
+Building the latest fontconfig on OS X 10.4.7 ends with:
+
+rm -f fcarch.h
+./fc-arch auto < ../fc-arch/fcarch.tmpl.h > fcarch.h
+./fc-arch: unknown signature
+"12345678_00000001_00000004_00000004_00000004_00000010_00000004_00000004_00000008_00000004_00000004_0000000c_00000004_00000004_00000010_00000004_00000004_00000002_00000020_00000004_0000001c"
+        Please update fcarch.tmpl.h and rebuild
+gnumake[3]: *** [fcarch.h] Error 1
+gnumake[2]: *** [all] Error 2
+
+
+The problem seems to be that configure determines the system architecture by
+running '/bin/arch' and '/usr/bin/arch -k'. The problem is that /bin/arch does
+not exist on OS X and /usr/bin/arch does not accept any command line arguments.
+
+A temporary fix is to set CONFIGURE_ARGS+=--with-arch=ppc in mk.conf, but
+that's just a bandaid on the real problem.
+
+Is there a quick (and more permanent) fix that can be applied or is this worth
+a PR?
+
+Thanks,
+Mark
+===============================================================
+
+3. POSSIBLE SOLUTION:
+
+declare -x PKG_CONFIG_PATH=/usr/lib/pkgconfig
+THEN ./configure
+DIDN'T WORK
+
+4. ? SOME RELATED STUFF ONLINE...
+
+
+INSTALL libsvg:
+
+checking for libxml-2.0 >= 2.4.7 ... Package libxml-2.0 was not found in the pkg-config search path. Perhaps you should add the directory containing `libxml-2.0.pc' to the PKG_CONFIG_PATH environment variable No package 'libxml-2.0' found
+configure: error: Library requirements (libxml-2.0 >= 2.4.7 ) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.
+
+
+INSTALL libsvg-cairo:
+
+INSTALL svg2png:
+
+
+
+SOLUTION:
+
+    DROP CAIRO AND INSTALL INKSCAPE:
+
+
+PROBLEM:
+
+    cd /Users/young/apps/inkscape/inkscape-0.44.1
+    ./configure
+    ...
+    configure: error: libgc (the Boehm Conservative Collector) 6.4+, is needed to compile inkscape --   
+
+INSTALLED libgc OK BUT GOT THIS ERROR:
+
+error: --enable-lcms was specified, but appropriate LittleCms development packages could not be found
+
+	INSTALLED liblcms1-dev FROM DOWNLOADED lcms_1.15.orig.tar.gz	==	OK
+
+THEN DID ./configure IN ~/apps/inkscape/inkscape-0.44.1 AND GOT THIS ERROR:
+
+checking for INKSCAPE... configure: error: Package requirements (gdkmm-2.4  glibmm-2.4  gtkmm-2.4  gtk+-2.0 >= 2.4.0  libxml-2.0 >= 2.6.11  libxslt >= 1.0.15  sigc++-2.0 >= 2.0.12    gthread-2.0 >= 2.0 libpng >= 1.2) were not met:
+
+No package 'gdkmm-2.4' found
+No package 'glibmm-2.4' found
+No package 'gtkmm-2.4' found
+No package 'gtk+-2.0' found
+No package 'libxml-2.0' found
+No package 'libxslt' found
+No package 'sigc++-2.0' found
+No package 'gthread-2.0' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables INKSCAPE_CFLAGS
+and INKSCAPE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+SO DID:
+
+cd /Users/young/apps/inkscape/inkscape-0.44.1
+export PKG_CONFIG_PATH=/usr/lib/pkgconfig
+echo $PKG_CONFIG_PATH
+
+BUT GOT THE SAME ERROR AS ABOVE:
+
+checking for INKSCAPE... configure: error: Package requirements (gdkmm-2.4  glibmm-2.4  gtkmm-2.4  gtk+-2.0 >= 2.4.0  libxml-2.0 >= 2.6.11  libxslt >= 1.0.15  sigc++-2.0 >= 2.0.12    gthread-2.0 >= 2.0 libpng >= 1.2) were not met:
+
+No package 'gdkmm-2.4' found
+No package 'glibmm-2.4' found
+No package 'gtkmm-2.4' found
+No package 'gtk+-2.0' found
+No package 'sigc++-2.0' found
+No package 'gthread-2.0' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables INKSCAPE_CFLAGS
+and INKSCAPE_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+
+SO TRIED BUT GOT SAME AS ABOVE:
+
+./configure INKSCAPE_CFLAGS="" INKSCAPE_LIBS=""
+
+THEN CHECKED /usr/lib FOR THE ABOVE SIX LIBRARIES - NOT FOUND IN /usr/lib.
+
+SO INSTALLED gtkmm, glibmm and gtk+ FROM:
+
+http://www.gtkmm.org
+ 
+NB: gtkmm VERSION 2.10.0 FOR gtk+ VERSION 2.10.0
+
+	gtkmm DEPENDENCIES:
+	atk						== OK
+	glibmm-2.4 >= 2.11.3	== OK
+	cairomm-1.0 >= 1.1.12
+	pango >= 1.5.2
+
+	INSTALLED pango FROM:
+	http://www.pango.org/
+	
+	cairomm DEPENDENCIES:
+	cairo
+		
+		cairo DEPENDENCIES:
+		freetype			== OK
+		fontconfig	
+	
+		INSTALLED freetype:
+		
+			$ cd path_to_folder_containing_freetype_source.tar.gz
+			$ tar -zxf freetype-2.1.10.tar.gz
+		
+			Edit include/freetype/config/ftoption.h. Line 146 should be:
+			
+			#define  FT_CONFIG_OPTION_SYSTEM_ZLIB
+			
+			Line 439 should be: (NOTE: I'm assuming, naively probably, that since we own a Mac with Mac OS X, we have the right to use Apple's patented bytecode interpreter in software. Enlightenment is welcome on this issue. Strangely, the freetype provided by Apple doesn't use this option.)
+			
+			#define TT_CONFIG_OPTION_BYTECODE_INTERPRETER
+			
+			Line 483 should be:
+			
+			#define TT_CONFIG_OPTION_COMPONENT_OFFSET_SCALED
+			
+			( If you are upgrading from an earlier freetype version you installed (v2.1.5 or earlier), the new include structure doesn't delete the old includes, just writes new files as needed. This leaves behind some old includes that may confuse some older software. So you can delete these:
+			
+				$ sudo rm -r /usr/local/include/freetype*
+			)
+			
+			Then continue:
+			
+				cd /Users/young/apps/inkscape/freetype-2.1.10
+				export CFLAGS=-O2
+				./configure --prefix=/usr --mandir=/usr/local/share/man
+				make
+				sudo make install   == OK
+		
+		
+		INSTALLED fontconfig USING darwinports:
+		
+			INSTALLED DARWINPORTS FROM:
+			
+			
+			export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+			echo $PATH
+			sudo port -d selfupdate
+			
+			DEBUG: Rebuilding the MacPorts base system if needed.
+			Synchronizing from rsync://rsync.darwinports.org/dpupdate/dports
+			...
+			selfupdate done!
+
+			sudo port install fontconfig
+			
+		INSTALLED cairo USING darwinports:
+		sudo port install cairo
+	
+	INSTALLED cairomm USING darwinports:
+	sudo port install cairomm
+
+*****************
+NB: DARWINPORTS PORTS ARE INSTALLED IN /opt/local/lib
+THE darwinports tree is /opt/local
+*****************
+	
+	INSTALLED atk FROM:
+	http://www.icewalkers.com/download/ATK/1433/dls/
+	
+		atk DEPENDENCIES:
+		*** GLIB 2.0.0 or better is required.
+		
+		INSTALLED glib FROM:
+		ftp://ftp.gtk.org/
+		
+			glib DEPENDENCIES:
+			error:
+			*** You must have either have gettext support in your C library, or use the
+			*** GNU gettext library. (http://www.gnu.org/software/gettext/gettext.html
+	
+			INSTALLED gettext
+			
+	
+	glibmm DEPENDENCIES:
+	
+	sigc++-2.0 >= 2.0.0 === ok, INSTALLED ABOVE
+	glib-2.0 >= 2.9.0  == ok, INSTALLED ABOVE
+		gobject-2.0 >= 2.9.0	== included in glib
+		gmodule-2.0 >= 2.9.0    == included in glib
+
+
+INSTALLED sigc++ FROM:
+http://libsigc.sourceforge.net/
+
+
+cd /Users/young/apps/inkscape/inkscape-0.44.1
+sudo ./configure PKG_CONFIG_PATH=/sw/lib/pkgconfig  # OK!!
+>>> ...
+Configuration:
+
+        Source code location:     .
+        Destination path prefix:  /usr/local
+        Compiler:                 g++
+        CPPFLAGS:                 
+        CXXFLAGS:                 -Wall -W -Wpointer-arith -Wcast-align -Wsign-compare -Woverloaded-virtual -Wswitch  -Wno-unused-parameter -g -O2
+        CFLAGS:                   -Wall -W -Wno-pointer-sign -g -O2
+        LDFLAGS:                  
+
+        Use Xft font database:    no
+        Use gnome-vfs:            yes
+        Use openoffice files:     yes
+        Use MMX optimizations:    no
+        Use relocation support:   no
+        Use boost graph library:  no
+        Enable LittleCms:         yes
+        Enable Inkboard:          no
+<<<
+
+BUT DOES NOT make:
+
+then mv -f ".deps/conn-avoid-ref.Tpo" ".deps/conn-avoid-ref.Po"; \
+else rm -f ".deps/conn-avoid-ref.Tpo"; exit 1; \
+fi
+./util/share.h:34: error: declaration of 'Inkscape::Util::ptr_shared<T>::operator bool() const'
+./util/share.h:32: error: conflicts with previous declaration 'Inkscape::Util::ptr_shared<T>::operator const T1*() const'
+./util/share.h: In instantiation of `Inkscape::Util::ptr_shared<char>':
+./util/share.h:116:   instantiated from here
+./util/share.h:22: error: declaration of 'Inkscape::Util::ptr_shared<T>::operator bool() const [with T = char]'
+./util/share.h:32: error: conflicts with previous declaration 'Inkscape::Util::ptr_shared<T>::operator const T1*() const [with T1 = T1, T = char]'
+make[2]: *** [conn-avoid-ref.o] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all] Error 2
+
+
+SO TRIED AN EARLIER VERSION, inkscape-0.42:
+
+cd /Users/young/apps/inkscape/inkscape-0.42
+sudo ./configure PKG_CONFIG_PATH=/sw/lib/pkgconfig  # OK!!
+>>>...
+Configuration:
+
+        Source code location:     .
+        Destination path prefix:  /usr/local
+        Compiler:                 g++
+        CPPFLAGS:                 
+        CXXFLAGS:                 -Wall -W -Wpointer-arith -Wcast-align -Wsign-compare -Woverloaded-virtual -Wswitch  -Wno-unused-parameter -g -O2
+        LDFLAGS:                  
+
+        Use Xft font database:    no
+        Use gnome-print:          no
+        Use gnome-vfs             yes
+        Use openoffice files:     yes
+        Use MMX optimizations:    no
+        Use relocation support:   no
+        Use Python extensions:    skipped
+        Use Perl extensions:      skipped
+<<<
+
+sudo make
+
+DID NOT MAKE!
+
+

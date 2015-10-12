@@ -1,0 +1,878 @@
+Notes-hardware-kbcspta.txt
+
+
+<entry [Sat Dec 6 21:19:03 UTC 2009] CREATED HTML REDIRECT IN index.html>
+
+
+
+<html>
+<head>
+     <meta http-equiv="Refresh" content="0; url=http://kbcspta.org:8080/display/PTA/Home
+">
+</head>
+<body>
+
+<p> Redirecting to
+<a href="http://kbcspta.org:8080/display/PTA/Home"> KBCS PTA Home page </a>
+</p>
+
+</body>
+</html>
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Dec 6 21:19:03 UTC 2009] LINODE ACCOUNT DETAILS>
+
+
+
+ID: linode32230
+IP: 74.207.231.78
+
+ONE SSH METHOD:
+
+ssh linode32230@atlanta94.linode.com
+
+OTHER SSH METHOD:
+
+ssh root@74.207.231.78
+
+
+Current Reverse DNS
+IP Address 	RDNS
+74.207.231.78 	www.kbcspta.org
+
+
+Network Settings
+eth0: 	74.207.231.78 ( www.kbcspta.org )
+Gateways: 	74.207.231.1
+Netmask: 	255.255.255.0
+DNS Servers: 	75.127.97.6
+75.127.97.7
+
+
+</entry>
+
+
+
+<entry [Sun Nov 22 21:19:03 UTC 2009] FIXED MISSING RICH TEXT EDITOR>
+
+
+
+
+
+
+***  SUPPORT REQUEST ***
+
+
+
+CHECKED IN GENERAL CONFIGS BUT RICH TEXT WAS ENABLED 
+
+http://www.adaptavist.com/display/AtlassianConfluence/General+Configuration
+
+Confluence Administration --> General Configuration
+
+
+http://forums.atlassian.com/thread.jspa?messageID=257311553
+
+There is a current issue open for the bundled plugins found at:
+http://jira.atlassian.com/browse/CONF-7750
+
+CAUSE:
+In Confluence 2.5 the "Tiny MCE" (Rich Text Editor) was moved to a plugin format as part of the bundled-plugins. It existed as included javascript in previous versions. This will cause an issue for users who cannot extract the bundled-plugins with confluence.
+
+WORKAROUND:
+Manually extract the 'atlassian-tinymce-plugin-1.12.jar' from 'atlassian-bundled-plugins.zip' and upload it using the Plugin Repository interface. No reboot of apache required; Rich Text Editor begins working right away.
+
+
+I solved it by just unzipping the plugins file manually and putting the .jar
+files into the {CONFLUENCE_DATA_DIR}/bundled_plugins directory.
+
+The plugins are in the file:
+WEB-INF/classes/com/atlassian/confluence/setup/atlassian-bundled-plugins.zip
+
+cd /usr/share/confluence/confluence/WEB-INF/classes/com/atlassian/confluence/setup/
+
+
+THAT CAN'T BE IT AS THE UNZIPPED atlassian-bundled-plugins.zip FILE CONTAINS IDENTICAL FILES TO THOSE CONTAINED IN THE <CONFLUENCE-DATA>/bundled_plugins FOLDER:
+
+diff /usr/share/confluence-data/bundled-plugins /usr/share/confluence/confluence/WEB-INF/classes/com/atlassian/confluence/setup
+
+Only in /usr/share/confluence/confluence/WEB-INF/classes/com/atlassian/confluence/setup: atlassian-bundled-plugins.zip
+Only in /usr/share/confluence/confluence/WEB-INF/classes/com/atlassian/confluence/setup: demo-site.zip
+[root@li73-78 bundled-plugins]# 
+
+
+
+
+
+NOTES
+-----
+
+
+     CONFLUENCE TABS WIKI MARKUP
+
+     {style} 
+     .wiki-content { width: 900px; padding: 1em; } 
+     {style} 
+     
+     {composition-setup} 
+     cloak.toggle.type = text 
+     cloak.toggle.open = [+] 
+     cloak.toggle.close = [-] 
+     {composition-setup} 
+     {deck:id=deck} 
+     {card:label=Get|default=true} 
+     {include:Overview (2.6)} 
+     {card} 
+     {card:label=Install} 
+     {include:Installation (2.6)} 
+     {card} 
+     {card:label=Configure} 
+     {include:Configuration (2.6)} 
+     {card} 
+     {card:label=Administer} 
+     {include:Sakai Admin Guide - Full} 
+     {card} 
+     {card:label=Migrate} 
+     {include:Migration (2.6)} 
+     {card} 
+     {card:label=Tools} 
+     {include:Tools (2.6)} 
+     {card} 
+     {card:label=Release Notes} 
+     {include:Release Notes (2.6)} 
+     {card} 
+     {card:label=Fixes} 
+     {include:Fixes (2.6)} 
+     {card} 
+     {card:label=Security} 
+     {include:Security Policy} 
+     {card} 
+     {deck}
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Nov 22 10:52:03 UTC 2009] SETUP OUTGOING EMAIL FROM CONFLUENCE>
+
+
+
+http://confluence.atlassian.com/display/DOC/Configuring+a+server+for+outgoing+mail
+
+CREATE GMAIL ACCOUNT FOR KBCSPTA
+
+NAME: kbcspta
+PASS: k*9
+
+
+1. EDIT server.xml
+
+emacs /usr/share/confluence/conf/server.xml
+
+
+ADD INSIDE <Context path...
+
+              <Resource name="mail/Session"
+                    auth="Container"
+                    type="javax.mail.Session"
+                    mail.smtp.host="smtp.gmail.com"
+                    mail.smtp.port="465"
+                    mail.smtp.auth="true"
+                    mail.smtp.user="kbcspta@gmail.com"
+                    password="<****yourpassword ****>"
+                    mail.smtp.starttls.enable="true"
+                    mail.smtp.socketFactory.class="javax.net.ssl.SSLSocketFactory"
+              />
+
+
+
+
+
+2. MOVE mail*.jar AND activate*.jar TO THE TOMCAT FOLDER
+
+
+mv /usr/share/confluence/confluence/WEB-INF/lib/mail-1.4.1.jar /usr/share/confluence/lib
+chmod 755 /usr/share/confluence/lib/mail-1.4.1.jar 
+mv /usr/share/confluence/confluence/WEB-INF/lib/activation-1.0.2.jar /usr/share/confluence/lib
+chmod 755 /usr/share/confluence/lib/activation-1.0.2.jar 
+
+
+3. RESTART CONFLUENCE
+
+/usr/share/confluence/bin/shutdown.sh
+/usr/share/confluence/bin/startup.sh
+
+
+
+4. INCREASE LINODE MEMORY TO 540MB -- IMPORTANT!!! - WILL NOT WORK WITHOUT THIS!!!
+
+TO AVOID THIS ERROR:
+
+Error occurred during initialization of VM
+Could not reserve enough space for object heap
+
+
+
+5. CREATE A MAIL SERVER
+
+Login Confluence as admin
+Click on "Mail Servers" --> 'Add a new SMTP mail server'
+
+use JNDI and enter
+
+     java:comp/env/mail/Session
+
+
+
+6. SEND A TEST EMAIL USING gmail SMTP server:
+
+
+     Your test message has been sent successfully to stuartpyoung@gmail.com.
+
+
+
+OK!
+
+
+
+
+
+NOTES
+-----
+
+
+http://grokbase.com/topic/2008/01/10/centos-5-sendmail-configuration/km0HzMHg6mTU60403MeTG1pxW_Q
+
+
+
+INSTALL sendmail
+
+yum install sendmail
+
+
+emacs /etc/mail/sendmail.mc
+
+
+RESTART SENDMAIL
+
+/etc/rc.d/init.d/sendmail restar
+
+
+
+CHECK SENDMAIL IS RUNNING
+
+telnet localhost 25
+Trying 127.0.0.1...
+telnet: connect to address 127.0.0.1: Connection refused
+
+
+
+</entry>
+
+
+
+<entry [Sat Nov 21 23:07:03 UTC 2009] INSTALL CONFLUENCE LAYOUT AND PLUGINS>
+
+
+
+
+EDIT PAGE LAYOUT
+
+1. Make sure the Confluence Default theme is selected from the 'Themes' menu.
+
+2. Click 'Layout' under the 'Look and Feel' section.
+'Layout' is only displayed if you are a Confluence Site Administrator.
+
+3. Click 'Create Custom' under the 'Page Layout' section.
+
+
+
+REPLACE THIS CODE:
+
+<div class="wiki-content">
+$body
+</div>
+
+
+
+WITH THIS CODE:
+
+
+#if ($action.isPrintableVersion() == false)
+<style>
+.spacetree * ul{
+padding-left:0px;
+margin-left: 0px;
+}
+.spacetree * li{
+margin-left: 5px;
+padding-left:5px;
+}
+
+</style>
+
+<table cellspacing="2" cellpadding="5">
+<tr>
+<td valign="top" align="left" width="22%" bgcolor="#F9F9F9" class="noprint">
+<div class="tabletitle">Table of Contents</div>
+<div class="spacetree">
+#includePage($helper.spaceKey "TreeNavigation")
+</div>
+</td>
+<td valign="top" align="left" width="78%" class="pagecontent">
+<div class="wiki-content">
+$body
+</div>
+</td>
+</tr>
+</table>
+#else
+<div class="wiki-content">
+    $body
+</div>
+#end
+
+
+
+
+INSTALL CONFLUENCE PLUGINS
+
+
+LAST 2 OF 7 MODULES IN Confluence HTML Macros
+html
+html-include
+
+
+CALENDAR PLUGIN
+
+INCREASE MYSQL max_allowed_packet TO 32M TO AVOID THIS ERROR:
+"problem evicting or flushing a plugin object" 
+
+
+     mysql -u root -p
+     SET GLOBAL max_allowed_packet = 32000000;
+
+
+
+AND SET my.cnf FILE
+
+emacs /var/lib/mysql/my.cnf
+
+     [mysqld]
+     max_allowed_packet=16M
+
+
+
+AND RESTART MYSQL
+
+/etc/init.d/mysqld restart
+
+
+
+Content Formatting Macros (CENTER) PLUGIN
+http://confluence.atlassian.com/display/CONFEXT/Content+Formatting+Macros
+http://www.adaptavist.com/display/AtlassianConfluence/center+macro
+
+DOWNLOAD FROM HERE
+http://confluence.atlassian.com/display/CONFEXT/Confluence+Repository+Client
+
+
+	If running Confluence v2.3 or above make sure that the Confluence Compatibility Macros are disabled as that also has a {table} macro and is enabled by default.
+    
+    
+
+
+
+
+AVOID THIS ERROR:
+
+Error occurred during initialization of VM Could not reserve enough space for object heap
+
+
+tail /usr/share/confluence/logs/catalina.out
+
+     at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:128)
+     at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
+     at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
+     at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:263)
+     at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:844)
+     at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:584)
+     at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:447)
+     at java.lang.Thread.run(Unknown Source)
+Error occurred during initialization of VM
+Could not reserve enough space for object heap
+
+
+
+
+http://forums.atlassian.com/message.jspa?messageID=257297934
+
+Running Confluence on a VM can be very tricky, and not recommended by Atlassian...
+
+That said, sometimes there are crazy corporate policies...
+
+Had a client with the same problem you are having. It turned out to be something related to the memory allocated to that virtual machine... because the confluence server was not too busy, its memory was being borrowed for other VMs by the VM Server... I think there is a way of setting the VM's memory not to be shared...
+
+Something similar could be set for disk space.
+
+Another creative solution would be putting a wget on a cron job, to access a given page every few minutes so the VM Server does not take the memory away...
+
+
+
+
+
+I think I may have found the source of the problem: Generating JSESSIONID takes a long time. I have made the following change to server.xml:
+
+<Manager randomClass="java.security.SecureRandom" pathname="" />
+
+And the problem has not appeared since. Why this problem appears on a VM and not on a physical XP install I do not know, but I will investigate further. 
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Nov 21 21:07:03 UTC 2009] INSTALL CONFLUENCE>
+
+
+
+SEE http://confluence.atlassian.com/display/DOC/Installing+Confluence+Standalone+on+Unix+or+Linux
+
+
+1. INSTALL JAVA JRE AND SDK
+
+mkdir -p /root/basecd -
+scp -r root@74.207.235.81:/root/base/apps ./
+
+
+JAVA VERSION
+
+./java -version 
+     java version "1.6.0_17"
+     Java(TM) SE Runtime Environment (build 1.6.0_17-b04)
+     Java HotSpot(TM) Client VM (build 14.3-b01, mixed mode, sharing)
+
+
+EXPORT JRE_HOME AND JAVA_HOME IN .bash_profile:
+
+export JRE_HOME=/root/base/apps/java/jre1.6.0_17/bin
+export JAVA_HOME=/root/base/apps/java/jdk1.6.0_17/bin
+
+
+
+
+2. INSTALL X11 DEPENDECIES
+
+yum install libXp
+yum install libXp-devel
+
+
+
+3. DOWNLOAD THE STANDALONE INSTALLATION FILE
+
+#### INSTALL UTILITIES
+
+yum install wget
+yum install unzip
+
+#### CREATE DIRECTORY AND DOWNLOAD
+
+mkdir -p /root/software/confluence
+cd /root/software/confluence
+
+wget http://www.atlassian.com/software/confluence/downloads/binary/confluence-3.0.2-std.zip
+
+
+SAVED TO /root/software/confluence
+
+
+#### UNZIP AND INSTALL TO /usr/share
+
+cd /root/software/confluence
+unzip confluence-3.0.2-std.zip
+cp -r confluence-3.0.2-std /usr/share/
+
+WHICH CREATED THIS INSTALLATION DIRECTORY
+
+/usr/share/confluence-2.7.0-std/
+
+CREATE LINK TO /usr/share/confluence
+
+ln -s /usr/share/confluence-3.0.2-std /usr/share/confluence 
+
+
+CREATE DATA DIRECTORY
+
+mkdir /usr/share/confluence-data
+
+
+sobash
+DOWNLOAD MYSQL CONNECTOR 
+
+cd /root/software/confluence
+
+wget http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.10.tar.gz/from/pick
+
+
+
+UNZIP AND COPY TO /usr/share/confluence/lib
+
+cd /root/software/confluence
+tar xvfz mysql-connector-java-5.1.10.tar.gz
+
+cp /root/software/confluence/mysql-connector-java-5.1.10/mysql-connector-java-5.1.10-bin.jar /usr/share/confluence/lib
+
+chmod 755 /usr/share/confluence/lib/mysql-connector-java-5.1.10-bin.jar
+
+
+
+
+
+CREATE MYSQL DATABASE AND USER confluenceuser 
+
+yum install mysql-server
+
+
+INSTALL PHP AND MYSQL SUPPORT FOR PHP
+
+yum install php5 php-pear
+yum install php-mysql
+
+
+INSTALL mod_python AND MYSQL SUPPORT FOR PYTHON
+
+yum install mod_python
+yum install MySQL-python
+
+
+SET ROOT PASSWORD:
+
+mysqladmin -u root password o*4*a
+
+
+LOGIN AS ROOT USER AND CREATE DATABASE AND USER confluenceuser:
+
+mysql -u root -p;
+
+CREATE DATABASE confluence CHARACTER SET utf8 COLLATE utf8_bin;
+
+GRANT ALL PRIVILEGES ON confluence.* TO 'confluenceuser'@'localhost' IDENTIFIED BY 'open4confluence';
+
+FLUSH PRIVILEGES;
+
+
+
+
+
+
+START CONFLUENCE AND SET UP NEW CONFIGURATION
+
+cd /usr/share/confluence/bin
+./startup.sh
+
+
+ps aux
+( OR IS IT?
+export JRE_HOME=/root/base/apps/java/jre1.6.0_17
+export JAVA_HOME=/root/base/apps/java/jdk1.6.0_17 )
+
+
+
+
+Enter your license key and click the 'Custom Installation' button.
+
+Under the 'External Database' heading, select 'MySQL' from the dropdown list and click 'External Database'.
+
+On the next page, click 'Direct JDBC'.
+
+Enter confluenceuser in the User Name field, and the password you chose earlier in the Password field
+
+Click the Next button.
+
+OK!!
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Nov 21 14:33:03 UTC 2009] INSTALL LAMP ON kbcspta LINODE>
+
+
+
+
+SET TIMEZONE
+
+By default, Linode installations of CentOS are set to Eastern Standard Time.
+
+
+INSTALL APACHE
+
+yum install httpd
+
+The configuration for Apache is contained in the httpd.conf file, which is located at: /etc/httpd/conf/httpd.conf. We advise you to make a backup of this file into your home directory, like so:
+
+cp /etc/httpd/conf/httpd.conf ~/httpd.conf.backup
+
+
+SET SECURITY
+
+A configuration tool is available for basic firewall administration. Install the tool by issuing the following command:
+
+yum install system-config-securitylevel-tui
+
+Then, use the following command to start the tool:
+
+system-config-securitylevel-tui
+
+If you need more control over the firewall, you can interact with the firewall (iptables) directly with the iptables command, and you can see an output of all iptables rules with the following command:
+
+less /etc/sysconfig/iptables-config
+
+
+INSTALL whois (i.e., jwhois)
+
+yum install jwhois
+
+
+SET VIRTUAL HOST FOR kbcspta.org
+
+yum install emacs
+
+
+
+START HTTPD
+
+/etc/init.d/httpd start
+
+
+ADD TO .bash_profile
+
+alias apache='su -s /bin/bash apache'
+alias gobash='emacs -nw ~/.bash_profile'
+alias sobash='source ~/.bash_profile'
+alias em='emacs -nw'
+
+
+
+WORKING!
+
+
+TRANSFER DOMAIN www.kbcspta.com TO LINODE
+
+
+LOGIN TO godaddy.com:
+
+user: kbcspta
+
+
+
+BEFORE TRANSFER IS EFFECTIVE USE THE helpinghost DNS SERVERS
+
+Primary DNS server:               ns1.helpinghost.com
+Primary DNS IP address:       64.246.27.246
+Secondary DNS server:           ns2.helpinghost.com
+Secondary DNS IP address:   207.44.192.32
+
+
+
+CHANGE DNS SERVERS TO LINODE HERE
+
+https://manage.opensrs.net/
+
+(LOGIN AS HELPINGHOST USER)
+
+IN 'Name servers' SET THESE ADDRESSES:
+
+ns1.linode.com
+ns2.linode.com
+ns3.linode.com
+ns4.linode.com
+
+(Allow up to 24 hours for DNS changes to propagate through the Internet, although it may 
+happen much faster. You can use the whois utility from a shell prompt to see if your domain's 
+record has been updated with our nameservers.)
+
+
+
+SET DOMAIN NAME ON LINODE:
+
+SEE http://library.linode.com/linode-manager/configuring-dns-with-the-linode-manager:
+
+Log into the Linode Manager and click the "DNS Manager" tab. You'll see an empty zone list.
+
+Click "Add a new domain zone" and enter 'stuartpyoung.com', then click OK.
+
+Enter the SOA email address (use administrative contact email address for your domain) and accept the default choices for the remaining options.
+
+Several DNS records will be automatically created for your domain. These include a default entry for your domain, A records for "www" and "mail", and an MX record directing mail delivery to "mail.yourdomain.com".
+
+
+SET THE DOMAIN'S REVERSE DNS:
+
+LinodeManager --> Network tab --> reverse DNS (entry for your Linode's IP address):
+
+NB: use the whole domain name, including the 'www':
+
+www.stuartpyoung.com
+
+
+
+
+
+INSTALL MySQL
+
+yum install mysql-server
+
+In CentOS 5.2 this provides version 5.0.45 of MySQL. 
+
+
+SET MYSQL TO RUN ON BOOT
+
+/sbin/chkconfig --levels 235 mysqld on
+
+Use the chkconfig command to setup runlevels as needed.
+
+Now you can start the mysql daemon (mysqld) with the following command (as root):
+
+/etc/init.d/mysqld start
+
+
+Initializing MySQL database:  WARNING: The host 'origin' could not be looked up with resolveip.
+This probably means that your libc libraries are not 100 % compatible
+with this binary MySQL version. The MySQL daemon, mysqld, should work
+normally with the exception that host name resolving will not work.
+This means that you should use IP addresses instead of hostnames
+when specifying MySQL privileges !
+Installing MySQL system tables...
+OK
+Filling help tables...
+OK
+
+To start mysqld at boot time you have to copy
+support-files/mysql.server to the right place for your system
+
+PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !
+To do so, start the server, then issue the following commands:
+/usr/bin/mysqladmin -u root password 'new-password'
+/usr/bin/mysqladmin -u root -h origin password 'new-password'
+
+Alternatively you can run:
+/usr/bin/mysql_secure_installation
+
+which will also give you the option of removing the test
+databases and anonymous user created by default.  This is
+strongly recommended for production servers.
+
+See the manual for more instructions.
+
+You can start the MySQL daemon with:
+cd /usr ; /usr/bin/mysqld_safe &
+
+You can test the MySQL daemon with mysql-test-run.pl
+cd mysql-test ; perl mysql-test-run.pl
+
+Please report any problems with the /usr/bin/mysqlbug script!
+
+The latest information about MySQL is available on the web at
+http://www.mysql.com
+Support MySQL by buying support/licenses at http://shop.mysql.com
+                                                                     [  OK  ]
+Starting MySQL:                                                      [  OK  ]
+
+
+
+INSTALL PHP 
+
+yum install php5 php-pear
+
+
+Once PHP5 is installed we'll need to tune the configuration file located in /etc/php.ini to enable more descriptive errors, logging, and better performance. These modifications provide a good starting point if you're unfamiliar with PHP configuration.
+
+Make sure that the following values are set, and relevant lines are uncommented (comments are lines begining with a semi-colon (;)):
+
+emacs /etc/php.ini
+
+error_reporting = E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR
+display_errors = Off
+log_errors = On
+error_log = /var/log/php.log
+max_execution_time = 300
+memory_limit = 64M
+register_globals = Off
+
+
+INSTALL support for MySQL in PHP
+
+yum install php-mysql
+
+
+INSTALL mod_python
+
+yum install mod_python
+
+
+To enable python support for the site "kbcspta.org", you need to add the following to the site's <VirtualHost > entry in the configuration file:
+
+emacs /etc/httpd/conf.d/vhost.conf
+
+AddHandler mod_python .py
+PythonHandler mod_python.publisher
+PythonDebug On
+
+SO IT NOW READS:
+
+<VirtualHost *:80>
+     ServerAdmin admin@kbcspta.org
+     ServerName kbcspta.org
+     ServerAlias www.kbcspta.org
+     DocumentRoot /srv/www/kbcspta.org/
+     ErrorLog /srv/www/kbcspta.org/logs/error.log
+     CustomLog /srv/www/kbcspta.org/logs/access.log combined
+
+     AddHandler mod_python .py
+     PythonHandler mod_python.publisher
+     PythonDebug On
+
+</VirtualHost>
+
+
+AND RESTART APACHE
+
+/etc/init.d/httpd reload 
+
+Reloading httpd:                                                     [  OK  ]
+
+
+INSTALL MYSQL SUPPORT FOR PYTHON
+
+yum install MySQL-python
+
+
+
+
+
+
+

@@ -1,0 +1,501 @@
+Notes-apps-interproscan.txt
+
+
+EMAIL: baniyarath@med.miami.edu
+
+
+
+</entry>
+
+
+
+<entry [Wed Feb 17 02:40:02 EST 2010] INSTALLED INTERPROSCAN>
+
+
+
+
+You can also use CPAN to install modules in your local directory.
+
+First enter the CPAN shell, then set the arguments for the commands "perl Makefile.PL" and "./Build install", like this:
+
+perl -e shell -MCPAN
+
+
+o conf makepl_arg PREFIX=/nethome/syoung/base/apps/interproscan/4.6/dependencies
+o conf mbuildpl_arg "--prefix /nethome/syoung/base/apps/interproscan/4.6/dependencies"
+o conf commit
+
+
+install XML::Quote
+install IO::Scalar
+
+
+INSTALLED TO HERE:
+
+/nethome/syoung/base/apps/interproscan/4.6/dependencies/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/XML
+/nethome/syoung/base/apps/interproscan/4.6/dependencies/lib/perl5/site_perl/5.8.8/IO
+
+
+
+export SITE_PERL=/nethome/syoung/base/apps/interproscan/4.6/dependencies:$SITE_PERL
+
+export PATH=/nethome/syoung/base/apps/interproscan/4.6/dependencies/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi:$PATH
+export LD_LIBRARY_PATH=/nethome/syoung/base/apps/interproscan/4.6/dependencies
+
+
+
+
+
+NOTES
+=====
+
+
+CONFIG GAVE THIS ERROR:
+
+
+>>Checking if your Perl installation has the modules required by InterProScan...
+Can't locate XML/Quote.pm in @INC (@INC contains: /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at ./test.pl line 2.
+BEGIN failed--compilation aborted at ./test.pl line 2.
+WARNING: Module XML::Quote is not installed
+
+Can't locate IO/Scalar.pm in @INC (@INC contains: /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at ./test.pl line 2.
+BEGIN failed--compilation aborted at ./test.pl line 2.
+WARNING: Module IO::Scalar is not installed
+
+FATAL: 2 modules are missing, please install them or check your LD_LIBRARY_PATH, PERL5LIB and/or PATH
+environmental variables, then relaunch Config.pl.  Sorry for any inconvenience
+
+
+
+#=======================================================
+#>      InterProScan Perl-based version 4.6
+#>
+#> Installing InterProScan
+#>
+#> Author:  Sarah Hunter <hunter (at) ebi.ac.uk>
+#>
+#> $Id: Installing_InterProScan.txt,v 1.13 2010/01/18 11:01:30 hunter Exp $ 
+#>
+#=======================================================
+
+This document describes the system requirements and procedures for installing version 4.6 of 
+InterProScan and its data. 
+
+Contents
+--------
+1. System Requirements
+	1.1 Perl
+	1.2 Operating Systems
+	1.3 Disk Space
+2. Software Install
+	2.1 File Download
+	2.2 File decompression
+	2.3 Log into the machine
+	2.4 Find out perl path
+	2.5 Run Config.pl
+	2.6 Test the installation
+3. Data Update
+
+
+--------------------------------------------------------
+1. System Requirements
+
+1.1 Perl
+The InterProScan package has been developed in Perl5 under UNIX and requires 
+that various perl modules be installed beforehand.  Please note that all these 
+modules are available via the CPAN website (http://search.cpan.org/).  Also 
+note that many of these modules are available by default in the core perl 
+installation (see http://perldoc.perl.org/index-modules-A.html for information 
+about which are included), otherwise ask your system administrator for help in 
+installing them.
+  * CGI
+  * DB_File.pm - the interface to Berkeley DB
+  * English
+  * File::Basename
+  * File::Copy
+  * File::Path
+  * File::Spec::Functions
+  * FileHandle
+  * IO::Scalar
+  * IO::String
+  * Mail::Send
+  * Sys::Hostname
+  * URI::Escape
+  * XML::Parser.pm - libexpat (1.95.5 or newer) which is needed for the new 
+                     implementation of BlastProDom and to parse xml outputs.
+  * XML::Quote
+
+1.2 Operating Systems
+For a list of currently supported operating systems (with details of how they 
+were compiled), please see the README in the BIN directory.
+
+Note that binaries for Mac Darwin, PowerPC, Solaris/Sparc and AIX are no longer 
+produced for InterProScan v4.4 and above.  
+
+For distributed computing:
+  * InterProScan relies on UNIX rsh. This means you have to be able to rlogin 
+    to the hosts you are going to use.
+  * The installation should be on a shared file system (e.g. over NFS) that is 
+    accessible from all hosts (in the queue) you are going to use.
+  * The installation step implies that you are able to execute such commands as 
+    'ls', 'pwd', 'rsh' and 'uname'.
+
+1.3 Disk Space
+The full installation (with binaries & data for all platforms) takes about 9 Gb.
+
+
+2. Software Install
+
+2.1 File Download
+Download the following files from ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan :
+
+ * RELEASE/latest/iprscan_v4.4.tar.gz  - InterProScan itself
+ * BIN/4.x/iprscan_bin4.x_[PLATFORM].tar.gz - Binaries for the various platforms
+ * BIN/4.4/[PLATFORM]/fingerPRINTScan - New FingerPRINTScan binaries for the various platforms
+ * DATA/iprscan_DATA_[LATESTDATAVERSION].tar.gz - databases used by InterProScan (except Panther)
+ * DATA/iprscan_PTHR_DATA_[LATESTDATAVERSION].tar.gz - panther database and indexes
+ * DATA/iprscan_MATCH_DATA_[LATESTDATAVERSION].tar.gz - match_complete.xml and interpro.xml files
+
+Where [PLATFORM] is your Operating System and [LATESTDATAVERSION] is the most 
+recent version of the data available on the FTP site. The binaries in the BIN 
+directory have been pre-compiled for each platform for your convenience. If 
+you to compile them yourself with your own options, see the InterProScan README 
+file for url(s) where to download them from.
+
+2.2 File decompression
+Decompress each of them in the root directory where you want to install 
+InterProScan.  When unpacked, the files contain a sub-directory structure and 
+so you should unpack them all from the same place.
+
+  % gunzip -c iprscan_DATA_[LATEST_VERSION].tar.gz | tar -xvf -
+  % gunzip -c iprscan_PTHR_DATA_[LATESTDATAVERSION].tar.gz | tar -xvf -
+  % gunzip -c iprscan_MATCH_DATA_[LATESTDATAVERSION].tar.gz | tar -xvf -
+  % gunzip -c iprscan_bin4.x_[PLATFORM].tar.gz | tar -xvf -
+  % gunzip -c iprscan_v4.4.tar.gz | tar -xvf -
+
+The following directory structure will be created:
+
+./iprscan/
+	|-bin   = contains perl scripts and binaries for InterProScan
+	|  `-binaries/
+	|-conf  = contains configuration files for setting up InterProScan locally
+	|-data  = contains all member databases (e.g. Pfam)
+	|-docs  = contains documentation
+	|-image = contains images used in the graphical output and web GUI
+	|-lib   = contains additional perl modules and scripts for running InterProScan
+	`-tmp   = storage area for temporary files created 
+
+
+Copy the fingerPRINTScan binary into bin/binaries, replacing the one distributed.
+
+
+2.3 Log into the machine
+If you will be running InterProScan via a queue system (such as LSF), you must 
+make sure that you are logged into the machine with the queue software 
+installed and available before running the installation script.
+
+2.4 Find out perl path
+Find out what the full path of the perl installation you will be using is.
+
+  % which perl
+
+2.5 Run Config.pl
+Change into the iprscan directory and run the Config.pl script to start the 
+installation process.  
+Answer the prompts or press <Enter> to accept the defaults:
+
+  % cd iprscan
+  % /<path>/<to>/<your>/perl Config.pl
+
+
+You will be asked the following questions (there is additional useful 
+information about what you are configuring written below; not everything will 
+be displayed on screen):
+
+---------------------------------------------------------------------------
+
+ If you are updating an old installation, you can keep some of the configuration information from 
+ the previous install.  If you wish to do a completely fresh install, answer "y" to this.
+
+  Reconfigure everything (first time install)? (y|n)
+
+ InterProScan needs to know where it is installed.  If you do not provide this, the installation root 
+ will be the home directory of the user ($HOME in the environment) by default or otherwise, the 
+ current working directory.  If you do decide to set paths, you will be prompted for the full path of 
+ InterProScan on your system. Likewise, by default, the installation script will take the default 
+ perl path (found by running which perl) unless you specify otherwise.
+
+  Do you want to set paths? (y|n): 
+  Enter the full path for the InterProScan installation?:
+  Do you want to set another one Perl command in place of [default_PERL]? (y|n):
+
+ To cope with bulk jobs and to enable efficient parallelisation, InterProScan splits input files with 
+ FASTA formatted sequences into smaller parts (chunks). The default size suggested is "10".  The 
+ value you provide is the number of sequences that will be put into each chunk.  If you put a higher 
+ value, you will have fewer chunks, with more sequences in each chunk and vice versa.  Try to 
+ avoid using a value that would give you more than 3000 chunks.  If you are having speed 
+ problems, you may wish to try altering this value first.
+
+  Setup chunk size? (y|n)
+  Enter chunk size (default 10):
+
+ You can configure InterProScan to limit the number of input sequences (protein & nucleotide) and 
+ the maximum length for a nucleotide sequence and minimum length for a protein sequence. You 
+ can also configure the minimum length for a translated ORF and which codon table value
+ to use to translate DNA/RNA sequence into six frames (see http://www.ebi.ac.uk/cgi-
+ bin/mutations/trtables.cgi ). If you wish to configure this behaviour, answer "y" to the question.  
+ Otherwise, the defaults shown in brackets will be used.
+
+  Do you want to configure it? (y|n)
+  Enter the maximum of input protein sequences (default = 1000):
+  Enter the maximum of input nucleic sequences (default = 100):
+  Enter the maximum length (nucleic acids) for a nucleotide sequence (default = 10000):
+  Enter the minimum length (amino acids) for a protein sequence (default = 5):
+  Enter the minimum length for the length of a translated orf (default = 50):
+  Enter the default codon table value to use to translate dna/rna in six frames (default = 0):
+
+ Next you will be asked which applications (such as Pfam, Panther, Gene3D, etc.) you wish to use 
+ in InterProScan.  Please note that certain databases and/or algorithms are only available with a 
+ license.  Please see the README for more information about where to obtain the various 
+ binaries.  You will also be asked whether you wish to use a queue system, such as Sun 
+ GridEngine, PBS or LSF.  If you do not have a queue system, the jobs will be run locally (see the 
+ README for more information on queue systems).
+
+  Do you want to setup applications (if you don't, no applications will be included in InterProScan by default)?(y/n)
+  Do you wish to use a queue system? (y|n)
+
+ If you answer "y" to the second question, you will then be asked which of the supported queue 
+ systems you wish to use (Hit enter for the ones you don't wish to use and "y" for the one you do): 
+
+  Do you want to use sge6/lsf42/pbs (y|n)
+
+ You can then specify global settings for the queue system, such as a global cluster name and/or 
+ queue name.  If you say you do wish to specify the system settings, you will be prompted for 
+ them.
+
+  Do you want to set a global cluster name for all applications? (Default = 'n') (y|n):
+  Please enter the global cluster name you want to use for all applications:
+  Do you want to set a global queue name for all applications? (Default = 'n') (y|n):
+  Please enter the name of the global queue you want to use for all applications:
+
+ You are then shown the information you entered and asked to confirm that it is correct
+
+  Is all this information correct? (y|n)
+
+ Next, you can specify which tools you wish to use within InterProScan and, if you are using a 
+ queue system with multiple queues, which cluster and/or queue to run them on.  Remember that 
+ certain tools (TMHMM, SignalP and Superfamily) require a license.  At this point, Config.pl will 
+ also check that your operating system is supported and print an error if it isn't.
+
+  Do you want to use [TOOL_NAME] (y|n)		
+  Which queueing system?(lsf42|pbs54|sge6|condor)
+  Do you want to launch [TOOL_NAME] on a specific cluster? (y|n)
+  Enter cluster name:
+  Do you want to execute [TOOL_NAME] on a specific queue ? (y|n):
+  Enter the queue name to run [TOOL_NAME] using resource:
+
+ If you answered that you DON'T wish to use a queuing system, you can look at the supported 
+ queue systems again by answering yes when asked.  Otherwise, by default 'local' will by set for 
+ all your applications. If you want to set a queueing system to be run with your applications later, 
+ you can relaunch Config.pl.  If you want to run the tools without a queue system but on a different 
+ host than the one you are logged into (via rsh) you can specify it in the next section.
+
+  Please enter the execution host name of [TOOL_NAME]:
+
+ Next, you set up the administrator email address.  If there is a problem with the installation, email 
+ will be sent to you and a mail link placed on the web interface if you choose to install it.
+
+  Do you want to set an administrator email address? (y|n)
+  Please enter the email address of the administrator:
+
+ The Config.pl script will now go through all the files necessary and configure them according to 
+ your wishes.
+
+ You can set up InterProScan to run via a web interface.  You will need to have access to a web 
+ server in order to do this.  You can download the open-source Apache web server for UNIX from 
+ http://httpd.apache.org/.  If you do decide to install the web interface, you will need to edit the 
+ httpd.conf files with the information that is printed out by Config.pl and restart the web server.
+
+  Do you want to run InterProScan using a web interface? (y|n)
+  Do you want to run InterProScan through a secure HTTP server? (y|n)
+  Enter the name of your server name. You can specify a specific port to listen to. (e.g. foo.bar.com:4000)?: 
+
+ Config.pl will now try to index the data files you have downloaded for use with InterProScan.  If 
+ there is a problem, it will be output to the screen. Please note, this may take a long time.
+
+ Finally, you will be asked if you wish to register InterProScan.  This is so that we can better 
+ understand the type of users who download the software.  It also adds you to a (quiet) mailing list, 
+ where announcements on releases and bug fixes are made.
+
+  Proceed with the registration (y|n)
+  Your organization name:
+  Contact person:
+  Contact e-mail:
+  WEB interface?
+
+---------------------------------------------------------------------------
+
+ If the installation is completed successfully, you will see the following message:
+
+  Installation is completed
+
+
+2.6 Test the installation
+You can test that the installation has worked properly by running the provided 
+set of test sequences thus:
+
+  % cd bin; ./iprscan -cli -i ../test.seq -iprlookup -goterms
+
+-iprlookup requests that InterProScan looks up the corresponding InterPro entry 
+and -goterms does the same in GO (Gene Ontology). -cli specifies that the 
+script is being run on the command line and not via the web (CGI).  For a full 
+range of options on the command-line, type the following:
+
+  % ./iprscan -cli -h
+
+You can compare your results with the merged.raw files provided.
+merged.raw.crc is the results file when a crc check is done for pre-computed
+results in the match file.  merged.raw.nocrc is from when -nocrc is specified
+on the command-line and so results look-up is not performed and all methods
+are run again on the sequences.
+
+3. Data Update
+
+The InterPro database currently updates on a regular basis (every 6 weeks).  
+When this happens, the data for InterProScan will also update on the FTP site.  
+In order to ensure that you have the correct results, you should check you have 
+the latest version of the data installed.  To update the data, do the following:
+
+Download the latest release tar.gz files from ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/DATA/
+
+Go to the directory that contains your iprscan installation directory. Untar 
+and unzip the files:
+
+  % gunzip -c /<path>/<to>/iprscan_DATA_[LATESTDATAVERSION].tar.gz | tar -xvf -
+  % gunzip -c /<path>/<to>/iprscan_PTHR_DATA_[LATESTDATAVERSION].tar.gz | tar -xvf -
+
+Check that the indices are up-to-date by running bin/index_data.pl, if they 
+aren't, run bin/index_data.pl with the -inx and -bin options. (For more help 
+on index_data.pl run with the -h option).
+
+Alternatively, you can download the individual files, placing them in the 
+./iprscan/data directory (e.g. interpro.xml, match.xml, Pfam-A.hmm, sf_hmm, 
+sf_hmm_sub, smart.HMMs, Gene3D.hmm, smart.desc (not public), smart.thresholds 
+(not public), smart.overlaps (not public), superfamily.hmm, TIGRFAMs_HMM.LIB, 
+hamap.prf or prodom.ipr).  Ensure that you re-index them using index_data.pl as 
+before.  Please note that InterProScan now assumes that most HMM files will be 
+converted to binary format before searching, for speed.
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Feb 17 02:39:02 EST 2010] DOWNLOAD INTERPROSCAN>
+
+
+
+mkdir -p /nethome/syoung/base/apps/interproscan
+cd /nethome/syoung/base/apps/interproscan
+
+
+IPRSCAN RELEASE
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/RELEASE/4.6/iprscan_v4.6.tar.gz
+
+
+BINARIES
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/BIN/4.x/iprscan_bin4.x_Linux64.tar.gz
+
+
+DOCS
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/Installing_InterProScan.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/FAQs.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/README.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/README_DATA.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/ReleaseNotes.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/index.html
+wget http://141.80.164.19/bioinf_dokus/interproscan/FAQs.html
+ 
+
+NEWS
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/NEWS
+
+ 
+DATA
+
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/DATA/iprscan_DATA_25.0.tar.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/DATA/iprscan_MATCH_DATA_25.0.tar.gz
+wget ftp://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/DATA/iprscan_PTHR_DATA_14.0.tar.gz
+
+
+COMMERCIAL PACKAGES
+
+How can I plug in SignalP / TMHMM predictions?
+ 
+The InterProScan package provides all required scripts/parsers for the methods but you have to contact the authors to get the programs and data since they are not publicly available.
+ 
+Intallation:
+1) Save the decodeanhmm binary into iprscan/bin/YOURPLAFORM/ or made a soft link to your installation. 
+
+2) Save (or link) data files into iprscan/data/ directory: e.g. TMHMM2.1.1.model for THMHMM and/or V.EUK.1.bsmod for SignalP. you can check/change all the names in corresponding iprscan/conf/files. 
+
+3) Uncomment the applications in the header of CONFIG.pl and run it.
+
+ 
+See: README for the relevant URLs and references.
+
+
+
+=============================================================
+# 30th Jul 2009
+---------------
+
+Version 4.5 of InterProScan released
+
+There is a new member database included with InterProScan:  
+HAMAP.  You can read about this database at their home page 
+(http://www.expasy.org/sprot/hamap/).  Also note that you 
+should use the 2.2.19 version of BLAST with ProDom to get the 
+same results as the signatures shown through the InterPro 
+website.  Unfortunately, this binary has not been 
+pre-compiled and put into the binaries.  We hope to do this 
+soon.
+
+=============================================================
+# 8th Sep 2008
+--------------
+
+Version 4.4 of InterProScan released
+
+Please note, there is a new version of FingerPRINTScan which
+must be downloaded for your platform after you have 
+installed and configured the rest of the programs and data. 
+Please read the README in the BIN directory of the FTP site
+for more information.
+
+Also note that the match_complete.xml file now contains 
+match-less proteins.
+
+For other details, see the release notes.
+
+=============================================================
+#19th Oct 2006
+--------------
+
+Version 4.3 of InterProScan released.
+
+Please note - match_complete.xml is now used for lookups, 
+rather than match.xml
+
+
+

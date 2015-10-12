@@ -1,0 +1,84 @@
+Content-type: text/html
+
+++++ Workflow::saveWorkflow()
+
+	SELECT username FROM sessions
+	WHERE username = 'syoung'
+	AND sessionid = '1228791394.7868.158'
+SELECT projectnumber, workflownumber
+FROM project
+WHERE username = 'syoung'
+AND project = 'Project1'
+AND workflow = 'Workflow2'
+project number: 1
+workflow number: 7
+DELETE FROM project
+WHERE username = 'syoung'
+AND project = 'Project1'
+AND workflow = 'Workflow2'
+Delete result: 1
+INSERT INTO project (username,project,projectNumber,workflow,workflowNumber,name,number,location,executor,description,arguments,outputs,inputs)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+applications:
+$VAR1 = [
+          {
+            'location' => 'bin/apps/miniMAQ.pl',
+            'outputs' => {},
+            'executor' => 'perl',
+            'name' => 'miniMAQ',
+            'description' => 'Aligns against a reference sequence and predicts SNPs.',
+            'inputs' => {},
+            'type' => 'pipeline',
+            'arguments' => {
+                             ' inputfile' => {
+                                               'params' => ' ',
+                                               'required' => ' true',
+                                               'format' => 'fasta, binaryFasta ',
+                                               'value' => ' ',
+                                               'args' => ' ',
+                                               'type' => 'file',
+                                               'option' => '--inputfile',
+                                               'description' => ' Full path to input file',
+                                               'paramFunction' => ' '
+                                             },
+                             ' reference' => {
+                                               'params' => ' ',
+                                               'required' => ' true',
+                                               'format' => 'fasta',
+                                               'value' => ' ',
+                                               'args' => ' ',
+                                               'type' => ' file',
+                                               'option' => '--reference',
+                                               'description' => ' Full path to reference sequence file',
+                                               'paramFunction' => ' '
+                                             },
+                             ' outputdir' => {
+                                               'params' => ' ',
+                                               'required' => 'true',
+                                               'format' => ' ',
+                                               'value' => ' ',
+                                               'args' => ' ',
+                                               'type' => 'directory',
+                                               'option' => '--outputdir',
+                                               'description' => 'Full path to output directory',
+                                               'paramFunction' => ' '
+                                             }
+                           }
+          }
+        ];
+Values:
+$VAR1 = 'syoung';
+$VAR2 = 'Project1';
+$VAR3 = 1;
+$VAR4 = 'Workflow2';
+$VAR5 = 7;
+$VAR6 = 'miniMAQ';
+$VAR7 = 1;
+$VAR8 = 'bin/apps/miniMAQ.pl';
+$VAR9 = 'perl';
+$VAR10 = 'Aligns against a reference sequence and predicts SNPs.';
+$VAR11 = '{" inputfile":{"params":" ","required":" true","format":"fasta, binaryFasta ","value":" ","args":" ","type":"file","option":"--inputfile","description":" Full path to input file","paramFunction":" "}," reference":{"params":" ","required":" true","format":"fasta","value":" ","args":" ","type":" file","option":"--reference","description":" Full path to reference sequence file","paramFunction":" "}," outputdir":{"params":" ","required":"true","format":" ","value":" ","args":" ","type":"directory","option":"--outputdir","description":"Full path to output directory","paramFunction":" "}}';
+$VAR12 = '{}';
+$VAR13 = '{}';
+result: 1
+{ result : 'Project 'Project1' workflow 'Workflow2' saved' }

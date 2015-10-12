@@ -1,0 +1,198 @@
+Notes-apps-screen.txt
+
+LIVE SCREEN LIST
+================
+
+
+
+screen -r 23149
+
+Mon Aug 18 01:01:39 EDT 2008
+
+./velvet-paired.pl -i /home/syoung/base/pipeline/ecoli-velvet/data/ecoli_in.solexa.fasta -l 21 -o assembly-paired-lane1
+Input file: /home/syoung/base/pipeline/ecoli-velvet/data/ecoli_in.solexa.fasta
+Inputting sequences...
+/home/syoung/base/apps/velvet/velveth assembly-paired-lane1 21 -ins_length 50 -shortPaired data/ecoli_in.solexa.fasta &> /home/syoung/base/pipeline/ecoli-velvet/assembly-paired-lane1/velveth_log.txt
+Assembling sequences...
+/home/syoung/base/apps/velvet/velvetg assembly-paired-lane1 -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/ecoli-velvet/assembly-paired-lane1/velvetg_log.txt
+...
+
+
+Wed Jul 30 18:00:44 EDT 2008
+                                
+        12209.pts-3.solexa01    (Detached)  mira (human1-mira) STILL RUNNING
+
+        8064.pts-13.solexa01    (Detached)  ENDED eland (/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung)
+                                STARTED Tue Jul 29 23:23:21 EDT 2008
+    
+Tue Jul 29 20:10:19 EDT 2008
+
+        27201.pts-8.solexa01    (Detached)  ENDED eland on phiX
+        12679.pts-8.solexa01    (Detached)  KILLED mkdir /home/syoung/base/pipeline/human1-velvet/nucmer.chr1
+        15809.pts-5.solexa01    (Detached)  KILLED vcake (human1-vcake) FAILED - NO OUTPUT FILES
+        12209.pts-3.solexa01    (Detached)  mira (human1-mira) STILL RUNNING
+        28724.pts-15.solexa01   (Detached)  KILLED ssaha2 (human1-velvet) FAILED USING WHOLE HUMAN AS REFERENCE
+
+PREVIOUS LIST:
+    
+    12679.pts-8.solexa01    (Attached)
+    15809.pts-5.solexa01    (Detached)
+    11173.pts-8.solexa01    (Detached)
+    10664.pts-12.solexa01   (Detached)
+    28724.pts-15.solexa01   (Detached)
+
+
+
+
+screen -r 12209 
+
+- Wed Aug 13 14:32:33 EDT 2008 STILL NOT COMPLETED, ON CONTIG 3503 (see below)
+- Tue Jul 29 20:10:19 EDT 2008 STILL RUNNING, ON CONTIG 534 (see below)
+- Mon Aug 18 14:14:58 EDT 2008 KILLED ON CONTIG 4400
+    
+cd /home/syoung/base/bin/nextgen
+./mira.pl -i human1_sequence_in.fasta -d /home/syoung/base/pipeline/human1-mira/data
+
+    Mira: /home/syoung/base/apps/mira/bin/mira
+    Project: human1_sequence
+    Backbone file: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta
+    /home/syoung/base/apps/mira/bin/mira --project=human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+    ...
+
+
+    Tue Jul 29 20:10:19 EDT 2008 STILL RUNNING, ON CONTIG 534:
+
+    cd /home/syoung/base/pipeline/human1-mira/data
+    tail -n 50 log_assembly.txt
+    
+        ...
+        -------------- Contig statistics ----------------
+        Contig id: 534
+        Contig length: 933
+        
+                              Sanger         454      Solexa       SOLiD
+        Num. reads                 0           0           0           0
+        100% merged reads          -           -           0           0
+        Avg. read len              0           0           0           0
+        Max. coverage              1           0           0           0
+        Avg. coverage              0           0           0           0
+        
+        Max. contig coverage: 1
+        Avg. contig coverage: 0
+        
+        Consensus contains:     A: 180  C: 300  G: 268  T: 185  N: 0
+                                IUPAC: 0        Funny: 0        *: 0
+        GC content: 60.9%
+        -------------------------------------------------
+        
+        bfc debug checkpoint
+        done
+        Gogo: mapping 2 mismatches
+        Localtime: Tue Jul 29 20:07:56 2008
+        [14] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   933 237825 / 34 / 1
+        [14] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+    Wed Aug 13 14:32:33 EDT 2008 STILL NOT COMPLETED, ON CONTIG 3503:
+
+    cd /home/syoung/base/pipeline/human1-mira/data
+    tail -n 50 log_assembly.txt
+
+
+        That's it for this contig.
+        
+        -------------- Contig statistics ----------------
+        Contig id: 3503
+        Contig length: 1023
+        
+                              Sanger         454      Solexa       SOLiD
+        Num. reads                 0           0           0           0
+        100% merged reads          -           -           0           0
+        Avg. read len              0           0           0           0
+        Max. coverage              1           0           0           0
+        Avg. coverage              0           0           0           0
+        
+        Max. contig coverage: 1
+        Avg. contig coverage: 0
+        
+        Consensus contains:     A: 215  C: 319  G: 272  T: 217  N: 0
+                                IUPAC: 0        Funny: 0        *: 0
+        GC content: 57.8%
+        -------------------------------------------------
+        
+        bfc debug checkpoint
+        done
+        Gogo: mapping 1 mismatch
+        Localtime: Wed Aug 13 14:32:25 2008
+        [15] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   1023        239248 / 34 / 1
+        [15] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        RL1
+
+
+        CHECKED AGAIN Mon Aug 18 14:14:58 EDT 2008 ON CONTIG 4400:
+
+            Finished building.
+            Localtime: Mon Aug 18 14:13:16 2008
+            
+            -------------- Contig statistics ----------------
+            Contig id: 4400
+            Contig length: 937
+            
+                                  Sanger         454      Solexa       SOLiD
+            Num. reads                 0           0         148           0
+            100% merged reads          -           -          65           0
+            Avg. read len              0           0          34           0
+            Max. coverage              1           0          19           0
+            Avg. coverage              0           0        8.62           0
+            
+            Max. contig coverage: 20
+            Avg. contig coverage: 8.62
+
+
+###screen -r 15809  - FINISHED OK
+###
+###[syoung@solexa01 nextgen]$ ./vcake.pl -r /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta -i /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta
+###/home/syoung/base/apps/vcake/VCAKE_1.0.pl -b /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta -f /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta -k 30 -n 20 -m 18 -t 0 -o 100 -l logfile.txt -s fasta
+###
+###
+###    cd /home/syoung/base/pipeline/human1-vcake/assembly
+###    tail -n 50 logfile.txt
+
+
+###screen -r 28724 - KILLED Tue Jul 29 20:10:19 EDT 2008
+###
+###    /store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa /home/syoung/base/pipeline/human.genome/ucsc/human.fasta
+###    Max. sequence length: 1473
+###    ##gff-version 2
+###    ##source-version 2.0.0
+###    ##date 08/07/21
+###    
+###    cd /home/syoung/base/pipeline/human1-velvet/ssaha.whole-human
+###    
+###        [syoung@solexa01 ssaha.whole-human]$ ll
+###        total 129M
+###        drwxr-xr-x 2 syoung users 4.0K Jul 21 22:36 .
+###        drwxr-xr-x 9 syoung users 4.0K Jul 26 22:13 ..
+###        -rw-r--r-- 1 syoung users  34K Jul 21 22:36 contigs.base
+###        -rw-r--r-- 1 syoung users  28K Jul 21 22:36 contigs.body
+###        -rw-r--r-- 1 syoung users 100K Jul 21 22:36 contigs.fa
+###        -rw-r--r-- 1 syoung users 128M Jul 21 22:36 contigs.head
+###        -rw-r--r-- 1 syoung users  17K Jul 21 22:36 contigs.name
+###        -rw-r--r-- 1 syoung users 4.2K Jul 21 22:36 contigs.size
+###
+###    NO OUTPUT
+    
+
+###screen -r 12679 - KILLED Tue Jul 29 20:10:19 EDT 2008
+###
+###mkdir /home/syoung/base/pipeline/human1-velvet/nucmer.chr1
+
+
+###12679
+###
+###[syoung@solexa01 ssaha.chr1]$ /store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa chr1.fa
+###Max. sequence length: 1473
+#####gff-version 2
+#####source-version 2.0.0
+#####date 08/07/23
+

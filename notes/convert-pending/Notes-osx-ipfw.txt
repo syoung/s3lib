@@ -1,0 +1,155 @@
+Notes-osx-ipfw.txt
+
+REM: Must set script as executable!
+sudo chmod 755 /Library/StartupItems/Firewall/Firewall
+
+WRITE THE FOLLOWING EXECUTABLE SCRIPT:
+em /etc/rc.firewall
+>>>
+ipfw add 00001 allow udp from any 626 to any dst-port 626
+ipfw add 00010 divert 8668 ip from any to any via en1
+ipfw add 01000 allow ip from any to any via lo0
+ipfw add 01010 deny ip from any to 127.0.0.0/8
+ipfw add 01020 deny ip from 224.0.0.0/4 to any in
+ipfw add 01030 deny tcp from any to 224.0.0.0/4 in
+ipfw add 12300 allow tcp from any to any established
+ipfw add 12301 allow tcp from any to any out
+ipfw add 12302 allow tcp from any to any dst-port 22
+ipfw add 12302 allow udp from any to any dst-port 22
+ipfw add 12303 allow udp from any to any out keep-state
+ipfw add 12304 allow udp from any to any in frag
+ipfw add 12305 allow tcp from any to any dst-port 311
+ipfw add 12306 allow tcp from any to any dst-port 625
+ipfw add 12307 allow udp from any to any dst-port 626
+ipfw add 12308 allow icmp from any to any icmptypes 8
+ipfw add 12309 allow icmp from any to any icmptypes 0
+ipfw add 12310 allow igmp from any to any
+ipfw add 12311 allow tcp from any to any dst-port 3283,5900
+ipfw add 12311 allow udp from any to any dst-port 3283,5900
+ipfw add 12312 allow tcp from any to any dst-port 80
+ipfw add 12313 allow udp from any to any dst-port 67
+ipfw add 12314 allow udp from any to any dst-port 68
+ipfw add 12315 allow ip from 192.168.0.0/16 to any
+ipfw add 40000 allow ip from 129.171.101.233 to 129.171.101.102
+ipfw add 40001 allow ip from 129.171.101.102 to 129.171.101.233
+ipfw add 65534 deny ip from any to any
+ipfw add 65535 allow ip from any to any
+<<<
+
+FIREWALL SCRIPTS Firewall AND StartupParameters.plist:
+
+em /Library/StartupItems/Firewall/Firewall
+
+
+>>>
+#!/bin/sh
+
+##
+# Firewall
+##
+
+. /etc/rc.common
+
+StartService ()
+{
+#  if [ "${FIREWALL:=-NO-}" = "-YES-" ]
+#  then
+    ConsoleMessage "Starting ipfw firewall"
+    sh /etc/rc.firewall > /dev/null
+#  fi
+}
+
+StopService ()
+{
+  ConsoleMessage "Stopping Firewall"
+  /sbin/ipfw -f -q flush
+}
+
+RestartService ()
+{
+    ConsoleMessage "Restarting ipfw firewall"
+    StopService
+    StartService
+}
+
+RunService "$1"
+<<<
+
+em /Library/StartupItems/Firewall/StartupParameters.plist
+>>>
+{
+  Description     = "Firewall";
+  Provides        = ("Firewall");
+  Requires        = ("NetworkExtensions","Resolver");
+  OrderPreference = "Late";
+  Messages =
+  {
+    start = "Starting firewall";
+    stop  = "Stopping firewall";
+  };
+}
+<<<
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+FOR COMPARISON, THE SGE STARTUP SCRIPTS:
+
+
+em /Library/StartupItems/SGE/SGE
+>>>
+#!/bin/sh
+
+. /etc/rc.common
+
+StartService ()
+{
+##
+# Start Sun Grid Engine Services
+##
+    	ConsoleMessage "Starting Sun Grid Engine"
+        /common/sge/default/common/sgemaster > /dev/null 2>&1 < /dev/null
+        /common/sge/default/common/sgeexecd > /dev/null 2>&1 < /dev/null
+}
+
+StopService ()
+{
+##
+# Stop Sun Grid Engine Services
+##
+    ConsoleMessage "Stopping Sun Grid Engine Services"
+    /common/sge/default/common/sgeexecd stop
+    /common/sge/default/common/sgemaster stop
+}
+
+RestartService ()
+{
+##
+# Restart Sun Grid Engine Services
+##
+    ConsoleMessage "Restarting Sun Grid Engine Services"
+    StopService
+    StartService
+}
+
+RunService "$1"
+<<<
+
+
+em /Library/StartupItems/SGE/StartupParameters.plist
+>>>
+{
+  Description     = "Sun Grid Engine Services";
+  Provides        = ("SGE");
+  Requires        = ("Disks", "Resolver");
+  OrderPreference = "Late";
+  Messages =
+  {
+    start = "Starting Sun Grid Engine";
+    stop  = "Stopping Sun Grid Engine";
+  };
+}
+<<<
+

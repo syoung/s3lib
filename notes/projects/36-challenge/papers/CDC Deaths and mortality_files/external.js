@@ -1,0 +1,17 @@
+if(typeof CDC=="undefined"){var CDC=new Object();}if(typeof CDC.Policy=="undefined"){CDC.Policy=new Object();
+}CDC.Policy.ExternalLinks=function(){function WhiteListEntry(domainPattern,isRegExp){this.DomainPattern=domainPattern;
+this.IsRegExp=isRegExp;}var whiteList=new Array(new WhiteListEntry("https?://\\w*.cdc.gov(?:[\\?/](?:.*)?)?",true),new WhiteListEntry("https?://\\w*.\\w*.cdc.gov(?:[\\?/](?:.*)?)?",true));
+function IsExternal(href){var result=true;if(typeof href=="undefined"||href.length==0||href.indexOf("http:")==-1){result=false;
+}else{for(var i=0;i<whiteList.length;i++){if(whiteList[i].IsRegExp){var exp=new RegExp(whiteList[i].DomainPattern,"mi");
+if(exp.exec(href)){result=false;break;}}else{if(href.indexOf(whiteList[i].DomainPattern)>-1){result=false;
+break;}}}}return result;}function AddImage(anchor){if(!anchor.hasClass("noLinking")){var href=anchor.attr("href");
+if(IsExternal(href)){anchor.addClass("external");var newImage=$(document.createElement("img"));
+newImage.attr("alt","External Web Site Policy.");newImage.attr("title","External Web Site Policy.");
+newImage.attr("src","/TemplatePackage/images/icon_out.png");var newAnchor=$(document.createElement("a"));
+newAnchor.addClass("external");newAnchor.attr("href","#linkPolicy");newAnchor.attr("title","External Web Site Policy.");
+newAnchor.append(newImage);anchor.after(newAnchor);}}}return{addWhiteListEntry:function(pattern,isRegularExpression){whiteList[whiteList.length]=new WhiteListEntry(pattern,isRegularExpression);
+},fixLinks:function(){if(!$("body").hasClass("noLinking")&&$("#linkPolicy").length>0){var node=$("#content-main");
+if(node.length>0){node.find("a").each(function(){AddImage($(this));});}node=$("#nav-container");
+if(node.length>0){node.find("div:not(#nav) a").each(function(){AddImage($(this));
+});}if($(".external").length>0){$("#linkPolicy").css("display","block");}else{$("#linkPolicy").css("display","none");
+}}}};}();$(document).ready(function(){CDC.Policy.ExternalLinks.fixLinks();});

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml" lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+      <meta name="width" content="500" />
+      <meta name="generator" content="Posterous" />
+      <link href="http://assets5.posterous.com/bundles/posts.css?1319175046" media="screen" rel="stylesheet" type="text/css" />
+      <!--[if lt IE 9]>
+        <link href="http://assets9.posterous.com/bundles/ie.css?1319175046" media="screen" rel="stylesheet" type="text/css" />
+      <![endif]-->  
+      <link rel="alternate" type="application/rss+xml" href="http://computercamp.cdwilson.us/rss.xml"/>
+      <meta name="medium" content="blog" /><link rel="image_src" href="http://files.posterous.com/user_profile_pics/936224/chrisandmonica.png" />
+      <script type="text/javascript">
+//<![CDATA[
+window._token = 'ub1h7qb9IuvAvJ4G/5qBukfyjrjI2wTbNn3QS+K8x9k='; beforeload = (new Date()).getTime(); pagetype = 'show';
+//]]>
+</script>
+      <script src="http://assets8.posterous.com/bundles/sites_initialization.js?1319175046" type="text/javascript"></script>
+      <script type="text/javascript">
+//<![CDATA[
+var $j = jQuery.noConflict();
+//]]>
+</script>
+      <script data-post-data="%7B%22user_id%22%3A716568%2C%22post_id%22%3A38031915%2C%22post_is_private%22%3Afalse%2C%22post_url_slug%22%3A%22git-gitolite-git-daemon-gitweb-setup-on-ubunt%22%7D" data-posterous-deferred-content-url="http://computercamp.cdwilson.us/posts/deferred_content.jsonp" data-posts-data="%5B%7B%22user_id%22%3A716568%2C%22post_id%22%3A38031915%2C%22post_is_private%22%3Afalse%2C%22post_url_slug%22%3A%22git-gitolite-git-daemon-gitweb-setup-on-ubunt%22%7D%5D" id="posterous_initialization_script" src="http://assets7.posterous.com/javascripts/initialize.js?1319174928" type="text/javascript"></script>      
+      <script src="http://assets9.posterous.com/javascripts/vendor/modernizr.custom.35729.js?1319174928" type="text/javascript"></script>
+      
+      <!--[if lt IE 9]>
+        <script src="http://assets3.posterous.com/javascripts/html5.js?1319174928" type="text/javascript"></script>
+        <script src="http://assets2.posterous.com/javascripts/innershiv.js?1319174928" type="text/javascript"></script>
+      <![endif]-->          
+    <script src="http://assets8.posterous.com/bundles/tags.js?1319175046" type="text/javascript"></script><link rel="canonical" href="http://computercamp.cdwilson.us/git-gitolite-git-daemon-gitweb-setup-on-ubunt" />
+    <meta charset="utf-8" />
+    
+    
+      
+          
+      
+          
+      
+      
+      <link href="/images/favicon.png" rel="icon" type="image/x-png" />
+      
+      <title>git + gitolite + git-daemon + gitweb setup on Ubuntu 11.10 server - Computer Camp</title>
+<link href="/themes/cleansheet/styles.css" rel="stylesheet" type="text/css" />
+      <style>
+        /* global styles */
+        body, html { text-align: center; width: 100%; height: 100%; margin: 0; padding: 0; background-color: #FFF; font-family: Arial, Helvetica, sans-serif; color: #424037; }
+        
+        a { color: #BC7134; text-decoration: none; }
+        a[name] { color: #999; text-decoration: none; }
+    
+        article header h1 a { color: #444; }
+        article header h1 a:hover { color: #999; text-decoration: none; }
+        
+        header#page_header hgroup { margin-top: 40px; #999; display: block; }
+        header#page_header hgroup a { color: #999; }
+        header#page_header hgroup h2 { margin: 10px 0 30px; font-size: 1.4em; font-weight: normal; color: #999; letter-spacing: 0px;}
+        
+      nav#navigation ul li a.current { color: #999; }
+      
+      section#extra_links h1 span { letter-spacing: 0; display: block; font-size: 10px; font-weight: normal; color: #999; }
+      section#extra_links ul { color: #999; font-size: 10px; }
+      
+      form.search input.text { font-size: 12px; padding: 2px 2px 2px 20px; border: 1px solid #ccc; background: #FFF url('/images/icons/search16.png') no-repeat 3px 3px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+      
+      aside#sidebar { float: right; width: 175px; margin-top: 20px; font-size: 1.2em; color: #999; }
+      aside#sidebar section h1 { font-size: 11px; font-weight: normal; color: #999; letter-spacing: 0; }
+      aside#sidebar section ul li { list-style: none; color: #999; }
+      
+      section#statistics { font-size: 10px; color: #999; }
+      section#statistics strong { color: #424037; }
+
+      section#tags li.selected a { color: #424037; }
+            
+      h2#archive_list {margin-top: 0px; color: #111;}
+      section#archives {display:block;}
+      section#archives div.inner {margin-left:10px;line-height:1.5em;}
+      section#archives div.year {margin-top:5px;margin-bottom:5px;}
+      
+      article header aside.sms { font-size: 11px; color: #999; }
+      
+      div.editbox a { color: #999; }
+        div.editbox a:hover { color: #BC7134; }
+      
+      article time a { font-size: 14px; color: #C6C1A5; }
+      
+      footer section.author { width: 500px; margin-left: 155px; float: none; margin-bottom: 15px; }
+      footer section.author h1 { font-size: 10px; font-weight: normal; color: #999; margin: 0 0 5px; }
+      footer section.author h1 a { color: #999; }
+      footer section.author:hover h1 a { color: #BC7134; text-decoration: none; }
+      
+        div.comment_label { float: left; width: 130px; color: #C6C1A5; font-size: 14px; padding-top: 2px; margin-top: 0px; text-align: right; }
+        div.comment_spacer { float: left; width: 130px; color: #999; font-size: 14px; padding-top: 14px; text-align: right; display: block; }
+        div.comment_date { color: #C6C1A5; font-size: 14px; }
+        div.commentunit { margin: 10px 0px; color: #424037; }
+
+      footer section.locations h1 { font-size: 11px; font-weight: normal; color: #999; line-height: 21px; margin-top: 0px; }
+    
+        .pagination a:hover, .pagination a:active { border: 1px solid #ca9d00; color: #BC7134; }
+        .pagination span.current { padding: 2px 5px; margin: 2px; font-weight: bold; border: 1px solid #BC7134; background-color: #BC7134; color: #FFF; }
+        
+        input, select, textarea { color: #444; font-size: 1.6em; font-family: "Lucida Grande", sans-serif;
+            line-height:1.3em !important; padding: 5px; }
+        input[type='text'], input[type='password'], select, textarea { background-color: #FFF; border: 1px solid #ccc; }
+        input[type='button'], input[type='submit'] { height: 2em; font-size: 1.4em; color: #444; margin-top: 10px; }
+        
+        #rss { margin: 10px 0px; }
+        
+      footer section.share, footer section.tags, footer section.locations { margin-bottom: 15px; }
+      footer section.share { margin-bottom: 18px; float: right; width: auto; margin: 10px 0 0; }
+      .p_response_widget { float: left; }
+      .p_response_container { clear: both; }
+      
+      div.posterous_tweet_button { margin-right: 0; }
+        
+      </style>
+  </head>
+  <body><div class="posterous_site_data" data-post-id="38031915" data-posterous-hostname="posterous.com" data-show-type="post" data-site-id="2314674" data-site-location="false" data-site-type="posterous" data-slug-id="git-gitolite-git-daemon-gitweb-setup-on-ubunt" data-user-id="716568"></div><div class="posterous_ojs" data-posterous-admin-box="true"></div><div class="posterousPrivateBox">
+	
+	
+</div>
+      <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              apiKey : '9cccf2c9570e99aeb7ea4a7284b957a1',
+              status : true, // check login status
+              cookie : true, // enable cookies to allow the server to access the session
+              xfbml  : true  // parse XFBML
+            });
+            
+          };
+
+          (function() {
+            var e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.src = 'http://connect.facebook.net/en_US/all.js';
+            e.async = true;
+            document.getElementById('fb-root').appendChild(e);
+          }());
+        </script>
+    
+    <div id="wrap">
+      <aside class="clearfix" id="posterous_header">
+        <a href="http://posterous.com" class="logo" title="Posterous">Posterous</a>
+        <nav><div style="display:none" data-posterous-bar-legacy="true"></div></nav>
+      </aside>
+      <header id="page_header">
+        
+          <hgroup>
+            <h1><a href="http://computercamp.cdwilson.us" title="Computer Camp" rel="index">Computer Camp</a></h1>
+            
+              <h2>Nerds Rejoice.</h2>
+              <a href="http://flattr.com/thing/416928/Computer-Camp" target="_blank">
+              <img title="Flattr this" src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" /></a>
+            
+          </hgroup>
+        
+        
+            <section id="extra_links">
+          
+            <a href="http://computercamp.cdwilson.us" class="back_to_blog" rel="up">&laquo; Back to posts</a>
+          
+          
+          
+          
+          
+        </section>
+      </header>
+      <aside id="sidebar">
+        
+        
+          <section id="statistics">
+            <ul>
+              <li>Viewed <strong><div class="posterous_ojs" data-posterous-view-count="true" data-posterous-post-id="38031915"></div> times</strong></li>
+            </ul>
+          </section>
+          
+                
+                  
+            <section id="tags">
+              <h1>Filed under</h1>
+              <ul>
+                
+              
+                
+                  <li><a href="/tag/ubuntugitgitolitegitdaemongitwebserver" rel="tag">ubuntu git gitolite git-daemon gitweb server</a></li>
+                
+              
+            
+              </ul>
+            </section>
+          
+                
+              
+        
+        
+      </aside>
+      <div id="articles">
+        
+          <article class="post clearfix" id="post_38031915">
+            <header>
+              <section>
+                
+                  <time pubdate="pubdate" datetime="2010-12-31"><a href="http://computercamp.cdwilson.us/git-gitolite-git-daemon-gitweb-setup-on-ubunt">December 31, 2010</a></time>
+                
+                
+              </section>
+              
+                <h1 class="post-title"><a href="http://computercamp.cdwilson.us/git-gitolite-git-daemon-gitweb-setup-on-ubunt">git + gitolite + git-daemon + gitweb setup on Ubuntu 11.10 server</a></h1>
+              
+              
+      	        
+            
+              <div class="editbox">
+                
+        				
+                  
+                  <ul class="mini_commands posterous_edit_box posterous_edit_box_hidden" data-posterous-edit-box="true" data-posterous-post-id="38031915">
+	
+	<li><a href="http://posterous.com/posts/edit/38031915">Edit</a></li>
+  <li><a href="/posts/destroy/38031915" onclick="if (confirm('Are you sure you want to delete this post?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method'); m.setAttribute('value', 'delete'); f.appendChild(m);var s = document.createElement('input'); s.setAttribute('type', 'hidden'); s.setAttribute('name', 'authenticity_token'); s.setAttribute('value', 'ub1h7qb9IuvAvJ4G/5qBukfyjrjI2wTbNn3QS+K8x9k='); f.appendChild(s);f.submit(); };return false;">Delete</a></li>
+	<li><a href="http://posterous.com/posts/38031915/tags/edit_multiple" data-post-id="38031915" data-posterous-modal="true" data-posterous-tag-form="true">Tags</a></li>
+	
+	  <li><a href="//posterous.com/autopost/crosspost?post_id=38031915" data-posterous-modal="true">Autopost</a>
+	
+</ul>
+
+                
+                
+              
+              </div>
+            </header>
+            <div class="body">
+              <div class="inner">
+                <p><strong>UPDATE &ndash; 10/17/2011</strong></p>
+
+<ul>
+<li>Updated everything to work on Ubuntu 11.10 server and fixed a couple wrong/missing steps in the process</li>
+</ul>
+
+
+<p><strong>UPDATE &ndash; 10/16/2011</strong></p>
+
+<p>(thanks to @Elena and @admin in comments for catching my goofs)</p>
+
+<ul>
+<li>Fixed typo (changed <code>chmod 666 /tmp/username.pub</code> to <code>chmod 644 /tmp/username.pub</code>)</li>
+<li>Replaced the bits about restarting</li>
+</ul>
+
+
+<p><strong>UPDATE &ndash; 5/8/2011</strong></p>
+
+<ul>
+<li><p>This works on Ubuntu Server 11.04 as well.</p></li>
+<li><p>Fixed the section at the bottom about editing <code>/etc/sv/git-daemon/run</code> because I forgot to include the bits about changing the base-path and directory.  Sorry bout that&hellip;</p></li>
+<li><p>Added bits about setting gitweb owner and description</p></li>
+<li><p>Added url rewrite bits</p></li>
+<li><p>Added optional bits for <code>/etc/gitweb.conf</code></p></li>
+<li><p>Added gitweb theme</p></li>
+</ul>
+
+
+<hr />
+
+<p>So here&rsquo;s the skinny on getting <strong>git</strong>, <strong>gitolite</strong>, <strong>git-daemon</strong>, and <strong>gitweb</strong> set up on your Ubuntu 11.10 server using the packages from apt.</p>
+
+<p><strong>Make sure to read this entirely and follow every step!</strong></p>
+
+<h2>git setup</h2>
+
+<p>Install git and doc:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo apt<span class="argument">-get</span> install git<span class="argument">-core</span> git<span class="argument">-doc</span></pre></div>
+</div>
+
+
+<p>Setup your username and email:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>git config <span class="other">-</span><span class="argument">-global</span> user<span class="other">.</span>name <span class="s"><span class="dl">&quot;</span><span class="k">Your Name</span><span class="dl">&quot;</span></span>
+git config <span class="other">-</span><span class="argument">-global</span> user<span class="other">.</span>email your<span class="other">@</span>email<span class="other">.</span>com</pre></div>
+</div>
+
+
+<h2>gitolite setup</h2>
+
+<p>Copy over your pubkey from your local machine to the git server:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="c"># FROM YOUR LOCAL MACHINE</span>
+scp ~<span class="other">/</span><span class="other">.</span>ssh<span class="other">/</span>id_rsa<span class="other">.</span>pub git<span class="other">.</span>server<span class="other">:</span><span class="other">/</span>tmp<span class="other">/</span>username<span class="other">.</span>pub</pre></div>
+</div>
+
+
+<p>Create <code>gitolite</code> group and <code>gitolite</code> user:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo addgroup gitolite
+sudo adduser <span class="other">-</span><span class="argument">-disabled</span><span class="argument">-password</span> <span class="other">-</span><span class="argument">-home</span> <span class="other">/</span>home<span class="other">/</span>gitolite <span class="other">-</span><span class="argument">-ingroup</span> gitolite gitolite</pre></div>
+</div>
+
+
+<p>Install gitolite:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo apt<span class="argument">-get</span> <span class="argument">-y</span> install gitolite</pre></div>
+</div>
+
+
+<p>Append www-data to gitolite group so gitweb can access the repos:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo usermod <span class="argument">-a</span> <span class="argument">-G</span> gitolite www<span class="argument">-data</span></pre></div>
+</div>
+
+
+<p>and make sure that groups are updated for apache:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo service apache2 restart</pre></div>
+</div>
+
+
+<p>Run the gitolite setup:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo su <span class="other">-</span> gitolite
+gl<span class="argument">-setup</span> <span class="other">/</span>tmp<span class="other">/</span>cwilson<span class="other">.</span>pub</pre></div>
+</div>
+
+
+<p>Setup will allow you to modify gitolite config umask settings so that new repos are given permissions to enable gitweb and git-daemon export:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="c"># change $REPO_UMASK = 0077; to $REPO_UMASK = 0027; # gets you 'rwxr-x---'</span></pre></div>
+</div>
+
+
+<p>Exit out of gitolite user session and return to your normal user account:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="fu">exit</span></pre></div>
+</div>
+
+
+<p>If for some reason you weren&rsquo;t able to edit <code>.gitolite.rc</code> during the <code>gl-setup</code> phase, edit <code>.gitolite.rc</code> and fix permissions so that <code>gitolite</code> group has read access to repositories:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>home<span class="other">/</span>gitolite<span class="other">/</span><span class="other">.</span>gitolite<span class="other">.</span>rc
+<span class="c"># change $REPO_UMASK = 0077; to $REPO_UMASK = 0027; # gets you 'rwxr-x---'</span>
+sudo chmod g<span class="other">+</span>r <span class="other">/</span>home<span class="other">/</span>gitolite<span class="other">/</span>projects<span class="other">.</span>list
+sudo chmod <span class="argument">-R</span> g<span class="other">+</span>rx <span class="other">/</span>home<span class="other">/</span>gitolite<span class="other">/</span>repositories</pre></div>
+</div>
+
+
+<p>You should now be able to clone the <code>gitolite-admin.git</code> repository that&rsquo;s created automatically by the gitolite setup script:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="c"># FROM YOUR LOCAL MACHINE</span>
+git clone gitolite<span class="other">@</span>git<span class="other">.</span>server<span class="other">:</span>gitolite<span class="argument">-admin</span><span class="other">.</span>git</pre></div>
+</div>
+
+
+<p>Edit <code>gitolite.conf</code> to enable <code>gitweb</code> and <code>git-daemon</code> export for testing:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="c"># FROM YOUR LOCAL MACHINE</span>
+<span class="fu">cd</span> gitolite<span class="argument">-admin</span>
+emacs conf<span class="other">/</span>gitolite<span class="other">.</span>conf
+<span class="c"># change to:</span>
+repo    testing
+      RW<span class="other">+</span>     <span class="other">=</span>   <span class="other">@</span>all
+      R       <span class="other">=</span>   daemon
+testing <span class="s"><span class="dl">&quot;</span><span class="k">Owner</span><span class="dl">&quot;</span></span> <span class="other">=</span> <span class="s"><span class="dl">&quot;</span><span class="k">Test repo</span><span class="dl">&quot;</span></span>
+git add conf<span class="other">/</span>gitolite<span class="other">.</span>conf
+git commit <span class="argument">-m</span> <span class="s"><span class="dl">&quot;</span><span class="k">Enabled gitweb and git-daemon export for testing repo</span><span class="dl">&quot;</span></span>
+git push
+<span class="fu">cd</span> <span class="other">.</span><span class="other">.</span></pre></div>
+</div>
+
+
+<p>Setting the repo owner and description automatically gives read access to gitweb so you don&rsquo;t have to specify it explicitly.</p>
+
+<p>Clone <code>testing</code> and add a file (so it&rsquo;s not empty):</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>git clone gitolite<span class="other">@</span>git<span class="other">.</span>server<span class="other">:</span>testing<span class="other">.</span>git
+<span class="fu">cd</span> testing
+<span class="fu">echo</span> <span class="s"><span class="dl">&quot;</span><span class="k">README</span><span class="dl">&quot;</span></span> &gt; README
+git add README
+git commit <span class="argument">-m</span> <span class="s"><span class="dl">&quot;</span><span class="k">Added README</span><span class="dl">&quot;</span></span>
+git push origin master</pre></div>
+</div>
+
+
+<h2>gitweb setup</h2>
+
+<p>Install gitweb:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo apt<span class="argument">-get</span> install highlight gitweb</pre></div>
+</div>
+
+
+<p>Change the gitweb configuration to use the gitolite repo paths:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>etc<span class="other">/</span>gitweb<span class="other">.</span>conf
+<span class="c"># change $projectroot to /home/gitolite/repositories</span>
+<span class="c"># change $projects_list to /home/gitolite/projects.list</span></pre></div>
+</div>
+
+
+<p>Now you should be able to see the testing repository in gitweb at:</p>
+
+<p><a href="http://git.server/gitweb/">http://git.server/gitweb/</a></p>
+
+<h2>git-daemon setup</h2>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo apt<span class="argument">-get</span> install git<span class="argument">-daemon</span><span class="argument">-run</span></pre></div>
+</div>
+
+
+<p>Now we need to change the sv config for git-daemon so that it runs as the gitdaemon user and gitolite group (since gitolite group has read access to the repositories)</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>etc<span class="other">/</span>sv<span class="other">/</span>git<span class="argument">-daemon</span><span class="other">/</span>run</pre></div>
+</div>
+
+
+<p>Change:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="pp">#!/bin/sh</span>
+<span class="fu">exec</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span>
+<span class="fu">echo</span> <span class="s"><span class="dl">'</span><span class="k">git-daemon starting.</span><span class="dl">'</span></span>
+<span class="fu">exec</span> chpst <span class="argument">-ugitdaemon</span> <span class="dl">\</span>
+  <span class="s"><span class="dl">&quot;</span><span class="k">$(git --exec-path)</span><span class="dl">&quot;</span></span><span class="other">/</span>git<span class="argument">-daemon</span> <span class="other">-</span><span class="argument">-verbose</span> <span class="other">-</span><span class="argument">-base</span><span class="argument">-path=</span><span class="other">/</span>var<span class="other">/</span>cache <span class="other">/</span>var<span class="other">/</span>cache<span class="other">/</span>git</pre></div>
+</div>
+
+
+<p>to:</p>
+
+<p><strong>IMPORTANT:</strong> notice the change from <code>-ugitdaemon</code> to <code>-ugitdaemon:gitolite</code></p>
+
+<div class="CodeRay">
+  <div class="code"><pre><span class="pp">#!/bin/sh</span>
+<span class="fu">exec</span> <span class="number">2</span>&gt;&amp;<span class="number">1</span>
+<span class="fu">echo</span> <span class="s"><span class="dl">'</span><span class="k">git-daemon starting.</span><span class="dl">'</span></span>
+<span class="fu">exec</span> chpst <span class="argument">-ugitdaemon</span><span class="other">:</span>gitolite <span class="dl">\</span>
+  <span class="s"><span class="dl">&quot;</span><span class="k">$(git --exec-path)</span><span class="dl">&quot;</span></span><span class="other">/</span>git<span class="argument">-daemon</span> <span class="other">-</span><span class="argument">-verbose</span> <span class="other">-</span><span class="argument">-base</span><span class="argument">-path=</span><span class="other">/</span>var<span class="other">/</span>lib<span class="other">/</span>gitolite<span class="other">/</span>repositories <span class="other">/</span>var<span class="other">/</span>lib<span class="other">/</span>gitolite<span class="other">/</span>repositories</pre></div>
+</div>
+
+
+<p>Restart git-daemon:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo sv restart git<span class="argument">-daemon</span></pre></div>
+</div>
+
+
+<p>You should now be able to clone the <code>testing</code> repo via the git protocol:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>git clone git<span class="other">:</span><span class="other">/</span><span class="other">/</span>git<span class="other">.</span>server<span class="other">/</span>testing<span class="other">.</span>git</pre></div>
+</div>
+
+
+<h2>Pretty URLs</h2>
+
+<p>To enable pretty gitweb urls (<a href="http://git.server">http://git.server</a> instead of <a href="http://git.server/gitweb/">http://git.server/gitweb/</a> as explained in <a href="http://repo.or.cz/w/alt-git.git?a=blob_plain;f=gitweb/README">http://repo.or.cz/w/alt-git.git?a=blob_plain;f=gitweb/README</a>):</p>
+
+<p>Open <code>/etc/apache2/conf.d/gitweb</code>:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>etc<span class="other">/</span>apache2<span class="other">/</span>conf<span class="other">.</span>d<span class="other">/</span>gitweb</pre></div>
+</div>
+
+
+<p>and comment out everything.</p>
+
+<p>Enable rewrites in apache:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo a2enmod rewrite
+sudo service apache2 restart</pre></div>
+</div>
+
+
+<p>Add a new &lsquo;git&rsquo; virtual host:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>etc<span class="other">/</span>apache2<span class="other">/</span>sites<span class="argument">-available</span><span class="other">/</span>git</pre></div>
+</div>
+
+
+<p>and add the following:</p>
+
+<p><script src="https://gist.github.com/961709.js"></script></p>
+
+<p>Enable the new &lsquo;git&rsquo; virtual host:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo a2ensite git
+sudo service apache2 reload</pre></div>
+</div>
+
+
+<p>Enable pretty urls in <code>/etc/gitweb.conf</code>:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo emacs <span class="other">/</span>etc<span class="other">/</span>gitweb<span class="other">.</span>conf</pre></div>
+</div>
+
+
+<p>and add the following:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre># Enable PATH_INFO so the server can produce URLs of the
+# form: http://git.cdwilson.us/project.git/xxx/xxx
+# This allows for pretty URLs *within* the Git repository, where
+# my Apache rewrite rules are not active.
+$feature{'pathinfo'}{'default'} = [1];</pre></div>
+</div>
+
+
+<h2>gitweb extras</h2>
+
+<p>To enable other optional features of gitweb, add the following:</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>$projects_list_description_width = 100;
+
+# Enable blame, pickaxe search, snapshop, search, and grep
+# support, but still allow individual projects to turn them off.
+# These are features that users can use to interact with your Git trees. They
+# consume some CPU whenever a user uses them, so you can turn them off if you
+# need to. Note that the 'override' option means that you can override the
+# setting on a per-repository basis.
+$feature{'blame'}{'default'} = [1];
+$feature{'blame'}{'override'} = 1;
+
+$feature{'pickaxe'}{'default'} = [1];
+$feature{'pickaxe'}{'override'} = 1;
+
+$feature{'snapshot'}{'default'} = [1];
+$feature{'snapshot'}{'override'} = 1;
+
+$feature{'search'}{'default'} = [1];
+
+$feature{'grep'}{'default'} = [1];
+$feature{'grep'}{'override'} = 1;
+
+$feature{'show-sizes'}{'default'} = [1];
+$feature{'show-sizes'}{'override'} = 1;
+
+$feature{'avatar'}{'default'} = ['gravatar'];
+$feature{'avatar'}{'override'} = 1;
+
+$feature{'highlight'}{'default'} = [1];
+$feature{'highlight'}{'override'} = 1;</pre></div>
+</div>
+
+
+<h2>Custom Theme</h2>
+
+<p>To add a customized theme (from <a href="http://kogakure.github.com/gitweb-theme/">http://kogakure.github.com/gitweb-theme/</a>):</p>
+
+<div class="CodeRay">
+  <div class="code"><pre>sudo mv <span class="other">/</span>usr<span class="other">/</span>share<span class="other">/</span>gitweb<span class="other">/</span>static<span class="other">/</span>gitweb<span class="other">.</span>js <span class="other">/</span>usr<span class="other">/</span>share<span class="other">/</span>gitweb<span class="other">/</span>static<span class="other">/</span>gitweb<span class="other">.</span>js<span class="other">.</span>orig
+sudo mv <span class="other">/</span>usr<span class="other">/</span>share<span class="other">/</span>gitweb<span class="other">/</span>static<span class="other">/</span>gitweb<span class="other">.</span>css <span class="other">/</span>usr<span class="other">/</span>share<span class="other">/</span>gitweb<span class="other">/</span>static<span class="other">/</span>gitweb<span class="other">.</span>css<span class="other">.</span>orig
+<span class="fu">cd</span> <span class="other">/</span>tmp
+git clone git<span class="other">:</span><span class="other">/</span><span class="other">/</span>github<span class="other">.</span>com<span class="other">/</span>kogakure<span class="other">/</span>gitweb<span class="argument">-theme</span><span class="other">.</span>git
+<span class="fu">cd</span> gitweb<span class="argument">-theme</span>
+sudo cp gitweb<span class="other">.</span>css gitweb<span class="other">.</span>js <span class="other">/</span>usr<span class="other">/</span>share<span class="other">/</span>gitweb<span class="other">/</span>static<span class="other">/</span></pre></div>
+</div>
+              </div>
+            </div>
+            <footer>
+              
+              
+              
+                
+              
+            
+              
+                
+              
+            
+                
+              <aside class="p_responses light">
+                
+                  
+                 
+              
+                
+                    <section class="share">
+                      <div class="facebook_like">
+                          
+                
+                  <fb:like href="http://computercamp.cdwilson.us/git-gitolite-git-daemon-gitweb-setup-on-ubunt" layout="button_count" show_faces="true" width="" action="like" font="lucida grande" colorscheme="light" ref=""></fb:like>
+                
+              
+            </div>
+                      
+                          
+                
+                  <div class="posterous_tweet_button">
+                    <a href="http://twitter.com/share" class="posterous_tweet_button twitter-share-button"
+                      data-url="http://post.ly/2tbaD"
+                      data-counturl="http://computercamp.cdwilson.us/git-gitolite-git-daemon-gitweb-setup-on-ubunt"
+                      data-via=""
+                      data-text="git + gitolite + git-daemon + gitweb setup on Ubuntu 11.10 server"
+                      data-count="horizontal"
+                      data-related="posterous:Posterous is the place to post everything."
+                      data-lang="en">Tweet</a>
+                  </div>
+                
+              
+            
+                    </section>
+                  
+              
+            
+          
+                  
+
+                  
+                    <nav class='p_response_widget'>
+<ul class='clearfix'>
+<li class='p_responses_link'><a href="/responses/recent?post_id=38031915" data-posterous-response-count="38031915" data-response-post-id="38031915" title="View responses to this post"><strong>17</strong> responses</a></li>
+<li class='p_like_link'><a href="/likes/create?like_type=post&amp;post_id=38031915" class="like_post" data-like-url="/likes/create?like_type=post&amp;post_id=38031915" data-posterous-like-button-for-post-id="38031915" data-posterous-like-text="Like this post" data-posterous-like="true" data-posterous-unlike-text="Unlike this post" data-unlike-url="/likes/delete?like_type=post&amp;post_id=38031915" rel="nofollow" title="Like this post"><div class='p_like_icon'></div><div class='p_unlike_icon' style='display:none'></div><span>Like</span></a></li>
+<li class='p_comment_link'><a href="/responses/recent?post_id=38031915" data-comment-post-id="38031915" title="Comment on this post"><div>Comment</div></a></li>
+</ul>
+</nav>
+
+                        <div data-posterous-responses-for-post-id='38031915'>
+<div class='p_response_container'>
+<a name='comment'></a>
+<div class='p_responses_list clearfix' data-posterous-responses-container>
+<article class='p_like p_response' data-likes_user_id='user-1051229' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1298369710'>8 months ago</time>
+<a href="http://posterous.com/people/he6CjNXZoewfU">Tobias Hoffmann</a> liked this post.
+</div>
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1303016322'>6 months ago</time>
+<a href="http://lesharris.com">Les Harris</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+Oh man, Thank You.  I spent the better part of today trying to get gitweb and gitolite playing happily.  This helped out a ton.
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_owner p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1304875197'>5 months ago</time>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ">Christopher Wilson</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ"><img alt="Christopher Wilson" src="http://files.posterous.com/user_profile_pics/936224/chrisandmonica_thumb.png" /></a>
+</div>
+<div class='p_comment_text'>
+@Les I spent the better part of a day banging my head against a wall trying to get this set up, so I'm glad this helped!
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1305539366'>5 months ago</time>
+<a href="vanillux.org">Fabrice Quenneville</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+Thank you so much, spent the most of a day figuring how to do all these steps :) <p>Using your how-to took maximum 30 minutes!!</p><p>(11.04)</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1308220113'>4 months ago</time>
+<a href="">artis</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+is this correct?<br />repo    testing<br />      RW+     =   @allhttp://posterous.com/posts/edit/38031915<br />      R       =   gitweb<br />      R       =   daemon<p>i mean - @allhttp://posterous.com/posts/edit/38031915</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_owner p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1308251224'>4 months ago</time>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ">Christopher Wilson</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ"><img alt="Christopher Wilson" src="http://files.posterous.com/user_profile_pics/936224/chrisandmonica_thumb.png" /></a>
+</div>
+<div class='p_comment_text'>
+@artis nope, it's a typo... just fixed it, thanks!
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1308686903'>4 months ago</time>
+<a href="http://twitter.com/sokekoke">sokekoke (Twitter)</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://twitter.com/sokekoke"><img alt="Missing-user-35" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" /></a>
+</div>
+<div class='p_comment_text'>
+Thanks for this! Having some trouble though.<p>When I browse gitweb, stylsheet is missing and in sourcecode the url for the sheet looks like this: "/gitweb/gitweb.css". When i try to browse eg. summary it says this: "Internal Server Error".</p><p>In my apache error.log, it says: "Request exceeded the limit of 10 internal redirects due to probable configuration error"</p><p>So i used LogLevel debug to backtrace and here is one of the things it tells me: "r->uri = /gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb.cgi/gitweb/git-logo.png, referer: <a href="http://git" rel="nofollow">http://git</a>.[myserver].com/"</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1309138335'>4 months ago</time>
+<a href="http://twitter.com/ExuloCode">ExuloCode (Twitter)</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://twitter.com/ExuloCode"><img alt="Default_profile_3_normal" src="http://a2.twimg.com/sticky/default_profile_images/default_profile_3_normal.png" /></a>
+</div>
+<div class='p_comment_text'>
+@sokekoke<br />I had the same problem, the current gitweb package has index.cgi which is a symlink to the actual gitweb.cgi in cgi-bin.  In your virtual host file, change:<br />RewriteRule ^.* /gitweb.cgi/$0 [L,PT]<br />to<br />RewriteRule ^.* /index.cgi/$0 [L,PT]<p>That worked for me.  I also recommend the stylesheet, logo, and favicon paths in /etc/gitweb.conf, for example:<br />$stylesheet = "/gitweb/gitweb.css";<br />to<br />$stylesheet = "/gitweb.css";</p><p>...because you're using virtual hosts without a subdirectory now.</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1310001168'>3 months ago</time>
+<a href="http://twitter.com/adriandantas">adriandantas (Twitter)</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://twitter.com/adriandantas"><img alt="Img_0599_2_normal" src="http://a3.twimg.com/profile_images/451414059/IMG_0599_2_normal.jpg" /></a>
+</div>
+<div class='p_comment_text'>
+Thank you very much for writting such a detailed post!!!
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1312972804'>2 months ago</time>
+<a href="">ivariable</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+Thanks a lot for the post! Really saved my hours of config digging ))
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1316526568'>27 days ago</time>
+<a href="http://twitter.com/JeffBallweg">JeffBallweg (Twitter)</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://twitter.com/JeffBallweg"><img alt="Christmas_boat_sm_normal" src="http://a1.twimg.com/profile_images/1246020184/christmas_boat_sm_normal.jpg" /></a>
+</div>
+<div class='p_comment_text'>
+Great post mate. Also big thanks for going back and doing the little updates and clarifications. <p>I'd also note that if anyone has previously used gitosis and is now going to gitolite, there are a few extra steps that might cause some issues. See <a href="http://sitaramc.github.com/gitolite/doc/migrate.html" rel="nofollow">http://sitaramc.github.com/gitolite/doc/migrate.html</a> to clean up after gitosis before you go ahead with gitolite, as some lingering gotsis config will cause issues with gitolite.</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1316840489'>24 days ago</time>
+<a href="http://twitter.com/que1roz">que1roz (Twitter)</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://twitter.com/que1roz"><img alt="81_4b4711ef5b13b_normal" src="http://a2.twimg.com/profile_images/1103294737/81_4b4711ef5b13b_normal.jpg" /></a>
+</div>
+<div class='p_comment_text'>
+thanks, it worked like a charm.<p>I am also suggest people to follow @sokekoke advice regarding the .css logo and index.cgi</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_like p_response' data-likes_user_id='oauth_user-759813' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1317190685'>20 days ago</time>
+<a href="http://twitter.com/DiVariable">DiVariable (Twitter)</a> liked this post.
+</div>
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1317370370'>18 days ago</time>
+<a href="http://www.trueelena.org">Elena ``of Valhalla''</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+Thanks for your tutorial.<p>Just a nitpick: there is no need to reboot; to update the group informations it is enough to restart the services with /etc/init.d/apache2 restart (for the webserver) and sv restart git-daemon (for git-daemon, of course).</p>
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_owner p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1317405568'>17 days ago</time>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ">Christopher Wilson</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ"><img alt="Christopher Wilson" src="http://files.posterous.com/user_profile_pics/936224/chrisandmonica_thumb.png" /></a>
+</div>
+<div class='p_comment_text'>
+@Elena<br />I knew enough to know the group info should be read again, but not enough to know how to cause it... Thanks for the heads up :)
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1318635827'>3 days ago</time>
+<a href="">admin</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<img alt="" src="http://assets5.posterous.com/images/profile/missing-user-35.png?1318901869" />
+</div>
+<div class='p_comment_text'>
+rebooting is NOT neccessary and chmod 666 the worst thing one can do - making an authentication token writable for EVERYBODY is just WRONG!
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+<article class='p_comment p_owner p_response' style='display:none;'>
+<div class='p_info'>
+<span class='p_icon'></span>
+<time pubdate='1318896386'>about 2 hours ago</time>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ">Christopher Wilson</a> responded:
+</div>
+<div class='p_comment_body'>
+<div class='p_profile_photo'>
+<a href="http://posterous.com/people/4SygH3Vlv6mZ"><img alt="Christopher Wilson" src="http://files.posterous.com/user_profile_pics/936224/chrisandmonica_thumb.png" /></a>
+</div>
+<div class='p_comment_text'>
+FYI, I updated everything today to work with Ubuntu 11.10 server and fixed the errors mentioned in the comments above
+</div>
+</div>
+<ul class='p_action_links'>
+</ul>
+
+</article>
+
+</div>
+</div>
+</div>
+
+                        <div class="posterous_ojs" data-posterous-new-comment-form="true"></div>
+                  
+                
+              </aside> 
+        		
+              
+            </footer>
+          </article>
+        
+      </div>
+      
+    </div>
+  
+
+    
+      <script type="text/javascript">
+    	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    	</script>
+    	<script type="text/javascript">
+    	var pageTracker = _gat._getTracker("UA-4054156-1");
+    	pageTracker._setDomainName("none");
+    	pageTracker._setAllowLinker(true);
+    	pageTracker._setAllowHash(false);
+    	pageTracker._initData();
+    	pageTracker._trackPageview();
+    	</script>  	
+    
+	
+	<!-- Start Quantcast tag -->
+	<script type="text/javascript">
+	_qoptions={
+	qacct:"p-16ewveTurfCCM"
+	};
+	</script>
+	
+	
+    	<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+    	<noscript>
+    	<a href="http://www.quantcast.com/p-16ewveTurfCCM" target="_blank"><img src="http://pixel.quantserve.com/pixel/p-16ewveTurfCCM.gif" style="display: none;" border="0" height="1" width="1" alt="Quantcast"/></a>
+    	</noscript>	
+	
+	<!-- End Quantcast tag -->
+
+
+
+<script src="http://www.scribd.com/javascripts/view.js" type="text/javascript"></script>
+<script src="http://assets9.posterous.com/bundles/sites.js?1319175046" type="text/javascript"></script>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js" defer></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<script>
+	var fbid_site_owner = 1;
+</script>
+
+
+
+<div class="posterous_ojs" data-posterous-twitter-oauth="true" data-posterous-post-ids="%7B%2238031915%22%3A%22http%3A%2F%2Fcomputercamp.cdwilson.us%2Fgit-gitolite-git-daemon-gitweb-setup-on-ubunt%22%7D" data-posterous-redirect-url="http://posterous.com/oauth/init_oauth_and_redirect/?ssod=computercamp.cdwilson.us&oauth_provider_type="></div>
+<iframe src="http://posterous.com/analytics_tracker" style="height: 1px; width: 1px; display: none;"></iframe>
+
+      <script type="text/javascript">
+      var mp_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+      document.write(unescape("%3Cscript src='" + mp_protocol + "api.mixpanel.com/site_media/js/api/mixpanel.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+
+      <script type="text/javascript">
+      try { 
+          var mpmetrics = new MixpanelLib("9a3025103118d0cfb3f778328f140ccb"); 
+          mpmetrics.set_config({ cookie_name: "posterous_mp" });
+          mpmetrics.register({"browser":"Safari","registered":"false","user":""});
+      } catch(err) {
+          null_fn = function () {};
+          var mpmetrics = { track: null_fn, track_funnel: null_fn, register: null_fn, register_once: null_fn, register_funnel: null_fn };
+      }
+      </script>      
+    </body>
+</html>
+
+

@@ -1,0 +1,174 @@
+DSH distributed shell
++++++++++++++++++++++
+
+# GET UPTIME AND AVERAGE LOAD IN LAST 1 MIN, 5 MINS AND 15 MINS
+sudo dsh -a uptime
+
+
+
+Adding Custom BLAST targets: 
+++++++++++++++++++++++++++++
+
+1. FORMAT THE DATABASE:
+
+USE mpiformatdb BUT FIRST ADD TO .ncbirc FILE:
+
+[ncbi]
+Data=/common/data
+
+[BLAST]
+BLASTDB=/common/data
+BLASTMAT=/common/data
+
+[mpiBLAST]
+Shared=/common/data
+Local=/common/tmp
+
+mpiformatdb READS THE ~/.ncbirc FILE AND CREATED THE FORMATTED DATABASE FRAGMENTS IN THE /common/tmp DIRECTORY:
+
+USE btformatdb:
+
+sudo btformatdb -i Swissprot
+
+WHICH DOES THIS:
+
+/common/bin/mpiformatdb --config-file=/common/etc/mpiblast.conf.build --nfrags=3 --quiet -p T -i /common/data/Swissprot -o T
+
+AND THIS:
+
+formatdb -p T -i /tmp/reorderFSqR8L -N 3 -n /common/tmp/Swissprot -o T
+
+
+NB: FOR NUCLEOTIDE DATABASES, E.G. ensemble, DO THIS
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+sudo btformatdb -i ensembl-elegans -p F
+
+ensembl-elegans
+ensembl-fugu
+ensembl-human
+ensembl-mouse
+ensembl-tetraodon
+ensembl-yeast
+ensembl-zebrafish
+unigene-anopheles
+unigene-dog
+unigene-drosophila
+unigene-elegans
+unigene-fugu
+unigene-human
+unigene-hydra
+unigene-mouse
+unigene-pig
+unigene-pine
+unigene-rat
+unigene-rice
+unigene-zebrafish
+
+
+
+sudo btformatdb -i ensembl-elegans -p F -o F
+
+/common/bin/mpiformatdb --config-file=/common/etc/mpiblast.conf.build --nfrags=3 --quiet -p F -i /common/data/ensembl-elegans -o T
+sudo mv ../tmp/* ./
+
+/common/bin/mpiformatdb --config-file=/common/etc/mpiblast.conf.build --nfrags=3 --quiet -p F -i /common/data/ensembl-chimp -o T
+sudo mv ../tmp/* ./
+
+/common/bin/mpiformatdb --config-file=/common/etc/mpiblast.conf.build --nfrags=3 --quiet -p F -i /common/data/ensembl-mouse -o T
+sudo mv ../tmp/* ./
+
+
+cd /common/data
+sudo chmod 674 *
+sudo chown www:wheel *
+
+TROUBLESHOOTING
+++++++++++++++++
+
+ERROR:
+NOTE: ncbiapi [000.000] SeqIdParse Failure at c.elegans|T24D1.1
+
+SOLUTION:
+THIS JUST MEANS THERE IS NO DESCRIPTION INFORMATION, I.E., THE FASTA FILE HEADER LOOKS LIKE THIS:
+
+>c.elegans|T24D1.1
+AGCGGCGGTGCGGTGCGATTCGCGACGAAAATCAATGAATCAGAGTGCCATCTGACGTGCAATTATATGTCGCCACCTGC
+
+ensembl AND unigene ARE NUCLEOTIDE DATABASES SO THE FOLLOWING COMMAND MUST BE USED:
+
+
+
+
+-------------------------------------------------------------------------
+sudo btformatdb -i Swissprot
+
+Segmenting database into 3 pieces based upon NODECOUNT.  This 
+value can be overriden using the -s flag.
+Format command:  /common/bin/mpiformatdb --config-file=/common/etc/mpiblast.conf.build --nfrags=3 --quiet -p T -i /common/data/Swissprot -o T 
+Reading input file
+Done, read 1419915 lines
+Reordering 188477 sequence entries
+Breaking Swissprot (68 MB) into 3 fragments
+Executing: formatdb -p T -i /tmp/reorderFSqR8L -N 3 -n /common/tmp/Swissprot -o T 
+Removed /tmp/reorderFSqR8L
+Created 3 fragments.
+Writes the current EMBOSS version number
+-------------------------------------------------------------------------
+
+COPY OVER TO THE /common/data DIRECTORY AND CHANGE OWNERSHIP:
+
+sudo cp /common/tmp/Swissprot.0* /common/data
+
+sudo chown www:wheel /common/data/Swissprot*             # change ownership to www
+
+RENAME THE FILES TO TWO-DIGIT FORMAT:
+
+sudo mv Swissprot.000.phr swissprot.00.phr
+sudo mv Swissprot.000.pin swissprot.00.pin
+sudo mv Swissprot.000.pnd swissprot.00.pnd
+sudo mv Swissprot.000.pni swissprot.00.pni
+sudo mv Swissprot.000.psd swissprot.00.psd
+sudo mv Swissprot.000.psi swissprot.00.psi
+sudo mv Swissprot.000.psq swissprot.00.psq
+sudo mv Swissprot.001.phr swissprot.01.phr
+sudo mv Swissprot.001.pin swissprot.01.pin
+sudo mv Swissprot.001.pnd swissprot.01.pnd
+sudo mv Swissprot.001.pni swissprot.01.pni
+sudo mv Swissprot.001.psd swissprot.01.psd
+sudo mv Swissprot.001.psi swissprot.01.psi
+sudo mv Swissprot.001.psq swissprot.01.psq
+sudo mv Swissprot.002.phr swissprot.02.phr
+sudo mv Swissprot.002.pin swissprot.02.pin
+sudo mv Swissprot.002.pnd swissprot.02.pnd
+sudo mv Swissprot.002.pni swissprot.02.pni
+sudo mv Swissprot.002.psd swissprot.02.psd
+sudo mv Swissprot.002.psi swissprot.02.psi
+sudo mv Swissprot.002.psq swissprot.02.psq
+
+
+(Btformatdb is a wrapper around NCBI's 'mpiformatdb'. It automatically splits the BLAST target into volumes 
+so that parallel BLAST implementations such as btblastall can operate on several portions of the target at once.)
+    
+NB: THIS ONLY CREATES A SINGLE DATABASE, WHICH blastall DOES NOT FIND:
+
+formatdb -i Swissprot -p T -o T             # format as protein, with indexes
+ 
+
+2. REGISTER WITH Pise WEB INTERFACE:
+
+The dropdown menus for BLAST targets are dynamically generated based on the 
+contents of BLASTDB.  Adding BLAST targets simply requires that correctly formatted 
+BLAST databases be placed in BLASTDB.  Inquiry provides the tools btformatdb and 
+indexblastdatasets to simplify this process. 
+
+Re-format all targets:
+
+sudo indexblastdatasets 
+ 
+Indexblastdatasets is a wrapper around btblastall.  For each file in BLASTDB, it checks to 
+see if it is a FASTA formatted dataset.  If it is, indexblastdatasets invokes btformatdb on it. 
+ 
+To use the tool, run:
+
+indexblastdatasets --format 
+ 

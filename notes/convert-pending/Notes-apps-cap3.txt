@@ -1,0 +1,2132 @@
+
+</entry>
+
+
+
+<entry [Thu May 17 13:16:23 EDT 2007] CREATED arraycompare.fixnumberreads.pl TO FIX ALREADY DONE COMPARISONS>
+
+
+
+
+	NAME
+
+	   arraycompare.fixnumberreads.pl
+
+	PURPOSE
+   
+		1. CORRECT OMISSION OF querynumberreads AND targetnumberreads FIELDS
+		
+			IN compare_<target> TABLE
+
+    INPUT
+		
+		1. compare_<target>	TABLE
+			
+    OUTPUT
+    
+		1. .TSV FILE CONFORMING TO FIELDS IN compare_<target> TABLE
+		
+			WITH POPULATED querynumberreads AND targetnumberreads 
+
+	USAGE
+
+		./arraycompare.fixnumberreads.pl <-d database> <-t target> [-h]
+
+
+        -d database             : name of source database
+        -t target               : name of target database
+        -h                      : print this 'help' message
+
+    <required argument>
+    [optional argument]
+
+	EXAMPLES
+	
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p95_o100 -t karenia3_p90_o100
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p95_o100 -t karenia3_p75_o100
+
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p90_o100 -t karenia3_p95_o100
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p90_o100 -t karenia3_p75_o100
+
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p75_o100 -t karenia3_p90_o100
+sudo ./arraycompare.fixnumberreads.pl -d karenia3_p75_o100 -t karenia3_p95_o100
+
+
+</entry>
+
+
+
+<entry [Thu May 10 12:57:46 EDT 2007] CREATED assemblyengine.pl TO DO THE BASIC ASSEMBLY FROM START TO FINISH>
+
+
+
+./assemblyengine.pl <-d database> [-s stage] [-h]
+
+E.G.:
+
+./assemblyengine.pl -d karenia3_p75_o100 -s 4
+
+./assemblyengine.pl -d karenia3_p75_o100 -s 4
+
+
+</entry>
+
+
+
+<entry [Thu May 10 03:06:14 EDT 2007] CREATED arraycompareengine.pl TO RUN arraycompare.pl ON THE CLUSTER>
+
+
+
+sudo ./arraycompareengine.pl -d karenia3_p75_o100 -t karenia3_p90_o100
+sudo ./arraycompareengine.pl -d karenia3_p75_o100 -t karenia3_p95_o100
+
+sudo ./arraycompareengine.pl -d karenia3_p90_o100 -t karenia3_p75_o100
+sudo ./arraycompareengine.pl -d karenia3_p90_o100 -t karenia3_p95_o100
+
+sudo ./arraycompareengine.pl -d karenia3_p95_o100 -t karenia3_p75_o100
+sudo ./arraycompareengine.pl -d karenia3_p95_o100 -t karenia3_p90_o100
+
+
+/common/pipeline/karenia3_p75_o100/collection/arraycompareengine.d-karenia3_p75_o100.t-karenia3_p95_o100.sh
+
+RUN TIME: 04:06:30
+Completed ./arraycompareengine.pl
+7:15AM, 10 May 2007
+****************************************
+
+/common/pipeline/karenia3_p75_o100/collection/arraycompareengine.d-karenia3_p75_o100.t-karenia3_p95_o100.sh
+
+RUN TIME: 04:06:30
+Completed ./arraycompareengine.pl
+7:15AM, 10 May 2007
+****************************************
+
+
+/common/pipeline/karenia3_p90_o100/collection/arraycompareengine.d-karenia3_p90_o100.t-karenia3_p75_o100.sh
+
+RUN TIME: 00:07:26
+Completed ./arraycompareengine.pl
+3:19AM, 10 May 2007
+****************************************
+
+/common/pipeline/karenia3_p90_o100/collection/arraycompareengine.d-karenia3_p90_o100.t-karenia3_p95_o100.sh
+
+RUN TIME: 06:47:43
+Completed ./arraycompareengine.pl
+9:59AM, 10 May 2007
+****************************************
+
+/common/pipeline/karenia3_p95_o100/collection/arraycompareengine.d-karenia3_p95_o100.t-karenia3_p75_o100.sh
+
+RUN TIME: 02:40:55
+Completed ./arraycompareengine.pl
+5:53AM, 10 May 2007
+****************************************
+
+
+/common/pipeline/karenia3_p95_o100/collection/arraycompareengine.d-karenia3_p95_o100.t-karenia3_p90_o100.sh
+
+RUN TIME: 00:04:53
+Completed ./arraycompareengine.pl
+3:26AM, 10 May 2007
+****************************************
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed May  9 16:12:20 EDT 2007] MSG: Tim, Doug>
+
+
+SUBJECT: MISSING READS
+
+Hi Tim and Doug,
+
+You can get read sequence and other information using the Search function of sandbox16:
+
+http://genomics.rsmas.miami.edu/sandbox16/sandbox16.html
+
+Search --> Simple Search --> SELECT 'Read' in scrollbox
+
+Just to recap, the reason why some reads didn't show up earlier was mainly because they were transitive reads:
+
+PROBLEM:
+=======
+MISSING READS IN p90 (PRESENT IN p95)
+
+E.G.: p95 queryid=3666 IS A SINGLET WITH READ 505-019-C09, WHICH IS  NOT FOUND IN p90
+
+DIAGNOSIS:
+========
+
+505-019-C09 IS A SINGLET IN p95 BUT, IN p90 IT IS INCORPORATED INTO A CONTIG AND
+THEN IGNORED (NOT ENTERED INTO THE TABLE OF READS IN THE DATABASE) BECAUSE IT IS A TRANSITIVE READ (SAME FOR THE EXAMPLES BELOW)
+
+p95 queryid=6
+500-001-G02, 501-003-F08
+
+p95 queryid=105
+
+
+one (530-059-D06) has a match in p90 cluster #883
+the other 2 sequences (501-011-D10, 530-006-H04) do have matches anywhere in the p90 output
+
+
+530-059-D06 IS FOUND IN p90 Contig907
+
+501-011-D10 IS FOUND IN p90 Contig907 AND IS TRANSITIVE
+
+530-006-H04 IS FOUND IN p90 contig1740 AND IS NOT TRANSITIVE
+
+
+530-059-D06 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+501-011-D10 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+530-006-H04 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+
+SOLUTION:
+=======
+
+INCLUDE ALL TRANSITIVE READS IN THE DATABASE.
+
+
+
+ From:  Tim McLean (tmclean@rsmas.miami.edu)
+Sent: Mon 5/07/07 10:26 PM
+To: stuart young (youngstuart@hotmail.com)
+Cc: Douglas L.Crawford (dcrawford@rsmas.miami.edu)
+   
+Stuart,
+
+I don't know how extensive the problem is--I found these examples just be randomly choosing clusters and comparing the outputs between the datasets.
+
+queryid=3666
+the p95 sequences do not match anything in the p90 clusters, I can't 505-019-C09 (the p95 sequence for this id) anywhere in the p90 output.
+
+queryid=6
+the same as above, but neither of the two p95 sequences (500-001-G02, 501-003-F08) for this cluster are in the p90 output.
+
+queryid=105
+this cluster has 3 sequences, one (530-059-D06) has a match in p90 cluster #883, but the other 2 sequences (501-011-D10, 530-006-H04) do have matches anywhere in the p90 output.
+
+There are probably more examples.
+
+Tim
+
+
+
+    From: youngstuart@hotmail.com
+    To: tmclean@rsmas.miami.edu
+    CC: dcrawford@rsmas.miami.edu
+    Subject: RE: Compare
+    Date: Mon, 7 May 2007 21:35:46 +0000
+
+    Hi Tim,
+
+    Could you give me the sequence numbers for those in the p95 assembly that don't have matches in the p90 assembly?
+
+    Cheers,
+
+    Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Tue May  8 16:42:55 EDT 2007] REDO assemblyreads AND assemblysequences TO INCLUDE ALL TRANSITIVE READS>
+
+
+
+
+sudo ./arrayassemblyreadsassemblysequences.pl -d karenia3_p75_o100
+sudo ./arrayassemblyreadsassemblysequences.pl -d karenia3_p90_o100
+sudo ./arrayassemblyreadsassemblysequences.pl -d karenia3_p95_o100
+
+
+</entry>
+
+
+
+<entry [Tue May  8 16:42:55 EDT 2007] MISSING READS IN p90 (PRESENT IN p95)>
+
+
+
+E.G.:
+
+p95 queryid=3666
+505-019-C09
+
+SOLUTION:
+
+505-019-C09 IS A SINGLET IN p95 BUT IS INCORPORATED INTO A CONTIG IN p90 AND
+IGNORED BECAUSE IT IS A TRANSITIVE READ (SAME FOR THE EXAMPLES BELOW)
+
+p95 queryid=6
+500-001-G02, 501-003-F08
+
+p95 queryid=105
+
+
+one (530-059-D06) has a match in p90 cluster #883
+the other 2 sequences (501-011-D10, 530-006-H04) do have matches anywhere in the p90 output
+
+
+530-059-D06 IS FOUND IN p90 Contig907 
+
+501-011-D10 IS FOUND IN p90 Contig907 AND IS TRANSITIVE
+
+530-006-H04 IS FOUND IN p90 contig1740 AND IS NOT TRANSITIVE
+
+
+530-059-D06 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+501-011-D10 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+530-006-H04 IS FOUND IN p95 Contig108 AND IS NOT TRANSITIVE
+
+
+
+
+
+ From:  Tim McLean (tmclean@rsmas.miami.edu)
+Sent: Mon 5/07/07 10:26 PM
+To: stuart young (youngstuart@hotmail.com)
+Cc: Douglas L.Crawford (dcrawford@rsmas.miami.edu)
+	
+Stuart,
+
+I don't know how extensive the problem is--I found these examples just be randomly choosing clusters and comparing the outputs between the datasets.
+
+queryid=3666
+the p95 sequences do not match anything in the p90 clusters, I can't 505-019-C09 (the p95 sequence for this id) anywhere in the p90 output.
+
+queryid=6
+the same as above, but neither of the two p95 sequences (500-001-G02, 501-003-F08) for this cluster are in the p90 output.
+
+queryid=105
+this cluster has 3 sequences, one (530-059-D06) has a match in p90 cluster #883, but the other 2 sequences (501-011-D10, 530-006-H04) do have matches anywhere in the p90 output.
+
+There are probably more examples.
+
+Tim
+
+
+
+On May 7, 2007, at 5:35 PM, stuart young wrote:
+
+Hi Tim,
+
+Could you give me the sequence numbers for those in the p95 assembly that don't have matches in the p90 assembly?
+
+Cheers,
+
+Stuart.
+
+CC: dcrawford@rsmas.miami.edu
+From: tmclean@rsmas.miami.edu
+Subject: Re: Compare
+Date: Mon, 7 May 2007 13:13:22 -0400
+To: youngstuart@hotmail.com
+
+Stuart,
+
+The output is better (i.e. some sequences do match between the two data sets), but the problem is not completely resolved.  There still exist some sequences in the p95 clusters that do not have matches in the p90 output.   The two datasets should have the same sequences but in different clusters, right? Some sequences in the p95 output do not appear in the p90 output, probably vice versa, but I haven't checked yet.
+
+Tim
+
+
+On May 7, 2007, at 12:28 PM, stuart young wrote:
+
+Hi Tim and Doug,
+
+I've fixed the .TSV output - it was returning the readnames corresponding to the target collection id but from the query collection rather than the readnames for the target collection.
+
+For the example we looked at, the new output is:
+
+query    queryid    queryannotation    querynumberreads    queryreadnames    target    targetreadnames    querylength    targetlength    queryhitstart    queryhitstop    targethitstart    targethitstop    matchlength    totalidentity    queryidentity    targetidentity    hitevaluedec    hitevalueexp    score
+karenia3_p95_o100    2212        2    530-070-D08;530-081-E04    karenia3_p90_o100    505-031-C04;529-005-A09;529-007-B03;530-004-C11;530-004-D02;530-008-B12;530-008-F08;530-013-B08;530-015-G02;530-027-G11;530-029-F06;530-030-A11;530-033-C02;530-037-H03;530-039-B04;530-042-C10;530-045-E03;530-051-E06;530-059-G08;530-070-D08;530-071-C06;530-081-E04;530-082-C04;530-084-H07    240    449    1    240    2    240    239    100    100    100    1.34    -121    217
+karenia3_p95_o100    2212        2    530-070-D08;530-081-E04    karenia3_p90_o100    530-002-G02    240    248    1    238    10    248    237    94.2    95    95    3.5    -88    161
+karenia3_p95_o100    2212        2    530-070-D08;530-081-E04    karenia3_p90_o100    530-011-E12;530-027-H12    240    218    17    217    15    215    200    83.75    100    100    4.73    -112    201
+karenia3_p95_o100    2212        2    530-070-D08;530-081-E04    karenia3_p90_o100    530-057-G08    240    171    17    176    12    171    159    66.66    100    100    1.24    -78    145
+
+Hopefully that should make more sense.
+
+Cheers,
+
+Stuart.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu May  3 18:18:57 EDT 2007] MSG: DOUG,TIM>
+
+
+SBJT: FINISHED KARENIA3 (p75, p90, p95) COMPARISON
+
+Hi Doug and Tim,
+
+The comparisons are finished and viewable on sandbox15:
+
+http://genomics.rsmas.miami.edu/sandbox15/sandbox15.html
+
+I've named the new databases as follows:
+
+karenia3_p75_o100 
+karenia3_p90_o100 
+karenia3_p95_o100 
+
+You can view the comparisons here:
+
+View --> Comparison
+
+Stuart.
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 30 14:23:59 EDT 2007] KARENIA 5, 6 AND 7>
+
+
+
+karenia5	karenia3_p75_o100 
+karenia6	karenia3_p90_o100 
+karenia7	karenia3_p95_o100 
+
+5. CREATE .FASTA FILES AND FORMAT FOR BLAST
+===========================================
+
+sudo ./cap3engine.pl -d karenia3 -p collectionsequencesfasta.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+
+6. DO COMPARISON BLASTS
+=======================
+
+sudo ./cap3engine.pl -d karenia3 -p collectionarrayblast.pl -a p -r 75-100 -n 6 -x "-o 100" -t
+sudo ./collectionarrayblast.pl -d karenia3_p75_o100 -t karenia3_p90_o100,karenia3_p95_o100 
+sudo ./collectionarrayblast.pl -d karenia3_p90_o100 -t karenia3_p75_o100,karenia3_p95_o100 
+sudo ./collectionarrayblast.pl -d karenia3_p95_o100 -t karenia3_p90_o100,karenia3_p75_o100 
+
+7. LOAD COMPARISION BLASTS
+==========================
+
+sudo ./cap3engine.pl -d karenia3 -p collectionblastloaddata.pl -a p -r 75-100 -n 6 -x "-o 100" -t
+sudo ./collectionblastloaddata.pl -d karenia3_p75_o100 -t karenia3_p90_o100,karenia3_p95_o100 
+sudo ./collectionblastloaddata.pl -d karenia3_p90_o100 -t karenia3_p75_o100,karenia3_p95_o100 
+sudo ./collectionblastloaddata.pl -d karenia3_p95_o100 -t karenia3_p90_o100,karenia3_p75_o100 
+
+
+9. DO COMPARISON WITH compare.pl
+================================
+
+# sudo ./cap3engine.pl -d karenia3_p -p arraycompare.pl -a p -r 75-100 -n 6 -x "-o 100" -t
+
+sudo ./arraycompare.pl -d karenia3_p75_o100 -t karenia3_p90_o100
+
+
+Deleting from table 'compare_karenia3_p90_o100'... done.
+Loading data into table 'compare_karenia3_p90_o100'... done.
+Completed ./arraycompare.pl
+Run time: 03:32:03
+3:47PM, 1 May 2007
+
+
+sudo ./arraycompare.pl -d karenia3_p75_o100 -t karenia3_p95_o100 
+
+
+
+sudo ./arraycompare.pl -d karenia3_p90_o100 -t karenia3_p75_o100
+
+Comparing sequences from 'karenia3_p90_o100' (total 7266) with 'karenia3_p95_o100'...
+...
+7240
+7250
+7260
+Output file printed:
+
+/common/pipeline/karenia3_p90_o100/blast/compare.karenia3_p90_o100-karenia3_p75_o100.tsv
+
+Deleting from table 'compare_karenia3_p75_o100'... done.
+Loading data into table 'compare_karenia3_p75_o100'... done.
+Completed ./arraycompare.pl
+Run time: 02:36:42
+11:17PM, 1 May 2007
+
+
+
+sudo ./arraycompare.pl -d karenia3_p90_o100 -t karenia3_p95_o100
+
+7260
+Output file printed:
+
+/common/pipeline/karenia3_p90_o100/blast/compare.karenia3_p90_o100-karenia3_p95_o100.tsv
+
+Deleting from table 'compare_karenia3_p95_o100'... done.
+Loading data into table 'compare_karenia3_p95_o100'... done.
+Completed ./arraycompare.pl
+Run time: 07:48:59
+5:52PM, 2 May 2007
+****************************************
+
+
+************************
+
+sudo ./arraycompare.pl -d karenia3_p95_o100 -t karenia3_p75_o100 
+Comparing sequences from 'karenia3_p95_o100' (total 9249) with 'karenia3_p75_o100'...
+...
+9220
+9230
+9240
+Output file printed:
+
+/common/pipeline/karenia3_p95_o100/blast/compare.karenia3_p95_o100-karenia3_p75_o100.tsv
+
+Deleting from table 'compare_karenia3_p75_o100'... done.
+Loading data into table 'compare_karenia3_p75_o100'... done.
+Completed ./arraycompare.pl
+Run time: 03:01:43
+9:01PM, 2 May 2007
+****************************************
+
+sudo ./arraycompare.pl -d karenia3_p95_o100 -t karenia3_p90_o100
+
+9230
+9240
+Output file printed:
+
+/common/pipeline/karenia3_p95_o100/blast/compare.karenia3_p95_o100-karenia3_p90_o100.tsv
+
+Deleting from table 'compare_karenia3_p90_o100'... done.
+Loading data into table 'compare_karenia3_p90_o100'... done.
+Completed ./arraycompare.pl
+Run time: 06:20:00
+3:41AM, 3 May 2007
+****************************************
+
+10. DO ALIGNMENTS WITH collectionsequencesalignment.pl
+=====================================================
+
+sudo ./cap3engine.pl -d karenia3 -p arraycollectionsequencesalignment.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+
+11. POPULATE reads AND screenedreads TABLES
+===========================================
+
+sudo ./cap3engine.pl -d karenia3 -p karenia3reads.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+
+12. DO ANNOTATION BLASTS
+========================
+
+sudo ./cap3engine.pl -d karenia3 -p collectionarrayblast.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p collectionblastloaddata.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+
+13. POPULATE collectionsequencesdiv, collectionsequencesannotation AND collectionsequencesblastdiv TABLES
+=========================================================================================================
+
+sudo ./cap3engine.pl -d karenia3 -p collectionsequencesannotation.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p collectionsequencesblastdiv.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p collectionsequencesdiv.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+./collectionsequencesdiv.pl -d karenia3_p75_o100
+./collectionsequencesdiv.pl -d karenia3_p90_o100
+./collectionsequencesdiv.pl -d karenia3_p95_o100
+
+
+============================
+
+cd /Users/young/FUNNYBASE/bin/cap3
+sudo ./cap3engine.pl -d karenia3 -p assemblysequencesqualitybargraphengine.pl -a p -r 75-100 -n 6 -x "-o 100"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 30 14:23:10 EDT 2007] KARENIA 5, 6 AND 7 PARAMETERS>
+
+
+
+From : 	Douglas Crawford <dcrawford@rsmas.miami.edu>
+Sent : 	Monday, April 30, 2007 5:50 PM
+To : 	Tim McLean <tmclean@rsmas.miami.edu>
+CC : 	"stuart young" <youngstuart@hotmail.com>
+Subject : 	Re: CAP3 update - 7. Karenia3 overlap percent identity vs overlap length
+	
+	
+Go to previous message	|	Go to next message	|	Delete	|	Inbox
+Stuart & Tim
+
+p75_o100, 
+** p90_o100, 
+** p95_o100, 
+
+the most important comparisons are among contigs.  
+Every contig will have a low e-score from its component parts (the DNA sequence reads).
+What we need to know is which contigs match which contig when cluster using different parameters.
+
+Thus p95 and p90 (w/ o= 100) have similar number of contigs (2280 vs 2532), but 90 has 2,300 fewer singletons.
+
+What we need to find out is the contig in 90 that do not exist in 95,
+                                                  whether 90 has the same contigs with more reads.
+
+THEN Tim will manually examine the unique 90 contigs and ask if the alignment makes sense
+             Tim will manually examine contigs that have different number of reads and see if the alignment make sense.  
+
+So,
+  Blast 90 CONTIGS against  95 CONTIGS,  then provide all hits that have low e values ( < 10**-30 ???),  the number of contigs for 90 and for all its matches.
+repeat for 95 CONTIGS  vs 90 CONTIGS.
+
+Tim will manually look through 90 or 95 with out matches.
+ Tim will manually look at contigs with different number of reads (or the top 100 with the largest differences in # of contigs).
+
+OK?
+
+dlc 
+*****-----********------------**************---*******
+Douglas L. Crawford
+Director Marine Genomics
+Rosenstiel School of Marine 
+      and  Atmospheric Sciences
+University of Miami
+4600 Rickenbacker Cswy
+Miami, FL 33149
+
+305-421-4121
+http://crawford.rsmas.miami.edu/
+http://genomics.rsmas.miami.edu/funnybase/super_craw4/
+
+
+
+On Apr 30, 2007, at 1:17 PM, Tim McLean wrote:
+
+    Stuart,
+
+    Thanks for the info.  Doug and I talked about the data earlier today, and we agreed that we should now focus on the three following parameter sets:
+
+    p75_o100, p90_o100, and p95_o100, with the last two being the most likely useful.
+
+    Can you now run karenia3 using each of the three parameter sets and keep the data output (karenia5, 6, and 7?)?
+    Then run a blast/comparison between each data set?  We want to find which clusters change as a function of the parameters, specifically what is the size and composition of each cluster in each database and are they the same or different between the databases.   We will have to figure out from those comparisons which dataset to ultimately use to pick genes for printing.
+
+    Thanks,
+    Tim
+
+    On Apr 25, 2007, at 1:24 AM, stuart young wrote:
+
+        Hi Doug and Tim,
+
+        Here are the numbers of contigs and singlets for the karenia3 (all reads) permutation assemblies of overlap percent identity vs overlap length:
+
+        database file_contigs file_singlets database_contigs database_singlets
+        karenia3_p75_o25 2638 5364 2533 3156
+        karenia3_p80_o25 2651 5751 2557 3374
+        karenia3_p85_o25 2645 6690 2542 3934
+        karenia3_p90_o25 2668 8474 2587 5115
+        karenia3_p95_o25 2328 12033 2273 7830
+        karenia3_p100_o25 0 22351 0 17160
+
+        karenia3_p75_o50 2624 5688 2525 3249
+        karenia3_p80_o50 2638 6078 2545 3471
+        karenia3_p85_o50 2627 7007 2531 4036
+        karenia3_p90_o50 2631 8753 2561 5197
+        karenia3_p95_o50 2297 12191 2257 7841
+        karenia3_p100_o50 0 22351 0 17160
+
+        karenia3_p75_o75 2635 5993 2540 3381
+        karenia3_p80_o75 2644 6368 2559 3604
+        karenia3_p85_o75 2638 7258 2547 4130
+        karenia3_p90_o75 2627 8922 2561 5242
+        karenia3_p95_o75 2298 12198 2262 7783
+        karenia3_p100_o75 0 22351 0 17160
+
+        karenia3_p75_o100 2689 6251 2600 3404
+        karenia3_p80_o100 2678 6606 2593 3608
+        karenia3_p85_o100 2662 7483 2576 4137
+        karenia3_p90_o100 2602 9103 2532 5249
+        karenia3_p95_o100 2313 11938 2280 7505
+        karenia3_p100_o100 0 22351 0 17160
+
+        NB: file_contigs = contigs in output .contigs file
+             database_contigs = contigs that pass the default 50bp trimmed length filter
+
+
+        Cheers,
+
+        Stuart.
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 25 17:23:34 EDT 2007] N-FOLD ASSEMBLIES>
+
+
+
+CREATED arraycap3nfold.pl
+
+NAME		arraycap3nfold.pl
+
+PURPOSE
+
+	DO N-FOLD ASSEMBLIES USING ALL 	N(N - 1) / 2 COMBINATIONS OF SEQUENTIAL
+	SUBASSEMBLIES. E.G., DIVIDE INTO READS GROUPS 1, 2 AND 3, THEN DO THE
+	FOLLOWING ASSEMBLIES:
+	
+	    - 1, 2, 3
+		- 1, 3, 2
+		- 3, 2, 1
+		- 3, 1, 2
+		- 2, 3, 1
+		- 2, 1, 3
+
+	IN EACH CASE, THE READS ARE ADDED TO THE SINGLETS AND CONTIGS FROM THE
+	PREVIOUS ASSEMBLY (NONE IN THE FIRST ASSEMBLY) AND REASSEMBLED USING THE
+	SAME CAP3 PARAMETERS EACH TIME.
+
+INPUT
+	
+	1. READ SEQUENCE .phd FILES
+	
+	2. USER-DEFINED N-FOLD VALUE (DEFAULT = 3-FOLD)
+	
+OUTPUT
+
+	1. collectionsequence DATABASES FOR ALL INTERVENING SUBASSEMBLIES AND
+		THE FINAL ASSEMBLY
+
+	2. 
+ 
+
+
+</entry>
+
+
+
+<entry [Tue Apr 24 14:03:56 EDT 2007] CLEAR UP DIRECTORY AND ASSEMBLY FILE NAMES>
+
+
+
+
+MOVE o50 FILES TO CORRECT NAME:
+
+
+sudo rename karenia3_p80_o100/edit_dir s/.o.100/_o100/
+ls karenia3_p80_o100/edit_dir
+
+sudo rename karenia3_p85_o100/edit_dir s/.o.100/_o100/
+ls karenia3_p85_o100/edit_dir
+ls karenia3_p85_o0
+sudo mv karenia3_p85_o0 karenia3_p85_o50
+sudo rename karenia3_p85_o50/edit_dir s/.o.50/_o50/
+ls karenia3_p85_o50/edit_dir
+sudo mv karenia3_p85_o5 karenia3_p85_o25
+ls karenia3_p85_o25/edit_dir
+sudo rename karenia3_p85_o25/edit_dir s/.o.25/_o25/
+ls karenia3_p85_o25/edit_dir 
+
+ls karenia3_p90_o100/edit_dir
+sudo rm karenia3_p90_o100
+
+sudo rename karenia3_p90_o100/edit_dir s/.o.100/_o100/
+ll karenia3_p90_o100/edit_dir
+ll karenia3_p90_o0/edit_dir
+sudo mv karenia3_p90_o0 karenia3_p90_o50
+sudo rename karenia3_p90_o50/edit_dir s/.o.50/_o50/
+ll karenia3_p90_o50/edit_dir
+sudo mv karenia3_p90_o5 karenia3_p90_o25
+ll karenia3_p90_o25/edit_dir
+
+
+ls karenia3_p95_o100/edit_dir
+sudo rm karenia3_p95_o100
+sudo rename karenia3_p95_o100/edit_dir s/.o.100/_o100/
+ll karenia3_p95_o100/edit_dir
+
+
+ll karenia3_p95_o0/edit_dir
+sudo mv karenia3_p95_o0 karenia3_p95_o50
+sudo rename karenia3_p95_o50/edit_dir s/.o.50/_o50/
+ll karenia3_p95_o50/edit_dir
+
+sudo mv karenia3_p95_o5 karenia3_p95_o25
+ll karenia3_p95_o25/edit_dir
+
+ls karenia3_p*/edit_dir
+
+
+</entry>
+
+
+
+<entry [Mon Apr 23 17:25:21 EDT 2007] RUN 6 X 4 COMBINATION:>
+
+
+
+	overlap length (-o)		25,50,75,100
+	
+	percent identity (-p)	75,80,85,90,95,100
+
+
+DO KARENIA 4:
+
+cd /Users/local/FUNNYBASE/bin/cap3
+sudo ./arraycap3assembly.pl -d karenia4 -a p -r 75-100 -n 6 -x "-o 25"
+sudo ./arraycap3assembly.pl -d karenia4 -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./arraycap3assembly.pl -d karenia4 -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./arraycap3assembly.pl -d karenia4 -a p -r 75-100 -n 6 -x "-o 100"
+
+>>>...
+Output file: /common/pipeline/karenia4_p75.o.75/edit_dir/karenia4_p75.o.75.fasta.1.cap.out
+Output file: /common/pipeline/karenia4_p80.o.75/edit_dir/karenia4_p80.o.75.fasta.2.cap.out
+Output file: /common/pipeline/karenia4_p85.o.75/edit_dir/karenia4_p85.o.75.fasta.3.cap.out
+Output file: /common/pipeline/karenia4_p90.o.75/edit_dir/karenia4_p90.o.75.fasta.4.cap.out
+Output file: /common/pipeline/karenia4_p95.o.75/edit_dir/karenia4_p95.o.75.fasta.5.cap.out
+Output file: /common/pipeline/karenia4_p100.o.75/edit_dir/karenia4_p100.o.75.fasta.6.cap.out
+
+RUN TIME: 00:05:27
+Completed ./arraycap3assembly.pl
+11:25PM, 23 April 2007
+****************************************
+<<<
+
+DO KARENIA 3:
+
+1. DO cap3 ASSEMBLY
+===================
+ON gems:
+
+cd /Users/local/FUNNYBASE/bin/cap3
+
+sudo ./arraycap3assembly.pl -d karenia3 -a p -r 75-100 -n 6 -x "-o 25"
+sudo ./arraycap3assembly.pl -d karenia3 -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./arraycap3assembly.pl -d karenia3 -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./arraycap3assembly.pl -d karenia3 -a p -r 75-100 -n 6 -x "-o 100"
+
+
+RUN TIME: 02:52:39
+Completed ./arraycap3assembly.pl
+2:21AM, 24 April 2007
+****************************************
+
+
+2. CREATE SINGLETS FASTAFILE
+============================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia3 -p arraysingletsqualfile.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./arraycap3engine.pl -d karenia3 -p arraysingletsqualfile.pl -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./arraycap3engine.pl -d karenia3 -p arraysingletsqualfile.pl -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./arraycap3engine.pl -d karenia3 -p arraysingletsqualfile.pl -a p -r 75-100 -n 6 -x "-o 25"
+
+RUN TIME: 00:01:06
+Completed ./arraycap3engine.pl
+11:13AM, 24 April 2007
+****************************************
+
+3. DO assemblyreads AND assemblysequences .TSV FILES
+====================================================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequences.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./arraycap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequences.pl -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./arraycap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequences.pl -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./arraycap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequences.pl -a p -r 75-100 -n 6 -x "-o 25"
+
+
+RUN TIME: 00:05:21
+Completed ./arraycap3engine.pl
+6:10PM, 24 April 2007
+****************************************
+
+
+4. CREATE DATABASE TABLES
+=========================
+
+sudo ./cap3engine.pl -d karenia3 -p create_database.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p create_database.pl -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./cap3engine.pl -d karenia3 -p create_database.pl -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./cap3engine.pl -d karenia3 -p create_database.pl -a p -r 75-100 -n 6 -x "-o 25"
+
+RUN TIME: 00:00:04
+Completed ./cap3engine.pl
+6:25PM, 24 April 2007
+****************************************
+
+4. LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES
+==================================================================
+ON genomics:
+
+cd /Users/young/FUNNYBASE/bin/cap3
+sudo ./cap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequencesloaddata.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequencesloaddata.pl -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./cap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequencesloaddata.pl -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./cap3engine.pl -d karenia3 -p arrayassemblyreadsassemblysequencesloaddata.pl -a p -r 75-100 -n 6 -x "-o 25"
+
+RUN TIME: 00:00:38
+Completed ./cap3engine.pl
+6:27PM, 24 April 2007
+****************************************
+
+
+4. POPULATE collectionsequences TABLE
+==================================================================
+ON genomics:
+
+sudo ./cap3engine.pl -d karenia3 -p arraycollectionsequences.pl -a p -r 75-100 -n 6 -x "-o 100"
+sudo ./cap3engine.pl -d karenia3 -p arraycollectionsequences.pl -a p -r 75-100 -n 6 -x "-o 75"
+sudo ./cap3engine.pl -d karenia3 -p arraycollectionsequences.pl -a p -r 75-100 -n 6 -x "-o 50"
+sudo ./cap3engine.pl -d karenia3 -p arraycollectionsequences.pl -a p -r 75-100 -n 6 -x "-o 25"
+
+RUN TIME: 00:01:05
+Completed ./cap3engine.pl
+6:29PM, 24 April 2007
+****************************************
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 23 17:12:40 EDT 2007] REFACTORED arraycap3assembly.pl AND arraycap3engine.pl BY ADDING -x ARGUMENT>
+
+
+
+	-x   extra_options
+	
+EXAMPLE
+
+cd /Users/local/FUNNYBASE/bin/cap3
+sudo ./arraycap3assembly.pl -d karenia4 -a o -r 21-50 -n 10 -x "-p 80"
+
+THIS RUNS THE ASSEMBLY WITH PARAMETER -o ACROSS THE RANGE OF 21 TO 50 AND
+PARAMETER -p SET AT A CONSTANT 80
+	
+
+</entry>
+
+
+
+<entry [Sun Apr 22 21:26:01 EDT 2007] MSG: Doug>
+
+
+CC: Margie
+
+Hi Doug,
+
+Here's a summary of the last week and my plan for the week of Mon 23rd April:
+
+Karenia database summary
+++++++++++++++++++++++++
+
+Karenia4
+
+- 600 sequences from Karenia3
+
+Karenia3
+
+- All karenia sequences as in karenia2, but also contains an extra read filtering
+step to remove suspected vector sequence.
+
+- Added two pSMART vector sequences from Tim (his own and the company's version)
+
+Karenia2
+
+All karenia sequences, default CAP3 settings.
+
+
+TASKS COMPLETED:
+++++++++++++++++
+
+Cap3 analysis
+=============
+
+CAP3 PARAMETER ANALYSIS 1
+
+
+    -p  N  specify overlap percent identity cutoff N > 65 (75)
+
+    RANGE TESTED:  66-100
+
+
+CAP3 PARAMETER ANALYSIS 2
+
+    -s  N  specify overlap similarity score  cutoff  N  >  100  (500)
+
+    RANGE TESTED:  101-1000
+
+
+CAP3 PARAMETER ANALYSIS 3
+
+   -o  N  specify overlap length cutoff > 20 (30)
+    
+    RANGE TESTED: 21-50
+    
+
+
+Cap3 alignment display
+======================
+
+CREATED collectionsequencesalignment.pl AND arraycollectionsequencesalignment.pl
+
+	NAME: collectionsequencesalignment.pl
+
+	PURPOSE: PARSE SEQUENCE-READS ALIGNMENT FROM .cap.out FILE
+	
+
+Comparison View
+===============
+
+- Added the CAP3 parameter experiments to the 'Comparison' view of sandbox:
+
+http://genomics.rsmas.miami.edu/sandbox15/sandbox15.html
+File --> Open --> Database --> CAP3 --> choose parameter experiment
+View --> Comparison
+
+
+- NEW FUNCTION: Select for comparison by sequence number.
+
+
+Quality distribution
+====================
+
+- Did quality distribution for assembly sequences (contigs and singlets)
+for all CAP3 parameter experiments
+
+http://genomics.rsmas.miami.edu/sandbox15/sandbox15.html
+File --> Open --> Database --> CAP3 --> choose parameter experiment
+View --> Quality cutoff
+
+
+Sequence search
+===============
+
+- Added all CAP3 experiments:
+
+    - sequence quality display
+    - BLAST hits display
+    - alignment view (see above)
+    - sequence + read download
+
+
+http://genomics.rsmas.miami.edu/sandbox15/sandbox15.html
+File --> Open --> Database --> CAP3 --> choose parameter experiment
+Search --> Simple Search / Advanced Search
+
+
+Plan for the week ahead
++++++++++++++++++++++++
+
+1. Thesis research
+
+    DONE: Grouping of iprscan results by annotation (to produce a single annotation)
+
+    ONGOING: Grouping of motifs by position
+
+    TO DO: Run Decision Trees and Naive Bayes classifiers using orthologues data
+
+2. dbEST submission
+
+    - Do you want to submit them? Only experiment 130 is missing the 'Library' description. Apart from that, expts 126, 151-158 are ready to submit. 
+
+3. Funnybase website
+
+    TO DO: Database stats, snp stats, uploads
+    TO DO: Bios for Doug, Margie, Amy, Jeff, Dean, Meredith, Stuart, Tim 
+
+4. Pathways annotation
+    
+    95% DONE: Pathway annotation (by building synonym tables) using fuzzy matches of GO descriptions with swissprot annotations 
+
+5. Annotation
+
+   DONE: Refactor 'collectionsequencesannotation.pl' to include
+          - BLAST hits
+          - IPRSCAN hits
+
+   TO DO: Create 'collectionsequencessvg.pl' to include
+          - BLAST hits
+          - IPRSCAN hits
+
+6. Annotations paper:
+
+    TO DO: Check points below
+
+
+>IMPORTANT:
+>    A   There are two task:  we need to but the data and figures  
+>about "The problem with Annotation"
+>          1:   X% OF Y number of Human refseq are not annotated.
+>          2: quality of annotation depends on database,  the better  
+>the database, the lower is X%
+>          3:  gene names differ among databases  (??)
+>         4 :  More than one "equivalent" hit with different names
+>
+>          5:  GENE NAMES in publication are often unrelated to well  
+>managed databases  (how do we know this is true,  is it true?).
+>
+>B:  You (and I) need to play with funnybase and make sure all the  
+>links and searches work
+>    Currently we are only searching the SwissProt hits
+>    We can not search by hits to human/mouse/rat/dog  accession  
+>number, locus number or any standard in NCBI
+>    Blasting??
+
+
+Cheers,
+
+Stuart.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CAP3 PARAMETER ANALYSIS 3
+
+   -o  N  specify overlap length cutoff > 20 (30)
+    
+    RANGE TESTED: 21-50
+    
+    One requirement for an overlap is that the length  in
+     bp  of  the overlap is no less than the value of the minimum
+     overlap length cutoff parameter.  The value for this parame-
+     ter can be changed with the "-o" option.  
+
+-a o -r 21-50 -n 10
+
+1. DO cap3 ASSEMBLY
+===================
+ON gems:
+
+cd /Users/local/FUNNYBASE/bin/cap3
+sudo ./arraycap3assembly.pl -d karenia4 -a o -r 21-50 -n 10
+
+
+2. CREATE SINGLETS FASTAFILE
+============================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arraysingletsqualfile.pl -a o -r 21-50 -n 10
+
+3. DO assemblyreads AND assemblysequences .TSV FILES
+====================================================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequences.pl -a o -r 21-50 -n 10
+
+4. LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES
+==================================================================
+ON genomics:
+
+cd /Users/young/FUNNYBASE/bin/cap3
+sudo ./cap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequencesloaddata.pl -a o -r 21-50 -n 10
+
+
+4. POPULATE collectionsequences TABLE
+==================================================================
+ON genomics:
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequences.pl -a o -r 21-50 -n 10
+
+
+5. CREATE .FASTA FILES AND FORMAT FOR BLAST
+===========================================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesfasta.pl -a o -r 21-50 -n 10
+
+
+6. DO COMPARISON BLASTS
+=======================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionarrayblast.pl -a o -r 21-50 -n 10 -t
+
+
+7. LOAD COMPARISION BLASTS
+==========================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionblastloaddata.pl -a o -r 21-50 -n 10 -t
+
+
+8. CREATE collectionsequencesannotation TABLE
+=============================================
+
+sudo ./cap3engine.pl -d karenia4 -p create_database.pl -a o -r 21-50 -n 10
+
+
+9. DO COMPARISON WITH compare.pl
+================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycompare.pl -a o -r 21-50 -n 10 -t
+
+RUN TIME: 01:21:15
+Completed ./cap3engine.pl
+11:55PM, 21 April 2007
+****************************************
+
+10. DO ALIGNMENTS WITH collectionsequencesalignment.pl
+=====================================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a o -r 21-50 -n 10
+
+11. POPULATE reads AND screenedreads TABLES
+===========================================
+
+sudo ./cap3engine.pl -d karenia4 -p karenia4reads.pl -a o -r 21-50 -n 10
+sudo ./cap3engine.pl -d karenia4 -p karenia4screenedreads.pl -a o -r 21-50 -n 10
+
+12. POPULATE collectionsequencesdiv, collectionsequencesannotation AND collectionsequencesblastdiv TABLES
+=========================================================================================================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesblastdiv.pl -a o -r 21-50 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesannotation.pl -a o -r 21-50 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesdiv.pl -a o -r 21-50 -n 10
+
+13. DO QUALITY DISTRIBUTIONS
+============================
+
+cd /Users/young/FUNNYBASE/bin/cap3
+sudo ./cap3engine.pl -d karenia4 -p assemblysequencesqualitybargraphengine.pl -a o -r 21-50 -n 10
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Apr 21 01:42:48 EDT 2007] DO collectionarrayblast FOR ALL CAP3 ASSEMBLIES>
+
+
+
+sudo ./cap3engine.pl -d karenia4 -p collectionarrayblast.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionarrayblast.pl -a s -r 101-1000 -n 10
+
+sudo ./cap3engine.pl -d karenia4 -p collectionblastloaddata.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionblastloaddata.pl -a s -r 101-1000 -n 10
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesblastdiv.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesblastdiv.pl -a s -r 101-1000 -n 10
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesannotation.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesannotation.pl -a s -r 101-1000 -n 10
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesdiv.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesdiv.pl -a s -r 101-1000 -n 10
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a s -r 101-1000 -n 10
+
+
+REMOVE USED FILES IN blast FOLDER:
+
+sudo mkdir safe
+sudo mv *blast.tsv safe
+sudo rm -fr karenia4_*
+sudo mv safe/* ./
+sudo rmdir safe/
+ls
+
+
+</entry>
+
+
+
+<entry [Sat Apr 21 01:34:07 EDT 2007] DO screened reads AND reads TABLES FOR ALL CAP3 ASSEMBLIES>
+
+
+
+sudo ./cap3engine.pl -d karenia4 -p karenia4reads.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p karenia4screenedreads.pl -a p -r 66-100 -n 10
+sudo ./cap3engine.pl -d karenia4 -p karenia4reads.pl -a s -r 101-1000 -n 10
+sudo ./cap3engine.pl -d karenia4 -p karenia4screenedreads.pl -a s -r 101-1000 -n 10
+
+
+</entry>
+
+
+
+<entry [Sat Apr 21 01:18:55 EDT 2007] DO collectionsequencesdiv FOR ALL CAP3 ASSEMBLIES>
+
+
+
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesdiv.pl -a s -r 101-1000 -n 10
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesdiv.pl -a p -r 66-100 -n 10
+
+
+
+</entry>
+
+
+
+<entry [Fri Apr 20 15:54:43 EDT 2007] CREATED collectionsequencesalignment.pl AND arraycollectionsequencesalignment.pl>
+
+
+
+	NAME: collectionsequencesalignment.pl
+
+	PURPOSE: PARSE SEQUENCE-READS ALIGNMENT FROM .cap.out FILE
+	
+	INPUT:
+			1. <database>.fasta.cap.out FILE IN edit_dir
+
+
+	OUTPUT:
+			1. alignment ENTRY IN collectionsequencesalignment TABLE
+
+	USAGE:
+
+       ./collectionsequencesalignment.pl <-d database> [-h]
+
+
+RAN arraycollectionsequencesalignment.pl WITH cap3engine.pl
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a s -r 101-1000 -n 10
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a p -r 66-100 -n 10
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Fri Apr 20 04:18:50 EDT 2007
+MSG: Tim
+CC: Doug
+
+
+Hi Tim,
+
+I've added the first two sets of CAP3 parameter experiments to the 'Comparison' view of sandbox:
+
+http://genomics.rsmas.miami.edu/sandbox15/sandbox15.html
+
+View --> Comparison
+
+NB: You can now select for comparison by sequence number.
+
+
+Check out Karenia4 vs Karenia4, Karenia4_p..., Karenia4_s...
+
+CAP3 PARAMETER ANALYSIS 1
+
+
+       -p  N  specify overlap percent identity cutoff N > 65 (75)
+
+       RANGE TESTED:  66-100
+
+    The requirement for an overlap is that  the  percent  identity  of  the
+     overlap is no less than the minimum percent identity cutoff.
+     
+     The value for this parameter can be changed  with  the  "-p"
+     option.  A value of 75 for p means 0.75 or 75%.
+
+
+
+CAP3 PARAMETER ANALYSIS 2
+
+       -s  N  specify overlap similarity score  cutoff  N  >  100  (500)
+
+       RANGE TESTED:  101-1000
+
+     The third measure is based on overlap similarity score.  The
+     similarity  score  of  an  overlapping  alignment is defined
+     using base quality values. Let m be the match score  factor,
+     let  n  be  the  mismatch score factor, and let g be the gap
+     penalty factor.  Values for these parameters can be set with
+     the "-m", "-n", and "-g" options.  A match at bases of qual-
+     ity values q1 and q2 is given a score of m * min(q1,q2).   A
+     mismatch  at  bases  of  quality values q1 and q2 is given a
+     score of n * min(q1,q2).  A base of quality value  q1  in  a
+     gap  is  given  a  score of -g * min(q1,q2), where q2 is the
+     quality value of the base in the other sequence right before
+     the  gap.  The  score  of a gap is the sum of scores of each
+     base in the gap minus a gap  open  penalty.  The  similarity
+     score  of  an  overlapping alignment is the sum of scores of
+     each match, each mismatch, and each gap.  With  m  =  2,  an
+     overlap  that  consists  of  25  matches at bases of quality
+     value 10 has a score of 500. If the similarity score  of  an
+     overlap  is less than the overlap similarity score cutoff s,
+     then the overlap is removed.
+
+
+
+Cheers,
+
+Stuart.
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Apr 20 01:57:09 EDT 2007] CAP3 PARAMETER ANALYSIS 2>
+
+
+
+       -s  N  specify overlap similarity score  cutoff  N  >  100  (500)
+
+     The third measure is based on overlap similarity score.  The
+     similarity  score  of  an  overlapping  alignment is defined
+     using base quality values. Let m be the match score  factor,
+     let  n  be  the  mismatch score factor, and let g be the gap
+     penalty factor.  Values for these parameters can be set with
+     the "-m", "-n", and "-g" options.  A match at bases of qual-
+     ity values q1 and q2 is given a score of m * min(q1,q2).   A
+     mismatch  at  bases  of  quality values q1 and q2 is given a
+     score of n * min(q1,q2).  A base of quality value  q1  in  a
+     gap  is  given  a  score of -g * min(q1,q2), where q2 is the
+     quality value of the base in the other sequence right before
+     the  gap.  The  score  of a gap is the sum of scores of each
+     base in the gap minus a gap  open  penalty.  The  similarity
+     score  of  an  overlapping alignment is the sum of scores of
+     each match, each mismatch, and each gap.  With  m  =  2,  an
+     overlap  that  consists  of  25  matches at bases of quality
+     value 10 has a score of 500. If the similarity score  of  an
+     overlap  is less than the overlap similarity score cutoff s,
+     then the overlap is removed.
+
+-a p -r 66-100
+
+-a s -r 101-1000
+
+1. DO cap3 ASSEMBLY
+===================
+ON gems:
+
+cd /Users/local/FUNNYBASE/bin/cap3
+sudo ./arraycap3assembly.pl -d karenia4 -a s -r 101-1000 -n 10
+
+
+TEST:
+
+/usr/bin/cap3 /common/pipeline/karenia4_s101/edit_dir/karenia4_s101.fasta -s 101 > /common/pipeline/karenia4_s101/edit_dir/karenia4_s101.fasta.1.cap.out
+/usr/bin/cap3 /common/pipeline/karenia4_s460/edit_dir/karenia4_s460.fasta -s 460 > /common/pipeline/karenia4_s460/edit_dir/karenia4_s460.fasta.5.cap.out
+/usr/bin/cap3 /common/pipeline/karenia4_s820/edit_dir/karenia4_s820.fasta -s 820 > /common/pipeline/karenia4_s820/edit_dir/karenia4_s820.fasta.9.cap.out
+
+
+2. CREATE SINGLETS FASTAFILE
+============================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arraysingletsqualfile.pl -a s -r 101-1000 -n 10
+
+3. DO assemblyreads AND assemblysequences .TSV FILES
+====================================================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequences.pl -a s -r 101-1000 -n 10
+
+4. LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES
+==================================================================
+ON genomics:
+
+cd /Users/young/FUNNYBASE/bin/cap3
+sudo ./cap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequencesloaddata.pl -a s -r 101-1000 -n 10
+
+
+4. POPULATE collectionsequences TABLE
+==================================================================
+ON genomics:
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequences.pl -a s -r 101-1000 -n 10
+
+
+5. CREATE .FASTA FILES AND FORMAT FOR BLAST
+===========================================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesfasta.pl -a s -r 101-1000 -n 10
+
+
+6. DO COMPARISON BLASTS
+=======================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionarrayblast.pl -a s -r 101-1000 -n 10 -t
+
+
+7. LOAD COMPARISION BLASTS
+==========================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionblastloaddata.pl -a s -r 101-1000 -n 10 -t
+
+
+8. CREATE collectionsequencesannotation TABLE
+=============================================
+
+sudo ./cap3engine.pl -d karenia4 -p create_database.pl -a s -r 101-1000 -n 10
+
+
+9. DO COMPARISON WITH compare.pl
+================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycompare.pl -a s -r 101-1000 -n 10 -t
+
+
+10. DO ALIGNMENTS WITH collectionsequencesalignment.pl
+=====================================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a s -r 101-1000 -n 10
+
+
+</entry>
+
+
+
+<entry [Thu Apr 19 03:21:15 EDT 2007] CAP3 ANALYSIS>
+
+
+
+1. DO cap3 ASSEMBLY
+===================
+ON gems:
+
+cd /Users/local/FUNNYBASE/bin/cap3
+sudo ./arraycap3assembly.pl -d karenia4 -a p -r 66-100 -n 10
+
+2. CREATE SINGLETS FASTAFILE
+============================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arraysingletsqualfile.pl -a p -r 66-100 -n 10
+
+3. DO assemblyreads AND assemblysequences .TSV FILES
+====================================================
+ON gems:
+
+sudo ./arraycap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequences.pl -a p -r 66-100 -n 10
+
+4. LOAD .TSV FILES INTO assemblyreads AND assemblysequences TABLES
+==================================================================
+ON genomics:
+
+sudo ./cap3engine.pl -d karenia4 -p arrayassemblyreadsassemblysequencesloaddata.pl -a p -r 66-100 -n 10
+
+
+4. POPULATE collectionsequences TABLE
+==================================================================
+ON genomics:
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequences.pl -a p -r 66-100 -n 10
+
+
+5. CREATE .FASTA FILES AND FORMAT FOR BLAST
+===========================================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionsequencesfasta.pl -a p -r 66-100 -n 10
+
+
+6. DO COMPARISON BLASTS
+=======================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionarrayblast.pl -a p -r 66-100 -n 10 -t
+
+
+7. LOAD COMPARISION BLASTS
+==========================
+
+sudo ./cap3engine.pl -d karenia4 -p collectionblastloaddata.pl -a p -r 66-100 -n 10 -t
+
+
+8. CREATE collectionsequencesannotation TABLE
+=============================================
+
+sudo ./cap3engine.pl -d karenia4 -p create_database.pl -a p -r 66-100 -n 10
+
+
+9. DO COMPARISON WITH compare.pl
+================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycompare.pl -a p -r 66-100 -n 10 -t
+
+
+10. DO ALIGNMENTS WITH collectionsequencesalignment.pl
+=====================================================
+
+sudo ./cap3engine.pl -d karenia4 -p arraycollectionsequencesalignment.pl -a p -r 66-100 -n 10
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Hi Tim and Doug,
+
+I'm almost through with the first batch of CAP3 assemblies based on 'karenia4'. You'll be able to see the comparisons with 'karenia4' tomorrow, once I've had a chance to run the 'compare.pl' script on them.
+
+I'm currently at this stage:
+
+SELECTED PARAMETER:
+
+       -p  N  specify overlap percent identity cutoff N > 65 (75)
+
+
+    The requirement for an overlap is that  the  percent  identity  of  the
+     overlap is no less than the minimum percent identity cutoff.
+     
+     The value for this parameter can be changed  with  the  "-p"
+     option.  A value of 75 for p means 0.75 or 75%.
+
+
+NUMBER OF ASSEMBLIES: 10
+
+STATUS:
+
+- CAP3 ASSEMBLIED DONE
+
+- SEQUENCES LOADED INTO assemblyreads AND assemblysequences TABLES
+
+- SEQUENCES LOADED INTO collectionsequences TABLE
+
+TO DO:
+
+- COMPARISON
+
+
+I've copied below my previous message 'CAP3 update - 2' which had an explanation of what 'karenia4' is:
+
+------------------
+
+Here are some more details on the karenia3 vs karenia4 comparison:
+
+    DONE: Selected out 600 collection sequences (having the word 'protein' in their annotation),
+              got their constituent reads and reassembled with CAP3 to create 'karenia4'. Then did  
+              BLAST comparison of karenia3 against karenia4.
+
+    DONE: Revamped 'compare.pl' to provide more information about similar sequences between
+              two databases. Also redid 'comparereport.pl' to provide simple retrieval based on percent
+              identity.
+
+    DONE: Added view 'comparison' function to sandbox14, View --> Comparison:
+ 
+    http://genomics.rsmas.miami.edu/sandbox14/sandbox14.html
+
+    This shows the total count of similar sequences among two databases (will add single sequence 
+     similarities soon) and allows you to download the similar sequences based on percent identity.
+     
+     NB: Currently I've only done the comparison of 'karenia3' vs 'karenia4' but I'll be adding the 
+     others comparisons later.
+
+    DONE: Added karenia4 to 'quality cutoff' on sandbox13 and sandbox14, View --> Quality cutoff
+
+    TO DO: Redo CAP3 of karenia4 sequences with many different CAP3 parameter settings to see 
+     if can avoid bad combinations of reads in contigs.
+
+--------------
+
+>Tim and Stuart,
+>    OK:  Tim suggest that most of the cluster are fine. HOWEVER,   
+>they are NOT being portrayed correctly.  That is the alignment given 
+>  on the webpage (ClustalW???) does not do the same aligning as 
+>CAP3.
+>Can we just visualize the CAP3 alignment.
+
+
+Since ClustalW seems to be a bit buggy with our data, I'll just capture the original CAP3 alignments of contigs with reads by redoing the assembly and display those instead.
+
+
+>3rd:  Garbage in Garbage out.  HOWEVER, I thought PHRED solve this  
+>problem.
+>WHY are there bad sequences?
+
+>> I also compared some clusters that had the  
+>>same annotation and found that some of them had identical sequences 
+>>  between them, but they failed to cluster--so, the opposite 
+>>problem  of the above.
+>>
+
+I think it's still worthwhile to check the different parameters to see what differing numbers of contigs we get and the credibility of those contigs. We may be able to minimise these inconsistencies by using a particular set of parameters.
+
+>>About the website,  Doug and I both cannot get the alignments or  
+>>sequences from the search page.  If you search for some keyword, go 
+>>  down the list of returned proteins, and select one, you will get  
+>>the output.  If you click on the blue arrow, you will get Karenia  
+>>cluster 6 with the consensus seq. but no others.  If you click on  
+>>the green arrow, you will get Karenia cluster 646 alignment.  This  
+>>is true for whatever protein you select, in either database.  Can  
+>>you fix that please?
+
+
+Okay, I'll fix that asap.
+
+
+>Finally:  Tim suggested that the comparison was not helpful.
+>Stuart,  what is the utility?
+
+The comparison function provides the number of sequences that are similar (i.e., above the user-specified identity threshold) between the two databases. You can click on the blue arrow to download all of the similar sequences. I'll be adding the ability to select one sequence and see its similar sequences in the other database soon.
+
+Cheers,
+
+Stuart.
+
+
+>From: Douglas Crawford <dcrawford@rsmas.miami.edu>
+>To: Tim McLean <tmclean@rsmas.miami.edu>
+>CC: "stuart young" <youngstuart@hotmail.com>
+>Subject: Re: CAP3 update
+>Date: Wed, 18 Apr 2007 16:34:41 -0400
+>
+>
+>2ND:  some of the alignment have reverse sequence,  which CLUSTALW  
+>can NOT deal with,  but CAP3 can.
+>Do we really want to use reverse sequences,   or do we just want to  
+>know they exist?
+>TIM:  what would you like.
+>
+>
+>Finally:  Tim suggested that the comparison was not helpful.
+>Stuart,  what is the utility?
+>
+>dlc
+>
+>
+>
+>******-----********------------**************---*******
+>Douglas L. Crawford
+>Director Marine Genomics
+>Rosenstiel School of Marine Sciences
+>University of Miami
+>4600 Rickenbacker Cswy
+>Miami, FL 33149
+>
+>305-421-4121
+>http://crawford.rsmas.miami.edu/
+>http://genomics.rsmas.miami.edu/funnybase/super_craw4/
+>
+>
+>On Apr 18, 2007, at 4:14 PM, Tim McLean wrote:
+>
+>>Hi Stuart,
+>>
+>>Sorry to hear that your leg is not doing so well.
+>>
+>>Here is what I have found from my manual alignments:
+>>
+>>I went through 93 of the 'protein' clusters.  67 looked fine (73%)
+>>								26 didn't look good (13 could be corrected via manual  
+>>alignment,
+>>												4 clusters were made up of garbage sequences,
+>>												3 could not be manually aligned because one of the  
+>>sequences turned out to be the reverse/complement of the remaining  
+>>sequences, 											  and 6 made no sense no matter what I did to 
+>>  them)
+>>
+>>So the majority of the bad clusters looked bad because the  
+>>alignment we saw on the computer screen didn't have the sequences  
+>>properly aligned, and when I manually aligned them everything made  
+>>sense and the consensus sequence appeared to correctly jump from  
+>>one sequence to another.  The 4 garbage clusters were made up of  
+>>sequences that themselves were garbage--meaning the sequencer was  
+>>unable to sequence through a very early string of T's or A's, and  
+>>the entire sequence read is an alternation of strings of A's, C's,  
+>>G's, or T's.  I'm guessing the strings of bases allowed the seqs.  
+>>to cluster together, and the quality score was high enough to pass  
+>>the filter.  3 clusters could be righted when I found the reverse/ 
+>>complement sequence, but 6 clusters have defied my ability to align 
+>>  all of the sequences that were put into a cluster.  So only about 
+>>  6% of the clusters may be faulty, rather than the 50% we were  
+>>thinking on Friday.  I also compared some clusters that had the  
+>>same annotation and found that some of them had identical sequences 
+>>  between them, but they failed to cluster--so, the opposite 
+>>problem  of the above.
+>>
+>>About the website,  Doug and I both cannot get the alignments or  
+>>sequences from the search page.  If you search for some keyword, go 
+>>  down the list of returned proteins, and select one, you will get  
+>>the output.  If you click on the blue arrow, you will get Karenia  
+>>cluster 6 with the consensus seq. but no others.  If you click on  
+>>the green arrow, you will get Karenia cluster 646 alignment.  This  
+>>is true for whatever protein you select, in either database.  Can  
+>>you fix that please?
+>>
+>>Lastly, I'm unclear what Karenia 4 is, and how it differs from  
+>>Karenia 3.  Similarly, what does the comparison feature do?  I'm  
+>>looking at the output and I can't determine what all of the output  
+>>is and how it helps me determine anything.
+>>
+>>Tim
+>>
+>>
+>>
+>>On Apr 18, 2007, at 2:57 PM, stuart young wrote:
+>>
+>>>Hi Tim,
+>>>
+>>>Just to let you know what stage the CAP3 analysis is at, I've  
+>>>finished redoing the database comparison function I mentioned on  
+>>>Friday and I've added it to newest version of sandbox:
+>>>
+>>>http://genomics.rsmas.miami.edu/sandbox14/sandbox14.html
+>>>
+>>>View --> Comparison
+>>>
+>>>NB: It only works for Karenia3 vs Karenia4.
+>>>
+>>>I'll be running the different CAP3 assemblies (with different  
+>>>parameters) today to see how changing the parameters affects the  
+>>>output assembled sequences.
+>>>
+>>>This is primarily to see if we can avoid the problem we saw on  
+>>>Friday - two sets of reads that appear different but are combined  
+>>>into one contig.
+>>>
+>>>Cheers,
+>>>
+>>>Stuart.
+>>>
+>>>_________________________________________________________________
+>>>Express yourself instantly with MSN Messenger! Download today it's 
+>>>  FREE! 
+>>>http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+NAME
+
+     cap3 - Sequence Assembly Program
+
+
+
+SYNOPSIS
+
+     cap3 File_of_reads [options]
+
+
+
+DESCRIPTION
+
+  Introduction
+     We have made the following improvements to the CAP  sequence
+     assembly program.
+
+     1. Use of forward-reverse constraints  to  correct  assembly
+     errors and link contigs.
+
+     2. Use of base  quality  values  in  alignment  of  sequence
+     reads.
+
+     3. Automatic clipping of 5' and 3' poor regions of reads.
+
+     4. Generation of assembly results in  ace  file  format  for
+     Consed.
+
+     5. CAP3 can be used in GAP4 of the Staden package.
+
+     The improved program  is  named  CAP3.   These  improvements
+     allow  CAP3  to  take  longer sequences of higher errors and
+     produce more accurate consensus sequences.
+
+     Use of constraints in layout generation
+
+     A forward-reverse constraint is often produced by sequencing
+     both  ends  of  a  subclone.   A  forward-reverse constraint
+     specifies that the two  reads  should  be  on  the  opposite
+     strands of the DNA molecule within a specified range of dis-
+     tance.
+
+     CAP3 makes use of a large  number  of  forward-reverse  con-
+     straints  to locate and correct errors in layout of sequence
+     reads.  This capability  allows  CAP3  to  address  assembly
+     errors due to repeats.
+
+     CAP3 also uses constraints to link contigs  separated  by  a
+     gap.   This  feature provides useful information to sequence
+     finishers.
+
+     The algorithm used in CAP3 is  designed  to  tolerate  wrong
+     constraints,  which  are  due  to  errors in naming and lane
+     tracking.
+
+     Use of quality values in alignment
+
+     CAP3 makes use of base quality  values  in  constructing  an
+     alignment  of  sequence  reads  and  generating  a consensus
+     sequence for each contig.
+
+     This allows the program to use both base quality values  and
+     the  depth of coverage at a position to improve the accuracy
+     in generating a consensus base at the position.
+
+     The alignment method in CAP3 is very tolerable of  reads  of
+     high sequencing errors.
+
+     Automatic clipping of 5' and 3' poor regions
+
+     CAP3 clips 5' and 3' poor regions of  reads  and  uses  only
+     good  regions of reads in assembly. Thus there is no need to
+     perform clipping in advance. Note that vector  sequences  in
+     reads must be masked before using CAP3.
+
+  Input to CAP3
+     CAP3 takes as input a file of sequence reads in  FASTA  for-
+     mat.   If  the  names  of  reads  contain  a dot ('.'), CAP3
+     requres that the names of reads sequenced from the same sub-
+     clone  contain the same substring up to the first dot.  CAP3
+     takes two optional files: a file of quality values in  FASTA
+     format and a file of forward-reverse constraints.
+
+     The file of quality values must be named "xyz.qual", and the
+     file of forward-reverse constraints must be named "xyz.con",
+     where "xyz" is the name of the sequence file.  CAP3 uses the
+     same format of a quality file as Phrap.
+
+     Each line of the  constraint  file  specifies  one  forward-
+     reverse constraint of the form:
+
+     ReadA   ReadB    MinDistance    MaxDistance
+
+     where ReadA and ReadB are names of two  reads,  and  MinDis-
+     tance  and  MaxDistance  are  distances  (integers)  in base
+     pairs.  The constraint is  satisfied  if  ReadA  in  forward
+     orientation  occurs  in  a  contig  before  ReadB in reverse
+     orientation, or ReadB in forward  orientation  occurs  in  a
+     contig  before  ReadA in reverse orientation, and their dis-
+     tance is between MinDistance and  MaxDistance.   CAP3  works
+     better if a lot more constraints are used.
+
+     We have a separate program named  "formcon"  to  generate  a
+     constraint  file  from the sequence file.  The program takes
+     an input file of fragments in FASTA format and two  integers
+     (minimum  distance and maximum distance in bp).  The minimum
+     distance and maximum distances specify a lower and  a  upper
+     limit  on  the subclone length, respectively.  It produces a
+     file of forward-reverse constraints for CAP3.  It is assumed
+     that  a pair of forward and reverse reads must contain a dot
+     in their names and a pair of forward and reverse reads  have
+     a  common name up to the first dot.  Because CAP3 uses reads
+     whose ends are clipped, instead of  raw  reads,  to  measure
+     their distance, the distance seen by CAP3 could be different
+     from the insert size by 1000 to 1500 bp. For example, if the
+     insert  size  is 2000 to 3000 bp,  we recommend that you use
+     500 for the minimum distance and 4000 for the  maximum  dis-
+     tance.   The  results  are  in  the file with name ending in
+     ".con".
+
+  Output from CAP3
+     Assembly results in CAP format go to the standard output and
+     need  to  be directed to a file. Note that clipped 5' and 3'
+     sequences of reads are not shown in CAP3 format output.
+
+     CAP3 also produces  assembly  results  in  ace  file  format
+     (".ace").   This  allows CAP3 output to be viewed in Consed.
+     Note that clipped 5' and 3' sequences of reads are shown  in
+     ace format output.
+
+     CAP3 saves consensus sequences in file ".contigs" and  their
+     quality  values in file ".contigs.qual".  Reads that are not
+     used in assembly are put in  file  ".singlets".   Additional
+     information about assembly is given in file ".info".
+
+     The CAP3 program reports whether each constraint  is  satis-
+     fied  or  not.  The  report is in file ".results".  A sample
+     report file is given here:
+
+     CPBKY55.F   CPBKY55.R    500   6000    3210  satisfied
+     CPBKY92.F   CPBKY92.R    500   6000    497   unsatisfied  in
+     distance
+     CPBKY28.F   CPBKY28.R    500   6000     unsatisfied
+     CPBKY56.F   CPBKY56.R    500   6000      10th  link  between
+     CPBKI23.F+ and CPBKT37.R-
+     CPBKY70.F   CPBKY70.R    500   6000     4th overlap  between
+     CPBKM47.F+ and CPBKN28.R-
+
+     The first four columns are simply taken from the  constraint
+     file.   Line  1  indicates that the constraint is satisfied,
+     where the actual distance between the two reads is given  on
+     the  fifth  column.  Line 2 indicates that the constraint is
+     not satisfied in distance, that is, the two reads  in  oppo-
+     site  orientation  occur  in the same contig, but their dis-
+     tance (given on the fifth column) is out of the given range.
+     Line 3 indicates that the constraint is not satisfied.  Line
+     4 indicates that this constraint is a 10th  one  that  links
+     two  contigs, where the 3' read of one contig is "CPBKI23.F"
+     in plus  orientation  and  the  5'  read  of  the  other  is
+     "CPBKT37.R"  in  minus orientation. The information suggests
+     that the two contigs should go together in the  gap  closure
+     phase.   Line  5 indicates that the constraint is a 4th con-
+     straint  supporting  an  overlap   between   CPBKM47.F   and
+     CPBKN28.R.   The  overlap  is not implemented in the current
+     the assembly.
+
+     CAP3 takes 20 to 60 minutes to assemble a cosmid or BAC data
+     set on a Sun Ultra1 workstation.
+     
+OPTIONS
+
+     A detailed documentation on CAP3 usage.
+
+     Usage: cap3 File_of_reads [options]
+
+     File_of_reads is a file of DNA reads in FASTA format
+
+     If the file of reads is named 'xyz', then the file of  qual-
+     ity  values  must  be named 'xyz.qual', and the file of con-
+     straints named 'xyz.con'.
+
+     Options (default values):
+
+       -a  N  specify band expansion size N > 10 (20)
+       -b  N  specify base quality cutoff for differences N >  15
+     (20)
+       -c  N  specify base quality cutoff for clipping N > 5 (10)
+       -d  N  specify max qscore sum at differences N > 100 (250)
+       -e  N  specify extra number of differences N > 10 (20)
+       -g  N  specify gap penalty factor N > 0 (6)
+       -m  N  specify match score factor N > 0 (2)
+       -n  N  specify mismatch score factor N < 0 (-5)
+       -o  N  specify overlap length cutoff > 20 (30)
+       -p  N  specify overlap percent identity cutoff N > 65 (75)
+       -s  N  specify overlap similarity score  cutoff  N  >  100
+     (500)
+       -u  N  specify min number of constraints for correction  N
+     > 0 (4)
+       -v  N  specify min number of constraints for linking N > 0
+     (2)
+       -x  N  specify prefix string for output file names (cap)
+
+     If no quality file is given, then a default quality value of
+     10 is used for each base.
+
+     The following sections explain the parameters of CAP3.
+
+     Clipping of poor regions
+
+     CAP3 computes clipping positions of  each  read  using  both
+     base quality values and similarity information. The user can
+     influence the clipping process by giving a different quality
+     value  cutoff  with  the "-c" option. Using a larger quality
+     value could cause more regions to be trimmed.
+
+     Band of diagonals
+
+     The program determines a minimum band of  diagonals  for  an
+     overlapping  alignment  between two sequence reads. The band
+     is expanded by a number of bases specified by the user  with
+     option "-a".
+
+     Quality difference score of an overlap
+
+     Overlaps between reads are evaluated by five measures.   The
+     first  measure is based on base quality.  If an overlap con-
+     tains lots of differences at bases of high quality, then the
+     overlap  is removed. Specifically, let b be the base quality
+     cutoff value and let d be the maximum difference score.  The
+     values  for the two parameters can be set using the "-b" and
+     "-d" options. If the overlap contains a difference at  bases
+     of  quality  values q1 and q2, then the score at the differ-
+     ence is max(0, min(q1, q2) - b). The difference score of  an
+     overlap  is the sum of scores at each difference.  For exam-
+     ple, an overlap contains two differences, one  at  bases  of
+     quality  values  15 and 30 and the other at bases of quality
+     values 40 and 50. With b = 20, the difference score  of  the
+     overlap  is 0 + 20 = 20. If the difference score of an over-
+     lap exceeds d, then the overlap is removed. With b = 20,  an
+     overlap with 15 differences at bases of quality values 40 or
+     higher has a difference score of at least 300 and is removed
+     if d = 250.
+
+     Number of differences in an overlap
+
+     The second measure looks at the number of differences in  an
+     overlap.   If  the  number  of  differences in an overlap is
+     higher than expected, than the overlap is removed.   Let  an
+     integer  e be the maximum number of extra differences.  Con-
+     sider an overlap between reads f  and  g.   Let  d1  be  the
+     estimated  number  of  sequencing errors for the region of f
+     involved in the overlap and let r2 be that for the region of
+     g  involved  in  the  overlap.   If  the  observed number of
+     differences in the overlap is greater than r1 + r2 + e, then
+     the  overlap  is removed.  The value for the parameter e can
+     be changed using the "-e" option.  The  expected  number  of
+     differences  in  the  overlap  is  about  r1 + r2.  Giving a
+     smaller value to e causes more overlaps to be removed.
+
+     Similarity score of an overlap
+
+     The third measure is based on overlap similarity score.  The
+     similarity  score  of  an  overlapping  alignment is defined
+     using base quality values. Let m be the match score  factor,
+     let  n  be  the  mismatch score factor, and let g be the gap
+     penalty factor.  Values for these parameters can be set with
+     the "-m", "-n", and "-g" options.  A match at bases of qual-
+     ity values q1 and q2 is given a score of m * min(q1,q2).   A
+     mismatch  at  bases  of  quality values q1 and q2 is given a
+     score of n * min(q1,q2).  A base of quality value  q1  in  a
+     gap  is  given  a  score of -g * min(q1,q2), where q2 is the
+     quality value of the base in the other sequence right before
+     the  gap.  The  score  of a gap is the sum of scores of each
+     base in the gap minus a gap  open  penalty.  The  similarity
+     score  of  an  overlapping alignment is the sum of scores of
+     each match, each mismatch, and each gap.  With  m  =  2,  an
+     overlap  that  consists  of  25  matches at bases of quality
+     value 10 has a score of 500. If the similarity score  of  an
+     overlap  is less than the overlap similarity score cutoff s,
+     then the overlap is removed.
+
+     Minimum length and percent identity of an overlap
+
+     The fourth requirement for an overlap is that the length  in
+     bp  of  the overlap is no less than the value of the minimum
+     overlap length cutoff parameter.  The value for this parame-
+     ter can be changed with the "-o" option.  The fifth require-
+     ment for an overlap is that  the  percent  identity  of  the
+     overlap is no less than the minimum percent identity cutoff.
+     The value for this parameter can be changed  with  the  "-p"
+     option.  A value of 75 for p means 0.75 or 75%.
+
+     Forward-reverse constraints
+
+     Corrections to an assembly are  made  using  forward-reverse
+     constraints.  Let an integer u be the minimum number of con-
+     straints for correction.  Consider  an  alternative  overlap
+     between  two  reads  f and g.  Assume that f is in contig C1
+     and that g is in contig C2.  If the  number  of  unsatisfied
+     constraints  that  support  the  overlap  between f and g is
+     greater than the value of the u parameter plus the number of
+     satisfied constraints that support the current joins involv-
+     ing f and g, then the current joins involving f  and  g  are
+     disconnected and the overlap between f and g is implemented.
+     The value for this parameter can be changed  with  the  "-u"
+     option.
+
+     Contigs that are linked by forward-reverse  constraints  are
+     reported.  The minimum number of constraints for reporting a
+     link between two contigs is specified with the "-v" option.
+
+     Output file names
+
+     The names of all output files contain a substring "cap".   A
+     different  substring  can be specified with the "-x" option.
+     This feature was suggested by Harley Gorrell.
+
+
+    

@@ -1,0 +1,21 @@
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--executable /nethome/syoung/0.5/bin/apps/aligners/NOVOALIGN.pl \
+--replicates 1-2 \
+--loop parallel \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.10000.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.10000.sequence.txt \
+--reference /nethome/bioinfo/data/sequence/chromosomes/human/hg19/novoalign/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novo-test/%REPLICATE% \
+--params "-r All 1" \
+--distance 200 \
+--deviation 50 \
+--species human \
+--label novo-test-chr22-%REPLICATE% \
+--maxjobs 2000 \
+--queue large \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+--reads 1000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novo-test/%REPLICATE%/novo-test.out \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novo-test/loop-novo-test.out

@@ -1,0 +1,463 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en"><head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
+<meta name="description" content="Incremental development is distinctly different from iterative development in its purpose and also from its management implications. Teams get into trouble by doing one and not the other, or by trying to manage them the same way. This article illustrates their differences and how to use them together.">
+<title>STSC CrossTalk - Using Both Incremental and Iterative Development - May&nbsp;2008</title>
+<link rel="stylesheet" type="text/css" href="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/stsc.css">
+<script language="JavaScript" type="text/javascript">
+var root = "/";
+var menuRoot = "/menus";
+var imageRoot = "/images";
+</script>
+<script language="JavaScript1.2" type="text/javascript" src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/drop_down_menu_defns.js"></script><script language="JavaScript1.2" src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/HM_ScriptDOM.js" type="text/javascript"></script>
+<script language="JavaScript" src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/rollovers.js" type="text/javascript"></script>
+<script language="JavaScript" src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/left_nav.js" type="text/javascript"></script>
+<script language="JavaScript" src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/disclaim.js" type="text/javascript"></script>
+</head><div FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body topmargin="0" leftmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<table summary="Header" border="0" cellpadding="0" cellspacing="0">
+	<tbody><tr>
+		<td rowspan="2"><a href="http://www.stsc.hill.af.mil/index.html"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/logo_stsc.gif" alt="STSC Logo" border="0" height="71" width="140"></a></td>
+		<td>
+		
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_spacer.gif" alt="" border="0" height="16" width="11">
+		
+<a href="http://www.stsc.hill.af.mil/about/index.html" onmouseover="imgon('img01'); popUp( 'HM_Menu1',event )" onmouseout="imgoff('img01');popDown('HM_Menu1')">
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_about_off.gif" name="img01" alt="About Us" border="0" height="16" width="58"></a>
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_spacer.gif" alt="" border="0" height="16" width="15">
+
+<a href="http://www.stsc.hill.af.mil/consulting/" onmouseover="imgon('img02'); popUp( 'HM_Menu2',event )" onmouseout="imgoff('img02'); popDown( 'HM_Menu2',event )"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_consulting_off.gif" name="img02" alt="Consulting Services" border="0" height="16" width="110"></a>
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_spacer.gif" alt="" border="0" height="16" width="14">
+
+<a href="http://www.stsc.hill.af.mil/crosstalk/about.html" onmouseover="imgon('img03'); popUp( 'HM_Menu3',event )" onmouseout="imgoff('img03'); popDown( 'HM_Menu3',event )"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_crosstalk_off.gif" alt="CrossTalk" name="img03" id="img03" border="0" height="16" width="58"></a>
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_spacer.gif" alt="" border="0" height="16" width="15">
+
+<a href="http://www.stsc.hill.af.mil/conference/" onmouseover="imgon('img04'); popUp( 'HM_Menu4',event )" onmouseout="imgoff('img04'); popDown( 'HM_Menu4',event )"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_conference_off.gif" name="img04" alt="STC Conference" border="0" height="16" width="67"></a>
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_spacer.gif" alt="" border="0" height="16" width="15">
+
+<a href="http://www.stsc.hill.af.mil/resources/" onmouseover="imgon('img05'); popUp( 'HM_Menu5',event )" onmouseout="imgoff('img05'); popDown( 'HM_Menu5',event )"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_top_resources_off.gif" name="img05" alt="Resources" border="0" height="16" width="60"></a>
+
+<img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/bnr_top_right.gif" alt="" border="0" height="16" width="56"></td>
+
+
+		<form name="searchForm" action="/scripts/search.idq" method="post"></form>
+		<td rowspan="2" valign="top"><label for="search"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/title_search.gif" alt="Search" border="0" height="16" width="46"></label><br>
+		<input class="searchBox" id="search" name="CiRestriction" size="9" maxlength="100" type="text"><input src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/btn_search.gif" name="search" alt="GO" border="0" height="19" type="image" width="22"><br>
+		<select class="searchSelect" id="scope" name="CiScope">
+			<option value="/" selected="selected">Entire Site</option>
+			<option value="/crosstalk/">CrossTalk Only</option>
+		</select><label for="scope">&nbsp;</label>
+		<input name="CiMaxRecordsPerPage" value="20" type="hidden">
+		<input name="TemplateName" value="search" type="hidden">
+		<input name="CiSort" value="rank[d],write[d]" type="hidden">
+		</td>
+		
+	</tr>
+	<tr>
+		<td valign="top"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/bnr_top_secondary.jpg" alt="Software Technology Support Center" border="0" height="55" width="478"></td>
+	</tr>
+</tbody></table>
+
+<table summary="Left Navigation and Content" border="0" cellpadding="0" cellspacing="0">
+	<tbody><tr>
+		<td class="leftNav" valign="top"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_spacer.gif" alt="" border="0" height="30" width="131"><br>
+			<script language="JavaScript" type="text/javascript">
+		document.searchForm.CiScope.selectedIndex=1;
+	</script><table summary="Left Navigation" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td class="leftSubnav" valign="top"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/about.html" onmouseover="imgon('img09')" onmouseout="imgoff('img09')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_aboutCT_off.gif" name="img09" alt="About CrossTalk" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/about.html#mission">Mission</a><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/about.html#staff">Staff</a><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/about.html#contact">Contact Us</a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="5" width="131"><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/" onmouseover="imgon('img14')" onmouseout="imgoff('img14')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_current_off.gif" name="img14" alt="About Us" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/subscribe.html" onmouseover="imgon('img10')" onmouseout="imgoff('img10')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_subscription_off.gif" name="img10" alt="Subscription" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/subscribe.asp?subscribe">Subscribe Now</a><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/subscribe.asp?update">Update</a><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/subscribe.asp?cancel">Cancel</a><br>
+						&nbsp;&nbsp;-&nbsp;<a href="http://www.stsc.hill.af.mil/crosstalk/CrossTalk.rss"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/rss20.gif" align="bottom" border="0" height="15" width="47"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="5" width="131"><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/theme.html" onmouseover="imgon('img11')" onmouseout="imgoff('img11')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_theme_off.gif" name="img11" alt="Themes Calendar" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/author.html" onmouseover="imgon('img12')" onmouseout="imgoff('img12')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_author_off.gif" name="img12" alt="Author Guidelines" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/back_issues.asp" onmouseover="imgon('img13')" onmouseout="imgoff('img13')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_back_off.gif" name="img13" alt="Back Issues" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/articles.asp" onmouseover="imgon('img15')" onmouseout="imgoff('img15')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_article_off.gif" alt="Article Index" name="img15" border="0" height="21" width="131"></a><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="131"><br><a href="http://www.stsc.hill.af.mil/crosstalk/comments.html" onmouseover="imgon('img16')" onmouseout="imgoff('img16')"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_your_off.gif" alt="Your Comments" name="img16" border="0" height="21" width="131"></a><br></td>
+</tr>
+</tbody></table>
+		</td>
+		<td valign="top"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="100" width="18"></td>
+		<td valign="top"> 
+        
+        <span class="breadCrumb"><a href="http://www.stsc.hill.af.mil/index.html">Home</a> &gt; <a href="http://www.stsc.hill.af.mil/crosstalk/2008/05/index.html">CrossTalk&nbsp;May&nbsp;2008</a> &gt; Article</span><br>
+        <table border="0" cellpadding="0" cellspacing="0" width="525">
+<tbody><tr>
+<td valign="bottom"><span class="titleSpace"><br></span><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/title_ct_secondary.gif" alt="CrossTalk - The Journal of Defense Software Engineering" border="0" height="55" width="424"></td>
+<td class="ctArticleGroup" align="right" valign="top">May&nbsp;2008&nbsp;Issue</td>
+</tr>
+<tr>
+<td colspan="2"><br><span class="ctArticleTitle">Using Both Incremental and Iterative Development</span><br><span class="ctAuthor">Dr. Alistair Cockburn,&nbsp;
+					Humans and Technology<br></span><br><span class="ctAbstract">Incremental
+development is distinctly different from iterative development in its
+purpose and also from its management implications. Teams get into
+trouble by doing one and not the other, or by trying to manage them the
+same way. This article illustrates their differences and how to use
+them together.</span><hr>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Incremental
+and iterative development predate the Agile movement; I first ran into
+them while doing research for the IBM Consulting Group in 1991 [1, 2,
+3]. At that time I learned how different they are in purpose and
+nature, and eventually how to manage them.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Those
+differences seem to have been forgotten in the intervening years. I now
+see would-be Agile teams suffering from doing only incremental
+development, where I used to see waterfall-type projects suffering from
+doing neither or only iterative development.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Both are needed. People need to learn to use them separately as well as together.</p><span class="ctSectionTitle">Definitions, Please!</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Briefly,</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>
+						<strong><i> Incremental </i></strong>development
+is a staging and scheduling strategy in which various parts of the
+system are developed at different times or rates and integrated as they
+are completed. </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The alternative strategy to incremental development is to develop the entire system with a<i> big-bang </i>integration at the end.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>
+						<strong><i> Iterative </i></strong>development is a rework scheduling strategy in which time is set aside to revise and improve parts of the system. </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The alternative strategy to iterative development is to plan to get everything right the first time.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">It
+is important to notice that neither strategy presupposes, requires, or
+implies the other. It is possible to do either alone, both, or neither.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In
+practice, it is advisable to do both in different quantities. If you
+only increment, there tends to be an unpleasant surprise at the end
+when the quality is not good enough. If you iterate the entire system,
+ripple effects of the changes easily get out of control.</p><span class="ctSectionTitle">It Is Not Waterfall</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">First of all, we need to get past the<i> it looks like waterfall </i>trap.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In
+all development, whether prototype, Agile, tornado, or waterfall, we
+first decide what to build; we then design and program something. Only
+after doing some programming (however much we decide to program), we
+put ourselves in a position to debug the system. Only after the system
+is running can we validate that what we built is the right thing to
+build, built correctly. This sequence is shown in Figure 1.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig1.jpg" alt="Figure 1:  The Validation V Is a Fact of Life " border="0" height="209" width="525"><br>Figure 1: <span class="ctCaption">  The Validation V Is a Fact of Life </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Figure
+1 should really be read backwards, as a dependency diagram: We cannot
+ship till we debug and validate; we cannot debug until we code; we
+cannot code until we design, we cannot design until we have decided
+what to design.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In other words, the<i> validation V </i>is a simple fact of life, and we shall have to deal with it in both incremental and iterative development.</p><span class="ctSectionTitle">Incremental Development</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In
+incremental development, we break up the work into smaller pieces and
+schedule them to be developed over time and integrated as they are
+completed. Figures 2-4 illustrate this procedure.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Imagine
+that the top sheet of blocks represents various user interface
+components, the middle sheet represents middleware, and the bottom
+sheet represents back end or database components.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Figure
+2 shows that in the first increment, a full piece of functionality is
+built from the user interface (UI) through to back end (and in this
+case, additional pieces of the UI are also built). In the second
+increment (Figure 3), we see that additional functionality is added
+across all layers of the system. This may be a sufficient point to
+deploy the system as it is so far to real users and start accruing
+business benefit. In the third increment (Figure 4), the rest of the
+system is completed and incremented.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig2.jpg" alt="Figure 2:  Incremental Development, Stage1 " border="0" height="263" width="270"><br>Figure 2: <span class="ctCaption">  Incremental Development, Stage1 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig3.jpg" alt="Figure 3:  Incremental Development, Stage 2 " border="0" height="262" width="270"><br>Figure 3: <span class="ctCaption">  Incremental Development, Stage 2 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig4.jpg" alt="Figure 4:  Incremental Development, Stage 3 " border="0" height="250" width="270"><br>Figure 4: <span class="ctCaption">  Incremental Development, Stage 3 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+pattern just described is the one used by most modern projects, Agile
+or not. It is a staging strategy with a long history of success.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+mistake people make these days is they forget to iterate. They do not
+factor in the time to learn what they misunderstood when they decided
+what to build at the very beginning and what needs to be improved in
+the design.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">This
+mistake results in the old failure of delivering what people do not
+want. I wish to highlight that even many Agile project teams make this
+mistake.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The correcting strategy is iterative development.</p><span class="ctSectionTitle">Iterative Development</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In iterative development, we set aside time to improve what we have.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Requirements
+and user interfaces are the most notorious places where we historically
+have had to revise our work, but they are not the only ones.
+Technology, architecture, and algorithms are also likely to need
+inspection and revision. Performance underload is often wrongly guessed
+in the early stages of design, requiring a major architectural revision.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">In
+terms of the validation V, the difference is that instead of
+integrating and perhaps shipping the software at the end of the cycle,
+we<i> examine </i>it from various standpoints: Was it the right thing to develop? Do the users like the way it works? Does it work fast enough?</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Figure 5 shows the validation V for an iterative development cycle.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig5.jpg" alt="Figure 5:  The Validation V for an Iterative Cycle " border="0" height="219" width="525"><br>Figure 5: <span class="ctCaption">  The Validation V for an Iterative Cycle </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">There are two particular, specialized rework strategies:</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>Develop
+the system as well as possible in the thinking that if it is done
+sufficiently well, the changes will be relatively minor and can be
+incorporated quickly. </li>
+					<li>Develop the least amount
+possible before sending out for evaluation, in the thinking that less
+work will be wasted when the new information arrives. </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">There
+are aficionados of both approaches. Indeed, both work well under
+certain circumstances. A project manager must learn to use both.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+following is an effective use of the first strategy: A musician and a
+photographer were making a DVD together. The musician recorded the
+four-minute track in its entirety. The photographer noticed that a
+small sequence of slide transitions did not match the music. The
+musician re-recorded just those bars, and spliced them into the music
+track.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">To
+show an effective use of the second strategy, I adjust Jeff Patton&#8217;s
+example of the painting of the Mona Lisa, imagining the discussion
+between Leonardo and his patron (Figures 6-8) [4].</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Leonardo draws a sketch of what he intends to do (Figure 6) and goes to the patron, asking, &#8220;How&#8217;s this going to work for you?&#8221;</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig6.jpg" alt="Figure 6:  Iterative Development of the Mona Lisa, Stage 1 " border="0" height="420" width="270"><br>Figure 6: <span class="ctCaption">  Iterative Development of the Mona Lisa, Stage 1 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+patron says, &#8220;No, no, no. She can&#8217;t be looking right, she has to be
+looking left!&#8221; Fortunately, Leonardo has not done too much work yet, so
+this is easy to change.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Leonardo
+goes away, reverses the picture and does some color and detail (Figure
+7). He goes back to the patron: &#8220;By cost, I&#8217;m about one-third done.
+What do you think now?&#8221;</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig7.jpg" alt="Figure 7:  Iterative Development of the Mona Lisa, Stage 2 " border="0" height="423" width="270"><br>Figure 7: <span class="ctCaption">  Iterative Development of the Mona Lisa, Stage 2 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+patron says, &#8220;No, you can&#8217;t make her head look that big! Make it look
+more balanced with her body size.&#8221; (Yes, they had the equivalent of
+Photoshop and airbrushing back then &#8211; he was called<i> Leonardo</i>).</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Leonardo goes away and finishes the painting (Figure 8) and turns in his bill.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig8.jpg" alt="Figure 8:  Iterative Development of the Mona Lisa, Stage 3 " border="0" height="399" width="270"><br>Figure 8: <span class="ctCaption">  Iterative Development of the Mona Lisa, Stage 3 </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The patron says, &#8220;Really, I&#8217;d rather have her eyes bigger, but okay, for the money I&#8217;ve paid, let&#8217;s call it done.&#8221;</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">What I wish to highlight is that both strategies are valid and both fit the<i> iterative </i>tag. In both cases, rework was done on an existing part of the system.</p><span class="ctSectionTitle">Blending the Two</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Incremental
+and iterative development fit well with each other. Taking advantage of
+the validation V, we can arrange to alternate<i> incremental </i>Vs with<i> iterative </i>Vs in various ways to get any number of composite iterative/incremental strategies as Figure 9 illustrates.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<br><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn_Fig9.jpg" alt="Figure 9:  Putting Iterative and Incremental Development Together " border="0" height="294" width="525"><br>Figure 9: <span class="ctCaption">  Putting Iterative and Incremental Development Together </span><br>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Figure
+9 shows a strategy in which each incremental section of the system is
+given two examination/rework periods before being integrated and staged
+for delivery. The figure shows three incremental development periods,
+each increment staged as it gets completed, the whole then shipped as a
+package.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">This is one &#8211; but only one &#8211; of the possible ways to blend the two. As long as they are clearly marked<i> examine </i>and<i> stage </i>(or even better,<i> ship </i>), the Vs can be mixed in almost any combination.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Figure
+9 shows one added benefit of describing increments and iterations with
+Vs: The resulting diagram maps easily to a calendar. Each examine,
+integrate, or ship marker is a milestone in the project manager&#8217;s
+project plan. This allows the project manager to preview and monitor
+the time spent revising. In this way, we put the validation V<i> fact of life </i>to good use in showing our incremental-iterative development strategy.</p><span class="ctSectionTitle">Managing Them</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Superficially,
+the two look very similar. However, they need to be managed
+differently. Increments are easy to spot, easy to separate, relatively
+easy to estimate, and easy to schedule. The entire strategy can be
+summarized in two steps:</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>Divide the system into complete, useful slices of functionality or according to some other useful decomposition you may choose. </li>
+					<li>Do them one after the other. </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Iterations
+are considerably more difficult. They are hard to separate, hard to
+estimate, and hard to schedule. Of course, being difficult does not
+mean you do not have to do all those things. You still have to do them,
+including answering the following three questions:</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>Which items need to get rework periods scheduled? </li>
+					<li>How many rework periods does each need? </li>
+					<li>How long should each rework period be? </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Although
+there is no simple, reliable answer to these questions, there is a
+simple starting strategy from which you can derive a version that fits
+your project [5].</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ul>
+					<li>Plan
+to revise the user interface for sure, plan time to add or revise
+requirements as the end users start to use the system, and suspect that
+the performance-under-load architecture will need to be revised. </li>
+					<li>Allocate
+two revision periods for the user interface design, and one each for
+requirements drift and performance re-architecture. </li>
+					<li>Allocate for the first revision one-third of the initial development time, and for the second revision one half of that. </li>
+				</ul>
+			<p></p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">You will need to develop and test your own numbers, but those might not be bad starting numbers for the first estimate.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">If
+you are doing Agile development with Scrum or eXtreme Programming, make
+sure every user story or backlog card passes through the Scrum sprint
+backlog three times with those multipliers on them as work size
+estimates for the subsequent passes.</p><span class="ctSectionTitle">Three Stories</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Finally, I offer three stories of incremental/iterative development done poorly and done well. The first one, project<i> Baker</i>, shows iterative confused with incremental &#8211; they iterated when they should have incremented. The second one, project<i> Laddie</i>, shows the problem of modern Agile projects incrementing without iterating. The final one, project<i> Winifred</i>, shows them done well.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Project
+Baker was a fixed price, fixed-scope project with 200 people. They
+worked in monthlong cycles (an incremental development strategy).</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+teams were separated and worked in pipeline fashion so that the
+requirements writers wrote requirements for some features for a month
+then passed them along at the start of the next month to the designers.
+A month later, the designers passed the designs along to the
+programmers who programmed for a month. At the end, the testers were
+given pieces of code to test and integrate.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Misunderstanding the term<i> iterative development</i>,
+they then gave everyone instructions that requirements and design could
+be changed at any time (this was their iterative development strategy).</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+pandemonium that ensued is just what you might expect. Each month the
+requirements writers revised any part of the requirements document,
+which changed any amount of design and programming. By the third month,
+it was obvious to the programmers that they were programming a system
+that had already been changed by the designers who were simultaneously
+aware that they were designing a system that had already been changed
+by the requirements writers. The testers never got anything that fit
+together.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Project Baker was in trouble from the start, partly due to the pipelining strategy but even more to the uncontrolled iteration.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Let us look at an Agile failure mode.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Project
+Laddie was using an Agile approach with two-week iterations. All user
+stories were put into a long list and developed to completion each
+iteration (their incremental development strategy). At the end of each
+iteration, the customer was shown what had been built during those two
+weeks. Of course, since two weeks is a very short time, there was never
+time to show the customer what was being designed so there generally
+were corrections to be made.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+customer had to choose whether to delay work on new user stories in
+order to correct the mistakes made, or to push the corrections to the
+back of the work queue. (This was their iterative development strategy
+&#8211; not a very nice one from the customer&#8217;s perspective.)</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The
+customer complained after a while that he felt he had to get things
+right the first time since the choices given to him about how and when
+to fix mistakes were not very pleasant. This, he correctly felt,
+violated the very spirit of Agile development [6].</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Let us end with a happy story.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Project
+Winifred was a fixed price, fixed-scope, fixed-time project of 18
+months, using about 45 people at its peak. The basic development cycle
+was three months, resulting in deployment after each cycle [7]. (This
+was the incremental strategy.)</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">There
+was no particular incremental strategy required within each development
+cycle &#8211; the teams got to develop features in any sequence they wanted.
+However, every team had to show their ongoing work to real users at
+least twice within each cycle, so that the users could change or
+correct what was being built (their iterative strategy). It had to be
+real software, from user interface to database, not just screen
+mock-ups.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Typically,
+each team showed the users what they were building after six weeks of
+work and again after eight weeks of work. In the first user viewing,
+perhaps 60-80 percent of the functionality was complete. The users were
+given the right to change anything they did not like about what they
+saw, including<i> I know that&#8217;s what I said I wanted, but now that I see it, it is actually not what I want at all</i>.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">By
+the second viewing, perhaps 90-95 percent of the functionality was
+complete, and the users were only allowed to correct egregious mistakes
+and make fine-tuning corrections. This permitted both requirements and
+user interface correction while still making sense for a fixed-price
+contract.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Project
+Winifred deployed successfully and the users got more-or-less what they
+wanted. The system is still in use and being maintained a decade later,
+which is a fair indicator of success.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Note that project Winifred&#8217;s incremental-iterative strategy combination followed the style of the Mona Lisa story earlier.</p><span class="ctSectionTitle">Summary</span><br><p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The word<i> increment </i>fundamentally means<i> add onto</i>.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The word<i> iterate </i>fundamentally means<i> re-do</i>.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Sadly,<i> iterative development </i>has
+come to mean either incremental or iterative, indiscriminately. That
+was an unfortunate turn for our industry since each serves a different
+purpose and needs to be managed differently.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Incremental
+development gives you opportunities to improve your development
+process, as well as adjust the requirements to the changing world.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Iterative
+development helps you improve your product quality. Yes, it is rework,
+and yes, you probably need to do some rework to make your product shine.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">The development process, feature set, and product quality all need constant improvement. Use an<i> incremental </i>strategy, with reflection, to improve the first two. Use an<i> iterative </i>strategy, with reflection, to improve the third.</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				<strong> References </strong>
+				<strong>  </strong>
+			</p>
+<p xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+				</p><ol>
+					<li>Cockburn, A. &#8220;The Impact of Object Orientation on Application Development.&#8221;<i> IBM Systems Journal </i>Nov. 1993. </li>
+					<li>Cockburn, A. &#8220;Unraveling Incremental Development.&#8221;<i> Alistair Cockburn </i>&lt;http://alistair.cockburn. us/index.php/Unraveling_incre mental_development&gt;. </li>
+					<li>Cockburn, A. &#8220;Using VW Staging to Clarify Spiral Development.&#8221;<i> Alistair Cockburn </i>&lt;http://alistair.cockburn. us/index.php/Using _VW_staging _to_clarify_spiral_development&gt;. </li>
+					<li>Patton, J. &#8220;The Neglected Practice of Iteration.&#8221;<i> StickyMinds </i>&lt;www.sticky minds.com/sitewide.asp?Function= edetail&amp;ObjectType=COL&amp;ObjectId=13178&gt;. </li>
+					<li>Cockburn, A. &#8220;Three Cards for User Rights.&#8221;<i> Alistair Cockburn </i>&lt;http:// alistair.cockburn.us/index.php/Three_cards_for_user_rights&gt;. </li>
+					<li>Cockburn, A. &#8220;Are Iterations Hazardous to Your Project?&#8221;<i> Alistair Cockburn </i>&lt;http://alistair.cockburn. us/index.php/Are_iterations_ hazardous_to_your_project?&gt;. </li>
+					<li>Cockburn, A.<i> Surviving Object-Oriented Projects</i>. Addison-Wesley, 1998. </li>
+				</ol>
+			<p></p>
+<hr><span class="ctSectionTitle">About the Author</span><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/0805Cockburn.jpg" alt="Dr. Alistair Cockburn" align="center" border="0" height="158" width="134"><p>
+			<strong xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Alistair Cockburn, Ph.D., </strong>is
+an expert on object-oriented (OO) design, software development
+methodologies, use cases, and project management. He is the author of <i xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Agile Software Development</i>, <i xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Writing Effective Use Cases</i>, and <i xmlns:msn="http://www.stsc.hill.af.mil/msn" xmlns:xs="http://www.w3.org/2001/XMLSchema">Surviving OO Projects</i>
+and was one of the authors of the Agile Development Manifesto. Cockburn
+defined an early agile methodology for the IBM Consulting Group, served
+as special advisor to the Central Bank of Norway, and has worked for
+companies in several countries. Many of his materials are available
+online at &lt;http://alistair.cockburn.us&gt;. <br><br>1814 East Fort Douglas CIR<br>Salt Lake City, UT 84103<br>
+		                	Phone:  (801) 582-3162<br>
+		                	E-mail: <a href="mailto:acockburn@aol.com">acockburn@aol.com</a><br></p><br clear="all"></td>
+</tr>
+</tbody></table>
+		
+		</td>
+	</tr>
+</tbody></table>
+<table summary="Footer" border="0" cellpadding="0" cellspacing="0">
+	<tbody><tr> 
+		<td rowspan="4" class="leftNav"><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/nav_left_logo_usaf.gif" alt="USAF Logo" border="0" height="95" width="131"></td>
+		<td align="right"><br><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/vert_line.gif" alt="" border="0" height="26" hspace="11" width="1"></td>
+		<td><br><a href="http://www.stsc.hill.af.mil/about/privacysecurity.html">Privacy and Security Notice</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="http://www.stsc.hill.af.mil/about/disclaimer.html">External Links Disclaimer</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="http://www.stsc.hill.af.mil/about/sitemap.html">Site Map</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="http://www.stsc.hill.af.mil/about/info.html">Contact Us</a></td>
+	</tr>
+	<tr>
+		<td class="rule"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/spacer.gif" alt="" border="0" height="1" width="18"></td>
+		<td class="rule"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="1" width="200"></td>
+	</tr>
+	<tr>
+		<td><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="1" width="30"></td>
+		<td class="footer"><img src="0805Cockburn%20-%20iterative%20and%20incremental%20development_files/clear.gif" alt="" border="0" height="10" width="18"><br>
+
+
+		Please <a href="http://www.stsc.hill.af.mil/emailstsc.html" target="_blank">E-mail</a> or call 801-775-5555 (DSN 775-5555) if you have any questions regarding your <a href="http://www.stsc.hill.af.mil/crosstalk/subscribe.html">CrossTalk subscription</a> or for additional STSC information.<br><br>
+		<strong>Webmaster:</strong> 517th SMXS/MDEA, 801-777-0857 (DSN 777-0857), <a href="http://www.stsc.hill.af.mil/emailstsc.html" target="_blank">E-mail</a><br><br>
+      	<strong>STSC Parent Organizations: </strong> <a href="http://www.309smxg.hill.af.mil/" target="_blank">309SMXG</a> <a href="http://www.hill.af.mil/" target="_blank">Ogden Air Logistics Center, Hill AFB</a>
+
+
+</td>
+	</tr>
+</tbody></table>
+<br>
+<br>
+
+
+<div style="border: 1px solid rgb(153, 102, 204); overflow: hidden; position: absolute; visibility: hidden; left: -500px; top: 0px; width: 98px; cursor: default; height: 119px;" id="HM_Menu1"><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 0px;" id="HM_Item1_1">Consulting Svcs</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 20px;" id="HM_Item1_2">CrossTalk</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 40px;" id="HM_Item1_3">Conference</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 60px;" id="HM_Item1_4">Customers</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 80px;" id="HM_Item1_5">Contact Us</div><div style="padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 92px; top: 100px;" id="HM_Item1_6">Site Map</div></div><div style="border: 1px solid rgb(153, 102, 204); overflow: hidden; position: absolute; visibility: hidden; left: -500px; top: 0px; width: 148px; cursor: default; height: 179px;" id="HM_Menu2"><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 0px;" id="HM_Item2_1">CMMI</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 20px;" id="HM_Item2_2">SW Estimation</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 40px;" id="HM_Item2_3">Proc Improvement</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 60px;" id="HM_Item2_4">Project Mgmt</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 80px;" id="HM_Item2_5">Configuration Mgmt</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 100px;" id="HM_Item2_6">Sys Eng &amp; Development</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 120px;" id="HM_Item2_7">SW Measurement</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 140px;" id="HM_Item2_8">SW Quality Engineering</div><div style="padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 142px; top: 160px;" id="HM_Item2_9">Tech Adoption Svcs</div></div><div style="border: 1px solid rgb(153, 102, 204); overflow: hidden; position: absolute; visibility: hidden; left: -500px; top: 0px; width: 108px; cursor: default; height: 159px;" id="HM_Menu3"><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 0px;" id="HM_Item3_1">About CrossTalk</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 20px;" id="HM_Item3_2">Current Issue</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 40px;" id="HM_Item3_3">Subscription</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 60px;" id="HM_Item3_4">Theme Calendar</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 80px;" id="HM_Item3_5">Author Guidelines</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 100px;" id="HM_Item3_6">Back Issues</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 120px;" id="HM_Item3_7">Article Index</div><div style="padding: 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 102px; top: 140px;" id="HM_Item3_8">Your Comments</div></div><div style="border: 1px solid rgb(153, 102, 204); overflow: hidden; position: absolute; visibility: hidden; left: -500px; top: 0px; width: 108px; cursor: default; height: 119px;" id="HM_Menu5"><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 0px;" id="HM_Item5_1">Seminars</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 20px;" id="HM_Item5_2">Events</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 40px;" id="HM_Item5_3">Technical Docs</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 60px;" id="HM_Item5_4">Web Sites</div><div style="border-bottom: 1px solid rgb(0, 0, 0); padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 80px;" id="HM_Item5_5">FAQ</div><div style="padding: 3px 16px 3px 3px; position: absolute; visibility: inherit; cursor: pointer; background-color: rgb(204, 204, 255); color: rgb(51, 0, 102); font-family: Verdana,Helvetica,Arial,sans-serif; font-style: normal; font-variant: normal; font-weight: normal; font-size: 8pt; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; left: 0px; width: 89px; top: 100px;" id="HM_Item5_6">Help Desk</div></div></body></html>

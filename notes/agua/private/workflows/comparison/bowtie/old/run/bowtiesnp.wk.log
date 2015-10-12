@@ -1,0 +1,523 @@
+[workflow bowtiesnp]
+2011-01-19 17:41:12
+
+
+Workflow:
+name           bowtiesnp
+owner          anonymous
+outputdir      /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie/run
+wkfile         /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie/bowtiesnp.wk
+outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie/run/bowtiesnp.wk.bkp
+start          7
+stop           7
+	
+  Application:
+  name           copysplit
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Link split file subdirectories and generate splitfile.txt file in target directory
+  ordinal        1
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    loop           distributed
+    looplabel      eland-copysplit
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-copysplit.out
+    maxjobs        2000
+    mode           link
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+    queue          small
+    replicates     1-33
+    source         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    target         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%
+    walltime       24
+
+	
+  Application:
+  name           bowtie
+  owner          anonymous
+  type           aligner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through 1-33 files doing Bowtie alignment with split read input files
+  ordinal        2
+
+    Parameters:
+    clean          
+    cluster        LSF
+    cpus           1
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          bowtie-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/loop-bowtie.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%/bowtie.out
+    walltime       24
+
+	
+  Application:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        3
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/loop-binbam.out
+    maxjobs        2000
+    queue          small
+    reference      chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%/binbam.out
+    walltime       48
+
+	
+  Application:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively
+  ordinal        4
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/33
+    label          bowtie-cumulative
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative
+    queue          small
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/cumulative.out
+    walltime       48
+
+	
+  Application:
+  name           bamtosnp
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Call SNPs from .bam files using samtools
+  ordinal        5
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/bamToSnp.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/loop-bamtosnp.out
+    maxdepth       500
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22
+    queue          small
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%/bamtosnp.out
+    walltime       48
+
+	
+  Application:
+  name           snptosav
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+  ordinal        6
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    dbsnp          snp130
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/loop-sav.out
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative
+    queue          small
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/sav-%REPLICATE%.out
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/snp130
+    walltime       24
+
+	
+  Application:
+  name           unbinsav
+  owner          anonymous
+  location       perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+  description    Join the binned .sav files into a single .sav file for each cumulative iteration
+  ordinal        7
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/33
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative
+    queue          small
+    suffix         sav
+    walltime       48
+
+
+
+[app unbinsav]
+2011-01-19 17:41:12
+
+  Application:
+  name           unbinsav
+  owner          anonymous
+  location       perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+  description    Join the binned .sav files into a single .sav file for each cumulative iteration
+  ordinal        7
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie/run/7-unbinsav.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/33
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative
+    queue          small
+    suffix         sav
+    walltime       48
+
+Command:
+
+perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl \
+ --binlevel 500000 \
+ --suffix sav \
+ --filename hit.bam \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/33 \
+ --walltime 48 \
+ --cluster LSF \
+ --queue small \
+ --cpus 1 \
+ --maxjobs 1000 
+
+
+Output:
+
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312707
+UCSCBin::setBinsByRange    hitstart: 16050016
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/2/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312579
+UCSCBin::setBinsByRange    hitstart: 16050012
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/3/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312389
+UCSCBin::setBinsByRange    hitstart: 16050054
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/4/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5315472
+UCSCBin::setBinsByRange    hitstart: 16050028
+UCSCBin::setBinsByRange    hitstop: 51244528
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/5/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5313369
+UCSCBin::setBinsByRange    hitstart: 16050002
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/6/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5316508
+UCSCBin::setBinsByRange    hitstart: 16050017
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/7/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5311800
+UCSCBin::setBinsByRange    hitstart: 16050047
+UCSCBin::setBinsByRange    hitstop: 51244528
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/8/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5314240
+UCSCBin::setBinsByRange    hitstart: 16050002
+UCSCBin::setBinsByRange    hitstop: 51244525
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/9/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5314129
+UCSCBin::setBinsByRange    hitstart: 16050005
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/10/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5305973
+UCSCBin::setBinsByRange    hitstart: 16050003
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/11/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5309627
+UCSCBin::setBinsByRange    hitstart: 16050002
+UCSCBin::setBinsByRange    hitstop: 51244527
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/12/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5310399
+UCSCBin::setBinsByRange    hitstart: 16050040
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/13/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5314813
+UCSCBin::setBinsByRange    hitstart: 16050003
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/14/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5310299
+UCSCBin::setBinsByRange    hitstart: 16050007
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/15/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5310441
+UCSCBin::setBinsByRange    hitstart: 16050044
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/16/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312616
+UCSCBin::setBinsByRange    hitstart: 16050008
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/17/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5316787
+UCSCBin::setBinsByRange    hitstart: 16050058
+UCSCBin::setBinsByRange    hitstop: 51244525
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/18/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312683
+UCSCBin::setBinsByRange    hitstart: 16050039
+UCSCBin::setBinsByRange    hitstop: 51244529
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/19/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5311991
+UCSCBin::setBinsByRange    hitstart: 16050022
+UCSCBin::setBinsByRange    hitstop: 51244527
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/20/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5315954
+UCSCBin::setBinsByRange    hitstart: 16050022
+UCSCBin::setBinsByRange    hitstop: 51244524
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/21/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5317230
+UCSCBin::setBinsByRange    hitstart: 16050002
+UCSCBin::setBinsByRange    hitstop: 51244528
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/22/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5308163
+UCSCBin::setBinsByRange    hitstart: 16050024
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/23/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5315789
+UCSCBin::setBinsByRange    hitstart: 16050022
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/24/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5317696
+UCSCBin::setBinsByRange    hitstart: 16050074
+UCSCBin::setBinsByRange    hitstop: 51244529
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/25/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5322290
+UCSCBin::setBinsByRange    hitstart: 16050001
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/26/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5312453
+UCSCBin::setBinsByRange    hitstart: 16050038
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/27/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5314191
+UCSCBin::setBinsByRange    hitstart: 16050050
+UCSCBin::setBinsByRange    hitstop: 51244529
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/28/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5318238
+UCSCBin::setBinsByRange    hitstart: 16050037
+UCSCBin::setBinsByRange    hitstop: 51244528
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/29/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5316556
+UCSCBin::setBinsByRange    hitstart: 16050008
+UCSCBin::setBinsByRange    hitstop: 51244528
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/30/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5313717
+UCSCBin::setBinsByRange    hitstart: 16050073
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/31/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5311116
+UCSCBin::setBinsByRange    hitstart: 16050004
+UCSCBin::setBinsByRange    hitstop: 51244531
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/32/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5313440
+UCSCBin::setBinsByRange    hitstart: 16050014
+UCSCBin::setBinsByRange    hitstop: 51244530
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    rangefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/33/chr22/hit.bam.range
+UCSCBin::setBinsByRange    readnumber: 5319740
+UCSCBin::setBinsByRange    hitstart: 16050040
+UCSCBin::setBinsByRange    hitstop: 51244527
+
+UCSCBin::unbin    Running 33 jobs
+Cluster::execute    executing 33 jobs
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-1.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-1-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-1.sh
+Job <3274028> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-2.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-2-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-2.sh
+Job <3274029> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-3.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-3-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-3.sh
+Job <3274030> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-4.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-4-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-4.sh
+Job <3274031> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-5.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-5-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-5.sh
+Job <3274032> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-6.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-6-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-6.sh
+Job <3274033> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-7.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-7-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-7.sh
+Job <3274034> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-8.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-8-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-8.sh
+Job <3274035> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-9.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-9-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-9.sh
+Job <3274036> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-10.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-10-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-10.sh
+Job <3274037> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-11.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-11-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-11.sh
+Job <3274038> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-12.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-12-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-12.sh
+Job <3274039> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-13.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-13-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-13.sh
+Job <3274040> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-14.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-14-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-14.sh
+Job <3274041> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-15.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-15-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-15.sh
+Job <3274042> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-16.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-16-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-16.sh
+Job <3274043> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-17.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-17-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-17.sh
+Job <3274044> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-18.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-18-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-18.sh
+Job <3274045> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-19.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-19-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-19.sh
+Job <3274046> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-20.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-20-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-20.sh
+Job <3274047> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-21.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-21-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-21.sh
+Job <3274048> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-22.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-22-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-22.sh
+Job <3274049> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-23.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-23-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-23.sh
+Job <3274050> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-24.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-24-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-24.sh
+Job <3274051> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-25.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-25-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-25.sh
+Job <3274052> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-26.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-26-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-26.sh
+Job <3274053> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-27.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-27-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-27.sh
+Job <3274054> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-28.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-28-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-28.sh
+Job <3274055> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-29.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-29-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-29.sh
+Job <3274056> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-30.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-30-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-30.sh
+Job <3274057> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-31.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-31-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-31.sh
+Job <3274058> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-32.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-32-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-32.sh
+Job <3274059> is submitted to queue <small>.
+Cluster::execute    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-33.sh
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/unbin-chr22-33-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/scripts/unbin-chr22-33.sh
+Job <3274060> is submitted to queue <small>.
+Cluster::runJobs    doing check 0 with checkCompleted(jobs, label)
+Cluster::checkCompleted    Cluster::checkCompleted(jobs, label)
+Cluster::checkCompleted    label: unbin
+Cluster::checkCompleted    no. jobs: 33
+Cluster::runJobs    completed: 1
+Cluster::printCheckfiles    Opening logfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/check/unbin/check.log
+Cluster::runJobs    Completed unbin at 11-01-19 17:42:13, duration: 00:00:50
+Cluster::usageStats    Checking non-batch stdout file
+Cluster::runJobs    Doing printUsage       11-01-19 17:42:13
+Cluster::printUsage    printUsage(jobs, label)
+Cluster::printUsage    BEFORE outputdir: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative
+Cluster::printUsage    AFTER outputdir: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22
+Cluster::printUsage    usagefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/usage/unbin-usage.txt
+Cluster::printUsage    No. batchstats: 1
+Cluster::printUsage    batchstats[0]: 
+Cluster::printUsage    Printing USAGE file: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/usage/unbin-usage.txt
+Cluster::runJobs    After printUsage       11-01-19 17:42:13
+Cluster::runJobs    cleanup not defined. Leaving scriptfiles.
+unbin.pl    Run time: 00:01:00
+unbin.pl    Completed /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+unbin.pl    5:42PM, 19 January 2011
+unbin.pl    ****************************************
+
+
+
+
+
+Completed workflow bowtiesnp

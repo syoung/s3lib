@@ -1,0 +1,1055 @@
+Notes-apps-gbrowse.txt
+
+
+</entry>
+
+
+
+<entry [Mon Aug  4 20:49:41 EDT 2008] PROCESS ***NCBI*** cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES>
+
+
+
+
+1. CALCULATE CHROMOSOME SIZES ON solexa:
+
+cd ~/base/bin/nextgen
+./chomosome_sizes.pl -d ~/base/pipeline/human-genome
+
+emacs /home/syoung/base/pipeline/human-genome/chromosome_positions.txt
+
+    chr1    0       252194715       252194715
+    chr2    252194716       500004889       247810173
+    chr3    500004890       703496755       203491865
+    chr4    703496756       898595282       195098526
+    chr5    898595283       1083070308      184475025
+    chr6    1083070309      1257388302      174317993
+    chr7    1257388303      1419386157      161997854
+    ...
+
+2. GET CDNA POSITIONS USING CHROMOSOME START POSITIONS TO FILTER cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES
+
+cd /home/syoung/base/pipeline/human-cdna-embl
+grep -n ">" Homo_sapiens.NCBI36.49.cdna.known.fas > cdna_positions.txt
+
+head cdna_positions.txt
+1:>ENST00000391556 cdna:known supercontig::NT_113908:7373:8827:-1 gene:ENSG00000212867
+27:>ENST00000361390 cdna:known chromosome:NCBI36:MT:3308:4264:1 gene:ENSG00000198888
+44:>ENST00000391565 cdna:known chromosome:NCBI36:MT:3308:5514:1 gene:ENSG00000212876
+82:>ENST00000361453 cdna:known chromosome:NCBI36:MT:4471:5512:1 gene:ENSG00000198763
+101:>ENST00000391564 cdna:known chromosome:NCBI36:MT:5585:7515:1 gene:ENSG00000212875
+135:>ENST00000361624 cdna:known chromosome:NCBI36:MT:5905:7446:1 gene:ENSG00000198804
+162:>ENST00000361739 cdna:known chromosome:NCBI36:MT:7587:8270:1 gene:ENSG00000198712
+175:>ENST00000391563 cdna:known chromosome:NCBI36:MT:7587:8295:1 gene:ENSG00000212874
+188:>ENST00000361851 cdna:known chromosome:NCBI36:MT:8367:8573:1 gene:ENSG00000198744
+193:>ENST00000361899 cdna:known chromosome:NCBI36:MT:8528:9208:1 gene:ENSG00000198899
+
+
+3. CREATE GFF FILE USING cdna_positions.txt FILE AND chromosome_positions.txt FILE
+
+./cdna2gff.pl -d /home/syoung/base/pipeline/human-cdna -i /home/syoung/base/pipeline/human-genome/chromosome_positions.txt
+
+
+NB: GET REFSEQ CDNAS FROM HERE:
+
+ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/RNA
+
+    rna.gbk.gz  -   CONTAINS 45,045 cDNAs
+    rna.gbk.gz  -   
+
+BUT NEED MAPPINGS OF POSITIONS OF CDNAS ON GENOME...
+
+
+CHECKED AT ucsc:
+
+ftp://hgdownload.cse.ucsc.edu/goldenPath/hg18/
+
+( nb: THIS CONTAINS ONLY THE GENOME: ftp://ftp.ncbi.nih.gov/refseq )
+
+
+    
+
+
+</entry>
+
+
+
+<entry [Fri Aug  8 16:07:27 EDT 2008] TEST OF ELAND READS ALIGNED WITH cDNA>
+
+
+
+http://204.68.94.166/cgi-bin/gbrowse/human/
+
+SEARCH
+
+chr1:58954..59954
+
+
+
+</entry>
+
+
+
+<entry [Sun Aug  3 18:22:18 EDT 2008] INSTALL ASTD ALTERNATIVE SPLICE SITES GFF TO GBROWSE human_chr1>
+
+
+
+1. CREATE EMPTY human_chr1 DIRECTORY AND MAKE chmod 777
+
+cd /var/www/html/gbrowse/databases
+mkdir human_chr1
+chmod 777 human_chr1
+
+#2. INSTALL chr1 FASTA FILE AS human_chr1.fa INTO human_chr1 DIRECTORY
+#
+#cd /var/www/html/gbrowse/databases/human_chr1
+#ll 
+
+
+
+
+3. CREATE CONF FILE AND SET db_args SO THAT FASTA FILE WILL BE ALSO LOADED
+
+db_args       = -adaptor memory
+		-dir     '/var/www/html/gbrowse/databases/human_chr1'
+        
+
+    cd /etc/httpd/conf/gbrowse.conf
+    
+
+
+
+2. INSTALL ALTERNATE SPLICING GFF FILE
+
+     STD Feb 2008 Release 1.1 (current release)
+    
+        * Go to the FTP site
+        * README - read these first!
+        * [new]New available flat files
+    
+    Species 	Feb 2008 Release 1.1
+    Homo Sapiens 	
+    
+        * data in EMBL format
+        * Genome coordinates (GFF3)             <--- 9606_features.gff
+        * Genome coordinates (GTF2.2)
+        * Fasta format sequences of all transcripts
+        * Fasta format sequences of all exons
+        * Fasta format sequences of all peptides
+        * Splice events (GFF3) [new]
+        * Splice events (UCSC BED) [new]
+        * transcripts per million (TPM) expression
+
+
+2. COPY 9606_features.gff.gz TO THE NEW human_chr1 DIRECTORY, UNZIP AND RENAME
+
+    SSH COPY FROM C:\DATA\05-ng.exons\download TO /var/www/html/gbrowse/databases/human_chr1
+
+    gunzip 9606_features.gff.gz
+
+
+
+
+    cp tutorial/data_files/human_chr11.gff databases/human_chr1
+    emacs tutorial/data_files/human_chr11.gff/human_chr1
+    
+        # file: human_chr11.gff
+        ctgA	example	contig	1	50000	.	.	.	Contig ctgA
+        ctgA	example	my_feature	1659	1984	.	+	.	My_feature f07
+        ctgA	example	my_feature	3014	6130	.	+	.	My_feature f06
+        ctgA	example	my_feature	4715	5968	.	-	.	My_feature f05
+        ctgA	example	my_feature	13280	16394	.	+	.	My_feature f08
+        ctgA	example	my_feature	15329	15533	.	+	.	My_feature f10
+        ctgA	example	my_feature	19157	22915	.	-	.	My_feature f13
+        ctgA	example	my_feature	22132	24633	.	+	.	My_feature f15
+        ctgA	example	my_feature	23072	23185	.	+	.	My_feature f14
+        ctgA	example	my_feature	24562	28338	.	+	.	My_feature f02
+        ctgA	example	my_feature	36034	38167	.	+	.	My_feature f09
+        ctgA	example	my_feature	36649	40440	.	-	.	My_feature f03
+        ctgA	example	my_feature	37242	38653	.	+	.	My_feature f04
+        ctgA	example	my_feature	44705	47713	.	-	.	My_feature f01
+        ctgA	example	my_feature	46990	48410	.	-	.	My_feature f11
+        ctgA	example	my_feature	49758	50000	.	-	.	My_feature f12
+
+
+5. COPY human_chr1.conf (__NOT human_chr11.conf__) CONF FILE INTO /etc/httpd/conf/gbrowse.conf DIRECTORY
+
+    CHECK CONTENTS OF conf_files DIRECTORY
+
+    ll tutorial/conf_files/
+    
+    
+    
+
+</entry>
+
+
+
+<entry [Mon Aug  4 20:49:41 EDT 2008] PROCESS ***NCBI*** cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES>
+
+
+
+
+1. CALCULATE CHROMOSOME SIZES ON solexa:
+
+cd ~/base/bin/nextgen
+./chomosome_sizes.pl -d ~/base/pipeline/human-genome
+
+    ...
+    Output file printed:    
+    /home/syoung/base/pipeline/human-genome/chromosome_positions.txt    
+    
+    Run time: 00:00:30
+    Completed ./chromosome_positions.pl
+    9:18PM, 4 August 2008
+    ****************************************
+
+emacs /home/syoung/base/pipeline/human-genome/chromosome_positions.txt
+
+    chr1    0       252194715       252194715
+    chr2    252194716       500004889       247810173
+    chr3    500004890       703496755       203491865
+    chr4    703496756       898595282       195098526
+    chr5    898595283       1083070308      184475025
+    chr6    1083070309      1257388302      174317993
+    chr7    1257388303      1419386157      161997854
+    chr8    1419386158      1568586482      149200324
+    chr9    1568586483      1711665202      143078719
+    chr10   1711665203      1849747436      138082233
+    chr11   1849747437      1986888870      137141433
+    chr12   1986888871      2121885397      134996526
+    chr13   2121885398      2238311239      116425841
+    chr14   2238311240      2346807198      108495958
+    chr15   2346807199      2449152894      102345695
+    chr16   2449152895      2539756696      90603801
+    chr17   2539756697      2620106935      80350238
+    chr18   2620106936      2697746434      77639498
+    chr19   2697746435      2762834321      65087886
+    chr20   2762834322      2826519007      63684685
+    chr21   2826519008      2874402219      47883211
+    chr22   2874402220      2925087482      50685262
+    chrX    2925087483      3083099514      158012031
+    chrY    3083099515      3142027930      58928415
+
+
+2. USE CHROMOSOME START POSITIONS TO FILTER cDNA AND ALTERNATE TRANSCRIPTS INTO GFF FILES
+
+GET CDNA POSITIONS
+
+cd /home/syoung/base/pipeline/human-cdna-ncbi
+grep -n ">"  1_refSeq_cDNA.fasta > cdna_positions.txt
+
+head cdna_positions.txt
+    2:>ref|NC_000001|58954-59871
+    17:>ref|NC_000001|78028-78732
+    29:>ref|NC_000001|c133801-129490
+    34:>ref|NC_000001|357522-358460
+    49:>ref|NC_000001|c611897-610959
+    64:>ref|NC_000001|c669586-664192
+    70:>ref|NC_000001|c669586-665209
+    76:>ref|NC_000001|c743378-743229
+    ...
+
+
+3. CREATE GFF FILE USING cdna_positions.txt FILE AND chromosome_positions.txt FILE
+
+./cdna2gff.pl -d /home/syoung/base/pipeline/human-cdna-ncbi -i /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -n "human-cdna-ncbi"
+
+cd /home/syoung/base/pipeline/human-cdna-ncbi
+head human-cdna-ncbi-chr1.gff
+
+
+NB: GET REFSEQ CDNAS FROM HERE:
+
+ftp://ftp.ncbi.nih.gov/genomes/H_sapiens/RNA
+
+    rna.fna.gz  -   CONTAINS 45,045 cDNAs
+
+BUT NEED MAPPINGS OF POSITIONS OF CDNAS ON GENOME...
+
+CHECKED AT ucsc:
+
+ftp://hgdownload.cse.ucsc.edu/goldenPath/hg18/
+
+( nb: THIS CONTAINS ONLY THE GENOME: ftp://ftp.ncbi.nih.gov/refseq )
+
+
+    
+</entry>
+
+
+
+<entry [Fri Aug  1 21:15:38 EDT 2008] GOT CYTOBAND POSITIONS FROM ucsc (USE LATER WITH SVG) AND CHROMSOME IMAGES FOR CONVERSION TO SVG>
+
+
+
+
+
+    The Genome Browser uses the table cytoBand, which has the correspondance 
+    between chromosome band positions and base positions.  You can get this 
+    table for hg18 (March 2006 Assembly) by clicking on "downloads" on the 
+    main page, clicking on "human", and then clicking on "annotation 
+    database".  The file is called cytoBand.txt.gz.
+    
+    Originally, the data were obtained from NCBI here: 
+    http://www.ncbi.nlm.nih.gov/genome/cyto/cytobac.cgi?CHR=all&VERBOSE=ctg .
+    
+    I hope this answers your question.  If you require more assistance, please 
+    don't hesitate to contact us again.
+    
+    Kayla Smith
+    UCSC Genome Bioinformatics Group
+
+
+CHROMOSOME LINE NUMBER POSITIONS IN HUMAN GENOME FASTA FILE:
+
+    cd /home/syoung/base/pipeline/human-genome/ucsc/
+    [syoung@solexa01 ucsc]$ ls
+    chr10.fa  chr14.fa  chr18.fa     chr20.fa  chr3.fa  chr7.fa  chrY.fa
+    chr11.fa  chr15.fa  chr19.fa     chr21.fa  chr4.fa  chr8.fa  dummy
+    chr12.fa  chr16.fa  chr1.fa      chr22.fa  chr5.fa  chr9.fa  human.fasta
+    chr13.fa  chr17.fa  chr1.fa.zip  chr2.fa   chr6.fa  chrX.fa  human.fasta.gff
+
+    [syoung@solexa01 ucsc]$ grep -n ">" human.fasta
+    1:>chr1
+    4944997:>chr2
+    9804021:>chr3
+    13794059:>chr4
+    17619522:>chr5
+    21236681:>chr6
+    24654682:>chr7
+    27831112:>chr8
+    30756610:>chr9
+    33562077:>chr10
+    36269573:>chr11
+    38958622:>chr12
+    41605614:>chr13
+    43888475:>chr14
+    46015848:>chr15
+    48022628:>chr16
+    49799175:>chr17
+    51374671:>chr18
+    52897016:>chr19
+    54173251:>chr20
+    55421972:>chr21
+    56360860:>chr22
+    57354690:>chrX
+    60452967:>chrY
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug  1 21:15:27 EDT 2008] INSTALL volvox AS TEST ON zion>
+
+
+
+NB: zion's IP ADDRESS IS 204.68.94.166
+
+[syoung@zion gbrowse]$ traceroute 204.68.94.166
+traceroute to 204.68.94.166 (204.68.94.166), 30 hops max, 40 byte packets
+ 1  zion.ccs.miami.edu (204.68.94.166)  0.027 ms  0.011 ms  0.007 ms
+[syoung@zion gbrowse]$ 
+
+
+1. CHANGE OWNERSHIPS TO WRITE TO databases AND gbrowse.conf DIRECTORIES:
+
+cd /var/www/html/gbrowse
+sudo chown -R syoung databases/
+sudo chown -R syoung /etc/httpd/conf/gbrowse.conf/
+
+2. CREATE EMPTY volvox DIRECTORY AND MAKE chmod 777
+
+cd /var/www/html/gbrowse/databases
+mkdir volvox
+chmod 777 volvox
+
+
+3. CHECK CONTENT OF YEAST DIRECTORY AND TUTORIAL FILES
+
+cd /var/www/html/gbrowse
+
+ll databases/yeast_chr1/
+
+    -rw-r--r-- 1 syoung root   229K Jul 20 22:36 chromosome1.fa
+    -rw-r--r-- 1 syoung root    22K Jul 20 22:36 chromosome1.gff
+    -rw-r--r-- 1 syoung apache  12K Jul 20 22:42 directory.index
+
+ll tutorial/data_files/
+
+    -rw-r--r-- 1 root root  264 Jul 20 22:36 HEADER.html
+    -rw-r--r-- 1 root root  55K Jul 20 22:36 elegans.fa
+    -rw-r--r-- 1 root root  286 Jul 20 22:36 elegans_acceptor.gff
+    -rw-r--r-- 1 root root  14K Jul 20 22:36 elegans_core.gff
+    -rw-r--r-- 1 root root  269 Jul 20 22:36 elegans_deletion.gff
+    -rw-r--r-- 1 root root  422 Jul 20 22:36 elegans_expression.gff
+    -rw-r--r-- 1 root root 1.7K Jul 20 22:36 elegans_extra.gff
+    -rw-r--r-- 1 root root  679 Jul 20 22:36 elegans_repeats.gff
+    -rw-r--r-- 1 root root  573 Jul 20 22:36 elegans_sts.gff
+    -rw-r--r-- 1 root root 5.1K Jul 20 22:36 ests.fa
+    -rw-r--r-- 1 root root  50K Jul 20 22:36 volvox.fa
+    -rw-r--r-- 1 root root  99K Jul 20 22:36 volvox.gff3
+    -rw-r--r-- 1 root root  915 Jul 20 22:36 volvox1.gff
+    -rw-r--r-- 1 root root  993 Jul 20 22:36 volvox2.gff
+    -rw-r--r-- 1 root root 7.6K Jul 20 22:36 volvox3.gff
+    -rw-r--r-- 1 root root 1.1K Jul 20 22:36 volvox4.gff
+    -rw-r--r-- 1 root root  296 Jul 20 22:36 volvox4a.gff
+    -rw-r--r-- 1 root root  427 Jul 20 22:36 volvox4b.gff
+    -rw-r--r-- 1 root root  198 Jul 20 22:36 volvox5.gff
+    -rw-r--r-- 1 root root  24K Jul 20 22:36 volvox6.gff
+    -rw-r--r-- 1 root root  773 Jul 20 22:36 volvox7.gff
+    -rw-r--r-- 1 root root 1.1K Jul 20 22:36 volvox8.gff
+    -rw-r--r-- 1 root root   72 Jul 20 22:36 volvox9.gff
+    -rw-r--r-- 1 root root  55K Jul 20 22:36 volvox_all.fa
+    -rw-r--r-- 1 root root  35K Jul 20 22:36 volvox_all.gff
+    -rw-r--r-- 1 root root 164K Jul 20 22:36 volvox_trace.scf
+
+
+4. COPY volvox1.gff FROM THE data_files DIRECTORY TO THE NEW volvox DIRECTORY
+
+    cp tutorial/data_files/volvox1.gff databases/volvox
+    emacs tutorial/data_files/volvox1.gff/volvox
+    
+        # file: volvox1.gff
+        ctgA	example	contig	1	50000	.	.	.	Contig ctgA
+        ctgA	example	my_feature	1659	1984	.	+	.	My_feature f07
+        ctgA	example	my_feature	3014	6130	.	+	.	My_feature f06
+        ctgA	example	my_feature	4715	5968	.	-	.	My_feature f05
+        ctgA	example	my_feature	13280	16394	.	+	.	My_feature f08
+        ctgA	example	my_feature	15329	15533	.	+	.	My_feature f10
+        ctgA	example	my_feature	19157	22915	.	-	.	My_feature f13
+        ctgA	example	my_feature	22132	24633	.	+	.	My_feature f15
+        ctgA	example	my_feature	23072	23185	.	+	.	My_feature f14
+        ctgA	example	my_feature	24562	28338	.	+	.	My_feature f02
+        ctgA	example	my_feature	36034	38167	.	+	.	My_feature f09
+        ctgA	example	my_feature	36649	40440	.	-	.	My_feature f03
+        ctgA	example	my_feature	37242	38653	.	+	.	My_feature f04
+        ctgA	example	my_feature	44705	47713	.	-	.	My_feature f01
+        ctgA	example	my_feature	46990	48410	.	-	.	My_feature f11
+        ctgA	example	my_feature	49758	50000	.	-	.	My_feature f12
+
+
+5. COPY volvox.conf (__NOT volvox1.conf__) CONF FILE INTO /etc/httpd/conf/gbrowse.conf DIRECTORY
+
+    CHECK CONTENTS OF conf_files DIRECTORY
+
+    ll tutorial/conf_files/
+
+        -rw-r--r-- 1 root root  292 Jul 20 22:36 HEADER.html
+        -rw-r--r-- 1 root root 2.9K Jul 20 22:36 elegans_core.conf
+        -rw-r--r-- 1 root root 2.7K Jul 20 22:36 elegans_extra.conf
+        -rw-r--r-- 1 root root 2.1K Jul 20 22:36 volvox.conf
+        -rw-r--r-- 1 root root 6.9K Jul 20 22:36 volvox.gff3.conf
+        -rw-r--r-- 1 root root 2.2K Jul 20 22:36 volvox2.conf
+        -rw-r--r-- 1 root root 2.7K Jul 20 22:36 volvox3.conf
+        -rw-r--r-- 1 root root 3.6K Jul 20 22:36 volvox4.conf
+        -rw-r--r-- 1 root root 3.9K Jul 20 22:36 volvox5.conf
+        -rw-r--r-- 1 root root 5.0K Jul 20 22:36 volvox_final.conf
+
+    CHECK CONTENTS OF /etc/httpd/conf/gbrowse.conf DIRECTORY
+    
+    ll /etc/httpd/conf/gbrowse.conf/
+        
+        total 36K
+        drwxr-xr-x 5 root root 4.0K Jul 20 22:36 .
+        drwxr-xr-x 3 root root 4.0K Jul 20 22:36 ..
+        drwxr-xr-x 2 root root 4.0K Jul 20 22:36 MobyServices
+        -r--r--r-- 1 root root 2.7K Jul 20 22:36 enzymes.txt
+        drwxr-xr-x 2 root root 4.0K Jul 20 22:36 languages
+        -r--r--r-- 1 root root 1.4K Jul 20 22:36 log4perl.conf
+        drwxr-xr-x 2 root root 4.0K Jul 20 22:36 plugins
+        -r--r--r-- 1 root root 4.6K Jul 20 22:36 yeast_chr1.conf
+
+    cp tutorial/conf_files/volvox.conf /etc/httpd/conf/gbrowse.conf
+    head /etc/httpd/conf/gbrowse.conf/volvox.conf
+
+        [GENERAL]
+        description   = Volvox Example Database
+        db_adaptor    = Bio::DB::GFF
+        db_args       = -adaptor memory
+                -gff     '/var/www/html/gbrowse/databases/volvox'
+        
+        aggregators = 
+        plugins     = 
+        
+        # list of tracks to turn on by default
+        default features = ExampleFeatures
+        ...
+
+
+    TROUBLESHOOTING:
+    
+        If for some reason you get a blank page or an "Internal server error," there are a couple of things to check. First, open the file volvox.conf with a text editor ("Notepad" on Windows systems, emacs, pico or vi on Unix systems) and confirm that the path to the volvox database directory in this section is correct:
+        
+        db_args       = -adaptor memory
+                -gff    '/var/www/html/gbrowse/databases/volvox'
+        
+        If there is a space in "/var/www/html" then you must be certain to put single quotes around the path as shown in the example above.
+        
+        Next check that the volvox1.gff file does exist inside the volvox database directory and that it is readable by all users on your system. Similarly, check that the volvox.conf configuration file is in the same directory as yeast_chr1.conf, and that it is readable by all users on your system. 
+
+        
+        If you're still having no luck, check the bottom of the Apache server error log for error messages. This file is located in various places depending on how Apache is installed. Look for the file error_log, typically located in /usr/local/apache/logs, C:\Program Files\Apache Group\Apache2\logs, /var/log/www, or /var/log/httpd. The error message will usually point you in the right direction.
+
+        If you're still having no luck, sorry! Stop the tutorial and send an e-mail to GBrowse support at gmod-gbrowse@lists.sourceforge.net
+
+
+    SHOW EXONS AND INTRONS
+    ======================
+    
+    USE A CUSTOMISED AGGREGATOR TO SHOW MULTI-SEGMENTED FEATURES spliced transcripts, and gapped sequence similarity alignments, such as the alignment of cDNAs to the genome. 
+    
+        -   DROP volvox3.gff INTO databases/volvox DIRECTORY
+
+            head databases/volvox/volvox3.gff
+            
+                ctgA   example   match 6885   8999   .   -   .   Match seg03
+                ctgA   example   HSP   6885   7241   .   -   .   Match seg03
+                ctgA   example   HSP   7410   7737   .   -   .   Match seg03
+                ctgA   example   HSP   8055   8080   .   -   .   Match seg03
+                ctgA   example   HSP   8306   8999   .   -   .   Match seg03
+                ctgA   example   match 5233   9825   .   -   .   Match seg04
+                ctgA   example   HSP   5233   5302   .   -   .   Match seg04
+                ctgA   example   HSP   5800   6101   .   -   .   Match seg04
+                ctgA   example   HSP   6442   6854   .   -   .   Match seg04
+                ctgA   example   HSP   7106   7211   .   -   .   Match seg04
+                ctgA   example   HSP   7695   8177   .   -   .   Match seg04
+                ctgA   example   HSP   8545   8783   .   -   .   Match seg04
+                ctgA   example   HSP   8869   8935   .   -   .   Match seg04
+                ctgA   example   HSP   9404   9825   .   -   .   Match seg04
+
+            The types "match" and "HSP" are not arbitrary, but are needed to tell the GBrowse database what the relationship between the full-length feature and its subparts are. The specific type names expected are mediated by a series of "aggregators" -- code modules that are loaded when GBrowse starts up (SEE BELOW).
+
+
+    INSTRUCTIONS
+
+        -   ADD TO BOTTOM (TRACK CONFIGURATION SECTION) OF /etc/httpd/conf/gbrowse.conf/volvox.conf
+    
+            [Alignments]
+            feature      = match
+            glyph        = segments
+            key          = Example alignments
+        
+        -   CHANGE
+        
+                aggregators =
+                
+            TO 
+
+                aggregators = match
+
+        -   UPDATE IMAGE
+        
+
+    OK - DISPLAYS EXONS AS BLOCKS AND INTRONS AS LINES
+    
+        
+    
+    SHOW INTRONS AS ARCHES
+    ======================
+        
+        Use the "processed_transcript" aggregator and its companion glyph "processed_transcript"        
+        
+        The file volvox4.gff defines a gene named EDEN, and its three spliced forms named EDEN.1, EDEN.2 and EDEN.3
+
+        emacs volvox4.gff 
+        
+            ctgA    example gene    1050    9000    .       +       .       Gene EDEN ; Note "protein kinase"
+                                                      
+            ctgA    example mRNA    1050    9000    .       +       .       mRNA EDEN.1 ; Gene EDEN
+            ctgA    example 5'-UTR  1050    1200    .       +       .       mRNA EDEN.1
+            ctgA    example CDS     1201    1500    .       +       0       mRNA EDEN.1
+            ctgA    example CDS     3000    3902    .       +       0       mRNA EDEN.1
+            ctgA    example CDS     5000    5500    .       +       0       mRNA EDEN.1
+            ctgA    example CDS     7000    7608    .       +       0       mRNA EDEN.1
+            ctgA    example 3'-UTR  7609    9000    .       +       .       mRNA EDEN.1
+                                                                       
+            ctgA    example mRNA    1050    9000    .       +       .       mRNA EDEN.2 ; Gene EDEN
+            ctgA    example 5'-UTR  1050    1200    .       +       .       mRNA EDEN.2
+            ctgA    example CDS     1201    1500    .       +       0       mRNA EDEN.2
+            ctgA    example CDS     5000    5500    .       +       0       mRNA EDEN.2
+            ctgA    example CDS     7000    7608    .       +       0       mRNA EDEN.2
+            ctgA    example 3'-UTR  7609    9000    .       +       .       mRNA EDEN.2
+                                                        
+            ctgA    example mRNA    1300    9000    .       +       .       mRNA EDEN.3 ; Gene EDEN
+            ctgA    example 5'-UTR  1300    1500    .       +       .       mRNA EDEN.3
+            ctgA    example 5'-UTR  3000    3300    .       +       .       mRNA EDEN.3
+            ctgA    example CDS     3301    3902    .       +       0       mRNA EDEN.3
+            ctgA    example CDS     5000    5500    .       +       1       mRNA EDEN.3
+            ctgA    example CDS     7000    7600    .       +       1       mRNA EDEN.3
+            ctgA    example 3'-UTR  7601    9000    .       +       .       mRNA EDEN.3
+        
+        The first line of the file defines the gene as a whole, starting at position 1050 of ctgA and extending to position 9000. Following this, there are three sets of lines that define the structure of the spliced forms EDEN.1, EDEN.2, and EDEN.3. By convention, the whole transcript is represented as type "mRNA". It has subparts named "5'-UTR", CDS, and "3'-UTR", where the UTR features are the 5' and 3' untranslated regions, respectively, and CDS is the coding region. Note how the CDS is split by splicing among multiple discontinuous locations on the reference sequence. The UTRs can be split in this way too.
+        
+        Each mRNA and its subparts are grouped together under a common name in the ninth column ("mRNA EDEN.1", "mRNA EDEN.2", and so forth).
+        
+        In addition, each mRNA has a Gene attribute that ties it to the EDEN gene itself ("Gene EDEN").
+        
+        Although this isn't required for the display, doing this will identify the various alternative transcripts as belonging to the same gene should you wish to use the GBrowse database for data mining.
+        
+        It will also show the user what gene the transcript belongs to when he or she clicks on it for details.
+        
+            HINT: If you prefer not to distinguish between 5' and 3' UTRs, you can simply use "UTR" as the type. If you don't know where the UTRs are, just leave them blank. If you'd rather think in terms of exons and introns, then check out the "transcript" aggregator and its corresponding "transcript" glyph. 
+
+
+    INSTRUCTIONS
+
+        -   add volvox4.gff to the database. Then make the following changes to volvox.conf:
+        
+        -   Change the aggregators line to read as follows:
+        
+                  aggregators = match
+                    processed_transcript
+                        
+        
+        -   Add the following new stanza to the bottom of the file:
+        
+                  [Transcripts]
+                  feature      = processed_transcript
+                  glyph        = processed_transcript
+                  bgcolor      = peachpuff
+                  description  = 1
+                  key          = Protein-coding genes
+                        
+        
+        The updated aggregators option loads the processed_transcript aggregator, which knows how to put CDS and UTR features together to form a spliced transcript. The new Transcripts track associates aggregated processed_transcript features with the like-named glyph, sets its background color to peachpuff (yes, there really is a color by this name!), turns on the description lines, and sets the human readable track name to "Protein-coding genes."
+        
+            The aggregators option demonstrates that GBrowse config file
+            options can continue across multiple lines
+            provided that each additional line is indented.
+
+        
+    OK - DISPLAYS the new "Protein-coding genes" track.
+        
+
+
+
+</entry>
+
+
+
+<entry [Tue Jul 29 20:07:16 EDT 2008] TO DO: DOWNLOAD DATA SOURCES FOR HUMAN GENOME TRACKS>
+
+
+
+HGVBase
+
+HapMap
+
+dbSNP
+
+
+
+
+
++++++++++++++++++++++</entry>
+
+
+
+<entry [Sat Jul 19 19:31:18 EDT 2008] INSTALL GBROWSE ON zion>
+
+
+
+
+1. TRIED TO INSTALL WITH yum BUT DIDN'T WORK
+
+    yum install gbrowse
+    
+    [root@zion syoung]# yum install gbrowse
+    Loading "fastestmirror" plugin
+    Determining fastest mirrors
+     * base: mirror.newnanutilities.org
+     * updates: centos.omnispring.com
+     * addons: sunsite.utk.edu
+     * extras: www.gtlib.gatech.edu
+    base                      100% |=========================| 1.1 kB    00:00     
+    base      : ################################################## 3222/3222
+    updates                   100% |=========================|  951 B    00:00     
+    primary.xml.gz            100% |=========================| 153 kB    00:00     
+    updates   : ################################################## 405/405
+    addons                    100% |=========================|  951 B    00:00     
+    extras                    100% |=========================| 1.1 kB    00:00     
+    extras    : ################################################## 240/240
+    Setting up Install Process
+    Parsing package install arguments
+    No package gbrowse available.
+    Nothing to do
+    [root@zion syoung]# 
+    [root@zion syoung]# 
+
+
+2. DOWNLOADED GBrowse
+
+http://sourceforge.net/project/showfiles.php?group_id=27707
+
+3. INSTALLED expat LIBRARY AND XML::Parser MANUALLY
+
+
+    INSTALLED expat-2.0.1.tar.gz
+           
+        sudo su
+        ./configure
+        make
+        make install
+        
+            ...
+            ----------------------------------------------------------------------
+            Libraries have been installed in:
+               /usr/local/lib
+            
+            If you ever happen to want to link against installed libraries
+            in a given directory, LIBDIR, you must either use libtool, and
+            specify the full pathname of the library, or use the `-LLIBDIR'
+            flag during linking and do at least one of the following:
+               - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+                 during execution
+               - add LIBDIR to the `LD_RUN_PATH' environment variable
+                 during linking
+               - use the `-Wl,--rpath -Wl,LIBDIR' linker flag
+               - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+            
+            See any operating system documentation about shared libraries for
+            more information, such as the ld(1) and ld.so(8) manual pages.
+            ----------------------------------------------------------------------
+            for FN in ./lib/expat.h ./lib/expat_external.h ; do /usr/bin/install -c -m 644 $FN /usr/local/include ; done
+            /bin/sh ./conftools/mkinstalldirs /usr/local/bin /usr/local/man/man1
+            mkdir /usr/local/man
+            mkdir /usr/local/man/man1
+            /bin/sh ./libtool --mode=install /usr/bin/install -c xmlwf/xmlwf /usr/local/bin/xmlwf
+            /usr/bin/install -c xmlwf/.libs/xmlwf /usr/local/bin/xmlwf
+            /usr/bin/install -c -m 644 ./doc/xmlwf.1 /usr/local/man/man1
+
+
+    SET LD_LIBRARY_PATH TO libexpat.so DIRECTORY:
+
+        export LD_LIBRARY_PATH=/usr/local/lib
+      
+    THEN INSTALLED XML::PARSER 
+
+        perl Makefile.PL
+        make        
+        make test
+        make install
+        OK        
+        
+        PROBLEM:
+        
+            make test GIVES ERROR (IF YOU DON'T SE THE LD_LIBRARY_PATH ENV. VARIABLE):
+
+                Can't load '/home/syoung/base/apps/XML-Parser-2.35/blib/arch/auto/XML/Parser/Expat/Expat.so'
+        
+        DIAGNOSIS:
+        
+            Expat.so depends on external libraries (libexpat.so). Check which dependencies:
+
+            ldd /home/syoung/base/apps/XML-Parser-2.35/blib/arch/auto/XML/Parser/Expat/Expat.so
+    
+                libexpat.so.1 => not found
+                libc.so.6 => /lib64/libc.so.6 (0x00002aaaaaccd000)
+                /lib64/ld-linux-x86-64.so.2 (0x0000555555554000)
+          
+                locate libexpat.so.1
+                    /home/syoung/base/apps/expat-2.0.1/.libs/libexpat.so.1
+                    /home/syoung/base/apps/expat-2.0.1/.libs/libexpat.so.1.5.2
+                    /usr/local/lib/libexpat.so.1
+                    /usr/local/lib/libexpat.so.1.5.2
+
+        SOLUTION:
+        
+            SET LD_LIBRARY_PATH TO libexpat.so DIRECTORY:
+        
+            export LD_LIBRARY_PATH=/usr/local/lib
+      
+
+
+4. INSTALLED OTHER DEPENDENCIES USING CPAN
+
+sudo su
+perl -MCPAN -e shelll
+
+install Module GD::SVG                  ####Generate optional SVG output
+install Module SOAP::Lite               ####SOAP protocol
+#install Module XML::Parser              ####Parsing of XML documents
+install Module GD                       ####Graphical Drawing Toolkit
+install Module XML::Twig                ####Available on CPAN
+install Module SVG                      ####Generate optional SVG output
+install Module Text::Shellwords         ####Execute shell commands
+install Module XML::Parser::PerlSAX     ####Parsing of XML documents
+install Module XML::Writer              ####Parsing + writing of XML documents
+install Module Graph::Directed          ####Generic Graph data stucture and algorithms
+
+ALSO INSTALLED XML-SAX-0.16 WITH DEPENDENCY XML-NamespaceSupport-1.09
+
+
+5. INSTALLED BioPerl
+
+
+    DOWNLOADED BioPerl version 1.5.2 FROM http://www.bioperl.org
+
+        perl Makefile.PL
+        make
+        make test
+        make install
+        # OK
+
+
+
+6. INSTALLED GBrowse
+
+    DOWNLOADED Generic-Genome-Browser-1.68.tar.gz    
+
+        tar xvfz Generic-Genome-Browser-1.68.tar.gz
+        cd Generic-Genome-Browser-1.68
+        perl Makefile.PL
+        make
+        make test
+        make install
+
+            ...
+            Installing sample_data...
+            Installing contrib...
+            Installing js files...
+            Installing sample data files...
+            
+            
+            #############################################################################
+            GBrowse is now installed.  Read INSTALL for further setup instructions.
+            Go to http://localhost/gbrowse/ for the online tutorial and reference manual.
+            #############################################################################
+
+
+
+
+NOTES
+=====
+(OUTPUT FROM perl Makefile.PL IF DEPENDENCIES NOT ALREADY INSTALLED)
+
+Generic Genome Browser Installation
+
+    GBrowse is distributed as binary packages for Windows and Macintosh OS
+    X, and as source code for Unix systems. These installation instructions
+    are for a source code (manual) build. For binary installations, please
+    see the online instructions located at
+
+    <http://www.gmod.org/wiki/index.php/GBrowse#Installation>
+
+Source Code (Manual) Build
+
+    GBrowse runs on top of several software packages. These must be
+    installed and configured before you can run GBrowse. Most preconfigured
+    Linux systems will have some of these packages installed already.
+
+    A) MySQL -- <http://www.mysql.com>
+        The MySQL database is a fast open source relational database that is
+        widely used for web applications. For small projects (a few
+        thousands of annotated features), you can skip installing MySQL and
+        use an in-memory database instead.
+
+    B) Apache Web Server -- <http://www.apache.org>
+        The Apache web server is the industry standard open source web
+        server for Unix and Windows systems.
+
+    C) Perl 5.005 -- <http://www.cpan.org>
+        The Perl language is widely used for web applications. Version 5.6
+        is preferred, but 5.00503 or higher will work.
+
+    D) Standard Perl modules -- <http://www.cpan.org>
+        The following Perl modules must be installed for GBrowse to work.
+        They can be found on the Comprehensive Perl Archive Network (CPAN):
+
+           CGI                  (2.56 or higher)
+           GD                   (2.07 or higher)
+           CGI::Session         (4.03 or higher)
+           DBI                  (any version)
+           DBD::mysql           (any version)
+           Digest::MD5          (any version)
+           Text::Shellwords     (any version)
+           Class::Base          (any version)
+
+    E) BioPerl version 1.5.2 or higher -- <http://www.bioperl.org>
+        Or 'bioperl-live'.
+
+        INSTALLED BioPerl AFTER INSTALLING expat, XML::Parser AND MANY OTHER PERL MODULES (SEE BELOW):
+        
+        perl Makefile.PL
+        make
+        make test
+        make install
+        
+        
+            
+        NB: INSTALLED XML-SAX-0.16 WITH DEPENDENCY XML-NamespaceSupport-1.09
+                
+                 
+            
+            ** Bio::DB::GFF Tests section** 
+            Do you want to run the BioDBGFF tests (requires a mysql, postgres or oracle database) y/n [n] 
+            
+            External Module GD::SVG, Generate optional SVG output,
+             is not installed on this computer.
+              The  in Bioperl needs it for Bio::Graphics
+        
+            
+            External Module Ace, Aceperl,
+             is not installed on this computer.
+              The Bio::DB::Ace in Bioperl needs it for access of ACeDB database
+            
+            External Module SOAP::Lite, SOAP protocol,
+             is not installed on this computer.
+              The Bio::DB::XEMBLService in Bioperl needs it for XEMBL Services (also Bibliographic queries in Biblio::) 
+            
+            External Module GD, Graphical Drawing Toolkit,
+             is not installed on this computer.
+              The Bio::Graphics in Bioperl needs it for Rendering Sequences and Features
+            
+            External Module XML::Parser, Parsing of XML documents,
+             is not installed on this computer.
+              The Bio::SeqIO::game,Bio::Variation::* in Bioperl needs it for Bio::Variation code, GAME parser
+            
+            External Module XML::Twig, Available on CPAN,
+             is not installed on this computer.
+              The Module Bio::Variation::IO::xml.pm in Bioperl needs it for parsing of XML documents
+            
+            External Module SVG, Generate optional SVG output,
+             is not installed on this computer.
+              The  in Bioperl needs it for Bio::Graphics
+            
+            External Module Text::Shellwords, Execute shell commands,
+             is not installed on this computer.
+              The Bio::Graphics in Bioperl needs it for test scripts
+            
+            External Module XML::Parser::PerlSAX, Parsing of XML documents,
+             is not installed on this computer.
+              The Bio::SeqIO::game,Bio::Variation::* in Bioperl needs it for Bio::Variation code, GAME parser
+            
+            External Module XML::Writer, Parsing + writing of XML documents,
+             is not installed on this computer.
+              The Bio::SeqIO::game,Bio::Variation::* in Bioperl needs it for Bio::Variation code, GAME parser
+            
+            External Module Graph::Directed, Generic Graph data stucture and algorithms,
+             is not installed on this computer.
+              The Bio::Ontology::SimpleOntologyEngine in Bioperl needs it for Ontology Engine implementation for the GO parser
+
+
+    Optional modules:
+
+    F) INSTALL OPTIONAL PERL MODULES:
+    
+        sudo su
+        perl -MCPAN -e shell
+    
+    
+        install URI
+        install HTML::Parser
+        install Text::Shellwords
+        install CGI::Session
+        install GD    
+        install XML::Parser        
+        install XML::Writer
+        install XML::TwiG
+        install XML::DOM
+        
+        If these modules are present, the "Sequence Dumper" plugin will be
+        able to produce GAME and BSML output. They can be downloaded from
+        CPAN.
+
+    G) LWP
+        To load remote 3d party annotations. Available from CPAN.
+
+        LWP dependencies (optional):
+    
+    
+         HTML/TokeParser.pm
+
+            URI
+            MIME-Base64
+            HTML-Parser
+            libnet
+            Digest-MD5
+            Compress-Zlib
+
+        
+
+    H) Bio::Das
+        To display remote annotations using the Distributed Annotation
+        System. The current version is available at
+        http://www.biodas.org/download/Bio::Das/Bio-Das-0.92.tar.gz
+
+        OK
+
+    I) MOBY
+        Needed by gbrowse_moby to fetch and display data from MOBY
+        providers. Available from biomoby.org; obtain via anonymous cvs
+        until it is released. Directions are at
+        http://www.biomoby.org/GettingTheCode.html.
+
+        OK
+
+    J) GD::SVG
+        To save images as publication-quality editable images in Scalar
+        Vector Graphics format. Available from CPAN.
+
+        *** LOADS MANY DEPENDENCIES
+
+        providers. Available from biomoby.org; obtain via anonymous cvs
+        until it is released. Directions are at
+        http://www.biomoby.org/GettingTheCode.html.
+
+    J) GD::SVG
+        To save images as publication-quality editable images in Scalar
+        Vector Graphics format. Available from CPAN.
+
+    K) Bio::SCF File::Temp io-lib(v1.7+)
+        Needed by the trace glyph which can parse SCF files and display the
+        trace graph. The io-lib library can be downlowded from
+        
+        https://sourceforge.net/project/showfiles.php?group_id=100316&package_id=108243
+        
+        which is part of the Staden Package
+        
+        
+        https://sourceforge.net/projects/staden/.
+
+    Once the prerequisites are installed, download the most recent version
+    of the Generic-Genome-Browser source code from:
+
+       L<http://prdownloads.sourceforge.net/gmod>
+
+    This will give you a .tar.gz file, which must be uncompressed and
+    unpacked. Then run the following commands (in brief):
+
+       perl Makefile.PL
+       make
+       make test (optional)
+       make install UNINST=1
+
+    This will install the software in the default location under
+    /usr/local/apache. See "Details" to change this, or to install gbrowse
+    into your home directory. The 'UNINST=1' will insure that older versions
+    of perl modules being installed will be removed to help prevent
+    conflicts.
+
+
+       perl Makefile.PL
+       make
+       make test (optional)
+       make install UNINST=1
+
+            ...
+            Installing sample_data...
+            Installing contrib...
+            Installing js files...
+            Installing sample data files...
+            
+            
+            #############################################################################
+            GBrowse is now installed.  Read INSTALL for further setup instructions.
+            Go to http://localhost/gbrowse/ for the online tutorial and reference manual.
+            #############################################################################
+
+    OK
+    
+
+
+

@@ -1,0 +1,197 @@
+Notes-apps-dokuwiki.txt
+
+
+</entry>
+
+
+
+<entry [Tue Sep 30 03:40:47 EDT 2008] LOCAL AND REMOTE BACKUP OF DOKUWIKI SITE>
+
+
+
+http://www.dokuwiki.org/tips:backup_script
+
+
+</entry>
+
+
+
+<entry [Mon Sep 29 12:21:57 EDT 2008] INSTALLED PLUGINS - sidebar, pagemove AND outliner>
+
+
+
+sidebar
+http://wiki.jalakai.co.uk/dokuwiki/doku.php/tutorials/sidebar
+
+pagemove
+http://www.isection.co.uk/doku.php#installation
+
+outliner
+http://blackdaemon.no-ip.org/wiki/dokuwiki:plugin:outliner:demo
+http://blackdaemon.no-ip.org/wiki/dokuwiki:plugin:outliner#download
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep 29 12:31:57 EDT 2008] FIXED ERROR: No ACL setup yet! Denying access to everyone.>
+
+
+
+http://www.dokuwiki.org/acl
+
+ADD TO conf/local.php:
+
+
+$conf['useacl']       = 1;        // this enables the ACL feature
+$conf['superuser']    = '@admin'; // admin group is superuser
+  
+
+</entry>
+
+
+
+<entry [Sun Sep 14 11:49:45 EDT 2008] INSTALL ON ZION>
+
+
+
+1) SENDMAIL - SET NAME TO 'zion.ccs.miami.edu' INSTEAD OF 'localhost.localdomain' (REJECTED BY THE MAIL SERVER WITH THE 'Data format error' MESSAGE)
+
+    NOT NECESSARY AS NAME ALREADY IN /etc/hosts:
+
+    sudo emacs /etc/hosts
+    
+    127.0.0.1 localhost.localdomain localhost
+    # Auto-generated hostname. Please do not remove this comment.
+    204.68.94.166 zion.ccs.miami.edu zion
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Aug 23 12:54:32 EDT 2008] MAIL SENDING PROBLEM: Data format error>
+
+
+
+
+
+
+    Aug 22 14:37:17 solexa01 sendmail[9110]: m7MIbGKa009110: to=jia huang <jhuang1@med.miami.edu>, ctladdr=apache (48/48), delay=00:00:01, xdelay=00:00:01, mailer=relay, pri=30391, relay=[127.0.0.1] [127.0.0.1], dsn=2.0.0, stat=Sent (m7MIbGv0009111 Message accepted for delivery)
+    Aug 22 14:37:17 solexa01 sendmail[9113]: STARTTLS=client, relay=medipload.med.miami.edu., version=TLSv1/SSLv3, verify=FAIL, cipher=DHE-RSA-AES256-SHA, bits=256/256
+    Aug 22 14:37:17 solexa01 sendmail[9113]: m7MIbGv0009111: to=<jhuang1@med.miami.edu>, ctladdr=<apache@localhost.localdomain> (48/48), delay=00:00:00, xdelay=00:00:00, mailer=esmtp, pri=120672, relay=medipload.med.miami.edu. [129.171.88.233], dsn=5.6.0, stat=Data format error
+    Aug 22 14:37:17 solexa01 sendmail[9113]: m7MIbGv0009111: m7MIbHv0009113: DSN: Data format error
+    Aug 22 14:37:17 solexa01 sendmail[9113]: m7MIbHv0009113: to=root, delay=00:00:00, xdelay=00:00:00, mailer=local, pri=31914, dsn=2.0.0, stat=Sent
+    Aug 22 14:37:55 solexa01 sendmail[9654]: m7MIbtnf009654: from=apache, size=418, class=0, nrcpts=1, msgid=<200808221837.m7MIbtnf009654@localhost.localdomain>, relay=apache@localhost
+    Aug 22 14:37:55 solexa01 sendmail[9655]: m7MIbt8G009655: from=<apache@localhost.localdomain>, size=699, class=0, nrcpts=1, msgid=<200808221837.m7MIbtnf009654@localhost.localdomain>, proto=ESMTP, daemon=MTA, relay=solexa01 [127.0.0.1]
+    Aug 22 14:37:55 solexa01 sendmail[9654]: m7MIbtnf009654: to=david dittman <ddittman@med.miami.edu>, ctladdr=apache (48/48), delay=00:00:00, xdelay=00:00:00, mailer=relay, pri=30418, relay=[127.0.0.1] [127.0.0.1], dsn=2.0.0, stat=Sent (m7MIbt8G009655 Message accepted for delivery)
+    Aug 22 14:37:55 solexa01 sendmail[9657]: STARTTLS=client, relay=medipload.med.miami.edu., version=TLSv1/SSLv3, verify=FAIL, cipher=DHE-RSA-AES256-SHA, bits=256/256
+    Aug 22 14:37:55 solexa01 sendmail[9657]: m7MIbt8G009655: to=<ddittman@med.miami.edu>, ctladdr=<apache@localhost.localdomain> (48/48), delay=00:00:00, xdelay=00:00:00, mailer=esmtp, pri=120699, relay=medipload.med.miami.edu. [129.171.88.233], dsn=5.6.0, stat=Data format error
+    Aug 22 14:37:55 solexa01 sendmail[9657]: m7MIbt8G009655: m7MIbt8G009657: DSN: Data format error
+
+
+DIAGNOSIS
+
+SENDMAIL IS RUNNING
+
+[syoung@solexa01 log]$ ps aux | grep sendmail
+syoung    6283  0.0  0.0  61132   716 pts/5    S+   13:00   0:00 grep sendmail
+root     26261  0.0  0.0  66824   924 ?        Ss   Jul11   2:05 sendmail: accepting connections
+smmsp    26270  0.0  0.0  57584   632 ?        Ss   Jul11   0:00 sendmail: Queue runner@01:00:00 for /var/spool/clientmqueue
+[syoung@solexa01 log]$ 
+
+BUT IT IS SENDING MAIL USING THE NAME 'localhost.localdomain'. THIS IS BEING REJECTED BY THE MAIL SERVER WITH THE 'Data format error' MESSAG.
+
+SOLUTION:
+
+EDIT THE /etc/hosts FILE:
+
+sudo emacs /etc/hosts
+
+
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1               solexa01 localhost.localdomain localhost
+127.0.0.1               solexa01.med.miami.edu solexa01 SOLEXA01
+::1             localhost6.localdomain6 localhost6
+
+TO:
+
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+#127.0.0.1              solexa01 localhost.localdomain localhost
+127.0.0.1               solexa01 solexa01.med.miami.edu localhost
+127.0.0.1               solexa01.med.miami.edu solexa01 SOLEXA01
+::1             localhost6.localdomain6 localhost6
+
+
+RESTART SENDMAIL:
+    
+/etc/init.d/sendmail restart
+
+/etc/init.d/sendmail stop
+/etc/init.d/sendmail start
+
+OK!!
+
+
+</entry>
+
+
+
+<entry [Fri Aug 22 14:17:05 EDT 2008] DOWNLOAD AND INSTALL docuwiki ON solexa01>
+
+
+
+1. DOWNLOADED dokuwiki-2008-05-05.tgz
+
+http://www.splitbrain.org/projects/dokuwiki
+
+2. PUT UNZIPPED FOLDERS AND FILES IN /var/www/html/dokuwiki
+
+3. BROWSE TO
+
+http://localhost/dokuwiki/install.php
+
+ET VOILA!!
+
+
+
+3. [OPTIONAL] SET PERMISSIONS
+http://www.dokuwiki.org/install:permissions
+
+The following permissions must be modified for the respective DokuWiki functions to work:
+
+cd /var/www/html/docuwiki
+sudo chown -R apache bin
+sudo chown -R apache lib
+sudo chmod 775 lib
+
+
+In the 'conf' directory, the following files must be writeable by the web process:
+
+    local.php for the installer and for subsequent web configuration to work.
+    users.auth.php and acl.auth.php for the ACL web configuration and usermanager to work.
+
+sudo chown -R apache conf
+cd conf
+sudo cp local.php.dist local.php
+sudo cp users.auth.php.dist users.auth.php
+sudo cp acl.auth.php.dist acl.auth.php
+sudo chmod 644 *php
+ll *php
+    -rw-r--r-- 1 apache users  448 Aug 22 14:24 acl.auth.php
+    -rw-r--r-- 1 apache users 9.7K May  5 13:10 dokuwiki.php
+    -rw-r--r-- 1 apache users  631 May  5 13:10 local.php
+    -rw-r--r-- 1 apache users 1.8K May  5 13:10 mediameta.php
+    -rw-r--r-- 1 apache users  151 Aug 22 14:24 users.auth.php
+
+
+
+
+
+

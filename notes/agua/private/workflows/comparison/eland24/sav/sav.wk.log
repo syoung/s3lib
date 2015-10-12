@@ -1,0 +1,117 @@
+[workflow sav]
+2011-01-28 15:15:07
+
+Workflow:	sav
+Started: 2011-01-28 15:13:09
+Stopped: 2011-01-28 15:13:10
+Duration: 0 hrs 0 mins 1 secs
+
+
+	Application	1	snptosav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-28 15:13:09
+	stopped: 2011-01-28 15:13:10
+	duration: 0 hrs 0 mins 1 secs
+
+
+
+	Application	2	filtersav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+	Application	3	vendbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+	Application	4	vennnondbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+
+[app 1 snptosav]
+2011-01-28 15:15:07
+
+  Application:
+  name           snptosav
+  owner          anonymous
+  ordinal        1
+  status         unknown
+  started        2011-01-28 15:13:09
+  stopped        2011-01-28 15:13:10
+  duration       0 hrs 0 mins 1 secs
+  locked         0
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    dbsnp          snp130
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/loop-sav.out
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative
+    queue          small
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/sav-%REPLICATE%.out
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/snp130
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/SAV.pl \
+ --binlevel 500000 \
+ --filename hit.bam \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE% \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative \
+ --tempfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/snp130 \
+ --referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22 \
+ --dbsnp snp130 \
+ --species human \
+ --maxjobs 2000 \
+ --queue small \
+ --cluster LSF \
+ --walltime 24 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/sav-%REPLICATE%.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/cumulative/loop-sav.out 
+
+
+Output:
+
+
+
+
+Application status: unknown
+
+
+Completed workflow sav
+2011-01-28 15:15:07

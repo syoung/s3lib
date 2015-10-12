@@ -1,0 +1,198 @@
+
++++</entry>
+
+
+
+<entry [Fri Apr 11 21:34:49 EDT 2008] invalid PHD file>
+
+
+
+
+POLYPHRED  Version 5.03
+--------------------------------------------------------------
+Reading the ACE file /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta.cap.ace
+Reading the PHD and POLY files.
+  Reading information for contig Contig1947
+ERROR: invalid PHD file /Users/young/FUNNYBASE/pipeline/funnybase11/phd_dir/ERROR: invalid PHD file /Users/young/FUNNYBASE/pipeline/funnybase11/phd_dir/, line 0
+
+DIAGNOSIS
+=========
+
+    .ace FILE HAS LIKE THIS:
+    
+        DS
+    
+    WHEN IT SHOULD BE LIKE THIS:
+
+        DS 500-001-A01.ab1 CHROMAT_FILE: 500-001-A01.ab1 PHD_FILE: 500-001-A01.ab1.phd.1 CHEM: prim DYE: big TIME: Tue Oct  3 02:44:33 2006
+
+
+SOLUTION
+========
+
+THREE ALTERNATIVES:
+
+1) REDO .fasta WITH THIS IN THE HEADERS (...THEN REDO ASSEMBLY):
+
+>500-001-A01.ab1 CHROMAT_FILE: 500-001-A01.ab1 PHD_FILE: 500-001-A01.ab1.phd.1 CHEM: prim DYE: big TIME: Tue Oct  3 02:44:33 2006
+
+2) RENAME .ab1 FILES 
+
+3) FIX .ACE FILE:
+
+cd ~/FUNNYBASE/bin/pipeline4/archive
+./addabi.pl -i /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta.cap.ace -o /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta.cap.ace.fixed
+
+/usr/local/bin/polyphred  -ace funnybase11.fasta.cap.ace.fixed -dir /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir -output funnybase11.poly
+
+
+FOLLOWING ERROR:
+================
+
+Reading the PHD and POLY files.
+  Reading information for contig Contig2265
+ERROR: sequence in PHD file /Users/young/FUNNYBASE/pipeline/funnybase11/phd_dir/159-130-F08.ab1.phd.1 is longer than in ACE file.ERROR: invalid PHD file /Users/young/FUNNYBASE/pipeline/funnybase11/phd_dir/159-130-F08.ab1.phd.1, line 248
+
+DIAGNOSIS
+=========
+
+BECAUSE OF PRE-ASSEMBLY TRIMMING OF READS, THE .phd FILES CONTAIN LONGER SEQUENCES (WITH 'nnn')
+
+
+SOLUTION
+========
+
+RECREATE .phd FILES USING FASTA FILES
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+funnybase11
+===========
+
+cd ~/FUNNYBASE/pipeline/funnybase11
+export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+
+/usr/local/bin/polyphred  -ace funnybase11.fasta.cap.ace -dir /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir -output funnybase11.poly
+
+
+
+
+aplysia4
+========
+
+cd ~/FUNNYBASE/pipeline/aplysia4
+export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+
+/usr/local/bin/polyphred  -ace aplysia4.fasta.screen.cap.ace -dir /Users/young/FUNNYBASE/pipeline/aplysia4/edit_dir -output aplysia4.poly
+
+
+
+karenia5
+========
+
+cd ~/FUNNYBASE/pipeline/karenia5
+export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+
+/usr/local/bin/polyphred  -ace karenia5.fasta.screen.cap.ace -dir /Users/young/FUNNYBASE/pipeline/karenia5/edit_dir -output karenia5.poly
+
+
+
+
++++</entry>
+
+
+
+<entry [Fri Apr 11 20:23:22 EDT 2008] INVALID .ace file>
+
+
+
+DIAGNOSIS:
+
+    polyphred WANTS AN EXTRA COUPLE OF EMPTY LINE RETURNS AT THE END OF THE .ace file
+    
+SOLUTION:
+
+    ADD THE EXTRA LINES MANUALLY OR BY SCRIPT
+
+echo "" | cat > linefile    
+cat myfile.ace linefile > myfile.ace2
+cat myfile.ace2 linefile > myfile.ace3
+mv -f myfile.ace3 myfile.ace
+
+
++++</entry>
+
+
+
+<entry [Fri Apr 11 19:33:30 EDT 2008] ERROR: invalid PHD file ... POLYPHRED is terminating.>
+
+
+
+cd ~/FUNNYBASE/pipeline/karenia5
+
+/usr/local/bin/polyphred  -ace karenia5.fasta.cap.ace -dir /Users/young/FUNNYBASE/pipeline/karenia5/edit_dir -output karenia5.poly
+
+POLYPHRED  Version 5.03
+--------------------------------------------------------------
+Reading the ACE file /Users/young/FUNNYBASE/pipeline/karenia5/edit_dir/karenia5.fasta.cap.ace
+Reading the PHD and POLY files.
+  Reading information for contig Contig10
+ERROR: invalid PHD file /Users/young/FUNNYBASE/pipeline/karenia5/phd_dir/ERROR: invalid PHD file /Users/young/FUNNYBASE/pipeline/karenia5/phd_dir/, line 0
+
+POLYPHRED is terminating.
+
+DIAGNOSIS:
+
+    DID NOT SPECIFY PHRED_PARAMETER_FILE ENV VARIABLE
+
+SOLUTION:
+
+export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+
+cd /Users/young/FUNNYBASE/pipeline/aplysia3
+export PHRED_PARAMETER_FILE=/Users/young/FUNNYBASE/apps/phred/phredpar.dat
+
+/usr/local/bin/polyphred  -ace aplysia3.fasta.screen.cap.ace -dir /Users/young/FUNNYBASE/pipeline/aplysia3/edit_dir -output aplysia3.poly
+
+OK!!
+
+POLYPHRED  Version 5.03
+--------------------------------------------------------------
+Reading the ACE file /Users/young/aplysia3/edit_dir/aplysia3.fasta.screen.cap.ace
+Reading the PHD and POLY files.
+  Reading information for contig Contig88
+    Unable to open file /Users/young/aplysia3/poly_dir/027-001-G02.ab1.poly - skipping.
+    Unable to open file /Users/young/aplysia3/poly_dir/056-001-C05.ab1.poly - skipping.
+...
+  Updating information for Contig96
+Writing the output file /Users/young/aplysia3/edit_dir/aplysia3.poly
+
+
++++</entry>
+
+
+
+<entry [Fri Apr 11 19:29:48 EDT 2008] ERROR can not access directory ... POLYPHRED is terminating.>
+
+
+
+/usr/local/bin/polyphred  -ace karenia5.fasta.cap.ace -dir /Users/young/FUNNYBASE/pipeline/karenia5/edit_dir -output karenia5.poly
+
+
+POLYPHRED  Version 5.03
+--------------------------------------------------------------
+ERROR: can not access directory /Users/young/FUNNYBASE/pipeline/karenia5/phd_dir/
+
+POLYPHRED is terminating.
+
+
+DIAGNOSIS:
+
+WRONG DIRECTORY
+
+SOLUTION:
+
+CHANGE TO DIRECTORY ABOVE edit_dir
+cd ~/FUNNYBASE/pipeline/karenia5
+

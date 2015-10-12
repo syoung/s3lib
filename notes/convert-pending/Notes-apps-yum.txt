@@ -1,0 +1,1347 @@
+Notes-apps-yum.txt
+
+http://www.g-loaded.eu/2005/12/11/local-yum-repository/
+
+Local YUM Repository
+December 11th, 2005 by George Notaras
+
+ 
+Sometimes, especially when you create your own RPMs, it is extremely useful to keep them in a local YUM repository. The advantage of this is that, when you install a package, YUM automatically resolves any dependencies, not only by downloading the necessary packages from the other repositories you might have in you list, but also by using your local repo as a resource for potential dependencies.
+
+So, when installing a package (eg my_package.rpm) with YUM, you are supposed to have already created RPM packages for all of the my_package.rpm‘s dependencies and to have updated the repository’s metadata, so that yum is able to resolve all the dependencies. If these dependencies do not exist in any of the repositories in your list, then, in short, you cannot install your package with yum.
+
+So, in order to install an RPM package and all the other packages that it depends on, you only need to run:
+
+# yum install my_package.rpm
+How to create a local YUM repo
+You will need an utility, named createrepo. Its RPM package exists in Fedora Extras. To install it, just run as root:
+
+# yum install createrepo
+Then, put all your custom RPM packages in a directory. Assuming that this directory is /mnt/fc_local_repo/, you can create all the necessary metadata for your local repository by running the following command as root or as the user that owns the directory:
+
+# createrepo /mnt/fc_local_repo/
+That’s it! Your local YUM repository is ready.
+
+Keep in mind that every time you put any new RPMs in that directory or remove any old RPMs, you will need to run the above command again, so that the repository metadata gets updated.
+
+Add your local repo to the list
+The next thing you need to do is to add your local repository to your list of repos, so that yum knows where to find it. This info is kept in the /etc/yum.repos.d/ directory. As root, create a new text file in this directory, name it fedora-local.repo (you can use any name you like, but remember to add the extension .repo), and add the following info in it:
+
+[localrepo]
+name=Fedora Core $releasever - My Local Repo
+baseurl=file:///mnt/fc_local_repo/
+enabled=1
+gpgcheck=0
+#gpgkey=file:///path/to/you/RPM-GPG-KEY
+As you can see, we used the protocol file:/// in the baseurl option. This assumes that the local repo exists in the local machine. If it exists in another machine of your internal network, feel free to use any other protocol in order to tell yum where to find your local repository, For example you can use http://, ftp://, smb:// etc.
+
+In the above example, the GPG key check is disabled (gpgcheck=0). If you sign your packages, you can set this to "1" and uncomment the following line (gpgkey=...). This contains the path to your public key, so that YUM can verify the package signatures.
+
+You can have as many local YUM repositories as you like.
+
+Other uses of a local repository
+Using a local repository does not only serve as a place for your custom RPMs. You can perfectly save some bandwidth by downloading all the released fedora updates in that repo and use this to update all the systems of your internal network. This will save bandwidth and time.
+
+Further Reading
+There is an excellent YUM guide at the Fedora web site. It’s well written and will help you become experts with YUM:
+
+
+http://fedora.redhat.com/docs/yum/index.html
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep 14 16:23:24 EDT 2010] USE yum-allowdowngrade PLUGIN TO INSTALL EARLIER VERSION OF R>
+
+
+
+1. INSTALL PLUGIN yum-allowdowngrade
+
+yum install yum-allowdowngrade
+
+
+2. CHECK CURRENT VERSIONS OF R
+
+rpm -qa | grep R
+
+    perl-Compress-Raw-Zlib-2.024-1.el5.rf
+    R-devel-2.10.0-2.el5
+    perl-URI-1.35-3
+    perl-Compress-Raw-Bzip2-2.024-1.el5.rf
+    libRmath-2.10.0-2.el5
+    libRmath-devel-2.10.0-2.el5
+    perl-File-Copy-Recursive-0.38-1.el5.rf
+    R-core-2.10.0-2.el5
+    R-2.10.0-2.el5
+
+
+3. INSTALL DOWNGRADED VERSION
+
+PROBLEM: HOW TO FIGURE OUT WHICH VERSON OF R TO INSTALL OR DOWNLOAD
+
+I.E.:
+
+yum --allow-downgrade install R-2.8.1???
+
+
+CHECKED INSTALLED R:
+
+    yum list R*
+    Loaded plugins: allowdowngrade, fastestmirror
+    Loading mirror speeds from cached hostfile
+     * rpmforge: apt.sw.be
+     * base: mirror.raystedman.net
+     * updates: mirrors.netdna.com
+     * addons: mirrors.netdna.com
+     * extras: mirror.skiplink.com
+    Installed Packages
+    R.i386                                                                    2.10.0-2.el5                                                          installed
+    R-core.i386                                                               2.10.0-2.el5                                                          installed
+    R-devel.i386                                                              2.10.0-2.el5                                                          installed
+
+
+
+
+
+
+####yum install yum-allowdowngrade
+####...then
+####Code:
+####yum --allow-downgrade install kmod-ndiswrapper-2.6.25-14.fc9.x86_64-1.52-30.lvn9.x86_64
+
+</entry>
+
+
+
+<entry [Tue Sep 14 14:22:24 EDT 2010] INSTALL YUM LOCALLY ON pegasus>
+
+
+
+
+mkdir /nethome/syoung/base/apps/yum
+cd /nethome/syoung/base/apps/yum
+wget http://yum.baseurl.org/download/3.2/yum-3.2.28.tar.gz
+mkdir /nethome/syoung/base/apps/yum/3.2.28
+tar xvfz /nethome/syoung/base/apps/yum/yum-3.2.28.tar.gz
+cd /nethome/syoung/base/apps/yum/yum-3.2.28
+
+emacs README
+
+    run make
+    run make install, if you're a masochist.
+    
+    you're better off making an rpm and installing it
+
+
+set DESTDIR
+-----------
+
+export DESTDIR=/nethome/syoung/base/apps/yum/3.2.28
+
+
+make clean
+
+    rm -f *.pyc *.pyo *~ *.bak
+    for d in rpmUtils yum etc docs po; do make -C $d clean ; done
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    rm -f *.pyc *.pyo *~
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    rm -f *.pyc *.pyo *~
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    rm -f *.pyc *.pyo *~
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    rm -f *.pyc *.pyo *~
+    rm -fr epydoc
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    cd test; rm -f *.pyc *.pyo *~ *.bak
+
+
+make PREFIX=/nethome/syoung/base/apps/yum/3.2.28
+
+    for d in rpmUtils yum etc docs po; do make PYTHON=python -C $d; [ $? = 0 ] || exit 1 ; done
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    echo "Nothing to do"
+    Nothing to do
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    echo "Nothing to do"
+    Nothing to do
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    echo "Nothing to do"
+    Nothing to do
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    echo "Nothing to do"
+    Nothing to do
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    intltool-update --gettext-package=yum --pot
+    make[1]: intltool-update: Command not found
+    make[1]: *** [yum.pot] Error 127
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    make: *** [subdirs] Error 1
+
+make install
+
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli
+    for p in callback.py cli.py output.py shell.py utils.py yumcommands.py yummain.py yum-updatesd.py ; do \
+                    install -m 644 $p /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/$p; \
+            done
+    mv /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/yum-updatesd.py /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/yumupd.py
+    python -c "import compileall; compileall.compile_dir('/nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli', 1, '', 1)"
+    Listing /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/callback.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/cli.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/output.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/shell.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/utils.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/yumcommands.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/yummain.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28/usr/share/yum-cli/yumupd.py ...
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/usr/bin /nethome/syoung/base/apps/yum/3.2.28/usr/sbin
+    install -m 755 bin/yum.py /nethome/syoung/base/apps/yum/3.2.28/usr/bin/yum
+    install -m 755 bin/yum-updatesd.py /nethome/syoung/base/apps/yum/3.2.28/usr/sbin/yum-updatesd
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/var/cache/yum
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/var/lib/yum
+    for d in rpmUtils yum etc docs po; do make PYTHON=python DESTDIR=`cd /nethome/syoung/base/apps/yum/3.2.28; pwd` -C $d install; [ $? = 0 ] || exit 1; done
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils
+    for p in arch.py __init__.py miscutils.py oldUtils.py transaction.py updates.py ; do \
+                    install -m 644 $p /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/$p; \
+            done
+    python -c "import compileall; compileall.compile_dir('/nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils', 1, '/usr/lib/python2.4/site-packages/rpmUtils', 1)"
+    Listing /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/__init__.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/arch.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/miscutils.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/oldUtils.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/transaction.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/rpmUtils/updates.py ...
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/rpmUtils'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum
+    for p in callbacks.py comps.py config.py constants.py depsolve.py Errors.py failover.py history.py i18n.py __init__.py logginglevels.py mdparser.py metalink.py misc.py packageSack.py packages.py parser.py pgpmsg.py pkgtag_db.py plugins.py repoMDObject.py repos.py rpmsack.py rpmtrans.py sqlitesack.py sqlutils.py transactioninfo.py update_md.py yumRepo.py ; do \
+                    install -m 644 $p /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/$p; \
+            done
+    python -c "import compileall; compileall.compile_dir('/nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum', 1, '/usr/lib/python2.4/site-packages/yum', 1)"
+    Listing /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/Errors.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/__init__.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/callbacks.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/comps.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/config.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/constants.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/depsolve.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/failover.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/history.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/i18n.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/logginglevels.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/mdparser.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/metalink.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/misc.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/packageSack.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/packages.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/parser.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/pgpmsg.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/pkgtag_db.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/plugins.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/repoMDObject.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/repos.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/rpmsack.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/rpmtrans.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/sqlitesack.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/sqlutils.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/transactioninfo.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/update_md.py ...
+    Compiling /nethome/syoung/base/apps/yum/3.2.28//usr/lib/python2.4/site-packages/yum/yumRepo.py ...
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/yum'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/yum/
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/yum/protected.d
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/yum/repos.d
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/yum/vars
+    install -m 644 yum.conf /nethome/syoung/base/apps/yum/3.2.28/etc/yum/yum.conf
+    install -m 644 version-groups.conf /nethome/syoung/base/apps/yum/3.2.28/etc/yum/version-groups.conf
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/logrotate.d
+    install -m 644 yum.logrotate /nethome/syoung/base/apps/yum/3.2.28/etc/logrotate.d/yum
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/rc.d/init.d
+    install -m 755 yum-updatesd.init /nethome/syoung/base/apps/yum/3.2.28/etc/rc.d/init.d/yum-updatesd
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/dbus-1/system.d/
+    install -m 755 yum-updatesd-dbus.conf /nethome/syoung/base/apps/yum/3.2.28/etc/dbus-1/system.d/yum-updatesd.conf
+    install -m 755 yum-updatesd.conf /nethome/syoung/base/apps/yum/3.2.28/etc/yum/yum-updatesd.conf
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/etc/bash_completion.d
+    install -m 644 yum.bash /nethome/syoung/base/apps/yum/3.2.28/etc/bash_completion.d
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/etc'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man5
+    mkdir -p /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man8
+    install -m 644 yum.8 /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man8/yum.8
+    install -m 644 yum-shell.8 /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man8/yum-shell.8
+    install -m 644 yum.conf.5 /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man5/yum.conf.5
+    install -m 644 yum-updatesd.8 /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man8/yum-updatesd.8
+    install -m 644 yum-updatesd.conf.5 /nethome/syoung/base/apps/yum/3.2.28/usr/share/man/man5/yum-updatesd.conf.5
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/docs'
+    make[1]: Entering directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    intltool-update --gettext-package=yum --pot
+    make[1]: intltool-update: Command not found
+    make[1]: *** [yum.pot] Error 127
+    make[1]: Leaving directory `/nethome/syoung/base/apps/yum/yum-3.2.28/po'
+    make: *** [install] Error 1
+
+[syoung@u03 yum-3.2.28]$ cd /nethome/syoung/base/apps/yum/3.2.28
+[syoung@u03 3.2.28]$ ll
+    total 20K
+    drwxrwxr-x 5 syoung bioinfo 2.0K Sep 14 16:08 .
+    drwxrwxr-x 4 syoung bioinfo 2.0K Sep 14 14:26 ..
+    drwxrwxr-x 7 syoung bioinfo 2.0K Sep 14 16:08 etc
+    drwxrwxr-x 6 syoung bioinfo 2.0K Sep 14 16:08 usr
+    drwxrwxr-x 4 syoung bioinfo 2.0K Sep 14 16:08 var
+
+YUM IS INSTALLED HERE:
+
+/nethome/syoung/base/apps/yum/3.2.28/usr/bin/yum
+
+    Loaded plugins: fastestmirror
+    You need to give some command
+    usage: yum [options] COMMAND
+    
+    List of Commands:
+    
+    check-update   Check for available package updates
+    clean          Remove cached data
+    deplist        List a package's dependencies
+    downgrade      downgrade a package
+    erase          Remove a package or packages from your system
+    groupinfo      Display details about a package group
+    groupinstall   Install the packages in a group on your system
+    grouplist      List available package groups
+    groupremove    Remove the packages in a group from your system
+    help           Display a helpful usage message
+    info           Display details about a package or group of packages
+    install        Install a package or packages on your system
+    list           List a package or groups of packages
+    localinstall   Install a local RPM
+    makecache      Generate the metadata cache
+    provides       Find what package provides the given value
+    reinstall      reinstall a package
+    repolist       Display the configured software repositories
+    resolvedep     Determine which package provides the given dependency
+    search         Search package details for the given string
+    shell          Run an interactive yum shell
+    update         Update a package or packages on your system
+    upgrade        Update packages taking obsoletes into account
+    
+    
+    options:
+      -h, --help            show this help message and exit
+      -t, --tolerant        be tolerant of errors
+      -C                    run entirely from cache, don't update cache
+      -c  [config file]     config file location
+      -R  [minutes]         maximum command wait time
+      -d  [debug level]     debugging output level
+      --showduplicates      show duplicates, in repos, in list/search commands
+      -e  [error level]     error output level
+      -q, --quiet           quiet operation
+      -v, --verbose         verbose operation
+      -y                    answer yes for all questions
+      --version             show Yum version and exit
+      --installroot=[path]  set install root
+      --enablerepo=[repo]   enable one or more repositories (wildcards allowed)
+      --disablerepo=[repo]  disable one or more repositories (wildcards allowed)
+      -x [package], --exclude=[package]
+                            exclude package(s) by name or glob
+      --disableexcludes=[repo]
+                            disable exclude from main, for a repo or for
+                            everything
+      --obsoletes           enable obsoletes processing during updates
+      --noplugins           disable Yum plugins
+      --nogpgcheck          disable gpg signature checking
+      --disableplugin=[plugin]
+                            disable plugins by name
+      --enableplugin=[plugin]
+                            enable plugins by name
+      --skip-broken         skip packages with depsolving problems
+      --color=COLOR         control whether color is used
+    
+      Plugin Options:
+
+
+
+DOWNLOAD R-2.8.1 RPM AND INSTALL WITH YUM ON linode
+---------------------------------------------------
+
+mkdir -p /nethome/syoung/base/apps/R-local
+cd /nethome/syoung/base/apps/R-local
+wget 
+yum localinstall <packagename>
+
+
+
+
+
+
+
+INSTALL LOCALLY
+
+mkdir /nethome/syoung/base/apps/R-local
+
+
+/nethome/syoung/base/apps/yum/3.2.28/usr/bin/yum --installroot=/nethome/syoung/base/apps/R-local install R
+
+
+Maybe, but not using yum.
+
+
+You may be able to install opera if you create your own $HOME/usr/bin and $HOME/usr/lib directories. You will need to prefix the command with LD_LIBRARY_PATH=$HOME/usr/lib/ if the package uses /usr/lib. Also add $HOME/usr/bin to your PATH variable.
+
+
+
+mkdir -p /nethome/syoung/base/apps/R/2.10.0
+yum localinstall /nethome/syoung/base/apps/R/2.10.0 R
+
+
+
+Problems running without root
+
+
+Rpm/yum assume they are managing an entire single system (unlike, say, Zero Install), and generally assume root like privileges. Here is a list of things to think about if you are trying to break this assumption.
+
+Problems running rpm without root
+
+A significant portion of packaged rpm software assumes that scriptlets will be run as root, to do operations like add users or load SELinux policy into the kernel.
+Rpm assumes root like privileges, so it can change the owner of files and/or permissions, SELinux labels etc.
+Rpm needs to be able to write to at least the rpm DB files, which are owned by root.
+Rpm --relocate is generally considered to be unusable.
+Problems running yum without root
+
+Because of the above rpm problems, yum calls geteuid() and refuses to do certain commands unless that returns 0 (root).
+Even if you just used the yum API, yum would need to be able to write to at least /var/lib/yum/* /var/log/yum.log and a cache directory. Some rpm API calls will be untested (or at least much less tested) if run as non-root.
+--installroot is not intended to change the above, the assumption is that you will still be running yum as root.
+Solutions
+
+Use mock shell, if you want chroot type environments that normal users can create.
+Use some other packaging format, if you want to be able to "install packages" into $HOME/blah (but there are significant downsides which you should be aware of).
+
+
+
+
+
+
+
+
+INSTALLED createrepo
+
+/nethome/syoung/base/apps/yum/3.2.28/usr/bin/yum install createrepo
+
+
+    ...
+    Running Transaction
+      Installing     : libxml2-python                                    [1/2] 
+      Installing     : createrepo                                        [2/2] 
+    
+    Installed: createrepo.noarch 0:0.4.11-3.el5
+    Dependency Installed: libxml2-python.x86_64 0:2.6.26-2.1.2.8
+    Complete!
+
+
+
+
+
+
+
+Loaded plugins: fastestmirror
+You need to give some command
+usage: yum [options] COMMAND
+
+List of Commands:
+
+check-update   Check for available package updates
+clean          Remove cached data
+deplist        List a package's dependencies
+downgrade      downgrade a package
+erase          Remove a package or packages from your system
+groupinfo      Display details about a package group
+groupinstall   Install the packages in a group on your system
+grouplist      List available package groups
+groupremove    Remove the packages in a group from your system
+help           Display a helpful usage message
+info           Display details about a package or group of packages
+install        Install a package or packages on your system
+list           List a package or groups of packages
+localinstall   Install a local RPM
+makecache      Generate the metadata cache
+provides       Find what package provides the given value
+reinstall      reinstall a package
+repolist       Display the configured software repositories
+resolvedep     Determine which package provides the given dependency
+search         Search package details for the given string
+shell          Run an interactive yum shell
+update         Update a package or packages on your system
+upgrade        Update packages taking obsoletes into account
+
+
+options:
+  -h, --help            show this help message and exit
+  -t, --tolerant        be tolerant of errors
+  -C                    run entirely from cache, don't update cache
+  -c  [config file]     config file location
+  -R  [minutes]         maximum command wait time
+  -d  [debug level]     debugging output level
+  --showduplicates      show duplicates, in repos, in list/search commands
+  -e  [error level]     error output level
+  -q, --quiet           quiet operation
+  -v, --verbose         verbose operation
+  -y                    answer yes for all questions
+  --version             show Yum version and exit
+  --installroot=[path]  set install root
+  --enablerepo=[repo]   enable one or more repositories (wildcards allowed)
+  --disablerepo=[repo]  disable one or more repositories (wildcards allowed)
+  -x [package], --exclude=[package]
+                        exclude package(s) by name or glob
+  --disableexcludes=[repo]
+                        disable exclude from main, for a repo or for
+                        everything
+  --obsoletes           enable obsoletes processing during updates
+  --noplugins           disable Yum plugins
+  --nogpgcheck          disable gpg signature checking
+  --disableplugin=[plugin]
+                        disable plugins by name
+  --enableplugin=[plugin]
+                        enable plugins by name
+  --skip-broken         skip packages with depsolving problems
+  --color=COLOR         control whether color is used
+
+  Plugin Options:
+[syoung@u03 bin]$ yum --installroot=/ install R
+[syoung@u03 bin]$ ./yum
+Loaded plugins: fastestmirror
+You need to give some command
+usage: yum [options] COMMAND
+
+List of Commands:
+
+check-update   Check for available package updates
+clean          Remove cached data
+deplist        List a package's dependencies
+downgrade      downgrade a package
+erase          Remove a package or packages from your system
+groupinfo      Display details about a package group
+groupinstall   Install the packages in a group on your system
+grouplist      List available package groups
+groupremove    Remove the packages in a group from your system
+help           Display a helpful usage message
+info           Display details about a package or group of packages
+install        Install a package or packages on your system
+list           List a package or groups of packages
+localinstall   Install a local RPM
+makecache      Generate the metadata cache
+provides       Find what package provides the given value
+reinstall      reinstall a package
+repolist       Display the configured software repositories
+resolvedep     Determine which package provides the given dependency
+search         Search package details for the given string
+shell          Run an interactive yum shell
+update         Update a package or packages on your system
+upgrade        Update packages taking obsoletes into account
+
+
+options:
+  -h, --help            show this help message and exit
+  -t, --tolerant        be tolerant of errors
+  -C                    run entirely from cache, don't update cache
+  -c  [config file]     config file location
+  -R  [minutes]         maximum command wait time
+  -d  [debug level]     debugging output level
+  --showduplicates      show duplicates, in repos, in list/search commands
+  -e  [error level]     error output level
+  -q, --quiet           quiet operation
+  -v, --verbose         verbose operation
+  -y                    answer yes for all questions
+  --version             show Yum version and exit
+  --installroot=[path]  set install root
+  --enablerepo=[repo]   enable one or more repositories (wildcards allowed)
+  --disablerepo=[repo]  disable one or more repositories (wildcards allowed)
+  -x [package], --exclude=[package]
+                        exclude package(s) by name or glob
+  --disableexcludes=[repo]
+                        disable exclude from main, for a repo or for
+                        everything
+  --obsoletes           enable obsoletes processing during updates
+  --noplugins           disable Yum plugins
+  --nogpgcheck          disable gpg signature checking
+  --disableplugin=[plugin]
+                        disable plugins by name
+  --enableplugin=[plugin]
+                        enable plugins by name
+  --skip-broken         skip packages with depsolving problems
+  --color=COLOR         control whether color is used
+
+  Plugin Options:
+  
+  
+
+
+
+
+
+
+
+12. Use yum to install a local package, automatically checking/satisfying dependencies
+
+
+yum --nogpgcheck localinstall packagename.arch.rpm
+
+
+13. Get set up for rebuilding packages while not being root
+
+Sometimes you just have to rebuild that package - maybe only to use some configuration option which just isn't there in the official package. Or because you have found some great package which you really cannot find in the repositories, but the site only gives you RPMs for another distribution. So you have to grab the src.rpm and rebuild it for yourself. But you really do not want to do it as root. So here's how to rebuild your packages in your home directory - with your own user account. Assume that you really want to do that in ~/redhat. Sure, you can move that somewhere else.
+
+13.1. Method A
+First we setup the directory you want to be working in. Note the astounding similarity to the directory structure in /usr/src/redhat:
+
+
+[testuser@shutdown ~]$ cd
+[testuser@shutdown ~]$ mkdir -p redhat/{SRPMS,RPMS,SPECS,BUILD,SOURCES}
+[testuser@shutdown ~]$ ls redhat/
+BUILD RPMS SOURCES SPECS SRPMS
+[testuser@shutdown ~]$
+Then we fiddle with some rpm macros, so rpmbuild knows about you and where you want to build:
+
+
+[testuser@shutdown ~]$ echo "%_topdir /home/testuser/redhat" >> .rpmmacros
+[testuser@shutdown ~]$ echo "%packager Test User <testuser@example.com>" >> .rpmmacros
+[testuser@shutdown ~]$ cat .rpmmacros
+%_topdir /home/testuser/redhat
+%packager Test User <testuser@example.com>
+[testuser@shutdown ~]$
+That was it. The next time you issue rpmbuild --rebuild foo.src.rpm, your results will be in ~/redhat/RPMS/i386 (or whichever architecture you just built your package for). Easy, isn't it?
+
+13.2. Method B
+For CentOS-4, configure the kbs-Extras repo (optionally add kbs-Misc) from the Repositories page and "yum install fedora-rpmdevtools" as root using "sudo" or "su -". As the build user (may want to use a special account for this to avoid problems in your normal user home directory) do "fedora-buildrpmtree" and an ~/rpmbuild/... directory tree and ~/.rpmmacros file will be automagically created. (Note "rpmbuild" versus "redhat" in Method A.)
+
+For CentOS-5 - A package for rpmdevtools does not seem to be available. The FC6 SRPM rpmdevtools-5.3-1.fc6.src.rpm builds and works.
+
+The following addition to the macros may be needed to get proper names for some packages (substitute appropriate distro version for "el4" as required):
+
+
+[testuser@shutdown ~]$ echo "%dist .el4" >> .rpmmacros
+
+
+
+
+
+
+
+
+[root@li182-248 R-2.8.1]# yum install libpng-devel
+Loaded plugins: allowdowngrade, fastestmirror
+Loading mirror speeds from cached hostfile
+ * rpmforge: apt.sw.be
+ * base: mirror.raystedman.net
+ * updates: mirrors.netdna.com
+ * addons: mirrors.netdna.com
+ * extras: mirror.skiplink.com
+Setting up Install Process
+Parsing package install arguments
+Resolving Dependencies
+--> Running transaction check
+---> Package libpng-devel.x86_64 2:1.2.10-7.1.el5_5.3 set to be updated
+---> Package libpng-devel.i386 2:1.2.10-7.1.el5_5.3 set to be updated
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+=============================================================================================
+ Package               Arch            Version                        Repository        Size
+=============================================================================================
+Installing:
+ libpng-devel          i386            2:1.2.10-7.1.el5_5.3           updates          181 k
+ libpng-devel          x86_64          2:1.2.10-7.1.el5_5.3           updates          184 k
+
+Transaction Summary
+=============================================================================================
+Install      2 Package(s)         
+Update       0 Package(s)         
+Remove       0 Package(s)         
+
+Total download size: 366 k
+Is this ok [y/N]: y
+Downloading Packages:
+(1/2): libpng-devel-1.2.10-7.1.el5_5.3.i386.rpm                       | 181 kB     00:00     
+(2/2): libpng-devel-1.2.10-7.1.el5_5.3.x86_64.rpm                     | 184 kB     00:00     
+---------------------------------------------------------------------------------------------
+Total                                                         11 MB/s | 366 kB     00:00     
+Running rpm_check_debug
+Running Transaction Test
+Finished Transaction Test
+Transaction Test Succeeded
+Running Transaction
+  Installing     : libpng-devel                                      [1/2] 
+  Installing     : libpng-devel                                      [2/2] 
+
+Installed: libpng-devel.i386 2:1.2.10-7.1.el5_5.3 libpng-devel.x86_64 2:1.2.10-7.1.el5_5.3
+Complete!
+[root@li182-248 R-2.8.1]# yum install libpng-devel
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep 14 14:21:24 EDT 2010] INSTALL R WITH YUM ON ngsdev>
+
+
+
+http://koolinus.wordpress.com/2008/12/23/how-to-install-r-on-centos/
+
+CREATED FILE R.repo IN /nethome/syoung/base/apps/yum
+
+mkdir -p /nethome/syoung/base/apps/yum/R.repo
+emacs /nethome/syoung/base/apps/yum/R.repo
+
+    [R-project]
+    name=R project for Statistical Computing repository
+    baseurl=http://rm.mirror.garr.it/mirrors/CRAN/bin/linux/redhat/el5/i386
+    failovermethod=priority
+    enabled=1
+    gpgcheck=0
+    priority=15
+
+AND COPIED TO /etc/yum.repos.d/
+
+[syoung@ngsdev yum]$ cp R.repo /tmp
+[syoung@ngsdev yum]$ sudo su
+[root@ngsdev yum]# cp /tmp/R.repo /etc/yum.repos.d/
+
+
+
+
+
+
+
+
+http://koolinus.wordpress.com/2008/12/23/how-to-install-r-on-centos/
+
+CREATED FILE R.repo IN /nethome/syoung/base/apps/yum
+
+emacs /nethome/syoung/base/apps/yum/R.repo
+
+    [R-project]
+    name=R project for Statistical Computing repository
+    baseurl=http://rm.mirror.garr.it/mirrors/CRAN/bin/linux/redhat/el5/i386
+    failovermethod=priority
+    enabled=1
+    gpgcheck=0
+    priority=15
+
+AND COPIED TO /etc/yum.repos.d/
+
+[syoung@ngsdev yum]$ cp R.repo /tmp
+[syoung@ngsdev yum]$ sudo su
+[root@ngsdev yum]# cp /tmp/R.repo /etc/yum.repos.d/
+
+
+FIND R IF AVAILABLE:
+
+yum list available  R
+
+    R-project                 100% |=========================| 1.0 kB    00:00     
+    primary.xml.gz            100% |=========================| 2.9 kB    00:00     
+    R-project : ################################################## 5/5
+    Available Packages
+    R.i386                                   2.10.0-2.el5           R-project 
+
+
+
+
+
+mkdir -p /nethome/syoung/base/apps/R/2.10.0
+
+yum localinstall /nethome/syoung/base/apps/R/2.10.0 R
+
+
+
+
+sudo su
+yum install R
+
+    ...
+    xdg-utils               noarch     1.0.2-2.el5.rf   rpmforge           51 k
+    xorg-x11-proto-devel    i386       7.1-9.el5.centos  base              253 k
+    Updating for dependencies:
+    gcc-c++                 x86_64     4.1.2-44.el5     base              3.8 M
+    
+    Transaction Summary
+    =============================================================================
+    Install     28 Package(s)
+    Update      11 Package(s)
+    Remove       0 Package(s)
+    
+    Total download size: 124 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    Running rpm_check_debug
+    Running Transaction Test
+
+    <HANGS>
+
+
+CHECK WHAT YUM IS RUNNING:
+
+strace yum -y update
+
+
+WHICH SHOWS THIS RECURRENT 'Another app is currently holding the yum lock; waiting for it to exit...' MESSAGE WHICH REPEATS EVERY SECOND:
+
+
+    futex(0x114cd500, FUTEX_WAKE, 1)        = 0
+    select(0, NULL, NULL, NULL, {2, 0})     = 0 (Timeout)
+    stat("/var/run", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+    open("/var/run/yum.pid", O_WRONLY|O_CREAT|O_EXCL, 0644) = -1 EEXIST (File exists)
+    open("/var/run/yum.pid", O_RDONLY)      = 6
+    fstat(6, {st_mode=S_IFREG|0644, st_size=4, ...}) = 0
+    fstat(6, {st_mode=S_IFREG|0644, st_size=4, ...}) = 0
+    mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x2ba54b472000
+    read(6, "6463", 4096)                   = 4
+    read(6, "", 4096)                       = 0
+    kill(6463, SIG_0)                       = 0
+    close(5)                                = 0
+    munmap(0x2ba54b471000, 4096)            = 0
+    write(2, "Another app is currently holding"..., 73Another app is currently holding the yum lock; waiting for it to exit...
+    ) = 73
+    futex(0x114cd500, FUTEX_WAKE, 1)        = 0
+    select(0, NULL, NULL, NULL, {2, 0}
+
+
+
+
+
+To find out what's locking up yum, try running:
+
+# ps aux | grep yum
+
+Note the PID number of the process and run this to kill the process:
+
+# kill <insert PID number>
+
+Check to see if the process has been killed by rerunning:
+
+# ps aux | grep yum
+
+If not, rinse and repeat until the process is killed; some processes can be very stubborn.
+
+
+
+
+
+
+SIMILAR PROBLEM DUE TO STALE NFS MOUNT
+http://fedoraforum.org/forum/showthread.php?t=243420
+
+F12 Yum locks during "Running Transaction Test"
+I spent some time on this issue and I just wanted to share a resolution that was difficult to find (at least for me).
+
+Yum was working fine for me for a long time on my Fedora 12 installation x64, when suddenly it stopped during transaction checks. It didn't matter which package I was installing, or if I performed an update or anything. Always in the same place, and it always required a kill -9 to stop the process. Even with debugging turned on in yum (-d 10 -e 10 --rpmverbosity=10) it would not display an error...just hang during the transaction check. I tried the following to no avail:
+Code:
+# rm -f /var/lib/rpm/__db.*
+# yum clean all
+# rpm -v -v rebuilddb
+Still, it would lock after the transaction test.
+
+The only thing that solved my issue was running:
+Code:
+# strace yum -y update
+This showed me that I had a stale NFS mount that was in a hung state. I tried umount but it just showed that the device was busy and would not unmount. The only way to fix it was to perform:
+Code:
+# umount -l /mnt/data
+which allowed the stale mount to be removed. Once that was cleaned up, everything worked. 
+
+I struggled with this because there were no debugging messages, and I had no idea the transaction check would go through all of my mounted drives. However I just wanted others to know about this, because it was a rare issue, and I had trouble finding the solution.
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+INSTALL graphviz ON ngsdev 
+
+http://www.graphviz.org/Download_linux_rhel.php
+
+1. DOWNLOAD REPO FILE TO /etc/yum.repos.d/
+
+cd /nethome/syoung/base/apps/yum
+sudo su
+cp graphviz-rhel.repo /etc/yum.repos.d/
+    OK
+    
+ll /etc/yum.repos.d/
+
+    -rw-r--r-- 1 root   root    2188 Mar 11 11:48 CentOS-Base.repo
+    -rw-r--r-- 1 root   root    2181 Feb  4 03:39 CentOS-Base.repo~
+    -rw-r--r-- 1 root   root     626 Jun 19  2008 CentOS-Media.repo
+    -rw-r--r-- 1 syoung bioinfo 1006 Jun 24 12:40 graphviz-rhel.repo
+    -rw-r--r-- 1 root   root     337 Mar  4  2009 rpmforge.repo
+
+
+Then as root type:
+
+
+yum list available 'graphviz*'
+    
+    Available Packages
+
+    graphviz.x86_64                          2.26.3-1.el5           graphviz-stable 
+    graphviz-devel.x86_64                    2.26.3-1.el5           graphviz-stable 
+    graphviz-doc.x86_64                      2.26.3-1.el5           graphviz-stable 
+    graphviz-gd.x86_64                       2.26.3-1.el5           graphviz-stable 
+    graphviz-graphs.x86_64                   2.26.3-1.el5           graphviz-stable 
+    graphviz-guile.x86_64                    2.26.3-1.el5           graphviz-stable 
+    graphviz-java.x86_64                     2.26.3-1.el5           graphviz-stable 
+    graphviz-lua.x86_64                      2.8-1.el5.rf           rpmforge        
+    graphviz-ocaml.x86_64                    2.8-1.el5.rf           rpmforge        
+    graphviz-perl.x86_64                     2.26.3-1.el5           graphviz-stable 
+    graphviz-php.x86_64                      2.16-1.el5             graphviz-stable 
+    graphviz-python.x86_64                   2.26.3-1.el5           graphviz-stable 
+    graphviz-ruby.x86_64                     2.26.3-1.el5           graphviz-stable 
+    graphviz-tcl.x86_64                      2.26.3-1.el5           graphviz-stable 
+
+
+yum install 'graphviz*'
+
+
+yum install graphviz.x86_64 graphviz-devel.x86_64 graphviz-doc.x86_64 graphviz-gd.x86_64 graphviz-graphs.x86_64
+
+    ...
+    Installed: graphviz-devel.x86_64 0:2.26.3-1.el5 graphviz-doc.x86_64 0:2.26.3-1.el5 graphviz-gd.x86_64 0:2.26.3-1.el5 graphviz-graphs.x86_64 0:2.26.3-1.el5
+Dependency Installed: freeglut.x86_64 0:2.4.0-7.1.el5 graphviz.x86_64 0:2.26.3-1.el5 gtkglext.x86_64 0:1.0.6-1.el5.rf gts.x86_64 0:0.7.6-11.el5
+Complete!
+
+yum install graphviz-perl.x86_64
+    
+    ...
+    Installed: graphviz-perl.x86_64 0:2.26.3-1.el5
+    Complete!
+
+Caution: Our snapshot builds are generated automatically every day from CVS. The new snapshot rpms don't necessarily contain any changes, other than datestamps. Also, it sometimes happens that changes we are making will compile OK but will break things.
+
+Instead of enabling graphviz-snapshot for automatic updates, we recommend that you only manually update to a snapshot if you have reason to believe that it fixes a particular problem you are seeing.
+
+To manually update to a snapshot release, use the command:
+
+        yum --enablerepo=graphviz-snapshot update 'graphviz*'
+        
+        
+
+
+http://www.graphviz.org/Download_linux_rhel.php
+</entry>
+
+
+
+<entry [Sun May 16 22:11:15 EDT 2010] AVOID ERROR 'conflicts with file from package' WHEN DOING yum install>
+
+
+
+ERROR
+
+SUMMARY ERROR MESSAGE (FULL ERROR MESSAGE BELOW):
+
+yum install git
+
+    ...
+    file /usr/share/man/man8/svnserve.8.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+    file /usr/share/xemacs/site-packages/lisp/psvn.el from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+
+
+SOLUTION
+
+1. yum erase subversion
+2. yum install git
+
+
+
+1) yum erase subversion
+
+OK!
+
+    Loaded plugins: fastestmirror
+    Setting up Remove Process
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package subversion.i386 0:1.4.2-4.el5_3.1 set to be erased
+    --> Processing Dependency: subversion = 1.4.2-4.el5_3.1 for package: mod_dav_svn
+    ---> Package subversion.x86_64 0:1.4.2-4.el5_3.1 set to be erased
+    --> Running transaction check
+    ---> Package mod_dav_svn.x86_64 0:1.4.2-4.el5_3.1 set to be erased
+    --> Finished Dependency Resolution
+    
+    Dependencies Resolved
+    
+    ==========================================================================================
+     Package              Arch            Version                    Repository          Size
+    ==========================================================================================
+    Removing:
+     subversion           i386            1.4.2-4.el5_3.1            installed          7.6 M
+     subversion           x86_64          1.4.2-4.el5_3.1            installed          7.9 M
+    Removing for dependencies:
+     mod_dav_svn          x86_64          1.4.2-4.el5_3.1            installed          139 k
+    
+    Transaction Summary
+    ==========================================================================================
+    Install      0 Package(s)         
+    Update       0 Package(s)         
+    Remove       3 Package(s)         
+    
+    Is this ok [y/N]: y
+    Downloading Packages:
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Erasing        : subversion                                        [1/3] 
+      Erasing        : subversion                                        [2/3] 
+      Erasing        : mod_dav_svn                                       [3/3] 
+    warning: /etc/httpd/conf.d/subversion.conf saved as /etc/httpd/conf.d/subversion.conf.rpmsave
+    
+    Removed: subversion.i386 0:1.4.2-4.el5_3.1 subversion.x86_64 0:1.4.2-4.el5_3.1
+    Dependency Removed: mod_dav_svn.x86_64 0:1.4.2-4.el5_3.1
+    Complete!
+
+
+2) yum install git
+
+OK!
+    
+    Loaded plugins: fastestmirror
+    Loading mirror speeds from cached hostfile
+     * rpmforge: ftp-stud.fht-esslingen.de
+     * base: centos.mirror.nac.net
+     * updates: hpc.arc.georgetown.edu
+     * addons: www.gtlib.gatech.edu
+     * extras: centos.omnispring.com
+    Setting up Install Process
+    Parsing package install arguments
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: perl(LWP::UserAgent) for package: git
+    --> Processing Dependency: perl(SVN::Ra) for package: git
+    --> Processing Dependency: rcs for package: git
+    --> Processing Dependency: perl(SVN::Core) for package: git
+    --> Processing Dependency: rsync for package: git
+    --> Processing Dependency: perl(Git) for package: git
+    --> Processing Dependency: perl(SVN::Delta) for package: git
+    --> Running transaction check
+    ---> Package perl-libwww-perl.noarch 0:5.805-1.1.1 set to be updated
+    --> Processing Dependency: perl-HTML-Parser >= 3.33 for package: perl-libwww-perl
+    --> Processing Dependency: perl(HTML::Entities) for package: perl-libwww-perl
+    --> Processing Dependency: perl(Compress::Zlib) for package: perl-libwww-perl
+    ---> Package rsync.x86_64 0:3.0.7-1.el5.rf set to be updated
+    ---> Package subversion-perl.x86_64 0:1.6.11-0.1.el5.rf set to be updated
+    --> Processing Dependency: subversion = 1.6.11-0.1.el5.rf for package: subversion-perl
+    --> Processing Dependency: libsvn_delta-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_repos-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_diff-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_client-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_fs-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_subr-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_ra-1.so.0()(64bit) for package: subversion-perl
+    --> Processing Dependency: libsvn_wc-1.so.0()(64bit) for package: subversion-perl
+    ---> Package rcs.x86_64 0:5.7-30.1 set to be updated
+    ---> Package perl-Git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: perl(Error) for package: perl-Git
+    --> Running transaction check
+    ---> Package perl-Error.noarch 0:0.17016-1.el5.rf set to be updated
+    ---> Package perl-HTML-Parser.x86_64 0:3.64-1.el5.rf set to be updated
+    --> Processing Dependency: perl(HTML::Tagset) >= 3 for package: perl-HTML-Parser
+    ---> Package subversion.x86_64 0:1.6.11-0.1.el5.rf set to be updated
+    ---> Package perl-IO-Compress.noarch 0:2.024-1.el5.rf set to be updated
+    --> Processing Dependency: perl(Compress::Raw::Bzip2) = 2.024 for package: perl-IO-Compress
+    --> Processing Dependency: perl(Compress::Raw::Zlib) = 2.024 for package: perl-IO-Compress
+    --> Running transaction check
+    ---> Package perl-Compress-Raw-Zlib.x86_64 0:2.024-1.el5.rf set to be updated
+    ---> Package perl-Compress-Raw-Bzip2.x86_64 0:2.024-1.el5.rf set to be updated
+    ---> Package perl-HTML-Tagset.noarch 0:3.20-1.el5.rf set to be updated
+    --> Finished Dependency Resolution
+    
+    Dependencies Resolved
+    
+    ==========================================================================================
+     Package                       Arch         Version                  Repository      Size
+    ==========================================================================================
+    Installing:
+     git                           x86_64       1.5.2.1-1.el5.rf         rpmforge        28 M
+    Installing for dependencies:
+     perl-Compress-Raw-Bzip2       x86_64       2.024-1.el5.rf           rpmforge       110 k
+     perl-Compress-Raw-Zlib        x86_64       2.024-1.el5.rf           rpmforge       178 k
+     perl-Error                    noarch       0.17016-1.el5.rf         rpmforge        28 k
+     perl-Git                      x86_64       1.5.2.1-1.el5.rf         rpmforge        18 k
+     perl-HTML-Parser              x86_64       3.64-1.el5.rf            rpmforge       151 k
+     perl-HTML-Tagset              noarch       3.20-1.el5.rf            rpmforge        14 k
+     perl-IO-Compress              noarch       2.024-1.el5.rf           rpmforge       242 k
+     perl-libwww-perl              noarch       5.805-1.1.1              base           376 k
+     rcs                           x86_64       5.7-30.1                 base           349 k
+     rsync                         x86_64       3.0.7-1.el5.rf           rpmforge       376 k
+     subversion                    x86_64       1.6.11-0.1.el5.rf        rpmforge       6.8 M
+     subversion-perl               x86_64       1.6.11-0.1.el5.rf        rpmforge       2.4 M
+    
+    Transaction Summary
+    ==========================================================================================
+    Install     13 Package(s)         
+    Update       0 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total size: 39 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Installing     : subversion                                      [ 1/13] 
+      Installing     : subversion-perl                                 [ 2/13] 
+      Installing     : perl-Compress-Raw-Zlib                          [ 3/13] 
+      Installing     : rcs                                             [ 4/13] 
+      Installing     : rsync                                           [ 5/13] 
+      Installing     : perl-Compress-Raw-Bzip2                         [ 6/13] 
+      Installing     : perl-IO-Compress                                [ 7/13] 
+      Installing     : perl-HTML-Tagset                                [ 8/13] 
+      Installing     : perl-HTML-Parser                                [ 9/13] 
+      Installing     : perl-libwww-perl                                [10/13] 
+      Installing     : perl-Error                                      [11/13] 
+      Installing     : git                                             [12/13] 
+      Installing     : perl-Git                                        [13/13] 
+    
+    Installed: git.x86_64 0:1.5.2.1-1.el5.rf
+    Dependency Installed: perl-Compress-Raw-Bzip2.x86_64 0:2.024-1.el5.rf perl-Compress-Raw-Zlib.x86_64 0:2.024-1.el5.rf perl-Error.noarch 0:0.17016-1.el5.rf perl-Git.x86_64 0:1.5.2.1-1.el5.rf perl-HTML-Parser.x86_64 0:3.64-1.el5.rf perl-HTML-Tagset.noarch 0:3.20-1.el5.rf perl-IO-Compress.noarch 0:2.024-1.el5.rf perl-libwww-perl.noarch 0:5.805-1.1.1 rcs.x86_64 0:5.7-30.1 rsync.x86_64 0:3.0.7-1.el5.rf subversion.x86_64 0:1.6.11-0.1.el5.rf subversion-perl.x86_64 0:1.6.11-0.1.el5.rf
+    Complete!
+
+
+
+
+
+FULL ERROR MESSAGE:
+
+yum install git
+
+    Loaded plugins: fastestmirror
+    Loading mirror speeds from cached hostfile
+     * rpmforge: apt.sw.be
+     * base: centos.mirror.nac.net
+     * updates: hpc.arc.georgetown.edu
+     * addons: www.gtlib.gatech.edu
+     * extras: centos.omnispring.com
+    rpmforge                                                           | 1.1 kB     00:00     
+    primary.xml.gz                                                     | 3.7 MB     00:02     
+    rpmforge                                                       10172/10172
+    Setting up Install Process
+    Parsing package install arguments
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: perl(LWP::UserAgent) for package: git
+    --> Processing Dependency: perl(SVN::Ra) for package: git
+    --> Processing Dependency: rcs for package: git
+    --> Processing Dependency: perl(SVN::Core) for package: git
+    --> Processing Dependency: rsync for package: git
+    --> Processing Dependency: perl(Git) for package: git
+    --> Processing Dependency: perl(SVN::Delta) for package: git
+    --> Running transaction check
+    ---> Package perl-libwww-perl.noarch 0:5.805-1.1.1 set to be updated
+    --> Processing Dependency: perl-HTML-Parser >= 3.33 for package: perl-libwww-perl
+    --> Processing Dependency: perl(HTML::Entities) for package: perl-libwww-perl
+    --> Processing Dependency: perl(Compress::Zlib) for package: perl-libwww-perl
+    ---> Package rcs.x86_64 0:5.7-30.1 set to be updated
+    ---> Package subversion-perl.x86_64 0:1.6.11-0.1.el5.rf set to be updated
+    --> Processing Dependency: subversion = 1.6.11-0.1.el5.rf for package: subversion-perl
+    ---> Package rsync.x86_64 0:3.0.7-1.el5.rf set to be updated
+    ---> Package perl-Git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: perl(Error) for package: perl-Git
+    --> Running transaction check
+    ---> Package perl-IO-Compress.noarch 0:2.024-1.el5.rf set to be updated
+    --> Processing Dependency: perl(Compress::Raw::Bzip2) = 2.024 for package: perl-IO-Compress
+    --> Processing Dependency: perl(Compress::Raw::Zlib) = 2.024 for package: perl-IO-Compress
+    ---> Package perl-Error.noarch 0:0.17016-1.el5.rf set to be updated
+    ---> Package subversion.x86_64 0:1.6.11-0.1.el5.rf set to be updated
+    ---> Package perl-HTML-Parser.x86_64 0:3.64-1.el5.rf set to be updated
+    --> Processing Dependency: perl(HTML::Tagset) >= 3 for package: perl-HTML-Parser
+    --> Running transaction check
+    ---> Package perl-HTML-Tagset.noarch 0:3.20-1.el5.rf set to be updated
+    ---> Package perl-Compress-Raw-Zlib.x86_64 0:2.024-1.el5.rf set to be updated
+    ---> Package perl-Compress-Raw-Bzip2.x86_64 0:2.024-1.el5.rf set to be updated
+    --> Finished Dependency Resolution
+    
+    Dependencies Resolved
+    
+    ==========================================================================================
+     Package                       Arch         Version                  Repository      Size
+    ==========================================================================================
+    Installing:
+     git                           x86_64       1.5.2.1-1.el5.rf         rpmforge        28 M
+    Updating:
+     subversion                    x86_64       1.6.11-0.1.el5.rf        rpmforge       6.8 M
+    Installing for dependencies:
+     perl-Compress-Raw-Bzip2       x86_64       2.024-1.el5.rf           rpmforge       110 k
+     perl-Compress-Raw-Zlib        x86_64       2.024-1.el5.rf           rpmforge       178 k
+     perl-Error                    noarch       0.17016-1.el5.rf         rpmforge        28 k
+     perl-Git                      x86_64       1.5.2.1-1.el5.rf         rpmforge        18 k
+     perl-HTML-Parser              x86_64       3.64-1.el5.rf            rpmforge       151 k
+     perl-HTML-Tagset              noarch       3.20-1.el5.rf            rpmforge        14 k
+     perl-IO-Compress              noarch       2.024-1.el5.rf           rpmforge       242 k
+     perl-libwww-perl              noarch       5.805-1.1.1              base           376 k
+     rcs                           x86_64       5.7-30.1                 base           349 k
+     rsync                         x86_64       3.0.7-1.el5.rf           rpmforge       376 k
+     subversion-perl               x86_64       1.6.11-0.1.el5.rf        rpmforge       2.4 M
+    
+    Transaction Summary
+    ==========================================================================================
+    Install     12 Package(s)         
+    Update       1 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total download size: 39 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    (1/13): perl-HTML-Tagset-3.20-1.el5.rf.noarch.rpm                  |  14 kB     00:00     
+    (2/13): perl-Git-1.5.2.1-1.el5.rf.x86_64.rpm                       |  18 kB     00:00     
+    (3/13): perl-Error-0.17016-1.el5.rf.noarch.rpm                     |  28 kB     00:00     
+    (4/13): perl-Compress-Raw-Bzip2-2.024-1.el5.rf.x86_64.rpm          | 110 kB     00:00     
+    (5/13): perl-HTML-Parser-3.64-1.el5.rf.x86_64.rpm                  | 151 kB     00:00     
+    (6/13): perl-Compress-Raw-Zlib-2.024-1.el5.rf.x86_64.rpm           | 178 kB     00:00     
+    (7/13): perl-IO-Compress-2.024-1.el5.rf.noarch.rpm                 | 242 kB     00:00     
+    (8/13): rcs-5.7-30.1.x86_64.rpm                                    | 349 kB     00:00     
+    (9/13): rsync-3.0.7-1.el5.rf.x86_64.rpm                            | 376 kB     00:00     
+    (10/13): perl-libwww-perl-5.805-1.1.1.noarch.rpm                   | 376 kB     00:00     
+    (11/13): subversion-perl-1.6.11-0.1.el5.rf.x86_64.rpm              | 2.4 MB     00:00     
+    (12/13): subversion-1.6.11-0.1.el5.rf.x86_64.rpm                   | 6.8 MB     00:03     
+    (13/13): git-1.5.2.1-1.el5.rf.x86_64.rpm                           |  28 MB     00:11     
+    ------------------------------------------------------------------------------------------
+    Total                                                     2.0 MB/s |  39 MB     00:18     
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    
+    
+    Transaction Check Error:
+      file /usr/share/emacs/site-lisp/psvn.el from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/de/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/es/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/fr/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/it/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/ja/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/ko/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/nb/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/pl/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/pt_BR/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/sv/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/zh_CN/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/locale/zh_TW/LC_MESSAGES/subversion.mo from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/man/man1/svn.1.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/man/man1/svnadmin.1.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/man/man1/svnlook.1.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/man/man5/svnserve.conf.5.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/man/man8/svnserve.8.gz from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+      file /usr/share/xemacs/site-packages/lisp/psvn.el from install of subversion-1.6.11-0.1.el5.rf.x86_64 conflicts with file from package subversion-1.4.2-4.el5_3.1.i386
+    
+    Error Summary
+    -------------
+
+ 
+
+
+</entry>
+
+
+
+<entry [Sun May 16 22:10:15 EDT 2010] ADD REPOSITORIES TO YUM CONFIG FILE>
+
+
+
+
+EXAMPLE: ADDED rpmforge.repo TO /etc/yum.repos.d DIRECTORY
+
+
+emacs /etc/yum.repos.d/rpmforge.repo
+
+    [rpmforge]
+    name = Red Hat Enterprise $releasever - RPMforge.net - dag
+    #baseurl = http://apt.sw.be/redhat/el5/en/$basearch/dag
+    mirrorlist = http://apt.sw.be/redhat/el5/en/mirrors-rpmforge
+    #mirrorlist = file:///etc/yum.repos.d/mirrors-rpmforge
+    enabled = 1
+    protect = 0
+    gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
+    gpgcheck = 0
+
+
+
+
+NB: YUM CONFIG FILE IS /etc/yum.conf
+
+cat /etc/yum.conf
+
+    [main]
+    cachedir=/var/cache/yum
+    keepcache=0
+    debuglevel=2
+    logfile=/var/log/yum.log
+    distroverpkg=redhat-release
+    tolerant=1
+    exactarch=1
+    obsoletes=1
+    gpgcheck=1
+    plugins=1
+    
+    # Note: yum-RHN-plugin doesn't honor this.
+    metadata_expire=1h
+    
+    # Default.
+    # installonly_limit = 3
+    
+    # PUT YOUR REPOS HERE OR IN separate files named file.repo
+    # in /etc/yum.repos.d
+
+
+
+NB: CentOS-Base.repo REPO FILE IN /etc/yum.repos.d HAS baseurl SET TO CCS URL
+
+
+diff /yum.repos.d/CentOS-Base.repo /yum.repos.d/CentOS-Base.repo~
+
+    19c19
+    < baseurl=http://bak.ccs.miami.edu/sysinstall/centos5.3_64
+    ---
+    > baseurl=http://ftp.usf.edu/pub/centos/5/os/x86_64
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr 19 03:13:44 EDT 2009] USE yum update>
+
+
+
+
+http://www.electrictoolbox.com/yum-transaction-check-error/
+
+
+
+

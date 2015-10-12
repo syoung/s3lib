@@ -1,0 +1,194 @@
+Notes-perl.txt
+
+
+</entry>
+
+
+
+<entry [Tue Oct 14 14:57:22 EDT 2008] Installing Perl Modules >
+
+
+
+http://servers.digitaldaze.com/extensions/perl/modules.html
+
+Utilities for installing Perl5 modules generally assume that the installation is being done in the root area of the file system of the host machine. As a Virtual Private Server user you do not have access to the root area of the host machine. So, you must install Perl5 modules locally, within your Virtual Private Server file system.
+Installing Perl5 Modules Locally
+
+Normally, the Perl5 module installation procedure includes commands something like these:
+
+    % perl5 Makefile.PL
+
+    % make
+
+    % make test
+
+    % make install
+
+    % make clean
+
+The first command, perl5 Makefile.PL, directs perl5 to create a makefile for the new module you are installing. When installing a perl5 module locally you must designate the home directory of your perl5 installation on the command line. That information is used by perl5 to create the makefile. Substitute the following command for perl5 Makefile.PL:
+
+    % perl5 Makefile.PL PREFIX=/usr/home/USERNAME/usr/local
+
+The value USERNAME above should be replaced with your Virtual Private Server primary user account name. So the complete installation process is:
+
+    % perl5 Makefile.PL PREFIX=/usr/home/USERNAME/usr/local
+
+    % make
+
+    % make test
+
+    % make install
+
+    % make clean
+
+For older modules it may be necessary to designate several other variables on the command line during the module installation:
+
+    % perl5 Makefile.PL PREFIX=/usr/home/USERNAME/usr/local \
+    INSTALLPRIVLIB=/usr/home/USERNAME/usr/local/lib/perl5 \
+    INSTALLSCRIPT=/usr/home/USERNAME/usr/local/bin \
+    INSTALLSITELIB=/usr/home/USERNAME/usr/local/lib/perl5/site_perl \
+    INSTALLBIN=/usr/home/USERNAME/usr/local/bin \
+    INSTALLMAN1DIR=/usr/home/USERNAME/usr/local/lib/perl5/man \
+    INSTALLMAN3DIR=/usr/home/USERNAME/usr/local/lib/perl5/man/man3
+
+To save yourself some typing you can create a file and put these variable assignments above in to a file (FILENAME) something like this:
+
+    PREFIX=/usr/home/USERNAME/usr/local \
+    INSTALLPRIVLIB=/usr/home/USERNAME/usr/local/lib/perl5 \
+    INSTALLSCRIPT=/usr/home/USERNAME/usr/local/bin \
+    INSTALLSITELIB=/usr/home/USERNAME/usr/local/lib/perl5/site_perl \
+    INSTALLBIN=/usr/home/USERNAME/usr/local/bin \
+    INSTALLMAN1DIR=/usr/home/USERNAME/usr/local/lib/perl5/man \
+    INSTALLMAN3DIR=/usr/home/USERNAME/usr/local/lib/perl5/man/man3
+
+Then, each time you install a perl5 module you can use the following syntax:
+
+    % perl5 Makefile.PL `cat FILENAME
+
+    % make
+
+    % make test
+
+    % make install
+
+    % make clean
+
+You also can have a few different local module installation procedures, for example one for production perl and another for development:
+
+    % perl5 Makefile.PL `cat FILENAME.production`
+
+or
+
+    % perl5 Makefile.PL `cat FILENAME.development`
+
+Making scripts find the modules you have installed
+
+When you install perl5 on your Virtual Private Server, all pre-installed modules are installed into these 4 directories (depending on which version of perl5 you are installing):
+
+    /usr/local/lib/perl5
+    /usr/local/lib/perl5/i386-bsdos/5.00X
+    /usr/local/lib/perl5/site_perl/i386-bsdos
+    /usr/local/lib/perl5/site_perl
+
+These 4 directories are already preset in the perl5's @INC array. This array contains the paths that perl5 searches in order to find modules. If you install perl5 modules locally as described above, you will need to append these two directories, which are local to your Virtual Private Server, to the @INC array:
+
+    /usr/home/<username>/usr/local/lib/perl5
+    /usr/home/<username>/usr/local/lib/perl5/site_perl
+
+The architecture specific directories are being searched by perl automatically Each time you want to use modules in that path you should add the following line to your scripts:
+
+    use lib qw(/usr/home/USERNAME/usr/local/lib/perl5 
+    /usr/home/USERNAME/usr/local/lib/perl5/site_perl);
+
+You don't have to put it into a BEGIN block; the lib.pm module takes care of that for you. It also adds the architecture specific directories.
+
+You also can use a BEGIN block to include your installed modules:
+
+    BEGIN { unshift @INC, qw(/usr/home/USERNAME/usr/local/lib/perl5 
+    /usr/home/USERNAME/usr/local/lib/perl5/site_perl); }
+
+However, the use lib construct seems to be cleaner and the unshift @INC construct doesn't automatically add the architecture specific directories to the @INC array.
+Installing new modules that require locally installed modules
+
+Okay, imagine that you have installed module A in /usr/home/USERNAME/usr/local/lib/perl5. Now you want to install a module B that demands module A to be already installed. You know that you have installed the A module, but amazingly B can't locate it. Why? Because when you try to install the module B it doesn't know that you have module A installed locally. Perl5 searches the basic 4 directories as defined by default in the @INC array. But your local directories aren't listed there.
+
+The solution is simple. The PERL5LIB environment variable does the same job in the shell as use lib does in your script. So if you use csh or tcsh, type the following at the command line:
+
+    % setenv PERL5LIB \
+    /usr/home/<username>/usr/local/lib/perl5:
+    /usr/home/<username>/usr/local/lib/perl5/site_perl
+
+Check the man page of your favorite shell how to set the environment variables if you use a shell different from csh/tcsh. Put this setenv statement into .login or another file that is being sourced each time you log in into your account and you will not have to remember setting it each time you login.
+Module installation using CPAN.pm
+
+An alternative to manually installing perl5 modules is the CPAN.pm module (see www.perl.com/CPAN/) which automates module download and installation. If you have perl5.004 or higher installed you have it bundled with the distribution. If not, you can download it from CPAN.
+
+When you initially run the perl5 -MCPAN -e shell command, it will ask you a few questions. You can use all the defaults, except for this one:
+
+    Parameters for the 'perl Makefile.PL' command? [] 
+    PREFIX=/usr/home/<username>/usr/local
+
+and this one:
+
+    Parameters for the 'make install' command? []
+    INSTALLMAN3DIR=/usr/home/<username>/usr/local/lib/perl5/man/man3
+
+After configuration of the module is complete, you will see a > prompt. Then you can try installing modules. To install the CGI module, do this:
+
+    > install CGI
+
+It will fetch the latest CGI module, unpack it, make it, test it and install it into your local area or the directory you specified as the PREFIX directory. The command:
+
+    > i /CGI/
+
+will return the list of modules that match that pattern.
+
+The CPAN.pm module has more functionality, like checking for the latest modules, for example. Just run perldoc CPAN to read the man page.
+
+
+</entry>
+
+
+
+<entry [Mon Dec 11 21:05:17 PST 2006] GET ENVIRONMENT VARIABLES>
+
+
+
+export 
+>>>
+declare -x ADOBE_SVG_VIEWER_PATH="/usr/local/adobesvg-3.01"
+declare -x BLASTDB="/Users/YOURHOME/data/blast"
+declare -x BLASTDIR="/usr/local/biotools/bin"
+declare -x BLASTMAT="/common/data/blastmat"
+declare -x CLICOLOR="1"
+declare -x DYLD_LIBRARY_PATH="/common/sge/lib/darwin:/common/lib"
+declare -x EMBOSS_ACDROOT="/usr/local/biotools/share/EMBOSS/acd"
+declare -x GO_ROOT="/go-dev/"
+declare -x HOME="/Users/local"
+declare -x INQUIRYVER="1.4.1"
+declare -x LD_LIBRARY_PATH="/usr/local/lib/graphviz"
+declare -x LOGNAME="local"
+declare -x MAIL="/var/mail/local"
+declare -x MANPATH="/usr/share/apps/ActiveTcl/bin:/common/sge/man:/usr/share/man:/common/mpich-1.2.7/ch_p4/man:/common/man:/usr/local/man:/usr/X11R6/man:/usr/local/biotools/man"
+declare -x MPICH="/common/mpich-1.2.7/ch_p4"
+declare -x OLDPWD
+declare -x PATH="/Users/local/apps/cytoscape/PLUGINS:/usr/lib/perl5/site_perl:/usr/share/apps/ActiveTcl/bin:/usr/local/mysql/bin:/usr/local/bin:/usr/share/apps/komodo:/sw/bin:/Users/local/FUNNYBASE/bin:/common/sge/bin/darwin:/bin:/sbin:/usr/bin:/usr/sbin:/common/mpich-1.2.7/ch_p4/bin:/common/bin:/common/sbin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin:/usr/local/biotools/bin:/Applications/bioinf/phylip/exe:/Applications/bioinf/t_coffee:/usr/local/biotools/bin"
+declare -x PERL5LIB="/RemotePerl"
+declare -x PLPLOT_LIB="/common/lib"
+declare -x PVM_ROOT="/Users/local/FUNNYBASE/NOTES/pvm/pvm3"
+declare -x PWD="/Users/local"
+declare -x RSHCOMMAND="/usr/bin/ssh"
+declare -x SGE_CELL="default"
+declare -x SGE_EXECD_PORT="702"
+declare -x SGE_QMASTER_PORT="701"
+declare -x SGE_ROOT="/common/sge"
+declare -x SHELL="/bin/bash"
+declare -x SHLVL="1"
+declare -x SSH_CLIENT="129.171.101.233 50928 22"
+declare -x SSH_CONNECTION="129.171.101.233 50928 129.171.101.102 22"
+declare -x SSH_TTY="/dev/ttyp3"
+declare -x TERM="xterm-color"
+declare -x USER="local"
+declare -x WISECONFIGDIR="/usr/local/biotools/wisecfg/"
+<<<

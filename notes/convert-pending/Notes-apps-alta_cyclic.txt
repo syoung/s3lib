@@ -1,0 +1,3592 @@
+Notes-project21-alta_cyclic.txt
+
+
+</entry>
+
+
+
+<entry [Wed Apr  29 23:33:20 EST 2009] MOVE ALTA CYCLIC OUTPUT FILES TO /nethome/syoung/alta-cyclic USING move.pl UTILITY>
+
+
+
+
+DRAWBACKS OF USING find
+-----------------------
+
+[user@localhost directory]$ find $directory -type f -name '*' -exec mv{} $directory2/. \;
+
+This involves filtering the list of files through the find command, instructing it to properly handle each file based on a specified set of command-line parameters. Due to the built-in flexibility of the find command, this workaround is easy to use, successful and quite popular. It allows you to selectively work with subsets of files based on their name patterns, date stamps, permissions and even inode numbers. In addition, and perhaps most importantly, you can complete the entire task with a single command.
+
+The main drawback to this method is the length of time required to complete the process. Unlike Method #1, where groups of files get processed as a unit, this procedure actually inspects the individual properties of each file before performing the designated operation. The overhead involved can be quite significant, and moving lots of files individually may take a long time.
+
+
+INSTEAD, USE move.pl (CREATES A FUNCTION)
+-----------------------------------------
+
+function large_mv ()
+{       while read line1; do
+                mv directory/$line1 ../directory2
+        done
+}
+ls -1 directory/ | large_mv
+
+Although writing a shell function does involve a certain level of complexity, I find that this method allows for a greater degree of flexibility and control than 'find'.
+
+This short function simply mimics the functionality of the find command given in Example 2: it deals with each file individually, processing them one by one. However, by writing a function you also gain the ability to perform an unlimited number of actions per file still using a single command:
+
+
+LARGER MOVE FUNCTION SLOW LIKE 'find'
+-------------------------------------
+
+function larger_mv ()
+{       while read line1; do
+                md5sum directory/$line1 >>  ~/md5sums
+                ls -l directory/$line1 >> ~/backup_list
+                mv directory/$line1 ../directory2
+        done
+}
+ls -1 directory/ | larger_mv
+
+
+This example demonstrates how you easily can get an md5sum and a backup listing of each file before moving it.
+
+Unfortunately, since this method also requires that each file be dealt with individually, it will involve a delay similar to that of 'find'. From experience I have found that 'find' is a little faster than the function given in Example 3a, so Method #3 should be used only in cases where the extra functionality is required.
+
+
+</entry>
+
+
+
+<entry [Wed Apr  29 23:33:20 EST 2009] COPY OLD RUN FILES TO /nethome/syoung/alta-cyclic>
+
+
+
+
+cd /nethome/syoung/
+find ./ -type f -name "^1224" -exec mv {} alta-cyclic/. \;
+
+
+</entry>
+
+
+
+<entry [Tue Feb  3 14:33:20 EST 2009] RECOVER FROM A BROKEN RUN>
+
+
+
+
+ How can I recover from a broken run?
+Simply run: brave_heart --load Path_to_Training_Folder_of_Broken_Run/egg. Alta-Cyclic will identify the last state that was saved and the location of the training files and will continure from the latest possible step. 
+
+
+</entry>
+
+
+
+<entry [Wed Oct 15 17:22:46 EDT 2008] RUNNING ALTA-CYCLIC + REMOVING OUTPUT FILES>
+
+
+ 
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-20 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 
+
+
+
+sudo /usr/local/sbin/pbs_server
+
+
+
+qsub -q gsmall   -o Cluster/Messages/output -e Cluster/Errors/error tmp_GBwL.sh
+
+
+find . -name '1224*' | xargs rm
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 15 16:22:46 EDT 2008] HOW TO RUN AN ARRAY JOB USING -t OPTION IN THE .sh FILE>
+
+
+
+CORRECT SYNTAX FOR OPTIONS IN .sh FILE:
+
+qsub -q gsmall test.sh
+
+    #!/bin/sh 
+    
+    #PBS -N alta-cyclic
+    #PBS -l walltime=10:30
+    
+    #TASK_ID=$(($1 + 1));
+    
+    #PBS -t 12
+    
+    
+    echo "PBS_ARRAYID " $PBS_ARRAYID;
+    
+    TASK_ID=$(($PBS_ARRAYID + 1));
+    echo "TASK_ID: " $TASK_ID;
+    echo "Sleeping...";
+    sleep 5;
+    echo "Awake.";
+    
+
+GAVE THE CORRECT NUMBER OF ERROR AND OUTPUT FILES:
+
+[syoung@kronos test4]$ ll | grep alta
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-0
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-1
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-11
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-2
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-3
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-4
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-5
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-6
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-7
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-8
+-rw-------  1 syoung bioinfo   0 Oct 15 16:48 alta-cyclic.e4488-9
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-0
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-1
+-rw-------  1 syoung bioinfo  48 Oct 15 16:48 alta-cyclic.o4488-11
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-2
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-3
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-4
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-5
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-6
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-7
+-rw-------  1 syoung bioinfo  46 Oct 15 16:48 alta-cyclic.o4488-8
+-rw-------  1 syoung bioinfo  47 Oct 15 16:48 alta-cyclic.o4488-9
+[syoung@kronos test4]$ 
+
+WITH THE CORRECT OUTPUT:
+
+[syoung@kronos test4]$ cat alta-cyclic.o4488-9
+
+    PBS_ARRAYID  9
+    TASK_ID:  10
+    Sleeping...
+    Awake.
+
+
+
+
+INFO FROM:
+
+man msub
+ 
+WHICH LED TO THIS:
+
+http://www.clusterresources.com/products/torque/docs/commands/qsub.shtml
+
+WHICH INCLUDES:
+
+1) SYNTAX OF -t OPTION
+
+2) SYNTAX FOR OPTIONS IN .sh FILE
+
+----
+
+1) SYNTAX OF -t OPTION
+
+  -t array_request
+               Specifies the task ids of a job array. Single task
+               arrays are allowed.
+
+               Declares  the number of  instances of the job that
+               are to be  created  by the server.  Each  of these
+               jobs will use the  same script and will be running
+               in a nearly identical environment.
+
+               The array_request  argument is an  integer id or a
+               range  of  integers.  Multiple ids  or  id  ranges
+               can  be combined in a comma delimted list.
+
+               Examples : -t 1-100 or -t 1,10,50-100
+
+               We  are  currently  aware  of one  limitation that
+               causes the creation of large  job arrays on TORQUE
+               installations with high job IDs. This is due to an
+               old file name length limitation. With thousands of
+               similarly named jobs (and for the time being, each
+               of these jobs has its own job file in pbs_server -
+               they do all share a copy of the  script file while
+               on the  server),  we run  into  limitations of the
+               file  name  hashing  algorithm  that  attempts  to
+               create unique  short file names  for all of  these
+               files.  We are looking  to remove  this limitation
+               for job arrays or sharing the job file.
+
+               Be aware that job arrays are  new in version 2.2.0
+               and are still under development and may have bugs,
+               and  certainly are  not  feature complete.  If you
+               have any suggestions or  bug reports, please bring
+               them to our attention.
+
+
+
+2) SYNTAX FOR OPTIONS IN .sh FILE
+
+
+EXTENDED DESCRIPTION
+       Script Processing:
+
+       A  job  script may consist of PBS directives, comments and
+       executable statements.  A PBS directive provides a way  of
+       specifying  job attributes in addition to the command line
+       options.  For example:
+              :
+              #PBS -N Job_name
+              #PBS -l walltime=10:30,mem=320kb
+              #PBS -m be
+              #
+              step1 arg1 arg2
+              step2 arg3 arg4
+
+
+       The qsub command scans the lines of the  script  file  for
+       directives.   An  initial  line  in the script that begins
+       with the characters "#!" or  the  character  ":"  will  be
+       ignored and scanning will start with the next line.  Scan-
+       ning will continue until the first executable  line,  that
+       is  a  line that is not blank, not a directive line, nor a
+       line whose first non white space  character  is  "#".   If
+       directives   occur  on  subsequent  lines,  they  will  be
+       ignored.
+
+       A line in the script file will be processed as a directive
+       to  qsub  if and only if the string of characters starting
+       with the first non white space character on the  line  and
+       of  the  same  length  as the directive prefix matches the
+       directive prefix.
+
+       The remainder  of  the  directive  line  consists  of  the
+       options  to  qsub in the same syntax as they appear on the
+       command line.  The option character is to be preceded with
+       the "-" character.
+
+       If  an  option  is  present in both a directive and on the
+       command line, that option and its argument, if  any,  will
+       be  ignored  in  the  directive.   The  command line takes
+       precedence.
+
+       If an option is present in a directive and not on the com-
+       mand  line,  that option and its argument, if any, will be
+       processed as if it had occurred on the command line.
+
+       The directive prefix string will be determined in order of
+       preference from:
+
+           The  value  of the -C option argument if the option is
+           specified on the command line.
+
+           The value of the environment variable  PBS_DPREFIX  if
+           it is defined.
+
+           The four character string #PBS.
+
+       If  the  -C  option  is found in a directive in the script
+       file, it will be ignored.
+
+       User Authorization:
+
+       When the user submits a job from a system other  than  the
+       one  on  which  the  PBS Server is running, the name under
+       which the job is to be executed is selected  according  to
+       the rules listed under the -u option.  The user submitting
+       the job must be authorized to run the job under the execu-
+       tion user name.  This authorization is provided if
+
+              (1)  The  host  on  which qsub is run is trusted by
+                   the execution host (see /etc/hosts.equiv),
+
+              (2)  The execution user has an .rhosts file  naming
+                   the submitting user on the submitting host.
+
+       C-Shell .logout File:
+
+       The  following  warning  applies for users of the c-shell,
+       csh.  If the job is executed under the csh and  a  .logout
+       file  exists  in  the home directory in which the job exe-
+       cutes, the exit status of the job is that of  the  .logout
+       script, not the job script.  This may impact any inter-job
+       dependencies.  To preserve the  job  exit  status,  either
+       remove the .logout file or place the following line as the
+       first line in the .logout file
+          set EXITVAL = $status
+       and the following line as  the  last  executable  line  in
+       .logout
+          exit $EXITVAL
+
+       Interactive Jobs:
+
+       If  the -I option is specified on the command line or in a
+       script directive, or if the  "interactive"  job  attribute
+       declared  true  via  the  -W  option, -W interactive=true,
+       either on the command line or in a script  directive,  the
+       job  is  an interactive job.  The script will be processed
+       for directives, but will not be  included  with  the  job.
+       When  the  job  begins  execution, all input to the job is
+       from the terminal session in which qsub is running.
+
+       When an interactive job is  submitted,  the  qsub  command
+       will  not  terminate when the job is submitted.  Qsub will
+       remain running until the job terminates,  is  aborted,  or
+       the  user  interrupts  qsub  with an SIGINT (the control-C
+       key).  If qsub is interrupted prior to job start, it  will
+       query  if  the  user wishes to exit.  If the user response
+       "yes", qsub exits and the job is aborted.
+
+       One the interactive job has started  execution,  input  to
+       and  output from the job pass through qsub.  Keyboard gen-
+       erated interrupts are passed to the  job.   Lines  entered
+       that begin with the tilde ('~') character and contain spe-
+       cial sequences are escaped by qsub.  The recognized escape
+       sequences are:
+
+              ~.     Qsub terminates execution.  The batch job is
+                     also terminated.
+
+              ~susp  Suspend the qsub program  if  running  under
+                     the  C shell.  "susp" is the suspend charac-
+                     ter, usually CNTL-Z.
+
+              ~asusp Suspend the input half of qsub (terminal  to
+                     job),  but  allow  output  to continue to be
+                     displayed.  Only works under  the  C  shell.
+                     "asusp"  is the auxiliary suspend character,
+                     usually CNTL-Y.
+
+
+EXIT STATUS
+       Upon successful processing, the qsub exit status will be a
+       value of zero.
+
+       If  the qsub command fails, the command exits with a value
+       greater than zero.
+
+</entry>
+
+
+
+<entry [Mon Oct 13 16:06:11 EDT 2008] TROUBLESHOOTING alta-cyclic ON kronos (CONTINUED)>
+
+
+
+
+1) ERROR DURING PROCESSING OF BLAT:
+
+Content of Cluster/Errors/error-4:
+problem to read file
+ at ./analyze_blat_neat.pl line 508
+        main::_check_read(0, 10) called at ./analyze_blat_neat.pl line 253
+        main::_fetch_DNA('gi|9626372|ref|NC_001422.1|', 179, 34, 'HASH(0x106f2b70)') called at ./analyze_blat_neat.pl line 87
+        main::getDNA('HASH(0x106e6a60)', 'HASH(0x106f2b70)', 34) called at ./analyze_blat_neat.pl line 36
+mv: cannot stat `unified_seq_sample_for_blat.fa.4.hash': No such file or directory
+6 messages
+Cleaning file...
+
+
+INVESTIGATING perl script:
+
+Generating script to send to the cluster: /home/syoung/2008.10.14_11.07.47__Training.Folder_PHIx2/sge_script_2008_10_14_11_07_57.pl
+    
+    -------------------------------------------
+    1#! /usr/bin/env perl
+                        use strict;
+                        use warnings;
+                        use File::Copy;
+                        use Readonly;
+                        use Storable;
+                        use Carp;
+    
+                        my $TASK_ID = shift;
+    
+                        Readonly my $REMOTE_DIR => '/tmp';
+                        Readonly my $SOURCE_DIR => '/home/syoung/2008.10.14_11.07.47__Training.Folder_PHIx2';
+                        print STDOUT "+I am alive: $TASK_ID\n";
+                    
+                        sub required_files {
+                            my ($r_hash_files) = @_;
+                            foreach my $file (keys %{$r_hash_files}) {
+                                my $file_source          = $r_hash_files->{$file}->{source};
+                                my $file_dest            = $r_hash_files->{$file}->{remote};
+                                my $file_dest_expected   = $r_hash_files->{$file}->{remote_expected} || $file_dest;
+    
+                                if (-e $file_source) {
+                                    copy($file_source,$file_dest)
+                                        or die "can not copy $file_source to $file_dest\n";
+                                    chmod oct '0777', $file_dest
+                                        or die "can not chmod $file_dest: $!\n";
+                                }
+    
+                                if (not -e $file_dest) {
+                                    die "cant fount $file_dest\n";
+                                }
+                            }
+                        }
+                     sub convert_task {
+                        Readonly my $DATA_FILE => './dataFile';
+                        my ($convert_me,$r_hash_files) = @_;
+                        my $r_hash_numbers = retrieve ($r_hash_files->{hashFile}->{remote}) 
+                            or confess "cant open dataFile\n";
+    
+                        confess "cant verify hash\n"
+                            if (not exists $r_hash_numbers->{verify});
+    
+                        my $seperator = $r_hash_numbers->{sep} || "_";
+    
+                        my $numbers = $r_hash_numbers->{$convert_me}
+                            or confess "cant convert $convert_me\n";
+                        $numbers =~ s/$seperator/ /g;
+                        return $numbers;
+                    }
+                    
+    #hash of NUM_VEC:
+    my $r_hash_NUM_VEC=({   hashFile=>{source=>"/home/syoung/2008.10.14_11.07.47__Training.Folder_PHIx2/dataFile.tmp2008_10_14_11_07_57",remote=>"dataFile.tmp2008_10_14_11_07_57",remote_expected=>"undef"},
+    });
+    #First - Solve $NUM_VEC
+    required_files ($r_hash_NUM_VEC);
+    my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+    
+    
+    
+    #hash files:
+    my $r_hash_files=({     analyze_blat=>{source=>"/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/analyze_blat_neat.pl",remote=>"analyze_blat_neat.pl",remote_expected=>"undef"},
+            file_to_blat=>{source=>"/home/syoung/2008.10.14_11.07.47__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa.$TASK_ID",remote=>"unified_seq_sample_for_blat.fa.$TASK_ID",remote_expected=>"undef"},
+            genome=>{source=>"/home/syoung/base/pipeline/phix2/phiFasta.fa.2bit",remote=>"phiFasta.fa.2bit",remote_expected=>"undef"},
+    });
+    
+    
+    
+    
+    #commands:
+    required_files ($r_hash_files);
+    system ("blat phiFasta.fa.2bit unified_seq_sample_for_blat.fa.$TASK_ID unified_seq_sample_for_blat.fa.$TASK_ID.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100 ");
+    system ("./analyze_blat_neat.pl unified_seq_sample_for_blat.fa.$TASK_ID.blt 25 34 phiFasta.fa.2bit unified_seq_sample_for_blat.fa.$TASK_ID.hash");
+    system ("mv unified_seq_sample_for_blat.fa.$TASK_ID.hash $SOURCE_DIR");
+    #epilouge:
+    #
+    
+
+
+
+2) ERROR: RUNNING OKAY BLAT X 12 THEN BLAT X 80, UNTIL MODEL 3, WHEN sge_*.pl SCRIPT CAN'T FIND 'trainer.pl':
+
+
+ERROR MESSAGE:
+
+Content of Cluster/Errors/error-41:
+Can't exec "trainer.pl": No such file or directory at ./sge_script_2008_10_14_13_35_42.pl line 74.
+
+1 messages
+Cleaning file...
+
+2008/10/14 at 13:47:42  Tasks alive: 0 out of 81. Finished: 100%        Max lifetime: 0s
+Test number of files returned from the cluster: ..ok
+Test stdout files(the files that return from the nodes):        ..ok found 81 files
+can't find the value of p1
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1794
+        Deconv::stdout_parse_file___for_matrix('Deconv=HASH(0xfad6f20)', 'Cluster/Messages/output-0') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1455
+        Deconv::stdout_parse_all_files____for_matrix('Deconv=HASH(0xfad6f20)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1380
+        Deconv::stdout_parse_matrix_quickly('Deconv=HASH(0xfad6f20)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 474
+        main::optimize_random_walk_parameters('HASH(0xfa82bb0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+Deconv=HASH(0xfad6f20) dying at Tue Oct 14 13:47:42 2008
+
+
+
+CONTENTS OF sge_script_2008_10_14_13_35_42.pl:
+
+
+#hash of NUM_VEC:                                                                                                                                                                 
+my $r_hash_NUM_VEC=({   hashFile=>{source=>"/home/syoung/2008.10.14_13.34.55__Training.Folder_PHIx2/dataFile.tmp2008_10_14_13_35_42",remote=>"dataFile.tmp2008_10_14_13_35_42",re\
+mote_expected=>"undef"},
+});
+#First - Solve $NUM_VEC                                                                                                                                                           
+required_files ($r_hash_NUM_VEC);
+my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+
+
+
+#hash files:                                                                                                                                                                      
+my $r_hash_files=({     Model3=>{source=>"/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model3.pm",remote=>"Model3.pm",remote_expected=>"undef"},
+        Model=>{source=>"/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model.pm",remote=>"Model.pm",remote_expected=>"undef"},
+        trainer=>{source=>"/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl",remote=>"trainer.pl",remote_expected=>"undef"},
+        svd=>{source=>"/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/svd",remote=>"svd",remote_expected=>"undef"},
+        unify_int_file=>{source=>"/home/syoung/2008.10.14_13.34.55__Training.Folder_PHIx2/Training_set_files/unified_int_sample.txt",remote=>"unified_int_sample.txt",remote_expe\
+cted=>"undef"},
+        hash_pos_to_seq_file=>{source=>"/home/syoung/2008.10.14_13.34.55__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa.PosToSeq.uniHash",remote=>"unif\
+ied_seq_sample_for_blat.fa.PosToSeq.uniHash",remote_expected=>"undef"},
+});
+
+
+
+
+#commands:                                                                                                                                                                        
+required_files ($r_hash_files);
+system ("trainer.pl --random_walk $NUM_VEC --svm 1 0.0001 --hash_pos_to_seq_file unified_seq_sample_for_blat.fa.PosToSeq.uniHash --number_of_cycles 34 --unify_int_file unified_i\
+nt_sample.txt --counter_threshold 10000 --train_cycles 30 31 32 33 34 --cross_vald 2 ");
+#epilouge:                                                                                                                                                                        
+#                                                                                                                                                                                 
+
+
+3) ERROR: BLAT RUNS OKAY BUT AFTER CLEANING UP alta-cyclic FAILS WITH THIS ERROR:
+
+/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Cluster/Messages/output-11 cleaned
+End of stdout_clean()
+$r_split_files
+$VAR1 = [
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.1',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.2',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.3',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.4',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.5',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.6',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.7',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.8',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.9',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.10',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.11',
+          '/home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files//unified_seq_sample_for_blat.fa.12'
+        ];
+
+File to blat: /home/syoung/2008.10.13_16.01.32__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa
+can't open unified_seq_sample_for_blat.fa.2.hash: No such file or directory at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 257
+
+
+
+
+SOLUTION:
+
+ADDED PATH TO 'trainer.pl' IN 'sge*.pl' FILE
+
+
+
+4) ERROR: MISSING PERL MODULE Archive::Tar
+
+Error file (file_to_clean) for task 42: /home/syoung/2008.10.14_14.10.22__Training.Folder_PHIx2/Cluster/Errors/error-41
+
+Content of Cluster/Errors/error-41:
+Can't locate Archive/Tar.pm in @INC (@INC contains: /home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/ /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8 /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+2 messages
+Cleaning file...
+
+2008/10/14 at 14:23:11  Tasks alive: 0 out of 81. Finished: 100%        Max lifetime: 0s
+Test number of files returned from the cluster: ..ok
+Test stdout files(the files that return from the nodes):        ..ok found 81 files
+can't find the value of p1
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1794
+        Deconv::stdout_parse_file___for_matrix('Deconv=HASH(0xe138f80)', 'Cluster/Messages/output-0') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1455
+        Deconv::stdout_parse_all_files____for_matrix('Deconv=HASH(0xe138f80)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1380
+        Deconv::stdout_parse_matrix_quickly('Deconv=HASH(0xe138f80)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 474
+        main::optimize_random_walk_parameters('HASH(0xe0e47e0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+Deconv=HASH(0xe138f80) dying at Tue Oct 14 14:23:11 2008
+
+
+
+SOLUTION: 
+
+INSTALLED Archive::Tar (SEE PERL MODULE INSTALL NOTES)
+
+INSTALL DEPENDENCIES:
+
+Compress-Zlib-2.012
+IO-Compress-Base-2.012
+Package-Constants-0.01
+
+1. INSTALL IO::Compress::Base 2.012
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/IO-Compress-Base-2.012
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+
+    PREFIX=/usr/home/USERNAME/usr/local \
+    INSTALLPRIVLIB=/usr/home/USERNAME/usr/local/lib/perl5 \
+    INSTALLSCRIPT=/usr/home/USERNAME/usr/local/bin \
+    INSTALLSITELIB=/usr/home/USERNAME/usr/local/lib/perl5/site_perl \
+    INSTALLBIN=/usr/home/USERNAME/usr/local/bin \
+    INSTALLMAN1DIR=/usr/home/USERNAME/usr/local/lib/perl5/man \
+    INSTALLMAN3DIR=/usr/home/USERNAME/usr/local/lib/perl5/man/man3
+
+
+2. INSTALL IO::Compress::Zlib  2.012 (CONTAINS IO::Compress::Gzip)
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/IO-Compress-Zlib-2.012
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+su -
+make install
+
+OK
+
+3. INSTALL Compress-Raw-Zlib-2.012
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Compress-Raw-Zlib-2.012
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+su -
+make install
+
+
+OK
+
+
+
+4. INSTALL Compress-Zlib
+
+DEPENDENCIES: 
+
+Inside IO-Compress-Base:
+* IO-Compress-Base-2.012
+* IO::Uncompress::Base  2.012
+
+Inside IO-Compress-Zlib:
+* IO::Compress::Gzip  2.012
+* IO::Uncompress::Gunzip  2.012
+
+Compress::Raw::Zlib 2.012
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Compress-Zlib-2.012
+
+PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/
+
+perl Makefile.PL PREFIX= /home/apps/alta-cyclic/0.1.0/perlmods
+
+    Up/Downgrade not needed.
+    Writing Makefile for Compress::Zlib
+    
+    I see you already have Compress::Zlib version 1.42 installed.
+    Version 1 MUST be removed for version 2 to operate correctly.
+    
+    The easiest way to do that is to install Compress::Zlib like this
+    
+        make install UNINST=1
+    
+    If you run the CPAN shell run this before installing Compress::Zlib
+    
+        o conf make_install_arg UNINST=1
+    
+make
+make install UNINST=1
+
+OK
+
+
+5. INSTALL Package-Constants-0.01
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Package-Constants-0.01
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+OK
+
+
+6. INSTALL Compress::Raw::Bzip2 2.012
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Compress-Raw-Bzip2-2.012
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+OK
+
+
+7. INSTALL IO-Compress-Bzip2-2.012
+
+DEPENDENCIES:
+Compress::Raw::Bzip2 2.012
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/IO-Compress-Bzip2-2.012
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+OK
+
+
+
+8. INSTALL Algorithm-Diff-1.1902
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Algorithm-Diff-1.1902
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+
+
+
+9. INSTALL Text::Diff 0.35
+
+DEPENDENCIES:
+Algorithm-Diff-1.1902
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/Text-Diff-0.35
+
+perl Makefile.PL PREFIX= /home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+
+
+
+10. INSTALL Archive-Tar
+
+DEPENDENCIES:
+
+Compress::Zlib 2.012 not found. We have 1.42.
+IO::Compress::Base 2.012 not found.
+IO::Compress::Bzip2 2.012 not found.
+IO::Compress::Gzip 2.012 not found.
+Package::Constants 0 not found.
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-1.40
+
+PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+
+
+
+
+
+
+
+7) ERROR: PERL MODULE NOT FOUND Package::Constants
+
+    ...
+    Content of Cluster/Errors/error-59:
+    Can't locate Package/Constants.pm in @INC (@INC contains: l/ /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8 /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar/Constant.pm line 12.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar/Constant.pm line 12.
+    Compilation failed in require at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar/File.pm line 12.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar/File.pm line 12.
+    Compilation failed in require at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar.pm line 18.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar.pm line 18.
+    Compilation failed in require at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+    8 messages
+    Cleaning file...
+    
+    Error file (file_to_clean) for task 45: /home/syoung/2008.10.15_10.54.00__Training.Folder_PHIx2/Cluster/Errors/error-44
+    
+    Content of Cluster/Errors/error-44:
+    /var/spool/torque/mom_priv/jobs/4450-44.kro.SC: line 15: ./sge_script_2008_10_15_10_54_43.pl: Text file busy
+    1 messages
+    Cleaning file...
+
+
+
+
+
+
+
+
+5) ERROR: MISSING PERL MODULE IO::Zlib FOR Archive::Tar
+
+ERROR MESSAGE:
+
+    4408-71.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         
+    Error file (file_to_clean) for task 58: /home/syoung/2008.10.14_18.15.28__Training.Folder_PHIx2/Cluster/Errors/error-57
+    
+    Content of Cluster/Errors/error-57:
+    Can't locate IO/Zlib.pm in @INC (@INC contains: /home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/ /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8 /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/site_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/site_perl/5.8.8 /usr/lib/perl5/site_perl/5.8.7 /usr/lib/perl5/site_perl/5.8.6 /usr/lib/perl5/site_perl/5.8.5 /usr/lib/perl5/site_perl /usr/lib64/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.7/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.6/x86_64-linux-thread-multi /usr/lib64/perl5/vendor_perl/5.8.5/x86_64-linux-thread-multi /usr/lib/perl5/vendor_perl/5.8.8 /usr/lib/perl5/vendor_perl/5.8.7 /usr/lib/perl5/vendor_perl/5.8.6 /usr/lib/perl5/vendor_perl/5.8.5 /usr/lib/perl5/vendor_perl /usr/lib64/perl5/5.8.8/x86_64-linux-thread-multi /usr/lib/perl5/5.8.8 .) at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar.pm line 11.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8/Archive/Tar.pm line 11.
+    Compilation failed in require at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 18.
+    4 messages
+    Cleaning file...
+    
+    2008/10/14 at 18:26:15  Tasks alive: 1 out of 81. Finished: 99% Max lifetime: 0s
+    STATUS RESPONSE LINES: 
+    4407-8.kronos             tmp_u3cC.sh      syoung                 0 R gsmall         **
+    4407-11.kronos            tmp_u3cC.sh      syoung                 0 R gsmall         **
+    4408-2.kronos             tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-5.kronos             tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-14.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-17.kronos            tmp_Vxax.sh      syoung          00:00:00 R gsmall         **
+    4408-22.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-25.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-31.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-32.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-40.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-56.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-64.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         **
+    4408-71.kronos            tmp_Vxax.sh      syoung                 0 R gsmall         
+    Error file (file_to_clean) for task 42: /home/syoung/2008.10.14_18.15.28__Training.Folder_PHIx2/Cluster/Errors/error-41
+    
+    Content of Cluster/Errors/error-41:
+    ./sge_script_2008_10_14_18_16_15.pl: line 3: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 4: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 5: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 6: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 7: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 8: use: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 10: my: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 12: /tmp: Is a directory
+    ./sge_script_2008_10_14_18_16_15.pl: line 13: /home/syoung/2008.10.14_18.15.28__Training.Folder_PHIx2: Is a directory
+    ./sge_script_2008_10_14_18_16_15.pl: line 14: print: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 16: sub: command not found
+    ./sge_script_2008_10_14_18_16_15.pl: line 17: syntax error near unexpected token `$r_hash_files'
+    ./sge_script_2008_10_14_18_16_15.pl: line 17: `                        my ($r_hash_files) = @_;'
+    13 messages
+    Cleaning file...
+    
+    2008/10/14 at 18:28:15  Tasks alive: 0 out of 81. Finished: 100%        Max lifetime: 0s
+    Test number of files returned from the cluster: ..ok
+    Test stdout files(the files that return from the nodes):        can't find Cluster/Messages/output-14
+     at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 267
+            Deconv::test_location_stdout_files('Deconv=HASH(0x1af49c70)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1378
+            Deconv::stdout_parse_matrix_quickly('Deconv=HASH(0x1af49c70)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 474
+            main::optimize_random_walk_parameters('HASH(0x1a6ace90)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+    Deconv=HASH(0x1af49c70) dying at Tue Oct 14 18:28:16 2008
+    You have new mail in /var/spool/mail/syoung
+    [syoung@kronos ~]$ 
+
+
+SOLUTION:
+
+INSTALL IO-Zlib-1.09
+
+cd /home/apps/alta-cyclic/0.1.0/archive/Archive-Tar-dependencies/IO-Zlib-1.09
+
+perl Makefile.PL PREFIX=/home/apps/alta-cyclic/0.1.0/perlmods
+make
+make install
+
+
+
+
+6) ERROR: TEXT FILE BUSY
+
+SEEMS TO BE A DELAY IN NFS SHARING CHANGES TO PERL MODULES
+
+
+http://linux.derkeiler.com/Mailing-Lists/Debian/2005-09/1579.html
+
+"When I tried
+to run a just edited Perl program, I'd get the "text file busy" error I
+mentioned above. Â If the program used a module, and the module was just
+edited, I would not get that error, so I could edit a module on the
+workstation, save it to the NFS mount, run a program on the server that used
+that module, and it would run."
+
+
+ERROR MESSAGE:
+
+    ...
+    4278-9.kronos             tmp_mcRy.sh      syoung          00:00:01 C gsmall         **
+    4278-10.kronos            tmp_mcRy.sh      syoung          00:00:01 C gsmall         **
+    4278-11.kronos            tmp_mcRy.sh      syoung          00:00:00 C gsmall         
+    Error file (file_to_clean) for task 3: /home/syoung/2008.10.14_17.08.23__Training.Folder_PHIx2/Cluster/Errors/error-2
+    
+    Content of Cluster/Errors/error-2:
+    /var/spool/torque/mom_priv/jobs/4278-2.kron.SC: ./sge_script_2008_10_14_17_08_34.pl: /usr/bin/env: bad interpreter: Text file busy
+    1 messages
+    Cleaning file...
+    
+    Error file (file_to_clean) for task 5: /home/syoung/2008.10.14_17.08.23__Training.Folder_PHIx2/Cluster/Errors/error-4
+    2008/10/14 at 17:08:58  Tasks alive: 1 out of 12. Finished: 92% Max lifetime: 0s
+    STATUS RESPONSE LINES: 
+    4278-0.kronos             tmp_mcRy.sh      syoung          00:00:01 C gsmall         **
+    4278-1.kronos             tmp_mcRy.sh      syoung          00:00:01 C gsmall         **
+
+
+    ...
+    File to blat: /home/syoung/2008.10.14_17.08.23__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa
+    PWD:
+    /home/syoung/2008.10.14_17.08.23__Training.Folder_PHIx2
+    Retrieving hash file: unified_seq_sample_for_blat.fa.1.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.2.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.3.hash
+    can't open unified_seq_sample_for_blat.fa.3.hash: No such file or directory at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 269
+    ...
+    
+    
+
+
+CHANGED INTERPRETER LINE TO #! /usr/bin/perl BUT STILL SAME PROBLEM...
+
+
+as root:
+
+ssh n15
+
+
+cd /var/spool/torque/mom_priv/jobs
+
+[root@c15 jobs]# ls
+4406-3.kron.JB  4406-3.kron.SC  4406-3.kron.TK  4406-6.kron.JB  4406-6.kron.SC  4406-6.kron.TK
+
+[root@c15 jobs]# cat  4406-3.kron.SC
+#$ -S /bin/bash                    
+#$ -cwd                            
+#$ -v PATH                         
+#$ -j y                         
+
+#$ -t 1-12:1            
+
+SDIR=$PWD                          
+ls 
+cp /home/syoung/2008.10.14_18.02.57__Training.Folder_PHIx2/sge_script_2008_10_14_18_03_07.pl .                     
+TASK_ID=$(($PBS_ARRAYID + 1))
+echo "./sge_script_2008_10_14_18_03_07.pl $TASK_ID"  
+./sge_script_2008_10_14_18_03_07.pl $TASK_ID  
+[root@c15 jobs]# pwd
+
+
+[root@c15 jobs]# cat 4406-6.kron.JB 
+2!>õH4406-6.kronos.ccs.miami.edu4406-6.kron]¨À~ð0`ª!Iÿ`ª!Iÿ 'x''m
+                                                                        Job_Nametmp_I2JL.sh`ª!Iÿ`ª!Iÿøhørø~
+Job_Ownersyoung@kronos.ccs.miami.edu`ª!Iÿ`ª!Iÿ%õX%õb%õd
+job_stateT`ª!Iÿ`ª!Iÿ 4ø4þ4equeuegsmall`ª!Iÿ`ª!Iÿ 'x''tserverkronos.ccs.miami.edu`ª!Iÿ`ª!Iÿ%õX%õc%õe
+                                                                                                   Checkpointu`ª!Iÿ`ª!Iÿ-÷Ø-÷ã-÷Ç
+                                                                                                                                 dError_Pathkronos.ccs.miami.edu:/home/syoung/2008.10.14_18.02.57__Training.Folder_PHIx2/Cluster/Errors/error-6`ª!Iÿ`ª!Iÿ 4ø45h
+exec_hostn15/7`ª!Iÿ`ª!Iÿ%õX%õb%õd
+Join_Pathn`ª!Iÿ`ª!Iÿ 4ø45e
+                          Keep_Filesn`ª!Iÿ`ª!Iÿøhønøi
+                                                     mtime1224021822`ª!Iÿ`ª!IÿÀíí$íË
+                                                                                    gOutput_Pathkronos.ccs.miami.edu:/home/syoung/2008.10.14_18.02.57__Training.Folder_PHIx2/Cluster/Messages/output-6`ª!Iÿ`ª!Iÿ 'x''i
+                                    session_id29552`ª!Iÿ`ª!Iÿ0(ÂVariable_ListPBS_O_HOME=/nethome/syoung
+PBS_O_LANG=en_US.UTF-8
+PBS_O_LOGNAME=syoung
+PBS_O_PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto:/nethome/apps/alta-cyclic/0.1.0/perlexternal:/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto:/nethome/apps/alta-cyclic/0.1.0/perlexternal:/usr/local/bin:/bin:/usr/bin
+PBS_O_MAIL=/var/spool/mail/syoung
+PBS_O_SHELL=/bin/bash
+PBS_SERVER=kronos.ccs.miami.edu
+PBS_O_HOST=kronos.ccs.miami.edu
+PBS_O_WORKDIR=/home/syoung/2008.10.14_18.02.57__Training.Folder_PHIx2
+PBS_O_QUEUE=gsmall
+
+
+
+CHECKED server_logs:
+
+
+AS root:
+
+tail -n 200  /var/spool/torque/server_logs/20081014
+ 
+...
+10/14/2008 18:35:31;0001;PBS_Server;Svr;PBS_Server;Connection refused (111) in contact_sched, Could not contact Scheduler - port 15004 cannot bind to port 1023 in client_to_svr - connection refused
+...
+10/14/2008 18:35:48;0100;PBS_Server;Req;;Type JobObituary request received from pbs_mom@n13, sock=19
+10/14/2008 18:35:48;0010;PBS_Server;Job;4409-9.kronos.ccs.miami.edu;Exit_status=0 resources_used.cput=00:00:01 resources_used.mem=6516kb resources_used.vmem=284964kb resources_used.walltime=00:00:03
+10/14/2008 18:35:48;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/14/2008 18:35:48;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/14/2008 18:35:48;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=10
+10/14/2008 18:35:48;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=10
+1
+...
+10/14/2008 18:36:06;0020;PBS_Server;Job;4409.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4409.kronos.ccs.miami.edu, request from: syoung@kronos.ccs.miami.edu
+10/14/2008 18:36:06;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miami.edu
+10/14/2008 18:36:29;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=10
+...
+
+
+
+
+POSSIBLE RACE CONDITION:
+
+SOLUTION:
+
+SLEEP FOR RANDOM INTERVAL IN .sh SCRIPT
+
+hexdump -d /dev/random
+
+
+OUTCOME:
+
+NO MORE 'text file busy' FOR sge*.pl FILE BUT NOW A NEW 'text file busy' for 'analyze_blat_neat.pl':
+
+
+    Submitted new job on:1224043976
+    Life time:      6hHours
+    Number of Tasks:        81
+    Update rate:    2mMins
+    perl file: /home/syoung/2008.10.15_00.12.12__Training.Folder_PHIx2/sge_script_2008_10_15_00_12_55.pl
+    perl file (no path): sge_script_2008_10_15_00_12_55.pl
+    *****************************************
+    Printed shell script: tmp_0IZ6.sh
+    In directory: /home/syoung/2008.10.15_00.12.12__Training.Folder_PHIx2
+    *****************************************
+    ***************************************************
+    Qsub command:
+    $D_SUBMIT_COMMAND $memory_request -o $message_path -e $error_path $sh_file 2>&1
+    qsub -q gsmall   -o Cluster/Messages -e Cluster/Errors tmp_0IZ6.sh 2>&1
+    Submit response:
+    Cannot connect to default server host 'kronos.ccs.miami.edu' - check pbs_server daemon.
+    qsub: cannot connect to server kronos.ccs.miami.edu (errno=111)
+    
+    ***************************************************
+    submit error: Cannot connect to default server host 'kronos.ccs.miami.edu' - check pbs_server daemon.
+    qsub: cannot connect to server kronos.ccs.miami.edu (errno=111)
+    
+     at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 245
+            Submit_tools::submit('Submit_tools=HASH(0x2aaab1b85770)', '/home/syoung/2008.10.15_00.12.12__Training.Folder_PHIx2/sge_s...') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1283
+            Deconv::submit_quicky('Deconv=HASH(0x13160b90)', '2m') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 471
+            main::optimize_random_walk_parameters('HASH(0x13104220)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+    Deconv=HASH(0x13160b90) dying at Wed Oct 15 00:12:56 2008
+    [syoung@kronos syoung]$ 
+
+
+Content of Cluster/Errors/error-3:
+Can't exec "./analyze_blat_neat.pl": Text file busy at ./sge_script_2008_10_15_00_10_31.pl line 73.
+mv: cannot stat `unified_seq_sample_for_blat.fa.4.hash': No such file or directory
+2 messages
+Cleaning file...
+
+
+
+SOLUTION:
+
+REWROTE .sh FILE USING -t OPTION
+
+SEE ABOVE:
+Wed Oct 15 16:22:46 EDT 2008
+HOW TO RUN AN ARRAY JOB USING -t OPTION IN THE .sh FILE
+
+
+7) ERROR: QSUB RAN FINE AND .hash FILES WERE FOUND OKAY. BUT SERVER WENT DOWN.
+
+
+    File to blat: /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa
+    Blat.pm. unify_hashes()
+    PWD:
+    /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2
+    Retrieving hash file: unified_seq_sample_for_blat.fa.1.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.2.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.3.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.4.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.5.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.6.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.7.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.8.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.9.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.10.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.11.hash
+    Retrieving hash file: unified_seq_sample_for_blat.fa.12.hash
+    33136 sequences passed the BLAT and the analysis
+    The pos_to_seq hash file is stored at /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa.PosToSeq.uniHash
+    Optimization of random walk parameters:
+    Round 1
+    p1 = (0.96:0.005:1)
+    p2 = (0.96:0.005:1)
+    Test file pos_to_seq(and trying to open it):    ..ok
+    Test unified intensity file:    ..ok
+    Test all requiered parameters loaded:   ..ok
+    Test all mandatory files:
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model3.pm
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/svd
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model.pm
+                            ...ok
+    
+    --------------------------------------------------
+    Parameters:
+    Hash_pos_to_seq_file:   /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/Training_set_files/unified_seq_sample_for_blat.fa.PosToSeq.uniHash
+    Number_of_cycles:       34
+    Unify_int_file: /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/Training_set_files/unified_int_sample.txt
+    Counter_threshold:      10000
+    Cross_vald:     2
+    Estimate_prop:  undef
+    Bring file to:  undef
+    Train_cycles:   30 31 32 33 34
+    SVM_params:     1 0.0001
+    Random_walk     Wild card
+    --------------------------------------------------
+    
+    
+    --------------------------------------------------
+    /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl --random_walk <X> --svm 1 0.0001 --hash_pos_to_seq_file <hash_pos_to_seq_file> --number_of_cycles 34 --unify_int_file <unify_int_file> --counter_threshold 10000 --train_cycles 30 31 32 33 34 --cross_vald 2 
+    --------------------------------------------------
+    
+    Test file pos_to_seq(and trying to open it):    ..ok
+    Test unified intensity file:    ..ok
+    Total number of permutation is 81
+    The lengthes of the parameters are:9 9 
+    Test file pos_to_seq(and trying to open it):    ..ok
+    Test unified intensity file:    ..ok
+    Test all requiered parameters loaded:   ..ok
+    Test all mandatory files:
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model3.pm
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/svd
+                            /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/Model.pm
+                            ...ok
+    Submitted new job on:1224104633
+    Life time:      6hHours
+    Number of Tasks:        81
+    Update rate:    2mMins
+    perl file: /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/sge_script_2008_10_15_17_03_53.pl
+    perl file (no path): sge_script_2008_10_15_17_03_53.pl
+    *****************************************
+    Printed shell script: tmp_jeBc.sh
+    In directory: /home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2
+    *****************************************
+    ***************************************************
+    Qsub command:
+    qsub -q gsmall   -o Cluster/Messages/output -e Cluster/Errors/error tmp_jeBc.sh 2>&1
+    Submit response:
+    Cannot connect to default server host 'kronos.ccs.miami.edu' - check pbs_server daemon.
+    qsub: cannot connect to server kronos.ccs.miami.edu (errno=111)
+    
+    ***************************************************
+    submit error: Cannot connect to default server host 'kronos.ccs.miami.edu' - check pbs_server daemon.
+    qsub: cannot connect to server kronos.ccs.miami.edu (errno=111)
+    
+     at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 268
+            Submit_tools::submit('Submit_tools=HASH(0xba780a0)', '/home/syoung/2008.10.15_17.03.11__Training.Folder_PHIx2/sge_s...') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1283
+            Deconv::submit_quicky('Deconv=HASH(0xb5756e0)', '2m') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 471
+            main::optimize_random_walk_parameters('HASH(0xb567ee0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+    Deconv=HASH(0xb5756e0) dying at Wed Oct 15 17:03:54 2008
+
+
+http://www.clusterresources.com/pipermail/torqueusers/2008-September/008044.html
+
+
+
+
+
+CONTENTS OF server_logs FILE 20081015:
+
+MULTIPLE 'copy request failed' BEFORE pbs_server CRASHED:
+
+
+10/15/2008 17:36:17;0001;PBS_Server;Svr;PBS_Server;[continued]
+10/15/2008 17:36:17;0008;PBS_Server;Job;4492-8.kronos.ccs.miami.edu;JOB_SUBSTATE_STAGEOUT
+10/15/2008 17:36:17;0008;PBS_Server;Job;4492-8.kronos.ccs.miami.edu;about to copy stdout/stderr/stageout files
+10/15/2008 17:36:17;0008;PBS_Server;Job;4492-8.kronos.ccs.miami.edu;copy request failed
+
+AND THIS JUST BEFORE pbs_server CRASHED:
+
+
+
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 44
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 44 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.3:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n03 (192.168.2.3:1023) (stream 44)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n03
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n03
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n03 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 41
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 41 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.7:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n07 (192.168.2.7:1023) (stream 41)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n07
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n07
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n07 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 47
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 47 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.10:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n10 (192.168.2.10:1023) (stream 47)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n1010/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n10
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n10 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 48
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 48 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.8:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n08 (192.168.2.8:1023) (stream 48)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n08
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n08
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n08 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 51
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 51 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.15:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n15 (192.168.2.15:1023) (stream 51)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n15
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n15
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n15 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 43
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 43 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.6:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n06 (192.168.2.6:1023) (stream 43)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n06
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n06
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n06 - state=0, newstate=0
+10/15/2008 17:36:38;0040;PBS_Server;Req;do_rpp;rpp request received on stream 42
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 42 (version 1)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.14:1023
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n14 (192.168.2.14:1023) (stream 42)
+10/15/2008 17:36:38;0004;PBS_Server;Svr;is_request;IS_STATUS received from n14
+10/15/2008 17:36:38;0040;PBS_Server;Req;is_stat_get;received status from node n14
+10/15/2008 17:36:38;0040;PBS_Server;Req;update_node_state;adjusting state for node n14 - state=0, newstate=0
+10/15/2008 17:36:40;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 17:36:40;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 17:36:40;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 17:36:40;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 17:36:40;0020;PBS_Server;Job;4492.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4492.kronos.ccs.miami.edu, request from: syoung@kronos.ccs.miami.edu
+10/15/2008 17:36:40;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miami.edu
+<CRASHED HERE>
+10/15/2008 17:38:26;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 17:38:26;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 17:38:26;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 17:38:26;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 17:38:26;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+10/15/2008 17:38:26;0086;PBS_Server;Svr;PBS_Server;Recovered queue glarge
+10/15/2008 17:38:26;0086;PBS_Server;Svr;PBS_Server;Recovered queue gbigmem
+10/15/2008 17:38:26;0086;PBS_Server;Svr;PBS_Server;Recovered queue pmedium
+10/15/2008 17:38:26;0086;PBS_Server;Svr;PBS_Server;Recovered queue gsmall
+
+
+
+THIS HAPPENS EVERY TIME THE pbs_server DAEMON CRASHES (AND THE SERVER ONLY CRASHES WHEN IT HAPPENS):
+
+
+10/15/2008 17:26:19;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 17:26:19;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 17:26:19;0020;PBS_Server;Job;4491.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4491.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 17:26:19;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 17:35:43;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 17:35:43;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 17:35:43;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 17:35:43;004
+
+
+
+10/15/2008 17:03:45;0008;PBS_Server;Job;4488-10.kronos.ccs.miami.edu;JOB_SUBSTATE_STAGEDEL
+10/15/2008 17:03:45;0001;PBS_Server;Svr;PBS_Server;svr_setjobstate: setting job 4488-10.kronos.ccs.miami.edu state from EXITING-STAGEDEL to EXITING-EXITED (5-53)
+10/15/2008 17:03:45;0001;PBS_Server;Svr;PBS_Server;[continued]
+10/15/2008 17:03:45;0008;PBS_Server;Job;4488-10.kronos.ccs.miami.edu;JOB_SUBSTATE_EXITED
+10/15/2008 17:03:45;0040;PBS_Server;Req;free_nodes;freeing nodes for job 4488-10.kronos.ccs.miami.edu
+10/15/2008 17:03:45;0040;PBS_Server;Req;free_nodes;freeing node n06/2 from job 4488-10.kronos.ccs.miami.edu (nsnfree=7)
+10/15/2008 17:03:45;0001;PBS_Server;Svr;PBS_Server;svr_setjobstate: setting job 4488-10.kronos.ccs.miami.edu state from EXITING-EXITED to COMPLETE-COMPLETE (6-59)
+10/15/2008 17:03:45;0001;PBS_Server;Svr;PBS_Server;[continued]
+10/15/2008 17:03:45;0008;PBS_Server;Job;4488-10.kronos.ccs.miami.edu;JOB_SUBSTATE_COMPLETE
+10/15/2008 17:03:45;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 17:03:45;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=9
+10/15/2008 17:03:45;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=9
+10/15/2008 17:03:45;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=9
+10/15/2008 17:03:53;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 17:03:53;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 17:03:53;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 17:03:53;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 17:03:53;0020;PBS_Server;Job;4490.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4490.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 17:03:53;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 17:25:32;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 17:25:32;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 17:25:32;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+
+
+10/15/2008 16:07:26;0040;PBS_Server;Req;do_rpp;rpp request received on stream 13
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message received from stream 13 (version 1)
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.24:1023
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n24 (192.168.2.24:1023) (stream 13)
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;IS_STATUS received from n24
+10/15/2008 16:07:26;0040;PBS_Server;Req;is_stat_get;received status from node n24
+10/15/2008 16:07:26;0040;PBS_Server;Req;update_node_state;adjusting state for node n24 - state=0, newstate=0
+10/15/2008 16:07:26;0040;PBS_Server;Req;do_rpp;rpp request received on stream 16
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message received from stream 16 (version 1)
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message received from stream 192.168.2.13:1023
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;message STATUS (4) received from mom on host n13 (192.168.2.13:1023) (stream 16)
+10/15/2008 16:07:26;0004;PBS_Server;Svr;is_request;IS_STATUS received from n13
+10/15/2008 16:07:26;0040;PBS_Server;Req;is_stat_get;received status from node n13
+10/15/2008 16:07:26;0040;PBS_Server;Req;update_node_state;adjusting state for node n13 - state=0, newstate=0
+10/15/2008 16:07:28;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 16:07:28;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 16:07:28;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 16:07:28;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 16:07:28;0020;PBS_Server;Job;4471.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4471.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 16:07:28;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 16:07:40;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 16:07:40;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 16:07:40;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 16:07:40;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 16:07:40;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+10/15/2008 16:07:40;0086;PBS_Server;Svr;PBS_Server;Recovered queue glarge
+10/15/2
+
+
+
+
+
+10/15/2008 15:55:54;0008;PBS_Server;Job;4470-10.kronos.ccs.miami.edu;JOB_SUBSTATE_COMPLETE
+10/15/2008 15:55:54;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 15:55:55;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=11
+10/15/2008 15:55:55;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=11
+10/15/2008 15:55:55;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=11
+10/15/2008 15:55:55;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 15:55:55;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 15:55:58;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236046 port 15002
+10/15/2008 15:56:07;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 15:56:07;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 15:56:11;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236060 port 15002
+10/15/2008 15:56:13;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236042 port 15002
+10/15/2008 15:56:14;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236041 port 15002
+10/15/2008 15:56:15;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236040 port 15002
+10/15/2008 15:56:19;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 15:56:19;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 15:56:19;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 15:56:19;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 15:56:19;0020;PBS_Server;Job;4470.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4470.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 15:56:19;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 16:06:31;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 16:06:31;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 16:06:31;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 16:06:31;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 16:06:31;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+
+
+
+
+
+10/15/2008 10:54:16;0001;PBS_Server;Svr;PBS_Server;[continued]
+10/15/2008 10:54:16;0008;PBS_Server;Job;4449-11.kronos.ccs.miami.edu;JOB_SUBSTATE_COMPLETE
+10/15/2008 10:54:16;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 10:54:17;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 10:54:17;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 10:54:17;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 10:54:19;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 10:54:19;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 10:54:24;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236036 port 15002
+10/15/2008 10:54:28;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236046 port 15002
+10/15/2008 10:54:31;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 10:54:31;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 10:54:36;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236060 port 15002
+10/15/2008 10:54:39;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236060 port 15002
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 10:54:43;0020;PBS_Server;Job;4449.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4449.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 10:54:43;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 10:54:43;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236060 port 15002
+10/15/2008 10:54:43;0004;PBS_Server;Svr;svr_connect;attempting connect to host 3232236060 port 15002
+10/15/2008 10:54:43;0001;PBS_Server;Svr;PBS_Server;process_Dreply, malloc failed
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 10:54:43;0100;PBS_Server;Req;;Type QueueJob request received from syoung@kronos.ccs.miami.edu, sock=11
+
+
+
+
+
+
+10/15/2008 00:12:44;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:12:44;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:12:44;0100;PBS_Server;Req;;Type StatusJob request received from pbs_mom@n27, sock=11
+10/15/2008 00:12:44;0100;PBS_Server;Req;;Type JobObituary request received from pbs_mom@n27, sock=11
+10/15/2008 00:12:44;0010;PBS_Server;Job;4441-10.kronos.ccs.miami.edu;Exit_status=0 resources_used.cput=00:00:01 resources_used.mem=6524kb resources_used.vmem=222284kb resources_\
+used.walltime=00:00:09
+10/15/2008 00:12:44;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 00:12:44;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 00:12:45;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:12:45;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:12:45;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:12:55;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 00:12:55;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:12:55;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=12
+10/15/2008 00:12:55;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:12:55;0020;PBS_Server;Job;4441.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4441.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 00:12:55;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 00:16:40;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 00:16:40;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 00:16:40;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 00:16:40;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 00:16:40;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+10/15/2008 00:16:40;0086;PBS_Server;Svr;PBS_Server;Recovered queue glarge
+10/15/2
+
+
+
+
+10/15/2008 00:08:10;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 00:08:11;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:11;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:11;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:11;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:08:11;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:08:23;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:08:23;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:08:28;0040;PBS_Server;Svr;kronos.ccs.miami.edu;Scheduler sent command term
+10/15/2008 00:08:28;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:28;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:28;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=17
+10/15/2008 00:08:35;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=18
+10/15/2008 00:08:35;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=16
+10/15/2008 00:08:35;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=18
+10/15/2008 00:08:35;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=16
+10/15/2008 00:08:35;0020;PBS_Server;Job;4439.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4439.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 00:08:35;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 00:10:23;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 00:10:23;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 00:10:23;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 00:10:23;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 00:10:23;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+10/15/2008 00:10:23;0086;PBS_Server;Svr;PBS_Server;Recovered queue glarge
+
+
+
+
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type StatusNode request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type StatusJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type StatusQueue request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type ModifyJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0008;PBS_Server;Job;4438.kronos.ccs.miami.edu;Job Modified at request of root@kronos.ccs.miami.edu
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type RunJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0008;PBS_Server;Job;4438.kronos.ccs.miami.edu;Job Run at request of root@kronos.ccs.miami.edu
+10/15/2008 00:01:45;0100;PBS_Server;Req;;Type ModifyJob request received from root@kronos.ccs.miami.edu, sock=10
+10/15/2008 00:01:45;0008;PBS_Server;Job;4438.kronos.ccs.miami.edu;Job Modified at request of root@kronos.ccs.miami.edu
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type StatusJob request received from syoung@kronos.ccs.miami.edu, sock=9
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type AuthenticateUser request received from tozgokm@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type StatusServer request received from tozgokm@kronos.ccs.miami.edu, sock=9
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type StatusJob request received from tozgokm@kronos.ccs.miami.edu, sock=9
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type AuthenticateUser request received from syoung@kronos.ccs.miami.edu, sock=11
+10/15/2008 00:01:50;0100;PBS_Server;Req;;Type DeleteJob request received from syoung@kronos.ccs.miami.edu, sock=9
+10/15/2008 00:01:50;0020;PBS_Server;Job;4437.kronos.ccs.miami.edu;Unauthorized Request, request type: 6, Object: Array, Name: 4437.kronos.ccs.miami.edu, request from: syoung@kro\
+nos.ccs.miami.edu
+10/15/2008 00:01:50;0080;PBS_Server;Req;req_reject;Reject reply code=15007(Unauthorized Request  MSG=operation not permitted), aux=0, type=DeleteJob, from syoung@kronos.ccs.miam\
+i.edu
+10/15/2008 00:07:50;0002;PBS_Server;Svr;Log;Log opened
+10/15/2008 00:07:50;0006;PBS_Server;Svr;PBS_Server;Server kronos.ccs.miami.edu started, initialization type = 1
+10/15/2008 00:07:50;0002;PBS_Server;Svr;Act;Account file /var/spool/torque/server_priv/accounting/20081015 opened
+10/15/2008 00:07:50;0040;PBS_Server;Req;setup_nodes;setup_nodes()
+10/15/2008 00:07:50;0086;PBS_Server;Svr;PBS_Server;Recovered queue greserve
+10/15/2008 00:07:50;0086;PBS_Server;Svr;PBS_Server;Recovered queue glarge
+10/15/2008 00:07:50;0086;PBS_Server;Svr;PBS_Server;Recovered queue gbigmem
+10/15/2008 00:07:50;0086;PBS_Server;Svr;PBS_Server;Recovered queue pmedium
+10/15/2008 00:07:50;0086;PBS_Server;Svr;PBS_Server;Recovered queue gsmall
+
+
+
+Definition of a delete job request is here:
+
+http://74.125.45.104/search?q=cache:x1YvhK2FmIsJ:www.rhpcs.mcmaster.ca/pbs/docs/542/PBSProERS_5_4_0.pdf+pbs+%22delete+job+request%22+crash&hl=en&ct=clnk&cd=5&gl=us
+
+
+3.5.7 Delete Job Request
+A Delete Job request asks a Server to remove a job from the queue in which it exists and
+not place it elsewhere. The batch Server will reject a Delete Job Request if any of the fol-
+lowing conditions are true:
+•
+The user of the client is not authorized to delete the designated
+job.
+•
+The designated job is not owned by the Server.
+•
+The designated job is not in an eligible state. Eligible states are
+queued, held, waiting, running, and transiting.
+If the job is in the running state, the Server will forward the Delete Job request to the pri-
+mary MOM daemon responsible for the job. (Upon receipt, the MOM daemon will first
+send a SIGTERM signal to the job process group. After a delay specified by the delete
+request or if not specified, the kill_delay queue attribute, the MOM will send a
+SIGKILL signal to the job process group. The job is then placed into the exiting state.)
+Option arguments exist to specify the “delay” time (seconds) between the SIGTERM and
+SIGKILL signals, as well as to “force” the deletion of the job even if the node on it is run-
+ning is not responding.
+
+
+SOLUTION:
+
+    REMOVE unlink FROM Submit_tools.pm LINE 938
+    
+    #	unlink $file_to_clean or confess "can't clean: $file_to_clean of task $task: $!\n";
+
+    REMOVE delete_job COMMAND FROM Submit_tools.pm LINE 133
+    
+    #   $self->delete_job($job_id);
+
+    REMOVE unlink FROM Blat.pm LINE 276
+    
+    #   unlink $file      or confess "can't clean $file: $!\n";
+    #   unlink $hash_file or confess "can't clean $hash_file: $!\n";
+
+
+    REMOVE unlink FROM Submit_tools.pm LINE 1062
+    
+    #	unlink $file_to_clean or confess "can't clean: $file_to_clean of task $task: $!\n";
+
+
+
+8) ERROR: error while loading shared libraries: libgsl.so.0
+
+    Active tasks: 3 (Total tasks: 6)
+    Job 4512 task 55 status: C
+    
+    Content of Cluster/Errors/error-54:
+    Model3.pm did not return a true value at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 12.
+    BEGIN failed--compilation aborted at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 12.
+    2 messages
+    Cleaning file...
+    
+    Job 4512 task 58 status: finished
+    task_is_dead(job_id, task)
+    Job id: 4512
+    Task: 58
+    $self->{data}->{$job_id}->{$task}:
+    $self->{data}->{4512}->{58}:
+    $VAR1 = {
+              'time' => {
+                          'born' => 1224144481,
+                          'updated' => 1224144601
+                        },
+              'status' => 'finished'
+            };
+    Job 4512 task 73 status: C
+    
+    Content of Cluster/Errors/error-72:
+    ./svd: error while loading shared libraries: libgsl.so.0: cannot open shared object file: No such file or directory
+    can't open V matrix
+     at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 240
+    3 messages
+    Cleaning file...
+
+
+SOLUTION:
+
+FIX PATH TO GSL LIB IN .bash_profile:
+
+/usr/local/qt/lib:/usr/lib:/home/apps/alta-cyclic/0.1.0/gsl/libs
+
+SHOULD BE:
+
+/usr/local/qt/lib:/usr/lib:/home/apps/alta-cyclic/0.1.0/gsl/lib
+(NO EXTRA 's' ON END)
+
+TEST:
+
+/home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl --random_walk 3.14 9.56 --svm 1 0.0001 --hash_pos_to_seq_file unified_seq_sample_for_blat.fa.PosToSeq.uniHash --number_of_cycles 34 --unify_int_file unified_int_sample.txt --counter_threshold 10000 --train_cycles 30 31 32 33 34 --cross_vald 2 
+
+
+9) ERROR: svm-scale: command not found
+
+sh: svm-scale: command not found
++1224220057     svm-scale -l -1 -u 1 -s 1224220021_SVM_training_file_for_cycle_34_HL5r.range 1224220021_SVM_training_file_for_cycle_34_HL5r > 1224220021_SVM_training_file_for_cycle_34_HL5r.scaled
+
+SOLUTION:
+
+ADDED libsvm TO PATH IN .bash_profile:
+
+/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86
+
+
+WHERE trainer.pl CONTAINS THE FOLLOWING SPECIFICATION FOR random_walk:
+
+    GetOptions( "random_walk=f{2}"         => \@random_walk,
+
+
+
+AND WHERE --random_walk=f{2} CAN BE --random_walk 3.14 9.56
+
+
+http://search.cpan.org/~jv/Getopt-Long-2.37/lib/Getopt/Long.pm
+
+
+= type [ desttype ] [ repeat ]
+
+    The option requires an argument of the given type. Supported types are:
+
+    s
+
+        String. An arbitrary sequence of characters. It is valid for the argument to start with - or --.
+    i
+
+        Integer. An optional leading plus or minus sign, followed by a sequence of digits.
+    o
+
+        Extended integer, Perl style. This can be either an optional leading plus or minus sign, followed by a sequence of digits, or an octal string (a zero, optionally followed by '0', '1', .. '7'), or a hexadecimal string (0x followed by '0' .. '9', 'a' .. 'f', case insensitive), or a binary string (0b followed by a series of '0' and '1').
+    f
+
+        Real number. For example 3.14, -6.23E24 and so on.
+
+    The desttype can be @ or % to specify that the option is list or a hash valued. This is only needed when the destination for the option value is not otherwise specified. It should be omitted when not needed.
+
+    The repeat specifies the number of values this option takes per occurrence on the command line. It has the format { [ min ] [ , [ max ] ] }.
+
+    min denotes the minimal number of arguments. It defaults to 1 for options with = and to 0 for options with :, see below. Note that min overrules the = / : semantics.
+
+    max denotes the maximum number of arguments. It must be at least min. If max is omitted, but the comma is not, there is no upper bound to the number of argument values taken.
+: type [ desttype ]
+
+    Like =, but designates the argument as optional. If omitted, an empty string will be assigned to string values options, and the value zero to numeric options.
+
+    Note that if a string argument starts with - or --, it will be considered an option on itself.
+: number [ desttype ]
+
+    Like :i, but if the value is omitted, the number will be assigned.
+: + [ desttype ]
+
+    Like :i, but if the value is omitted, the current value for the option will be incremented.
+
+
+
+10) ERROR: SOME TASK IDS ARE NOT REMOVED FROM THE task_array AND SO REMAIN AS 'active jobs' AFTER THE ARRAY JOB HAS TERMINATED, SO THE PROCESS DOESN'T GO FORWARD - IT GETS STUCK WAITING FOR THE ALREADY FINISHED JOBS TO APPEAR IN qstat (WHICH THEY WON'T AS THEY'VE ALREADY COMPLETED.)
+
+
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-20 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 &> out11
+
+
+SOLUTION:
+
+REMOVE THE flag_error DESIGNATION TO 1 AT Submit_tools.pm LINE 558
+
+    ERORR: if ($job_id_status{$job_id}{$task_reported}{'status'} =~ m/E/)
+            {
+                carp "problem in $job_id $task_reported\n";
+
+
+        #### REMOVE FLAG ERROR AS 'E' STATUS USUALLY MARKS A TRANSITION BETWEEN 'R' AND 'C'
+
+                #$flag_error = 1;
+
+
+            } #end of error
+
+
+
+
+ /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-20 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 > out12
+problem in 4573 9
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 229
+error in 4573
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 229
+Use of uninitialized value in concatenation (.) or string at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 697.
+Use of uninitialized value in concatenation (.) or string at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 697.
+problem in 4573 10
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 229
+error in 4573
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 229
+Use of uninitialized value in concatenation (.) or string at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 697.
+Use of uninitialized value in concatenation (.) or string at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 697.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Oct 12 23:58:44 EDT 2008] NEW QUEUE NAMES>
+
+
+
+From: Hu, Zongjun 
+Sent: Thursday, October 09, 2008 5:26 PM
+To: Young, Stuart
+Subject: moab client on zion
+
+Stuart,
+
+I have enabled the following command on zion. Please try.
+
+msub, mshow, canceljob, checkjob
+
+You can try submit jobs to the following queues,
+
+gsmall, gmedium, glarge, gbigmem, gdebug
+
+Since zion is not sharing home with kronos, you may not able to use data on zion.
+
+BTW, I have changed your group on zion to bioinfo, which is required by moab client.
+
+Regards,
+
+Zongjun Hu
+----------
+Center for Computational Science
+University of Miami, Miami, FL33143
+Email: zhu@med.miami.edu
+Ph: 305-243-1647(O) 786-338-1017(C)
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Oct 12 23:57:44 EDT 2008] TROUBLESHOOTING alta-cyclic ON kronos>
+
+
+
+
+cd /home/apps/alta-cyclic/0.1.0/bin/i386
+
+#umask 0002
+#./sge_script_2008_09_17_00_44_05.pl 3833
+#em /var/spool/torque/mom_priv/jobs/3849.kronos.SC
+ 
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-20 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 
+
+
+
+ERROR:
+
+/var/spool/torque/mom_priv/jobs/4147.kronos.SC: line 9: cd: ls: No such file or directory
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_10_13_00_12_\
+13.pl line 13.
+Use of uninitialized value in hash element at ./sge_script_2008_10_13_00_12_13.pl line 45.
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_10_13_00_12_\
+13.pl line 45.
+cant convert
+ at ./sge_script_2008_10_13_00_12_13.pl line 45
+        main::convert_task('undef', 'HASH(0xca30360)') called at ./sge_script_2008_10_13_00\
+_12_13.pl line 56
+
+
+
+
+
+
+
+
+EXPECTED JOB SUBMIT RESPONSE:
+
+#    $submit_response =~ m/Your job-array (\d+)\..*has been submitted/;  
+
+E.G.:
+
+ Your job-array 84265.1-26:5 ("ArrayJob") has been submitted
+
+OR:
+
+
+qsub array-job.sh
+Your job-array 90935.1-100:1 (\"Array-Job\") has been submitted
+[jerome@cluster ~]$ qstat
+job-ID  prior   name       user         state submit/start at     queue                          slots ja-task-ID
+-----------------------------------------------------------------------------------------------------------------
+  90935 0.50000 Array-Job  jerome       r     05/16/2007 12:28:33 all.q@compute-0-0.local            1 9
+
+
+ACTUAL JOB SUBMIT RESPONSE:
+
+
+Submit response:
+4144.kronos.ccs.miami.edu
+
+BUT ADJUSTED FOR IN Submit_tools.pm AT LINE 227:
+
+
+#    $submit_response =~ m/Your job-array (\d+)\..*has been submitted/;
+    $submit_response =~ /^(\d+)/;
+
+ 
+[syoung@kronos test]$ qsub -q gsmall ./test.sh -o output -e error
+4146.kronos.ccs.miami.edu
+
+[syoung@kronos test]$ qstat 4146
+Job id                    Name             User            Time Use S Queue
+------------------------- ---------------- --------------- -------- - -----
+4146.kronos               test.sh          syoung                 0 R gsmall         
+
+[syoung@kronos test]$ qstat 4146
+Job id                    Name             User            Time Use S Queue
+------------------------- ---------------- --------------- -------- - -----
+4146.kronos               test.sh          syoung          00:00:00 C gsmall 
+
+
+cd /nethome/syoung/test
+
+emacs arrayjob.sh
+
+#$ -S /bin/bash
+#$ -cwd
+#$ -v PATH
+#$ -j y
+#$ -t 1-12:1
+
+SDIR=$PWD
+
+echo "/nethome/syoung/test/test.sh $SGE_TASK_ID"
+/nethome/syoung/test/test.sh $SGE_TASK_ID
+    
+emacs test.sh
+
+#!/bin/sh
+echo "JOB " $1;
+echo "Sleeping...";
+sleep 5;
+echo "Awake.";
+
+
+CHANGING THE ARRAY JOB OPTION LINE
+
+#$ -t 1-12:1
+
+TO
+
+#$ -t 12
+
+DOESN'T EXECUTE AN ARRAY JOB.
+
+
+THIS COMMAND EXECUTES AN ARRAY JOB:
+
+qsub -q gsmall -o output/outputfile  -e error/errorfile  -t 12 arrayjob.sh
+
+
+WITH ERROR AND OUTPUT FILES:
+
+[syoung@kronos test]$ ll error
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-0
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-1
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-10
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-11
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-2
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-3
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-4
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-5
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-6
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-7
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-8
+-rw------- 1 syoung bioinfo   0 Oct 13 00:39 errorfile-9
+[syoung@kronos test]$ ll output
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-0
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-1
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-10
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-11
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-2
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-3
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-4
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-5
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-6
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-7
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-8
+-rw------- 1 syoung bioinfo  54 Oct 13 00:39 outputfile-9
+
+
+DISCOVERED HAVE TO USE '$PBS_ARRAYID' INSTEAD OF '$SGE_TASK_ID':
+
+http://www.clusterresources.com/torquedocs21/2.1jobsubmission.shtml
+
+E.G.:
+
+[syoung@kronos test]$ cat test.sh
+
+#!/bin/sh 
+
+echo "JOB " $PBS_ARRAYID;
+echo "Sleeping...";
+sleep 5;
+
+[syoung@kronos test]$ qsub -q gsmall  -t 12 test.sh
+
+[syoung@kronos test]$ cat test.sh.o4174-9
+JOB  9
+Sleeping...
+Awake.
+
+
+AFTER CORRECTING THIS IN Submit_tools.pm, brave_heart.pl RUNS THE BLATS:
+
+drwx------   9 syoung bioinfo  16K Oct 13 01:52 .
+drwxr-xr-x 302 root   root     16K Oct 10 03:05 ..
+drwxr-xr-x   4 syoung bioinfo  16K Oct 13 01:52 2008.10.13_01.52.35__Training.Folder_PHIx2
+-rwxrwxrwx   1 syoung bioinfo  22K Oct 13 01:52 analyze_blat_neat.pl
+drwxr-xr-x   9 syoung bioinfo  16K Oct 13 01:52 archive
+drwxr-xr-x   3 syoung bioinfo  16K Sep 16 14:35 base
+-rw-------   1 syoung bioinfo  58K Oct 13 01:27 .bash_history
+-rw-r--r--   1 syoung bioinfo   24 Jun 11 18:02 .bash_logout
+-rw-r--r--   1 syoung bioinfo  13K Oct 13 00:00 .bash_profile
+-rw-r--r--   1 syoung bioinfo  13K Sep 17 12:39 .bash_profile~
+-rw-r--r--   1 syoung bioinfo  465 Jun 11 18:02 .bashrc
+-rw-r--r--   1 syoung bioinfo  283 Jun 11 18:02 .cshrc
+-rwxrwxrwx   1 syoung bioinfo  148 Oct 13 01:52 dataFile.tmp2008_10_13_01_52_41
+-rw-r--r--   1 syoung bioinfo  515 Jun 11 18:02 .emacs
+drwxr-xr-x   3 syoung bioinfo  16K Sep 16 14:47 .emacs.d
+-rw-r--r--   1 syoung bioinfo  224 Sep 16 15:28 find.Readonly
+-rw-r--r--   1 syoung bioinfo 1.6G Sep 12 13:15 human-run2-phiX-int.tar
+-rw-r--r--   1 syoung bioinfo  48M Sep 12 13:15 human-run2-phiX-seq.tar.gz
+-rw-r--r--   1 syoung bioinfo  123 Jun 11 18:02 .login
+-rwxrwxrwx   1 syoung bioinfo 5.4K Oct 13 01:52 phiFasta.fa
+-rw-r--r--   1 syoung bioinfo  125 Jun 11 18:02 .profile
+-rwxr-xr-x   1 syoung bioinfo 3.6K Oct 13 01:02 sge_script_2008_10_13_01_02_22.pl
+-rwxr-xr-x   1 syoung bioinfo 3.6K Oct 13 01:08 sge_script_2008_10_13_01_08_37.pl
+-rwxr-xr-x   1 syoung bioinfo 3.6K Oct 13 01:20 sge_script_2008_10_13_01_20_34.pl
+-rwxr-xr-x   1 syoung bioinfo 3.6K Oct 13 01:28 sge_script_2008_10_13_01_28_42.pl
+-rwxr-xr-x   1 syoung bioinfo 3.6K Oct 13 01:52 sge_script_2008_10_13_01_52_41.pl
+drwx------   2 syoung bioinfo  16K Sep 12 13:31 .ssh
+-rw-------   1 syoung bioinfo    0 Oct  9 17:25 STDIN.e4114
+-rw-------   1 syoung bioinfo    0 Oct  9 17:25 STDIN.o4114
+drwxr-xr-x   4 syoung bioinfo  16K Sep 16 17:33 temp
+drwxr-xr-x   4 syoung bioinfo  16K Oct 13 01:49 test
+-rwxr-xr-x   1 syoung bioinfo   58 Oct 12 23:51 test.sh~
+-rwxrwxrwx   1 syoung bioinfo 219K Oct 13 01:52 unified_seq_sample_for_blat.fa.1
+-rwxrwxrwx   1 syoung bioinfo 221K Oct 13 01:52 unified_seq_sample_for_blat.fa.10
+-rw-r--r--   1 syoung bioinfo 309K Oct 13 01:52 unified_seq_sample_for_blat.fa.10.blt
+-rwxrwxrwx   1 syoung bioinfo 220K Oct 13 01:52 unified_seq_sample_for_blat.fa.11
+-rw-r--r--   1 syoung bioinfo 311K Oct 13 01:52 unified_seq_sample_for_blat.fa.11.blt
+-rw-r--r--   1 syoung bioinfo 306K Oct 13 01:52 unified_seq_sample_for_blat.fa.1.blt
+-rwxrwxrwx   1 syoung bioinfo 219K Oct 13 01:52 unified_seq_sample_for_blat.fa.2
+-rw-r--r--   1 syoung bioinfo 302K Oct 13 01:52 unified_seq_sample_for_blat.fa.2.blt
+-rwxrwxrwx   1 syoung bioinfo 220K Oct 13 01:52 unified_seq_sample_for_blat.fa.3
+-rw-r--r--   1 syoung bioinfo 321K Oct 13 01:52 unified_seq_sample_for_blat.fa.3.blt
+-rwxrwxrwx   1 syoung bioinfo 221K Oct 13 01:52 unified_seq_sample_for_blat.fa.4
+-rw-r--r--   1 syoung bioinfo 310K Oct 13 01:52 unified_seq_sample_for_blat.fa.4.blt
+-rwxrwxrwx   1 syoung bioinfo 222K Oct 13 01:52 unified_seq_sample_for_blat.fa.5
+-rw-r--r--   1 syoung bioinfo 312K Oct 13 01:52 unified_seq_sample_for_blat.fa.5.blt
+-rwxrwxrwx   1 syoung bioinfo 218K Oct 13 01:52 unified_seq_sample_for_blat.fa.6
+-rw-r--r--   1 syoung bioinfo 308K Oct 13 01:52 unified_seq_sample_for_blat.fa.6.blt
+-rwxrwxrwx   1 syoung bioinfo 220K Oct 13 01:52 unified_seq_sample_for_blat.fa.7
+-rw-r--r--   1 syoung bioinfo 315K Oct 13 01:52 unified_seq_sample_for_blat.fa.7.blt
+-rwxrwxrwx   1 syoung bioinfo 225K Oct 13 01:52 unified_seq_sample_for_blat.fa.8
+-rw-r--r--   1 syoung bioinfo 318K Oct 13 01:52 unified_seq_sample_for_blat.fa.8.blt
+-rwxrwxrwx   1 syoung bioinfo 220K Oct 13 01:52 unified_seq_sample_for_blat.fa.9
+-rw-r--r--   1 syoung bioinfo 315K Oct 13 01:52 unified_seq_sample_for_blat.fa.9.blt
+-rw-r--r--   1 syoung bioinfo  658 Jun 11 18:02 .zshrc
+
+
+
+head unified_seq_sample_for_blat.fa.7.blt 
+psLayout version 3
+
+match   mis-    rep.    N's     Q gap   Q gap   T gap   T gap   strand  Q               Q       Q       Q       T               T       T       T       block   blockSizes      qStarts    tStarts
+        match   match           count   bases   count   bases           name            size    start   end     name            size    start   end     count
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+23      2       0       0       0       0       0       0       +       5_4_187_490;5_4_212_33  25      0       25      gi|9626372|ref|NC_001422.1|     5386    1404    1429    125,      0,      1404,   ttttaacgcgccgtggatgcctgcc,      ttttaaagcgccgtggatgcctgac,
+23      1       0       0       0       0       0       0       +       5_20_263_481    25      0       24      gi|9626372|ref|NC_001422.1|     5386    4447    4471    1       24,       0,      4447,   aaagaaaggcattaaggatgagtg,       aaagaaaggtattaaggatgagtg,
+24      1       0       0       0       0       0       0       +       5_13_246_810    25      0       25      gi|9626372|ref|NC_001422.1|     5386    2925    2950    1       25,       0,      2925,   gatttatgttcggtgctattgctgg,      gatttatgtttggtgctattgctgg,
+25      0       0       0       0       0       0       0       -       5_7_538_427;5_6_723_363 25      0       25      gi|9626372|ref|NC_001422.1|     5386    662     687     125,      0,      662,    caaacggcctgtctcatcatggaag,      caaacggcctgtctcatcatggaag,
+24      1       0       0       0       0       0       0       +       5_2_766_291     25      0       25      gi|9626372|ref|NC_001422.1|     5386    3153    3178    1       25,       0,      3153,   ctatggctaaagctggtaaaggagt,      ctatggctaaagctggtaaaggact,
+
+
+NOW TO FIX THE INCORRECT ERROR FILENAMES:
+
+***************************************************
+2008/10/13 at 01:52:41  Starting 4176
+Error filenames:
+Cluster/Errors/tmp_ALyb.sh.e4176.1
+Cluster/Errors/tmp_ALyb.sh.e4176.2
+Cluster/Errors/tmp_ALyb.sh.e4176.3
+Cluster/Errors/tmp_ALyb.sh.e4176.4
+Cluster/Errors/tmp_ALyb.sh.e4176.5
+Cluster/Errors/tmp_ALyb.sh.e4176.6
+Cluster/Errors/tmp_ALyb.sh.e4176.7
+Cluster/Errors/tmp_ALyb.sh.e4176.8
+Cluster/Errors/tmp_ALyb.sh.e4176.9
+Cluster/Errors/tmp_ALyb.sh.e4176.10
+Cluster/Errors/tmp_ALyb.sh.e4176.11
+Cluster/Errors/tmp_ALyb.sh.e4176.12
+
+AND OUTPUT FILENAMES:
+
+**
+2008/10/13 at 02:14:40  Tasks alive: 0 out of 12. Finished: 100%        Max lifetime: 0s
+Cleaning stdout files
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.1' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.2' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.3' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.4' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.5' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.6' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.7' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.8' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.9' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.10' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.11' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+No such file: '/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.12' at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 345
+files were tarred in /home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/tmp/4177 under 4177.tar/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.1 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.2 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.3 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.4 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.5 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.6 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.7 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.8 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.9 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.10 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.11 cleaned
+/home/syoung/2008.10.13_02.13.56__Training.Folder_PHIx2/Cluster/Messages/tmp_jkjU.sh.o4177.12 cleaned
+can't open unified_seq_sample_for_blat.fa.1.hash: No such file or directory at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 250
+
+
+
+NB: SAVED ERROR AND OUTPUT FILES FROM BEING DELETED:
+
+COMMENTED OUT Blat.pm LINE 354
+
+    #unlink $file || croak "can't clean file: $file $!\n";
+
+COMMENTED OUT Submit_tools.pm LINE 869
+
+    #	unlink $file_to_clean or confess "can't clean: $file_to_clean of task $task: $!\n";
+
+
+
+
+
+IN ERROR FILES:
+
+File is not in a 2bit format or version is not zero
+ at ./analyze_blat_neat.pl line 389
+        main::_read_2bit_header('GLOB(0x32df7d0)') called at ./analyze_blat_neat.pl line 331
+        main::get_2bit_tree('phiFasta.fa') called at ./analyze_blat_neat.pl line 35
+mv: cannot stat `unified_seq_sample_for_blat.fa.6.hash': No such file or directory
+
+
+LATEST ERROR IS TO DO WITH THE PBS_SERVER DAEMON:
+
+
+Submit response:
+Cannot connect to default server host 'kronos' - check pbs_server daemon.
+qsub: cannot connect to server kronos (errno=111)
+
+***************************************************
+submit error: Cannot connect to default server host 'kronos' - check pbs_server daemon.
+qsub: cannot connect to server kronos (errno=111)
+
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 240
+        Submit_tools::submit('Submit_tools=HASH(0x6955560)', '/home/syoung/2008.10.13_02.32.00__Training.Folder_PHIx2/sge_s...') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 219
+        Cluster::Blat::cluster_blat_and_analyze('HASH(0x5983900)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 109
+        Cluster::Blat::quick('HASH(0x59839c0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 349
+        main::blat_it('HASH(0x5069c40)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 79
+
+
+
+ls 2008.10.13_02.13.56__Training.Folder_PHIx2
+
+Cluster                                unified_seq_sample_for_blat.fa.11.blt  unified_seq_sample_for_blat.fa.4.blt  unified_seq_sample_for_blat.fa.8
+tmp                                    unified_seq_sample_for_blat.fa.1.blt   unified_seq_sample_for_blat.fa.5      unified_seq_sample_for_blat.fa.8.blt
+Training_set_files                     unified_seq_sample_for_blat.fa.2       unified_seq_sample_for_blat.fa.5.blt  unified_seq_sample_for_blat.fa.9
+unified_seq_sample_for_blat.fa.1       unified_seq_sample_for_blat.fa.2.blt   unified_seq_sample_for_blat.fa.6      unified_seq_sample_for_blat.fa.9.blt
+unified_seq_sample_for_blat.fa.10      unified_seq_sample_for_blat.fa.3       unified_seq_sample_for_blat.fa.6.blt
+unified_seq_sample_for_blat.fa.10.blt  unified_seq_sample_for_blat.fa.3.blt   unified_seq_sample_for_blat.fa.7
+unified_seq_sample_for_blat.fa.11      unified_seq_sample_for_blat.fa.4       unified_seq_sample_for_blat.fa.7.blt
+
+
+cd /home/syoung/archive/2008.10.13_02.13.56__Training.Folder_PHIx2
+[syoung@kronos 2008.10.13_02.13.56__Training.Folder_PHIx2]$ ll
+total 6.0M
+drwxr-xr-x  5 syoung bioinfo  16K Oct 13 02:24 .
+drwxr-xr-x 17 syoung bioinfo  16K Oct 13 02:39 ..
+drwxr-xr-x  4 syoung bioinfo  16K Oct 13 02:14 Cluster
+drwxr-xr-x  3 syoung bioinfo  16K Oct 13 02:14 tmp
+drwxr-xr-x  2 syoung bioinfo  16K Oct 13 02:14 Training_set_files
+-rwxrwxrwx  1 syoung bioinfo 219K Oct 13 02:14 unified_seq_sample_for_blat.fa.1
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.10
+-rw-r--r--  1 syoung bioinfo 310K Oct 13 02:14 unified_seq_sample_for_blat.fa.10.blt
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.11
+-rw-r--r--  1 syoung bioinfo 314K Oct 13 02:14 unified_seq_sample_for_blat.fa.11.blt
+-rw-r--r--  1 syoung bioinfo 304K Oct 13 02:14 unified_seq_sample_for_blat.fa.1.blt
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.2
+-rw-r--r--  1 syoung bioinfo 306K Oct 13 02:14 unified_seq_sample_for_blat.fa.2.blt
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.3
+-rw-r--r--  1 syoung bioinfo 318K Oct 13 02:14 unified_seq_sample_for_blat.fa.3.blt
+-rwxrwxrwx  1 syoung bioinfo 221K Oct 13 02:14 unified_seq_sample_for_blat.fa.4
+-rw-r--r--  1 syoung bioinfo 308K Oct 13 02:14 unified_seq_sample_for_blat.fa.4.blt
+-rwxrwxrwx  1 syoung bioinfo 221K Oct 13 02:14 unified_seq_sample_for_blat.fa.5
+-rw-r--r--  1 syoung bioinfo 316K Oct 13 02:14 unified_seq_sample_for_blat.fa.5.blt
+-rwxrwxrwx  1 syoung bioinfo 219K Oct 13 02:14 unified_seq_sample_for_blat.fa.6
+-rw-r--r--  1 syoung bioinfo 309K Oct 13 02:14 unified_seq_sample_for_blat.fa.6.blt
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.7
+-rw-r--r--  1 syoung bioinfo 315K Oct 13 02:14 unified_seq_sample_for_blat.fa.7.blt
+-rwxrwxrwx  1 syoung bioinfo 226K Oct 13 02:14 unified_seq_sample_for_blat.fa.8
+-rw-r--r--  1 syoung bioinfo 318K Oct 13 02:14 unified_seq_sample_for_blat.fa.8.blt
+-rwxrwxrwx  1 syoung bioinfo 220K Oct 13 02:14 unified_seq_sample_for_blat.fa.9
+-rw-r--r--  1 syoung bioinfo 311K Oct 13 02:14 unified_seq_sample_for_blat.fa.9.blt
+
+
+
+
+
+RECREATED ERROR IN test2 DIRECTORY;
+
+cd /nethome/syoung/test2
+
+blat phiFasta.fa unified_seq_sample_for_blat.fa.1 unified_seq_sample_for_blat.fa.1.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100
+
+Loaded 5386 letters in 1 sequences
+..................................................Searched 125000 bases in 5000 sequences
+
+[syoung@kronos test2]$ ll
+total 880K
+drwxr-xr-x 2 syoung bioinfo  16K Oct 13 02:54 .
+drwx------ 9 syoung bioinfo  16K Oct 13 02:52 ..
+-rwxr-xr-x 1 syoung bioinfo 5.4K Oct 13 02:54 phiFasta.fa
+-rwxr-xr-x 1 syoung bioinfo 219K Oct 13 02:53 unified_seq_sample_for_blat.fa.1
+-rw-r--r-- 1 syoung bioinfo 304K Oct 13 02:54 unified_seq_sample_for_blat.fa.1.blt
+-rw-r--r-- 1 syoung bioinfo 304K Oct 13 02:53 unified_seq_sample_for_blat.fa.1.blt.old
+
+
+[syoung@kronos test2]$ ../analyze_blat_neat.pl unified_seq_sample_for_blat.fa.1.blt 25 34 phiFasta.fa unified_seq_sample_for_blat.fa.1.hash
+File is not in a 2bit format or version is not zero
+ at ../analyze_blat_neat.pl line 389
+        main::_read_2bit_header('GLOB(0x832e7f0)') called at ../analyze_blat_neat.pl line 331
+        main::get_2bit_tree('phiFasta.fa') called at ../analyze_blat_neat.pl line 35
+
+
+CONVERTED GENOME FILE TO 2-BIT:
+
+[syoung@kronos test2]$ faToTwoBit 
+faToTwoBit - Convert DNA from fasta to 2bit format
+usage:
+   faToTwoBit in.fa [in2.fa in3.fa ...] out.2bit
+options:
+   -noMask       - Ignore lower-case masking in fa file.
+   -stripVersion - Strip off version number after . for genbank accessions.
+   -ignoreDups   - only convert first sequence if there are duplicats
+
+[syoung@kronos test2]$ faToTwoBit phiFasta.fa phiFasta.fa.2bit
+[syoung@kronos test2]$ ll
+total 880K
+drwxr-xr-x 2 syoung bioinfo  16K Oct 13 03:00 .
+drwx------ 9 syoung bioinfo  16K Oct 13 02:52 ..
+-rwxr-xr-x 1 syoung bioinfo 5.4K Oct 13 02:54 phiFasta.fa
+-rw-r--r-- 1 syoung bioinfo 1.4K Oct 13 03:00 phiFasta.fa.2bit
+-rwxr-xr-x 1 syoung bioinfo 219K Oct 13 02:53 unified_seq_sample_for_blat.fa.1
+-rw-r--r-- 1 syoung bioinfo 304K Oct 13 02:54 unified_seq_sample_for_blat.fa.1.blt
+-rw-r--r-- 1 syoung bioinfo 304K Oct 13 02:53 unified_seq_sample_for_blat.fa.1.blt.old
+
+
+RERAN WITH 2-BIT FILE AS ARGUMENT (I.E, 'phiFasta.fa.2bit' INSTEAD OF 'phiFasta.fa'):
+
+cd /nethome/syoung/test2
+
+../analyze_blat_neat.pl unified_seq_sample_for_blat.fa.1.blt 25 34 phiFasta.fa.2bit unified_seq_sample_for_blat.fa.1.hash
+
++Number of lines:2822
+
+OK!!!
+
+head unified_seq_sample_for_blat.fa.1.hash
+
+pst12345678
+
+"AAACCTGCTGTTGCTTGGAAAGATTGGTGTTTTC
+                                   5_8_293_887
+"CATCATAGCCAGATGCCCAGAGATTAGAGCGCAT
+                                   5_14_962_256
+"ATTCACACGCCGACTGCTATCAGTATTTTTGTGT
+                                   5_20_823_51
+"AAGGACTGTGTGACTATTGACGTCCTTCCCCGTA
+                                   5_5_644_545
+"AAGAAATCATGAGTCAAGTTACTGAACAATCCGT
+                                   5_13_180_751
+"ATTACTACTGCTTGTTTACGAATTAAATCGAAGT
+
+
+**** NB: SO GENOME SEQUENCE MUST BE CONVERTED INTO 2-BIT FORMAT BEFORE RUNNING ALTA-CYCLIC USING faToTwoBit!!
+
+
+
+
+TROUBLESHOOTING CONTINUED ABOVE
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Sep 12 00:44:42 EDT 2008] TROUBLESHOOTING alta-cyclic ON phiX (LANE 4) IN HUMAN cDNA RUN (Run 1)>
+
+
+
+
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files ~/pipeline/phix2/human-run2-phix-int --path_to_training_sequences ~/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-300 --reference_genome ~/pipeline/phix2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIX2 --trim 25 
+
+mkdir -p pipeline/phix2
+
+
+
+1. GET .int FILES
+
+cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman
+sudo tar cvf human-run2-phiX-int.tar s_5*int.txt.gz
+ll human-run2-phiX-int.tar
+-rw-r--r-- 1 root root 1.6G Aug 23 23:29 human-run2-phiX.tar
+
+
+2. GET .seg FILES
+
+cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman/Bustard1.9.2_11-08-2008_ddittman
+sudo tar cvfz human-run2-phiX-seq.tar.gz s_5_*seq.txt
+ll *tar.gz
+-rw-r--r-- 1 root root 48M Aug 23 23:31 human-run2-phiX-seq.tar.gz
+
+
+3. LOCATION OF FILES ON genomics:
+
+/common/pipeline/phiX2/human-run2-phiX-seq
+/common/pipeline/phiX2/human-run2-phiX-int
+
+4. RUN TRAINING WITH brave_heart.pl
+
+cd /common/pipeline/phiX2
+
+sudo /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /common/pipeline/phiX2/human-run2-phiX-int --path_to_training_sequences /common/pipeline/phiX2/human-run2-phiX-seq --lane_for_training 5 --tiles_for_training 1-300 --reference_genome /common/pipeline/phiX2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIX2 --trim 25 
+
+
+    ...
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0298_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0299_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0300_int.txtGenerated sample of sequences and intensities for training: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample.txt /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_int_sample.txt
+    Found 90652 lines without ambiguous bases ('N's or '.')
+    After processing found 55867 unique entries for blatSending /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to blat on the cluster
+    Your blat parameters are:
+    -minMatch=1
+    -tileSize=6
+    -minScore=25
+    -minIdentity=60
+    -out=pslx
+    -dots=100
+    Your refernce genome file is /Volumes/gemshd3/common/pipeline/phiX2/phiX.2bitSplit /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to 12 subfiles. Each contains 10000 lines
+    
+    --------------------------------------
+    Names of split files:/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.1/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.2/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.3/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.4/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.5/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.6/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.7/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.8/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.9/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.10/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.11/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.12
+    --------------------------------------
+
+    
+    Total number of permutations is 12
+    Generating script to send to the cluster: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/sge_script_2008_08_24_03_41_53.pl
+    
+    -------------------------------------------
+    1#! /usr/bin/env perl
+                        use strict;
+                        use warnings;
+                        use File::Copy;
+                        use Readonly;
+                        use Storable;
+                        use Carp;
+    
+                        my $TASK_ID = shift;
+    
+                        Readonly my $REMOTE_DIR => '/tmp';                    Readonly my $SOURCE_DIR => '/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2';
+                        print STDOUT "+I am alive: $TASK_ID\n";
+                    
+                        sub required_files {
+                            my ($r_hash_files) = @_;
+                            foreach my $file (keys %{$r_hash_files}) {
+                                my $file_source          = $r_hash_files->{$file}->{source};
+                                my $file_dest            = $r_hash_files->{$file}->{remote};                            my $file_dest_expected   = $r_hash_files->{$file}->{remote_expected} || $file_dest;
+    
+                                if (-e $file_source) {
+                                    copy($file_source,$file_dest)
+                                        or die "can not copy $file_source to $file_dest\n";
+                                    chmod oct '0777', $file_dest
+                                        or die "can not chmod $file_dest: $!\n";
+                                }
+    
+                                if (not -e $file_dest) {
+                                    die "cant fount $file_dest\n";
+                                }
+                            }
+                        }
+                     sub convert_task {
+                        Readonly my $DATA_FILE => './dataFile';
+                        my ($convert_me,$r_hash_files) = @_;
+                        my $r_hash_numbers = retrieve ($r_hash_files->{hashFile}->{remote}) 
+                            or confess "cant open dataFile\n";
+    
+                        confess "cant verify hash\n"
+                            if (not exists $r_hash_numbers->{verify});
+    
+                        my $seperator = $r_hash_numbers->{sep} || "_";
+    
+                        my $numbers = $r_hash_numbers->{$convert_me}
+                            or confess "cant convert $convert_me\n";
+                        $numbers =~ s/$seperator/ /g;
+                        return $numbers;
+                    }
+                    
+    #hash of NUM_VEC:my $r_hash_NUM_VEC=({   hashFile=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/dataFile.tmp2008_08_24_03_41_53",remote=>"dataFile.tmp2008_08_24_03_41_53",remote_expected=>"undef"},
+    });
+    #First - Solve $NUM_VEC
+    required_files ($r_hash_NUM_VEC);
+    my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+    
+
+    #commands:
+    required_files ($r_hash_files);system ("blat phiX.2bit unified_seq_sample_for_blat.fa.$TASK_ID unified_seq_sample_for_blat.fa.$TASK_ID.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100 ");system ("./analyze_blat_neat.pl unified_seq_sample_for_blat.fa.$TASK_ID.blt 25 34 phiX.2bit unified_seq_sample_for_blat.fa.$TASK_ID.hash");
+    system ("mv unified_seq_sample_for_blat.fa.$TASK_ID.hash $SOURCE_DIR");
+    #epilouge:
+    #
+    
+    
+    Content of Cluster/Errors/tmp_ElE8.sh.e2047353.12:cp:
+    
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/sge_script_2008_08_24_03_41_53.pl: No such file or directory
+    /common/sge/default/spool//node007/job_scripts/2047353: line 10: ./sge_script_2008_08_24_03_41_53.pl: No such file or directory
+    
+    2 messages
+    Cleaining file
+    
+    
+2ND TRY:
+
+    SUMMARY:
+    
+    Content of Cluster/Errors/tmp_nB3p.sh.e2047354.1:cp:
+    
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    /common/sge/default/spool//node011/job_scripts/2047354: line 10: ./sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    
+    2 messages
+    Cleaining file
+
+
+    ll /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl
+    NOT FOUND!!
+
+    FULL OUTPUT:
+
+    ...    
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0299_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0300_int.txt
+    Generated sample of sequences and intensities for training: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample.txt /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_int_sample.txt
+    Found 90663 lines without ambiguous bases ('N's or '.')
+    After processing found 55895 unique entries for blatSending /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to blat on the cluster
+    Your blat parameters are:
+    -minMatch=1
+    -tileSize=6
+    -minScore=25
+    -minIdentity=60
+    -out=pslx
+    -dots=100
+    Your refernce genome file is /Volumes/gemshd3/common/pipeline/phiX2/phiFasta.fa
+    Split /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to 12 subfiles. Each contains 10000 lines
+    
+    --------------------------------------
+    Names of split files:/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.1/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.2/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.3/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.4/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.5/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.6/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.7/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.8/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.9/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.10/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.11/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.12
+    --------------------------------------
+    
+    Total number of permutations is 12
+    Generating script to send to the cluster:
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl
+    
+    -------------------------------------------
+    1#! /usr/bin/env perl
+                        use strict;
+                        use warnings;
+                        use File::Copy;
+                        use Readonly;
+                        use Storable;
+                        use Carp;
+    
+                        my $TASK_ID = shift;
+    
+                        Readonly my $REMOTE_DIR => '/tmp';
+                        Readonly my $SOURCE_DIR => '/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2';
+                        print STDOUT "+I am alive: $TASK_ID\n";
+                    
+                        sub required_files {
+                            my ($r_hash_files) = @_;
+                            foreach my $file (keys %{$r_hash_files}) {
+                                my $file_source          = $r_hash_files->{$file}->{source};
+                                my $file_dest            = $r_hash_files->{$file}->{remote};
+                                my $file_dest_expected   = $r_hash_files->{$file}->{remote_expected} || $file_dest;
+    
+                                if (-e $file_source) {
+                                    copy($file_source,$file_dest)
+                                        or die "can not copy $file_source to $file_dest\n";
+                                    chmod oct '0777', $file_dest
+                                        or die "can not chmod $file_dest: $!\n";
+                                }
+    
+                                if (not -e $file_dest) {
+                                    die "cant fount $file_dest\n";
+                                }
+                            }
+                        }
+                     sub convert_task {
+                        Readonly my $DATA_FILE => './dataFile';
+                        my ($convert_me,$r_hash_files) = @_;
+                        my $r_hash_numbers = retrieve ($r_hash_files->{hashFile}->{remote}) 
+                            or confess "cant open dataFile\n";
+    
+                        confess "cant verify hash\n"
+                            if (not exists $r_hash_numbers->{verify});
+    
+                        my $seperator = $r_hash_numbers->{sep} || "_";
+    
+                        my $numbers = $r_hash_numbers->{$convert_me}
+                            or confess "cant convert $convert_me\n";
+                        $numbers =~ s/$seperator/ /g;
+                        return $numbers;
+                    }
+                    
+    #hash of NUM_VEC:
+    my $r_hash_NUM_VEC=({   hashFile=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/dataFile.tmp2008_08_24_04_04_25",remote=>"dataFile.tmp2008_08_24_04_04_25",remote_expected=>"undef"},
+    });
+    
+    #First - Solve $NUM_VEC
+    required_files ($r_hash_NUM_VEC);
+    my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+    
+    
+    
+    #hash files:my $r_hash_files=({     analyze_blat=>{source=>"/Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/Cluster/Remote_Scripts/analyze_blat_neat.pl",remote=>"analyze_blat_neat.pl",remote_expected=>"undef"},        file_to_blat=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa.$TASK_ID",remote=>"unified_seq_sample_for_blat.fa.$TASK_ID",remote_expected=>"undef"},        genome=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/phiFasta.fa",remote=>"phiFasta.fa",remote_expected=>"undef"},
+    });
+    
+    
+    
+    
+    #commands:
+    required_files ($r_hash_files);system ("blat phiFasta.fa unified_seq_sample_for_blat.fa.$TASK_ID unified_seq_sample_for_blat.fa.$TASK_ID.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100 ");system ("./analyze_blat_neat.pl unified_seq_sample_for_blat.fa.$TASK_ID.blt 25 34 phiFasta.fa unified_seq_sample_for_blat.fa.$TASK_ID.hash");
+    system ("mv unified_seq_sample_for_blat.fa.$TASK_ID.hash $SOURCE_DIR");
+    #epilouge:
+    #
+    
+    
+    -------------------------------------------
+    
+    2008/08/24 at 04:04:26  Starting 2047354
+    2008/08/24 at 04:04:27  Tasks alive: 12 out of 12. Finished: 0% Max lifetime: 35999s
+    
+    Content of Cluster/Errors/tmp_nB3p.sh.e2047354.1:cp: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl: No such file or directory/common/sge/default/spool//node011/job_scripts/2047354: line 10: ./sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    2 messages
+    Cleaining file
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 22 00:44:42 EDT 2008] RUN alta-cyclic ON phiX (LANE 4) IN HUMAN cDNA RUN (Run 1)>
+
+
+
+ABORTED BECAUSE OF ERRORS IN int.txt.gz FILES... RAN HUMAN cDNA RUN (HUMAN RUN 2) INSTEAD - SEE ABOVE
+
+1. CHECK INPUT FILES
+
+cd /common/pipeline/phiX2
+
+TRANSFER FILES TO genomics
+
+cd ~
+ls | grep 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX
+080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz
+080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+
+CREATE DIRECTORIES:
+
+mkdir /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+mkdir /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+
+DO INT FILES:
+
+cd ~ 
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+cd 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+gunzip 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz
+tar xvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+cd ..
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files /common/pipeline/phiX2
+ls /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files 
+
+    ...
+    s_4_0296_int.txt.gz
+    s_4_0297_int.txt.gz
+    s_4_0298_int.txt.gz
+    s_4_0299_int.txt.gz
+    s_4_0300_int.txt.gz
+
+
+DO SEQ FILES:
+
+cd ~ 
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+cd 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+gunzip 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+tar xvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar
+cd ..
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files /common/pipeline/phiX2
+ls /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files 
+
+    ...
+    s_4_0296_seq.txt
+    s_4_0297_seq.txt
+    s_4_0298_seq.txt
+    s_4_0299_seq.txt
+    s_4_0300_seq.txt
+
+
+2. COPY REFERENCE SEQUENCE TO /common/pipeline/phiX2
+
+cp /Users/young/FUNNYBASE/apps/alta-cyclic/phiX.2bit /common/pipeline/phiX2/phiX.2bit
+cd /common/pipeline/phiX2
+ll
+    drwxr-xr-x   303 508  508      10K Aug 22 00:57 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+    drwxr-xr-x   303 508  508      10K Aug 20 12:59 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+    -rw-r--r--     1 508  508       5K Jul 29 19:04 phiFasta.fa
+    -rw-r--r--     1 508  wheel     1K Aug 22 11:17 phiX.2bit
+    
+    
+3. RUN TRAINING WITH brave_heart.pl
+
+cd /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic
+/Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files --path_to_training_sequences /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files --lane_for_training 4 --tiles_for_training 1-300 --reference_genome /common/pipeline/phiX2/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+
+
+
+
+Designing the experiment:
+=========================
+
+Make sure that you have on your flow-cell at least one rich DNA library with a known reference genome. We usually use phi-X174. You can download its reference genome in 2bit format here. 
+
+After the run:
+
+1. Analyze the image files with Firecrest and call the reference library with Bustard. 
+
+2. Launch Atla-Cyclic Training:
+
+    brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+3. Launch Atla-Cyclic Calling:
+
+    karma.pl --auto [OPTIONAL PARAMETERS] 
+
+
+    brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_4 --trim 25 
+
+
+
+BRAVE HEART - command line HELP
+
+node002:/alta-cyclic/Alta-Cyclic vanwye$ ./brave_heart.pl -help
+
+Usage:
+    brave_heart [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+Options:
+      Mandatory Parameters:
+      --number_of_cycles                Number of cycles in the run
+      --path_to_intensity_files         Path to the folder that contains the intensity files for training
+      --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intensity files
+      --lane_for_training               Lane number that is used for the training 
+      --tiles_for_training              The range of tiles that will be used for training
+      --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+      --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution nodes
+                                        N - assumes that the genome is installed on the cluster nodes
+
+      Optional Parameters:
+      --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+      --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+      --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+      --flowcell                        The flowcell name. 
+      --verbose                         Set verbosity.
+      --zipped                          If the intensity files are zipped
+      --debug                           Give extra messages and indicators. Stores .o files that return from the cluster
+      --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions.
+
+      Help Options:
+       --help                           Show a list of parameters.
+       --man                            Print a long manual.
+
+
+
+BRAVE HEART - command line man
+
+./brave_heart.pl --man
+
+
+BRAVE_HEART(1)        User Contributed Perl Documentation       BRAVE_HEART(1)
+
+
+
+NAME
+       brave_heart - A trainer program for Alta-Cyclic base caller.
+
+SYNOPSIS
+       brave_heart [MANDATORY PARAMETERS]   [OPTIONAL PARAMETERS]
+
+OPTIONS
+         Mandatory Parameters:
+         --number_of_cycles                Number of cycles in the run
+         --path_to_intensity_files         Path to the folder that contains the intensity files for training
+         --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intens
+ity files
+         --lane_for_training               Lane number that is used for the training
+         --tiles_for_training              The range of tiles that will be used for training
+         --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+         --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution node
+s
+                                           N - assumes that the genome is installed on the cluster nodes
+
+         Optional Parameters:
+         --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+         --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+         --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+         --flowcell                        The flowcell name.
+         --verbose                         Set verbosity.
+         --zipped                          If the intensity files are zipped
+         --debug                           Give extra messages and indicators. Stores .o files that return from the clus
+ter
+         --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may pr
+event us of collecting statistics and improve later versions.
+
+         Help Options:
+          --help                           Show a list of parameters.
+          --man                            Print a long manual.
+
+EXAMPLES
+       brave_heart.pl --number_of_cycles 50 --path_to_intensity_files
+       /home2/hannon/erlich/SGE-API/int_from_the_classic_run --path_to_train-
+       ing_sequences /home2/hannon/erlich/SGE-API/sequences_for_training_Clas-
+       sic/  --lane_for_training 8 --tiles_for_training 1-5 --reference_genome
+       ../step2/tmp/phiX.2bit --is_reference_genome_local Y --trim 25
+       --threshold_for_analysis 20 --maximum_lines_for_training 100000 --ver-
+       bose --debug --flowcell FLOWCELL_1234 --trim 25 --threshold_for_analy-
+       sis 20
+
+DESCRIPTION
+       brave_heart.pl is part of Alta-Cyclic base caller. The program extracts
+       a sample of intensity reads and their corresponding sequences that were
+       called with standard illumina base caller.  The sequences are trimmed
+       and matched back to the genome of the organism to extract a full length
+       sequences. The genomic sequences and the intensity values form the
+       training set. The training set is first used for optimization of the
+       random walk parameters (phasing) using iterative grid search. After
+       optimization of the the random walk parameters, the program optimizes
+       the SVM parameters (cross-talk).  Finally, an SVM machines are
+       prodouced for every cycle. This can be later used for calling using
+       karma.pl
+
+BUGS AND LIMITATIONS
+       If you feel you have found a bug in brave_heart.pl, please submit a bug
+       report at erlich@cshl.edu
+
+AUTHOR
+       Written By Yaniv Erlich <erlich@cshl.edu>
+
+LISCENSE AND COPYRIGHT
+       Copyright A(C) 2008 Cold Spring Harbor Laboratory.  This is free soft-
+       ware.  You may redistribute copies of it under the terms in LICENSE
+       file.  There is NO WARRANTY, to the extent permitted by law.
+
+
+
+BRAVE HEART - online man
+
+
+brave_heart - A trainer program for Alta-Cyclic base caller. 
+
+brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS] 
+
+
+OPTIONS
+
+Mandatory Parameters: 
+
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for training 
+--path_to_training_sequences Path to the folder that contains sequences that corresponds to intensity files 
+--lane_for_training Lane number that is used for the training 
+--tiles_for_training The range of tiles that will be used for training 
+--reference_genome Full path to the reference genome 
+--is_reference_genome_local Y - indicates that the refernce genome should be copied to the cluster nodes
+N - assumes that the genome is installed on the cluster nodes 
+
+Optional Parameters: 
+--trim Trim the trainings sequences for a certain number. Makes the training faster 
+--threshold_for_analysis Set the threshold for allowing mismatches in the training seqeunces 
+--maximum_lines_for_training Set the intial amount of eneries that will be sampled for training 
+--flowcell The flowcell name 
+--verbose Set verbosity 
+--zipped If the intensity files are zipped 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+--not_nice Do not report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions. 
+
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLE
+
+
+brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+karma - The base caller part of Alta-Cyclic 
+
+
+SYNOPSIS
+karma.pl --auto [--tiles --lanes]
+karma.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+
+
+
+OPTIONS
+--auto Gets the parameters from brave_heart. Only under Karma folder. NOTICE: the default tile range is 1-100. On a GAI machine you should use the --tiles option. See example below 
+ 
+Mandatory Parameters: 
+--random_walk Expect to get [best p1] and [best p2] that were found by brave_heart 
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for reading 
+--number_of_cycles Path to the folder that contains the intensity files for training 
+--lanes Lanes to read 
+--tiles Tiles to read 
+--SVM_tar_location Location of the SVM package that was generated by brave_heart 
+ 
+Optional Parameters: 
+--zipped If the intensity files are zipped 
+--flowcell The flowcell name. 
+--verbose Set verbosity. 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLES
+./karma.pl --auto
+./karma.pl --auto --tiles 1-300 --lanes 1
+
+ 
+
+
+
+
+Results 
+Your results are under the Karma directory in the same format that Illumina reports. 
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jul 29 18:57:37 EDT 2008] EXTRACTED int AND seq FILES FOR PHIX (LANE 4) IN cDNA RUN (Run 1)>
+
+
+
+    NB: Image files for lane 4 = 27GB unzipped
+
+    INTENSITY FILES (4 GB tarred and zipped):
+    
+    -rw-r--r-- 1 syoung users 4.2G Jul 29 18:41 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+    
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung
+    tar cvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar *int.txt.gz
+    ll 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar 
+        -rw-r--r-- 1 syoung users 4.2G Jul 29 18:41 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+
+    scp -r 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar young@genomics.rsmas.miami.edu:
+    
+    SEQUENCE FILES (136 MB tarred and zipped):
+    
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung
+    tar cvfz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz *seq.txt
+    ll 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+        -rw-r--r-- 1 syoung users 136M Jul 29 18:50 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+
+    scp -r 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz young@genomics.rsmas.miami.edu:
+
+
+    COPY REFERENCE SEQUENCE TO GENOMICS:
+    cd /home/jhoffman/myGenome
+    ls
+        error.txt  phiFasta.fa  phiFasta.fa.2bpb  phiFasta.fa.vld  phiX_config.txt
+                                                                                                                                                    
+                                                                                                                                                head phiFasta.fa
+        >gi|9626372|ref|NC_001422.1| Coliphage phiX174, complete genome
+        GAGTTTTATCGCTTCCATGACGCAGAAGTTAACACTTTCGGATATTTCTGATGAGTCGAAAAATTATCTT
+        GATAAAGCAGGAATTACTACTGCTTGTTTACGAATTAAATCGAAGTGGACTGCTGGCGGAAAATGAGAAA
+        ATTCGACCTATCCTTGCGCAGCTCGAGAAGCTCTTACTTTGCGACCTTTCGCCATCAACTAACGATTCTG
+        TCAAAAACTGACGCGTTGGATGAGGAGAAGTGGCTTAATATGCTTGGCACGTTCGTCAAGGACTGGTTTA
+        GATATGAGTCACATTTTGTTCATGGTAGAGATTCTCTTGTTGACATTTTAAAAGAGCGTGGATTACTATC
+        ...
+
+    scp -r phiFasta.fa young@genomics.rsmas.miami.edu:
+
+
+    ON genomics, COPY TO gems THEN MOVE TO /common/pipeline (MOVE STRAIGHT TO /common/pipeline GAVE I/O ERROR...)
+    
+    cd ~
+    sudo scp 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar local@gems.rsmas.miami.edu: # TAKES 10 MINS
+    sudo scp phiFasta.fa local@gems.rsmas.miami.edu:
+    sudo scp 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz local@gems.rsmas.miami.edu:
+    cd /common/pipeline/phiX2
+
+    ON gems:
+    
+    mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar /common/pipeline/phiX2
+    mv phiFasta.fa /common/pipeline/phiX2
+    mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz /common/pipeline/phiX2
+    /common/pipeline/phiX2
+
+
+</entry>
+
+
+
+<entry [Mon Jul 28 18:57:37 EDT 2008] TEST qsub ON olympus>
+
+
+
+
+1. WRITE EXECUTABLE
+
+cd /nethome/syoung/base/pipeline/qsub
+
+emacs testqsub.sh
+>>>
+#!/bin/sh
+#\$ -S /bin/bash
+
+## Join output with errors and place in current working directory
+#\$ -j y
+#\$ -cwd
+
+# When a single command in the array job is sent to a compute node,
+# its task number is stored in the variable SGE TASK ID,
+# so we can use the value of that variable to get the results we want:
+
+echo "Done"
+<<<
+
+chmod 755 testqsub.sh
+
+
+2. RUN
+
+[syoung@olympus qsub]$ qsub testqsub.sh 
+2764.olympus.ccs.miami.edu
+
+
+3. CHECK STATUS
+
+[syoung@olympus qsub]$ checkjob 2764
+job 2764
+
+AName: testqsub.sh
+State: Completed 
+Completion Code: 0
+Creds:  user:syoung  group:bioinfo  class:batch
+WallTime:   00:00:00 of 4:00:00
+SubmitTime: Sat Jul 26 19:28:14
+  (Time Queued  Total: 00:00:07  Eligible: 00:00:00)
+
+Total Requested Tasks: 1
+
+Req[0]  TaskCount: 1  Partition: base  
+Memory >= 0  Disk >= 0  Swap >= 0
+Opsys:   ---  Arch: ---  Features: ---
+
+Allocated Nodes:
+[zeus.ccs.miami.edu:1]
+
+
+Execution Partition:  base
+StartPriority:  0
+
+
+4. GET RESULTS
+
+[syoung@olympus qsub]$ ll
+total 3
+-rwxr-xr-x+ 1 syoung bioinfo 322 Jul 26 19:17 testqsub.sh
+-rw-------+ 1 syoung bioinfo   0 Jul 26  2008 testqsub.sh.e2764
+-rw-------+ 1 syoung bioinfo   5 Jul 26  2008 testqsub.sh.o2764
+
+emacs testsub.sh.o2764
+>>>
+Done.
+<<<
+
+
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 24 22:50:32 EDT 2008] ALL HUMAN LANES IMAGE FILES TOO LARGE FOR CLUSTER - DO A LANE AT A TIME>
+
+
+
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ du -hs Images/
+652G    Images/
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ pwd
+/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ 
+
+
+EXTRACT TILES 100-199 FROM LANE 4 (PHIX):
+
+cd 
+
+mkdir C1.1
+mkdir C2.1
+mkdir C3.1
+mkdir C4.1
+mkdir C5.1
+mkdir C6.1
+mkdir C7.1
+mkdir C8.1
+mkdir C9.1
+mkdir C10.1
+mkdir C11.1
+mkdir C12.1
+mkdir C13.1
+mkdir C14.1
+mkdir C15.1
+mkdir C16.1
+mkdir C17.1
+mkdir C18.1
+mkdir C19.1
+mkdir C20.1
+mkdir C21.1
+mkdir C22.1
+mkdir C23.1
+mkdir C24.1
+mkdir C25.1
+mkdir C26.1
+mkdir C27.1
+mkdir C28.1
+mkdir C29.1
+mkdir C30.1
+mkdir C31.1
+mkdir C32.1
+
+
+emacs copy.sh
+
+#!/bin/sh
+
+cp L004/C1.1/s_4_1* L004.100-199/C1.1/
+cp L004/C2.1/s_4_1* L004.100-199/C2.1/
+cp L004/C3.1/s_4_1* L004.100-199/C3.1/
+cp L004/C4.1/s_4_1* L004.100-199/C4.1/
+cp L004/C5.1/s_4_1* L004.100-199/C5.1/
+cp L004/C6.1/s_4_1* L004.100-199/C6.1/
+cp L004/C7.1/s_4_1* L004.100-199/C7.1/
+cp L004/C8.1/s_4_1* L004.100-199/C8.1/
+cp L004/C9.1/s_4_1* L004.100-199/C9.1/
+cp L004/C10.1/s_4_1* L004.100-199/C10.1/
+
+cp L004/C11.1/s_4_1* L004.100-199/C11.1/
+cp L004/C12.1/s_4_1* L004.100-199/C12.1/
+cp L004/C13.1/s_4_1* L004.100-199/C13.1/
+cp L004/C14.1/s_4_1* L004.100-199/C14.1/
+cp L004/C15.1/s_4_1* L004.100-199/C15.1/
+cp L004/C16.1/s_4_1* L004.100-199/C16.1/
+cp L004/C17.1/s_4_1* L004.100-199/C17.1/
+cp L004/C18.1/s_4_1* L004.100-199/C18.1/
+cp L004/C19.1/s_4_1* L004.100-199/C19.1/
+cp L004/C20.1/s_4_1* L004.100-199/C20.1/
+cp L004/C21.1/s_4_1* L004.100-199/C21.1/
+cp L004/C22.1/s_4_1* L004.100-199/C22.1/
+cp L004/C23.1/s_4_1* L004.100-199/C23.1/
+cp L004/C24.1/s_4_1* L004.100-199/C24.1/
+cp L004/C25.1/s_4_1* L004.100-199/C25.1/
+cp L004/C26.1/s_4_1* L004.100-199/C26.1/
+cp L004/C27.1/s_4_1* L004.100-199/C27.1/
+cp L004/C28.1/s_4_1* L004.100-199/C28.1/
+cp L004/C29.1/s_4_1* L004.100-199/C29.1/
+cp L004/C30.1/s_4_1* L004.100-199/C30.1/
+cp L004/C31.1/s_4_1* L004.100-199/C31.1/
+cp L004/C32.1/s_4_1* L004.100-199/C32.1/
+
+COPY FROM solexa01 TO LOCAL DIRECTORY ON genomics AND olympus:
+
+scp -r syoung@solexa01.med.miami.edu:/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L004.100-199.tar.gz ./
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Jul 17 22:59:24 EDT 2008
+
+Designing the experiment:
+Make sure that you have on your flow-cell at least one rich DNA library with a known reference genome. We usually use phi-X174. You can download its reference genome in 2bit format here. 
+
+After the run:
+
+1. Analyze the image files with Firecrest and call the reference library with Bustard. 
+
+2. Launch Atla-Cyclic Training:
+
+    brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+3. Launch Atla-Cyclic Calling:
+
+    karma.pl --auto [OPTIONAL PARAMETERS] 
+
+
+    brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+
+BRAVE HEART - command line HELP
+
+node002:/alta-cyclic/Alta-Cyclic vanwye$ ./brave_heart.pl -help
+
+Usage:
+    brave_heart [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+Options:
+      Mandatory Parameters:
+      --number_of_cycles                Number of cycles in the run
+      --path_to_intensity_files         Path to the folder that contains the intensity files for training
+      --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intensity files
+      --lane_for_training               Lane number that is used for the training 
+      --tiles_for_training              The range of tiles that will be used for training
+      --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+      --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution nodes
+                                        N - assumes that the genome is installed on the cluster nodes
+
+      Optional Parameters:
+      --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+      --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+      --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+      --flowcell                        The flowcell name. 
+      --verbose                         Set verbosity.
+      --zipped                          If the intensity files are zipped
+      --debug                           Give extra messages and indicators. Stores .o files that return from the cluster
+      --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions.
+
+      Help Options:
+       --help                           Show a list of parameters.
+       --man                            Print a long manual.
+
+
+
+BRAVE HEART - command line man
+
+./brave_heart.pl --man
+
+
+BRAVE_HEART(1)        User Contributed Perl Documentation       BRAVE_HEART(1)
+
+
+
+NAME
+       brave_heart - A trainer program for Alta-Cyclic base caller.
+
+SYNOPSIS
+       brave_heart [MANDATORY PARAMETERS]   [OPTIONAL PARAMETERS]
+
+OPTIONS
+         Mandatory Parameters:
+         --number_of_cycles                Number of cycles in the run
+         --path_to_intensity_files         Path to the folder that contains the intensity files for training
+         --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intens
+ity files
+         --lane_for_training               Lane number that is used for the training
+         --tiles_for_training              The range of tiles that will be used for training
+         --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+         --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution node
+s
+                                           N - assumes that the genome is installed on the cluster nodes
+
+         Optional Parameters:
+         --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+         --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+         --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+         --flowcell                        The flowcell name.
+         --verbose                         Set verbosity.
+         --zipped                          If the intensity files are zipped
+         --debug                           Give extra messages and indicators. Stores .o files that return from the clus
+ter
+         --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may pr
+event us of collecting statistics and improve later versions.
+
+         Help Options:
+          --help                           Show a list of parameters.
+          --man                            Print a long manual.
+
+EXAMPLES
+       brave_heart.pl --number_of_cycles 50 --path_to_intensity_files
+       /home2/hannon/erlich/SGE-API/int_from_the_classic_run --path_to_train-
+       ing_sequences /home2/hannon/erlich/SGE-API/sequences_for_training_Clas-
+       sic/  --lane_for_training 8 --tiles_for_training 1-5 --reference_genome
+       ../step2/tmp/phiX.2bit --is_reference_genome_local Y --trim 25
+       --threshold_for_analysis 20 --maximum_lines_for_training 100000 --ver-
+       bose --debug --flowcell FLOWCELL_1234 --trim 25 --threshold_for_analy-
+       sis 20
+
+DESCRIPTION
+       brave_heart.pl is part of Alta-Cyclic base caller. The program extracts
+       a sample of intensity reads and their corresponding sequences that were
+       called with standard illumina base caller.  The sequences are trimmed
+       and matched back to the genome of the organism to extract a full length
+       sequences. The genomic sequences and the intensity values form the
+       training set. The training set is first used for optimization of the
+       random walk parameters (phasing) using iterative grid search. After
+       optimization of the the random walk parameters, the program optimizes
+       the SVM parameters (cross-talk).  Finally, an SVM machines are
+       prodouced for every cycle. This can be later used for calling using
+       karma.pl
+
+BUGS AND LIMITATIONS
+       If you feel you have found a bug in brave_heart.pl, please submit a bug
+       report at erlich@cshl.edu
+
+AUTHOR
+       Written By Yaniv Erlich <erlich@cshl.edu>
+
+LISCENSE AND COPYRIGHT
+       Copyright A(C) 2008 Cold Spring Harbor Laboratory.  This is free soft-
+       ware.  You may redistribute copies of it under the terms in LICENSE
+       file.  There is NO WARRANTY, to the extent permitted by law.
+
+
+
+BRAVE HEART - online man
+
+
+brave_heart - A trainer program for Alta-Cyclic base caller. 
+
+brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS] 
+
+
+OPTIONS
+
+Mandatory Parameters: 
+
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for training 
+--path_to_training_sequences Path to the folder that contains sequences that corresponds to intensity files 
+--lane_for_training Lane number that is used for the training 
+--tiles_for_training The range of tiles that will be used for training 
+--reference_genome Full path to the reference genome 
+--is_reference_genome_local Y - indicates that the refernce genome should be copied to the cluster nodes
+N - assumes that the genome is installed on the cluster nodes 
+
+Optional Parameters: 
+--trim Trim the trainings sequences for a certain number. Makes the training faster 
+--threshold_for_analysis Set the threshold for allowing mismatches in the training seqeunces 
+--maximum_lines_for_training Set the intial amount of eneries that will be sampled for training 
+--flowcell The flowcell name 
+--verbose Set verbosity 
+--zipped If the intensity files are zipped 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+--not_nice Do not report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions. 
+
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLE
+
+
+brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+karma - The base caller part of Alta-Cyclic 
+
+
+SYNOPSIS
+karma.pl --auto [--tiles --lanes]
+karma.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+
+
+
+OPTIONS
+--auto Gets the parameters from brave_heart. Only under Karma folder. NOTICE: the default tile range is 1-100. On a GAI machine you should use the --tiles option. See example below 
+ 
+Mandatory Parameters: 
+--random_walk Expect to get [best p1] and [best p2] that were found by brave_heart 
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for reading 
+--number_of_cycles Path to the folder that contains the intensity files for training 
+--lanes Lanes to read 
+--tiles Tiles to read 
+--SVM_tar_location Location of the SVM package that was generated by brave_heart 
+ 
+Optional Parameters: 
+--zipped If the intensity files are zipped 
+--flowcell The flowcell name. 
+--verbose Set verbosity. 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLES
+./karma.pl --auto
+./karma.pl --auto --tiles 1-300 --lanes 1
+
+ 
+
+
+
+
+Results 
+Your results are under the Karma directory in the same format that Illumina reports. 
+
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 17 22:59:24 EDT 2008] INSTALL ALTA-CYCLIC ON ALL CLUSTER NODES>
+
+
+
+
+http://hannonlab.cshl.edu/Alta-Cyclic/install.html
+
+1. CREATE LOCAL DIRECTORY ON EACH NODE FOR ALTA-CYCLIC AND COPY ALTA CYCLIC AND DEPENDENCIES
+
+PLACE ON /common:
+
+sudo mkdir /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic_0.1.0.tar.gz /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/external.programs /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/phiX.2bit /common/pipeline/alta-cyclic
+
+TRANSFER TO LOCAL DIRECTORY:
+
+sudo dsh -a mkdir /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/Alta-Cyclic_0.1.0.tar.gz /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/external.programs /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/phiX.2bit /alta-cyclic
+
+
+COPY Readonly MODULE:
+
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/Readonly* /common/pipeline/alta-cyclic/perl.mods
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods/Readonly* /alta-cyclic/perl.mods
+sudo dsh -a "cd /alta-cyclic/perl.mods/; tar xvfz Readonly-1.03.tar.gz"
+
+
+COPY Term-Readkey MODULE (TermReadKey-2.30.tar.gz):
+
+ON gems
+
+cd /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/
+get TermReadKey-2.30.tar.gz
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/TermReadKey-2.30.tar.gz /common/pipeline/alta-cyclic/perl.mods
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods/TermReadKey-2.30.tar.gz /alta-cyclic/perl.mods
+sudo dsh -a "cd /alta-cyclic/perl.mods/; tar xvfz TermReadKey-2.30.tar.gz"
+
+
+
+2. INSTALL gsl C LIBRARY
+
+	Name	Tested version	Link	Debian/Ubuntu package
+    gsl	    32	            http://www.gnu.org/software/gsl/ 	libgsl0-dev
+
+# gsl-1.11.tar.gz WORKS OK!
+
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; ./configure  --host=powerpc-apple-darwin8.0;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make clean;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make install;"
+
+    node016.cluster.private:        ----------------------------------------------------------------------
+    node016.cluster.private:        Libraries have been installed in:
+    node016.cluster.private:           /usr/local/lib
+    node016.cluster.private:
+    node016.cluster.private:        If you ever happen to want to link against installed libraries
+    node016.cluster.private:        in a given directory, LIBDIR, you must either use libtool, and
+    node016.cluster.private:        specify the full pathname of the library, or use the `-LLIBDIR'
+    node016.cluster.private:        flag during linking and do at least one of the following:
+    node016.cluster.private:           - add LIBDIR to the `DYLD_LIBRARY_PATH' environment variable
+    node016.cluster.private:             during execution
+    node016.cluster.private:
+    node016.cluster.private:        See any operating system documentation about shared libraries for
+    node016.cluster.private:        more information, such as the ld(1) and ld.so(8) manual pages.
+    node016.cluster.private:        ----------------------------------------------------------------------
+
+
+NB: IF YOU DON'T RUN make clean, YOU GET THIS ERROR.
+
+    ERROR: libgslsiman.a is out of date; rerun ranlib
+    
+    DIAGNOSIS: BECAUSE YOU'VE COPIED THE LIBRARY YOU HAVE TO RUN ranlib TO AVOID THIS ERROR:
+    
+        /usr/bin/ld: table of contents for archive: ./.libs/libgslsiman.a is out of date; rerun ranlib(1) (can't load from it)
+            
+    (This can occur if you copy a library. This is from the relevant manpage:
+    "With the way libraries used to be created, errors were possible if the library was modified with ar(1) and the table of contents was not updated by rerunning ranlib(1). Thus the link editor, ld, warns when the modification date of a library is more recent than the creation date of its table of contents. Unfortunately, this means that you get the warning even if you only copy the library.")
+    
+    SOLUTION:
+    
+    locate libgslsiman.a
+    
+    ranlib /Users/local/FUNNYBASE/apps/alta-cyclic/external.programs/gsl-1.11/siman/.libs/libgslsiman.a
+    OR
+    ranlib /usr/local/lib/gsl/libgslsiman.a
+
+
+3. INSTALL PERL MODULES 
+
+Astro-FITS-Header-3.0.tar.gz
+List-MoreUtils-0.22.tar.gz
+PDL-2.4.3.tar.gz
+
+(NB: HAD TO RESET DATE/TIME ON NODE010 WITH: sudo date 072322452008)
+
+Astro-FITS-Header-3.0.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/Makefile /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; make install;"
+
+List-MoreUtils-0.22.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/List-MoreUtils-0.22/Makefile /alta-cyclic/perl.mods/List-MoreUtils-0.22/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; make install;"
+
+PDL-2.4.3.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/PDL-2.4.3/Makefile /alta-cyclic/perl.mods/PDL-2.4.3/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make install;"
+
+    NB: COULD BE DODGY:
+    
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/FITS.pm: cannot resolve L<glue|glue> in paragraph 158.
+        node016.cluster.private:        FlexRaw.pm...                 
+        node016.cluster.private:        Misc.pm...                    
+        node016.cluster.private:        NDF.pm...                     
+        node016.cluster.private:        Pic.pm...                     
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"compress"|compress> in paragraph 133.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"gzip"|gzip> in paragraph 133.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"gzip"|gzip> in paragraph 159.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"compress"|compress> in paragraph 159.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<pbmplus> in paragraph 174.
+        node016.cluster.private:        Pnm.pm...                     
+        node016.cluster.private:        Storable.pm...                
+        node016.cluster.private:        Simplex.pm...                 
+        node016.cluster.private:        Parser.pm...                  
+        node016.cluster.private:        Select.pm...                  
+        node016.cluster.private:        Usage.pm...                   
+        node016.cluster.private:        Cartography.pm...             
+        node016.cluster.private:        PDL.pm...                     
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/../PDL.pm: cannot resolve L<the pdl(1) (lowercase) man page|pdl> in paragraph 6.
+    
+    
+
+Readonlyl-1.03.tar.gz
+
+#sudo dsh -a mv /alta-cyclic/perl.mods/Readonly-1.03/Makefile /alta-cyclic/perl.mods/Readonly-1.03/Makefile.old
+#sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make install;"
+
+
+TermReadKey-2.30.tar.gz
+
+#sudo dsh -a mv /alta-cyclic/perl.mods/TermReadKey-2.30/Makefile /alta-cyclic/perl.mods/TermReadKey-2.30/Makefile.old
+#sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make install;"
+
+
+4. INSTALL blat	version 32	  http://www.soe.ucsc.edu/~kent/src/
+
+    1. UNZIP blatSrc32.zip
+    
+    2. GET MACHTYPE ENVIRONMENT VARIABLEL 
+        
+        gems:~/FUNNYBASE/apps/alta-cyclic/perl.mods/PDL-2.4.3 local$ echo $MACHTYPE
+        powerpc-apple-darwin8.0
+    
+
+        SET MACHTYPE TO 'i386' FOR Linux:
+        
+        export MACHTYPE=i386
+        echo $MACHTYPE
+
+        AND CREATE DIRECTORIES:
+
+       # where the (non-web) executables will go.
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; mkdir -p bin/i386;"
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; mkdir -p lib/i386;"
+
+
+    3. CREATE DIRECTORY /private/var/root/bin/i386 WHERE THE /private/var/root/bin/i386/blat FILE WILL GO
+        
+        sudo dsh -a "mkdir -p /private/var/root/bin/i386/"
+
+    4. GO TO blastSrc DIRECTORY AND make
+    
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; export MACHTYPE=i386; make;"
+
+        ...    
+        cd webBlat && make
+        gcc -O  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -DMACHTYPE_i386 -Wformat -Wimplicit -Wuninitialized -Wreturn-type -I../inc -I../../inc -I../../../inc -I../../../../inc  -c webBlat.c
+        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        strip webBlat
+
+        ...
+        node016.cluster.private:        cd utils/twoBitInfo && make
+        node016.cluster.private:        gcc -O -o /private/var/root/bin/i386/twoBitInfo twoBitInfo.o ../../lib/i386/jkweb.a -lm
+        node016.cluster.private:        strip /private/var/root/bin/i386/twoBitInfo
+        node016.cluster.private:        cd webBlat && make
+        node016.cluster.private:        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        node016.cluster.private:        strip webBlat
+
+
+5. NEEDS libSVM-tools		http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/ 	libsvm-tools
+
+    sudo dsh -a "cd /alta-cyclic/external.programs/libsvm-2.86; make clean;"
+    sudo dsh -a "cd /alta-cyclic/external.programs/libsvm-2.86; make;"
+
+
+
+7. GO TO PATH_TO_ALTA/Cluster/Remote_Scripts/ AND COMPILE SVD.c:
+
+    sudo dsh -a "/usr/local/bin/gsl-config --libs"
+    
+        -L/usr/local/lib -lgsl -lgslcblas -lm
+    
+    sudo dsh -a "/usr/local/bin/gsl-config --cflags"
+    
+        -I/usr/local/include
+
+
+    sudo dsh -a "cd /alta-cyclic/; tar xvfz Alta-Cyclic_0.1.0.tar.gz"
+    sudo dsh -a "cd /alta-cyclic/Alta-Cyclic/Cluster/Remote_Scripts; gcc $(/usr/local/bin/gsl-config --cflags) SVD.c $(/usr/local/bin/gsl-config --libs) -o svd;"
+
+
+    OK
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 17 22:59:24 EDT 2008] INSTALL ALTA-CYCLIC>
+
+
+
+http://hannonlab.cshl.edu/Alta-Cyclic/install.html
+
+1. INSTALL PERL MODULES 
+
+Astro-FITS-Header-3.0.tar.gz
+List-MoreUtils-0.22.tar.gz
+PDL-2.4.3.tar.gz
+
+
+2. DOWNLOAD ALTA-CYCLIC
+
+http://hannonlab.cshl.edu/Alta-Cyclic/download.html
+http://hannonlab.cshl.edu
+ 
+# Untar Alta-Cyclic package and copy it to any folder in your submission node.
+
+3. INSTALL sge
+
+sun grid engine (SGE)	version 6	  http://gridengine.sunsource.net/downloads/61/download.html
+
+
+4. INSTALL blat	version 32	  http://www.soe.ucsc.edu/~kent/src/
+
+    1. UNZIP blatSrc32.zip
+    
+    2. GET MACHTYPE ENVIRONMENT VARIABLEL 
+        
+        gems:~/FUNNYBASE/apps/alta-cyclic/perl.mods/PDL-2.4.3 local$ echo $MACHTYPE
+        powerpc-apple-darwin8.0
+    
+
+        SET MACHTYPE TO 'i386' FOR Linux:
+        
+        export MACHTYPE=i386
+        echo $MACHTYPE
+
+        AND CREATE DIRECTORIES:
+
+        mkdir -p bin/i386       # where the (non-web) executables will go.
+        mkdir lib/i386
+
+
+    3. CREATE DIRECTORY /Users/local/bin/i386 WHERE THE /Users/local/bin/i386/blat FILE WILL GO
+        
+        mkdir -p /Users/local/bin/i386
+
+    4. GO TO blastSrc DIRECTORY AND make
+    
+        ...    
+        cd webBlat && make
+        gcc -O  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -DMACHTYPE_i386 -Wformat -Wimplicit -Wuninitialized -Wreturn-type -I../inc -I../../inc -I../../../inc -I../../../../inc  -c webBlat.c
+        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        strip webBlat
+
+
+
+5. NEEDS libSVM-tools		http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/ 	libsvm-tools
+
+    1. UNZIP libsvm-2.86.zip
+
+    2. make
+    
+    
+6. INSTALL gsl C LIBRARY
+
+	Name	Tested version	Link	Debian/Ubuntu package
+    gsl	    32	            http://www.gnu.org/software/gsl/ 	libgsl0-dev
+
+    gsl-1.11.tar.gz
+    cd gsl-1.11
+
+    ./configure  --host=powerpc-apple-darwin8.0
+    make
+    sudo make install
+    sudo make clean
+
+
+7. GO TO PATH_TO_ALTA/Cluster/Remote_Scripts/ AND COMPILE SVD.c:
+
+    gsl-config --libs
+    
+        -L/usr/local/lib -lgsl -lgslcblas -lm
+    
+    gsl-config --cflags
+    
+        -I/usr/local/include
+
+
+    gcc $(gsl-config --cflags) SVD.c $(gsl-config --libs) -o svd
+
+    OK
+

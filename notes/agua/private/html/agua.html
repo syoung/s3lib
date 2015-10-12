@@ -1,0 +1,132 @@
+<!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"-->
+		<!--"http://www.w3.org/TR/html4/strict.dtd">-->
+
+<html>
+<head>
+
+<title>Agua 0.6</title>
+
+<style type="text/css">
+
+	/* DOJO STYLES */
+	@import "dojo-1.6.1rc2/dojo/resources/dojo.css";
+
+	/* THEMES */
+	@import "dojo-1.6.1rc2/dijit/themes/dijit.css";
+	@import "dojo-1.6.1rc2/dijit/themes/soria/soria.css";
+	@import "dojo-1.6.1rc2/dijit/themes/tundra/tundra.css";
+	@import "dojo-1.6.1rc2/dojox/widget/Loader/Loader.css";
+</style>
+
+
+<style type="text/css"> 
+	@import "dojo-1.6.1rc2/dijit/themes/claro/document.css";
+/*	@import "dojo-1.6.1rc2/dijit/tests//css/dijitTests.css";
+	br { margin-bottom: 4em; }
+*/</style> 
+ 
+		<!-- required: the default dijit theme: --> 
+		<!--<link id="themeStyles" rel="stylesheet" href="dojo-1.6.1rc2/dijit/themes/claro/claro.css"/> -->
+
+<link rel="stylesheet" href="plugins/core/css/toolbar.css">
+	
+<!-- LOAD DOJO -->
+<!--<script type="text/javascript"-->
+<!--		src="dojo-1.6.1rc2/dojo/dojo.js"-->
+<!--		djConfig="parseOnLoad: true, isDebug: true, useCommentedJson: true"></script>	-->
+
+<script type="text/javascript">
+
+// GLOBAL Agua VARIABLE
+var Agua = {};
+var Data = {};
+
+var dojoConfig = {
+	parseOnLoad: true,
+	isDebug: true,
+	locale: 'en-us',
+	extraLocale: ['ja-jp'],
+	modulePaths: {"plugins": "../../plugins"}
+};
+
+</script>
+
+<script type="text/javascript"
+		src="dojo-1.6.1rc2/dojo/dojo.js"
+		isDebug: true, debugAtAllCosts: true, useCommentedJson: true"></script>	
+
+
+<script type="text/javascript" src="builds/016-agua_dojo_dijit/dojo/agua_dojo_dijit.js.uncompressed.js"></script>
+
+<script type="text/javascript" src="builds/016-agua_all/dojo/agua_all.js.uncompressed.js"></script>
+
+
+<!--<script type="text/javascript" src="builds/011-workflow/dojo/dojo/dojo.js.uncompressed.js"></script>-->
+
+<!--<script type="text/javascript" src="builds/007-dijit/dojo/dijit/dijit.js.uncompressed.js"></script>-->
+
+<!--<script type="text/javascript" src="builds/015-agua_dojo/dojo/agua_dojo.js.uncompressed.js"></script>-->
+
+<!--<script type="text/javascript" src="builds/014-agua/dojo/agua.js.uncompressed.js"></script>-->
+
+<!--<script type="text/javascript" src="builds/011-workflow/dojo/workflow.js.uncompressed.js"></script>-->
+<!--<script type="text/javascript" src="builds/012-admin/dojo/admin.js.uncompressed.js"></script>-->
+
+
+<script type="text/javascript">
+
+// COMMENT WHEN USING BUILD
+dojo.registerModulePath("plugins","../../plugins");	
+dojo.registerModulePath("t","../../t");	
+
+// UNCOMMENT WHEN USING BUILD
+//dojo.registerModulePath("plugins","../../../../plugins");	
+//dojo.registerModulePath("t","../../../../t");	
+//dojo.registerModulePath("dojoc","../../../../dojo-1.6.1rc2/dojoc");	
+
+// DEBUG LOADER
+dojo.require("dojoc.util.loader");
+
+
+dojo.addOnLoad(function(){
+
+	// REQUIRE Agua
+	dojo.require("plugins.core.Agua");
+	console.log("agua.html    BEFORE Agua = new plugins.core.Agua()");
+	Agua = new plugins.core.Agua( {
+		cgiUrl : "../../cgi-bin/agua/0.6/"
+		, htmlUrl : "../../agua/0.6/"
+		//, dataUrl: dojo.moduleUrl("t", "json/getData-111127.json")
+	});
+
+//		console.log("Controller.addOnLoad    plugins.login.Controller.addOnLoad");
+
+		Agua.loginController = new plugins.login.Login();
+
+		// COMMENT THIS TO DISABLE AUTOMATIC LOGIN
+		//Agua.loginController.login();
+
+
+		//Agua.controllers["home"].createTab();		
+
+
+	console.log("agua.html    BEFORE Agua.loadPlugins");
+	console.log("agua.html    Agua.data: " + Agua.data);
+	console.dir({data:Agua.data});
+	
+	Agua.loadPlugins(
+		//[
+		//	"plugins.login.Login"
+		//]
+	);
+	console.log("agua.html    Completed");	
+});
+
+</script>
+
+
+</head>
+<body class="agua tundra">
+	<div id="attachPoint"></div>
+</body>
+</html>

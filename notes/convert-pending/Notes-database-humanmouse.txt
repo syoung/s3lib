@@ -1,0 +1,419 @@
+Notes-database-humanmouse.txt
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jan 16 21:44:57 EST 2008
+
+1. POPULATE humanmouse DATABASE collection TABLE WITH MOUSE AND HUMAN ORTHOLOGUES
+=================================================================================
+
+./clustrorthologues.pl -d humanmouse -f /Users/young/FUNNYBASE/dev/annotation/Clustr/integr8/25.H_sapiens.orthologues -n 59
+
+
+AND RAN IT:
+
+
+./clustrorthologues.pl -d humanmouse -f /Users/young/FUNNYBASE/dev/annotation/Clustr/integr8/25.H_sapiens.orthologues -n 59 -p mouse,human
+
+    11620
+    11630
+    Output file printed:
+    
+    /Users/young/FUNNYBASE/pipeline/humanmouse/collection/humanmouse.collection.tsv
+    
+    Dropping 'collection' if exists... done.
+    Creating table 'collection'... done.
+    Loading data into table 'collection'... done.
+    Completed ./clustrorthologues.pl
+    Run time: 00:00:22
+    9:03PM, 14 November 2007
+    ****************************************
+
+    select count(distinct collectionid) from collection;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        11630 |
+    +------------------------------+
+
+1. GET INTERPRO HITS WITH IPRSCAN
+=================================
+
+sudo ./arrayiprscandaemon.pl -d humanmouse -n 10
+
+    ESTIMATED COMPLETION 28 hours FROM Wed Nov 14 22:05:38 EST 2007
+    I.E. LATE THURSDAY NIGHT
+
+
+2. Load InterPro hits into 'collectioniprscan' table
+====================================================
+
+./collectioniprscan.pl -d humanmouse -s protein
+
+
+    select count(distinct collectionid) from collectioniprscan;
+
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         9876 |
++------------------------------+
+
+
+3. Load 'collection' and 'collectioniprscan' tables onto cluster
+================================================================
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d humanmouse -t collection,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/humanmouse/collection/clusterloadtable.sh
+sudo /common/pipeline/humanmouse/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+3. GET IPRSCAN SET 
+==================
+
+(NB: ADDED SEED LIMIT ON collection ACCESSIONS BECAUSE TOO MANY, WHICH MEANT THERE
+WERE NO NEGATIVE AND POSITIVE EXAMPLES COMING FROM THE EXTERNAL, Swissprot
+SEQUENCES)
+
+sudo ./arrayiprscansetdaemon.pl -d humanmouse -t 24 
+    
+    Run time: 01:26:49
+    Completed ./arrayiprscansetdaemon.pl
+    9:56PM, 22 January 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscanset;
+   +------------------------------+
+   | count(distinct collectionid) |
+   +------------------------------+
+   |                         9013 |
+   +------------------------------+
+
+
+4. GET IPRSCAN SET SEQUENCES
+============================
+
+./iprscansetsequence.pl -d humanmouse    
+
+    Run time: 00:07:59
+    Completed ./iprscansetsequence.pl
+    10:08PM, 22 January 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscansetsequence;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                         9013 |
+    +------------------------------+
+
+
+5. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d humanmouse -n 24
+            
+    Run time: 04:28:07
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    2:38AM, 23 January 2008
+    ****************************************
+
+6. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+./arrayiprscansetalignmentloaddata.pl -d humanmouse -t 24
+    
+    Run time: 00:05:42
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    9:02AM, 23 January 2008
+    ****************************************
+
+
+7. LOAD THE iprscanset AND iprscansetalignment TABLES TO THE CLUSTER
+====================================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d humanmouse -t iprscanset,iprscansetalignment
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/humanmouse/collection/clusterloadtable.sh
+sudo /common/pipeline/humanmouse/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+8. DO SUPERDOMAINS
+==================
+
+sudo ./arrayiprscansuperdomaindaemon.pl -d humanmouse -t 24
+        
+    Run time: 00:09:56
+    Completed ./arrayiprscansuperdomaindaemon.pl
+    2:21PM, 23 January 2008
+    ****************************************    
+
+9. LOAD SUPERDOMAINS
+====================
+
+./arrayiprscansuperdomainloaddata.pl -d humanmouse -t 24
+    
+    Run time: 00:00:11
+    Completed ./arrayiprscansuperdomainloaddata.pl
+    2:26PM, 23 January 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                         8773 |
+    +------------------------------+
+    
+
+10. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d humanmouse
+    
+    
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:24:44
+    3:47PM, 23 January 2008
+    ****************************************
+
+
+11. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d humanmouse
+
+    
+    Completed ./nfoldbayes.pl
+    Run time: 00:04:10
+    3:58PM, 23 January 2008
+    ****************************************
+
+
+12. Load TABLES onto cluster
+========================================================================================
+
+TABLES:
+iprscanset
+iprscansetsequence
+iprscansetalignment
+iprscanattributebayes
+iprscansuperdomain 
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d humanmouse -t iprscanset,iprscansetsequence,iprscansetalignment,iprscansuperdomain,iprscanattributebayes
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/humanmouse/collection/clusterloadtable.sh
+
+sudo /common/pipeline/humanmouse/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+12. Populate 'iprscanattributes' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+
+USING:
+
+./signaturecommandengine.pl -d humanmouse
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g iprscan -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g size -s 100 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g size -s 150 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g size -s 300 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+
++---------+------------+
+| groupby | domainsize |
++---------+------------+
+| iprscan |          0 |
+| size    |        100 |
+| size    |        150 |
+| size    |        300 |
++---------+------------+
+
+DURATION: ~ 19 hours
+
+FROM:
+
+    Run time: 01:50:59
+    Completed /Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl
+    6:28PM, 23 January 2008
+    ****************************************
+
+TO (LAST ONE GOT STUCK): 
+
+    Run time: 13:15:35
+    Completed /Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl
+    11:37AM, 24 January 2008
+    ****************************************
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g both -s 100 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g both -s 150 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d humanmouse -g both -s 300 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d humanmouse -t 24
+
+    select distinct groupby, domainsize from iprscanattribute;
+    +---------+------------+
+    | groupby | domainsize |
+    +---------+------------+
+    | iprscan |          0 |
+    | size    |        100 |
+    | size    |        150 |
+    | size    |        300 |
+    +---------+------------+
+
+
+13. DO DECISION TREES
+=====================
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d humanmouse -g both -s 300
+
+    select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
+
+
+
+
+OK
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Nov 16 09:58:16 EST 2007] TRIED TO USE PRECOMPUTED IPRSCANS FROM *.IPC FILES TO POPULATE collectioniprscan TABLE FOR CluSTr COLLECTION BUT NONE FOUND IN interprohuman AND interpromouse TABLES!!>
+
+
+
+./clustriprscan.pl -d humanmouse
+    
+    RUN TIME: 00:01:06
+    Completed ./clustriprscan.pl
+    8:45PM, 16 November 2007
+    ****************************************
+
+NO IPRSCANS RETRIEVED, EVEN THOUGH THERE ARE OVER 30,000 ACCESSION ENTRIES FOR BOTH HUMAN AND MOUSE interpro TABLES:
+    
+
+select count(distinct accession) from interpromouse;
++---------------------------+
+| count(distinct accession) |
++---------------------------+
+|                     31618 |
++---------------------------+
+1 row in set (1.76 sec)
+
+mysql> select count(distinct accession) from interprohuman;
++---------------------------+
+| count(distinct accession) |
++---------------------------+
+|                     38489 |
++---------------------------+
+
+
+SOLUTION: DO THE INTERPRO HITS USING IPRSCAN
+
+</entry>
+
+
+
+<entry [Wed Nov 14 20:37:11 EST 2007] CREATED clustrorthologues.pl TO LOAD CluSTr ORTHOLOGUE PAIRS TO collection TABLE>
+
+
+
+    APPLICATION     clustrorthologues
+    
+    PURPOSE
+    
+        Load data for two species from a CluSTr (clustering based on
+        
+        pairwise comparisons between protein sequences) PORC (Possible
+        
+        Orthologue Clusters) *.orthologues file.
+        
+        One the species is the species by which the file is named, the other
+        
+        species is given by its Integr8_ProteomeID number. (The list of numbers
+        
+        is in the gas.txt file.)
+        
+    INPUT
+    
+        1. integr8 PORC FILE DERIVED FROM CluSTr
+        
+        2. swissprot TABLE CONTAINING SEQUENCES
+        
+    OUTPUT
+
+        1.  <database>.collection.tsv FILE IN collection DIRECTORY
+
+        2. LOAD INTO collection TABLE
+    
+    NOTES
+    
+        *.orthologues FILE FORMAT:
+
+        #Putative orthologues for M.musculus
+        #NCBI_TaxID=10090
+        #Integr8_ProteomeID=59
+        #Column definition (one row per protein per species containing orthologues):
+        #Integr8_GeneID Gene_name       Protein_ID      Protein_name    Integr8_ProteomeID      Proteome_name   Species_name    Orthologous_gene_IDs  Orthologoues_protein_IDs        Significance
+        #Protein IDs are either UniProtKB ACs or IPI identifiers
+        #See http://www.ebi.ac.uk/integr8/ for more information
+        IGI00001030     BC030183        P17257  UPF0484 protein C1orf90 homolog 25      H.sapiens       IGI00004839;    Q9BTA0; 76.2    Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi; Mammalia; Eutheria; Euarchontoglires
+        IGI00001030     BC030183        P17257  UPF0484 protein C1orf90 homolog 21457   G.gallus        IGI02658224;    IPI00579107;    42.1 Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi
+        IGI00001030     BC030183        P17257  UPF0484 protein C1orf90 homolog 22974   B.taurus        IGI02670314;    IPI00686851;    81   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi; Mammalia; Eutheria
+
+   USAGE
+
+       ./clustrorthologues.pl <-d database> <-f filepath> <-n number> <-p species_pair> [-h]
+    
+    -d database          :    name of the collection database
+    -f filepath          :    /full/path/to/orthologues_file for first species
+    -n number            :    integr8 proteome ID number for second species
+    -p species_pair      :    comma-separated species pair (e.g., human,mouse)
+    -h help              :    print this message
+
+    EXAMPLES
+    
+./clustrorthologues.pl -d humanmouse -f /Users/young/FUNNYBASE/dev/annotation/Clustr/integr8/25.H_sapiens.orthologues -n 59

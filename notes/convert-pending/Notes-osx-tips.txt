@@ -1,0 +1,274 @@
+Notes-osx-tips.txt
+==================
+
+++++++</entry>
+
+
+
+<entry [Thu Aug 14 19:12:53 EDT 2008] Send a running Process to the Background>
+
+
+
+• With the keyboard shortcut C-z the Bash allows to suspend a
+running process
+
+• With the bg command a suspended process can be resumed
+in the background
+
+• A process running in the background can be sent back to the
+foreground using fg
+
+
+Example:
+
+herbert@Paulina:/var/video $ gzip *
+[1]+ Stopped
+gzip *
+herbert@Paulina:/var/video $ bg
+[1]+ gzip * &
+herbert@Paulina:/var/video $ fg
+gzip *
+herbert@Paulina:/var/video $ _
+
+
+ACTUAL CASE:
+
+1. RUNNING PROCESS
+
+[syoung@solexa01 nextgen]$ ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+    nucmer: /home/syoung/base/apps/mummer/nucmer
+    /home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+    1: PREPARING DATA
+    2,3: RUNNING mummer AND CREATING CLUSTERS
+    # reading input file "out.ntref" of length 938792
+    # construct suffix tree for sequence of length 938792
+    # (maximum input length is 536870908)
+    # process 9387 characters per dot
+    #....................................................................................................
+    # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer out.ntref 0.45
+    # reading input file "/home/syoung/base/pipeline/human-genome/human.fasta" of length 3080419503
+    # matching query-file "/home/syoung/base/pipeline/human-genome/human.fasta"
+    # against subject-file "out.ntref"
+    # COMPLETETIME /store/home/syoung/base/apps/mummer/mummer out.ntref 2898.49
+    # SPACE /store/home/syoung/base/apps/mummer/mummer out.ntref 2997.38
+    4: FINISHING DATA
+
+    (STILL RUNNING)
+
+    
+2. KILL WITH CNTL+Z
+
+sls-=fg[1]   Killed                  emacs -nw /home/syoung/base/pipeline/human-genome/chromosome_positions.txt  (wd: ~)
+(wd now: ~/base/bin/nextgen)
+[3]   Killed                  emacs -nw /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords.gff
+
+[4]+  Stopped                 ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+
+3. JOB IS NOW SUSPENDED. GET JOB NUMBER
+
+[syoung@solexa01 nextgen]$ jobs
+[2]-  Stopped                 ./chromosomegff.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/human-velvet-sorted.gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -d /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/chromosome-gff -o human-velvet-nucmer
+[4]+  Stopped                 ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+
+4. USE bg TO RESTART THE JOB IN THE BACKGROUND:
+
+[syoung@solexa01 nextgen]$ bg 4
+[4]+ ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human &
+[syoung@solexa01 nextgen]$ ps aux | grep nucmer
+syoung   17493  0.0  0.0  61136   724 pts/7    S+   18:54   0:00 grep nucmer
+syoung   30341  0.0  0.0  82008  4028 pts/7    S    16:21   0:00 /usr/bin/perl -w? ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+syoung   30343  0.1  0.0  91688  5616 pts/7    S    16:21   0:12 /usr/bin/perl /home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+
+JOB IS RUNNING IN THE BACKGROUND AND WILL TERMINATE NORMALLY
+
+
+5. (OPTIONAL) USE fg TO PUT THE JOB BACK IN THE FOREGROUND
+    
+fg 4
+
+
+++++++</entry>
+
+
+
+<entry [Thu Nov 29 01:29:27 EST 2007] GET THE CPU SPEED AND MOST OTHER SYSTEM SPECIFICATIONS ON THE COMMAND LINE>
+
+
+
+ system_profiler -detailLevel mini 
+
+
+++++++</entry>
+
+
+
+<entry [Fri Sep  7 22:17:56 EDT 2007] USE umask TO ALLOW www AND OTHER USERS TO DELETE FILES CREATED BY EACH OTHER>
+
+
+
+INSIDE THE PERL APP (ACTUALLY PLACED INSIDE Util.pm AS IT'S useD BY ALL APPS):
+
+umask 0000;
+
+SO THIS FILE HAS A umask OF 0000 EVEN THOUGH THE DIRECTORY umask IS 0022 REGARDLESS
+OF WHO CREATED IT:
+
+~/FUNNYBASE/pipeline/unigene/collection young$ umask
+0022
+
+www$ /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl -dunigene
+
+-rw-rw-rw-    1 www    young     166K Sep  7 23:18 unigene.orthologuesuniqueorf.tsv
+
+young$ /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl -dunigene
+
+-rw-rw-rw-    1 young  young     166K Sep  7 23:21 unigene.orthologuesuniqueorf.tsv
+
+
+IF THE umask 0000; IS REMOVED FROM Util.pm, THE FILE HAS 644 PERMISSIONS (REGARDLESS
+OF WHO CREATED IT):
+
+young$ /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl -dunigene
+
+-rw-r--r--    1 young  young     166K Sep  7 23:20 unigene.orthologuesuniqueorf.tsv
+
+www$ /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl -dunigene
+
+-rw-r--r--    1 www    young     166K Sep  7 23:25 unigene.orthologuesuniqueorf.tsv
+
+AND THE NON-OWNER CAN'T WRITE OVER THE FILE:
+
+-rw-r--r--    1 young  young     166K Sep  7 23:20 unigene.orthologuesuniqueorf.tsv
+
+www$ /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl -dunigene
+Creating table 'orthologuesuniqueorf' if not exists... done.
+Deleting from table 'orthologuesuniqueorf'... done.
+Doing /Users/young/FUNNYBASE/bin/pipeline4/orthologuesuniqueorf.pl for unigene orthologues (total 138)
+Can't open output .TSV file: /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.orthologuesuniqueorf.tsv
+
+
+
+......
+TRIED USING SETUID, SETGID AND THE STICKY BIT TO ALLOW ANY USER TO DELETE FILES
+BUT DID NOT HAVE THE SAME RESULTS AS SUGGESTED IN SOME ONLINE ACCOUNTS (I.E.,
+COULD NOT:
+
+	- GET setuid TO ASSUME THE uid OF THE OWNER OF THE PROGRAMME REGARDLESS
+		OF WHO RUNS IT
+		
+	- GET setgid TO MAKE IT SO THAT WHOEVER CREATES A FILE IN THE DIRECTORY,
+		THE FILE'S OWNER WILL BE THE OWNER OF THE DIRECTORY
+
+			chmod
+	sticky	1
+	setgid	2
+	setuid	4
+
+-rwxrwsrwx    1 www    www         8B Sep  7 22:10 dummy
+-rwxr-xr-x    1 www    www         8B Sep  7 22:10 dummy1
+-rwxrwsrwx    1 www    www         8B Sep  7 22:10 dummy2
+-rwxrwsrwt    1 www    www         8B Sep  7 22:10 dummy3
+-rwsrwxrwx    1 www    www         8B Sep  7 22:10 dummy4
+
+																chmod	write	delete	own
+-rwxrwxrwx    1 www    www         8B Sep  7 22:10 dummy
+-rwxrwxrwt    1 www    www         8B Sep  7 22:10 dummy1
+-rwxrwsrwx    1 www    www         8B Sep  7 22:10 dummy2
+-rwxrwsrwt    1 www    www         8B Sep  7 22:10 dummy3
+-rwsrwxrwx    1 www    www         8B Sep  7 22:10 dummy4
+-rwsrwxrwt    1 www    www         7B Sep  7 22:23 dummy5
+-rwsrwsrwx    1 www    www         8B Sep  7 22:23 dummy6
+-rwsrwsrwt    1 www    www         7B Sep  7 22:24 dummy7
+drwxrwxrwx    2 www    www        68B Sep  7 22:11 dummydir		0777	yes		delete
+drwxr-sr-x    2 www    www        68B Sep  7 22:12 dummydir1	1777	yes		yes		
+drwxr-sr-x    2 www    www        68B Sep  7 22:12 dummydir2	2777	yes		yes
+drwxr-sr-x    2 www    www        68B Sep  7 22:12 dummydir3	3777	yes		yes		young	
+drwsrwxrwx    3 www    www       102B Sep  7 22:16 dummydir4	4777	yes		yes		www
+drwsrwsrwt    3 www    www       102B Sep  7 22:16 dummydir5	5777	yes		yes		young
+drwsrwsrwt    3 www    www       102B Sep  7 22:16 dummydir6	6777	yes		yes		young
+drwsrwsrwt    3 www    www       102B Sep  7 22:16 dummydir7	7777	yes		yes		young
+
+
+
++++++++</entry>
+
+
+
+<entry [Fri Feb  2 16:23:07 EST 2007] TOUCH>
+
+
+
+sudo touch -r ACAN-L5-005 ACAN-L2*
+sudo touch -r ACAN-L5-005 ACAN-L3*
+sudo touch -r ACAN-L5-005 ACAN-L4*
+sudo touch -r ACAN-L5-005 ACAN-L5*
+
+
+touch -- change file access and modification times
+
+touch [-acfm] [-r file] [-t [[CC]YY]MMDDhhmm[.SS]] file ...
+
+DESCRIPTION
+     The touch utility sets the modification and access times of files to the
+     current time of day.  If the file doesn't exist, it is created with
+     default permissions.
+
+     The following options are available:
+
+     -a      Change the access time of the file.  The modification time of the
+             file is not changed unless the -m flag is also specified.
+
+     -c      Do not create the file if it does not exist.  The touch utility
+             does not treat this as an error.  No error messages are displayed
+             and the exit value is not affected.
+
+     -f      Attempt to force the update, even if the file permissions do not
+             currently permit it.
+
+     -m      Change the modification time of the file.  The access time of the
+             file is not changed unless the -a flag is also specified.
+
+     -r      Use the access and modifications times from the specified file
+             instead of the current time of day.
+
+     -t      Change the access and modification times to the specified time.
+             The argument should be in the form ``[[CC]YY]MMDDhhmm[.SS]''
+             where each pair of letters represents the following:
+
+                   CC      The first two digits of the year (the century).
+                   YY      The second two digits of the year.  If ``YY'' is
+                           specified, but ``CC'' is not, a value for ``YY''
+                           between 69 and 99 results in a ``CC'' value of 19.
+                           Otherwise, a ``CC'' value of 20 is used.
+                   MM      The month of the year, from 1 to 12.
+                   DD      the day of the month, from 1 to 31.
+                   hh      The hour of the day, from 0 to 23.
+                   mm      The minute of the hour, from 0 to 59.
+                   SS      The second of the minute, from 0 to 61.
+
+             If the ``CC'' and ``YY'' letter pairs are not specified, the val-
+             ues default to the current year.  If the ``SS'' letter pair is
+             not specified, the value defaults to 0.
+
+DIAGNOSTICS
+     The touch utility exits 0 on success, and >0 if an error occurs.
+
++++++++</entry>
+
+
+
+<entry [Fri Feb  2 16:23:07 EST 2007] RENAME EXTERNAL DRIVE>
+
+
+
+GET DEVICE NAME:
+mount
+
+RENAME:
+
+sudo diskutil rename <device_name> <new_name>
+
+sudo diskutil rename /dev/disk4s3 terabook
+

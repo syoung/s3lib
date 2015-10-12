@@ -1,0 +1,18 @@
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop distributed \
+--looplabel eland24-splitfiles \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24 \
+--executable /nethome/syoung/0.5/bin/apps/aligners/splitFiles.pl \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE% \
+--label eland24-%REPLICATE% \
+--maxjobs 2000 \
+--walltime 24 \
+--queue small \
+--cluster LSF \
+--cpus 1 \
+--reads 250000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/stdout/%REPLICATE%/splitfiles.out \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/loop-splitfiles.out

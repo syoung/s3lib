@@ -1,0 +1,103 @@
+[workflow sav]
+2011-01-30 11:31:17
+
+Workflow:	sav
+Started: 2011-01-30 11:01:37
+Stopped: 2011-01-30 11:02:12
+Duration: 0 hrs 0 mins 35 secs
+
+
+	Application	1	snptosav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 1
+	started: 2011-01-28 14:30:44
+	stopped: 2011-01-29 02:38:01
+	duration: 12 hrs 7 mins 17 secs
+
+
+
+	Application	2	filtersav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 1
+	started: 2011-01-29 21:33:37
+	stopped: 2011-01-29 21:34:12
+	duration: 0 hrs 0 mins 35 secs
+
+
+
+	Application	3	venndbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+	status: unknown
+	locked: 0
+	started: 2011-01-30 11:01:37
+	stopped: 2011-01-30 11:02:12
+	duration: 0 hrs 0 mins 35 secs
+
+
+
+	Application	4	vennnondbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+	locked: 0
+
+
+
+
+[app 3 venndbsnp]
+2011-01-30 11:31:17
+
+  Application:
+  name           venndbsnp
+  owner          anonymous
+  ordinal        3
+  status         unknown
+  started        2011-01-30 11:01:37
+  stopped        2011-01-30 11:02:12
+  duration       0 hrs 0 mins 35 secs
+  locked         0
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+
+    Parameters:
+    cluster        LSF \
+    cpus           1 \
+    executable     /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+    label          bowtie-savvenn-dbsnp \
+    loop           distributed \
+    looplabel      bowtie-savvenn-dbsnp \
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie/savvenn-dbsnp.out
+    maxjobs        1000 \
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \
+    queryfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%-dbsnp.sav \
+    querylabel     bowtie-%REPLICATE%-dbsnp \
+    queue          small \
+    replicates     1-33 \
+    suffix         sav \
+    targetfile     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-33-dbsnp.sav \
+    targetlabel    bowtie-33-dbsnp \
+    walltime       24 \
+
+Command:
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \ \
+ --outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \ \
+ --replicates 1-33 \ \
+ --loop distributed \ \
+ --looplabel bowtie-savvenn-dbsnp \ \
+ --executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \ \
+ --queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%-dbsnp.sav \ \
+ --targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-33-dbsnp.sav \ \
+ --querylabel bowtie-%REPLICATE%-dbsnp \ \
+ --targetlabel bowtie-33-dbsnp \ \
+ --label bowtie-savvenn-dbsnp \ \
+ --suffix sav \ \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie \ \
+ --maxjobs 1000 \ \
+ --queue small \ \
+ --cluster LSF \ \
+ --walltime 24 \ \
+ --cpus 1 \ \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/savvenn/bowtie/savvenn-dbsnp.out 
+
+

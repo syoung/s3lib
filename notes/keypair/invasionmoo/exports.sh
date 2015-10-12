@@ -1,0 +1,4 @@
+export EC2_PRIVATE_KEY=/mnt/home/syoung/notes/agua/keypair/invasionmoo/pk-ZQ4GRHZP4YZZ5NTYKEXIZA5ORA3RVBEX.pem
+export EC2_CERT=/mnt/home/syoung/notes/agua/keypair/invasionmoo/cert-ZQ4GRHZP4YZZ5NTYKEXIZA5ORA3RVBEX.pem
+export AWS_ACCESS_KEY_ID=AKIAJ567Y4UVQTYT64HA
+export AWS_SECRET_ACCESS_KEY=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

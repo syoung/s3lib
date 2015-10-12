@@ -1,0 +1,194 @@
+Notes-scripts-snploc.txt
+
+
+</entry>
+
+
+
+<entry [Wed Jul  9 17:10:09 EDT 2008] MESSAGE TO DALE AND JAKE RE FILE UPLOAD, ETC.>
+
+
+
+From: Young, Stuart 
+Sent: Wednesday, July 09, 2008 4:49 PM
+To: Hedges, Dale; McCauley, Jacob L
+Cc: Khuri, Sawsan
+Subject: RE: perl script
+
+Hi Dale/Jake,
+
+Here’s the link to CLC bio’s Genome Workbench:
+
+CLC Bio 
+http://www.clcbio.com/index.php?id=354
+
+downloads
+http://www.clcbio.com/index.php?id=87
+
+
+Dale: Don’t forget to send me the link to the Aphid genome project (for the better assembly) so I can retry it with Mira and let you know how it goes.
+
+Jake: This is the page for FTPing the data files to me (it’ll email me the link to download them):
+
+File Management System (FMS)
+http://it.med.miami.edu/x447.xml
+
+It says you can send files of unlimited size so could you try uploading the SNP rs# data file first? If it’s too slow you could just send me a chunk.
+
+And if you get hold of the probe sequences file please FTP me a copy/send me a link!
+
+Here’s some info on mapping to the University’s network drive:
+
+Network File Services
+http://it.med.miami.edu/x64.xml
+
+Drive Mapping FAQ
+http://it.med.miami.edu/x1783.xml
+
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Wed Jul  9 17:09:57 EDT 2008] REPEAT REGIONS, SELF-CHAIN REGIONS AND SELF-CHAIN SCORE CALCULATION>
+
+
+
+http://gvs.gs.washington.edu/GVS/HelpSNPSummary.jsp
+whether the SNP is in a repeat region; the regions, as identified by the RepeatMasker program, were downloaded in the file chromOut.zip from the UCSC Genome site.
+
+links to download site:
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg18/bigZips/
+
+
+normalized score
+
+You can find more information about the score by looking at one of  the
+README files for the chain/net tables on the downloads server.  It looks like
+we don't have a directory for the self chain, but you can find an applicable
+explanation in one of the other chain/net downloads dirs (such as
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg16/vsMm3
+
+>>>...
+    The hg16 and mm3 assemblies were aligned by the blastz alignment
+    program, which is available from Webb Miller's lab at Penn State
+    University (http://www.bx.psu.edu/miller_lab/).  Any mm6 sequences larger
+    than 10,010,000 bases were split into chunks of 10,010,000 bases overlapping
+    by 10,000 bases for alignment.  A similar process was followed for rn3,
+    with chunks of 30,000,000 overlapping by 0.  Following alignment, the
+    coordinates of the chunk alignments were corrected by the
+
+***     blastz-normalizeLav script written by Scott Schwartz of Penn State.
+
+    Transposons that have been inserted since the Human/Mouse split were
+    removed from the assemblies before alignment using the fasta-subseq and
+    strip_rpts programs from Penn State.  The abbreviated genomes were aligned
+    with blastz, and the transposons were then added back in (i.e. the
+    
+    The blastz scoring matrix (Q parameter) used was the default matrix:
+    
+               A    C    G    T
+          A   91 -114  -31 -123
+          C -114  100 -125  -31
+          G  -31 -125  100 -114
+          T -123  -31 -114   91
+    
+    with a gap open penalty of O=400 and a gap extension penalty of E=30.
+    The minimum score for an alignment to be kept was K=3000 for the first pass
+    and L=2200 for the second pass, which restricted the search space to the
+    regions between two alignments found in the first pass.  The minimum
+    score for alignments to be interpolated between was H=2000.
+    
+    The .lav format blastz output, which does not include the sequence, was 
+    converted to .axt with lavToAxt and then to .psl format using the axtToPsl
+    program. Blastz alignments were chained using the axtChain program. Chained 
+    alignments were processed into nets by the chainPreNet, chainNet, netSyntenic, 
+    and netClass programs. netToAxt was used to produce .axt files from the .net
+    and .chain files using the -maxGap=300 option. 
+    The axtTight alignments were processed with subsetAxt using the matrix:
+    
+             A    C    G    T
+        A  100 -200 -100 -200
+        C -200  100 -200 -100
+        G -100 -200  100 -200
+        T -200 -100 -200  100
+    
+    with a gap open penalty of 2000 and a gap extension penalty of 50.
+    The minimum score was 3400.
+    All programs run after blastz were written by Jim Kent at UCSC.
+    
+    ----------------------------------------------------------------
+    If you plan to download a large file or multiple files from this 
+    directory, we recommend you use ftp rather than downloading the files 
+    via our website. To do so, ftp to hgdownload.cse.ucsc.edu, then go to 
+    the directory goldenPath/hg16/vsMm3/. To download multiple 
+    files, use the "mget" command:
+    
+        mget <filename1> <filename2> ...
+        - or -
+        mget -a (to download all the files in the directory) 
+    
+    All the tables in this directory are freely available for public use.
+    
+    --------------------------------------------------------------------
+    References
+    
+    Chiaromonte, F., Yap, V.B., and Miller, W.  Scoring pairwise genomic 
+    sequence alignments.  Pac Symp Biocomput 2002;115-26.
+    
+    Kent, W.J., Baertsch, R., Hinrichs, A., Miller, W., and Haussler, D. 
+    Evolution's cauldron: Duplication, deletion, and rearrangement in the 
+    mouse and human genomes.  Proc Natl Acad Sci USA 100(20):11484-11489 
+    Sep 30 2003.
+    
+    Schwartz, S., Kent, W.J., Smit, A., Zhang, Z., Baertsch, R., Hardison, R., 
+    Haussler, D., and Miller, W.  Human-mouse alignments with BLASTZ</A>. 
+    Genome Res. 13(1):103-7 (2003).
+<<<
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jul  9 17:08:26 EDT 2008] DALE MESSAGE RE SNP LOCATION PROJECT >
+
+
+
+
+From: Hedges, Dale 
+Sent: Wednesday, July 09, 2008 10:06 AM
+To: Young, Stuart
+Cc: McCauley, Jacob L; Khuri, Sawsan
+Subject: perl script
+
+Hi Stuart,
+
+We have a small Perl script project that I was hoping you could help us with. Basically, we need to write something to query a SNP’s rs# for its sequence location (we’ll have a list of about 1 million snps). We’d next need to cross-reference the location of 50bp of flanking sequence surrounding the SNP with the Self-chain annotation track (available in SQL table) in UCSC. 
+
+We want to flag all the SNPs that are in regions that have homology elsewhere in the genome, and also, for each SNP that is in a region of homology, provide a score for the relative sequence distance between the SNP flank and its nearest paralogue). Depending on what the data look like, there is the possibility of getting a paper out of it. Could we meet sometime this afternoon to discuss this? Jake and I are available from 2-3pm and after 3:30 in the CRB. 
+
+
+Thanks,
+Dale
+ 
+University of Miami--South Campus
+Building A, room #112
+12500 SW 152nd Street
+Miami, FL 33177
+ 
+Office tel.    (305) 243-1206
+ 
+ 
+ 
+ 
+

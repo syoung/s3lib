@@ -1,0 +1,1527 @@
+Notes-apps-repeatmasker.txt
+
+
+
+</entry>
+
+
+
+<entry [Fri Sep 10 16:08:16 EDT 2010] INSTALLED NEW REPEATMASKER & NCBI Search Engine>
+
+
+
+(Released Thursday July 1, 2010)
+
+1. DOWNLOAD RMBlast
+
+mkdir /nethome/syoung/base/apps/rmblast
+cd /nethome/syoung/base/apps/rmblast
+wget http://www.repeatmasker.org/rmblast-1.2-ncbi-blast-2.2.23+-x64-linux.tar.gz
+tar zxvf *.tar.gz
+
+
+2. DOWNLOAD RepeatMasker AND CONFIGURE
+To use the new search engine with RepeatMasker, run/re-run the configure program in the RepeatMasker directory. NOTE: RepeatMasker open-3.2.9 or higher is required to use RMBlast.
+
+
+mkdir /nethome/syoung/base/apps/repeatmasker/3.2.9
+cd /nethome/syoung/base/apps/repeatmasker/3.2.9
+wget http://www.repeatmasker.org/RepeatMasker-open-3-2-9.tar.gz
+
+3. INSTALL RepeatMasker LIBRARIES
+
+Download the libraries from http://www.girinst.org and unpack in the RepeatMasker program directory.
+This version supports the following libraries ( it is always best to use the most current ):
+
+cd /nethome/syoung/base/apps/repeatmasker/3.2.9
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/repeatmaskerlibraries/repeatmaskerlibraries-20090604.tar.gz
+
+
+
+
+RMBLAST Release Notes
+   ( rmblast[1.0] NCBI 2.2.23+ )
+
+ Overview
+ ========
+ RMBLAST is a RepeatMasker compatible version of the standard
+ NCBI BLAST suite.  The primary difference between this
+ distribution and the NCBI distribution is the addition of a new
+ program "rmblastn" for use with RepeatMasker and RepeatModeler.
+
+ Rmblastn supports RepeatMasker searches by adding a few
+ necessary features to the stock NCBI blastn program.  These
+ include:
+
+   - Support for custom matrices ( without KA-Statistics ).
+   - Support for cross_match-like complexity adjusted scoring.
+     Cross_match is Phil Green's seeded smith-waterman search
+     which is the default search engine used by RepeatMasker.
+   - Support for cross_match-like masklevel filtering.
+   
+
+
+
+repeatmaskerlibraries-20090120.tar.gz and later.
+cp repeatmaskerlibraries-20090120.tar.gz /usr/local/RepeatMasker/
+cd /usr/local/RepeatMasker
+gunzip repeatmaskerlibraries-20090120.tar.gz
+tar xvf repeatmaskerlibraries-20090120.tar
+rm repeatmaskerlibraries-20090120.tar
+
+
+Run Configure Script
+The program requires some configuration before use. There is now a script which assists in making these changes.
+cd /usr/local/RepeatMasker
+perl ./configure
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Mar 15 14:06:19 EDT 2010] KEY REPEATMASKER OPTIONS>
+
+
+
+
+       -nolow /-low
+            Does not mask low_complexity DNA or simple repeats
+    
+        -noint /-int
+            Only masks low complex/simple repeats (no interspersed repeats)
+    
+        -norna
+            Does not mask small RNA (pseudo) genes
+    
+        -alu
+            Only masks Alus (and 7SLRNA, SVA and LTR5)(only for primate DNA)
+   
+
+</entry>
+
+
+
+<entry [Mon Mar 15 13:06:19 EDT 2010] RUN REPEATMASKER ON bixby RUN 1 AND NA18507 FIRST SAMPLE ON KRONOS>
+
+
+
+
+1. CREATE REPEATMASKER OUTPUT DIR
+=================================
+
+mkdir -p /nethome/syoung/base/pipeline/bixby/run1/repmask
+cd /nethome/syoung/base/pipeline/bixby/run1/repmask
+
+
+2. CONVERT fastq TO fasta
+=========================
+
+cd /nethome/syoung/base/pipeline/bixby/run1/repmask
+ln -s /nethome/syoung/base/pipeline/bixby/run1/s_1_sequence.txt \
+/nethome/syoung/base/pipeline/bixby/run1/repmask/s_1_sequence.txt
+
+
+/nethome/syoung/base/bin/nextgen/solexa2fasta.pl \
+-i /nethome/syoung/base/pipeline/bixby/run1/repmask/s_1_sequence.txt \
+-o s_1_sequence
+
+    Run time: 00:29:21
+    Completed /nethome/syoung/base/bin/nextgen/solexa2fasta.pl
+    5:53PM, 16 March 2010
+    ****************************************
+
+CREATED FILES:
+
+ll /nethome/syoung/base/pipeline/bixby/run1/repmask
+
+    -rw-rw-rw- 1 syoung bioinfo 1.6G Mar 16 17:53 s_1_sequence.fasta
+    -rw-rw-rw- 1 syoung bioinfo 3.4G Mar 16 17:53 s_1_sequence.fasta.qual
+
+
+3. RUN REPEATMASKER 
+===================
+
+1. MASK LOW COMPLEXITY (no interspersed repeats)
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/
+
+screen -S repmask
+cd /nethome/syoung/base/pipeline/bixby/run1/repmask
+time /nethome/syoung/base/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker \
+-spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/run1/repmask \
+/nethome/syoung/base/pipeline/bixby/run1/repmask/s_1_sequence.fasta
+
+OUTPUT FILE:
+/nethome/syoung/base/pipeline/bixby/run1/repmask/RM_16579.TueMar161837452010/s_1_sequence.fasta
+
+COUNT NUMBER OF Ns IN OUTPUT FILE:
+grep -c N  /nethome/syoung/base/pipeline/bixby/run1/repmask/RM_16579.TueMar161837452010/s_1_sequence.fasta
+1330783
+
+COUNT NUMBER OF Ns IN INPUT FILE:
+grep -c N  /nethome/syoung/base/pipeline/bixby/run1/repmask/s_1_sequence.fasta
+1227617
+
+CHANGE DIR NAME TO lowcomplex
+
+mv RM_16579.TueMar161837452010 lowcomplex
+
+
+
+
+MASK ALUs AND PSEUDO GENES
+
+
+screen -S repmask
+cd /nethome/syoung/base/pipeline/bixby/run1/repmask
+time /nethome/syoung/base/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker \
+-spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/run1/repmask \
+-dir /nethome/syoung/base/pipeline/bixby/run1/repmask/
+/nethome/syoung/base/pipeline/bixby/run1/repmask/s_1_sequence.fasta
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -nolow -dir /nethome/syoung/base/pipeline/bixby/
+
+
+
+    
+
+MASK LOW COMPLEXITY (no interspersed repeats)
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs AND PSEUDO GENES
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -nolow -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs (PRIMATE ONLY)
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -nolow -norna -dir /nethome/syoung/base/pipeline/bixby/
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker -spec mouse -pa 8 -s -alu -dir /nethome/syoung/base/pipeline/bixby/
+
+
+
+
+
+mkdir -p /nethome/syoung/base/pipeline/SRA/NA18507/repeatmasker
+cd /nethome/syoung/base/pipeline/SRA/NA18507/repeatmasker
+
+ln -s /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_1.1.fasta reads_1.1.fasta
+ln -s /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_1.1.fasta.qual reads_1.1.fasta.qual
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+REPEATMASKER DOCUMENTATION
+
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/repeatmasker.help
+    
+ALUs
+LOW COMPLEXITY
+PSEUDOGENES (small RNA)
+
+
+MASK LOW COMPLEXITY (no interspersed repeats)
+
+./RepeatMasker -spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs AND PSEUDO GENES
+
+./RepeatMasker -spec mouse -pa 8 -s -nolow -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs (PRIMATE ONLY)
+
+./RepeatMasker -spec mouse -pa 8 -s -nolow -norna -dir /nethome/syoung/base/pipeline/bixby/
+./RepeatMasker -spec mouse -pa 8 -s -alu -dir /nethome/syoung/base/pipeline/bixby/
+
+
+
+
+
+
+ADDITIONAL PARAMS
+
+   
+    -frag [number]
+        Maximum sequence length masked without fragmenting (default 51000)
+        
+        SET TO LENGTH OF READ
+    
+    -gff
+        Creates an additional Gene Feature Finding format output
+
+    -x  Returns repetitive regions masked with Xs rather than Ns
+
+    -nolow /-low
+        Does not mask low_complexity DNA or simple repeats
+
+    -noint /-int
+        Only masks low complex/simple repeats (no interspersed repeats)
+
+    -norna
+        Does not mask small RNA (pseudo) genes
+
+    -alu
+        Only masks Alus (and 7SLRNA, SVA and LTR5)(only for primate DNA)
+
+-int    mask only low-complexity DNA or simple repeats (-int)
+
+-nolow    mask only interspersed repeats (-nolow)
+
+-alu     mask only Alu repeats (-alu).
+        
+    By default, all of the above are masked from the query sequence.
+    
+    -div [number] and -cutoff [number] allow for setting the level of
+    homology that must exist between a candidate repeat and the consensus
+    sequence.
+
+
+emacs /nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/repeatmasker.help
+
+    
+./RepeatMasker    
+    
+    NAME
+        RepeatMasker - Mask repetitive DNA
+    
+    SYNOPSIS
+
+          RepeatMasker [-options] <seqfiles(s) in fasta format>
+    
+    DESCRIPTION
+
+        The options are:
+    
+        -h(elp)
+            Detailed help
+    
+        Default settings are for masking all type of repeats in a primate
+        sequence.
+    
+        -w(ublast)
+            Use WU-blast, rather than cross_match as engine
+    
+        -pa(rallel) [number]
+            The number of processors to use in parallel (only works for batch
+            files or sequences over 50 kb)
+    
+        -s  Slow search; 0-5% more sensitive, 2-3 times slower than default
+    
+        -q  Quick search; 5-10% less sensitive, 2-5 times faster than default
+    
+        -qq Rush job; about 10% less sensitive, 4->10 times faster than default
+            (quick searches are fine under most circumstances) repeat options
+    
+        -nolow /-low
+            Does not mask low_complexity DNA or simple repeats
+    
+        -noint /-int
+            Only masks low complex/simple repeats (no interspersed repeats)
+    
+        -norna
+            Does not mask small RNA (pseudo) genes
+    
+        -alu
+            Only masks Alus (and 7SLRNA, SVA and LTR5)(only for primate DNA)
+    
+        -div [number]
+            Masks only those repeats < x percent diverged from consensus seq
+    
+        -lib [filename]
+            Allows use of a custom library (e.g. from another species)
+    
+        -cutoff [number]
+            Sets cutoff score for masking repeats when using -lib (default 225)
+    
+        -species <query species>
+            Specify the species or clade of the input sequence. The species name
+            must be a valid NCBI Taxonomy Database species name and be contained
+            in the RepeatMasker repeat database. Some examples are:
+    
+              -species human
+              -species mouse
+              -species rattus
+              -species "ciona savignyi"
+              -species arabidopsis
+    
+            Other commonly used species:
+    
+            mammal, carnivore, rodentia, rat, cow, pig, cat, dog, chicken, fugu,
+            danio, "ciona intestinalis" drosophila, anopheles, elegans,
+            diatoaea, artiodactyl, arabidopsis, rice, wheat, and maize
+    
+        Contamination options
+    
+        -is_only
+            Only clips E coli insertion elements out of fasta and .qual files
+    
+        -is_clip
+            Clips IS elements before analysis (default: IS only reported)
+    
+        -no_is
+            Skips bacterial insertion element check
+    
+        -rodspec
+            Only checks for rodent specific repeats (no repeatmasker run)
+    
+        -primspec
+            Only checks for primate specific repeats (no repeatmasker run)
+    
+
+        Running options
+    
+        -gc [number]
+            Use matrices calculated for 'number' percentage background GC level
+    
+        -gccalc
+            RepeatMasker calculates the GC content even for batch files/small
+            seqs
+    
+        -frag [number]
+            Maximum sequence length masked without fragmenting (default 51000)
+    
+        -maxsize [nr]
+            Maximum length for which IS- or repeat clipped sequences can be
+            produced (default 4000000). Memory requirements go up with higher
+            maxsize.
+    
+        -nocut
+            Skips the steps in which repeats are excised
+    
+        -noisy
+            Prints cross_match progress report to screen (defaults to .stderr
+            file)
+    
+        -nopost
+            Do not postprocess the results of the run ( i.e. call ProcessRepeats
+            ). NOTE: This options should only be used when ProcessRepeats will
+            be run manually on the results.
+    
+
+        output options
+    
+        -dir [directory name]
+            Writes output to this directory (default is query file directory,
+            "-dir ." will write to current directory).
+    
+        -a(lignments)
+            Writes alignments in .align output file; (not working with -wublast)
+    
+        -inv
+            Alignments are presented in the orientation of the repeat (with option -a)
+    
+        -cut ***NOT AVAILABLE IN THIS RELEASE***
+            Saves a sequence (in file.cut) from which full-length repeats are excised
+    
+        -small
+            Returns complete .masked sequence in lower case
+    
+        -xsmall
+            Returns repetitive regions in lowercase (rest capitals) rather than masked
+    
+        -x  Returns repetitive regions masked with Xs rather than Ns
+    
+        -poly
+            Reports simple repeats that may be polymorphic (in file.poly)
+    
+        -ace
+            Creates an additional output file in ACeDB format
+    
+        -gff
+            Creates an additional Gene Feature Finding format output
+    
+        -u  
+            Creates an additional annotation file not processed by ProcessRepeats
+    
+        -xm 
+            Creates an additional output file in cross_match format (for parsing)
+    
+        -fixed
+            Creates an (old style) annotation file with fixed width columns
+    
+        -no_id
+            Leaves out final column with unique ID for each element (was default)
+    
+        -e(xcln)
+            Calculates repeat densities (in .tbl) excluding runs of >25 Ns in the query
+    
+
+    NUMBER OF DIFFERENT MASKED SEQUENCES
+    
+        These are the numbers and bp of repeat consensus sequences (excluding
+        simple repeats and RNAs) as of May 2009 for the best represented clades
+        
+        species         # of consensi  total bp
+        All mammals combined   3081   4253979
+        Primates *              585    902148
+        Rodents *               606    931299
+        Carnivores *            130    158362
+        Perissodactyls *        130    220814
+        Ruminants *             112    130320
+        Bats *                  131    112724
+        Marsupials              554    863923
+        Monotremes              102    159182
+        Birds                   425    644078
+        Amphibia (mostly frog)  230    428828 
+        Teleost fish           1140   2807233
+        Tunicates               134    368438     
+        Sea urchins             211    560185
+        Flies                   306    906766
+        Mosquitos               363    914943
+        Other insects           356   1080649
+        Nematodes               461    698036
+        Flatworms               209    641758
+        Cnidarians              911   3057775 
+        Fungi                   256    695278
+        Arabidopsis             544   1460558
+        Other dicot plants      742   2563646
+        Rice                    575   1430176
+        Maize / corn            439   1566688
+        Other monocot plants    303    912057
+        Algae                   186    533952
+        
+        * Only order-specific elements; these genomes are also matched to 400+
+        consensus sequences for elements active before the origin of orders.
+
+
+
+
+    SENSITIVITY - USE 'slow' SETTING
+    
+    2.4 Sensitivity and speed  
+
+        The program can be run at four levels of sensitivity. The only
+        difference between these settings is the minimum match or word length
+        in the initial (not quite) hashing step of the cross_match program
+        (see the cross_match/PHRAP documentation). For mammalian queries, The
+        "slow" setting will find and mask 0-5% more repetitive DNA sequences
+        than by default, whereas the "quick" settings miss 5-10%, and the
+        "rush" (-qq) settings may miss 10-25% of the sequences masked by
+        default. The alignments may extend more or be somewhat more accurate
+        in the more sensitive settings as well.
+
+    
+    SPEED
+    
+        Following are benchmark times for random 1 Mbp of sequences of a
+        variety of different species run in parallel on 4 Pentium4 2.4Ghz
+        processors with 3 GB RAM with June 2004 RepeatMasker databases. The
+        percentage of the query masked is given in parentheses.
+        
+                                        ------------------------ cross_match ------------------------
+        Species         WUBlast (Def)    Rush            Quick           Default         Slow
+        -------         -------------   -------------   -------------   -------------   -------------
+        Human           02:54 (39.26)   01:54 (33.91)   05:05 (36.85)   22:15 (39.92)   57:54 (40.58)
+        Human-reversed  01:09 ( 1.98)   01:05 ( 2.00)   03:39 ( 2.06)   18:44 ( 2.07)   53:37 ( 2.09)
+        Chimpanzee      03:00 (40.83)   01:50 (35.24)   04:45 (38.70)   20:22 (41.59)   53:14 (42.24)
+        Mouse           03:31 (54.02)   01:47 (48.65)   04:21 (51.74)   18:54 (54.15)   47:26 (55.18)
+        Rat             04:46 (66.07)   02:05 (62.07)   04:32 (63.84)   19:41 (65.97)   48:23 (67.20)
+        Dog             02:24 (34.62)   01:32 (29.15)   03:07 (32.44)   12:29 (35.09)   30:14 (35.69)
+        Arabidopsis     01:01 ( 3.02)   00:51 ( 2.95)   04:41 ( 3.00)   46:52 ( 3.12) 1:46:53 ( 3.13)
+        Ciona savigny   01:25 (15.64)   01:02 (13.12)   01:30 (14.45)   06:13 (15.90)   15:24 (16.30)
+        C. elegans      02:35 (22.63)   01:38 (20.84)   02:39 (22.52)   12:12 (23.21)   25:15 (23.59)
+        Drosophila      01:59 (47.21)   01:23 (43.08)   02:30 (45.60)   15:49 (47.51)   39:24 (48.38)
+        Chicken         00:42 ( 6.52)   00:35 ( 6.18)   00:58 ( 6.42)   04:59 ( 6.53)   11:48 ( 6.58)
+        Fugu            00:35 ( 5.89)   00:34 ( 5.40)   00:49 ( 5.70)   03:51 ( 5.89)   09:20 ( 6.05)
+        
+        
+        The human-reversed sequence is the "human" sequence reversed but not
+        complemented. 2% of this sequence is (properly) masked as simple
+        repeats or low complexity DNA.
+
+
+    Some genuine genes are masked out by RepeatMasker
+
+        4    APPLICATIONS
+        
+        4.1  Use in database searches
+        
+        RepeatMasker is most commonly used to avoid spurious matches in
+        database searches. Generally this step is strongly recommended before
+        doing BLASTN or BLASTX equivalent searches with mammalian DNA
+        sequence.
+        
+        The most common concern is of course if RepeatMasker ever masks coding
+        regions.  
+        We found that false matches in coding regions are extremely rare, but
+        did identify 38 genuine fragments of interspersed repeats (4214 bp) in
+        the (annotated) coding regions of the 4440 human mRNAs (7.2 Mb)
+        analyzed (excluding annotated coding sequences of LINE-1 elements and
+        endogenous retroviruses). We verified matches with lower scores by
+        comparing the translation products to close homologous or redundant
+        entries in the database (the repeat matching regions always were
+        exactly missing). In the majority of these cases, the sequences appear
+        to be improperly annotated or to represent either artificially or
+        naturally defective mRNAs (e.g.  alternatively spliced exons comprised
+        of a small fragment of a repeat).  Genuine overlaps of interspersed
+        repeats with coding sequences usually involve terminal regions of the
+        ORFs. Since the transposable element derived region is unique to the
+        protein in that (group of) species, the masking does not interfere
+        with database searches.
+        
+        However, some cautionary comments are necessary. First, a few active
+        cellular genes are derived from transposable elements (see my list of
+        50 in our genome in Lander et al. 2001). Some of these genes will be
+        partially masked by a (related) transposon in the repeat database. EST
+        and cDNA matches beyond the masked region should alert you.
+        
+        Also remember that, currently only for mammals, RepeatMasker screens
+        for small RNA (pseudo)genes because of their similarity to SINEs. The
+        number of matches to small RNAs are listed in the overview table;
+        (close to) exact matches are possibly active genes, although related
+        active genes not in the database may show diverged matches. If you're
+        interested in (small) RNA genes, you should use the -norna option to
+        leave these sequences unmasked, while SINEs will remain masked.
+        
+        A final caution relates to the fact that 3' UTRs of transcripts are
+        about as dense in interspersed repeats as intergenic regions
+        are. Thus, many ESTs are completely masked as repetitive DNA. I
+        recommend that, when you compare a genomic sequence against the EST
+        database or use ESTs as a query in nucleotide searches, you search
+        with the unmasked sequence as well; use a long minimum match (word
+        length/ word size) like 40 bp to identify exact matches and avoid most
+        background. Unfortunately the maximum word length that can be used in
+        the NCBI BLASTN program is 18 (due to memory limitations).
+
+
+    Check for bacterial contamination
+
+    
+        
+        4.2  Identification of DNA source (contamination detection)
+
+        Bacterial insertion elements 
+        
+        Bacterial insertion sequences (IS elements) often pop up in foreign
+        sequences, as their activity in the E. coli is not always successfully
+        suppressed during cloning. As late as 2002, human entries in the
+        'finished' section of GenBank contained over a hundred IS elements.
+        
+        With each run, RepeatMasker includes a quick check for bacterial
+        insertion elements that may have inserted during cloning. You can turn
+        this off with the -no_is option. The -is_only option limits the run to
+        this check only.
+        
+        When a full-length element is found and a target site duplication is
+        confirmed, its location is both reported to the screen and stored in a
+        .alert file. The latter also contains information of possible
+        mouse<->human contamination.
+        
+        -is_clip, -is_only
+        
+        With the -is_only and is_clip options, the detected IS and one of the
+        flanking repeats is clipped out to restore the pre-cloning artifact
+        situation before comparison with the repeat databases. The original
+        query FASTA file will remain unchanged. An insertion-sequence-clipped,
+        but otherwise unmasked query sequence is printed to <file>.withoutIS.
+        
+        For single sequences larger than 4 Mbp, the -maxsize option needs to
+        be set to a number larger than the sequence length to retrieve this
+        file.
+        
+        With either of these options, a properly adjusted quality string is
+        printed to a file with the suffix .qual.withoutIS when a corresponding
+        PHRED quality file (.qual) is in the same directory. Note that these
+        names won't be such that the clipped sequence and quality file form a
+        pair for subsequent cross_match/PHRAP work. They need to be renamed,
+        as I assume one wants to do anyway.
+        
+        
+        Most but not all IS elements can be precisely cut out. The element may
+        be at the edge of a sequence, or (rarely) the element may have
+        inserted improperly, lacking target site duplications or missing
+        terminal bases (internal deletion products are generally handled
+        okay). These matches are reported, but are left untouched even in
+        _is_only or is_clip mode.
+        
+        The location of any IS element is both reported to the screen and
+        stored in an .alert file. The latter also contains information of
+        possible mouse<->human contamination.
+        
+        Here are the specifics of IS element insertions:
+        
+        IS1     8-10 bp duplication
+        IS2     5 bp duplication; published sequence was too short
+        IS3     3 bp duplication
+        IS4     No examples of clonal artifacts; no dup site info
+        IS5     4 bp duplication; preferred target TCTAGA
+        IS10    9 bp duplication; extreme preference for CGCTNAGCN; published
+                sequence for IS5 & 10 were too long, included preferred target site
+        IS30    2 bp duplication
+        IS150   3 bp dup, with one exception (4 bp); strong pref for CAGNNTGGGGCY
+        IS186   10 or 11 bp dup
+        Tn1000  5 bp duplication;
+
+
+
+
+    Mask lineage-specific repeats for genomic alignments
+
+
+        DateRepeats <repeatmasker .out files> -query <species1> -comp
+        <species2> [-comp <species3> -mask <species2>]
+        
+        The required flags are:
+        -q -query <species1> the species that has been analyzed
+        -c -comp <species2>  other mammalian species; can be used multiple times, adding extra 
+                             columns to the annotation in a  <file.out_species2_species3_etc>
+        
+        Optional parameters are:
+        -m -mask <species> produces a sequence file with all lineage specific repeats masked, i.e.
+                           those predicted to be in the -query and absent in the -mask species
+                           (sequence <file> and RepeatMasker <file.out> files must be in same directory)
+                           <species> must correspond to one of the -comp species
+        -a -aggressive     also mask those repeats unclear to be lineage specific or ancestral
+        -n -nolow          does not mask (micro)satellites or low complexity DNA, which are 
+                           generally lineage specific, but hard to date 
+        (-a and -n have no effect unless -m is used)
+        
+        In the first release of this script the <species> for -q, -c, and -m
+        are limited to human, mouse, rat, cat, dog, cow, pig, horse and
+        rabbit.
+        
+        
+        For example the command line:
+        DateRepeats chr3_4000001_4005000.out  -q mouse -c rat -c human
+        prints the following output to chr3_4000001_4005000.out_rat_human:
+        
+          SW  perc perc perc  query   position in query   matching repeat      position in  repeat      rat hum
+        score  div. del. ins. sequence begin  end (left)  repeat   class/family  begin  end (left)  ID
+        
+        12436  19.0  1.7  7.7 chr3_400    9  536 (4464) +  L1_Mur2  LINE/L1        1850 2408 (3469)   1    X  0  
+         2728   5.2  0.0  3.9 chr3_400  537  896 (4104) +  ORR1A0   LTR/MaLR          1  346    (0)   2    0  0  
+        12436  19.0  1.7  7.7 chr3_400  897 2441 (2559) +  L1_Mur2  LINE/L1        2408 3665 (2212)   1    X  0  
+         5229   7.2  0.0  1.1 chr3_400 2442 3134 (1866) +  L1Md_F2  LINE/L1        5877 6580    (2)   3    0  0  
+        12436  19.0  1.7  7.7 chr3_400 3135 4259  (741) +  L1_Mur2  LINE/L1        3665 4856 (1021)   1    X  0  
+          394  20.9  0.0  0.9 chr3_400 4260 4351  (649) +  Lx2      LINE/L1        6892 6996    (1)   4    X  0  
+        
+        The X indicates that the repeat is expected to be present at
+        orthologous sites, while the O predicts an absence. None of the above
+        repeats are found in the human genome. Notice that a mouse-specific
+        ORR1 (#2) and L1 (#4) has inserted into a rodent specific L1 (#1).
+        
+        
+        A few lines of the output for
+        DateRepeats chr19.fa.out -q rat -c mouse -c human -m mouse -a -n
+        are
+        1199 17.9 11.2 1.8 chr19 313706 313990 (58909535) C  Lx9     LINE/L1         (9) 7635 7324  377  X  0
+          23  0.0  0.0 0.0 chr19 314125 314147 (58909378) +  AT_rich Low_complexity    1   23  (0)  378  -  -
+         726 17.5  1.3 8.9 chr19 314152 314308 (58909217) +  B1_Rn   SINE/Alu          2  146  (2)  379  ?  0
+         228 32.8  0.0 7.4 chr19 314355 314476 (58909049) C  B3      SINE/B2        (77)  139   27  380  X  0
+        
+        The chr19.fa.masked_vs_mouse file contains a sequence appropriately
+        masked for alignment against mouse. It has repeats 377 & 380
+        masked. The -n flag leaves the AT-rich region unmasked, while the -a
+        flag forced it to mask repeat 379 as well. B1_Rn is rat specific, but
+        the 17.5% divergence from the consensus is much higher than the
+        average divergence level of non-functional DNA since the rat-mouse
+        split. It therefore gets the "?" assignment. The rules for assigning
+        question marks are arbitrary (2-fold lower divergence than expected,
+        1.5x higher than expected for a repeat at the boundary).
+
+
+
+    mask only alus:
+
+    RepeatMasker is sometimes used during assembly of large genomic
+    sequences.  This procedure probably is most useful in very Alu rich
+    regions; in that situation I recommend to only mask the Alus, and
+    maybe limit the masking to those Alus less than 15% diverged (-div
+    15).
+
+
+    mask only low complexity:
+    
+    
+
+
+    ...
+    4.4  Use in gene prediction and other applications
+    
+    Predicting genes from a masked sequence has several problems. First,
+    one should use the option -nolow to avoid masking low complexity
+    regions and trinucleotide repeats in coding regions. But even with
+    only interspersed repeats masked, gene prediction programs may fail to
+    identify exons correctly. As pointed out above, sometimes tail ends of
+    coding regions may have originated from transposable elements. Some
+    gene prediction programs suggest the extend of 3' UTRs. These will be
+    often overestimated in masked DNA, as many genuine poly A signals are
+    located in interspersed repeats. Finally, even if no coding regions
+    have been masked, splice sites may be compromised; e.g. the
+    polypyrimidine region that contributes to an acceptor splice site may
+    be contained within a repeat.
+    
+    Thus, I generally recommend to run a gene prediction program on
+    unmasked DNA (as well) and compare the predicted genes and exons with
+    the RepeatMasker output. Some gene prediction program allow you to
+    force certain exons out of the predictions (e.g. often the old ORFs of
+    LINE-1 elements and endogenous retroviruses are included in
+    genes). Work is also in progress at several sites to incorporate
+    RepeatMasker into gene prediction programs, in which cases matches to
+    repeats are weighted in along with the other parameters used.
+    
+    
+    Other uses
+    
+    Many people mask repeats before designing primers or oligo probes from
+    sequence data. I've often been told that primers/probes designed from
+    regions unmasked by RepeatMasker have a much better success rate. A
+    cautionary note here is that unmasked regions not necessarily are
+    unique in the genome (e.g. many lower copy repeats are not in the
+    database yet) and experiments should be performed as if no filtering
+    against repeats has been done.  The alignments can help in designing
+    primers from sequences that are completely masked. Regions that
+    diverge much from the consensus are less likely to misbehave than
+    others.
+    
+    RepeatMasker is sometimes used during assembly of large genomic
+    sequences.  This procedure probably is most useful in very Alu rich
+    regions; in that situation I recommend to only mask the Alus, and
+    maybe limit the masking to those Alus less than 15% diverged (-div
+    15).
+    
+    There are plenty of other uses, e.g. analysis of repeats can reveal a
+    lot about the evolution of a locus (deletions vs. insertions,
+    inversions, approximate time of these events). When you're doing that
+    you're a specialist and don't need any help from this help file (maybe
+    from some of the literature sited below though).
+    
+    
+    
+    5  REFERENCES
+    
+    Reference for RepeatMasker
+    
+    We appreciate it if you could refer to the web page (Smit,AFA &
+    Green,P RepeatMasker at http://www.repeatmasker.org) or otherwise to
+    Smit, AFA & Green, P., unpublished.
+    
+    The EMBL format of the RepBase Update database contains references for
+    individual repeats, as well as annotation with respect to divergence
+    level, affiliation, copy number, etc. Much if not most of the
+    information in this database is not published elsewhere. It can be
+    accessed at http://www.girinst.org/.
+    
+    We are trying to keep the nomenclature of the interspersed repeats in
+    the output of RepeatMasker identical to that of the reference
+    database. In most cases the names correspond to those most commonly
+    used in the literature.
+    
+    
+    There is much too much literature out there to list these days. My own
+    views on the repeat structure in mammalian genomes have most recently
+    been described in the following papers:
+    
+    Waterston et al. (2002) Initial sequencing and comparative analysis of
+    the mouse genome. Nature. 420(6915):5 20-62.
+    
+    Lander E. S., et al. (2001). Initial sequencing and analysis of the
+    human genome. Nature 409(6822): 860-921.
+    
+    Smit, A.F.A. (1999) Interspersed repeats and other mementos of
+    transposable elements in mammalian genomes. Curr Opin Genet Devel 9
+    (6), 657-663.
+    
+    If you have ideas for improvements or found a problem, drop a note
+    at rhubley@systemsbiology.org or asmit@systemsbiology.org
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Mar 15 13:06:19 EDT 2010] INSTALLED REPEATMASKER (MASK REPEATS, LOW COMPLEXITY, SATELLITE/ALU SEQUENCES) ON PEGASUS>
+
+
+
+
+LOCATION ON KRONOS
+(NB: HAD TO RERUN ./configure TO SET THE PATHS TO cross_match AND trf)
+
+    REPEATMASKER
+    /nethome/syoung/base/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker
+    CROSSMATCH
+    /nethome/syoung/base/apps/crossmatch/0.990329/cross_match
+    TRF
+    /nethome/syoung/base/apps/tandemrepeats/4.04/trf
+
+
+mkdir /nethome/syoung/base/apps/crossmatch
+cd /nethome/syoung/base/apps/crossmatch
+scp -r syoung@pegasus.ccs.miami.edu:/nethome/bioinfo/apps/crossmatch/0.990329 ./
+
+mkdir /nethome/syoung/base/apps/tandemrepeats
+cd /nethome/syoung/base/apps/tandemrepeats
+scp -r syoung@pegasus.ccs.miami.edu:/nethome/bioinfo/apps/tandemrepeats/4.04 ./
+
+
+LOCATION ON PEGASUS
+
+    REPEATMASKER
+    /nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/RepeatMasker
+    CROSS_MATCH
+    /nethome/bioinfo/apps/crossmatch/0.990329
+    TRF
+    /nethome/bioinfo/apps/tandemrepeats/4.04
+
+
+USAGE
+
+ALUs
+LOW COMPLEXITY
+PSEUDOGENES (small RNA)
+
+
+MASK LOW COMPLEXITY (no interspersed repeats)
+
+./RepeatMasker -spec mouse -pa 8 -s -noint -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs AND PSEUDO GENES
+
+./RepeatMasker -spec mouse -pa 8 -s -nolow -dir /nethome/syoung/base/pipeline/bixby/
+
+
+MASK ALUs (PRIMATE ONLY)
+
+./RepeatMasker -spec mouse -pa 8 -s -nolow -norna -dir /nethome/syoung/base/pipeline/bixby/
+./RepeatMasker -spec mouse -pa 8 -s -alu -dir /nethome/syoung/base/pipeline/bixby/
+
+
+ADDITIONAL PARAMS
+
+    -frag [number]      <= SET TO LENGTH OF READ
+        Maximum sequence length masked without fragmenting (default 51000)
+        
+    -gff
+        Creates an additional Gene Feature Finding format output
+
+    -x  Returns repetitive regions masked with Xs rather than Ns
+
+    -nolow /-low
+        Does not mask low_complexity DNA or simple repeats
+
+    -noint /-int
+        Only masks low complex/simple repeats (no interspersed repeats)
+
+    -norna
+        Does not mask small RNA (pseudo) genes
+
+    -alu
+        Only masks Alus (and 7SLRNA, SVA and LTR5)(only for primate DNA)
+
+-int    mask only low-complexity DNA or simple repeats (-int)
+
+-nolow    mask only interspersed repeats (-nolow)
+
+-alu     mask only Alu repeats (-alu).
+        
+    By default, all of the above are masked from the query sequence.
+    
+    -div [number] and -cutoff [number] allow for setting the level of
+    homology that must exist between a candidate repeat and the consensus
+    sequence.
+
+
+
+
+
+WAITING FOR LICENSE FOR cross_match AND ACCESS TO RepBase
+
+
+GET PREREQUISITE DATABASES AND TOOLS
+====================================
+
+
+1. DOWNLOAD tandem repeats finder
+=================================
+
+INSTALLED TO 
+
+/nethome/bioinfo/apps/tandemrepeats/4.04/tandem-repeats-finder-404.linux64.exe
+
+AND 
+
+/nethome/bioinfo/apps/tandemrepeats/4.04/tandemrepeatsfinder
+
+AND
+
+/nethome/bioinfo/apps/tandemrepeats/4.04/trf
+
+
+
+2. DOWNLOAD AND INSTALL RepeatMasker LIBRARIES FROM repBase
+===========================================================
+
+    -----Original Message-----
+    From: Jolanta Walichiewicz [mailto:jola@girinst.org] 
+    Sent: Monday, March 15, 2010 4:24 PM
+    To: Young, Stuart
+    Subject: Repbase Registration Confirmation
+    
+    Dear Colleague,
+    
+    Thank you for subscribing to Repbase Update.  Below is the information you
+    have provided along with your new password.  To download the most recent
+    version of Repbase Update, point your WWW browser to:
+         http://www.girinst.org/
+    then select the current issue.  You will be prompted for your username and
+    password.  If you have any questions or problems feel free to contact us,
+         e-mail: jola@girinst.org.
+    ----------------------------------------------------------------------------
+      Username: youngstuart                   Date: 2010-03-15 08:54:07
+    First Name: Stuart                   Last Name: Young
+        E-mail: syoung@med.miami.edu   
+       Company: University of Miami
+       Address: 1120 NW 14th St
+          City: Miami                        State: FL      Zip: 33136
+       Country: US                           Phone: 305-781-2286
+      Category: nonprofit
+    ----------------------------------------------------------------------------
+    
+      Username: youngstuart               Password: sqrzyw
+    ----------------------------------------------------------------------------
+
+SEE http://www.girinst.org/server/RepBase/
+
+RepeatMasker 3.2.8 supports repeatmaskerlibraries-20090120.tar.gz and later.
+Download the libraries from http://www.girinst.org and unpack in the RepeatMasker program directory.
+
+
+1. DOWNLOAD REPEATMASKER LIBRARIES
+
+mkdir -p /nethome/bioinfo/apps/repeatmasker/3.2.8
+cd /nethome/bioinfo/apps/repeatmasker/3.2.8
+
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/repeatmaskerlibraries/repeatmaskerlibraries-20090604.tar.gz
+
+tar xvfz repeatmaskerlibraries-20090604.tar.gz
+####rm repeatmaskerlibraries-20090120.tar
+
+
+
+2. GET OTHER VERSIONS
+
+cd /nethome/bioinfo/apps/repeatmasker/3.2.8
+    
+#    EMBL format (24.56 MB) 03-08-2010:
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/RepBase15.02.embl.tar.gz
+    
+#    FASTA format (13.12 MB) 03-08-2010:
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/RepBase15.02.fasta.tar.gz
+    
+#    REPEATMASKER
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/repeatmaskerlibraries/repeatmaskerlibraries-20090604.tar.gz
+    
+#    REPET
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/REPET/RepBase14.12_REPET.embl.tar.gz
+
+    
+
+
+3. PUT FASTA VERSION IN data/sequence
+
+cd /nethome/bioinfo/data/sequence/repbase
+wget --user youngstuart --password sqrzyw http://www.girinst.org/server/RepBase/protected/repeatmaskerlibraries/repeatmaskerlibraries-20090604.tar.gz
+
+
+
+
+
+
+    How to cite Repbase Update
+    General references
+    
+    General References apply to all applications of Repbase Update to data analysis (e.g. to sequence annotations using CENSOR, RepeatMasker or XBLAST). If you use Repbase Update in your work please cite one of the following papers:
+    
+    Jurka, J., Kapitonov, V.V., Pavlicek, A., Klonowski, P., Kohany, O., Walichiewicz, J. (2005) Repbase Update, a database of eukaryotic repetitive elements. Cytogentic and Genome Research 110:462-467
+    Jurka, J. Repbase Update: a database and an electronic journal of repetitive elements. Trends Genet. 9:418-420 (2000)
+    Jurka, J. Repeats in genomic DNA: mining and meaning. Curr. Opin. Struct. Biol. 8:333-337 (1998).
+    Specific references
+    
+    Specific references refer to original contributions to RU. Specific references must include: name of the author(s) listed at particular entry; name of the sequence; URL and the release number or date.
+    
+    Specific references apply to all original information published in Repbase Update and directly related to your original data. Specific references are available only with the EMBL format but not with the FASTA or RepeatMasker format.
+    
+    Major third party programs used for repeat mining
+    
+    Xu Z, Wang H.
+    LTR_FINDER: an efficient tool for the prediction of full-length LTR retrotransposons.
+    Nucleic Acids Res. 2007 Jul;35(Web Server issue):W265-8. Epub 2007 May 7.
+
+
+
+
+3. DOWNLOAD cross_match
+=======================
+(CAN USE WU-BLAST INSTEAD)
+
+    EMAILED REQUEST TO:
+    
+              Phrap/cross_match/swat:  Phil Green, phg (at) u.washington.edu
+              Phred: Brent Ewing, bge (at) u.washington.edu
+              Consed: David Gordon, dgordon (at) u.washington.edu
+        
+    NB: SENT Mon 15th March (...It can take up to 2 weeks for a license application to be processed, so please be patient.)
+    
+    
+    http://www.phrap.org/consed/snpGenome.tar.gz
+
+
+    Dear Sir/Madam,
+    
+    Please find my academic user agreement copied below for download access to these applications: phred, phrap, consed.
+    
+    Thank you in advance.
+    
+    Yours sincerely,
+    
+    Stuart Young
+    Post Doctoral Research Associate
+    Center for Computational Sciences
+    University of Miami
+    1120 NW 14th St, Miami, FL
+    305-243-4539
+    syoung@med.miami.edu
+    
+    
+    
+        ACADEMIC USER AGREEMENT
+        
+        Phrap:  A program for assembling DNA sequence data.
+        
+        Swat:  A program for searching one or more DNA or protein query sequences
+        against a sequence database, using (an efficient implementation of) the
+        Smith-Waterman-Gotoh algorithm.
+        
+        Cross_Match:  A general-purpose utility based on Swat for comparing any
+        two sets of (long or short) DNA sequences.
+        
+        Phred:  A program that reads DNA sequencer trace data, calls bases,
+        assigns quality values to the bases, and writes the base calls and quality
+        values to output files.
+        
+        Consed:  A program for viewing and editing Phrap assemblies.
+        
+        To receive any of these programs you will need to agree to the following
+        conditions. They should be taken seriously!
+        
+        1) You agree to read the documentation.  We welcome feedback on any
+        inaccuracies.
+        
+        2) You agree to report any bugs to us.  (To fix bugs, we will need
+        from you a dataset and a procedure that reproduces the problem; but do
+        not send datasets without first emailing us to describe the nature of
+        the bug.)
+        
+        3) You agree not to make the programs (including source code,
+        executables, or any part thereof, in modified or unmodified form)
+        available to anyone outside your group, and not to put them where they
+        may be accessible to outside individuals without your direct knowledge
+        (e.g. on a computer to which people outside your group have login
+        privileges).  The documentation however may be freely distributed.
+        Refer any requests for the programs to the authors.  If you are
+        operating a computer facility which provides access to several
+        independent investigators, you agree to set the permissions on the
+        executables and source code to allow execute but not read access, so
+        that the programs may not be copied. Investigators who want copies of
+        the software for their own use must return a separate copy of this
+        agreement.
+        
+        4) You agree not to use the programs for any commercial purpose,
+        including but not limited to commercially restricted sequencing
+        (defined as sequencing for which a company retains patenting or
+        licensing rights regarding the sequence, or the right to restrict or
+        delay dissemination of the sequence; with the sole exception that
+        sequencing is not considered to be commercially restricted if it is
+        federally funded and the investigators adopt the data release policies
+        endorsed at the Wellcome Trust-sponsored Bermuda meeting,
+        i.e. immediate release of data as it is generated).
+         [If you wish to obtain the software for commercially restricted
+        sequencing or any other commercial purposes, you will need to execute
+        a separate licensing agreement with the University of Washington and
+        pay a fee. In that case please contact:
+        
+        Lisa Heinz
+        University of Washington TechTransfer, Digital Ventures
+        Box 354990
+        4311-11th Avenue NE, Suite 500
+        Seattle, WA  98105-4608
+        
+        http://depts.washington.edu/techtran
+        
+        206-616-3451  FAX: 206-616-3322
+        swxfr@u.washington.edu
+        
+        Do not contact her if the academic license applies.]
+        
+        5) You acknowledge that the software is experimental in nature and is
+        supplied "AS IS", without obligation by the authors or the University
+        of Washington to provide accompanying services or support.  The entire
+        risk as to the quality and performance of the Software is with you.
+        UW AND THE AUTHORS EXPRESSLY DISCLAIM ANY AND ALL WARRANTIES
+        REGARDING THE SOFTWARE, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT
+        LIMITED TO WARRANTIES PERTAINING TO MERCHANTABILITY OR FITNESS FOR A
+        PARTICULAR PURPOSE.
+        
+        6) All members of your group with access to the software agree to the
+        same conditions.
+        
+        
+        
+        Having read the above, if you are still interested in obtaining the
+        programs, please return a copy of this entire message (which MUST be
+        included so that it is clear what you are agreeing to) by email
+        together with the following information:
+        
+        NAME:  Stuart Young
+        
+        ACKNOWLEDGEMENT: I agree to the license
+        
+        PROGRAMS: Which programs you want (phrap,cross_match, and swat are
+        distributed together). You must cc the message to each appropriate
+        individual (Brent Ewing, David Gordon, and/or Phil Green) at the email
+        addresses below so that they will know to send you the appropriate
+        program.
+        
+        PROGRAMS: phred, phrap, consed
+        
+        INSTITUTION: University of Miami
+        
+        DEPARTMENT: Center for Computational Science
+        
+        EMAIL: syoung@med.miami.edu
+    
+        OS: Linux 64-bit
+        
+        IP (Consed requestors only): 129.171.150.150
+
+
+REPLY FROM PHIL GREEN:
+
+
+    -----Original Message-----
+    From: Phil Green [mailto:pg@solduc.biotech.washington.edu] 
+    Sent: Monday, March 15, 2010 11:25 AM
+    To: phg@uw.edu
+    Subject: phrap/cross_match/swat ver 0.990329 (INSTALLATION INSTRUCTIONS)
+    
+    
+    I am sending the current version (0.990329) of the
+    phrap/cross_match/swat package in a separate email message. It will
+    have the subject line "phrap/cross_match/swat ver 0.990329 (PROGRAM
+    CODE)", and will contain the phrap package (in uuencoded form) in the
+    body of the message, NOT as an attachment -- the first few lines will
+    look like this:
+    
+    > begin 664 distrib.tar.Z
+    > M'YV0;<*L*6,F#9LR`!(J7,BPH<.'$"-*G$@1`(R+-BZ"L`@C1HP:,C9>O!CC
+    > MALB1)&?<B!$2A@T;*VW4N$%#8T<9-&2*K,BSI\^?0`'4F4,GC!R.<,X$C3BT
+    
+    The email should arrive today -- if you don't receive it, it probably
+    has been caught by your spam filter so please check that first. (If it
+    is not in your own spam filter, it may have been rejected by your
+    university's email server, in which case you should be prepared to
+    provide me with a non-university email account (such as gmail) if
+    necessary).  Installation instructions are below -- if you encounter
+    problems, please be sure you have carefully read and followed these
+    before contacting me.  The contacts for phred and consed are Brent
+    Ewing and David Gordon, at the email addresses indicated in the
+    license; I do not distribute or support these programs myself.
+    
+    N.B. A beta test version of the package, with many new
+    features and capabilities (including some support for next-generation
+    sequencing data), is now also available. It is not yet the default
+    distribution version because it is still being tested, so you must
+    request it separately, as follows: send an email to
+    phg@u.washington.edu, with a Subject: line that says "phrap new
+    version request", and an email body that consists of the following two
+    lines (it should be in exactly this format, to be computer readable):
+    
+    Request: phrap ver 1.080721 or later
+    Registered phrap email address: [[YOUR EMAIL ADDRESS]]
+    
+    The address should be the same one you supplied in your previous phrap request.
+    
+    
+    INSTALLATION INSTRUCTIONS (FOR VERSION 0.990329):
+    
+    The source code for the swat/cross_match/phrap package is being sent
+    to you in the form of an email message containing a uuencoded .tar.Z file
+    [in the email body, NOT as an attachment]; you will need to have access to
+    a Unix system for the initial unpacking, but once you've uudecoded it
+    and unpacked the .tar file (steps i and ii below), you should be able
+    to compile the programs on computers running other operating systems
+    -- they should be portable to almost anything with a decent C compiler
+    and adequate memory (512 Mb RAM or more is desirable). Here are the
+    steps needed to unpack and install the programs:
+    
+    i. Save the email message as a file (for example, "temp.mail"). If
+    possible, do this using the Unix mail command, rather than another
+    mail program -- some mail programs (e.g. Pine) remove trailing spaces
+    on each line of incoming messages, which will corrupt a uuencoded
+    message. If you cannot use Unix mail, try to avoid opening the message
+    before you save it.
+     Do not attempt to modify the saved mail message in any way. That is
+    unnecessary and may corrupt the message.
+    
+    ii. To unpack the saved file email message, execute the following two
+    commands on a Unix workstation, in the directory containing the file
+    created in step i above:
+    
+    > uudecode temp.mail
+    
+    > zcat distrib.tar.Z | tar xvf -
+    
+    If either of these commands results in a 'command not found' error
+    message (or something similar), then there is some problem with your
+    Unix installation and you will need to use a different computer or
+    consult a local expert about your system. Any other error message
+    likely means that the email message was corrupted by your mail program
+    (see step i above).
+    
+    iii. To produce working versions of the programs, move (if necessary)
+    all of the files produced by the above command to the computer on
+    which you wish to run the programs (which must have a C compiler!),
+    and execute the following command in the directory that contains the
+    files:
+    
+    > make
+    
+    If your compiler does not recognize the -O2 optimization flag (which
+    should be evident from warning messages it produces), you should change
+    the line
+    
+          CFLAGS= -O2
+    
+    in the file "makefile" to
+    
+          CFLAGS= -O
+    
+    Then remove all executables (files ending in .o) produced by the
+    original make, and recompile.
+    
+    Other WARNING messages (as opposed to ERROR messages!) that may be
+    produced by the compiler can in general be ignored. Please only
+    report compilation ERROR messages.
+    
+    iv. If you have datasets with more than 64,000 reads, or that include
+    sequences longer than 64,000 bp, you will need the .manyreads and/or
+    .longreads versions of phrap and cross_match. These are created using the
+    command
+    
+    > make manyreads
+    
+    v. If you are operating a non-commercial (academic or government)
+    computer facility which provides access to several independent
+    investigators, you are required by the licensing agreement to set the
+    permissions on the executables and source code to allow execute but
+    not read access, so that the programs may not be copied.
+    
+    vi. The documentation is in three .doc files: general.doc, phrap.doc,
+    and swat.doc. Please read it!
+    
+    Contact me if you have problems with any of the above steps. Before
+    doing so however please record exactly what steps you carried out, on
+    what computer & operating system, and what error messages you
+    received.
+    
+    N.B. PLEASE SEND MAIL TO ME ONLY AT phg@u.washington.edu
+    --- OTHER ADDRESSES MAY BE UNRELIABLE.
+    
+    Phil
+
+
+4. INSTALL cross_match
+======================
+
+mkdir -p /nethome/bioinfo/apps/crossmatch/0.990329
+cd /nethome/bioinfo/apps/crossmatch/0.990329
+zcat phrap-crossmatch-swat.tar.Z | tar xvf -
+
+make manyreads
+
+OK!
+
+    [syoung@u01 0.990329]$ ./cross_match
+    
+
+/nethome/bioinfo/apps/crossmatch/0.990329/cross_match
+
+    cross_match version 0.990329
+    
+    cross_match version 0.990329
+    Reading parameters ... 1.008 Mbytes allocated -- total 1.008 Mbytes
+    
+    Run date:time  100315:131703
+    
+    FATAL ERROR: Sequence files must be specified on command line. See documentation.
+    Run date:time  100315:131703[syoung@u01 0.990329]$ 
+
+
+
+    TANDEM REPEATS FINDER CITATION:
+    
+    Please cite:
+    G. Benson,
+    "Tandem repeats finder: a program to analyze DNA sequences"
+    Nucleic Acids Research (1999)
+    Vol. 27, No. 2, pp. 573-580.
+    A tandem repeat in DNA is two or more adjacent, approximate copies of a pattern of nucleotides. Tandem Repeats Finder is a program to locate and display tandem repeats in DNA sequences. In order to use the program, the user submits a sequence in FASTA format. There is no need to specify the pattern, the size of the pattern or any other parameter. The output consists of two files: a repeat table file and an alignment file. The repeat table contains information about each repeat, including its location, size, number of copies and nucleotide content. Clicking on the location indices for one of the table entries opens a second web browser that shows an alignment of the copies against a consensus pattern. The program is very fast, analyzing sequences on the order of .5Mb in just a few seconds. Submitted sequences may be of arbitrary length. Repeats with pattern size in the range from 1 to 2000 bases are detected. Sequence information sent to the server is confidential and deleted after program execution. Example of output.
+    
+    This material is based upon work supported by the National Science Foundation under Grant No. CCR-9623532
+
+
+
+INSTALL REPEATMASKER ON pegasus
+===============================
+http://www.repeatmasker.org/RMDownload.html
+
+
+
+CREATE DIRECTORY
+
+mkdir -p /nethome/bioinfo/apps/repeatmasker/3.2.8
+cd /nethome/bioinfo/apps/repeatmasker/3.2.8
+
+
+DOWNLOAD/UNZIP REPEAT MASKER
+    Latest Released Version: 6/4/2009: RepeatMasker-open-3-2-8.tar.gz
+
+cd /nethome/bioinfo/apps/repeatmasker/3.2.8
+wget http://www.repeatmasker.org/RepeatMasker-open-3-2-8.tar.gz
+tar xvfz RepeatMasker-open-3-2-8.tar.gz
+
+
+IMPORTANT PATHS
+
+PATH TO cross_match
+
+/nethome/bioinfo/apps/crossmatch/0.990329
+
+PATH TO tandem-repeats-finder LINK (trf)
+
+/nethome/bioinfo/apps/tandemrepeats/4.04
+
+
+./configure
+
+    ...
+    Add a Search Engine:
+       1. CrossMatch: [ Configured, Default ]
+       2. WUBlast/ABBlast (required by DupMasker): [ Un-configured ]
+       3. DeCypher (TimeLogic): [ Un-configured ]    
+       4. Done
+    
+    
+    Enter Selection: 4
+     -- Setting perl interpreter...
+    Can't open RepeatMasker: No such file or directory.
+    
+    Congratulations!  RepeatMasker is now ready to use.
+    Simply place /nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker
+    in your user's path and review the RepeatMasker
+    documentation here:
+
+OK!
+
+DOCUMENTATION IS HERE:
+
+/nethome/bioinfo/apps/repeatmasker/3.2.8/RepeatMasker/repeatmasker.help
+
+
+
+
+###
+###
+###Installation - By Hand
+###----------------------
+###
+###  1. Change line 1 in the RepeatMasker, ProcessRepeats and DateRepeats scripts,
+###     if Perl is not in the /usr/local/bin directory.
+###
+###     For Windows w/Cygwin port:  Cygwin perl is located in /bin/perl
+###     Alternatively, providing some flexibility and access from different systems,
+###     you can replace the first line and invoke perl like:
+###             #!/bin/env perl
+###             $^W = 1;
+###     We have not defaulted to this as it doesn't always work properly.
+###
+###  2. Edit the configuration section of the RepeatMasker and DateRepeats scripts.
+###     This is the section starting with the following text:
+###
+###     ##----------------------------------------------------------------------##
+###     ##     CONFIGURE THE FOLLOWING PARAMETERS FOR YOUR INSTALLATION         ##
+###
+###     In this section you will need to indicate the location
+###     of the cross_match executable and the RepeatMasker directory.
+###     If you are using WUBlast, you will also need to indicate the
+###     location of thes executables here.
+###
+###  3. Include RepeatMasker in every user's path (e.g. by making an alias in
+###    /usr/local/bin) or change an existing alias to RepeatMasker to indicate
+###    the new directory name.
+###
+###
+###
+###    ####
+###    ####The program requires some configuration before use. There is now a script which assists in making these changes.
+###    ####cd /usr/local/RepeatMasker
+###    ####perl ./configure
+###
+
+emacs README
+
+    /*****************************************************************************
+      RepeatMasker "open-3.0" and later versions are distributed under the
+      Open Source License.  Please read license.txt for more information.
+    /*****************************************************************************
+    
+    Updates of the RepeatMasker program are distributed without its repeat
+    consensus sequence files. The database falls under the copy rights of
+    the Genetic Information Research Institute and are available at its
+    website http://www.girinst.org/server/RepBase/RepBase.rptmsk.tar.gz
+    
+    We maintain these libraries as co-editor of RepBase Update and aim to
+    keep them in synch with the RepBase Update libraries.  However, at any
+    one time there are differences.  Entries can differ somewhat in
+    sequence, generally not by more than a few percent.  The nomenclature
+    is by and large identical. Discrepant RepBase and RepeatMasker names
+    for identical sequences are indicated in the EMBL formatted version of
+    the RepeatMasker database.
+    
+    An inevitable origin of differences is RepeatMasker's extensive
+    post-alignment processing (improvement) of the repeat annotation. For
+    one of many examples, internal sequences of LTR elements can be named
+    after the LTRs, even if there is no specific entry for that element in
+    the databases.
+    
+    The script queryRepeatDatabase.pl in the utilities directory
+    ( RepeatMasker/util/ ) will display how many repeats are in the library
+    for a given species. For poorly-covered species, you can create your
+    own libraries and use these with RepeatMasker. Alternatively, you can
+    mask your sequence using our transposon-protein database at
+    http://www.repeatmasker.org/cgi-bin/RepeatProteinMaskRequest. We will
+    make the protein-masking program and database part of the downloaded
+    RepeatMasker package in the near future.
+
+
+
+

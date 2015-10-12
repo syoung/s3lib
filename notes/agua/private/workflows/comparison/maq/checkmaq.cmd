@@ -1,0 +1,12 @@
+/nethome/syoung/0.5/bin/apps/aligners/MAQcheck.pl \
+--replicates 1-33 \
+--paired \
+--distance 200 \
+--deviation 50 \
+--params "-r All 1" \
+--label BOWTIE \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/maq/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq \
+--min 0.5 \
+--max 2 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/maqcheck.out

@@ -1,0 +1,524 @@
+dlc-genomics:~/FUNNYBASE/bin/iprscan young$ perl Config.pl 
+
+####################################################################################################
+#                Welcome to the InterProScan v4.2 installation script.
+#
+#  Tips:
+#     - If you are happy with the suggestion between [], just press <enter>
+#     - Whatever is shown between '/' and '/' is considered a valid input pattern
+####################################################################################################
+
+
+    Reconfigure everything? (first time install) [n] /(y|n)/? : y
+
+! Tip:
+!
+! InterProScan needs to know where it is installed and where perl is installed
+!
+    Do you want to set paths to perl and the installation directory? [y] /y|n/? : y
+
+! Tip:
+!
+! If your servers are using a shared file system, such as NFS, InterProScan is able to utilise this
+! and perform distributed computing across multiple servers
+! You will need set up the full UNIX path to the installation directory.
+! You also need to ensure that the InterProScan installation is on a SHARED DISK.
+!
+    Please enter the full path for the InterProScan installation [/Users/young/FUNNYBASE/bin/interproscan/iprscan] /.+/? : /Users/young/FUNNYBASE/bin/iprscan
+    Do you want to set another Perl command in place of [/usr/bin/perl]? [n] /y|n/? : 
+>>Changing Perl path in scripts ... >>DONE
+
+>>Checking if your Perl installation has the modules required by InterProScan...
+>>All modules needed are already installed.
+
+
+! Tip:
+!
+! To cope with bulk jobs and to enable efficient parallelization, InterProScan splits input files
+! with FASTA formatted sequences into smaller parts (chunks). Default size is "10" sequences per chunk
+!
+    Do you want to setup chunk size [y] /(y|n)/? : 
+
+! Tip:
+!
+! Here you should specify the maximum number of sequences allowed in each part (chunk).  Please note
+! it is not recommended to have more then 3000 chunks.
+!
+    Enter chunk size [10] /[0-9]+/? : 
+
+
+! Tip:
+!
+! You can configure InterProScan to limit the number of input sequences (protein & nucleotide),
+! set a maximum length for nucleotide sequences and a minimum length for protein sequences.
+! You can also configure the minimum length for a translated orf and use the codon table value
+! to translate the dna/rna sequence into six frames (http://www.ebi.ac.uk/cgi-bin/mutations/trtables.cgi).
+!
+    Do you want to configure this? [y] /(y|n)/? : 
+    Enter the maximum number of input protein sequences allowed [1000] /\d+/? : 
+    Enter the maximum number of input nucleic sequences allowed [100] /\d+/? : 
+    Enter the maximum length (in nucleic acids) for a nucleotide sequence [10000] /\d+/? : 
+    Enter the minimum length (in amino acids) for a protein sequence [5] /\d+/? : 
+    Enter the minimum allowed length of a translated orf [50] /\d+/? : 
+    Enter the default codon table value to use to translate dna/rna in six frames [0] /\d+/? : 
+
+
+! Tip:
+!
+! InterProScan currently encorporates searching against 13 databases. You have the choice whether or not to
+! set up a particular search tool against a database and how exactly that application will be configured to run
+! in this next section. You will configure the queue systems (if any) you will use, first
+!
+    Do you want to setup applications (if you don't, no applications will be included in InterProScan by default)? [y] /(y|n)/? : 
+
+! Tip:
+!
+! InterProScan is able to execute the applications via a UNIX QUEUING system which has an INTERACTIVE mode (such as LSF).
+! Currently, we mainly support LSF (which is used at EBI) however, we also provide configuration files for other systems
+! which are listed in the documentation
+!
+    Do you wish to use a queue system? [n] /(y|n)/? : 
+>>Checking your local architecture for InterProScan compatibility
+
+! Tip:
+! Blastprodom (a wrapper script on top of Blast package) is used to search against PRODOM families
+    Do you want to use blastprodom ? [y] /(y|n)/? : 
+!
+! PLEASE NOTE:
+! InterProScan can be launched through a cluster machine using RSH. To be able to utilise this
+! feature, all your machines must be visible to each other (see the .rhost file) and be mounted on
+! a shared file system, such as NFS
+! (If you are installing InterProScan for use on only one machine please ignore the above message)
+!
+    
+Please enter the execution host name of blastprodom [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Coils is used to predict coiled-coil segments with the algorithm of Lupas et al.
+    Do you want to use coils ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of coils [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Gene3d Gene3D is supplementary to the CATH database. This protein sequence database contains proteins from complete genomes which have been clustered into protein families and annotated with CATH domains, Pfam domains and functional information from KEGG, GO, COG, Affymetrix and STRINGS.
+    Do you want to use gene3d ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of gene3d [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpanther (hmmpfam from HMMER 2.3.2 package) PANTHER classifies proteins into families and specific functional subfamilies, which are then mapped to ontology terms and pathways.
+    Do you want to use hmmpanther ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpanther [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpir PIR produces the Protein  Sequence Database (PSD) of functionally annotated protein sequences, which grew out of the Atlas of Protein Sequence and Structure (1965-1978) edited by Margaret Dayhoff and has been incorporated into an integrated knowledge base system of value-added databases and analytical tools.
+    Do you want to use hmmpir ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpir [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmpfam (hmmpfam from HMMER 2.3.2 package) is used to search against the Pfam HMM (Profile hidden Markov models) database
+    Do you want to use hmmpfam ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmpfam [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmsmart (hmmpfam from HMMER 2.3.2 package) is used to search against the Smart HMM (Profile hidden Markov models) database
+    Do you want to use hmmsmart ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmsmart [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Hmmtigr (hmmpfam from HMMER 2.3.2 package) is used to search against TIGRFAMs collection of HMMs (Profile hidden Markov models)
+    Do you want to use hmmtigr ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of hmmtigr [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Fprintscan (FingerPRINTScan) is used to search against the PRINTS collection of protein signatures
+    Do you want to use fprintscan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of fprintscan [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Scanregexp (ScanProsite) is used to search against the PROSITE patterns collection and verify the  matches by statistically significant CONFIRM patterns
+    Do you want to use scanregexp ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of scanregexp [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Profilescan (ProfileScan (pfscan & ps_scan.pl) from Pftools 2.2) package is used  to search against the PROSITE profiles collection
+    Do you want to use profilescan ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of profilescan [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Superfamily A structural classification of proteins database for the investigation of sequences and structures.
+    Do you want to use superfamily ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of superfamily [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Seg is used for identifying and masking segments of low compositional complexity in amino acid sequences
+    Do you want to use seg ? [y] /(y|n)/? : 
+    
+Please enter the execution host name of seg [dlc-genomics.rsmas.miami.edu] /\S+/? : 
+
+! Tip:
+! Signalp predicts the presence and location of signal peptide cleavage sites, using eukaryotic HMM (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use signalp ? [n] /(y|n)/? : 
+
+! Tip:
+! Tmhmm is used for prediction of transmembrane helices in proteins using a Hidden Markov Model (under commercial license : contact software@cbs.dtu.dk)
+    Do you want to use tmhmm ? [n] /(y|n)/? : 
+
+! Tip:
+!
+! InterProScan can use taxonomy-based filtering of results which uses the InterPro taxonomy listed for each InterPro
+! entry to hide hits not relevant to that taxon.
+!
+    Do you want to make it available for users? [y] /y|n/? : 
+
+! Tip:
+!
+! You can specify an email address for the administrator. By default it will be you (young)
+! Administrators receive an email when a problem occurs in InterProScan.
+!
+    Do you want to set an administrator email address? [y] /y|n/? : 
+    Please enter the email address of the administrator: [] /[\w\.\-]+\@[\w\.\-]+/? : spyoung2@ncsu.edu
+>>Writing to the configuration files ... 
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/blastprodom.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/coils.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/fprintscan.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/gene3d.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/hmmpanther.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/hmmpfam.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/hmmpir.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/hmmsmart.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/hmmtigr.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/profilescan.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/scanregexp.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/seg.conf ... >>DONE
+>>Processing file : /Users/young/FUNNYBASE/bin/iprscan/conf/superfamily.conf ... >>DONE
+>>Setting File /Users/young/FUNNYBASE/bin/iprscan/conf/iprscan.conf ... >>DONE
+
+! Tip:
+!
+! InterProScan can be launched through a web interface. It can also be launched through secure HTTP (https)
+!
+    Do you want to run InterProScan using a web interface? [n] /y|n/? : y
+    Do you want to run InterProScan through a secure HTTP server? [n] /y|n/? : n
+    Enter the name of your server. You can specify a specific port to listen to. (e.g. "foo.bar.com:4000") [foobar.com] /[\w\.\_\-\:\d]+/? : dlc-genomics.rsmas.miami.edu
+!
+! Please add the following lines to your web server configuration (httpd.conf):
+#--------------------------------------
+ Alias /doc/ "/Users/young/FUNNYBASE/bin/iprscan/doc/html/"
+ Alias /images/ "/Users/young/FUNNYBASE/bin/iprscan/images/"
+ Alias /tmp/ "/Users/young/FUNNYBASE/bin/iprscan/tmp/"
+
+ ScriptAlias /iprscan/ "/Users/young/FUNNYBASE/bin/iprscan/bin/"
+
+ <Directory "/Users/young/FUNNYBASE/bin/iprscan/images">
+   Options Indexes MultiViews
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+ </Directory>
+
+ <Directory "/Users/young/FUNNYBASE/bin/iprscan/tmp/">
+   Options FollowSymLinks Includes SymLinksIfOwnerMatch
+    IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+    AllowOverride AuthConfig Limit FileInfo
+
+    Order deny,allow
+    Deny from all
+    Allow from .rsmas.miami.edu
+ </Directory>
+#--------------------------------------
+! Be sure that 'apache' or 'httpd' virtual user (uid/gid) have right to read/write into your /Users/young/FUNNYBASE/bin/iprscan iprscan directory.
+! Otherwise, if you are running a standalone http(s) web server, be sure also the user running it have to enough
+! rights to read/wrtie /Users/young/FUNNYBASE/bin/iprscan iprscan directory
+! If you encoutered problem with your web server running iprscan, read the FAQ or contact your system administrator.
+
+! After restarting your web server try http://dlc-genomics.rsmas.miami.edu/iprscan/iprscan
+!
+>>Indexing datafile ... 
+No specific file(s) given, indexing all files:
+
+Pfam
+prints.pval
+prodom.ipr
+Pfam-C
+smart.desc
+sf_hmm
+sf.seq
+Pfam-A.seed
+superfamily.hmm
+smart.thresholds
+smart.HMMs
+match.xml
+interpro.xml
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+
+No specific file(s) given, converting all files:
+
+Pfam
+sf_hmm
+superfamily.hmm
+smart.HMMs
+sf_hmm_sub
+TIGRFAMs_HMM.LIB
+Gene3D.hmm
+
+WARNING: Some problems occured when trying to index the data files.
+ Please fix the error below and index your datafiles using the /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl script.
+ For help, type './index_data.pl -h' 
+errormsg: ERROR: /Users/young/FUNNYBASE/bin/iprscan/data/Pfam checkIndex: /Users/young/FUNNYBASE/bin/iprscan/data/Pfam.inx index out of date? at /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl line 266.
+>>DONE
+
+! Tip:
+!
+!  We would appreciate it if you would register your installation of InterProScan.  This will allow us to notify you
+! of bug fixes and new releases of the software. We will not use your email address for any other purpose.
+!
+    Would you like to register InterProScan? [y] /(y|n)/? : y                               
+    What is the name of your organization? [] /\S+/? : NC State University
+WARNING: The information input is not valid (doesn't match /\S+/), please try again.
+    What is the name of your organization? [] /\S+/? : NC_State_University
+    Who is the contact person? [] /\S+/? : Stuart Young
+WARNING: The information input is not valid (doesn't match /\S+/), please try again.
+    Who is the contact person? [] /\S+/? : Stuart_Young
+    What is the e-mail address? [young@dlc-genomics.rsmas.miami.edu] /\S+/? : spyoung2@ncsu.edu
+    If you installed the web interface, what is the server name? [http://dlc-genomics.rsmas.miami.edu] /(\S+|n)/? : 
+Thank you.
+
+>>Installation is completed.  Please test your installation by running on the command line:
+
+        /Users/young/FUNNYBASE/bin/iprscan/bin/iprscan -cli -i /Users/young/FUNNYBASE/bin/iprscan/test.seq -o /Users/young/FUNNYBASE/bin/iprscan/test.out -format raw -goterms -ipr
+
+and comparing it with the merged.raw file that is supplied.
+For help and options on the commandline, run /Users/young/FUNNYBASE/bin/iprscan/bin/iprscan -cli -h
+
+dlc-genomics:~/FUNNYBASE/bin/iprscan young$ /Users/young/FUNNYBASE/bin/iprscan/bin/iprscan -cli -i /Users/young/FUNNYBASE/bin/iprscan/test.seq -o /Users/young/FUNNYBASE/bin/iprscan/test.out -format raw -goterms -ipr
+SUBMITTED iprscan-20051230-16191422
+
+FAILED
+        Iprscan job iprscan-20051230-16191422 failed and exit with status code 256
+/Users/young/FUNNYBASE/bin/iprscan/bin/iprscan: /Users/young/FUNNYBASE/bin/iprscan/tmp/20051230/iprscan-20051230-16191422/merged.raw unavailable : No such file or directory
+iprscan submission failed: checkSequences: Cannot get raw entry from iprmatches: getRawEntryFromIprMatches: query iprmatches failed: checkIndex: /Users/young/FUNNYBASE/bin/iprscan/data/match.xml.inx index out of date? at /Users/young/FUNNYBASE/bin/iprscan/lib/Dispatcher/Tool/InterProScan.pm line 3940.<br>dlc-genomics:~/FUNNYBASE/bin/iprscan young$
+
+
+FIXED INDEXING PROBLEM WITH index_data.pl:
+
+*** COMMAND:
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f Pfam -inx -iforce -v
+
+
+Usage : /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f file1 [-f fileN] -inx -iforce -bin -bforce -v -h
+
+
+Options:
+                -f       The name(s) of the file(s) you want to index. See description below. Each file should be
+                         preceeded by a -f flag.
+                         NOTE: DO NOT GIVE FULL PATH! JUST THE NAME OF THE FILE(S) TO UPDATE!!
+
+                -inx     To tell the program you want to index one or several files for InterProScan.
+
+                -iforce  Force reindexing the file(s) if already indexed (update the index).
+
+                -bin     To tell the program to convert a hmm library file (ascii) to a binary file.
+                         This action will speed up the hmm analysis up to 40%.
+
+                -bforce  Force the reconversion of a ascii file to a binary if this file already exists.
+
+                -v       Be verbose during actions (optional)
+
+                -h       Displays a help and exit.
+
+Supported Files for InterProScan indexing:
+- Gene3D.hmm
+- Pfam
+- Pfam-A.seed
+- Pfam-C
+- TIGRFAMs_HMM.LIB
+- interpro.xml
+- match.xml
+- prints.pval
+- prodom.ipr
+- sf.seq
+- sf_hmm
+- smart.HMMs
+- smart.desc
+- smart.thresholds
+- superfamily.hmm
+
+Using -bin option to convert ascii datafile to binary
+Supported files are :
+- Gene3D.hmm
+- Pfam
+- TIGRFAMs_HMM.LIB
+- sf_hmm
+- sf_hmm_sub
+- smart.HMMs
+- superfamily.hmm
+
+
+
+TESTED AGAIN:
+
+Users/young/FUNNYBASE/bin/iprscan/bin/iprscan -cli -i /Users/young/FUNNYBASE/bin/iprscan/test.seq -o /Users/young/FUNNYBASE/bin/iprscan/test.out -format raw -goterms -ipr
+
+
+
+#############################
+###    PROBLEM 2:
+#############################
+
+SUBMITTED iprscan-20051230-22130238
+
+FAILED
+        Iprscan job iprscan-20051230-22130238 failed and exit with status code 256
+/Users/young/FUNNYBASE/bin/iprscan/bin/iprscan: /Users/young/FUNNYBASE/bin/iprscan/tmp/20051230/iprscan-20051230-22130238/merged.raw unavailable : No such file or directory
+iprscan submission failed: checkSequences: Cannot get raw entry from iprmatches: getRawEntryFromIprMatches: query iprmatches failed: checkIndex: /Users/young/FUNNYBASE/bin/iprscan/data/match.xml.inx index out of date? at /Users/young/FUNNYBASE/bin/iprscan/lib/Dispatcher/Tool/InterProScan.pm line 3940.<br>dlc-genomics:~/FUNNYBASE/bin/iprscan young$ 
+
+
+REINDEXED match.xml, interpro.xml:
+
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f match.xml -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f interpro.xml -inx -iforce -v
+
+
+THEN IT WORKED!
+
+/Users/young/FUNNYBASE/bin/iprscan/bin/iprscan -cli -i /Users/young/FUNNYBASE/bin/iprscan/test.seq -o /Users/young/FUNNYBASE/bin/iprscan/test.out -format raw -goterms -ipr
+
+
+SUBMITTED iprscan-20051230-22322457
+
+=== ********************************************************** ===
+
+Some jobs failed! Please see the report file
+/Users/young/FUNNYBASE/bin/iprscan/tmp/20051230/iprscan-20051230-22322457/iprscan-20051230-22322457.report
+You can try to relaunch failed jobs using ResubmitJobs.pl
+script located in your iprscan/bin directory as follow :
+./ResubmitJobs.pl -r /Users/young/FUNNYBASE/bin/iprscan/tmp/20051230/iprscan-20051230-22322457/iprscan-20051230-22322457.report
+
+Then old results will be concatenated with new one
+
+=== ********************************************************** ===
+
+THE FAILED JOBS (BELOW) CONTAINED REFERENCES TO BINARY FILES WHICH DIDN'T EXIST:
+
+========================================================================
+Chunk: 1
+Jobid: iprscan-20051230-22322457-coils-cnk1
+Application: coils
+Please fix error(s) if necessary or check 'coils.conf' file.
+Errors :
+
+       2 sequences      528 aas        0 in coil
+
+
+========================================================================
+
+========================================================================
+Chunk: 1
+Jobid: iprscan-20051230-22322457-gene3d-cnk1
+Application: gene3d
+Please fix error(s) if necessary or check 'gene3d.conf' file.
+Errors :
+
+
+FATAL: Failed to open HMM database /Users/young/FUNNYBASE/bin/iprscan/data/Gene3D.hmm.bin
+Usage: hmmpfam [-options] <hmm database> <sequence file or database>
+  Available options are:
+   -h        : help; print brief help on version and usage
+   -n        : nucleic acid models/sequence (default protein)
+   -A <n>    : sets alignment output limit to <n> best domain alignments
+   -E <x>    : sets E value cutoff (globE) to <x>; default 10
+   -T <x>    : sets T bit threshold (globT) to <x>; no threshold by default
+   -Z <n>    : sets Z (# models) for E-value calculation
+
+
+
+========================================================================
+
+========================================================================
+Chunk: 1
+Jobid: iprscan-20051230-22322457-hmmpfam-cnk1
+Application: hmmpfam
+Please fix error(s) if necessary or check 'hmmpfam.conf' file.
+Errors :
+
+
+FATAL: Failed to open HMM database /Users/young/FUNNYBASE/bin/iprscan/data/Pfam.bin
+Usage: hmmpfam [-options] <hmm database> <sequence file or database>
+  Available options are:
+   -h        : help; print brief help on version and usage
+   -n        : nucleic acid models/sequence (default protein)
+   -A <n>    : sets alignment output limit to <n> best domain alignments
+   -E <x>    : sets E value cutoff (globE) to <x>; default 10
+   -T <x>    : sets T bit threshold (globT) to <x>; no threshold by default
+   -Z <n>    : sets Z (# models) for E-value calculation
+
+
+
+========================================================================
+
+========================================================================
+Chunk: 1
+Jobid: iprscan-20051230-22322457-hmmsmart-cnk1
+Application: hmmsmart
+Please fix error(s) if necessary or check 'hmmsmart.conf' file.
+Errors :
+
+
+SO I CREATED THE BINARY FILES FOR Pfam USING index_data.pl:
+
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f Pfam inx iforce -bin -v
+
+Creating Tool Object...Done
+Parsing Configuration file...Done
+
+========================================================
+        Binary Conversion for Pfam
+========================================================
+Converting ascii file Pfam to binary file ... DONE
+*********************************************************
+- Binary conversion for Pfam DONE
+*********************************************************
+
+
+
+...WHICH CREATED A NEW Pfam.bin FILE IN THE iprscan/data DIRECTORY.
+
+
+#############################
+###    PROBLEM 3:
+#############################
+
+AFTER RUNNING THE NEW INSTALLATION A COUPLE OF TIMES, THE FOLLOWING PROBLEM APPEARED
+AND PERSISTED EVEN AFTER REINSTALLING FROM SCRATCH:
+
+wget.pl COMPLAINS IT CAN'T FIND THE Date::Manip MODULE
+
+SOLUTION:
+
+cpan> install S/SB/SBECK/DateManip-5.44.tar.gz
+
+
+THEN CHECKED ON THE SITE FOR THE INDEXES AND FOUND THE REST NEEDED UPDATING:
+
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f sf_hmm -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f Pfam -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f Pfam-A.seed -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f Pfam-C -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f prints.pval -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f smart.HMMs -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f superfamily.hmm -inx -iforce -v
+perl /Users/young/FUNNYBASE/bin/iprscan/bin/index_data.pl -f TIGRFAMs_HMM.LIB -inx -iforce -v
+
+

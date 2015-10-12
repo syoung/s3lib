@@ -1,0 +1,94 @@
+Notes-apps-osx.txt
+
+</entry>
+
+
+
+<entry [Wed Dec 22 19:39:23 EST 2010] INSTALL MYSQL ON OSX (IMAC)>
+
+
+
+
+ADD TO .bash_profile:
+
+export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:$PATH"
+
+
+DOWNLOAD MYSQL:
+
+curl -O http://mysql.he.net/Downloads/MySQL-5.1/mysql-5.1.33.tar.gz
+tar xzvf mysql-5.1.33.tar.gz
+cd mysql-5.1.33
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 22 13:54:09 EST 2010] INSTALL BASIC APPS>
+
+
+
+
+INSTALL wget
+------------
+
+INSTRUCTIONS;
+http://www.withoutink.com/terminal/how-to-install-wget-in-osx/
+
+DOWNLOAD FROM:
+http://ftp.gnu.org/gnu/wget/wget-latest.tar.gz
+
+DOWNLOAD TO:
+mkdir -p /root/base/apps/wget
+cd /root/base/apps/wget
+
+INSTALL:
+./configure
+make
+make test
+sudo make install
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 22 12:39:23 EST 2010] HOW TO RUN A dmg FILE ON THE COMMAND LINE>
+
+
+
+
+1. MOUNT dmg FILE
+
+hdiutil attach ./file.dmg
+
+
+2. INSTALL WITH installer
+
+E.G., XCODE TOOLS:
+
+USE THE installer ON THE .mpkg files
+(SEE 'installer -help' OR man installer FOR OPTIONS)
+
+installer -pkg ./XcodeTools.mpkg -target /
+
+This assumes you want it installed on your main (boot) partition.
+
+The final argument is the target mount point which you'd only change if you're installing the package somewhere other than your boot partition.
+
+
+hdiutil attach ./file.dmg
+
+The command will mount the disk image for you, and then report back it's path in the /Volumes directory.
+
+When you're done with it, either drag it to the trash as usual, or you can type:
+
+hdiutil detach /Volumes/SomeVolume
+
+

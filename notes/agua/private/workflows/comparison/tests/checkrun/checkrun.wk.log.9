@@ -1,0 +1,104 @@
+[workflow checkrun]
+2011-01-21 13:15:37
+
+
+Workflow:
+name           checkrun
+owner          anonymous
+wkfile         checkrun.wk
+outputfile     checkrun.wk.bkp
+	
+  Application:
+  name           signalsuccess
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/signalSuccess.pl
+  ordinal        1
+
+    Parameters:
+    subjob2,subjob4,subjob6
+    succeeded      
+
+	
+  Application:
+  name           signalfailure
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/signalFailure.pl
+  ordinal        2
+
+    Parameters:
+    failed         
+    subjob1,subjob3,subjob5
+
+
+
+[app 1 signalsuccess]
+2011-01-21 13:15:37
+
+  Application:
+  name           signalsuccess
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/signalSuccess.pl
+  ordinal        1
+  outputfile     1-signalsuccess.app.bkp
+
+    Parameters:
+    subjob2,subjob4,subjob6
+    succeeded      
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/signalSuccess.pl \
+ succeeded \
+ subjob2,subjob4,subjob6 
+
+
+Output:
+
+	#### SEND JOB COMPLETION SIGNAL
+------------------------------------------------------------
+---[completed succeeded: complete subjob2,subjob4,subjob6]---
+------------------------------------------------------------
+
+
+X::App::run    completed: complete
+X::App::run    label: succeeded
+Job label 'succeeded' completion signal: complete subjob2,subjob4,subjob6
+
+X::Workflow::run    completed: 1
+[app 2 signalfailure]
+2011-01-21 13:15:37
+
+  Application:
+  name           signalfailure
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/signalFailure.pl
+  ordinal        2
+  outputfile     2-signalfailure.app.bkp
+
+    Parameters:
+    failed         
+    subjob1,subjob3,subjob5
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/signalFailure.pl \
+ failed \
+ subjob1,subjob3,subjob5 
+
+
+Output:
+
+	#### SEND JOB COMPLETION SIGNAL
+------------------------------------------------------------
+---[completed failed: incomplete subjob1,subjob2]---
+------------------------------------------------------------
+
+
+X::App::run    completed: incomplete
+X::App::run    label: failed
+Job label 'failed' completion signal: incomplete subjob1,subjob2
+
+X::App::run    Quitting due to incomplete job
+X::Workflow::run    completed: 0
+X::Workflow::run    App did not complete. Please check the job logs
+

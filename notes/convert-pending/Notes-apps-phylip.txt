@@ -1,0 +1,525 @@
+Notes-apps-phylip
+
+</entry>
+
+
+
+<entry [Wed Aug  8 17:57:25 EDT 2007] FIXED ISSUES WITH stramenophile3 JOB ERRORS BY DOING MANUAL REBOOT OF CLUSTER>
+
+
+
+ALL JOBS PROGRESSING NICELY:
+
+gems:~/FUNNYBASE/pipeline/phylip/stramenophile3 local$ tail -n 10 data.3*/*err*
+gems:~/FUNNYBASE/pipeline/phylip/stramenophile3 local$ tail -n 10 data.4*/*err*
+
+
+</entry>
+
+
+
+<entry [Tue Aug  7 15:00:33 EDT 2007] POSSIBLE RACE CONDITION - SOME dnaml JOBS DON'T RUN PAST FILE COPY STAGE>
+
+
+
+
+gems:~/FUNNYBASE/pipeline/phylip/stramenophile3 local$ ls -al data*/*err*
+-rw-r--r--   1 root  admin  5620 Aug  7 14:58 data.1/stramenophile3.error.1
+-rw-r--r--   1 root  admin  5654 Aug  7 14:57 data.10/stramenophile3.error.10
+-rw-r--r--   1 root  admin  5705 Aug  7 14:57 data.2/stramenophile3.error.2
+-rw-r--r--   1 root  admin  5739 Aug  7 14:58 data.3/stramenophile3.error.3
+-rw-r--r--   1 root  admin  5739 Aug  7 14:58 data.4/stramenophile3.error.4
+-rw-r--r--   1 root  admin  5620 Aug  7 14:58 data.5/stramenophile3.error.5
+-rw-r--r--   1 root  admin  5705 Aug  7 14:58 data.6/stramenophile3.error.6
+-rw-r--r--   1 root  admin     0 Aug  7 14:56 data.7/stramenophile3.error.7
+-rw-r--r--   1 root  admin     0 Aug  7 14:56 data.8/stramenophile3.error.8
+-rw-r--r--   1 root  admin     0 Aug  7 14:56 data.9/stramenophile3.error.9
+
+
+Options templatefile: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/stramenophile3.options
+BASE DIR: /Users/local/FUNNYBASE/pipeline/phylip
+Task id: 7
+mkdir -p /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7
+Input file: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/stramenophile3.input.7
+Option file: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/stramenophile3.options.7
+Output file: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/stramenophile3.out.7
+Tree file: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/stramenophile3.tree.7
+Error file: /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/stramenophile3.error.7
+
+`cp /Users/local/FUNNYBASE/pipeline/phylip/templatedir/outfile /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/`;
+`cp /Users/local/FUNNYBASE/pipeline/phylip/templatedir/outtree /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/`;
+`cp /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/stramenophile3.7 /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.\
+7/stramenophile3.input.7`;
+Copying outfile templates and input file to directory...
+cp /Users/local/FUNNYBASE/pipeline/phylip/templatedir/outfile /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7... done.
+cp /Users/local/FUNNYBASE/pipeline/phylip/templatedir/outtree /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7/... done.
+cp /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/stramenophile3.7 /Users/local/FUNNYBASE/pipeline/phylip/stramenophile3/data.7\
+/stramenophile3.input.7...
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jul 11 18:39:28 EDT 2007] MSG ALEX - PHYLIP TREE STILL RUNNING>
+
+
+
+
+MSG: Alex
+SJT: Phylip tree - still running
+
+Hi Alex,
+
+Fyi, the job is still running... Here's the current output attached.
+
+Cheers,
+
+Stuart.
+
+Attached file: ~/FUNNYBASE/dev/alex/070711.phylip_progress.txt
+
+</entry>
+
+
+
+<entry [Tue Jul 10 23:58:59 EDT 2007] dnaml RUN ON stramenophile2 DATA SET>
+
+
+
+1. COPY templatedir DIRECTORY (ON genomics PIPELINE) TO /Users/local/FUNNYBASE/pipeline/phylip
+
+2. COPY stramenophile2 DIRECTORY TO /Users/local/FUNNYBASE/pipeline/phylip. IT CONTAINS:
+
+	stramenophile2.1	-	INPUT FILE
+
+
+
+3. RUN arrayphylip.pl
+
+sudo ./arrayphylip.pl stramenophile2 1 stramenophile2.options
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jul 10 23:56:20 EDT 2007] dnaml RUN ON stramenophile2 DATA SET - OPTIONS FILE>
+
+
+
+
+ALEX EMAILED phylip SETTINGS:
+
+
+DEFAULT settings
+Nucleic acid sequence Maximum Likelihood method, version 3.61
+Settings for this run:
+  U                 Search for best tree?  Yes
+  T        Transition/transversion ratio:  2.0000
+  F       Use empirical base frequencies?  Yes
+  C                One category of sites?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  S        Speedier but rougher analysis?  Yes
+  G                Global rearrangements?  No
+  J   Randomize input order of sequences?  No. Use input order
+  O                        Outgroup root?  No, use as outgroup species  1
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  IBM PC
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+  Y to accept these or type the letter for one to change
+
+CORRECT SETTINGS FOR THIS RUN
+  U                 Search for best tree?  Yes
+  T        Transition/transversion ratio:  1.9433
+  F       Use empirical base frequencies?  Yes
+  C                One category of sites?  Yes
+  R           Rate variation among sites?  gamma + invariant (toggle twice to get to this)
+ W                       Sites weighted?  No
+  S        Speedier but rougher analysis?  Yes
+  G                Global rearrangements?  YES
+  J   Randomize input order of sequences?  When you type J it will ask for seed,  seed = 101, then it will ask for # of jumbles, enter 10
+  O                        Outgroup root?  No, use as outgroup species  1
+  M           Analyze multiple data sets?  When you hit M it will ask data or weights, type D (data), then it will ask how many datasets type 100
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  IBM PC
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+  Y to accept these or type the letter for one to change
+
+Then hit Y
+
+It will ask for coeff of variation  enter 1.451258
+
+Then number of categories = 6
+
+Frac invariant = 0.233
+
+
+
+BASED ON THE ABOVE, CREATED stramenophile2.options:
+
+------------------------------------------
+<INPUT_FILE>
+F
+<OUTPUT_FILE>
+T
+1.9433
+R
+R
+G
+J
+101
+10
+M
+D
+100
+Y
+1.451248
+6
+0.233
+F
+<TREE_FILE>
+-------------------------------------------
+
+WHICH RAN MANUALLY:
+
+Data set # 1:
+
+Adding species:
+   1. 18SE037T1F
+   2. 78707373|g
+   3. 1695795|gb
+   4. 34591215|g
+   5. 61380898|g
+   6. 18SP006T1F
+   7. CCMP1545  
+   8. SSRPE01   
+   9. 18SC040T1F
+  10. 148970237|
+  11. 18SK017T1F
+  12. SSRPD66   
+  13. Q2A03
+  ...
+  
+  
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+STRAMENOPHILE RUN INFO
+++++++++++++++++++++++
+
+gems:~/FUNNYBASE/bin/phylip local$ sudo arrayphylip stramenophile1 32 stramenophile1.options
+
+Shell script file printed:      /Users/local/FUNNYBASE/pipeline/phylip/stramenophile1/stramenophile1.sh
+qsub command: qsub -sync y -t 1-32 /Users/local/FUNNYBASE/pipeline/phylip/stramenophile1/stramenophile1.sh
+
+Run time: 22:23:35
+Completed /usr/bin/arrayphylip
+12:49AM, 26 September 2006
+****************************************
+
+
+ALEX - STRAMENOPHILE OPTIONS (Monday, September 25, 2006 3:05 PM)
+++++++++++++++++++++++++++++
+U - leave as is (default = yes)
+T - leave as is
+F - leave as default
+C - leave as default
+R - toggle ONCE until says gamma
+A - leave as is
+S - leave as is
+G - toggle to yes
+J - toggle - it will ask you for a random ODD seed number (4n+1)...enter what you will. THEN it will ask number of times to Jumble enter the number 1
+O - change to 135 (when you type "o" it will say "type number of outgroup")
+
+      It will then ask for seed you can use the same one as you used for the jumble
+M - when you hit "m" it will ask you multiple data sets of weights - go for
+      "D". THEN it will ask "how many data sets" type the number 4
+Then hit Y
+It will ask for the CV, enter the number 1.264911
+Then (I think) it will ask for rates in HMM number of categories, enter the number 6
+>Then it will start running and writing the data to the out file!
+
+
+ALEX - PARAMETERS
++++++++++++++++++
+
+DATASET:
+- 16 FILES WITH 5 ENTRIES EACH
+- FILE WITH
+
+2 with the little data packages and one with all 100 together (in case
+distributing to all nodes is easy).
+
+The data should be run in DNAML
+It automatically looks for a file named infile, when it doesn't see it it
+will prompt for a name - in this case it does not need an extension, jus the
+correct name (it only needs the extension when the file was not generated by
+one of the phylip packages.
+
+The setting should be as below:
+===============================
+
+#### U - leave as is (default = yes)
+#### F - leave as default
+#### C - leave as default
+R - toggle twice until says gamma + invariant sites
+#### A - leave as is
+#### S - leave as is
+G - toggle to yes
+J - toggle - it will ask you for a random ODD seed number...enter what you
+will. THEN it will ask number of times to Jumble enter the number 1
+O - change to 114 (when you type "o" it will say "type number of outgroup:"
+in this case it is 114)
+M - when you hit "m" it will ask you multiple data sets of weights - go for
+"D". THEN it will ask "how many data sets" type the number 5
+
+Then hit Y
+It will ask for the CV, enter the number 1.271335
+Then it will ask for rates in HMM number of categories, enter the number 6
+Then it will ask for the fraction of invariant sites, enter the number
+0.2166
+
+
+INTERACTIVE RUN OF dnaml
+++++++++++++++++++++++++
+
+dlc-genomics:~/FUNNYBASE/bin/phylip young$ /Users/young/apps/phylip/phylip3.66/exe/dnaml                                            
+dnaml: can't find input file "infile"
+Please enter a new file name> /Users/young/FUNNYBASE/bin/phylip/input
+
+dnaml: the file "outfile" that you wanted to
+     use as output file already exists.
+     Do you want to Replace it, Append to it,
+     write to a new File, or Quit?
+     (please type R, A, F, or Q) 
+F
+Please enter a new file name> /Users/young/FUNNYBASE/bin/phylip/output.1
+ERROR: Unable to read the number of species or characters in data set
+The input file is incorrect (perhaps it was not saved text only).
+
+
+Nucleic acid sequence Maximum Likelihood method, version 3.66
+
+
+Settings for this run:
+  U                 Search for best tree?  Yes
+  T        Transition/transversion ratio:  2.0000
+  F       Use empirical base frequencies?  Yes
+  C                One category of sites?  Yes
+  R           Rate variation among sites?  constant rate
+  W                       Sites weighted?  No
+  S        Speedier but rougher analysis?  Yes
+  G                Global rearrangements?  No
+  J   Randomize input order of sequences?  No. Use input order
+  O                        Outgroup root?  No, use as outgroup species  1
+  M           Analyze multiple data sets?  No
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  No
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+  Y to accept these or type the letter for one to change
+  
+
+arrayphylip.pl AND dnaml.pl ARRAY JOB OUTPUT
+++++++++++++++++++++++++++++++++++++++++++++
+Nucleic acid sequence Maximum Likelihood method, version 3.66
+
+Settings for this run:
+  U                 Search for best tree?  Yes
+  T        Transition/transversion ratio:  1.8797
+  F       Use empirical base frequencies?  Yes
+  C                One category of sites?  Yes
+  R           Rate variation among sites?  Gamma+Invariant sites
+  A   Rates at adjacent sites correlated?  No, they are independent
+  W                       Sites weighted?  No
+  S        Speedier but rougher analysis?  Yes
+  G                Global rearrangements?  Yes
+  J   Randomize input order of sequences?  Yes (seed =    7649,  1 times)
+  O                        Outgroup root?  No, use as outgroup species  1
+  M           Analyze multiple data sets?  Yes,  5 data sets
+  I          Input sequences interleaved?  Yes
+  0   Terminal type (IBM PC, ANSI, none)?  ANSI
+  1    Print out the data at start of run  Yes
+  2  Print indications of progress of run  Yes
+  3                        Print out tree  Yes
+  4       Write out trees onto tree file?  Yes
+  5   Reconstruct hypothetical sequences?  No
+
+  Y to accept these or type the letter for one to change
+
+Coefficient of variation of substitution rate among sites (must be positive)
+ In gamma distribution parameters, this is 1/(square root of alpha)
+
+Rates in HMM (including one for invariant sites):
+Number of categories (1-9)?
+Fraction of invariant sites?
+
+dnaml: the file "outtree" that you wanted to
+     use as output tree file already exists.
+     Do you want to Replace it, Append to it,
+     write to a new File, or Quit?
+     (please type R, A, F, or Q) 
+Please enter a new file name> 
+Data set # 1:
+
+Adding species:
+   1. B03N10EN36
+   2. OLI51033  
+   3. X68483Cyan
+   4. U37107Deve
+   5. H02N5EN360
+   6. AF107089  
+   7. SSRPB14   
+   8. Z15105Babe
+   9. AY381171HE
+  10. AB101540Di
+  11. OLI11008  
+  12. SSRPE01   
+  13. Q2H11N10CT
+  14. SSRPB45   
+  15. OLI11030  
+  16. AY294144  
+  17. OLI11010  
+  18. AY083224  
+  19. SSRPD77   
+  20. AY129055  
+  21. AY129038  
+  22. AB231617Ka
+  23. SSRPB26   
+  24. AF293898  
+  25. SSRPC86   
+  26. SSRPC15   
+  27. Q2B12N10CT
+  28. SSRPD66   
+  29. U21338Laby
+  30. Q2F10N5CTD
+  31. SSRPC31   
+  32. SSRPD64   
+  33. DH148EKDGI
+  34. AB045583  
+  35. AJ632204Sk
+  36. OLI11032  
+  37. SSRPE04   
+  38. Ra0106131 
+  39. SSRPB73   
+  40. AY129039  
+  41. SSRPD84   
+  42. U14386Pela
+  43. SSRPD86   
+  44. SSRPD74   
+  45. SSRPD81   
+  46. SSRPB64   
+  47. B04N10EN36
+  48. N414.27/WS
+  49. DH147EKD18
+  50. Q2A03CTD03
+  51. DH147EKD6G
+  52. SSRPB80   
+  53. AY635841Ba
+  54. AB183605Im
+  55. PPA246269P
+  56. SSRPD92   
+  57. SSRPE02   
+  58. AB246692Ps
+    ...
+    
+
+RANDOM NUMBER SEED
+++++++++++++++++++
+
+This should be an integer greater than zero (and probably less than 32767) and which is of the form 4n+1, that is, it leaves a remainder of 1 when divided by 4. This can be judged by looking at the last two digits of the integer (for instance 7651 is not of form 4n+1 as 51, when divided by 4, leaves the remainder 3). The random number seed is used to start the random number generator. If the randum number seed is not odd, the program will request it again. Any odd number can be used, but may result in a random number sequence that repeats itself after less than the full one billion numbers. Usually this is not a problem. As the random numbers appear to be unpredictable, there is no such thing as a "good" seed -- the numbers produced from one seed are statistically indistinguishable from those produced by another, and it is not true that the numbers produced from one seed (say 4533) are similar to those produced from a nearby seed (say 4537).
+
+
+  
+USING EXPECT
+++++++++++++
+
+
+15.13.1. Problem
+
+You want to automate interaction with a full-screen program that expects to have a terminal behind STDIN and STDOUT.
+15.13.2. Solution
+
+Use the Expect module from CPAN:
+
+use Expect;
+
+$command = Expect->spawn("program to run")
+    or die "Couldn't start program: $!\n";
+
+# prevent the program's output from being shown on our STDOUT
+$command->log_stdout(0);
+
+# wait 10 seconds for "Password:" to appear
+unless ($command->expect(10, "Password")) {
+    # timed out
+}
+
+# wait 20 seconds for something that matches /[lL]ogin: ?/
+unless ($command->expect(20, -re => '[lL]ogin: ?')) {
+    # timed out
+}
+
+# wait forever for "invalid" to appear
+unless ($command->expect(undef, "invalid")) {
+    # error occurred; the program probably went away
+}
+
+# send "Hello, world" and a carriage return to the program
+print $command "Hello, world\r";
+
+# if the program will terminate by itself, finish up with
+$command->soft_close( );
+
+# if the program must be explicitly killed, finish up with
+$command->hard_close( );
+	
+						
+
+
+15.13.3. Discussion
+
+This module requires two other modules from CPAN: IO::Pty and IO::Stty. It sets up a pseudo-terminal to interact with programs that insist on talking to the terminal device driver. People often use this for talking to passwd to change passwords. telnet (Net::Telnet, described in Recipe 18.6, is probably more suitable and portable) and ftp are also programs that expect a real tty.
+
+Start the program you want to run with Expect->spawn, passing a program name and arguments either in a single string or as a list. Expect starts the program and returns an object representing that program, or undef if the program couldn't be started.
+
+To wait for the program to emit a particular string, use the expect method. Its first argument is the number of seconds to wait for the string, or undef to wait forever. To wait for a string, give that string as the second argument to expect. To wait for a regular expression, give "-re" as the second argument and a string containing the pattern as the third argument. You can give further strings or patterns to wait for:
+
+$which = $command->expect(30, "invalid", "success", "error", "boom");
+if ($which) {
+    # found one of those strings
+}
+
+
+In scalar context, expect returns the number of arguments it matched. In the previous example, expect would return 1 if the program emitted "invalid", 2 if it emitted "success", and so on. If none of the patterns or strings matches, expect returns false.
+
+In list context, expect returns a five-element list. The first element is the number of the pattern or string that matched, which is the same as its return value in scalar context. The second argument is a string indicating why expect returned. If there were no error, the second argument would be undef. Possible errors are "1:TIMEOUT", "2:EOF", "3:spawn id(...)died", and "4:...". (See the Expect(3) manpage for the precise meaning of these messages.) The third argument of expect's return list is the string matched. The fourth argument is text before the match, and the fifth argument is text after the match.
+
+Sending input to the program you're controlling with Expect is as simple as using print. The only catch is that terminals, devices, and sockets all vary in what they send and expect as the line terminator‰?Ówe've left the sanctuary of the C standard I/O library, so the behind-the-scenes conversion to "\n" isn't taking place. We recommend trying "\r" at first. If that doesn't work, try "\n" and "\r\n".
+
+When you're finished with the spawned program, you have three options. One, you can continue with your main program, and the spawned program will be forcibly killed when the main program ends. This will accumulate processes, though. Two, if you know the spawned program will terminate normally either when it has finished sending you output or because you told it to stop
+
+for example, telnet after you exit the remote shell, call the soft_close method. If the spawned program could continue forever, like tail -f, then use the hard_close method; this kills the spawned program.

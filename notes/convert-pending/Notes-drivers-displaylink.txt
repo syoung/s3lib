@@ -1,0 +1,2021 @@
+Notes-drivers-displaylink
+
+</entry>
+
+
+
+<entry [Wed Feb  9 21:32:31 EST 2011] INSTALL VIEWSONIC DRIVER ON UBUNTU 10.10>
+
+
+
+#### DON'T DO THIS OR IT WILL DROP INTO TERMINAL MODE WITH NO RETURN
+####*********************************
+####ERROR:  'Sync. Out of Range'
+####
+####SOLUTION:
+####
+####PRESS Ctrl + ALT + F2
+####*********************************
+
+
+NO /etc/X11/xorg.conf FILE IS PRESENT BECAUSE IT'S SUPERFLUOUS:
+
+http://superuser.com/questions/51248/where-is-the-xorg-conf-file-in-karmic-koala-ubuntu-9-10
+
+xorg.conf will not be present unless it is explicitly required.
+
+The new X server doesn't need an xorg.conf file anymore rather gathering the
+devices with dbus and may be installed without it on Jaunty. You can still b
+uild your own though if you need to add something.
+
+
+REASONS WHY IT'S NOT NEEDED NORMALLY:
+
+Wikipedia on xorg.conf:
+
+For a long time, editing xorg.conf was necessary for advanced input devices and multiple monitor output to
+work correctly. This was regarded to be a major usability obstacle. In modern systems this is seldom necessary,
+thanks to input hotplugging and the XRandR extension integrated into new X.org releases. It is still needed
+for devices from some manufacturers, notably NVIDIA and Wacom, whose drivers fail to provide support for
+those technologies.
+
+
+CONFIRMED IT'S NOT PRESENT ON SYSTEM:
+
+locate xorg.conf
+
+/usr/share/X11/xorg.conf.d
+/usr/share/X11/xorg.conf.d/10-evdev.conf
+/usr/share/X11/xorg.conf.d/50-synaptics.conf
+/usr/share/X11/xorg.conf.d/50-vmmouse.conf
+/usr/share/X11/xorg.conf.d/50-wacom.conf
+/usr/share/X11/xorg.conf.d/51-synaptics-quirks.conf
+/usr/share/X11/xorg.conf.d/60-magictrackpad.conf
+/usr/share/doc/xserver-xorg-video-nouveau/examples/xorg.conf
+/usr/share/man/man5/xorg.conf.5.gz
+
+
+
+TURNS OUT THAT THIS elitebook HAS A FirePro M5800 (Mobility Radeon HD5000 Series) VGA CARD:
+
+
+lspci
+
+    ...
+    01:00.0 VGA compatible controller: ATI Technologies Inc Madison [Mobility Radeon HD 5000 Series]
+    ...
+
+lspci -v 
+    
+    ...
+    01:00.0 VGA compatible controller: ATI Technologies Inc Madison [Mobility Radeon HD\
+     5000 Series] (prog-if 00 [VGA controller])
+            Subsystem: Hewlett-Packard Company Madison XT [FirePro M5800]
+            Flags: bus master, fast devsel, latency 0, IRQ 46
+            Memory at c0000000 (64-bit, prefetchable) [size=256M]
+            Memory at d4400000 (64-bit, non-prefetchable) [size=128K]
+            I/O ports at 5000 [size=256]
+            Expansion ROM at d4440000 [disabled] [size=128K]
+            Capabilities: [50] Power Management version 3
+            Capabilities: [58] Express Legacy Endpoint, MSI 00
+            Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+            Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+            Capabilities: [150] Advanced Error Reporting
+            Kernel driver in use: radeon
+            Kernel modules: radeon
+    ...
+    
+    
+SO INSTALLED THE PROPRIETARY ATi DRIVER USING
+
+System --> Administration --> Additional Drivers
+
+
+
+********************************************************************************
+****** DISREGARD THE FOLLOWING - TRIED ASSUMING IT WAS AN INTEL VGA CARD *******
+********************************************************************************
+
+
+INSTALL xserver-xorg-video-displaylink:
+
+
+apt-get install xserver-xorg-video-displaylink
+    
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following packages were automatically installed and are no longer required:
+      linux-headers-2.6.35-22-generic linux-headers-2.6.35-22
+    Use 'apt-get autoremove' to remove them.
+    The following NEW packages will be installed:
+      xserver-xorg-video-displaylink
+    0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+    Need to get 11.0kB of archives.
+    After this operation, 77.8kB of additional disk space will be used.
+    WARNING: The following packages cannot be authenticated!
+      xserver-xorg-video-displaylink
+    Install these packages without verification [y/N]? y
+    Get:1 http://us.archive.ubuntu.com/ubuntu/ maverick/universe xserver-xorg-video-displaylink amd64 0.3-0ubuntu6 [11.0kB]
+    Fetched 11.0kB in 0s (22.2kB/s)                         
+    Selecting previously deselected package xserver-xorg-video-displaylink.
+    (Reading database ... 174478 files and directories currently installed.)
+    Unpacking xserver-xorg-video-displaylink (from .../xserver-xorg-video-displaylink_0.3-0ubuntu6_amd64.deb) ...
+    Setting up xserver-xorg-video-displaylink (0.3-0ubuntu6) ...
+
+
+INSTALL NVIDIA BINARY (PROPRIETARY) DRIVER
+
+apt-get install nvidia-current
+
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following extra packages will be installed:
+      dkms fakeroot patch
+    Suggested packages:
+      diffutils-doc
+    The following NEW packages will be installed:
+      dkms fakeroot nvidia-current patch
+    0 upgraded, 4 newly installed, 0 to remove and 0 not upgraded.
+    Need to get 46.2MB of archives.
+    After this operation, 144MB of additional disk space will be used.
+    Do you want to continue [Y/n]? y
+    WARNING: The following packages cannot be authenticated!
+      patch dkms fakeroot nvidia-current
+    Install these packages without verification [y/N]? y
+    Get:1 http://us.archive.ubuntu.com/ubuntu/ maverick/main patch amd64 2.6-2ubuntu1 [121kB]
+    Get:2 http://us.archive.ubuntu.com/ubuntu/ maverick-updates/main dkms all 2.1.1.2-3ubuntu1.1 [71.3kB]
+    Get:3 http://us.archive.ubuntu.com/ubuntu/ maverick/main fakeroot amd64 1.14.4-1ubuntu1 [101kB]
+    Get:4 http://us.archive.ubuntu.com/ubuntu/ maverick/restricted nvidia-current amd64 260.19.06-0ubuntu1 [45.9MB]
+    Fetched 46.2MB in 4min 38s (166kB/s)                                           
+    Selecting previously deselected package patch.
+    (Reading database ... 174484 files and directories currently installed.)
+    Unpacking patch (from .../patch_2.6-2ubuntu1_amd64.deb) ...
+    Selecting previously deselected package dkms.
+    Unpacking dkms (from .../dkms_2.1.1.2-3ubuntu1.1_all.deb) ...
+    Selecting previously deselected package fakeroot.
+    Unpacking fakeroot (from .../fakeroot_1.14.4-1ubuntu1_amd64.deb) ...
+    Selecting previously deselected package nvidia-current.
+    Unpacking nvidia-current (from .../nvidia-current_260.19.06-0ubuntu1_amd64.deb) ...
+    Processing triggers for man-db ...
+    Setting up patch (2.6-2ubuntu1) ...
+    Setting up dkms (2.1.1.2-3ubuntu1.1) ...
+    Setting up fakeroot (1.14.4-1ubuntu1) ...
+    update-alternatives: using /usr/bin/fakeroot-sysv to provide /usr/bin/fakeroot (fakeroot) in auto mode.
+    Setting up nvidia-current (260.19.06-0ubuntu1) ...
+    update-alternatives: using /usr/lib/nvidia-current/ld.so.conf to provide /etc/ld.so.conf.d/GL.conf (gl_conf) in auto mode.
+    update-initramfs: deferring update (trigger activated)
+    Loading new nvidia-current-260.19.06 DKMS files...
+    First Installation: checking all kernels...
+    Building only for 2.6.35-25-generic
+    Building for architecture x86_64
+    Building initial module for 2.6.35-25-generic
+    Done.
+    
+    nvidia-current.ko:
+    Running module version sanity check.
+     - Original module
+       - No original module exists within this kernel
+     - Installation
+       - Installing to /lib/modules/2.6.35-25-generic/updates/dkms/
+    
+    depmod.....
+    
+    DKMS: install Completed.
+    Processing triggers for python-gmenu ...
+    Rebuilding /usr/share/applications/desktop.en_US.utf8.cache...
+    Processing triggers for initramfs-tools ...
+    update-initramfs: Generating /boot/initrd.img-2.6.35-25-generic
+    Processing triggers for python-support ...
+
+
+
+CREATE NEW /etc/X11/xorg.conf FILE USING nvidia-xconfig WHICH WAS INSTALLED WITH nvidia-current:
+
+nvidia-xconfig
+
+    WARNING: Unable to locate/open X configuration file.
+    
+    New X configuration file written to '/etc/X11/xorg.conf'
+
+
+
+CHECK NEW xorg.conf FILE:
+
+cat /etc/X11/xorg.conf
+
+    # nvidia-xconfig: X configuration file generated by nvidia-xconfig
+    # nvidia-xconfig:  version 260.19.06  (buildmeister@builder101)  Mon Sep 13 04:59:45 PDT 2010
+    
+    Section "ServerLayout"
+        Identifier     "Layout0"
+        Screen      0  "Screen0"
+        InputDevice    "Keyboard0" "CoreKeyboard"
+        InputDevice    "Mouse0" "CorePointer"
+    EndSection
+    
+    Section "Files"
+    EndSection
+    
+    Section "InputDevice"
+        # generated from default
+        Identifier     "Mouse0"
+        Driver         "mouse"
+        Option         "Protocol" "auto"
+        Option         "Device" "/dev/psaux"
+        Option         "Emulate3Buttons" "no"
+        Option         "ZAxisMapping" "4 5"
+    EndSection
+    
+    Section "InputDevice"
+        # generated from default
+        Identifier     "Keyboard0"
+        Driver         "kbd"
+    EndSection
+    
+    Section "Monitor"
+        Identifier     "Monitor0"
+        VendorName     "Unknown"
+        ModelName      "Unknown"
+        HorizSync       28.0 - 33.0
+        VertRefresh     43.0 - 72.0
+        Option         "DPMS"
+    EndSection
+    
+    Section "Device"
+        Identifier     "Device0"
+        Driver         "nvidia"
+        VendorName     "NVIDIA Corporation"
+    EndSection
+    
+    Section "Screen"
+        Identifier     "Screen0"
+        Device         "Device0"
+        Monitor        "Monitor0"
+        DefaultDepth    24
+        SubSection     "Display"
+            Depth       24
+        EndSubSection
+    EndSection
+
+
+
+EDITED xorg.conf FILE, ADDING THIS AT END:
+
+
+
+Section "Device"
+    Identifier     "Device1"
+    Driver         "displaylink"
+    VendorName     "displaylink"
+    Option         "fbdev" "/dev/fb0"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen1"
+    Device         "Device1"
+    Monitor        "Monitor1"
+    DefaultDepth    24
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
+EndSection
+
+
+#Use the info in xorg.conf file for each monitor to create a combined xorg.conf. Then update the Device 
+#for Displaylink adapter to have Driver "displaylink" and Option "fbdev" "/dev/fb0".  Also update
+#Identifier strings for the DisplayLink adapter to "Device1", "Screen1", "Monitor1".
+#
+
+REMOVE POSSIBLE CLASHING DRIVER:
+
+apt-get --purge remove xserver-xorg-video-nouveau
+
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following packages will be REMOVED:
+      xserver-xorg-video-all* xserver-xorg-video-nouveau*
+    0 upgraded, 0 newly installed, 2 to remove and 0 not upgraded.
+    After this operation, 336kB disk space will be freed.
+    Do you want to continue [Y/n]? Y
+    (Reading database ... 174751 files and directories currently installed.)
+    Removing xserver-xorg-video-all ...
+    Removing xserver-xorg-video-nouveau ...
+    Processing triggers for man-db ...
+
+
+ENABLE NVIDIA DRIVERS:
+
+*** ATI DRIVERS PRESENT BUT NO NVIDIA DRIVERS...***
+
+Go to System->Administration->Additional Drivers
+
+check the box to enable the restricted drivers for your NVIDIA card if the option is provided.
+
+
+
+
+CONNECTED KENSINGTON USB2VGA AND RERAN nvidia-xconfig AND xorg.cong WAS ONLY DIFFERENT IN ONE LINE:
+
+head xorg.conf xorg.conf.laptop 
+
+    ==> xorg.conf <==
+    # nvidia-xconfig: X configuration file generated by nvidia-xconfig
+    # nvidia-xconfig:  version 260.19.06  (buildmeister@builder101)  Mon Sep 13 04:59:45 PDT 2010
+    
+    
+    Section "ServerLayout"
+        Identifier     "Layout0"
+        Screen      0  "Screen0" 0 0                <===== HERE
+        InputDevice    "Keyboard0" "CoreKeyboard"
+        InputDevice    "Mouse0" "CorePointer"
+    EndSection
+    
+
+    ==> xorg.conf.laptop <==
+    # nvidia-xconfig: X configuration file generated by nvidia-xconfig
+    # nvidia-xconfig:  version 260.19.06  (buildmeister@builder101)  Mon Sep 13 04:59:45 PDT 2010
+    
+    Section "ServerLayout"
+        Identifier     "Layout0"
+        Screen      0  "Screen0"
+        InputDevice    "Keyboard0" "CoreKeyboard"
+        InputDevice    "Mouse0" "CorePointer"
+    EndSection
+    
+
+
+
+
+This guide is for installing the NVIDIA closed source binary/restricted drivers on a system running an NVIDIA graphics card. For other graphics cards refer to the BinaryDriverHowto.
+
+The NVIDIA provided driver supports hardware-accelerated 3D, TV-Out support, and dual-head functions.
+
+Driver Versions
+There are the following restricted driver versions available in the repositories. You may install the nvidia-current package for the driver of the current version.
+
+96.43.18 (driver is 96.43.19 in the proposed updates source in ubuntu 10.10 )
+173.14.28
+185.18.36
+195.36.24
+To enable the latest version of binary driver in nvidia-current, please follow this link http://www.webupd8.org/2010/06/how-to-install-nvidia-25635-display.html to upgrade using a PPA repository.
+
+Installation
+Recommended step for Ubuntu 10.10
+Version 96.43.18 is broken ,Go to System->Administration->Software sources then go to the update's tab--tick proposed update sources--close & refesh. please follow this link for more infomantion http://ubuntulifeblog.blogspot.com/2010/12/update-on-nvidia-96-driver-with-ubuntu.html
+
+Recommended step for Ubuntu 10.04 or higher
+Nouveau, an open source driver, is installed by default. You can remove it by command-line by entering this:
+
+sudo apt-get --purge remove xserver-xorg-video-nouveau
+Ubuntu 9.10 or higher
+Go to System->Administration->Hardware Drivers and check the box to enable the restricted drivers for your NVIDIA card if the option is provided.
+Note that in Ubuntu 10.10, Hardware Drivers is renamed to Additional Drivers.
+If the restricted driver remains unactivated after attempting to activate it in the Hardware Drivers dialog, you may not have the appropriate linux headers installed to compile the driver. Ensure that the linux-headers-XXX and linux-restricted-modules-XXX packages are installed, where XXX matches the version of the kernel you are using (linux-image-XXX).
+If the activation hangs on download/install dialog, you can install the driver using System->Administration->Synaptic Package Manager, make sure you pick the latest driver version recommended by the "Hardware Drivers" tool and all its dependencies. Go to Hardware Drivers tool and activate the driver you just installed.
+Once downloaded & installed, reboot your computer.
+In 10.04, running sudo nvidia-xconfig on the command-line may be necessary before the driver module will function.
+The Hardware Drivers tool may not work properly on machines that have previously used third party tools like 'Envy' or manual installation to install previous drivers. You should remove those drivers before attempting to install using the built-in tool.
+Common Issues
+Boot up splash screen issues for users of Ubuntu 10.04 & higher
+Open up a Ternimal and install the Startup-Manager
+                                                         sudo apt-get install startupmanager 
+Launch the Startup Manager from "System>-Administration->Startup-Manager"
+In the "Boot options" tab, change the resolution to something your monitor can handle (1024x768 is usually enough for the boot screen to look nice).
+Change the color depth to "24 bits" and Press the "Close" button.Followed by a reboot to check that it is fixed.
+Can't Save Settings
+Nvidia-settings can't write to Xorg.conf if it hasn't been started with sudo.
+
+Work round one:
+
+Right click on your Desktop
+Choose create launcher
+The name is: nvidia-settings
+The command is: gksudo nvidia-settings
+Work round two:
+
+Use the Monitors preferences (System->Preferences->Monitors)
+Work round three:
+
+Right click on your menu
+Choose edit menus
+Find System->Administration->NVIDIA X Server Settings
+Click on properties
+Change the command to gksudo /usr/bin/nvidia-settings
+Suspend/Hibernation
+If you have an old legacy NVIDIA card (eg driver 96.43.17), hibernation & suspend will not work. To fix it see NvidiaLaptopBinaryDriverSuspend.
+
+Low Screen Resolutions
+Often screen resolutions on offer are far lower than those offered with the open source driver. The NVIDIA binary driver seems to be very weak at reliably probing this information from the monitor and relies on additional information in xorg.conf.
+
+To fix this you can add more resolutions by entering xrandr --addmode S-video ... in a command-line (where the dots add the resolution you want). For further details and potential workarounds see Fix X Resolution.
+
+Workaround for 10.10
+All these methods previously mentioned do not seem to always work. The following workaround worked for me.
+
+The easiest way to install binary drivers is to use the built in Hardware Drivers manager in Ubuntu. In Ubuntu 10.04 and 9:10 this is found under System->Administration->Hardware Drivers. In Ubuntu 10:10 Hardware Drivers is now named additional Drivers
+Select a nvidia hardware driver (see above which one too pick) and click Activate. The driver is now being downloaded and installed.
+See NvidiaResolutionXorgConf
+Screen Blanks/Monitor Turns Off
+Using a laptop with a GeForce Go card, or connecting the sole display via DVI on a dual-head system sometimes results in the screen not receiving a picture. This is caused by the driver outputting video to the VGA port on the graphics card, instead of DVI.
+
+The usual hint that you have this problem is when you hear the startup sound but nothing appears on the screen. If you do not hear any sound, you are more than likely experiencing unrelated problems.
+
+This is a launchpad bug about displays on digital outputs being blank when using NVIDIA binary driver, and can be resolved by editing your /etc/X11/xorg.conf file:
+
+Switch to the console (Try using ctrl+alt+F1, or reboot and select recovery mode from the GRUB menu.)
+Use your text editor to open /etc/X11/xorg.conf (try sudo nano /etc/X11/xorg.conf).
+Find the line that says Section "Screen"
+Insert a new line that says Option "UseDisplayDevice" "DFP".
+Save the file. If you had to restart into recovery mode, type reboot, otherwise restart your display using sudo /etc/init.d/gdm restart.
+Incorrect Refresh Rate Reported
+If you are using nvidia-glx/nvidia-glx-new and the refresh rate appears wrong (or different to that actually reported by your monitor) in gnome-display-properties/xrandr, you are probably seeing the effects of the DynamicTwinView feature. See this launchpad bug about being unable to "set" a proper screen refresh rate for details of this behaviour.
+
+Problems with Video Playback
+If you have problems with video playback, e.g. in mplayer, gxine, or mythtv frontend with a legacy card, it may be due to too high a color depth (e.g. using NT6 Vanta/Vanta LT "nvidia" driver, I experienced flickering vertical bars & blue screen flashing). To fix this, manually edit /etc/X11/xorg.conf and change DefaultDepth to 16.
+
+
+See Also
+NvidiaManual - Guide to installing the official NVIDIA driver from the NVIDIA website on Ubuntu. Explains the drawbacks and benefits of manual installation and how to safely avoid conflicts with the Ubuntu provided NVIDIA binary drivers.
+NvidiaMultiMonitors
+The Ubuntu Forums
+NvidiaOnSonyLaptop
+BinaryDriverHowto/Nvidia/Nouveau - The Nouveau driver, this tells you how to install it from Ubuntu 9.10 .
+NVIDIA Linux web forum - The the NVIDIA Linux web forum.
+currently open NVIDIA binary driver bugs in launchpad - open bugs
+
+
+
+
+
+GENERATE A NEW xorg.conf WITH Xorg -configure
+
+
+
+
+hp 8540w VIDEO PROCESSOR:
+
+Graphics Processor / Vendor NVIDIA Quadro FX 880M
+
+
+
+INSTALL nvidia-settings TO BE USED TO CREATE /etc/X11/xorg.conf AUTOMATICALLY:
+
+apt-get install nvidia-settings
+
+
+
+WROTE NEW CONFIG FILE
+
+nvidia-settings -r
+
+
+NEW FILE IS HERE:
+http://manpages.ubuntu.com/manpages/lucid/man1/alt-nvidia-current-settings.1.html
+
+~/.nvidia-settings-rc.
+
+
+
+BUT PRETTY SLIM:
+
+cat ~/.nvidia-settings-rc
+
+    #
+    # /root/.nvidia-settings-rc
+    #
+    # Configuration file for nvidia-settings - the NVIDIA X Server Settings utility
+    # Generated on Wed Feb  9 21:14:28 2011
+    #
+    
+    # ConfigProperties:
+    
+    RcFileLocale = C
+    ToolTips = Yes
+    DisplayStatusBar = Yes
+    SliderTextEntries = Yes
+    IncludeDisplayNameInConfigFile = No
+    ShowQuitDialog = Yes
+    
+    # Attributes:
+
+
+
+
+
+nvidia-settings -h
+
+nvidia-settings:  version 260.19.06  (buildd@yellow)  Mon Oct  4 15:59:51 UTC 2010
+  The NVIDIA X Server Settings tool.
+
+  This program is used to configure the NVIDIA Linux graphics driver.
+  For more detail, please see the nvidia-settings(1) man page.
+
+  Copyright (C) 2004 - 2010 NVIDIA Corporation.
+
+
+nvidia-settings [options]
+
+  -v, --version
+      Print the nvidia-settings version and exit.
+
+  -h, --help
+      Print usage information and exit.
+
+  --config=[CONFIG]
+      Use the configuration file CONFIG rather than the default ~/.nvidia-settings-rc
+
+  -c, --ctrl-display=[CTRL-DISPLAY]
+      Control the specified X display.  If this option is not given, then nvidia-settings will control the display specified by '--display'; if that is not given, then the $DISPLAY environment
+      variable is used.
+
+  -l, --load-config-only
+      Load the configuration file, send the values specified therein to the X server, and exit.  This mode of operation is useful to place in your xinitrc file, for example.
+
+  -n, --no-config
+      Do not load the configuration file.  This mode of operation is useful if nvidia-settings has difficulties starting due to problems with applying settings in the configuration file.
+
+  -r, --rewrite-config-file
+      Write the X server configuration to the configuration file, and exit, without starting the graphical user interface.  See EXAMPLES section.
+
+  -V, --verbose=[VERBOSE]
+      Controls how much information is printed.  By default, the verbosity is errors and only error messages are printed.  Valid values are 'errors' (print error messages), 'warnings' (print error
+      and warning messages), and 'all' (print error, warning and other informational messages).
+
+  -a, --assign=[ASSIGN]
+      The ASSIGN argument to the '--assign' command line option is of the form:
+      
+        {DISPLAY}/{attribute name}[{display devices}]={value}
+      
+      This assigns the attribute {attribute name} to the value {value} on the X Display {DISPLAY}.  {DISPLAY} follows the usual {host}:{display}.{screen} syntax of the DISPLAY environment variable
+      and is optional; when it is not specified, then it is implied following the same rule as the --ctrl-display option.  If the X screen is not specified, then the assignment is made to all X
+      screens.  Note that the '/' is only required when {DISPLAY} is present.
+      
+      {DISPLAY} can additionally include a target specification to direct an assignment to something other than an X screen.  A target specification is contained within brackets and consists of a
+      target type name, a colon, and the target id.  The target type name can be one of "screen", "gpu", "framelock", "vcs", "gvi", or "fan"; the target id is the index into the list of targets
+      (for that target type).  The target specification can be used in {DISPLAY} wherever an X screen can be used, following the syntax {host}:{display}[{target_type}:{target_id}].  See the output
+      of
+      
+        nvidia-settings -q all 
+      
+      for information on which target types can be used with which attributes.  See the output of
+      
+         nvidia-settings -q screens -q gpus -q framelocks -q vcs -q gvis -q fans 
+      
+      for lists of targets for each target type.
+      
+      The [{display devices}] portion is also optional; if it is not specified, then the attribute is assigned to all display devices.
+      
+      Some examples:
+      
+        -a FSAA=5
+        -a localhost:0.0/DigitalVibrance[CRT-0]=0
+        --assign="SyncToVBlank=1"
+        -a [gpu:0]/DigitalVibrance[DFP-1]=63
+
+  -q, --query=[QUERY]
+      The QUERY argument to the '--query' command line option is of the form:
+      
+        {DISPLAY}/{attribute name}[{display devices}]
+      
+      This queries the current value of the attribute {attribute name} on the X Display {DISPLAY}.  The syntax is the same as that for the '--assign' option, without '={value}'; specify '-q
+      screens', '-q gpus', '-q framelocks', '-q vcs', '-q gvis', or '-q fans' to query a list of X screens, GPUs, Frame Lock devices, Visual Computing Systems, SDI Input Devices, or Fans,
+      respectively, that are present on the X Display {DISPLAY}.  Specify '-q all' to query all attributes.
+
+  -t, --terse
+      When querying attribute values with the '--query' command line option, only print the current value, rather than the more verbose description of the attribute, its valid values, and its
+      current value.
+
+  -d, --display-device-string
+      When printing attribute values in response to the '--query' option, if the attribute value is a display device mask, print the value as a list of display devices (e.g., "CRT-0, DFP-0"),
+      rather than a hexadecimal bit mask (e.g., 0x00010001).
+
+  -g, --glxinfo
+      Print GLX Information for the X display and exit.
+
+  -e, --describe=[DESCRIBE]
+      Prints information about a particular attribute.  Specify 'all' to list the descriptions of all attributes.  Specify 'list' to list the attribute names without a descriptions.
+
+
+
+
+CREATED /etc/X11/xorg.conf
+
+/etc/X11/xorg.conf:
+Code:
+# nvidia-settings: X configuration file generated by nvidia-settings
+# nvidia-settings:  version 1.0  (buildd@palmer)  Fri Apr  9 10:35:18 UTC 2010
+#####################################################################################
+#JGC 2010-08-29
+#
+#This file is configured to allow Kensington Displaylink adapter to function as a second
+#display screen, if attached.  If not attached this file works with the Nvidia chip
+#and loads the Nvidia proprietary driver allowing the full resolution of 1920x1200.  
+#
+#I couldn't get the IOGear Displaylink device working, even by itself.  That may be due to 
+#a different, earlier chip.  I may need to get a more recent Displaylink adapter to have 3 monitors.
+#It took much to get this working.  Here's what I think is necessary to make the Kensington 
+#adapter work. 
+#
+#Download and install a 2.6.34 kernel as it has updated udlfb, the kernel Displaylink
+#framebuffer driver.  Kernel packages can be found at http://kernel.ubuntu.com/~kernel-ppa/mainline/
+#but that only seems to have generic kernels.  To fully utilize more the about 3.5Gb
+#of memory you need PAE (Physical Address Extension).  Generic kernels aren't compiled
+#to use PAE, only special PAE or server kernels are.  It appears a PAE version
+#is available here http://www.ubuntuupdates.org/packages/show/203551.  This Xorg file was
+#tested to work on the generic kernel from http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.34-lucid/.
+#
+#Install the package xserver-xorg-video-displaylink which is the X driver for DisplayLink devices.
+#This recently was called xf86-driver-displaylink but the new package has the latest version.
+#
+#To get a starting /etc/X11/xorg.conf connect each monitor to a graphics output on the Nvidia chip
+#on the Zotac board and execute nvidia-xconfig.  This will create a new xorg.conf if one doesn't
+#already exist.  Save the xorg.conf for each monitor.  
+#
+#Use the info in xorg.conf file for each monitor to create a combined xorg.conf. Then update the Device 
+#for Displaylink adapter to have Driver "displaylink" and Option "fbdev" "/dev/fb0".  Also update
+#Identifier strings for the DisplayLink adapter to "Device1", "Screen1", "Monitor1".
+#
+#There are issues with the Nvidia driver for the Nvidia chip on the Zotac board and the 
+#Displaylink driver.  The Displaylink driver will be unloaded if the Nvidia device is Screen 0 in the 
+#ServerLayout Section.  The workaround is to make the Displaylink Screen 0.  The
+#consequence of the workaround is the that Nvidia is not recognized to use the Nvidia 
+#proprietary driver. This limits the Nvidia screen resolution to 1680x1050 and none of the monitor 
+#GUI monitor tools work.
+#
+#Additionally color depth for the Nvidia device must be set at 16 to match the maximum of the 
+#Displaylink device.  Note that this setting limits the Nvidia to 16 even when the Displaylink
+#device is not attached.
+
+Section "ServerLayout"
+    Identifier     "Layout0"
+    Screen      0  "Screen1" 0 0
+    Screen      1  "Screen0" 760 1050
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+    Option         "Xinerama" "1"
+EndSection
+
+Section "Files"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Keyboard0"
+    Driver         "kbd"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor1"
+    VendorName     "Unknown"
+    ModelName      "Samsung SyncMaster"
+    HorizSync       30.0 - 81.0
+    VertRefresh     56.0 - 75.0
+    Option         "DPMS"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor0"
+    VendorName     "Unknown"
+    ModelName      "WDE L2610NW"
+    HorizSync       30.0 - 80.0
+    VertRefresh     56.0 - 75.0
+    Option         "DPMS"
+EndSection
+
+Section "Device"
+    Identifier     "Device1"
+    Driver         "displaylink"
+    Option  "fbdev" "/dev/fb0"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    BoardName      "Quadro FX 880M"
+    BusID          "PCI:3:0:0"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen1"
+    Device         "Device1"
+    Monitor        "Monitor1"
+    DefaultDepth    16
+    SubSection     "Display"
+        Depth       16
+    EndSubSection
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    16
+    SubSection     "Display"
+        Depth       16
+    EndSubSection
+EndSection
+
+
+
+
+ALSO FOUND THIS /etc/X11/xorg.conf
+
+http://ubuntuforums.org/showthread.php?t=1626668
+
+
+
+# nvidia-settings: X configuration file generated by nvidia-settings
+# nvidia-settings:  version 260.19.06  (buildd@yellow)  Mon Oct  4 15:59:51 UTC 2010
+
+Section "ServerLayout"
+    Identifier     "Layout0"
+    Screen      0  "Screen0" 0 0
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+    Option         "Xinerama" "0"
+EndSection
+
+Section "Files"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Keyboard0"
+    Driver         "kbd"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor0"
+    VendorName     "Unknown"
+    ModelName      "LEN"
+    HorizSync       56.5 - 67.8
+    VertRefresh     40.0 - 60.0
+    Option         "DPMS"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    BoardName      "Quadro FX 880M"
+    Option         "NoLogo" "1"
+    Option         "ConnectedMonitor" "DFP,CRT"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    24
+    Option         "TwinView" "1"
+    Option         "TwinViewXineramaInfoOrder" "DFP-0"
+    Option         "metamodes" "DFP: nvidia-auto-select +0+0; DFP: nvidia-auto-select +0+0, CRT: 1280x1024 +1920+0; DFP: 1280x1024 +0+0, CRT: 1280x1024 +0+0; DFP: nvidia-auto-select +0+0, CRT: 1024x768 +1920+0; DFP: 1024x768 +0+0, CRT: 1024x768 +0+0"
+    SubSection     "Display"
+        Depth       24
+    EndSubSection
+EndSection
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+INSTALL DISPLAYLINK DRIVER ON UBUNTU 10.10
+
+
+
+1. Install a compatible libusb version (0.13)
+sudo apt-get install libusb-dev
+    OK
+    
+
+2. Download libdlo
+
+cd /home/syoung/software/displaylink
+wget http://people.freedesktop.org/~berniet/libdlo-0.1.2.tar.gz
+tar xvfz *
+cd *
+./configure
+
+Using libdlo
+
+
+3. Plug in a DisplayLink USB device
+
+
+4. Build 
+
+./configure
+sudo make
+sudo make install
+make check
+
+
+5. Do lsusb
+
+lsusb
+Bus 003 Device 002: ID 17e9:0036 Newnham Research 
+Bus 003 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 002 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
+Bus 002 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+Bus 001 Device 004: ID 04f2:b15e Chicony Electronics Co., Ltd 
+Bus 001 Device 003: ID 138a:0007 DigitalPersona, Inc 
+Bus 001 Device 002: ID 8087:0020 Intel Corp. Integrated Rate Matching Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+
+dmesg
+    ...
+    [  186.182461] /dev/vmmon[0]: HostIF_ReadUptime: detected settimeofday: fixed uptimeBase old 18445448011387037557 new 18445448011394044159 attempts 1
+    [  191.300464] eth0: no IPv6 routers present
+    [  357.796238] lo: Disabled Privacy Extensions
+    [ 1989.651508] xhci_hcd 0000:45:00.0: WARN: short transfer on control ep
+    [ 1989.651879] xhci_hcd 0000:45:00.0: WARN: short transfer on control ep
+    [ 1989.653160] xhci_hcd 0000:45:00.0: WARN: short transfer on control ep
+    [ 1989.653540] xhci_hcd 0000:45:00.0: WARN: short transfer on control ep
+    [ 1989.654034] usb 3-3: dlfb: Waiting for completes and freeing all render urbs
+    [ 1989.654046] usb 3-3: dlfb: Detaching /dev/fb0
+    [ 1989.654378] usb 3-3: dlfb: release /dev/fb0 user=0 count=0
+    [ 1989.654454] Console: switching to colour VGA+ 80x25
+
+
+
+("Make check" will do some basic drawing on one of the attached DisplayLink devices. If you hit errors during configure, try installing the autotools and libtool packages.
+
+
+
+
+/etc/X11/xorg.conf:
+Code:
+# nvidia-settings: X configuration file generated by nvidia-settings
+# nvidia-settings:  version 1.0  (buildd@palmer)  Fri Apr  9 10:35:18 UTC 2010
+#####################################################################################
+#JGC 2010-08-29
+#
+#This file is configured to allow Kensington Displaylink adapter to function as a second
+#display screen, if attached.  If not attached this file works with the Nvidia chip
+#and loads the Nvidia proprietary driver allowing the full resolution of 1920x1200.  
+#
+#I couldn't get the IOGear Displaylink device working, even by itself.  That may be due to 
+#a different, earlier chip.  I may need to get a more recent Displaylink adapter to have 3 monitors.
+#It took much to get this working.  Here's what I think is necessary to make the Kensington 
+#adapter work. 
+#
+#Download and install a 2.6.34 kernel as it has updated udlfb, the kernel Displaylink
+#framebuffer driver.  Kernel packages can be found at http://kernel.ubuntu.com/~kernel-ppa/mainline/
+#but that only seems to have generic kernels.  To fully utilize more the about 3.5Gb
+#of memory you need PAE (Physical Address Extension).  Generic kernels aren't compiled
+#to use PAE, only special PAE or server kernels are.  It appears a PAE version
+#is available here http://www.ubuntuupdates.org/packages/show/203551.  This Xorg file was
+#tested to work on the generic kernel from http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.34-lucid/.
+#
+#Install the package xserver-xorg-video-displaylink which is the X driver for DisplayLink devices.
+#This recently was called xf86-driver-displaylink but the new package has the latest version.
+#
+#To get a starting /etc/X11/xorg.conf connect each monitor to a graphics output on the Nvidia chip
+#on the Zotac board and execute nvidia-xconfig.  This will create a new xorg.conf if one doesn't
+#already exist.  Save the xorg.conf for each monitor.  
+#
+#Use the info in xorg.conf file for each monitor to create a combined xorg.conf. Then update the Device 
+#for Displaylink adapter to have Driver "displaylink" and Option "fbdev" "/dev/fb0".  Also update
+#Identifier strings for the DisplayLink adapter to "Device1", "Screen1", "Monitor1".
+#
+#There are issues with the Nvidia driver for the Nvidia chip on the Zotac board and the 
+#Displaylink driver.  The Displaylink driver will be unloaded if the Nvidia device is Screen 0 in the 
+#ServerLayout Section.  The workaround is to make the Displaylink Screen 0.  The
+#consequence of the workaround is the that Nvidia is not recognized to use the Nvidia 
+#proprietary driver. This limits the Nvidia screen resolution to 1680x1050 and none of the monitor 
+#GUI monitor tools work.
+#
+#Additionally color depth for the Nvidia device must be set at 16 to match the maximum of the 
+#Displaylink device.  Note that this setting limits the Nvidia to 16 even when the Displaylink
+#device is not attached.
+
+Section "ServerLayout"
+    Identifier     "Layout0"
+    Screen      0  "Screen1" 0 0
+    Screen      1  "Screen0" 760 1050
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+    Option         "Xinerama" "1"
+EndSection
+
+Section "Files"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Keyboard0"
+    Driver         "kbd"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor1"
+    VendorName     "Unknown"
+    ModelName      "Samsung SyncMaster"
+    HorizSync       30.0 - 81.0
+    VertRefresh     56.0 - 75.0
+    Option         "DPMS"
+EndSection
+
+Section "Monitor"
+    # HorizSync source: edid, VertRefresh source: edid
+    Identifier     "Monitor0"
+    VendorName     "Unknown"
+    ModelName      "WDE L2610NW"
+    HorizSync       30.0 - 80.0
+    VertRefresh     56.0 - 75.0
+    Option         "DPMS"
+EndSection
+
+Section "Device"
+    Identifier     "Device1"
+    Driver         "displaylink"
+    Option  "fbdev" "/dev/fb0"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    BoardName      "GeForce 9300 / nForce 730i"
+    BusID          "PCI:3:0:0"
+EndSection
+
+Section "Screen"
+    Identifier     "Screen1"
+    Device         "Device1"
+    Monitor        "Monitor1"
+    DefaultDepth    16
+    SubSection     "Display"
+        Depth       16
+    EndSubSection
+EndSection
+
+Section "Screen"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    16
+    SubSection     "Display"
+        Depth       16
+    EndSubSection
+EndSection
+
+
+
+
+/etc/X11/xorg.conf:
+
+Xorg.0.log with only Nvidia monitor attached 
+Code:
+X.Org X Server 1.7.6
+Release Date: 2010-03-17
+X Protocol Version 11, Revision 0
+Build Operating System: Linux 2.6.24-27-server i686 Ubuntu
+Current Operating System: Linux jgc-virt 2.6.34-020634-generic #020634 SMP Mon May 17 20:34:55 UTC 2010 i686
+Kernel command line: BOOT_IMAGE=/boot/vmlinuz-2.6.34-020634-generic root=UUID=50ea7b8f-05ce-4f3a-8648-ef1c8c3ccd52 ro quiet splash
+Build Date: 21 July 2010  12:47:34PM
+xorg-server 2:1.7.6-2ubuntu7.3 (For technical support please see http://www.ubuntu.com/support) 
+Current version of pixman: 0.16.4
+	Before reporting problems, check http://wiki.x.org
+	to make sure that you have the latest version.
+Markers: (--) probed, (**) from config file, (==) default setting,
+	(++) from command line, (!!) notice, (II) informational,
+	(WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+(==) Log file: "/var/log/Xorg.0.log", Time: Thu Sep  2 17:53:35 2010
+(==) Using config file: "/etc/X11/xorg.conf"
+(==) Using config directory: "/usr/lib/X11/xorg.conf.d"
+(==) ServerLayout "Layout0"
+(**) |-->Screen "Screen1" (0)
+(**) |   |-->Monitor "Monitor1"
+(**) |   |-->Device "Device1"
+(**) |-->Screen "Screen0" (1)
+(**) |   |-->Monitor "Monitor0"
+(**) |   |-->Device "Device0"
+(**) |-->Input Device "Keyboard0"
+(**) |-->Input Device "Mouse0"
+(**) Option "Xinerama" "1"
+(==) Automatically adding devices
+(==) Automatically enabling devices
+(**) Xinerama: enabled
+(WW) The directory "/usr/share/fonts/X11/cyrillic" does not exist.
+	Entry deleted from font path.
+(==) FontPath set to:
+	/usr/share/fonts/X11/misc,
+	/usr/share/fonts/X11/100dpi/:unscaled,
+	/usr/share/fonts/X11/75dpi/:unscaled,
+	/usr/share/fonts/X11/Type1,
+	/usr/share/fonts/X11/100dpi,
+	/usr/share/fonts/X11/75dpi,
+	/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType,
+	built-ins
+(==) ModulePath set to "/usr/lib/xorg/extra-modules,/usr/lib/xorg/modules"
+(WW) AllowEmptyInput is on, devices using drivers 'kbd', 'mouse' or 'vmmouse' will be disabled.
+(WW) Disabling Keyboard0
+(WW) Disabling Mouse0
+(II) Loader magic: 0x81f0e80
+(II) Module ABI versions:
+	X.Org ANSI C Emulation: 0.4
+	X.Org Video Driver: 6.0
+	X.Org XInput driver : 7.0
+	X.Org Server Extension : 2.0
+(++) using VT number 7
+
+(--) PCI: (0:0:3:5) 10de:0aa3:19da:0ae5 nVidia Corporation MCP79 Co-processor rev 177, Mem @ 0xfdf80000/524288
+(--) PCI:*(0:3:0:0) 10de:086c:19da:0ae5 nVidia Corporation C79 [GeForce 9300 / nForce 730i] rev 177, Mem @ 0xfb000000/16777216, 0xd0000000/268435456, 0xee000000/33554432, I/O @ 0x0000cf00/128, BIOS @ 0x????????/131072
+(II) Open ACPI successful (/var/run/acpid.socket)
+(II) LoadModule: "extmod"
+(II) Loading /usr/lib/xorg/modules/extensions/libextmod.so
+(II) Module extmod: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.0.0
+	Module class: X.Org Server Extension
+	ABI class: X.Org Server Extension, version 2.0
+(II) Loading extension MIT-SCREEN-SAVER
+(II) Loading extension XFree86-VidModeExtension
+(II) Loading extension XFree86-DGA
+(II) Loading extension DPMS
+(II) Loading extension XVideo
+(II) Loading extension XVideo-MotionCompensation
+(II) Loading extension X-Resource
+(II) LoadModule: "dbe"
+(II) Loading /usr/lib/xorg/modules/extensions/libdbe.so
+(II) Module dbe: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.0.0
+	Module class: X.Org Server Extension
+	ABI class: X.Org Server Extension, version 2.0
+(II) Loading extension DOUBLE-BUFFER
+(II) LoadModule: "glx"
+(II) Loading /usr/lib/xorg/extra-modules/libglx.so
+(II) Module glx: vendor="NVIDIA Corporation"
+	compiled for 4.0.2, module version = 1.0.0
+	Module class: X.Org Server Extension
+(II) NVIDIA GLX Module  195.36.24  Thu Apr 22 10:38:29 PDT 2010
+(II) Loading extension GLX
+(II) LoadModule: "record"
+(II) Loading /usr/lib/xorg/modules/extensions/librecord.so
+(II) Module record: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.13.0
+	Module class: X.Org Server Extension
+	ABI class: X.Org Server Extension, version 2.0
+(II) Loading extension RECORD
+(II) LoadModule: "dri"
+(II) Loading /usr/lib/xorg/modules/extensions/libdri.so
+(II) Module dri: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.0.0
+	ABI class: X.Org Server Extension, version 2.0
+(II) Loading extension XFree86-DRI
+(II) LoadModule: "dri2"
+(II) Loading /usr/lib/xorg/modules/extensions/libdri2.so
+(II) Module dri2: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.1.0
+	ABI class: X.Org Server Extension, version 2.0
+(II) Loading extension DRI2
+(II) LoadModule: "displaylink"
+(II) Loading /usr/lib/xorg/modules/drivers/displaylink_drv.so
+(II) Module displaylink: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 0.0.1
+	ABI class: X.Org Video Driver, version 6.0
+(II) LoadModule: "nvidia"
+(II) Loading /usr/lib/xorg/extra-modules/nvidia_drv.so
+(II) Module nvidia: vendor="NVIDIA Corporation"
+	compiled for 4.0.2, module version = 1.0.0
+	Module class: X.Org Video Driver
+(II) DL: driver for : displaylink
+(II) NVIDIA dlloader X Driver  195.36.24  Thu Apr 22 09:34:29 PDT 2010
+(II) NVIDIA Unified Driver for all Supported NVIDIA GPUs
+(II) Primary Device is: PCI 03@00:00:0
+(WW) Falling back to old probe method for displaylink
+(II) Loading sub module "fbdevhw"
+(II) LoadModule: "fbdevhw"
+(II) Loading /usr/lib/xorg/modules/linux/libfbdevhw.so
+(II) Module fbdevhw: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 0.0.2
+	ABI class: X.Org Video Driver, version 6.0
+(EE) open /dev/fb0: No such file or directory
+(II) Loading sub module "fb"
+(II) LoadModule: "fb"
+(II) Loading /usr/lib/xorg/modules/libfb.so
+(II) Module fb: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.0.0
+	ABI class: X.Org ANSI C Emulation, version 0.4
+(II) Loading sub module "wfb"
+(II) LoadModule: "wfb"
+(II) Loading /usr/lib/xorg/modules/libwfb.so
+(II) Module wfb: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 1.0.0
+	ABI class: X.Org ANSI C Emulation, version 0.4
+(II) Loading sub module "ramdac"
+(II) LoadModule: "ramdac"
+(II) Module "ramdac" already built-in
+(**) NVIDIA(0): Depth 16, (--) framebuffer bpp 16
+(==) NVIDIA(0): RGB weight 565
+(==) NVIDIA(0): Default visual is TrueColor
+(==) NVIDIA(0): Using gamma correction (1.0, 1.0, 1.0)
+(**) Sep 02 17:53:36 NVIDIA(0): Enabling RENDER acceleration
+(II) Sep 02 17:53:36 NVIDIA(0): Support for GLX with the Damage and Composite X extensions is
+(II) Sep 02 17:53:36 NVIDIA(0):     enabled.
+(II) Sep 02 17:53:36 NVIDIA(0): NVIDIA GPU GeForce 9300 / nForce 730i (C79) at PCI:3:0:0
+(II) Sep 02 17:53:36 NVIDIA(0):     (GPU-0)
+(--) Sep 02 17:53:36 NVIDIA(0): Memory: 524288 kBytes
+(--) Sep 02 17:53:36 NVIDIA(0): VideoBIOS: 62.79.79.00.00
+(--) Sep 02 17:53:36 NVIDIA(0): Interlaced video modes are supported on this GPU
+(--) Sep 02 17:53:36 NVIDIA(0): Connected display device(s) on GeForce 9300 / nForce 730i at
+(--) Sep 02 17:53:36 NVIDIA(0):     PCI:3:0:0:
+(--) Sep 02 17:53:36 NVIDIA(0):     WDE L2610NW (CRT-0)
+(--) Sep 02 17:53:36 NVIDIA(0): WDE L2610NW (CRT-0): 300.0 MHz maximum pixel clock
+(II) Sep 02 17:53:36 NVIDIA(0): Assigned Display Device: CRT-0
+(==) Sep 02 17:53:36 NVIDIA(0): 
+(==) Sep 02 17:53:36 NVIDIA(0): No modes were requested; the default mode "nvidia-auto-select"
+(==) Sep 02 17:53:36 NVIDIA(0):     will be used as the requested mode.
+(==) Sep 02 17:53:36 NVIDIA(0): 
+(II) Sep 02 17:53:36 NVIDIA(0): Validated modes:
+(II) Sep 02 17:53:36 NVIDIA(0):     "nvidia-auto-select"
+(II) Sep 02 17:53:36 NVIDIA(0): Virtual screen size determined to be 1920 x 1200
+(--) Sep 02 17:53:37 NVIDIA(0): DPI set to (88, 98); computed from "UseEdidDpi" X config
+(--) Sep 02 17:53:37 NVIDIA(0):     option
+(==) Sep 02 17:53:37 NVIDIA(0): Disabling 32-bit ARGB GLX visuals.
+(II) UnloadModule: "displaylink"
+(II) Unloading /usr/lib/xorg/modules/drivers/displaylink_drv.so
+(II) UnloadModule: "fbdevhw"
+(II) Unloading /usr/lib/xorg/modules/linux/libfbdevhw.so
+(II) Sep 02 17:53:37 NVIDIA: Using 768.00 MB of virtual memory for indirect memory access.
+(II) Sep 02 17:53:37 NVIDIA(0): Initialized GPU GART.
+(II) Sep 02 17:53:37 NVIDIA(0): Setting mode "nvidia-auto-select"
+(II) Loading extension NV-GLX
+(II) Sep 02 17:53:37 NVIDIA(0): Initialized OpenGL Acceleration
+(==) NVIDIA(0): Disabling shared memory pixmaps
+(II) Sep 02 17:53:37 NVIDIA(0): Initialized X Rendering Acceleration
+(==) NVIDIA(0): Backing store disabled
+(==) NVIDIA(0): Silken mouse enabled
+(**) NVIDIA(0): DPMS enabled
+(II) Loading extension NV-CONTROL
+(==) RandR enabled
+(II) Initializing built-in extension Generic Event Extension
+(II) Initializing built-in extension SHAPE
+(II) Initializing built-in extension MIT-SHM
+(II) Initializing built-in extension XInputExtension
+(II) Initializing built-in extension XTEST
+(II) Initializing built-in extension BIG-REQUESTS
+(II) Initializing built-in extension SYNC
+(II) Initializing built-in extension XKEYBOARD
+(II) Initializing built-in extension XC-MISC
+(II) Initializing built-in extension SECURITY
+(II) Initializing built-in extension XINERAMA
+(II) Initializing built-in extension XFIXES
+(II) Initializing built-in extension RENDER
+(II) Initializing built-in extension RANDR
+(II) Initializing built-in extension COMPOSITE
+(II) Initializing built-in extension DAMAGE
+(II) Initializing extension GLX
+(II) XKB: reuse xkmfile /var/lib/xkb/server-B20D7FC79C7F597315E3E501AEF10E0D866E8E92.xkm
+(II) config/udev: Adding input device Power Button (/dev/input/event1)
+(**) Power Button: Applying InputClass "evdev keyboard catchall"
+(II) LoadModule: "evdev"
+(II) Loading /usr/lib/xorg/modules/input/evdev_drv.so
+(II) Module evdev: vendor="X.Org Foundation"
+	compiled for 1.7.6, module version = 2.3.2
+	Module class: X.Org XInput Driver
+	ABI class: X.Org XInput driver, version 7.0
+(**) Power Button: always reports core events
+(**) Power Button: Device: "/dev/input/event1"
+(II) Power Button: Found keys
+(II) Power Button: Configuring as keyboard
+(II) XINPUT: Adding extended input device "Power Button" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) XKB: reuse xkmfile /var/lib/xkb/server-0C76CA335E924C2441A31FBFED02D59A89874CA6.xkm
+(II) config/udev: Adding input device Video Bus (/dev/input/event8)
+(**) Video Bus: Applying InputClass "evdev keyboard catchall"
+(**) Video Bus: always reports core events
+(**) Video Bus: Device: "/dev/input/event8"
+(II) Video Bus: Found keys
+(II) Video Bus: Configuring as keyboard
+(II) XINPUT: Adding extended input device "Video Bus" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) config/udev: Adding input device Power Button (/dev/input/event0)
+(**) Power Button: Applying InputClass "evdev keyboard catchall"
+(**) Power Button: always reports core events
+(**) Power Button: Device: "/dev/input/event0"
+(II) Power Button: Found keys
+(II) Power Button: Configuring as keyboard
+(II) XINPUT: Adding extended input device "Power Button" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) config/udev: Adding input device CHESEN PS2 to USB Converter (/dev/input/event3)
+(**) CHESEN PS2 to USB Converter: Applying InputClass "evdev keyboard catchall"
+(**) CHESEN PS2 to USB Converter: always reports core events
+(**) CHESEN PS2 to USB Converter: Device: "/dev/input/event3"
+(II) CHESEN PS2 to USB Converter: Found keys
+(II) CHESEN PS2 to USB Converter: Configuring as keyboard
+(II) XINPUT: Adding extended input device "CHESEN PS2 to USB Converter" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) config/udev: Adding input device CHESEN PS2 to USB Converter (/dev/input/event4)
+(**) CHESEN PS2 to USB Converter: Applying InputClass "evdev pointer catchall"
+(**) CHESEN PS2 to USB Converter: Applying InputClass "evdev keyboard catchall"
+(**) CHESEN PS2 to USB Converter: always reports core events
+(**) CHESEN PS2 to USB Converter: Device: "/dev/input/event4"
+(II) CHESEN PS2 to USB Converter: Found 10 mouse buttons
+(II) CHESEN PS2 to USB Converter: Found scroll wheel(s)
+(II) CHESEN PS2 to USB Converter: Found relative axes
+(II) CHESEN PS2 to USB Converter: Found x and y relative axes
+(II) CHESEN PS2 to USB Converter: Found keys
+(II) CHESEN PS2 to USB Converter: Configuring as mouse
+(II) CHESEN PS2 to USB Converter: Configuring as keyboard
+(**) CHESEN PS2 to USB Converter: YAxisMapping: buttons 4 and 5
+(**) CHESEN PS2 to USB Converter: EmulateWheelButton: 4, EmulateWheelInertia: 10, EmulateWheelTimeout: 200
+(II) XINPUT: Adding extended input device "CHESEN PS2 to USB Converter" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) CHESEN PS2 to USB Converter: initialized for relative axes.
+(II) config/udev: Adding input device CHESEN PS2 to USB Converter (/dev/input/mouse0)
+(II) No input driver/identifier specified (ignoring)
+(II) config/udev: Adding input device C.C.H 4 Port Share Switch PC-2 (/dev/input/event5)
+(**) C.C.H 4 Port Share Switch PC-2: Applying InputClass "evdev keyboard catchall"
+(**) C.C.H 4 Port Share Switch PC-2: always reports core events
+(**) C.C.H 4 Port Share Switch PC-2: Device: "/dev/input/event5"
+(II) C.C.H 4 Port Share Switch PC-2: Found keys
+(II) C.C.H 4 Port Share Switch PC-2: Configuring as keyboard
+(II) XINPUT: Adding extended input device "C.C.H 4 Port Share Switch PC-2" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) config/udev: Adding input device C.C.H 4 Port Share Switch PC-2 (/dev/input/event6)
+(**) C.C.H 4 Port Share Switch PC-2: Applying InputClass "evdev pointer catchall"
+(**) C.C.H 4 Port Share Switch PC-2: Applying InputClass "evdev keyboard catchall"
+(**) C.C.H 4 Port Share Switch PC-2: always reports core events
+(**) C.C.H 4 Port Share Switch PC-2: Device: "/dev/input/event6"
+(II) C.C.H 4 Port Share Switch PC-2: Found 3 mouse buttons
+(II) C.C.H 4 Port Share Switch PC-2: Found scroll wheel(s)
+(II) C.C.H 4 Port Share Switch PC-2: Found relative axes
+(II) C.C.H 4 Port Share Switch PC-2: Found x and y relative axes
+(II) C.C.H 4 Port Share Switch PC-2: Found keys
+(II) C.C.H 4 Port Share Switch PC-2: Configuring as mouse
+(II) C.C.H 4 Port Share Switch PC-2: Configuring as keyboard
+(**) C.C.H 4 Port Share Switch PC-2: YAxisMapping: buttons 4 and 5
+(**) C.C.H 4 Port Share Switch PC-2: EmulateWheelButton: 4, EmulateWheelInertia: 10, EmulateWheelTimeout: 200
+(II) XINPUT: Adding extended input device "C.C.H 4 Port Share Switch PC-2" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) C.C.H 4 Port Share Switch PC-2: initialized for relative axes.
+(II) config/udev: Adding input device C.C.H 4 Port Share Switch PC-2 (/dev/input/mouse1)
+(II) No input driver/identifier specified (ignoring)
+(II) config/udev: Adding input device ATEN USB 2.0 Switch (4-port) (/dev/input/event7)
+(**) ATEN USB 2.0 Switch (4-port): Applying InputClass "evdev keyboard catchall"
+(**) ATEN USB 2.0 Switch (4-port): always reports core events
+(**) ATEN USB 2.0 Switch (4-port): Device: "/dev/input/event7"
+(II) ATEN USB 2.0 Switch (4-port): Found keys
+(II) ATEN USB 2.0 Switch (4-port): Configuring as keyboard
+(II) XINPUT: Adding extended input device "ATEN USB 2.0 Switch (4-port)" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+(II) config/udev: Adding input device HDA Digital PCBeep (/dev/input/event9)
+(II) No input driver/identifier specified (ignoring)
+(II) config/udev: Adding input device AT Translated Set 2 keyboard (/dev/input/event2)
+(**) AT Translated Set 2 keyboard: Applying InputClass "evdev keyboard catchall"
+(**) AT Translated Set 2 keyboard: always reports core events
+(**) AT Translated Set 2 keyboard: Device: "/dev/input/event2"
+(II) AT Translated Set 2 keyboard: Found keys
+(II) AT Translated Set 2 keyboard: Configuring as keyboard
+(II) XINPUT: Adding extended input device "AT Translated Set 2 keyboard" (type: KEYBOARD)
+(**) Option "xkb_rules" "evdev"
+(**) Option "xkb_model" "pc105"
+(**) Option "xkb_layout" "us"
+(**) Option "xkb_options" "lv3:ralt_switch"
+
+-
+
+-
+-rw-r--r-- 1 syoung syoung 2445786 2011-01-26 12:46 DisplayLink Mac OSX 1.6b3.zip
+drwxrwxr-x 2 syoung syoung    4096 2010-09-21 08:45 __MACOSX/
+
+syoung@hplaptop:~/software/displaylink$ rm -fr *
+syoung@hplaptop:~/software/displaylink$ ll
+
+syoung@hplaptop:~/software/displaylink$ wget http://people.freedesktop.org/~berniet/libdlo-0.1.2.tar.gz
+--2011-01-26 12:50:49--  http://people.freedesktop.org/~berniet/libdlo-0.1.2.tar.gz
+Resolving people.freedesktop.org... 131.252.210.176
+Connecting to people.freedesktop.org|131.252.210.176|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 476865 (466K) [application/x-gzip]
+Saving to: `libdlo-0.1.2.tar.gz'
+
+100%[======================================>] 476,865      544K/s   in 0.9s    
+
+2011-01-26 12:50:50 (544 KB/s) - `libdlo-0.1.2.tar.gz' saved [476865/476865]
+
+syoung@hplaptop:~/software/displaylink$ tar xvfz libdlo-0.1.2.tar.gz 
+libdlo-0.1.2/
+libdlo-0.1.2/AUTHORS
+libdlo-0.1.2/ChangeLog
+libdlo-0.1.2/Guide-v104.pdf
+libdlo-0.1.2/README
+libdlo-0.1.2/src/
+libdlo-0.1.2/src/dlo_usb.h
+libdlo-0.1.2/src/dlo_usb.c
+libdlo-0.1.2/src/libdlo.h
+libdlo-0.1.2/src/Makefile.am
+libdlo-0.1.2/src/dlo_base.h
+libdlo-0.1.2/src/Makefile.in
+libdlo-0.1.2/src/dlo_data.h
+libdlo-0.1.2/src/dlo_grfx.h
+libdlo-0.1.2/src/dlo_defs.h
+libdlo-0.1.2/src/dlo_grfx.c
+libdlo-0.1.2/src/dlo_mode.h
+libdlo-0.1.2/src/libdlo.c
+libdlo-0.1.2/src/dlo_structs.h
+libdlo-0.1.2/src/dlo_mode.c
+libdlo-0.1.2/test/
+libdlo-0.1.2/test/Makefile.am
+libdlo-0.1.2/test/Makefile.in
+libdlo-0.1.2/test/images/
+libdlo-0.1.2/test/images/test24.bmp
+libdlo-0.1.2/test/images/test16.bmp
+libdlo-0.1.2/test/images/test32.bmp
+libdlo-0.1.2/test/images/test08.bmp
+libdlo-0.1.2/test/test1.c
+libdlo-0.1.2/aclocal.m4
+libdlo-0.1.2/Makefile.am
+libdlo-0.1.2/Makefile.in
+libdlo-0.1.2/config/
+libdlo-0.1.2/config/ltmain.sh
+libdlo-0.1.2/config/depcomp
+libdlo-0.1.2/config/missing
+libdlo-0.1.2/config/config.sub
+libdlo-0.1.2/config/config.guess
+libdlo-0.1.2/config/install-sh
+libdlo-0.1.2/autogen.sh
+libdlo-0.1.2/mkdox.sh
+libdlo-0.1.2/configure.ac
+libdlo-0.1.2/COPYING
+libdlo-0.1.2/m4/
+libdlo-0.1.2/m4/ltsugar.m4
+libdlo-0.1.2/m4/lt~obsolete.m4
+libdlo-0.1.2/m4/ltoptions.m4
+libdlo-0.1.2/m4/libtool.m4
+libdlo-0.1.2/m4/ltversion.m4
+libdlo-0.1.2/configure
+libdlo-0.1.2/config.h.in
+syoung@hplaptop:~/software/displaylink$ cd libdlo-0.1.2/
+syoung@hplaptop:~/software/displaylink/libdlo-0.1.2$ ll
+total 732
+drwxr-xr-x 6 syoung syoung   4096 2009-10-18 22:43 ./
+drwxr-xr-x 3 syoung syoung   4096 2011-01-26 12:50 ../
+-rw-r--r-- 1 syoung syoung  32760 2009-10-18 22:42 aclocal.m4
+-rw-r--r-- 1 syoung syoung     34 2009-10-08 20:20 AUTHORS
+-rwxr-xr-x 1 syoung syoung     72 2009-10-08 20:20 autogen.sh*
+-rw-r--r-- 1 syoung syoung     36 2009-10-08 20:20 ChangeLog
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 config/
+-rw-r--r-- 1 syoung syoung   4924 2009-10-18 22:43 config.h.in
+-rwxr-xr-x 1 syoung syoung 469664 2009-10-18 22:43 configure*
+-rw-r--r-- 1 syoung syoung   1698 2009-10-18 22:41 configure.ac
+-rw-r--r-- 1 syoung syoung  23238 2009-10-08 20:20 COPYING
+-rw-r--r-- 1 syoung syoung 127485 2009-10-08 20:20 Guide-v104.pdf
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 m4/
+-rw-r--r-- 1 syoung syoung    832 2009-10-08 20:20 Makefile.am
+-rw-r--r-- 1 syoung syoung  24786 2009-10-18 22:43 Makefile.in
+-rwxr-xr-x 1 syoung syoung    848 2009-10-08 20:20 mkdox.sh*
+-rw-r--r-- 1 syoung syoung   1198 2009-10-08 20:20 README
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 src/
+drwxr-xr-x 3 syoung syoung   4096 2009-10-18 22:43 test/
+syoung@hplaptop:~/software/displaylink/libdlo-0.1.2$ ./configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking whether make sets $(MAKE)... yes
+checking for style of include used by make... GNU
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking dependency style of gcc... gcc3
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking minix/config.h usability... no
+checking minix/config.h presence... no
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for gcc... (cached) gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking dependency style of gcc... (cached) gcc3
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking for stdint.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking usb.h usability... yes
+checking usb.h presence... yes
+checking for usb.h... yes
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+checking for inline... inline
+checking for int32_t... yes
+checking for size_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+checking for usb_open in -lusb... yes
+checking for usb_get_driver_np... yes
+checking for usb_get_configuration... no
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible malloc... yes
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible realloc... yes
+checking for gettimeofday... yes
+checking for strchr... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating src/Makefile
+config.status: creating test/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+
+	libdlo 0.1.2
+	========
+
+	prefix:			/usr/local
+	exec_prefix:		${prefix}
+	libdir_name:		${exec_prefix}/lib
+	mandir:			${datarootdir}/man
+	includedir:		${prefix}/include
+
+	compiler:		gcc
+	cflags:			-g -O2
+	ldflags:		
+
+	xsltproc:-rw-r--r-- 1 syoung syoung 2445786 2011-01-26 12:46 DisplayLink Mac OSX 1.6b3.zip
+drwxrwxr-x 2 syoung syoung    4096 2010-09-21 08:45 __MACOSX/
+syoung@hplaptop:~/software/displaylink$ rm -fr *
+syoung@hplaptop:~/software/displaylink$ ll
+total 8
+drwxr-xr-x 2 syoung syoung 4096 2011-01-26 12:47 ./
+drwx------ 8 syoung syoung 4096 2011-01-26 12:47 ../
+syoung@hplaptop:~/software/displaylink$ wget http://people.freedesktop.org/~berniet/libdlo-0.1.2.tar.gz
+--2011-01-26 12:50:49--  http://people.freedesktop.org/~berniet/libdlo-0.1.2.tar.gz
+Resolving people.freedesktop.org... 131.252.210.176
+Connecting to people.freedesktop.org|131.252.210.176|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 476865 (466K) [application/x-gzip]
+Saving to: `libdlo-0.1.2.tar.gz'
+
+100%[======================================>] 476,865      544K/s   in 0.9s    
+
+2011-01-26 12:50:50 (544 KB/s) - `libdlo-0.1.2.tar.gz' saved [476865/476865]
+
+syoung@hplaptop:~/software/displaylink$ tar xvfz libdlo-0.1.2.tar.gz 
+libdlo-0.1.2/
+libdlo-0.1.2/AUTHORS
+libdlo-0.1.2/ChangeLog
+libdlo-0.1.2/Guide-v104.pdf
+libdlo-0.1.2/README
+libdlo-0.1.2/src/
+libdlo-0.1.2/src/dlo_usb.h
+libdlo-0.1.2/src/dlo_usb.c
+libdlo-0.1.2/src/libdlo.h
+libdlo-0.1.2/src/Makefile.am
+libdlo-0.1.2/src/dlo_base.h
+libdlo-0.1.2/src/Makefile.in
+libdlo-0.1.2/src/dlo_data.h
+libdlo-0.1.2/src/dlo_grfx.h
+libdlo-0.1.2/src/dlo_defs.h
+libdlo-0.1.2/src/dlo_grfx.c
+libdlo-0.1.2/src/dlo_mode.h
+libdlo-0.1.2/src/libdlo.c
+libdlo-0.1.2/src/dlo_structs.h
+libdlo-0.1.2/src/dlo_mode.c
+libdlo-0.1.2/test/
+libdlo-0.1.2/test/Makefile.am
+libdlo-0.1.2/test/Makefile.in
+libdlo-0.1.2/test/images/
+libdlo-0.1.2/test/images/test24.bmp
+libdlo-0.1.2/test/images/test16.bmp
+libdlo-0.1.2/test/images/test32.bmp
+libdlo-0.1.2/test/images/test08.bmp
+libdlo-0.1.2/test/test1.c
+libdlo-0.1.2/aclocal.m4
+libdlo-0.1.2/Makefile.am
+libdlo-0.1.2/Makefile.in
+libdlo-0.1.2/config/
+libdlo-0.1.2/config/ltmain.sh
+libdlo-0.1.2/config/depcomp
+libdlo-0.1.2/config/missing
+libdlo-0.1.2/config/config.sub
+libdlo-0.1.2/config/config.guess
+libdlo-0.1.2/config/install-sh
+libdlo-0.1.2/autogen.sh
+libdlo-0.1.2/mkdox.sh
+libdlo-0.1.2/configure.ac
+libdlo-0.1.2/COPYING
+libdlo-0.1.2/m4/
+libdlo-0.1.2/m4/ltsugar.m4
+libdlo-0.1.2/m4/lt~obsolete.m4
+libdlo-0.1.2/m4/ltoptions.m4
+libdlo-0.1.2/m4/libtool.m4
+libdlo-0.1.2/m4/ltversion.m4
+libdlo-0.1.2/configure
+libdlo-0.1.2/config.h.in
+syoung@hplaptop:~/software/displaylink$ cd libdlo-0.1.2/
+syoung@hplaptop:~/software/displaylink/libdlo-0.1.2$ ll
+total 732
+drwxr-xr-x 6 syoung syoung   4096 2009-10-18 22:43 ./
+drwxr-xr-x 3 syoung syoung   4096 2011-01-26 12:50 ../
+-rw-r--r-- 1 syoung syoung  32760 2009-10-18 22:42 aclocal.m4
+-rw-r--r-- 1 syoung syoung     34 2009-10-08 20:20 AUTHORS
+-rwxr-xr-x 1 syoung syoung     72 2009-10-08 20:20 autogen.sh*
+-rw-r--r-- 1 syoung syoung     36 2009-10-08 20:20 ChangeLog
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 config/
+-rw-r--r-- 1 syoung syoung   4924 2009-10-18 22:43 config.h.in
+-rwxr-xr-x 1 syoung syoung 469664 2009-10-18 22:43 configure*
+-rw-r--r-- 1 syoung syoung   1698 2009-10-18 22:41 configure.ac
+-rw-r--r-- 1 syoung syoung  23238 2009-10-08 20:20 COPYING
+-rw-r--r-- 1 syoung syoung 127485 2009-10-08 20:20 Guide-v104.pdf
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 m4/
+-rw-r--r-- 1 syoung syoung    832 2009-10-08 20:20 Makefile.am
+-rw-r--r-- 1 syoung syoung  24786 2009-10-18 22:43 Makefile.in
+-rwxr-xr-x 1 syoung syoung    848 2009-10-08 20:20 mkdox.sh*
+-rw-r--r-- 1 syoung syoung   1198 2009-10-08 20:20 README
+drwxr-xr-x 2 syoung syoung   4096 2009-10-18 22:43 src/
+drwxr-xr-x 3 syoung syoung   4096 2009-10-18 22:43 test/
+syoung@hplaptop:~/software/displaylink/libdlo-0.1.2$ ./configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... no
+checking for mawk... mawk
+checking whether make sets $(MAKE)... yes
+checking for style of include used by make... GNU
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking dependency style of gcc... gcc3
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /bin/grep
+checking for egrep... /bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking minix/config.h usability... no
+checking minix/config.h presence... no
+checking for minix/config.h... no
+checking whether it is safe to define __EXTENSIONS__... yes
+checking for gcc... (cached) gcc
+checking whether we are using the GNU C compiler... (cached) yes
+checking whether gcc accepts -g... (cached) yes
+checking for gcc option to accept ISO C89... (cached) none needed
+checking dependency style of gcc... (cached) gcc3
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for a sed that does not truncate output... /bin/sed
+checking for fgrep... /bin/grep -F
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking whether the shell understands some XSI constructs... yes
+checking whether the shell understands "+="... yes
+checking for /usr/bin/ld option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for ar... ar
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking for stdint.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking usb.h usability... yes
+checking usb.h presence... yes
+checking for usb.h... yes
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+checking for inline... inline
+checking for int32_t... yes
+checking for size_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+checking for usb_open in -lusb... yes
+checking for usb_get_driver_np... yes
+checking for usb_get_configuration... no
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible malloc... yes
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible realloc... yes
+checking for gettimeofday... yes
+checking for strchr... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating src/Makefile
+config.status: creating test/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+
+	libdlo 0.1.2
+	========
+
+	prefix:			/usr/local
+	exec_prefix:		${prefix}
+	libdir_name:		${exec_prefix}/lib
+	mandir:			${datarootdir}/man
+	includedir:		${prefix}/include
+
+	compiler:		gcc
+	cflags:			-g -O2
+	ldflags:		
+
+	xsltproc:		
+
+
+
+
+
+sudo su
+make 
+
+    make  all-recursive
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    Making all in src
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    /bin/bash ../libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT libdlo_la-dlo_grfx.lo -MD -MP -MF .deps/libdlo_la-dlo_grfx.Tpo -c -o libdlo_la-dlo_grfx.lo `test -f 'dlo_grfx.c' || echo './'`dlo_grfx.c
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_grfx.lo -MD -MP -MF .deps/libdlo_la-dlo_grfx.Tpo -c dlo_grfx.c  -fPIC -DPIC -o .libs/libdlo_la-dlo_grfx.o
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_grfx.lo -MD -MP -MF .deps/libdlo_la-dlo_grfx.Tpo -c dlo_grfx.c -o libdlo_la-dlo_grfx.o >/dev/null 2>&1
+    mv -f .deps/libdlo_la-dlo_grfx.Tpo .deps/libdlo_la-dlo_grfx.Plo
+    /bin/bash ../libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT libdlo_la-dlo_mode.lo -MD -MP -MF .deps/libdlo_la-dlo_mode.Tpo -c -o libdlo_la-dlo_mode.lo `test -f 'dlo_mode.c' || echo './'`dlo_mode.c
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_mode.lo -MD -MP -MF .deps/libdlo_la-dlo_mode.Tpo -c dlo_mode.c  -fPIC -DPIC -o .libs/libdlo_la-dlo_mode.o
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_mode.lo -MD -MP -MF .deps/libdlo_la-dlo_mode.Tpo -c dlo_mode.c -o libdlo_la-dlo_mode.o >/dev/null 2>&1
+    mv -f .deps/libdlo_la-dlo_mode.Tpo .deps/libdlo_la-dlo_mode.Plo
+    /bin/bash ../libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT libdlo_la-dlo_usb.lo -MD -MP -MF .deps/libdlo_la-dlo_usb.Tpo -c -o libdlo_la-dlo_usb.lo `test -f 'dlo_usb.c' || echo './'`dlo_usb.c
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_usb.lo -MD -MP -MF .deps/libdlo_la-dlo_usb.Tpo -c dlo_usb.c  -fPIC -DPIC -o .libs/libdlo_la-dlo_usb.o
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-dlo_usb.lo -MD -MP -MF .deps/libdlo_la-dlo_usb.Tpo -c dlo_usb.c -o libdlo_la-dlo_usb.o >/dev/null 2>&1
+    mv -f .deps/libdlo_la-dlo_usb.Tpo .deps/libdlo_la-dlo_usb.Plo
+    /bin/bash ../libtool --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT libdlo_la-libdlo.lo -MD -MP -MF .deps/libdlo_la-libdlo.Tpo -c -o libdlo_la-libdlo.lo `test -f 'libdlo.c' || echo './'`libdlo.c
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-libdlo.lo -MD -MP -MF .deps/libdlo_la-libdlo.Tpo -c libdlo.c  -fPIC -DPIC -o .libs/libdlo_la-libdlo.o
+    libdlo.c: In function ‘parse_cmdline’:
+    libdlo.c:488: warning: assignment discards qualifiers from pointer target type
+    libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -g -O2 -MT libdlo_la-libdlo.lo -MD -MP -MF .deps/libdlo_la-libdlo.Tpo -c libdlo.c -o libdlo_la-libdlo.o >/dev/null 2>&1
+    mv -f .deps/libdlo_la-libdlo.Tpo .deps/libdlo_la-libdlo.Plo
+    /bin/bash ../libtool --tag=CC   --mode=link gcc  -g -O2 -lusb -version-info 1:0:1  -o libdlo.la -rpath /usr/local/lib libdlo_la-dlo_grfx.lo libdlo_la-dlo_mode.lo libdlo_la-dlo_usb.lo libdlo_la-libdlo.lo  -lusb 
+    libtool: link: gcc -shared  .libs/libdlo_la-dlo_grfx.o .libs/libdlo_la-dlo_mode.o .libs/libdlo_la-dlo_usb.o .libs/libdlo_la-libdlo.o   /usr/lib/libusb.so    -Wl,-soname -Wl,libdlo.so.0 -o .libs/libdlo.so.0.1.0
+    libtool: link: (cd ".libs" && rm -f "libdlo.so.0" && ln -s "libdlo.so.0.1.0" "libdlo.so.0")
+    libtool: link: (cd ".libs" && rm -f "libdlo.so" && ln -s "libdlo.so.0.1.0" "libdlo.so")
+    libtool: link: ar cru .libs/libdlo.a  libdlo_la-dlo_grfx.o libdlo_la-dlo_mode.o libdlo_la-dlo_usb.o libdlo_la-libdlo.o
+    libtool: link: ranlib .libs/libdlo.a
+    libtool: link: ( cd ".libs" && rm -f "libdlo.la" && ln -s "../libdlo.la" "libdlo.la" )
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    Making all in test
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT test1.o -MD -MP -MF .deps/test1.Tpo -c -o test1.o test1.c
+    test1.c: In function ‘basic_grfx_test’:
+    test1.c:245: warning: cast from pointer to integer of different size
+    test1.c: In function ‘main’:
+    test1.c:937: warning: format ‘%X’ expects type ‘unsigned int’, but argument 2 has type ‘long unsigned int’
+    mv -f .deps/test1.Tpo .deps/test1.Po
+    /bin/bash ../libtool --tag=CC   --mode=link gcc  -g -O2   -o test1 test1.o ../src/libdlo.la -lusb -lusb 
+    libtool: link: gcc -g -O2 -o .libs/test1 test1.o  ../src/.libs/libdlo.so /usr/lib/libusb.so
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[2]: Nothing to be done for `all-am'.
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    root@hplaptop:/home/syoung/software/displaylink/libdlo-0.1.2# make install
+    Making install in src
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    make[2]: Nothing to be done for `install-exec-am'.
+    test -z "/usr/local/include" || /bin/mkdir -p "/usr/local/include"
+     /usr/bin/install -c -m 644 'libdlo.h' '/usr/local/include/libdlo.h'
+    test -z "/usr/local/lib" || /bin/mkdir -p "/usr/local/lib"
+     /bin/bash ../libtool   --mode=install /usr/bin/install -c  'libdlo.la' '/usr/local/lib/libdlo.la'
+    libtool: install: /usr/bin/install -c .libs/libdlo.so.0.1.0 /usr/local/lib/libdlo.so.0.1.0
+    libtool: install: (cd /usr/local/lib && { ln -s -f libdlo.so.0.1.0 libdlo.so.0 || { rm -f libdlo.so.0 && ln -s libdlo.so.0.1.0 libdlo.so.0; }; })
+    libtool: install: (cd /usr/local/lib && { ln -s -f libdlo.so.0.1.0 libdlo.so || { rm -f libdlo.so && ln -s libdlo.so.0.1.0 libdlo.so; }; })
+    libtool: install: /usr/bin/install -c .libs/libdlo.lai /usr/local/lib/libdlo.la
+    libtool: install: /usr/bin/install -c .libs/libdlo.a /usr/local/lib/libdlo.a
+    libtool: install: chmod 644 /usr/local/lib/libdlo.a
+    libtool: install: ranlib /usr/local/lib/libdlo.a
+    libtool: finish: PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/sbin" ldconfig -n /usr/local/lib
+    ----------------------------------------------------------------------
+    Libraries have been installed in:
+       /usr/local/lib
+    
+    If you ever happen to want to link against installed libraries
+    in a given directory, LIBDIR, you must either use libtool, and
+    specify the full pathname of the library, or use the `-LLIBDIR'
+    flag during linking and do at least one of the following:
+       - add LIBDIR to the `LD_LIBRARY_PATH' environment variable
+         during execution
+       - add LIBDIR to the `LD_RUN_PATH' environment variable
+         during linking
+       - use the `-Wl,-rpath -Wl,LIBDIR' linker flag
+       - have your system administrator add LIBDIR to `/etc/ld.so.conf'
+    
+    See any operating system documentation about shared libraries for
+    more information, such as the ld(1) and ld.so(8) manual pages.
+    ----------------------------------------------------------------------
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    Making install in test
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    test -z "/usr/local/bin" || /bin/mkdir -p "/usr/local/bin"
+      /bin/bash ../libtool   --mode=install /usr/bin/install -c 'test1' '/usr/local/bin/test1'
+    libtool: install: /usr/bin/install -c .libs/test1 /usr/local/bin/test1
+    make[2]: Nothing to be done for `install-data-am'.
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[2]: Nothing to be done for `install-exec-am'.
+    test -z "/usr/local/share/doc/libdlo" || /bin/mkdir -p "/usr/local/share/doc/libdlo"
+     /usr/bin/install -c -m 644 'README' '/usr/local/share/doc/libdlo/README'
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+
+
+
+make check
+
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    make[1]: Nothing to be done for `check'.
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/src'
+    Making check in test
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[1]: Nothing to be done for `check'.
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2/test'
+    make[1]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make  check-TESTS
+    make[2]: Entering directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    test: argv[0]: /home/syoung/software/displaylink/libdlo-0.1.2/test/.libs/lt-test1
+    test: init...
+    
+    test: basic graphics tests...
+    test: device info: uid &10E63F0
+    test: device info: serial 000000000001333
+    test: device info: type  &F
+    test: native mode info...
+      1680x1050 @ 59 Hz 24 bpp base &0
+    test: set_mode...
+    test: mode info...
+      1680x1050 @ 59 Hz 24 bpp base &0
+    test: cls... took 29 ms
+    test: random white dots... took 23 ms
+    test: random rectangles... took 38 ms
+    test: central rectangles... took 56 ms
+    test: white box outline... took 0 ms
+    test: copy central box... took 6 ms
+    test: copy central box (off edges of viewport)... took 4 ms
+            est: overlapping copy tests...
+    
+    test: viewport tests...
+    test: cls (three banks)... took 84 ms
+    test: plot crosses (three banks)... took 21 ms
+    test: switching to screen bank 1...
+    test: switching to screen bank 2...
+    test: switching to screen bank 0...
+    
+    test: screen scraping tests...
+    
+    test: bitmap file 'test08.bmp'
+    bmp->hdr.magic       4D42
+    bmp->hdr.file_sz     00001F8E (8078)
+    bmp->hdr.reserved1   0000
+    bmp->hdr.reserved2   0000
+    bmp->hdr.pix_offset  00000436
+    bmp->dib.dib_hdr_sz  00000028
+    bmp->dib.width       0000008C (140)
+    bmp->dib.height      00000032 (50)
+    bmp->dib.col_planes  0001
+    bmp->dib.bpp         0008 (8)
+    bmp->dib.compression 00000000
+    bmp->dib.raw_size    00001B58 (7000)
+    bmp->dib.x_pix_meter 00000DD7
+    bmp->dib.y_pix_meter 00000DD7
+    bmp->dib.pal_entries 00000100 (256)
+    bmp->dib.imp_cols    00000000
+    
+    test: bitmap file 'test16.bmp'
+    bmp->hdr.magic       4D42
+    bmp->hdr.file_sz     000036E6 (14054)
+    bmp->hdr.reserved1   0000
+    bmp->hdr.reserved2   0000
+    bmp->hdr.pix_offset  00000036
+    bmp->dib.dib_hdr_sz  00000028
+    bmp->dib.width       0000008C (140)
+    bmp->dib.height      00000032 (50)
+    bmp->dib.col_planes  0001
+    bmp->dib.bpp         0010 (16)
+    bmp->dib.compression 00000000
+    bmp->dib.raw_size    000036B0 (14000)
+    bmp->dib.x_pix_meter 00000DD7
+    bmp->dib.y_pix_meter 00000DD7
+    bmp->dib.pal_entries 00000000 (0)
+    bmp->dib.imp_cols    00000000
+    
+    test: bitmap file 'test24.bmp'
+    bmp->hdr.magic       4D42
+    bmp->hdr.file_sz     0000523E (21054)
+    bmp->hdr.reserved1   0000
+    bmp->hdr.reserved2   0000
+    bmp->hdr.pix_offset  00000036
+    bmp->dib.dib_hdr_sz  00000028
+    bmp->dib.width       0000008C (140)
+    bmp->dib.height      00000032 (50)
+    bmp->dib.col_planes  0001
+    bmp->dib.bpp         0018 (24)
+    bmp->dib.compression 00000000
+    bmp->dib.raw_size    00005208 (21000)
+    bmp->dib.x_pix_meter 00000DD7
+    bmp->dib.y_pix_meter 00000DD7
+    bmp->dib.pal_entries 00000000 (0)
+    bmp->dib.imp_cols    00000000
+    
+    test: bitmap file 'test32.bmp'
+    bmp->hdr.magic       4D42
+    bmp->hdr.file_sz     00006D96 (28054)
+    bmp->hdr.reserved1   0000
+    bmp->hdr.reserved2   0000
+    bmp->hdr.pix_offset  00000036
+    bmp->dib.dib_hdr_sz  00000028
+    bmp->dib.width       0000008C (140)
+    bmp->dib.height      00000032 (50)
+    bmp->dib.col_planes  0001
+    bmp->dib.bpp         0020 (32)
+    bmp->dib.compression 00000000
+    bmp->dib.raw_size    00006D60 (28000)
+    bmp->dib.x_pix_meter 00000DD7
+    bmp->dib.y_pix_meter 00000DD7
+    bmp->dib.pal_entries 00000000 (0)
+    bmp->dib.imp_cols    00000000
+    test: bitmap clipping test...
+    bmp->hdr.magic       4D42
+    bmp->hdr.file_sz     00001F8E (8078)
+    bmp->hdr.reserved1   0000
+    bmp->hdr.reserved2   0000
+    bmp->hdr.pix_offset  00000436
+    bmp->dib.dib_hdr_sz  00000028
+    bmp->dib.width       0000008C (140)
+    bmp->dib.height      00000032 (50)
+    bmp->dib.col_planes  0001
+    bmp->dib.bpp         0008 (8)
+    bmp->dib.compression 00000000
+    bmp->dib.raw_size    00001B58 (7000)
+    bmp->dib.x_pix_meter 00000DD7
+    bmp->dib.y_pix_meter 00000DD7
+    bmp->dib.pal_entries 00000100 (256)
+    bmp->dib.imp_cols    00000000
+    test: release &10E63F0...
+    test: final...
+    test: finished.
+    PASS: test/test1
+    =============
+    1 test passed
+    =============
+    make[2]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    make[1]: Leaving directory `/home/syoung/software/displaylink/libdlo-0.1.2'
+    root@hplaptop:/home/syoung/software/displaylink/libdlo-0.1.2# ^C
+    root@hplaptop:/home/syoung/software/displaylink/libdlo-0.1.2# 
+    root@hplaptop:/home/syoung/software/displaylink/libdlo-0.1.2# 

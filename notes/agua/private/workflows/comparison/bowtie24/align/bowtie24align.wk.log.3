@@ -1,0 +1,117 @@
+[workflow bowtie24align]
+2011-01-27 11:55:35
+
+
+Workflow:
+name           bowtie24align
+owner          anonymous
+started        2011-01-27 01:18:27
+stopped        2011-01-27 03:07:40
+duration       1 hrs 49 mins 13 secs
+locked         0
+	
+  Application:
+  name           copysplit
+  owner          anonymous
+  ordinal        1
+  status         unknown
+  started        2011-01-27 01:18:27
+  stopped        2011-01-27 01:19:29
+  duration       0 hrs 1 mins 2 secs
+  locked         1
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    loop           distributed
+    looplabel      eland-copysplit
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/loop-copysplit.out
+    maxjobs        2000
+    mode           link
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+    queue          small
+    replicates     1-33
+    source         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    target         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/%REPLICATE%
+    walltime       24
+
+	
+  Application:
+  name           bowtie24
+  owner          anonymous
+  ordinal        2
+  status         unknown
+  started        2011-01-27 01:19:29
+  stopped        2011-01-27 02:44:22
+  duration       1 hrs 24 mins 53 secs
+  locked         1
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          bowtie24-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/loop-bowtie24.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/%REPLICATE%
+    params         "--seedlen 24"
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/%REPLICATE%/bowtie24.out
+    walltime       24
+
+	
+  Application:
+  name           checkbowtie
+  owner          anonymous
+  ordinal        3
+  status         unknown
+  started        2011-01-27 02:44:22
+  stopped        2011-01-27 02:45:41
+  duration       0 hrs 1 mins 19 secs
+  locked         1
+  location       /nethome/syoung/0.5/bin/apps/aligners/BOWTIEcheck.pl
+
+    Parameters:
+    distance       200
+    label          BOWTIE
+    max            2
+    min            0.5
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24
+    paired         
+    params         "--seedlen 24"
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24/bowtiecheck.out
+
+	
+  Application:
+  name           cleanup
+  owner          anonymous
+  ordinal        4
+  status         unknown
+  started        2011-01-27 02:45:41
+  stopped        2011-01-27 03:07:40
+  duration       0 hrs 21 mins 59 secs
+  locked         0
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl
+
+    Parameters:
+    directory      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie24
+    mode           subdirs
+    references     chr22
+
+
+
+X::Workflow::run    Application may not completed successfully. Application status: locked. Please check the logfile: bowtie24align.wk.log
+

@@ -1,0 +1,1725 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>NetBeans How To Design a (module) API</title>
+    <link href="api-design_files/base_packaged.css" media="screen" rel="stylesheet" type="text/css">    
+    <!--[if IE 7]>
+    <link href="http://asset-1.netbeans.org/stylesheets/ie7_packaged.css?20110603.e655cfe" media="screen" rel="stylesheet" type="text/css" />    <![endif]-->
+    <!--[if IE 6]>
+    <link href="http://asset-2.netbeans.org/stylesheets/iex60.css?20110603.e655cfe" media="screen" rel="stylesheet" type="text/css" />    <![endif]-->
+    <link href="api-design_files/print_packaged.css" media="print" rel="stylesheet" type="text/css">
+    <script src="api-design_files/head_packaged.js" type="text/javascript"></script>
+        <script type="text/javascript" src="api-design_files/buttons.js"></script>
+    <script type="text/javascript">
+        stLight.options({
+                publisher:'bcd30425-1749-43d6-a311-18a82f89771a',
+        });
+    </script>
+        <script type="text/javascript">
+//<![CDATA[
+var page={"token":"22bf169e08b97e37d8034d83be253a1918c18eff"};
+//]]>
+</script>
+    <script type="text/javascript" charset="utf-8">
+      function debug(m){}
+    </script>
+    
+
+<meta name="topic" content="platform">
+<meta name="description" content="Hints for best practices when designing module APIs to make them powerful, readable, and maintainable with compatibility.">
+<meta name="type" content="article">
+<meta name="audience" content="nbdeveloper">
+<meta name="author" content="jtulach@netbeans.org">
+<link rel="stylesheet" href="api-design_files/netbeans.css" type="text/css">
+
+    <!-- INCLUDED CODE START -->
+    <script src="api-design_files/companion-projects.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="api-design_files/netbeans.css">
+    <link href="api-design_files/nblaf.css" media="screen" rel="stylesheet" type="text/css">    <meta name="keywords" content="java IDE, java editor, java Platform, free, open source, java development, j2ee support, development enviroment, web development, NetBeans, IDE, java">
+    <!-- INCLUDED CODE END -->
+  <link href="api-design_files/buttons.css" type="text/css" rel="stylesheet"></head>
+  <body id="bg" class="composite blue-bg">
+    <!-- INCLUDED CODE START -->
+    <div class="align-center">
+      
+      <div id="fixed-logo">
+        <div class="float-left"><a href="http://www.netbeans.org/index.html"><img src="api-design_files/nb-logo2.gif" class="logo-link" alt="netbeans.org - go to homepage" title="NetBeans.org - go to the homepage" style="margin-top: 10px;" border="0" width="159" height="60"></a></div>
+        <div id="search">
+          <!-- Google CSE Search Box Begins  -->
+          <form action="http://www.netbeans.org/search_result.html" id="cse-search-box">
+            <input name="cx" value="006102455337629464213:mt38ytkbuak" type="hidden">
+            <input name="cof" value="FORID:11" type="hidden">
+            <table>
+              <tbody><tr>
+                <td>
+                  <a href="http://www.netbeans.org/community/search.html" style="color: rgb(33, 53, 82);">Search:</a> </td><td><input name="q" class="text" style="border: 1px solid rgb(11, 104, 109); background: url(&quot;http://www.google.com/cse/intl/en/images/google_custom_search_watermark.gif&quot;) no-repeat scroll left center rgb(255, 255, 255);" type="text">
+                </td>
+                <td>
+                  <input src="api-design_files/search-button.gif" alt="Search netbeans.org" name="sa" value="Search" type="image">
+                </td>
+              </tr>
+            </tbody></table>
+          <input value="openide.netbeans.org/tutorial/api-design.html" name="siteurl" type="hidden"></form>
+          <script type="text/javascript" src="api-design_files/brand"></script>
+          <!-- Google CSE Search Box Ends -->
+        </div><div class="lang-dropdown"></div>
+      </div>
+    </div>
+    <div id="center-container"> <!-- layer centering whole page -->
+      <div id="page-border"> <!-- layer with page shaded L&R border -->
+        <!-- navigation buttons -->
+	        <div id="fixed-tabs"><img src="api-design_files/corner-left.png" class="float-left" style="" alt="corner image" width="11" height="26"><img src="api-design_files/corner-right.png" class="float-right" style="" alt="corner image" width="14" height="26">
+          <script src="api-design_files/rollover.js" type="text/javascript"></script>
+          <script type="text/javascript">
+            <!--
+            op_register("optab1","http://www.netbeans.org/images_www/v6/home-off.png","http://www.netbeans.org/images_www/v6/home-over.png");
+            op_register("optab2","http://www.netbeans.org/images_www/v6/products-off.png","http://www.netbeans.org/images_www/v6/products-over.png");
+            op_register("optab3","http://www.netbeans.org/images_www/v6/catalogue-off.png","http://www.netbeans.org/images_www/v6/catalogue-over.png");
+            op_register("optab4","http://www.netbeans.org/images_www/v6/platform-off.png","http://www.netbeans.org/images_www/v6/platform-over.png");
+            op_register("optab5","http://www.netbeans.org/images_www/v6/kb-off.png","http://www.netbeans.org/images_www/v6/kb-over.png");
+            op_register("optab6","http://www.netbeans.org/images_www/v6/community-on.png","http://www.netbeans.org/images_www/v6/community-over.png");
+            op_register("optab7","http://www.netbeans.org/images_www/v6/partners-off.png","http://www.netbeans.org/images_www/v6/partners-over.png");
+            //-->
+          </script>
+          <a href="http://netbeans.org/" title=""><img src="api-design_files/home-off.png" alt="" class="iMenu" id="optab1" onmouseover="op_set_over('optab1')" onmouseout="op_set_normal('optab1')" border="0" width="120" height="26"></a><a href="http://netbeans.org/features/index.html" title="Features"><img src="api-design_files/products-off.png" alt="Features" class="iMenu" id="optab2" onmouseover="op_set_over('optab2')" onmouseout="op_set_normal('optab2')" border="0" width="120" height="26"></a><a href="http://plugins.netbeans.org/PluginPortal/" title="Plugins"><img src="api-design_files/catalogue-off.png" alt="Plugins" class="iMenu" id="optab3" onmouseover="op_set_over('optab3')" onmouseout="op_set_normal('optab3')" border="0" width="120" height="26"></a><a href="http://platform.netbeans.org/" title="Platform"><img src="api-design_files/platform-off.png" alt="Platform" class="iMenu" id="optab4" onmouseover="op_set_over('optab4')" onmouseout="op_set_normal('optab4')" border="0" width="120" height="26"></a><a href="http://netbeans.org/kb/index.html" title="Docs&nbsp;&amp;&nbsp;Support"><img src="api-design_files/kb-off.png" alt="Docs&nbsp;&amp;&nbsp;Support" class="iMenu" id="optab5" onmouseover="op_set_over('optab5')" onmouseout="op_set_normal('optab5')" border="0" width="120" height="26"></a><a href="http://netbeans.org/community/index.html" title="Community"><img src="api-design_files/community-on.png" alt="Community" class="iMenu" id="optab6" border="0" width="120" height="26"></a><a href="http://netbeans.org/community/partners/index.html" title="Partners"><img src="api-design_files/partners-off.png" alt="Partners" class="iMenu" id="optab7" onmouseover="op_set_over('optab7')" onmouseout="op_set_normal('optab7')" border="0" width="120" height="26"></a>
+        </div><!-- navig buttons end -->
+        <div id="fixed-contentarea">
+          <!-- layer holding main content area, have L&R margins because of shaded borders -->
+          <div id="navig-breadcrumbs">
+            <a href="http://netbeans.org/">netbeans.org</a><span>&gt;</span>  <a href="http://netbeans.org/projects">projects</a> &gt;
+  <a href="http://netbeans.org/projects/openide">openide</a> &gt;
+  <a href="http://netbeans.org/projects/openide/content" class="current">Website</a>
+
+          </div>
+          <div id="fixed-contentbox-ie"> <!--  IE hack-->
+            <table class="colapse full-width f-page-table-2col"> <!-- main content table -->
+              <tbody><tr>
+                <td class="valign-top" id="main-content"><!-- main content cell, testwww page is here -->
+                  <div id="main">
+                    ﻿<div class="contentmast">
+                      <div class="f-page-auto-cell">
+                        <!-- Begin Content Area -->
+                        <!-- START your body content here -->
+                        <div class="content">
+                          <!--BEGIN CONTENT AREA-->
+                          
+                          
+
+
+
+
+<div class="contentPadding website">
+             
+
+
+<h1>How To Design a (module) API</h1>
+<b>$Revision: 1.1.1.1 $</b><br>
+
+<p>
+</p><center>    
+<h2>Read more in the newly published book</h2>
+    
+<a href="http://www.apidesign.org/">
+<img src="api-design_files/Apidesign.jpg">
+</a>
+</center>
+<p>
+</p><hr>
+    
+<dl>
+<dt><b>Abstract:</b>
+</dt><dd>
+A description of good design practices when design any APIs with especially 
+closer look to the case of an API based on NetBeans infrastructure is 
+content of this evolving document. 
+</dd></dl>
+
+<hr>
+<b>Document History:</b> <a href="http://www.netbeans.org/source/browse/openide/www/tutorial/api-design.html">available in CVS</a>
+
+<ol>
+    <li><a href="#why">Why API</a>?
+    </li><li><a href="#api">What is an API</a>?
+    </li><li><a href="#usecase">The Importance of Being Use Case Oriented</a>
+    </li><li><a href="#life">Life-cycle of an API</a>
+    </li><li><a href="#poi">Preservation of Investments</a>
+    </li><li><a href="#design">Design Practices</a>
+    <ol>
+        <li><a href="#design.less">Do not expose more than you want</a>
+        <ul>
+
+            <li><a href="#design.less.field">Method is better than Field</a></li>
+            <li><a href="#design.less.factory">Factory is better than Constructor</a></li>
+            <li><a href="#design.less.final">Make Everything Final</a></li>
+            <li><a href="#design.less.friend">Allow access only from a friend code</a></li>
+        
+        </ul>
+        </li><li><a href="#design.apiandspi">Separate API for clients from support API</a>
+        </li><li>Intercomponent lookup and communication
+        </li><li><a href="#design.interfacesandclasses">Interfaces vs. abstract classes</a>
+        </li><li><a href="#design.example">Case Study of client API and SPI separation</a>
+        </li><li><a href="#design.game">Using games to Improve API Design Skills</a>
+    </li></ol>
+</li></ol>
+
+<hr>
+
+<h2><a name="why">Why API?</a></h2>
+
+The <q>API</q> stands for <em>Application Programming Inteface</em> and before
+we drill down to descriptions and suggestions how to write it, it is not
+unreasonable to analyze a bit the meaning of these words.
+<p>
+The word <em>interface</em> indicates that the <em>API</em> lives between at
+least two different subjects.
+For example the internal structure of the application could be seen on one side,
+while leaving foreing applications making calls into it on the on the other. 
+Or there is
+the programmer (or team) developing the application and its API on one side 
+and on the other the programmers using it. The important observation is that 
+in both cases these two
+sides are <em>separated</em> - either <em>compiled</em> separatelly or 
+<em>developed</em> in completely different groups with their own schedules,
+goals and needs.
+</p><p>
+It is exactly this <em>separation</em> that implies that rules for 
+designing and maintaining an API. If there was no <em>separation</em> and the whole
+product was developed by tight team, build at once, there would be no need for
+bothering with API (as it is definitively more work) and also writing this
+tutorial. But as the real world <b>products</b> are composed from a set of
+independent <b>projects</b> developed by teams that do not necessarily know
+about each other, have completely different schedules and build their projects
+independently, but still want to communicate among themselves there is a need
+for a <b>stable</b> <b>contract</b> that can be used <b>for</b> such
+<b>communication</b>.
+
+</p><p>
+<i>Example: <b>Linux</b> distributions are done by Mandrake or
+RedHat, but their content is composed from a thousands of independent open
+source projects. The producer of the distribution cannot influence their work,
+it just takes what is available and stable at given time, makes sure that
+everything works together and creates the release.</i>
+
+<!--
+<P>
+<I>Example II.<I>: <em>NetBeans IDE</em> consists of a bunch of modules. These
+modules are developed
+
+-->
+
+</p><p>
+
+
+</p><hr>
+<h2><a name="api">What is an API?</a></h2>
+
+As the reason why API is used is to allow communictation between 
+teams and applications in order to allow separated and distributed development
+the answer to question <q>what is API</q> shall include everything that
+influences such kind of development.
+<p>
+<em>The API is everything that another team or application can depend on</em>:
+</p><ul>
+    <li><b>method and field signatures</b> - communication between applications
+    is usally about calling functions and passing data structures between
+    each other. If there is a change in the names of the methods, in their
+    arguments or in structure of exchanged data, the whole program often
+    does not even link well, nor it can run.
+    <p>
+
+    </p></li><li><b>files and their content</b> - many applications read various files
+    and their content can influence their behaviour. Imagine application
+    relying on the other one to read its configuration file and modifying
+    its content prior to invoking the application. If the format of the file
+    changes or the file is completely ignored, the communication between 
+    those applications gets broken.
+    <p>
+
+    </p></li><li><b>environment variables</b> - for example behaviour of <code>cvs</code>
+    can be influenced by the variable <code>CVSEDITOR</code>.
+    <p>    
+
+    </p></li><li><b>protocols</b> - opening a socket and being prepared to interpret
+    streams sent there, or putting or reading a data to clipboard or during
+    drag and drop again establishes an API that others can depend on.
+    <p>
+
+    </p></li><li><b>behaviour</b> - a bit harder to grip, but important for the 
+    separation as well is the the dynamic behaviour. How the program flow 
+    looks like - what is the order of execution, what locks are being held
+    during calls, in which threads a call can happen, etc. 
+    <p>
+
+    </p></li><li><b>L10N messages</b> - 
+    because the localization to a certain language is usually developed and 
+    distributed by somebody other than the person that writes the code, yet both of
+    them have to use the same keys (<code>NbBundle.getMessage
+    ("CTL_SomeKey")</code>), there is inherently a contract between 
+    the writer of the code and the translator - an API of sorts.
+</li></ul>
+
+The important thing with respect to distributed development is to
+be aware of possible APIs - of possible things other code can depend on. Only by
+identifying such aspects of own application one can develop it in a way that
+will not hurt cooperation with seperately developed applications.
+
+<hr>
+<h2><a name="usecase">The Importance of Being Use Case Oriented</a></h2>
+
+    <!-- 1. is an API good or bad? Undecidable, without knowing who
+        and how is using it -->
+
+    It is often not hard to decide whether a program is good or bad - 
+    if it crashes without doing anything useful, it is bad. If the
+    program cannot compile, it is even worse. But if it runs, helps
+    to get a work done, just sometimes
+    crashes, it is hardly good, but also it does not need to completely
+    bad. The decision depends on the perception of the evaluator.
+    The <em>subjective feeling</em> does matter. And the same applies when
+    one tries to judge a design. It does not matter whether it is a UI
+    design or API design. Again the personal perception is important.
+    <p>
+    On the other hand software engineering is (or at least should be)
+    done by engineers and important part of engineering is its measurability. 
+    So the ultimate goal for reasoning about design is to make it 
+    measurable, to suppress the subjective opinions and define set of
+    requirements that will be used to <q>measure</q> the quality of
+    the design. Of course defining the requirements might need some
+    personal opinions, but as soon as they are written down, one can become
+    pure engineer and use pure scientific methods to measure how 
+    much they are satisfied.
+    </p><p>
+    But as shown on the example of a good/bad program, the users
+    <em>subjective feeling</em> is important. And it is important in 
+    design as well. But in case of <em>API</em>, which stands 
+    for the interface between the internals of an application and 
+    a programatic usage of its functionality, the person that will have
+    the <em>subjective feeling</em> is the programmer using the <em>API</em>.
+    He is the <em>API</em> user.
+    He is the one that will judge the design and represent opinions
+    whether it is good or bad. Of course, such opinions will be 
+    absolutely personal, based on personal experience gain during
+    learning the desing and using the API. The easier is for 
+    the <em>API</em> users to make their job done, the better perception 
+    of the design they will get. 
+    </p><p>
+    The external programmer is more concerned by the time needed to
+    learn the API, by the amount of code needed to get his tasks done
+    and by the stability of the contract. The art of making good API
+    lays exactly in meeting these opposite requirements.
+    </p><p>
+    As usually one shall optimize for larger audience, for bigger effect.
+    Usually the amount of people using an API is a way larger than those
+    coding it, and that is why one shall take a special care to simplify
+    the life of these users. Little uneasiness in implementing the 
+    application  is acceptable, if the life of majority of users is 
+    simpler.  To better address user needs it is necessary 
+    to know and understand their requirements. If an API allows 
+    easy implementation of the common tasks, it is a good API.
+    </p><p>
+
+    <!-- 2. when designing API one should look at the problem from the
+        perspective of the users.  Preservation of investments. -->
+
+    That is why the initial step in API design is to investigate and collect 
+    the scenarios for possible uses of the application. Having these use
+    cases written down allows evaluation of each aspect of the API and 
+    validation of the design. The use cases serve as a fixed point to which
+    one validates the design of API. It is practically impossible to
+    jugde the quality of a design, but it is relatively easy to check whether
+    the design satisfies required use cases or not.
+    </p><p>
+
+    Once a usecase becomes supported, it should stay supported until
+    the end of the world (e. g. until it is not interesting anymore).
+
+    <!-- 3. the evolution problem. Lifecycle. Write down usecases. Allow 
+        automatic verification that usecase requirements are satisfied -->
+
+
+</p><hr>
+<h2><a name="life">Life-cycle of an API</a></h2>
+
+    There seems to be two ways a feature can become an <em>API</em> (defining
+    <em>API</em> as a stable interface that others can use over time without
+    unpleasant surprises). An <em>API</em> can be evolved
+
+    <ul>
+        <li><b>spontaneously</b> - someone is developing a feature, and another person 
+        finds it useful and starts to use it. Later
+        they find out about each other, share their experiences and very likely
+        find that the original design of the feature is not general
+        enough or that it was never intended to be treated as an <em>API</em>
+        In order to evolve it toward being an <em>API</em> they 
+        discuss changes to make the feature better and after few iterations 
+        it can become a useful and stable contract.
+
+        </li><li><b>by design</b> - there is a known need for a contract between two
+        components of the system. The requirements are collected, the problem area
+        investigated, the use cases understood, and then someone designs and writes 
+        the <em>API</em>.
+        Now others can use it in real world, comment, file bugs and enhancements
+        which results in improvements to the <em>API</em> 
+        and finally evolve it into a state where it is a useful and 
+        stable contract.
+    </li></ul>
+
+    In spite that these cases start differently they share the same attributes: Both
+    of them need some time for feedback and evaluation before the <em>API</em> can
+    be known to work and suit its purpose. Not  every effort ends as its
+    life as a stable API; sometimes it may turn out that the chosen way leads
+    nowhere and then it is better to abandon the work. 
+    <p>
+    <a name="categories">In order to clearly communicate what</a>
+    stage an <em>API</em> is in, whether it is still being evolved, whether it is
+    expected to ever be real <em>API</em> or whether it is stable and 
+    ready to use, 
+    let us introduce a system of stability clasification for APIs. The aim
+    is to give the code authors way how to communicate their intention with
+    particular feature and others to find out such information.
+
+    </p><ul>
+        <li><a name="category-private"><b>Private</b></a> is a category for features that are accessible
+        but are not intended for use outside of their component (module). 
+        Such features are subject to change with every release and depending
+        on them is risky and should be avoided.
+        <p>
+
+        </p></li><li><a name="category-friend"><b>Friend</b></a> API is used for features accessible to specific
+        components in the system, that help to overcome the lack
+        of a real stable API, but are intended only for use between these
+        <em>friend</em> components and nobody else. Often friend
+        components are developed by the same group of people. A change to this 
+        contract can be done every release, but owners of those <em>friend</em>
+        components must be notified in advance. No one else should depend
+        on such features - the author of this API does not have the intent
+        to create a general purpose API.
+        <p>
+
+        </p></li><li><a name="category-devel"><b>Under development</b></a> is a name for a contract that is 
+        expected to become a stable API, but that has not yet been finished.
+        The current state serves as a proof of concept, and others are 
+        encourage to try it and comment on a dedicated mailing list. 
+        Incompatible changes may be done between releases, but should be rare,
+        not radical and properly announced on the mailing list.
+        <p>
+
+        </p></li><li><a name="category-stable"><b>Stable</b></a> interfaces are those that have received a final
+        state and the maintainers are ready to support it forever and
+        never change them incompatibly. The "forever" and "never" should 
+        not be taken as absolute: It is possible to change the contract, but
+        only in major versions and only after a careful considerations and
+        in cases where it is imperative that a change be made.
+        Stable contracts should <a href="#poi">preserve the investments
+        </a> of those entering into them (users of an API).
+        <p>
+
+        </p></li><li><a name="category-official"><b>Official</b></a> are <em>stable</em> ones and also packaged
+        into one of NetBeans official namespaces:
+        <code>org.netbeans.api</code> or <code>org.netbeans.spi</code>
+        or <code>org.openide</code>. By packaging a contract into this 
+        package (and making it part of a release) one notifies others that 
+        the contract is <a href="http://openide.netbeans.org/tutorial/api.html#restrictions">stable - 
+        with all the consequence</a> (except the conditional support
+        for <a href="http://openide.netbeans.org/tutorial/api.html#earlyaddopt">early adoptions</a>  - 
+        7such modules has code base name that ends with with <q>/0</q>). Also,
+        the impact of possible incompatible changes to <em>official</em> API 
+        should be minimized by providing compatibility bridges and 
+        keeping binary compatibility even when source one is droped (see
+        the <a href="#poi">preservation</a> section).
+        <p>
+
+        </p></li><li><a name="category-third"><b>Third party</b></a> interfaces are provided by other parties
+        that do not follow the <em>NetBeans</em> rules and thus are hard
+        to classify. It is prefered not to expose such interfaces
+        as part of own contracts, in order to insulate users of 
+        NetBeans APIs from unexpected changes made in the imported 
+        interfaces.
+        <p>
+
+        </p></li><li><a name="category-standard"><b>Standard</b></a> is similar to the <em>third party</em> classification.
+        Also provided by someone out of <em>NetBeans</em>, but by someone
+        expected to evolve the interface in compatible way (for example 
+        <a href="http://www.jcp.org/">JSRs</a>). The standard is expected
+        to not change frequently.
+        <p>
+
+        </p></li><li><a name="category-deprecated"><b>Deprecated</b></a>. After a while,
+        nearly every <em>API</em>, regardless of what state it is, becomes obsoleted.
+        Usually a new, better support for the same task has been developed which
+        replaces the old <em>API</em>. In such case, mark the old <em>API</em>
+        <cite>deprecated</cite>. A previously stable <em>API</em> that changed
+        its stability to <cite>deprecated</cite> shall be supported for 
+        reasonable amount of time (a release) to communicate to users
+        that they shall migrate from it to the new replacement. After that time
+        the API can be removed from the product, while trying to preserve
+        it for old clients by making it available in alternative ways (e. g.
+        autoupdate centers).
+    </li></ul>
+
+    At the beginning of this chapter two different ways have been mentioned
+    how an API can be developed. Doing that <b>spontaneously</b> means in
+    the light of the above API categories to introduce a <em>private</em> or
+    <em>friend</em> API, that is discovered by someone else, found useful
+    and than evolves into <em>stable</em> one as described. An API developed
+    by design is more likely to begin its life with
+    <em>under development</em> status and after a bit of work
+    can turn into <em>stable</em> API. 
+
+<hr>
+<h2><a name="poi">Preservation of Investments</a></h2>
+
+    One of the most important things for NetBeans is fair treatment of our
+    partners. Module authors, platform extenders, contributors and others 
+    have to be sure that their work will not vanish or break whenever a new
+    release of NetBeans is announced. Their work has a right to be respected
+    and admired. As long as NetBeans succeeds at that we can be sure that our
+    partners will describe their experience to others and evangelize and
+    evolve the NetBeans community.
+    <p>
+    Because different parts of the system communicate with each other using
+    public contracts (API, SPI, registration places, defined functional
+    behavior), the way to preserve participants' investments is to
+    always evolve these contracts in compatible ways.
+    Each new version of NetBeans should make sure that
+    it allows existing modules to execute and work in reasonable way, or,
+    failing that, that it is easy to update existing sources to compile 
+    and use the contracts of the new release.
+
+    </p><h4>Maintained &amp; unmaintained</h4>
+
+    Another reason why it is necessary that previous versions of modules continue
+    to work is
+    that often there is a module that works well and does an excellent job
+    for its
+    users, but in reality it is unmaintained.  This can happen because the
+    owner has left, works on different
+    project or the company that created it does not exist anymore.  There
+    are even some projects on netbeans.org which are unmaintain but
+    still serving their users well.
+    If a new NetBeans version is released
+    and introduces serious incompatibilities so the module fails to work, it
+    is the authors of NetBeans who get blamed and shamed. That is why support for
+    previously
+    compiled modules is a necessary step: We must respect work that has been
+    done and 
+    is currently unmaintained.
+    <p>
+    On the other hand, the owner may still be alive, and want to bring
+    their code up to date - for example, one of the reasons for changes
+    to APIs is to improve performance, something any module author would
+    want to take advantage of.
+
+    This should be easy to
+    do, requiring no work in most cases.  However, even if great 
+    attention is paid to evolving the APIs well, in some cases
+    updating may require a bit of work.  If someone is maintaining
+    a module, they are expected to make the necessary updates
+    to the code to bring keep it in line with the current API set.
+
+
+    </p><h4>Examples</h4>
+
+    Even the biggest currently known change of behavior (the classpath
+    change
+    planned for 4.0) still allows a user to use a module developed against 
+    previous version of NetBeans and correctly use its functionality. If
+    someone
+    wants to use an old module, the only necessary thing is to setup the
+    roots 
+    of filesystems to match the classpath. 
+
+    <p>
+    On the other hand, APIs are designed by human beings, and the
+    best of APIs may still contain things that turn out later to be
+    mistakes.  One example of such a mistake is the Node.Cookie
+    marker interface, which restricts the usability of Cookies
+    and forces a dependency on the nodes package that is not
+    strictly necessary.  This interface should be removed.
+    As such the Node.Cookie Node.getCookie (Class) method
+    will be
+    changed to Object Node.getCookie (Class). Even after the change it can
+    be
+    guaranteed that old modules will continue to run. On the other hand, the
+    originally 
+    correct source code cannot compile anymore. It is observed that 99% of
+    all uses of that method will continue to compile - like
+
+</p><pre><span class="type">MyCookie</span> <span class="variable-name">c</span> = (<span class="type">MyCookie</span>)node.getCookie(MyCookie.<span class="keyword">class</span>);
+</pre>
+
+    The remaining 1% of uses, which look like:
+
+<pre><span class="type">Node.Cookie</span> <span class="variable-name">c</span> = node.getCookie(something);
+</pre>
+
+    will have to be updated, but active module authors will do it gladly because 
+    they profit by having their classes become more flexible, and the
+    change that must be done is very simple.
+
+    Of course instruction for doing this update has to be prominent part of 
+    release migration guide.
+
+
+<hr>
+<h2><a name="design">Design Practices</a></h2>
+    Let's talk about actual Java design practices and patterns 
+    that help the writer and maintainer to achieve the general suggestions and 
+    rules that have been discussed in previous chapters and the make
+    the user of an API feel comfortable, unsurprised and happy.
+
+    <h3><a name="design.less">Do not expose more than you want</a></h3>
+
+    Obviously the less of the implementation is expressed in the API, the
+    more flexibility one can have in future. There are some tricks that 
+    one can use to hide the implementation, but still deliver the desired
+    functionality. This section will discuss some of such tricks.
+
+    <h5><a name="design.less.field">Method is better than Field</a></h5>
+
+    It is better to use methods (usually getters and setters) to access 
+    fields than to expose them directly. The first reason is that a call to 
+    a method can do a lot of additional things, but in contrast an access to a field
+    can only read or write the value. When using getters one can for example 
+    do lazy initialization, synchronize the access or compose the value using
+    some computation algorithm. Setters on the other hand allow checks for correctness
+    of assigned value or notification of listeners when the change happens.
+    <p>
+    The other reason why to prefer methods can be found in the <em>Java Virtual
+    Machine</em> specification. It is allowed to move a method from a class 
+    to one of its superclasses and still remain binary compatible. So a method
+    initially introduced as <code>Dimension javax.swing.JComponent.getPreferredSize(Dimension d)</code> can
+    be deleted in new version and moved to 
+    <code>Dimension java.awt.Component.getPreferredSize(Dimension d)</code> as
+    the <code>JComponent</code> is a subclass of <code>Component</code> (this
+    really happened in JDK 1.2). Such operation is not allowed for fields. Once
+    a field is defined in a class, it has to stay there forever in order to 
+    keep binary compatibility. That is another reason why it is better to keep fields
+    private.
+
+    </p><h5><a name="design.less.factory">Factory is better than Constructor</a></h5>
+
+    It is more flexible to expose a factory method than to expose constructor.
+    Once a constructor is available as part of an API, it guarantees not only
+    that an instance assignable to a given class will be created, but also
+    that the instance will be of the <b>exact class</b> (no subclasses allowed)
+    and also that a <b>new instance</b> is created every time.
+    <p>
+    If instead a factory method is provided (usually a static method that 
+    takes the same arguments as the constructor and returns instance of the 
+    same class the constructor is defined in), one has more possibilities.
+    First of all one does not need to return the exact class, but some subclass
+    - allows to use polymophism and possibly clean up the code. 
+    Second avantage is to cache instances. While in case of constructor new
+    instance is created every time, the factory method can cache previously
+    instantiated objects and reuse them in order to save the memory.
+    Another reason is the possibility of proper synchronization when invoking
+    the factory method which is not possible (at least is limited) in case
+    of plain constructor. These are the reasons why one shall prefer 
+    factory methods over constructors.
+
+    </p><h5><a name="design.less.final">Make Everything Final</a></h5>
+
+    In a lot of cases people are not designing for subclassing and still
+    they do not prevent it. If you are writing an API and you explicitly 
+    do not want people to subclass or implement your interfaces (also see 
+    paragraph about <a href="#design.apiandspi">API vs. SPI</a>) it is 
+    better to disallow that.
+    <p>
+    Simplest solution is to make your class <code>final</code>. Other tricks
+    include non-public constructors (one shall do it anyway in favor of 
+    <a href="#design.less.factory">factory methods</a>) or 
+    making all (or at least most) methods <code>final</code> or 
+    <code>private</code>. 
+    </p><p>
+    Of course this works only for classes, if you decide to use interfaces
+    you cannot forbid foreign implementations on the level of virtual machine,
+    you can only ask people in JavaDoc not to do it. 
+
+    </p><h5><a name="design.less.friend">Allow access only from a friend code</a></h5>
+
+    Another useful technique to not expose too much in API is to give access to 
+    certain functionality (e. g. ability to instantiate a class or to call a 
+    certain method) just to a <q>friend</q> code.     
+    <p>
+    Java by default restricts the friends of a class to those classes that are
+    in the same package. If there is a functionality that you want share just
+    among classes in the same package, use <em>package-private</em> modifier
+    in definition of a constructor, a field or a method and then it will remain
+    accessible only to <q>friends</q>.
+    </p><p>
+    Sometimes however it is more useful to extend the set of friends to a wider
+    range of classes - for example one wants to define a pure API package and 
+    put the implementation into separate one. In such cases following trick
+    can be found useful. Imagine there is a class item (btw. also you can also
+    check out <a href="http://treefs.netbeans.org/source/browse/treefs/apidesign/friendpackage/">sources from CVS</a>):
+
+</p><pre><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="type">api</span>.Item {
+    <span class="comment">/** Friend only constructor */</span>
+    <span class="type">Item</span>(<span class="type">int</span> <span class="variable-name">value</span>) {
+        <span class="keyword">this</span>.value = value;
+    }
+
+    <span class="comment">/** API method(s) */</span>
+    <span class="keyword">public</span> <span class="type">int</span> <span class="function-name">getValue</span>() {
+        <span class="keyword">return</span> value;
+    }
+        
+    <span class="comment">/** Friend only method */</span>
+    <span class="keyword">final</span> <span class="type">void</span> <span class="function-name">addListener</span>(<span class="type">Listener</span> <span class="variable-name">l</span>) {
+        <span class="comment">// some impl
+</span>    }
+}
+</pre>
+
+    that is part of the API, but cannot be instanitated nor listened on 
+    outside of the friend classes (but these classes are not only in api
+    package). Then one can define an <code>Accessor</code> in the non-API
+    package:
+
+<pre><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="type">impl</span>.Accessor {
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">Accessor</span> <span class="variable-name">DEFAULT</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Accessor getDefault() {
+        <span class="keyword">if</span> (DEFAULT != <span class="keyword">null</span>) {
+            <span class="keyword">return</span> DEFAULT;
+        }
+    
+        <span class="comment">// invokes static initializer of Item.class</span>
+        <span class="comment">// that will assign value to the DEFAULT field above</span>
+        <span class="type">Class</span> <span class="variable-name">c</span> = api.Item.<span class="keyword">class</span>;
+        <span class="keyword">try</span> {
+            <span class="type">Class</span>.forName(<span class="variable-name">c</span>.getName(), true, <span class="variable-name">c</span>.getClassLoader());
+        } <span class="keyword">catch</span> (<span class="type">ClassNotFoundException</span> <span class="variable-name">ex</span>) {
+            <span class="keyword">assert</span> false : ex;
+        }
+        <span class="keyword">assert</span> <span class="variable-name">DEFAULT</span> != <span class="keyword">null</span> : "The DEFAULT field must be initialized";
+        <span class="keyword">return</span> DEFAULT;
+    }
+
+    <span class="comment">/** Accessor to constructor */</span>
+    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">Item</span> <span class="function-name">newItem</span>(<span class="type">int</span> <span class="variable-name">value</span>);
+    <span class="comment">/** Accessor to listener */</span>
+    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">void</span> <span class="function-name">addListener</span>(<span class="type">Item</span> <span class="variable-name">item</span>, <span class="type">Listener</span> <span class="variable-name">l</span>);
+}
+</pre>
+
+    with abstract methods to access all <q>friend</q> functionality of the
+    <code>Item</code> class and with a static field to get the accessor's
+    instance. The main trick is to implement the <code>Accessor</code> by a
+    (non-public) class in
+    the <code>api</code> package:
+
+<pre><span class="keyword">final</span> <span class="keyword">class</span> <span class="type">api</span>.AccessorImpl <span class="keyword">extends</span> <span class="type">impl.Accessor</span> {
+    <span class="keyword">public</span> <span class="type">Item</span> <span class="function-name">newItem</span>(<span class="type">int</span> <span class="variable-name">value</span>) {
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="type">Item</span>(value);
+    }
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">addListener</span>(<span class="type">Item</span> <span class="variable-name">item</span>, <span class="type">Listener</span> <span class="variable-name">l</span>) {
+        item.addListener(l);
+    }
+}
+</pre>
+
+    and register it as the default instance first time
+    somebody touches <code>api.Item</code> by adding a static initializer 
+    to the <code>Item</code> class:
+
+<pre><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="type">Item</span> {
+    <span class="keyword">static</span> {
+        impl.Accessor.DEFAULT = <span class="keyword">new</span> <span class="type">api.AccessorImpl</span>();
+    }
+
+    <span class="comment">// the rest of the Item class as shown above
+</span>}
+</pre>
+
+    Then the <em>friend</em> code can use the accessor to invoke the
+    hidden functionality from any package:
+
+<pre><span class="type">api.Item</span> <span class="variable-name">item</span> = impl.Accessor.getDefault().newItem(10);
+impl.Accessor.getDefault().addListener(item, <span class="keyword">this</span>);
+</pre>
+
+<p>
+    Please note that in <em>NetBeans</em> this is very useful in combination
+    with specifying publicly accessible packages in module manifest 
+    (<code>OpenIDE-Module-Public-Packages: api.**</code>) and thus disallowing
+    on the class loading level other modules from accessing the
+    <code>impl.Accessor</code>.
+</p>
+
+    <h3><a name="design.apiandspi">Separate API for clients from support API</a></h3>
+
+    Are there really more types of
+    API? If so, how do they differ? Do the users of those types differ? Do they
+    have different expectations? Those are questions that shall be answered
+    in the first part of this section. Then we will try to define the 
+    restrictions on evolution of different types of API, and present some
+    tips, tricks and lessons learned, which one can use to achieve and enforce
+    such restrictions.
+
+        <h5>The Client vs. Provider API</h5>
+
+        Before we start, we should ask a question: Who is the client and who
+        is the provider?
+        Let us do it on an example of <em>XMMS</em>, the 
+        media player for <em>UNIX</em>es (called WinAmp on another platform).
+        <p>
+        The player can play audio files, can skip to next 
+        song, return to previous one, offers a playlist with possibility to
+        add, remove and reorder songs. The functionality is provided for 
+        users, but accessible to other programs as well. So a program can
+        call <code>xmms.pause()</code> or <code>xmms.addToPlaylist(filename)</code>.
+        As can be seen, the communication is initiated 
+        by the other program that uses the player's API to instruct it to 
+        perform an action. After the execution of the command ends, the
+        control returns back to the caller. Let's name the caller a client and
+        such an API a <em>client API</em>.
+        </p><p>
+        On the other hand, the <em>XMMS</em>' APIs also allows third parties to
+        register
+        <em>output plugin</em>s. The functionality
+        of the default player can be extended by providing a utility method that writes the 
+        played data to a disk, broadcasts it over a network, etc. The
+        communication is in this case initiated by the player itself. After
+        collecting enough data for playback, the program locates the current 
+        output plugin and sends it the data to process: 
+        <code>plugin.playback (data)</code>. After finishing the playback 
+        the execution is returned back to the player that can continue in
+        gathering more data and the whole process continues. Is the plugin
+        a client? Well, it is in completely different position than the
+        client in previous paragraph.  It does not instruct <em>XMMS</em>
+        to do something, it increases the list of things <em>XMMS</em> can do.
+        So no, the plugin is not a client.  
+	<em>XMMS</em> ability to register plugins is a 
+        <em>Service Provider Interface</em>, or SPI.
+
+        
+        </p><h5>Expressing API/SPI in C and Java</h5>
+        
+        In this section we will discuss the actual implementation of the
+        API in two sample languages - procedural C and object oriented Java.
+        <p>
+        The C language is ready and suitable for expressing (client) API. One just
+        writes the methods and announces them in the header files, so others
+        can compile agaist them:
+
+</p><pre><span class="type">void</span> <span class="function-name">xmms_pause</span>();
+<span class="type">void</span> <span class="function-name">xmms_add_to_playlist</span>(<span class="type">char</span> *file);
+</pre>
+
+        The Java way is not much different:
+
+<pre><span class="keyword">class</span> <span class="type">XMMS</span> {
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">pause</span>();
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">addToPlaylist</span>(<span class="type">String</span> <span class="variable-name">file</span>);
+}
+</pre>
+
+        but one has more choices. It is possible to declare these methods
+        static, to leave them as instance methods, make them abstract, final,
+        etc. But generally speaking, the way C and Java handle client
+        APIs is nearly similar. However the 
+        situation is a far different when writing an SPI.
+        <p>
+        In order to write own plugin for <em>XMMS</em> in C one has to start
+        with a method that will do the playback. So the a plugin must
+        define:
+
+</p><pre><span class="type">void</span> <span class="function-name">my_playback</span>(<span class="type">char</span> *data) {
+    <span class="comment">// do the playback
+</span>}
+</pre>
+
+        and the player itself has to have some registration method, for example,
+
+<pre><span class="type">void</span> <span class="function-name">xmms_register_playback</span>((<span class="type">void</span>)(f*)(<span class="type">char</span>*));
+</pre>
+
+        that the plugin should call to register itself. <code>
+        xmms_register_playback(my_playback)</code> and its playback function
+        is then called by the <em>XMMS</em> whenever necessary. In Java the 
+        contract starts with a
+        definition of playback interface:
+
+<pre><span class="keyword">interface</span> XMMS.<span class="type">Playback</span> {
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">playback</span>(<span class="type">byte</span>[] <span class="variable-name">data</span>);
+}
+</pre>
+
+        then my plugin has to implement that interface 
+        <code>MyPlayback implements XMMS.Playback</code> and register that
+        instance to the player:
+
+<pre>XMMS.registerPlayback(<span class="keyword">new</span> <span class="type">MyPlayback</span>());
+</pre>
+
+        and that is all. The player can do its calls to the plugin as it could
+        in case of C. The major difference is that writing this kind of 
+        code is taught in Java courses 
+        without a proper explanation of what it really means.
+        <p>
+        In the C case, the amount of work to produce an SPI (for example 
+        callback) is high enough to prevent beginner from even trying it. One's
+        knowledge 
+        has to grow significantly to get to state when one can (or will need to)
+         design an SPI. But in Java any declared method that is not
+        private, final or static is defacto an invitation for someone 
+        to provide a callback and thus an accidental SPI. This is often not well understood
+        by programmers, teachers, and is not part of conventional wisdom. Any Java
+        book introduces public, non-static and non-final methods in one
+        of the first chapters (at least as soon as it starts to talk about 
+        Applets) without a proper warning of all consequences. That may
+        be fine for simple development, but when one starts to design
+        APIs, all habits learned at the begining turn into mistakes.
+
+
+        </p><h5>Evolution of API is a different process than evolution of SPI</h5>
+    
+        Evolution is a natural part of any contract. After a time everything 
+        gets obsoleted, insufficient or broken. APIs and SPIs are not
+        exceptions. So it is better 
+        be prepared for evolution at the begining, plan for it and
+        avoid mistakes that would otherwise be hard to undo.
+        <p>
+        In case of an API that is offering methods to clients, there is no
+        problem with additions. Extending the functionality to offer more
+        functionality to clients cannot hurt them - if they do not want
+        they do not need to use it. 
+        <!-- PENDING:
+        <em>Well they could be affected on
+        source level in Java - if a new overloaded method was introduced
+        the source that used to compile might get ambiguous in new version
+        </em>.
+        -->
+        </p><p>
+        In the cas of an SPI, the situation is exactly the oposite.
+        Adding new method into an interface that others
+        must provide effectively breaks all existing implementations,
+        because they do not implement it!
+        <!-- PENDING
+        Even the Java virtual machine can
+        load such classes, without linkage error, when such a missing
+        method is called it will result in <em>pure virtual method call</em>
+        error. This can be acceptable if the only caller of that method
+        is under control of the same person that adds the new method.
+        -->
+        
+        On the other hand it acceptable and valid to stop calling (de facto
+        removal) a method from an SPI. If the operation flow is not part
+        of the contract, not calling one method should not break anything.
+
+        </p><p>
+        So the way of evolution depends on the type of the interface:
+        API additions are fine but removing functionality is not; SPI
+        de-facto removals are allowed, but additions are not.
+        At the begining of producing a contract, one should realize and
+        understand which parts will be API that clients will call, and
+        what will be 
+        SPI that will extend the functionality one is writing. The biggest mistake that one
+        can make is to <em>mix API and SPI together</em> into one class. 
+        Then there is no room 
+        for evolution. Adding a method is forbidden because of the contract
+        for SPIs and removing because of the contract for APIs. <em>Always
+        separate API and SPI</em>.
+        
+        </p><h5>Example</h5>
+
+        As an example let us choose <code>DataObject</code> class, a part of the 
+        <a href="http://www.netbeans.org/download/dev/javadoc/LoadersAPI/org/openide/loaders/DataObject.html">
+        Data System API</a>. It is used for by clients to obtain a logical,
+        representation of a file or set of files, and logically manipulate
+        their contents:
+
+<pre><span class="comment">// locate a data object
+</span><span class="type">DataObject</span> <span class="variable-name">obj</span> = DataObject.find(fo);
+<span class="comment">// move it to different place
+</span>obj.move(destination);
+<span class="comment">// try to open it if supported
+</span><span class="type">OpenCookie</span> <span class="variable-name">o</span> = (<span class="type">OpenCookie</span>)obj.getCookie(OpenCookie.<span class="keyword">class</span>);
+<span class="keyword">if</span> (o != <span class="constant">null</span>) {
+    o.open();
+}
+</pre>
+
+        But the problem is that this client API is mixed together with a lot 
+        of methods provided just for subclasses (those that are protected in
+        <a href="http://www.netbeans.org/download/dev/javadoc/LoadersAPI/org/openide/loaders/DataObject.html">javadoc
+        </a>). 
+        They pointlessly clutter
+        the API and moreover prevent the API from being extended in future.
+        <!-- PENDING:
+        This is not a big problem because there is a getCookie method that
+        provides support for seamless extensions, but still.
+        -->
+        Moreover not only do the API and SPI conflict and make evolution
+        difficult,
+        but the execution flow
+        between API and SPI resulted in a lot of flow clashes - deadlocks.
+
+        <p>
+        That is why during design of 
+        <a href="http://openide.netbeans.org/proposals/loaders/">new data systems</a>
+        the <code>DataObject</code> has been reserved just for the API. It is 
+        supposed to be final and fully controlled by the implementation. The
+        actual behaviour is provided by a separate SPI:
+
+</p><pre><span class="keyword">interface</span> <span class="type">DataObjectOperator</span> {
+     <span class="comment">// delegated to from DataObject.move(DataFolder df)
+</span>    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">move</span>(<span class="type">DataObject</span> <span class="variable-name">obj</span>, <span class="type">DataFolder</span> <span class="variable-name">target</span>);
+    <span class="comment">// delegated to from DataObject.rename(String name)
+</span>    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">rename</span>(<span class="type">DataObject</span> <span class="variable-name">obj</span>, <span class="type">String</span> <span class="variable-name">name</span>);
+    <span class="comment">// delegated to from DataObject.getCookie(Class clazz)
+</span>    <span class="keyword">public</span> <span class="type">Object</span> <span class="function-name">getCookie</span>(<span class="type">DataObject</span> <span class="variable-name">obj</span>, <span class="type">Class</span> <span class="variable-name">clazz</span>);
+    <span class="comment">// etc.
+</span>}
+</pre>
+
+        By separating the API from SPI and fully controlling the flow between
+        them we can evolve the API and SPI independently and moreover 
+        add various pre-condition and post-condition checks
+        between the actual client and provider. For example it is simple
+        to add a new method <code>DataObject.move(DataFolder df, String
+        newName)</code> to the API that should move the object and 
+        rename it at once and bridge it as <code>move</code> and
+        <code>rename</code> calls into the <code>DataObjectOperator</code> by
+        default and (in case of of new improved operators) to the new method
+        <code>moveAndRename(DataObject obj, DataFolder df, String name)</code>
+        if provided.
+
+    <p>
+    The new data systems should be an example of good design that is 
+    aware that <em>what's good for SPI implementors isn't necessarily
+    good for API clients</em>, tries to give the API a chance to
+    evolve and also <em>restrict SPI implementors as little as
+    possible</em>.
+
+    </p><p>Another example in case you are not yet convinced:
+    <a href="http://www.netbeans.org/download/dev/javadoc/AntProjectAPI/org/netbeans/api/project/ant/AntArtifact.html"><code>AntArtifact</code></a>
+    was originally made an abstract class, rather than an interface, so that some final methods like
+    <code>getArtifactFile</code> and <code>getScriptFile</code> could be added for clients, and
+    <code>getID</code> could be defaulted. It seemed reasonable at the time. Of course, it turned out that later
+    the SPI part had to be extended to support multiple artifacts and properties. Adding support for properties
+    was easy enough to do compatibly, but adding support for multiple artifacts was messier: we had to deprecate the
+    old single-artifact getters and introduce new getters, while preserving compatibility for old implementations.
+    It would have been simpler to do had there been a final class <code>AntArtifact</code> with a factory method
+    accepting an SPI interface <code>AntArtifactImpl</code> (or the like), since we could have produced a new SPI
+    interface and a new factory method.
+
+    </p><hr>
+    <h3><a name="design.interfacesandclasses">Interfaces vs. abstract classes</a></h3>
+    
+    There seems to be long, never-ending flame war between those who prefer the strict
+    use of interfaces and those who like abstract classes. Such discussions
+    continue forever, starting usually every few months again and leading
+    nowhere, because people tend to hold to their opinions. Often such discussions
+    start with no common ground - no agreement on use cases or requirements.
+    Below we will look at the problem
+    from use case point of view.
+
+        <h5>The Advantages of Interfaces</h5>
+        The most obvious one is that <em>usage of the type</em>, if implemented as an abstract class, 
+        is limited as java doesn't allow multiple inheritance of classes. This
+        only becomes a problem when a type is huge, or when it significantly
+        enhances developer productivity to be able to subclass and reuse
+        a base implementations.  We will call these <em>support classes</em>,
+        where one is expected to subclass and reuse a base class's implementation.
+
+        <p>
+        The second advantage of interfaces 
+        is that there is an <em>enforced separation between the API and the 
+        implementation</em>. But this can be achieved with abstract classes too, with a bit 
+        of self control, while in interfaces that is enforced by the compiler.
+
+        </p><h5>The Advantages of Abstract Classes</h5>
+        The main reason why people prefer to use abstract classes is their <em>ability
+        to evolve in a time</em> - it is possible to add a new method with a default
+        implementation without breaking existing clients or implementors (here
+        we talk about runtime compatibility, not compile time one).
+        Interfaces lack such functionality, so it is necessary to introduce
+        another interface to provide future extensions.  So you end up
+        with a lot of interfaces such as
+        <code>interface BuildTargetDependencyEx extends BuildTargetDependency</code>
+        with additional methods. 
+        The original interface is still valid, the new one is available.
+
+        <p>
+        A second very useful feature of abstract classes is the possibility of 
+        <em>restricting access rights</em>. Every method in a public interface
+        is public and everybody can implement the interface. That for example
+        means anybody can implement such interface, but in real life, one often
+        wants to restrict that and have the creation under control. Interfaces
+        lack such restrictions.
+
+        </p><p>
+        Another thing that is possible with abstract classes is that they can
+        contain static methods. Of course that with interface one can create
+        separate classes with factory methods, but the truth is that a class 
+        is usually the most natural and reasonable place for factory methods that return
+        instances.
+
+      </p><h4>Use cases</h4>
+
+      Let's now give few real world examples and discuss whether the use
+      of one or the other approach has some benefits and why.
+
+        <h5>TopManager</h5>
+
+        The 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/TopManager.java?content-type=text/plain">
+        TopManager
+        </a>
+        is one of the oldest types in the NetBeans Open APIs
+        and was designed to bridge between the <code>org.openide.*</code> 
+        packages and their implementation in <code>org.netbeans.core</code>.
+        There is just one instance of the manager (provided by the core) and clients
+        of the API are not at all expected to extend/implement that type.
+        <p>
+        Analysis shows that this is a typical situation of providing a lot of 
+        utility methods to clients with complete
+        control over the implementation, where attention is
+        be paid to ease of use for clients of such API, while permitting 
+        dynamic discovery of the implementation (the API is in different compilation
+        unit [openide] than its implementation [core]).
+        </p><p>
+        This is a situation where one cannot gain any advantage by using
+        interfaces over using abstract classes. One needs a factory method,
+        one can add new methods, separation between API and implementation
+        is in the right hands and there is also the possibility to prevent instantiation of other
+        instances than the default one. If you happen to be in similar 
+        situation, it is best to use an abstract class.
+        </p><p>
+        An example what can happen if one chooses to use an interface is 
+        located next to <code>TopManager</code> in the same package - the 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/Places.java?content-type=text/plain">
+        Places
+        </a>
+        interface. In reality it is the same singleton as the
+        <code>TopManager</code>, it is accessed via the factory method <code>TopManager.getDefault().getPlaces()</code>.
+        All its methods could be part of the <code>TopManager</code> as well.
+        We just wanted to logically separate them and we did it using an
+        interface. As a result, as newer "places" that might be useful
+        API were created, we were afraid to add a method there after a time.
+        Since we decided creating a <code>Places2</code> interface would be
+        overkill, the interface started to be less and less used and now is nearly
+        obsolete.
+
+        </p><h5>Cookies</h5>
+
+        The 
+        <a href="http://www.netbeans.org/source/browse/openide/src/org/openide/cookies/">
+        cookies
+        </a>
+        are a coding pattern that allows any object to provide a specific feature 
+        (called cookie) by calling:
+
+
+<pre><span class="type">OpenCookie</span> <span class="variable-name">openCookie</span> = (<span class="type">OpenCookie</span>)anObject.getCookie(OpenCookie.<span class="keyword">class</span>);
+<span class="keyword">if</span> (openCookie != <span class="constant">null</span>) {
+    openCookie.open();
+}
+</pre>
+
+
+        Should the <code>OpenCookie</code> be interface or abstract class?
+        Simple analysis can show that there is a lot of clients, users of the
+        API, and also a lot of providers, often wanting to provide more cookies
+        at once. Moreover the cookie itself contains just one method
+        <code>open</code>. All of the that leads to answer that the type should be
+        an interface. We have the ability for multiple inheritance, and there is 
+        no fear of evolving the interface because it has just one method that 
+        does it all, no need for static factory methods, no need to prevent
+        subclassing. Thus an interface is the right choice.
+        
+        <p>
+        Very similar, but also very different example can be shown on another
+        cookie - the
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/cookies/InstanceCookie.java?content-type=text/plain">
+        InstanceCookie
+        </a>. It is also an interface and it used to have three methods 
+        but after few releases we realized a need for another to
+        improve performance. So we were forced to introduced a subclass
+        <code>InstanceCookie.Of</code> extending <code>InstanceCookie</code> 
+        and adding method <code>instanceOf</code>. This of course works, but 
+        adds a lot of pressure to users of the interface. Everyone using the API has
+        to code as following:
+
+</p><pre><span class="type">boolean</span> <span class="variable-name">doIAccept</span>;
+<span class="type">InstanceCookie</span> <span class="variable-name">ic</span> = (<span class="type">InstanceCookie</span>)obj.getCookie(InstanceCookie.<span class="keyword">class</span>);
+<span class="keyword">if</span> (ic <span class="keyword">instanceof</span> <span class="type">InstanceCookie.Of</span>) {
+    doIAccept = ((<span class="type">InstanceCookie.Of</span>)ic).instanceOf(myRequiredClass);
+} <span class="keyword">else</span> {
+    doIAccept = ic != <span class="constant">null</span> &amp;&amp;
+        myRequiredClass.isAssignableFrom(ic.instanceClass());
+}
+</pre>
+
+        The code is not too simple and moreover is spread over the whole
+        codebase. How much simpler it would be if we could just add a new method
+        into the cookie:
+
+
+<pre><span class="type">boolean</span> <span class="function-name">isInstanceOf</span>(<span class="type">Class</span> <span class="variable-name">c</span>) {
+    <span class="keyword">return</span> c.isAssignableFrom(instanceClass());
+}
+</pre>
+
+        but because java does not allow default methods in interfaces, we are
+        out of luck. Should we have used abstract class? No, we should not, the 
+        use cases are similar as with <code>OpenCookie</code>, but there is
+        another trick that (very likely) should have been used.
+        <p>
+        Instead of adding three methods into the interface we could add just
+        one that would return a class with all necessary information. 
+
+</p><pre><span class="keyword">interface</span> <span class="type">InstanceCookie</span> {
+    <span class="keyword">public</span> <span class="type">Info</span> <span class="function-name">instanceInfo</span>();
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="type">Info</span> <span class="keyword">extends</span> <span class="type">Object</span> {
+        <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">intanceName</span>();
+        <span class="keyword">public</span> <span class="type">Class</span> <span class="function-name">instanceClass</span>();
+        <span class="keyword">public</span> <span class="type">Object</span> <span class="function-name">instanceCreate</span>();
+    }
+}
+</pre>
+
+        This solution seems to combine the best of both worlds. Clients
+        have simple API, providers can implement instead of extend and in 
+        the <code>instanceInfo</code> method instantiate the info either
+        with some provided constructor or factory methods or lazily using subclassing.
+        Also when
+        we need to add the <code>instanceOf</code> after few releases,
+        we can. <code>InstanceCookie.Info</code> is a class and as such
+        can be extended by a method with a default implementation.
+        <p>
+        Of course to make such methods additions safe, it is better to
+        make the class final and provide factory methods that implementors
+        of <code>InstanceCookie</code> could use. Those factory methods
+        could either be simple, e.g. take values for <code>instanceName</code>,
+        <code>instanceClass</code> and <code>instanceCreate</code> methods.
+        Or the factory methods could take another interface with a methods
+        that would be called to lazily handle the invocations of for example
+        <code>Info.instanceCreate</code>. The actual solution depends on
+        the needs of the users of the API.
+        </p><p>
+        Please notice that similar pattern is used by java listeners.
+        Every listener is an interface and as such it has a constant
+        (often one) number of methods. But each method takes a subclass
+        of <a href="http://java.sun.com/j2se/1.4/docs/api/java/util/EventObject.html">EventObject</a>
+        which is a class and if necessary can be enhanced with a
+        <a href="http://java.sun.com/j2se/1.4/docs/api/java/awt/dnd/DragGestureEvent.html#startDrag%28java.awt.Cursor,%20java.awt.datatransfer.Transferable%29">
+        new method</a>.
+<!--        <h5>LookDescriptor</H5>  -->
+
+        </p><h5>FileObject</h5>
+
+        Another example from NetBeans is the
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/filesystems/FileObject.java?content-type=text/plain">
+        FileObject
+        </a> (part of the <a href="http://www.netbeans.org/download/dev/javadoc/org-openide-filesystems/org/openide/filesystems/doc-files/api.html">filesystem
+        API</a>).
+        This type usage seems very close to the TopManager example (but is not as
+        obvious):
+        There are very few people directly subclassing <code>FileObject</code> (javadoc's
+        HttpFileSystem, Kyley and Niclas) and tons of client API users (every
+        NetBeans module).
+        <p>
+        The amount of people directly subclassing 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/filesystems/FileSystem.java?content-type=text/plain">
+        FileSystem 
+        </a>
+        is the same as those doing that for <code>FileObject</code>, so it seems
+        fine to choose abstract class for both types, but it is true that the 
+        filesystem would probably work as interface too.
+        </p><p>
+        Moreover there is a support class, the 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/filesystems/AbstractFileSystem.java?content-type=text/plain">
+        AbstractFileSystem 
+        </a> that most of the people providing filesystem implementations are subclass. 
+        Because it is a support class, it needs to be a concrete class or at least a factory
+        method, but it offers five interfaces (Info, Change, Attr, List, Transfer) that are not 
+        exposed in the client API for users of filesystems, but 
+        users of it may implement to write an filesystem implementation.
+        People who write the own filesystem implement these interfaces most of the time and 
+        can use multiple interface inheritance.  And because AbstractFilesystem 
+        implements the client API contract, anyone subclassing it can be sure they
+        are implementing the full API, but only that API.
+
+        </p><h5>CloneableEditorSupport</h5>
+
+        Can support 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/text/CloneableEditorSupport.java?content-type=text/plain">
+        class</a>es 
+        be provided as interfaces? It is not easy.
+        What kind of support would it be if one would have to provide 
+        implementation of each method! So, often abstract classes are used as
+        base for support classes.
+        <p>
+        But one should carefully separate the support classes from the 
+        actual API (as the <code>CloneableEditorSupport</code> is in different
+        package than the 
+        <a href="http://www.netbeans.org/unbranded-source/browse/%7Echeckout%7E/openide/src/org/openide/cookies/EditorCookie.java?content-type=text/plain">
+        EditorCookie
+        </a> 
+        which it implements). Such separation ensures basic quality of design and 
+        prevents cheating - one needs to use just API methods even in the 
+        implementation and cannot rely on non-public hooks.
+
+<!-- Describe static methods in NbDocument 
+        <h5>NbDocument</H5>
+-->
+        
+      </p><h4>Interfaces or Classes?</h4>
+
+      <p>
+      Is it better to use interfaces or a classes? None, could be simple answer to
+      such general question. But if try to get down to the roots of the question
+      we can get a better answers.
+      </p><p>
+      First of all only those people that are designing an API that will be
+      maintained for a while, have to care. Those who are writing code to
+      pass an exam do not need to. They can choose whatever they wish.
+      </p><p>
+      Second necessary thing is to treat users of your API well. If you do not
+      care about them, do not care about the <em>interfaces or classes</em> question. 
+      </p><p>
+      If these conditions are satisfied then, from the discussion above, one
+      can see that classes are better for <em>client API</em> and interfaces for 
+      <em>service provider API</em>. So if you know that most of the users of an API
+      will just make calls to it, it is better to use classes (and the best
+      thing is to make them unsubclassable, that way one prevents accidental
+      subclasses at all). If you want people just to subclass. Then choose
+      interfaces, they are more safe and easy to use when subclassing.
+      If your case is somewhere in between (which should be prevented
+      according to <a href="#design.apiandspi">separation</a> paragraph)
+      the choice is up to you, but carefully judge what people will do more
+      often. You will not be sorry.
+
+    </p><hr>
+    <h3><a name="design.example"></a>Case Study of client API and SPI separation</h3>
+
+        The previous example with <code>CloneableEditorSupport</code> claims
+        that it is not easy to write support without classes, but the truth is 
+        it is not that complicated and moreover it really separates the
+        SPI from the client API and allows easier and safe future evolution. Here is
+        a sample rewrite of <code>CloneableEditorSupport</code> stuff using
+        interfaces:
+        <p>
+        The main goal of 
+        <a href="http://www.netbeans.org/source/browse/openide/src/org/openide/text/CloneableEditorSupport.java?rev=1.92&amp;content-type=text/x-cvsweb-markup&amp;showattic=1">CloneableEditorSupport</a>
+        is to implement some
+        interfaces 
+        <a href="http://www.netbeans.org/source/browse/openide/src/org/openide/cookies/OpenCookie.java?rev=1.7&amp;content-type=text/x-cvsweb-markup&amp;showattic=1">OpenCookie</a>, 
+        <a href="http://www.netbeans.org/source/browse/openide/src/org/openide/cookies/EditCookie.java?rev=1.6&amp;content-type=text/x-cvsweb-markup&amp;showattic=1">EditCookie</a>
+        and
+        <a href="http://www.netbeans.org/source/browse/openide/src/org/openide/cookies/EditorCookie.java?rev=1.15&amp;content-type=text/x-cvsweb-markup&amp;showattic=1">EditorCookie</a>
+        while letting the subclasses override abstract methods like
+        <code>String messageName ()</code>, <code>String messageModified ()</code>
+        and <code>String messageOpen ()</code> and provide and modify the 
+        behaviour of the abstract class. For implementation these
+        methods the subclass can call some support functions like 
+        <code>protected final UndoRedo.Manager getUndoRedo()</code> and 
+        communicate with the superclass implementation using for example 
+        <code>protected Task reloadDocument()</code>. The whole already 
+        enough complex situation is additionally complicated by a fact 
+        that <em>nearly every method can be overriden by a subclass</em> 
+        which creates operating environment so wild that nobody can 
+        guess what combinations are possible and makes future evolution
+        nearly impossible. 
+
+        </p><h5>Move Protected Methods Into Interface</h5>
+
+        The situation might be simplified by separating all methods that should 
+        be overriden in subclasses into own interface:
+
+<pre><span class="keyword">public</span> <span class="keyword">interface</span> <span class="type">CloneableEditorProvider</span> {
+    <span class="comment">// methods that have to be overridden
+</span>    <span class="comment">// in order for the functionality to work
+</span>    <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">messageName</span>();
+    <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">messageSave</span>();
+
+    <span class="comment">// additional stuff described below
+</span>}
+</pre>
+
+        and having a factory method
+
+<pre><span class="type">EditorCookie</span> <span class="variable-name">EditorFactory</span>.createEditor(<span class="type">CloneableEditorProvider</span> <span class="variable-name">p</span>);
+</pre>
+
+        that would convert the service provider interface into the desired
+        client API (this is a bit simplified, the real API would have to support
+        creation of multiple cookies <code>OpenCookie</code>,
+        <code>EditCookie</code>, etc. for example by having additional argument
+        of type <code>Class[]</code> that would specify all cookies the returned
+        value should implement). Functionally this is equivalent to providing a class with
+        abstract methods that should be implemented in subclasses, however
+        in addition, 
+        it guarantees that nobody will be able to cast <code>EditorCookie</code>
+        to <code>CloneableEditorProvider</code> and call some special methods on
+        it because the <code>createEditor</code> method has to create new 
+        object for its result that bridges its functionality to the provider.
+
+        <h5>Passing Notifications to Implementation</h5>
+
+        But the current state does not yet fully emulate the functionality
+        of the old <code>CloneableEditorSupport</code> - the provider is not 
+        able to invoke <code>reloadDocument</code> or any similar one. In order
+        to address this, let's enhance the interface:
+
+
+<pre><span class="keyword">public</span> <span class="keyword">interface</span> <span class="type">CloneableEditorProvider</span> {
+    <span class="comment">// the getter methods as in previous example
+</span>    <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">messageSave</span>();
+
+    <span class="comment">// the support for listeners
+</span>    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">addChangeListener</span>(<span class="type">ChangeListener</span> <span class="variable-name">l</span>)
+        <span class="keyword">throws</span> <span class="type">TooManyListenersException</span>;
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">removeChangeListener</span>(<span class="type">ChangeListener</span> <span class="variable-name">l</span>);
+}
+</pre>
+
+        Now the factory methods will not just build an implementation of
+        <code>EditorCookie</code>, but will also attach such implementation as
+        a listener to the provider. As there will always be at most one 
+        listener, the method signagure throws
+        <code>TooManyListenersException</code> to signal that the provider
+        can implement the method in the most simple way:
+
+<pre><span class="keyword">private</span> <span class="type">ChangeListener</span> <span class="variable-name">listener</span>;
+<span class="keyword">public</span> <span class="type">void</span> <span class="function-name">addChangeListener</span>(<span class="type">ChangeListener</span> <span class="variable-name">l</span>)
+        <span class="keyword">throws</span> <span class="type">TooManyListenersException</span> {
+    <span class="keyword">if</span> (listener != <span class="constant">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">TooManyListenersException</span>();
+    listener = l;
+}
+</pre>
+
+        and does not need to bother with support for multiple listeners, while
+        following the <b>JavaBeans</b> conventions. Whenever the provider
+        needs to reload the document, it can just fire
+        <code>listener.stateChanged (ev)</code> and the listening implementation will
+        know that the reload of the document is requested.
+
+        <h5>Callbacks to Implementation</h5>
+
+        The listener approach allows simple communication flow from the provider
+        to the implementation when needed, but there is still something missing - 
+        ability to obtain
+        <code>UndoRedo</code> via <code>CloneableEditorSupport.getUndoRedo</code>. 
+        In order to achieve that we might change the interface once more:
+
+<pre><span class="keyword">public</span> <span class="keyword">interface</span> <span class="type">CloneableEditorProvider</span> {
+    <span class="comment">// the getter methods as in previous example
+</span>    <span class="keyword">public</span> <span class="type">String</span> <span class="function-name">messageSave</span>();
+
+    <span class="comment">// the support callbacks
+</span>    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">attach</span>(<span class="type">Impl</span> <span class="variable-name">impl</span>) <span class="keyword">throws</span> <span class="type">TooManyListenersException</span>;
+
+
+    <span class="comment">// the class with methods for communication with the implementation
+</span>    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="type">Impl</span> <span class="keyword">extends</span> <span class="type">Object</span> {
+        <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">reloadDocument</span>();
+        <span class="keyword">public</span> <span class="type">UndoRedo</span> <span class="function-name">getUndoRedo</span>();
+    }
+}
+</pre>
+
+        We have replaced the listener with a special <code>Info</code> that
+        contains all the methods that the provider can call on the
+        implementation and added a method <code>attach</code> to allow 
+        registration of that class to any provider. 
+        <p>
+        This is the final state. Everything that is supposed to be called 
+        from the implementation is in the <code>CloneableEditorProvider</code>
+        interface, everything that is supposed to be called by a clients
+        is not avaible as <code>EditorCookie</code> and is completelly 
+        under control of the <code>EditorFactory</code> and the callback
+        communication from the provider to the factory is separated into
+        the <code>CloneableEditorProvider.Impl</code>. This state can
+        at first sight look more complex than the original 
+        <code>CloneableEditorSupport</code>, but it is much clearer and
+        separates the concerns comparing to the original mess in the support.
+        
+
+        </p><h5>Extensible Client Behaviour</h5>
+          
+        Anybody wants to add new user method or functionality into <code>EditorCookie</code>?
+        Why not, just enhance the <code>EditorFactory</code> to create better
+        implementation in its factory method. Is there a need to log requests
+        from clients? Again, <code>EditorFactory</code> is the right place 
+        to do it. Necessary to provide some synchronization, deadlock 
+        prevention, etc? Where else then in <code>EditorFactory</code>.
+
+        <h5>Extensible Communication betwen provider and implementation</h5>
+
+        As we have carefully choosen the <code>CloneableEditorProvider.Impl</code>
+        to be final class, we can always add a new methods to it. For example:
+
+<pre><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="type">CloneableEditorProvider</span>.Impl <span class="keyword">extends</span> <span class="type">Object</span> {
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">reloadDocument</span>();
+    <span class="keyword">public</span> <span class="type">UndoRedo</span> <span class="function-name">getUndoRedo</span>();
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">closeDocument</span>();
+}
+</pre>
+
+        as far as we teach the implementation to understand what
+        <code>closeDocument</code> means. 
+        Btw. actually the <code>Impl</code>
+        acts as a client API for the <code>CloneableEditorProvider</code>
+        and that is why it is better to make it class.
+        
+        <h5>Extensible Provider Evolution</h5>
+
+        It is often common that after a while the functionality of the
+        <code>EditorCookie</code> might be improved, if the
+        <code>CloneableEditorProvider</code> was a bit more capable. In the
+        original <code>CloneableEditorSupport</code> example this would be
+        solved by adding new (protected) method with default implementation
+        in the <code>CloneableEditorSupport</code>, but as adding a method is always a bit dangerous
+        (might introduce clashes - what used to compile in previous version
+        need not compile anymore, or need not run anymore). The provider 
+        approach presented in this case study allows us to define
+
+<pre><span class="keyword">interface</span> <span class="type">CloneableEditorProvider2</span> <span class="keyword">extends</span> <span class="type">CloneableEditorProvider</span> {
+    <span class="comment">/** Will be called when the document is about to be closed by user */</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="function-name">canClose</span>();
+}
+</pre>
+
+        and (possibly) new factory method (possibly because the original method taking just
+        <code>CloneableEditorProvider</code> could be enough) 
+
+<pre><span class="type">EditorCookie</span> <span class="variable-name">EditorFactory</span>.createEditor(<span class="type">CloneableEditorProvider2</span> <span class="variable-name">p</span>);
+</pre>
+
+        that will use the new interface for better implementation of the editor
+        while keeping the same interface for client API.
+        <p>
+        Another example of this kind of evolution can be observed in a situation
+        when the old provider interface is completely wrong and we want to
+        replace it, or enhance the amount of choices be completely new:
+
+</p><pre><span class="keyword">interface</span> <span class="type">PaintProvider</span> {
+    <span class="keyword">public</span> <span class="type">void</span> <span class="function-name">paintImage</span>(<span class="type">Image</span> <span class="variable-name">image</span>);
+}
+<span class="comment">/** Based on a ability to paint creates new EditorCookie */</span>
+<span class="type">EditorCookie</span> <span class="variable-name">EditorFactory</span>.createEditor(<span class="type">PaintProvider</span> <span class="variable-name">p</span>);
+</pre>
+
+        In spite of that the service provider API has changed completely, the
+        whole change is hidden in the factory that translates the calls between
+        old client API to the new provider interface. Moreover there is no
+        clash in evolution. Providers that really wishes to provide
+        <code>CloneableEditorProvider</code> do that by implementing directly
+        that interface, providers that want to handle the
+        <code>closeDocument</code> call as well do that by implementing
+        <code>CloneableEditorProvider2</code> and those that rely on the
+        completely new paint style implement <code>PaintProvider</code>. 
+        Each of such providers explicitly specifies what SPI contract it wants
+        to implement, this is much clearer than the possible mess with original
+        evolution of <code>CloneableEditorSupport</code> based on adding 
+        methods to it.
+
+<hr>
+<h3><a name="design.game">Using games to Improve API Design Skills</a></h3>
+
+<p>
+Having good API design skills is very important for people who work and create
+an open source framework like NetBeans. It is indeed fine to read and study
+some <a href="http://openide.netbeans.org/tutorial/api-design.html">API design guidelines</a>, however there is 
+no better learning approach than practicing the design in a situation 
+simulating the reality. Read the <a href="http://openide.netbeans.org/tutorial/api-fest.html">article about API Fest</a>
+to learn about the game called <em>API Fest</em> that
+the NetBeans core team created and played as part of improving their design
+skills.
+
+</p>
+
+
+<hr>
+Comments or suggestions how to enhance this document send to <a href="mailto:nbdev@netbeans.org">nbdev@netbeans.org</a> mailing list please.
+
+  
+  
+      </div>
+
+                          <!--END CONTENT AREA-->
+                        </div>
+                        <!-- End Content Area -->
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="valign-top rcol b-left" id="rc">
+                    <div id="floating-col-right">
+                      <!-- start NavCol -->
+                      <div class="f-page-cell bg-bege b-bottom">
+                            <div class="links">
+      <a href="http://netbeans.org/people/login?original_uri=http%3A%2F%2Fopenide.netbeans.org%2Ftutorial%2Fapi-design.html" rel="nofollow">Login</a>
+      <span class="separator">|</span> <a href="http://netbeans.org/people/new">Join Now</a>
+        <span class="separator">|</span>
+    <a href="http://netbeans.org/projects/help/pages/WebSite#WithNavigation" target="_blank">Help</a>
+  </div>
+  <br>
+  <form><input id="live-search" value="Jump to..." autocomplete="off" type="text"></form>
+  <br>
+
+                      </div>
+                      <div class="f-page-cell bg-sky b-bottom">
+                        <h2>Navigation</h2>
+                        <ul>
+                          <li><a href="http://netbeans.org/"><span class="bullet">»&nbsp;</span>Home</a></li>
+                          <li><a href="http://netbeans.org/mypage"><span class="bullet">»&nbsp;</span>My Page</a></li>
+                          <li><a href="http://netbeans.org/projects"><span class="bullet">»&nbsp;</span>Projects</a></li>
+                          <li><a href="http://netbeans.org/people"><span class="bullet">»&nbsp;</span>People</a></li>
+                        </ul>                        
+                      </div>
+                      <div id="col-right-context">
+                          <div class="vAccordion">
+  <h2>Project Features</h2>    
+      <ul>
+                  
+          <li><strong>
+              
+                Downloads              
+            </strong></li>
+                      
+            <li>
+              
+                <a href="http://netbeans.org/projects/openide/downloads">» Downloads</a></li>
+                                              
+          <li><strong>
+              
+                Website              
+            </strong></li>
+                      
+            <li>
+              
+                <a href="http://openide.netbeans.org/">» Website</a></li>
+                                          </ul>
+      
+<h2>About this Project</h2>
+  <div style="text-align:left; margin:5px;">
+    <a href="http://netbeans.org/projects/openide">openide</a>
+    
+    was started in
+    November 2009, is owned by
+    <a href="http://netbeans.org/people/4-Antonin-Nebuzelsky"><span class="person -kenai-anebuzelsky">Antonin Nebuzelsky</span></a>,
+    and has <a href="http://netbeans.org/projects/openide/members">3 members</a>.
+  </div>
+  <ul>
+    
+      
+        <li><a href="http://netbeans.org/projects/openide/watch">» Bookmark This Project</a></li>
+      
+    
+  </ul>
+  
+
+</div>
+
+                      </div>                                                                
+                      <!-- right navigation -->
+                      <div class="f-page-cell bg-bege b-bottom">
+                        <h2 style="border:0px;">NetBeans.org</h2>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/people/new">Join</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/news/">News</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/releases/" class="nav">Releases &amp; Planning</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/lists/" class="nav">Mailing Lists</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/issues.html">Bugzilla</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/contribute/" class="nav">Contribute</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/teams/" class="nav">Teams</a></div></div>
+                        <div class="rrrarticle"><div class="rarticletitle"><a href="http://www.netbeans.org/community/guidelines/" class="nav">Guidelines</a></div></div>
+                      </div>
+                    </div>
+                  </td>
+              </tr><!-- end main content -->
+            </tbody></table><!-- end main content table -->
+          </div><!-- end fixed-contentbox-ie -->
+        </div> <!-- end fixed-contentarea -->
+      </div>
+
+    <!-- flexible page footer -->
+	<div id="fixfluid-footer" class="clear">
+		<img src="api-design_files/footer-floating-corner-r.png" class="float-right" style="" alt="corner" width="14" height="36">
+		<img src="api-design_files/footer-floating-corner-l.png" class="float-left" style="" alt="corner" width="10" height="36">
+		<div id="footer-text">
+			<div id="footer-navig" class="float-left font-12">
+				<a href="http://www.cafeshops.com/netbeans/">Shop</a> &nbsp;
+				<a href="http://www.netbeans.org/download/sitemaps/www_map.html">SiteMap</a> &nbsp;
+				<a href="http://www.netbeans.org/about/index.html">About Us</a> &nbsp;
+				<a href="http://www.netbeans.org/about/contact.html">Contact</a> &nbsp;
+				<a href="http://www.netbeans.org/about/legal/index.html">Legal</a> &nbsp;
+			</div>
+		<div id="tof" class="float-right">
+			By use of this website, you agree to the <a href="http://www.netbeans.org/about/legal/terms-of-use.html">NetBeans Policies and Terms of Use</a> (<a href="http://netbeans.org/projects/help/pages/ReleaseNotes">revision 20110603.e655cfe</a>)
+		</div>
+		</div>
+	</div>
+      <div id="companion-projects">
+        <script type="text/javascript">
+          document.write(renderCompanionProjectIcons());
+        </script><center><table><tbody><tr><td class="companions-left b-green-left valign-center">Companion <br>Projects: </td><td class="valign-center"></td><td class="valign-center"><a href="http://www.mysql.com/"><img src="api-design_files/mysql_logo.gif" alt="MySQL - Open Source Database Server" title="MySQL - Open Source Database Server" width="53" height="45"></a>&nbsp;&nbsp;</td><td class="valign-center"><a href="https://glassfish.dev.java.net/"><img src="api-design_files/glassfish.gif" alt="GlassFish Community: an Open Source Application Server" title="GlassFish Community: an Open Source Application Server" width="53" height="45"></a>&nbsp;&nbsp;</td><td class="valign-center"><a href="http://www.java.net/"><img src="api-design_files/javanet.gif" alt="Java.net - The Source for Java Technology Collaboration" title="Java.net - The Source for Java Technology Collaboration" width="82" height="45"></a>&nbsp;</td><td class="valign-center"><a href="http://www.openoffice.org/"><img src="api-design_files/open-office.gif" alt="OpenOffice - The free and open productivity suite" title="OpenOffice - The free and open productivity suite" width="87" height="45"></a>&nbsp;</td><td class="valign-center"><a href="http://hudson-ci.org/"><img src="api-design_files/hudson.png" alt="Hudson - Continuous Integration" title="Hudson - Continuous Integration" width="75" height="25"></a>&nbsp;</td><td class="valign-center"><a href="http://javafx.com/"><img src="api-design_files/javafx.png" alt="JavaFX" title="JavaFX" width="74" height="26"></a>&nbsp;</td><td class="valign-center b-green-right" style="padding-right: 10px;"><a href="https://openjdk.dev.java.net/"><img src="api-design_files/openjdk.gif" alt="Open JDK: an Open SourceJDK" title="Open JDK: an Open SourceJDK" width="81" height="45"></a></td><td class="companions-right b-green-right valign-center align-center">&nbsp;Sponsored&nbsp;by&nbsp;<br><a href="http://www.oracle.com/"><img src="api-design_files/logo_oracle_footer.gif" alt="Sponsored by Oracle" title="Sponsored by Oracle" width="100" height="29"></a></td></tr></tbody></table></center>
+      </div>
+    </div>
+
+    <!-- Begin SiteCatalyst code -->
+    <script language="JavaScript" src="api-design_files/s_code_remote.js" type="text/javascript"></script><script type="text/javascript" src="api-design_files/metrics_group1.js"></script>
+    <!-- End SiteCatalyst code -->
+
+    <!-- Begin Google webtracking analytics -->
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script><script src="api-design_files/ga.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var pageTracker = _gat._getTracker("UA-2149007-1");
+      pageTracker._setDomainName("netbeans.org");
+      pageTracker._initData();
+      pageTracker._trackPageview();
+    </script>
+    <!-- End Google webtracking analytics -->
+    <!-- INCLUDED CODE END -->
+        <!-- popups that are anchored to specific elements -->
+    <div style="display: none;" class="popupMenuShadow" id="contextMenuShadow"></div>
+    <div class="popupMenuContainer" id="contextMenu">
+      <div class="popupMenu inline">	
+        <div class="upArrow"></div>
+        <div class="header"></div>
+        <div class="contextMenuBody" id="contextMenuBody">&nbsp;</div>
+      </div>
+    </div> 
+    
+    <!-- large content loaded via ajax. Faded but not modal. -->
+    <div class="jqmWindow jqmID1" id="jqm_large_overlay">
+      <div class="jqmHeader">
+        <div class="jqmTitle">&nbsp;</div>
+        <img alt="Close" class="jqmClose" src="api-design_files/close.gif">
+      </div>
+      <div class="jqmTarget">
+        <img alt="loading" src="api-design_files/activity.gif">
+      </div>
+      <div class="jqmFooter">
+      	<div class="jqmClose functionButtonContainer"><button class="functionButton" title="Done"> Done </button></div>
+      </div>
+    </div>
+    
+    <!-- confirmation dialogs with buttons. Faded and modal. -->
+    <div class="jqmWindow jqmID2" id="jqm_dialog">
+      <div class="jqmHeader">
+        <div class="jqmTitle">Please Confirm</div>
+        <img alt="Close" class="jqmClose" src="api-design_files/close.gif">
+      </div>
+      <div class="jqmTarget">&nbsp;</div>
+      <div class="jqmFooter">
+      	<div class="jqmClose functionButtonContainer"><button class="functionButton" id="jq_no_button" title="No" onclick="Modal.no()"> No </button></div>
+      	<div class="jqmClose functionButtonContainer"><button class="functionButton" id="jq_yes_button" title="Yes" onclick="Modal.yes();"> Yes </button></div>
+      </div>
+    </div>    
+
+  
+  <script src="api-design_files/body_packaged.js" type="text/javascript"></script>
+
+  
+
+<iframe style="display: none;" src="api-design_files/getSegment.html" name="stSegmentFrame" id="stSegmentFrame" scrolling="no" width="0px" frameborder="0" height="0px"></iframe><div style="visibility: hidden; top: -999px; left: -999px;" class="stwrapper" id="stwrapper"><div class="stclose"></div><iframe src="" style="top: 0px; left: 0px;" name="stLframe" class="stLframe" id="stLframe" allowtransparency="true" scrolling="no" width="345px" frameborder="0" height="450px"></iframe></div></body></html>

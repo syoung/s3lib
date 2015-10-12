@@ -1,0 +1,1794 @@
+Notes-hardware-pegasus.txt
+
+
+
+</entry>
+
+
+
+<entry [Wed Jan 19 20:19:39 EST 2011] VIEWING JOB INFORMATION: bjobs, bhist, etc.>
+
+
+
+GOOD RESOURCE
+http://www.vital-it.ch/support/LSF/lsf_using/B_display.html
+
+
+JOB INFO
+
+Recent jobs
+bjobs -a displays the same information as bjobs and in addition displays information about recently finished jobs (PEND, RUN, USUSP, PSUSP, SSUSP, DONE and EXIT statuses).
+
+Running jobs
+bjobs -r displays information only for running jobs (RUN state).
+
+... SIMILARLY -s FOR SUSPENDED JOBS, -p FOR PENDING JOBS
+
+JOB HISTORY
+bhist -l 1531
+
+
+
+</entry>
+
+
+
+<entry [Thu Apr  1 18:51:56 EDT 2010] bkill OPTIONS>
+
+
+
+
+
+http://www.vital-it.ch/support/LSF/command_reference/bkill.cmdref.html
+
+
+Kill all jobs in the job group /risk_group:
+bkill -g /risk_group 0 
+
+Force the removal of unkillable job 1045:
+bkill -r 1045 
+
+Sends signal 17 to the last job that was submitted by the invoker to queue night.
+bkill -s 17 -q night 
+
+Kills all the jobs that are in the queue short.
+bkill -q short -u all 0 
+
+Kill all jobs belonging to the service class named Tofino.
+bkill -sla Tofino 0 
+
+Kills the most recently submitted job associated with the application profile fluent for the current user.
+bkill -app fluent 
+
+Kills all jobs associated with the application profile fluent for the current user.
+bkill -app fluent 0 
+
+
+
+bkill
+
+sends signals to kill, suspend, or resume unfinished jobs
+Synopsis
+
+bkill [-l] [-app application_profile_name] [-g job_group_name] 
+[-sla service_class_name] [-J job_name] [-m host_name | 
+-m host_group] [-q queue_name] [-r | 
+-s signal_value | signal_name] [-u user_name | 
+-u user_group | -u all] [job_ID ... | 0 | "job_ID[index]" ...] 
+bkill [-l] [-b] [-app application_profile_name] [-g job_group_name] 
+[-sla service_class_name] [-J job_name] [-m host_name | 
+-m host_group] [-q queue_name] [-u user_name | 
+-u user_group | -u all] [job_ID ... | 0 | "job_ID[index]" ...] 
+bkill [-h | -V] 
+
+Description
+
+By default, sends a set of signals to kill the specified jobs. On UNIX, SIGINT and SIGTERM are sent to give the job a chance to clean up before termination, then SIGKILL is sent to kill the job. The time interval between sending each signal is defined by the JOB_TERMINATE_INTERVAL parameter in lsb.params(5).
+
+By default, kills the last job submitted by the user running the command. You must specify a job ID or -app, -g, -J, -m, -u, or -q. If you specify -app, -g, -J, -m, -u, or -q without a job ID, bkill kills the last job submitted by the user running the command. Specify job ID 0 (zero) to kill multiple jobs.
+
+On Windows, job control messages replace the SIGINT and SIGTERM signals (but only customized applications can process them) and the TerminateProcess() system call is sent to kill the job.
+
+Exit code 130 is returned when a dispatched job is killed with bkill.
+
+Only root and LSF administrators can run bkill -r. The -r option is ignored for other users.
+
+Users can only operate on their own jobs. Only root and LSF administrators can operate on jobs submitted by other users.
+
+If a signal request fails to reach the job execution host, LSF tries the operation later when the host becomes reachable. LSF retries the most recent signal request.
+
+If a job is running in a queue with CHUNK_JOB_SIZE set, bkill has the following results depending on job state:
+PEND
+
+Job is removed from chunk (NJOBS -1, PEND -1)
+RUN
+
+All jobs in the chunk are suspended (NRUN -1, NSUSP +1)
+USUSP
+
+Job finishes, next job in the chunk starts if one exists (NJOBS -1, PEND -1, SUSP -1, RUN +1)
+WAIT
+
+Job finishes (NJOBS-1, PEND -1)
+
+If the job cannot be killed, use bkill -r to remove the job from the LSF system without waiting for the job to terminate, and free the resources of the job.
+Options
+0
+
+Kills all the jobs that satisfy other options (-app. -g, -m, -q, -u, and -J).
+-b
+
+Kills large numbers of jobs as soon as possible. Local pending jobs are killed immediately and cleaned up as soon as possible, ignoring the time interval specified by CLEAN_PERIOD in lsb.params. Jobs killed in this manner are not logged to lsb.acct.
+
+Other jobs, such as running jobs, are killed as soon as possible and cleaned up normally.
+
+If the -b option is used with the 0 subcommand, bkill kills all applicable jobs and silently skips the jobs that cannot be killed.
+
+bkill -b 0
+Operation is in progress 
+
+The -b option is ignored if used with the -r or -s options.
+-l
+
+Displays the signal names supported by bkill. This is a subset of signals supported by /bin/kill and is platform-dependent.
+-r
+
+Removes a job from the LSF system without waiting for the job to terminate in the operating system.
+
+Only root and LSF administrators can run bkill -r. The -r option is ignored for other users.
+
+Sends the same series of signals as bkill without -r, except that the job is removed from the system immediately, the job is marked as EXIT, and the job resources that LSF monitors are released as soon as LSF receives the first signal.
+
+Also operates on jobs for which a bkill command has been issued but which cannot be reached to be acted on by sbatchd (jobs in ZOMBI state). If sbatchd recovers before the jobs are completely removed, LSF ignores the zombi jobs killed with bkill -r.
+
+Use bkill -r only on jobs that cannot be killed in the operating system, or on jobs that cannot be otherwise removed using bkill.
+
+The -r option cannot be used with the -s option.
+-app application_profile_name
+
+Operates only on jobs associated with the specified application profile. You must specify an existing application profile. If job_ID or 0 is not specified, only the most recently submitted qualifying job is operated on.
+-g job_group_name
+
+Operates only on jobs in the job group specified by job_group_name.
+
+Use -g with -sla to kill jobs in job groups attached to a service class.
+
+bkill does not kill jobs in lower level job groups in the path. For example, jobs are attached to job groups /risk_group and /risk_group/consolidate:
+
+bsub -g /risk_group  myjob
+Job <115> is submitted to default queue <normal>. 
+bsub -g /risk_group/consolidate myjob2
+Job <116> is submitted to default queue <normal>. 
+
+The following bkill command only kills jobs in /risk_group, not the subgroup /risk_group/consolidate:
+
+bkill -g /risk_group 0
+Job <115> is being terminated 
+bkill -g /risk_group/consolidate 0
+Job <116> is being terminated 
+
+-J job_name
+
+Operates only on jobs with the specified job name. The -J option is ignored if a job ID other than 0 is specified in the job_ID option.
+-m host_name | -m host_group
+
+Operates only on jobs dispatched to the specified host or host group.
+
+If job_ID is not specified, only the most recently submitted qualifying job is operated on. The -m option is ignored if a job ID other than 0 is specified in the job_ID option. See bhosts(1) and bmgroup(1) for more information about hosts and host groups.
+-q queue_name
+
+Operates only on jobs in the specified queue.
+
+If job_ID is not specified, only the most recently submitted qualifying job is operated on.
+
+The -q option is ignored if a job ID other than 0 is specified in the job_ID option.
+
+See bqueues(1) for more information about queues.
+-s signal_value | signal_name
+
+Sends the specified signal to specified jobs. You can specify either a name, stripped of the SIG prefix (such as KILL), or a number (such as 9).
+
+Eligible UNIX signal names are listed by bkill -l.
+
+The -s option cannot be used with the -r option.
+
+Use bkill -s to suspend and resume jobs by using the appropriate signal instead of using bstop or bresume. Sending the SIGCONT signal is the same as using bresume.
+
+Sending the SIGSTOP signal to sequential jobs or the SIGTSTP to parallel jobs is the same as using bstop.
+
+You cannot suspend a job that is already suspended, or resume a job that is not suspended. Using SIGSTOP or SIGTSTP on a job that is in the USUSP state has no effect and using SIGCONT on a job that is not in either the PSUSP or the USUSP state has no effect. See bjobs(1) for more information about job states.
+-sla service_class_name
+
+Operates on jobs belonging to the specified service class.
+
+If job_ID is not specified, only the most recently submitted job is operated on.
+
+Use -sla with -g to kill jobs in job groups attached to a service class.
+
+The -sla option is ignored if a job ID other than 0 is specified in the job_ID option.
+
+Use bsla to display the configuration properties of service classes configured in lsb.serviceclasses, the default SLA configured with ENABLE_DEFAULT_EGO_SLA in lsb.params, and dynamic information about the state of each service class.
+-u user_name | -u user_group | -u all
+
+Operates only on jobs submitted by the specified user or user group, or by all users if the reserved user name all is specified. To specify a Windows user account, include the domain name in uppercase letters and use a single backslash (DOMAIN_NAME\user_name) in a Windows command line or a double backslash (DOMAIN_NAME\\user_name) in a UNIX command line.
+
+If job_ID is not specified, only the most recently submitted qualifying job is operated on. The -u option is ignored if a job ID other than 0 is specified in the job_ID option.
+job_ID ... | 0 | "job_ID[index]" ...
+
+Operates only on jobs that are specified by job_ID or "job_ID[index]", where "job_ID[index]" specifies selected job array elements (see bjobs(1)). For job arrays, quotation marks must enclose the job ID and index, and index must be enclosed in square brackets.
+
+Jobs submitted by any user can be specified here without using the -u option. If you use the reserved job ID 0, all the jobs that satisfy other options (that is, -m, -q, -u and -J) are operated on; all other job IDs are ignored.
+
+The options -u, -q, -m and -J have no effect if a job ID other than 0 is specified. Job IDs are returned at job submission time (see bsub(1)) and may be obtained with the bjobs command (see bjobs(1)).
+-h
+
+Prints command usage to stderr and exits.
+-V
+
+Prints LSF release version to stderr and exits.
+Examples
+
+bkill -s 17 -q night 
+
+Sends signal 17 to the last job that was submitted by the invoker to queue night.
+
+bkill -q short -u all 0 
+
+Kills all the jobs that are in the queue short.
+
+bkill -r 1045 
+
+Forces the removal of unkillable job 1045.
+
+bkill -sla Tofino 0 
+
+Kill all jobs belonging to the service class named Tofino.
+
+bkill -g /risk_group 0 
+
+Kills all jobs in the job group /risk_group.
+
+bkill -app fluent 
+
+Kills the most recently submitted job associated with the application profile fluent for the current user.
+
+bkill -app fluent 0 
+
+Kills all jobs associated with the application profile fluent for the current user.
+
+
+</entry>
+
+
+
+<entry [Sun Mar 14 15:41:31 EDT 2010] GET NUMBER OF EXECUTION HOSTS AND THEIR AVAILABILITY USING bhosts AND lshosts>
+
+
+
+
+GET HOST INFORMATION (MEMORY SIZE, CPUS) WITH lhosts
+
+lshosts
+
+    HOST_NAME      type    model  cpuf ncpus maxmem maxswp server RESOURCES
+    m1           X86_64 Opteron2  60.0     4  7829M  9823M    Yes (mg)
+    n0001        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    n0002        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    n0003        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    ...
+    n0278        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    n0279        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    n0280        X86_64 Intel_EM  60.0     8 16054M 35165M    Yes (mpich2)
+    cacti       DEFAULT  DEFAULT   1.0     -      -      -     No ()
+    u01          X86_64  DEFAULT   1.0     -      -      -     No ()
+    u02          X86_64  DEFAULT   1.0     -      -      -     No ()
+    pegasus-m.c UNKNOWN UNKNOWN_   1.0     -      -      -     No ()
+
+
+GET EXECUTION NODE ACTIVITY AND AVAILABILITY WITH bhosts
+
+bhosts
+
+
+    [syoung@u01 ~]$ bhosts
+    HOST_NAME          STATUS       JL/U    MAX  NJOBS    RUN  SSUSP  USUSP    RSV 
+    m1                 closed          -      4      0      0      0      0      0
+    n0001              ok              -      8      0      0      0      0      0
+    n0002              ok              -      8      0      0      0      0      0
+    n0003              ok              -      8      0      0      0      0      0
+    ...
+    n0278              ok              -      8      0      0      0      0      0
+    n0279              ok              -      8      0      0      0      0      0
+    n0280              ok              -      8      0      0      0      0      0
+
+
+
+OTHER USEFUL COMMANDS
+
+INFO ON LSF (NO.CPUS - BUT CAN'T BE RIGHT... SAYS 60 + 60, I.E., 120 CPUS WHEN 280 ARE AVAILABLE)
+lsinfo
+
+
+bsub -n num-procs
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  9 01:31:00 EST 2010] INTERACTIVE JOB>
+
+
+
+[syoung@u01 maq3]$  bsub -I -q priority -n 4,10 "ls -al /" 
+Job <7479> is submitted to queue <priority>.
+<<Waiting for dispatch ...>>
+<<Starting on n0143>>
+total 20
+drwxr-xr-x  25 root root      540 Mar  4 18:19 .
+drwxr-xr-x  25 root root      540 Mar  4 18:19 ..
+-rw-r--r--   1 root root        0 Mar  4 13:17 .autofsck
+drwxr-xr-x   2 root root     4096 Feb 26 04:03 bin
+drwxr-xr-x  11 root root     3320 Mar  4 18:19 dev
+
+
+
+
+Submit an interactive job by using a pseudo-terminal
+
+Submission of interaction jobs using pseudo-terminal is not supported for Windows for either lsrun or bsub LSF commands.
+
+bsub -Ip
+
+To submit a batch interactive job by using a pseudo-terminal, use the bsub -Ip option.
+For example:
+
+% bsub -Ip vi myfile 
+ 
+
+Submits a batch interactive job to edit myfile.
+
+
+ 
+
+When you specify the -Ip option, bsub submits a batch interactive job and creates a pseudo-terminal when the job starts. Some applications such as vi for example, require a pseudo-terminal in order to run correctly.
+
+
+bsub -Is
+
+To submit a batch interactive job and create a pseudo-terminal with shell mode support, use the bsub -Is option.
+For example:
+
+% bsub -Is csh 
+ 
+ 
+ 
+
+</entry>
+
+
+
+<entry [Fri Mar  5 00:42:02 EST 2010] LSF EXIT CODES>
+
+
+http://ams.cern.ch/AMS/7/admin/lsf_exit_code.html
+
+
+COMMON EXIT CODES:
+
+Error codition 	LSF exit code 	Operating system 	System exit code equivalent 	Meaning 
+Command not found 	127	all 	1 or 127 	Command shell returns 1 if command not found. If the command cannot be found inside a job script, LSF return exit code 127. 
+Directory not available for output 	0	all 	1	LSF sends the output back to user through email if directory not available for output (bsub -o). 
+LSF internal error 	-127, 127 	all 	N/A 	RES returns -127 or 127 for all internal problems. 
+Out of memory 	N/A 	all 	N/A 	Exit code depends on the error handling of the application itself. 
+LSF job states 	0	all 	N/A 	Exit code 0 is returned for all job states 
+				
+Host failure 				
+
+
+MORE EXIT CODES:
+
+
+Code    Meaning
+
+0       A process exited with the code 127 (GLOBAL EXIT), which indicates success, causing all of the processes to exit.
+123     A process exited with the code 123 (GLOBAL ERROR) causing all of the processes to exit.
+124     The node the job executing on has been removed from the system.
+125     One or more processes were still running when the exit timeout expired.
+126     The resource is inadequate for the request. 
+
+
+</entry>
+
+
+
+<entry [Fri Mar  4 00:41:02 EST 2010] INSTALLED LSF::Job>
+
+
+
+
+(SEE ALSO: Notes-apps-make.txt, Thu Mar  4 12:42:07 EST 2010, USE 'perl Makefile.PL PREFIX=LOCALPATH' TO make TO A LOCAL DIRECTORY)
+
+
+CONSTRUCTORS 
+
+new ( [NUM] )
+$job = LSF::Job->new(123456);
+
+Creates a new LSF::Job object.
+
+Required argument is a LSF jobid. This does not *have* to exist in the system but would probably be a good idea!
+
+submit ( [ [ARGS] ], [COMMAND_STRING] )
+$job = LSF::Job->submit(-q => 'default' ,-o => '/dev/null' ,"echo hello");
+
+Creates a new LSF::Job object.
+
+Arguments are the LSF parameters normally passed to 'bsub'.
+
+Required parameter is the command line (as a string) that you want to execute.
+
+jobs ( [ARGS] )
+@jobs = LSF::Job->jobs( -J => "/mygroup/*" );
+
+Creates an array of LSF::Job objects corresponding to jobs that match the query
+
+Arguments are the LSF parameters normally passed to 'bjobs'.
+
+METHODS 
+
+$job->id() (or object in string context)
+id returns the jobid of the LSF Job. This is particularly useful when building up job interdependencies
+
+$job->history
+Returns a LSF::JobHistory object with information about the LSF job. See the LSF::JobHistory perldoc page.
+
+$job->bottom
+Moves the LSF job to the bottom of its queue. See the bbot man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->checkpoint
+Checkpoints a checkpointable job. See the bchkpnt man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->delete( [ARGS] )
+*** Deprecated in LSF 5.0. Use kill instead. ***
+
+Deletes the LSF job from the system. See the bdel man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->kill
+Kills the LSF job. See the bkill man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->migrate
+Migrates the LSF job. See the bmigrate man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->modify( [ARGS] )
+Modifies the LSF job. See the bmod man page. Since the objects are overloaded to return the job id when used in string context this allows easy build up of job dependancies e.g. Returns true on success, false on failure. Sets $? and $@;
+
+$job3->modify(-w => "done($job1) && done($job2)" );
+
+$job->restart
+Restarts a checkpointed job. See the brestart man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->resume
+Resumes a suspended job. See the bresume man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->run
+Starts the LSF job now. See the brun man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->stop
+Stops the LSF job. See the bstop man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->switch( [ARGS] )
+Switches the LSF job between LSF queues. See the bswitch man page. Returns true on success, false on failure. Sets $? and $@;
+
+$job->top
+Moves the LSF job to the top of its queue. See the btop man page. Returns true on success, false on failure. Sets $? and $@;
+
+
+USES
+http://search.cpan.org/~kwilliams/Module-Build-0.2806/lib/Module/Build/Cookbook.pm
+
+
+cd /nethome/syoung/base/pipeline/perlmods/IPC-Run-0.84/IPC-Run-0.84
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+make install
+
+cd /nethome/syoung/base/pipeline/perlmods/Date-Manip-5.56
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+#make install # --didn't work properly so copied manually
+
+cp -r /nethome/syoung/base/pipeline/perlmods/Date-Manip-5.56/blib/lib/Date /nethome/bioinfo/apps/agua/0.4/lib/external
+
+# OK
+
+
+cd /nethome/syoung/base/pipeline/perlmods/LSF-0.9/LSF-0.9
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+make install
+
+
+TROUBLESHOOTING
+===============
+
+1. FIXED ERROR:
+
+Cannot determine LSF version
+BEGIN failed--compilation aborted at /nethome/bioinfo/apps/agua/0.4/bin/apps/t/../../../lib/external/LSF.pm line 20.
+Compilation failed in require at (eval 5) line 3.
+        ...propagated at /usr/lib/perl5/5.8.8/base.pm line 85.
+BEGIN failed--compilation aborted at /nethome/bioinfo/apps/agua/0.4/bin/apps/t/../../../lib/external/LSF/Job.pm line 5.
+
+
+REPLACED LSF.pm LINE 16:
+
+        die "Cannot determine LSF version\n" unless $err =~ /^LSF ([^,]+)/m;
+        $__PACKAGE__::LSF = $1;
+
+WITH 
+        die "Cannot determine LSF version\n" unless $err =~ /^(Platform ) LSF ([^,]+)/m;
+        $__PACKAGE__::LSF = $2;
+
+
+THE OUTPUT OF lsid MUST HAVE CHANGED AFTER THE MODULE WAS WRITTEN:
+
+[syoung@m1 t]$ lsid -V
+
+    Platform LSF 7.0.6.134609, Sep 04 2009
+    Copyright 1992-2009 Platform Computing Corporation
+    
+      binary type: linux2.6-glibc2.3-x86_64
+
+
+
+
+
+2. FIXED ERROR:
+
+Can't use string ("LSF::JobHistory") as a HASH ref while "strict refs" in use at /nethome/bioinfo/apps/agua/0.4/bin/apps/t/../../../lib/external/LSF/JobHistory.pm line 23.
+BEGIN failed--compilation aborted at /nethome/bioinfo/apps/agua/0.4/bin/apps/t/../../../lib/external/LSF/Job.pm line 8.
+Compilation failed in require at ./01.Monitor-LSF.t line 35.
+BEGIN failed--compilation aborted at ./01.Monitor-LSF.t line 35.
+
+
+BY USING no strict IN AUTOLOAD, JobHistory.pm LINE 19:
+
+
+sub AUTOLOAD{
+    my $key = our $AUTOLOAD;
+
+    #print "LSF::JobHistory AUTOLOAD    LSF::JobHistory AUTOLOAD\n";
+    #print "LSF::JobHistory AUTOLOAD    BEFORE key: $key\n";
+
+$key =~ s/.*:://;
+
+    #print "LSF::JobHistory AUTOLOAD    AFTER key: $key\n";
+
+
+    my $self = shift;
+
+no strict;
+
+    $self->{$key} = shift if @_;
+
+    return $self->{$key};
+}
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 11:42:02 EST 2010] LSF JOB SCRIPT OPTIONS>
+
+
+
+
+#BSUB -J jobname	# assigns a name to job
+#BSUB -B	        # Send email at job start
+#BSUB -N	        # Send email at job end
+#BSUB -e errfile	# redirect stderr to specified file
+#BSUB -o out_file	# redirect stdout to specified file
+#BSUB -a application	# specify serial/parallel options
+#BSUB -P project_name	# charge job to specified project
+#BSUB -W runtime	# set wallclock time limit
+#BSUB -q queue_name	# specify queue to be used
+#BSUB -n num_procs	# specify number of processors
+#BSUB -R    "span[ptile=num_procs_per_node]"	# specify MPI resource requirements
+
+
+ENVIRONMENT VARIABLES:
+
+LSB_JOBID	Unique job number
+LSB_JOBINDEX	Job index for array jobs
+LSB_JOBNAME	Name of the job
+LS_JOBPID	Process ID of the job
+	
+
+COMMANDS:
+
+bsub < script	Submit a job script for execution
+bjobs 	Show status of running and pending jobs.
+bhist	Display historical information about your jobs.
+bkill	Kill a job.
+bstop, beresume	Hold a job. Release a held job.
+bqueues	Show configuration of queues.	
+busers	Display information about users and groups.
+bpeek	Display stderr and stdout from an unfinished job.
+bacct	Display accounting information for finished jobs.
+bhosts	Summarize load on each host.
+
+
+
+http://www.navo.hpc.mil/pbs_guide.html
+
+
+http://www.navo.hpc.mil/lsf_guide.html
+
+
+Queuing System Command Comparison		
+LoadLeveler	        LSF	Description
+llsubmit script	    bsub < script	Submit a job script for execution
+llq	                bjobs 	Show status of running and pending jobs.
+                    bhist	Display historical information about your jobs.
+llcancel	        bkill	Kill a job.
+llhold, llhold -r	bstop, beresume	Hold a job. Release a held job.
+llclass 	        bqueues	Show configuration of queues.
+showqlimits		
+                    busers	Display information about users and groups.
+                    bpeek	Display stderr and stdout from an unfinished job.
+                    bacct	Display accounting information for finished jobs.
+llstatus	        bhosts	Summarize load on each host.
+
+
+
+Job Script Frequently Used Options	
+
+
+Loadleveler	LSF	Option
+#@ job_name = jobname	#BSUB -J jobname	assigns a name to job
+#@ notify_user = login_name	#BSUB -B	Send email at job start
+#@ notification = start		
+#@ notification = complete	#BSUB -N	Send email at job end
+#@ error = errfile	#BSUB -e errfile	redirect stderr to specified file
+#@ output = out_file	#BSUB -o out_file	redirect stdout to specified file
+	#BSUB -a application	specify serial/parallel options
+#@ account_no =project_name	#BSUB -P project_name	charge job to specified project
+#@ wall_clock_limit = runtime	#BSUB -W runtime	set wallclock time limit
+#@ class = queue_name	#BSUB -q queue_name	specify queue to be used
+#@ node = num_nodes	#BSUB -n num_procs	specify number of processors
+		
+#@ tasks_per_node =num_procs	#BSUB -R"span[ptile=num_procs_per_node]"	specify MPI resource requirements
+	Environment Variable Comparison	
+LoadLeveler	LSF	Variable Description
+LOADL_JOB_NAME	LSB_JOBID	Unique job number
+LOADL_STEP_ID	LSB_JOBINDEX	Job index for array jobs
+LOADL_STEP_COMMAND	LSB_JOBNAME	Name of the job
+LOADL_PID	LS_JOBPID	Process ID of the job
+		
+
+Queuing System Command Comparison	
+
+
+LoadLeveler	LSF	Description
+llsubmit script	bsub < script	Submit a job script for execution
+llq	bjobs 	Show status of running and pending jobs.
+		
+	bhist	Display historical information about your jobs.
+llcancel	bkill	Kill a job.
+llhold, llhold -r	bstop, beresume	Hold a job. Release a held job.
+llclass 	bqueues	Show configuration of queues.
+		
+showqlimits		
+	busers	Display information about users and groups.
+	bpeek	Display stderr and stdout from an unfinished job.
+	bacct	Display accounting information for finished jobs.
+llstatus	bhosts	Summarize load on each host.
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 11:06:15 EST 2010] LSF SUBMIT JOB AS RERUNNABLE>
+
+
+
+http://ams.cern.ch/AMS/7/admin/jobrequeue.html
+Job Requeue and Job Rerun
+*** Interactive batch jobs (bsub -I) cannot be rerunnable. ***
+
+
+Submit a rerunnable job
+bsub -r 
+
+
+Submit a job as not rerunnable
+bsub -rn
+
+
+Enable automatic job rerun at the queue level, set:
+RERUNNABLE in lsb.queues to yes.
+
+Disable post-execution for rerunnable jobs, set env variable:
+LSB_DISABLE_RERUN_POST_EXEC=Y 
+
+(Running of post-execution commands upon restart of a rerunnable job may not always be desirable; for example, if the post-exec removes certain files, or does other cleanup that should only happen if the job finishes successfully.)
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 11:06:15 EST 2010] LSF JOB ID>
+
+
+
+mkdir /nethome/syoung/base/pipeline/lsf/jobid
+
+
+
+rm -fr /nethome/syoung/base/pipeline/lsf/jobid/jobid.sh
+emacs /nethome/syoung/base/pipeline/lsf/jobid/jobid.sh
+#!/bin/sh
+#BSUB -J test1 
+#BSUB -o %J.out   
+#BSUB -e %J.err  
+#BSUB -W 1:00   
+#BSUB -q priority
+#BSUB -n 1      
+#BSUB -B       
+#BSUB -N      
+#
+echo "Running jobid.sh"
+cd /nethome/syoung/base/pipeline/lsf/jobid
+echo "LSB_JOBID: " $LSB_JOBID
+echo "LS_JOBPID: " $LS_JOBPID
+echo "LSB_JOBINDEX: " $LSB_JOBINDEX
+echo "LSB_JOBNAME: " $LSB_JOBNAME
+echo "LSB_QUEUE: " $LSB_QUEUE
+echo "LSFUSER: " $LSFUSER
+echo "LSB_JOB_EXECUSER: " $LSB_JOB_EXECUSER
+echo "HOSTNAME: " $HOSTNAME
+echo "LSB_HOSTS: " $LSB_HOSTS
+echo "LSB_ERRORFILE: " $LSB_ERRORFILE
+echo "LSB_JOBFILENAME: " $LSB_JOBFILENAME
+echo "LD_LIBRARY_PATH: " $LD_LIBRARY_PATH
+echo "/usr/bin/perl /nethome/syoung/base/pipeline/lsf/jobid/test.x $LSB_JOBID b c > /nethome/syoung/base/pipeline/lsf/jobid/out.txt"
+/usr/bin/perl /nethome/syoung/base/pipeline/lsf/jobid/test.x %J b c > /nethome/syoung/base/pipeline/lsf/jobid/out.txt
+exit;
+
+
+
+
+
+RESULT OF printenv BY JOB ID 4760:
+
+
+Running serial executable on 1 cpu of one node
+printenv: 
+MODULE_VERSION_STACK=3.2.7
+MANPATH=/share/apps/lsf/7.0/man::/opt/xcat/share/man:
+LSF_EAUTH_AUX_PASS=yes
+LSB_EXEC_CLUSTER=lsfcluster
+HOSTNAME=n0143.pegasus.edu
+LSF_LOGDIR=/share/apps/lsf/log
+LSF_LIM_API_NTRIES=1
+SHELL=/bin/bash
+LSB_BATCH_JID=4760
+CLICOLOR=1
+HISTSIZE=1000
+SSH_CLIENT=10.136.60.185 1547 22
+LSB_TRAPSIGS=trap # 15 10 12 2 1
+LSB_ERRORFILE=4760.err
+LS_JOBPID=10276
+LSB_JOBRES_CALLBACK=35880@n0143.pegasus.edu
+OLDPWD=/nethome/syoung/base/pipeline/lsf/jobid
+LSF_SERVERDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/etc
+LSB_JOBID=4760
+LSB_JOB_EXECUSER=syoung
+LSB_JOBRES_PID=10276
+SSH_TTY=/dev/pts/14
+LSB_JOBNAME=test1
+PERL_BADLANG=0
+LSF_LIBDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib
+USER=syoung
+LD_LIBRARY_PATH=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib:
+LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:*.cmd=01;32:*.exe=01;32:*.com=01;32:*.btm=01;32:*.bat=01;32:*.sh=01;32:*.csh=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tz=01;31:*.rpm=01;31:*.cpio=01;31:*.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.xbm=01;35:*.xpm=01;35:*.png=01;35:*.tif=01;35:
+SBD_KRB5CCNAME_VAL=
+XCATROOT=/opt/xcat
+LSB_EEXEC_REAL_UID=
+HOSTTYPE=X86_64
+LSF_INVOKE_CMD=bsub
+LS_EXEC_T=START
+LSF_EAUTH_SERVER=mbatchd@lsfcluster
+LSF_VERSION=23
+LS_SUBCWD=/nethome/syoung/base/pipeline/lsf/jobid
+LSB_UNIXGROUP_INT=bioinfo
+LSB_HOSTS=n0143
+LSB_DJOB_RU_INTERVAL=15
+LSB_JOBFILENAME=/nethome/syoung/.lsbatch/1267719311.4760
+LSB_DJOB_HB_INTERVAL=15
+MODULE_VERSION=3.2.7
+MAIL=/var/spool/mail/syoung
+PATH=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/etc:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/java/bin:/opt/moab/bin:/apps/torque/bin:/opt/xcat/bin:/opt/xcat/sbin
+LSB_JOBINDEX=0
+LSB_EXIT_PRE_ABORT=99
+LSB_JOBEXIT_STAT=0
+INPUTRC=/etc/inputrc
+PWD=/nethome/syoung/base/pipeline/lsf/test
+_LMFILES_=/share/apps/modules/Modules/3.2.7/modulefiles/null
+JAVA_HOME=/usr/local/java
+SGE_EXECD_PORT=702
+LANG=en_US.UTF-8
+SGE_QMASTER_PORT=701
+MODULEPATH=/share/apps/modules/Modules/versions:/share/apps/modules/Modules/$MODULE_VERSION/modulefiles:/share/apps/modules/Modules/modulefiles
+LSF_EAUTH_CLIENT=user
+LSB_CHKFILENAME=/nethome/syoung/.lsbatch/1267719311.4760
+SGE_ROOT=/common/sge
+LOADEDMODULES=null
+LSB_DJOB_HOSTFILE=/nethome/syoung/.lsbatch/1267719311.4760.hostfile
+LSF_BINDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin
+LSB_DJOB_NUMPROC=1
+SHLVL=3
+HOME=/nethome/syoung
+LSB_ACCT_FILE=/tmp/.1267719311.4760.acct
+LSB_SUB_HOST=m1
+LSFUSER=syoung
+LOGNAME=syoung
+LSB_OUTPUTFILE=4760.out
+LSB_MCPU_HOSTS=n0143 1 
+LSB_QUEUE=priority
+XLSF_UIDDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib/uid
+SSH_CONNECTION=10.136.60.185 1547 10.141.226.100 22
+MODULESHOME=/share/apps/modules/Modules/3.2.7
+LSB_ECHKPNT_RSH_CMD=ssh -n
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+LSB_EEXEC_REAL_GID=
+LSF_ENVDIR=/share/apps/lsf/conf
+G_BROKEN_FILENAMES=1
+module=() {  eval `/share/apps/modules/Modules/$MODULE_VERSION/bin/modulecmd bash $*`
+}
+_=/usr/bin/printenv
+/usr/bin/perl /nethome/syoung/base/pipeline/lsf/jobid/test.x \%J b c > /nethome/syoung/base/pipeline/lsf/jobid/out.txt
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 11:05:15 EST 2010] LSF ARRAY JOB>
+
+
+
+FROM:
+http://www.slac.stanford.edu/comp/unix/package/lsf/LSF6.1_doc/html/lsf6.1_admin/G_jobarrays.html
+Creating a Job Array
+
+
+
+SUBMIT ARRAY JOB  - OK
+================
+
+cd /nethome/syoung/base/pipeline/lsf
+bsub -J "maq[1-10]" /nethome/syoung/base/pipeline/lsf/test/array.sh -f input.\$LSB_JOBINDEX 1000 "LAST" -o "/nethome/syoung/base/pipeline/lsf/test/out.%J.%I"
+
+
+
+WHERE 
+
+rm -fr array.sh
+emacs array.sh
+
+#!/bin/sh
+
+#BSUB -J test1                                                                                     #BSUB -o %J.out                                                                                    #BSUB -e %J.err                                                                                    #BSUB -W 1:00                                                                                      #BSUB -q priority                                                                                  #BSUB -n 1                                                                                         #BSUB -B                                                                                           #BSUB -N                                                                                           #                                                                                                               
+echo "Running serial executable on 1 cpu of one node"
+# Run serial executable on 1 cpu of one node                                                                    
+cd /nethome/syoung/base/pipeline/lsf/test
+/usr/bin/perl /nethome/syoung/base/pipeline/lsf/test/test.x a b c > /nethome/syoung/base/pipeline/lsf/test/out.$LSB_JOBINDEX.txt
+exit;
+####
+
+chmod 755 /nethome/syoung/base/pipeline/lsf/array.sh
+
+OUTPUT FILES: 
+
+[syoung@m1 test]$ ll
+total 92K
+drwxr-xr-x 2 syoung bioinfo 4.0K Mar  4 08:38 .
+drwxr-xr-x 3 syoung bioinfo 2.0K Mar  4 01:37 ..
+-rw-r--r-- 1 syoung bioinfo  222 Mar  3 10:39 4479.err
+-rw-r--r-- 1 syoung bioinfo   47 Mar  3 10:39 4479.out
+-rw-r--r-- 1 syoung bioinfo    0 Mar  3 10:40 4480.err
+-rw-r--r-- 1 syoung bioinfo   47 Mar  3 10:40 4480.out
+-rw-r--r-- 1 syoung bioinfo  250 Mar  4 01:29 4715.err
+-rw-r--r-- 1 syoung bioinfo   47 Mar  4 01:29 4715.out
+-rwxr-xr-x 1 syoung bioinfo 1.5K Mar  4 08:38 array.sh
+-rwxr-xr-x 1 syoung bioinfo 1.5K Mar  4 01:48 array.sh~
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.10.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.1.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.2.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.3.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.4.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.5.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.6.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.7.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.8.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:39 out.9.txt
+-rw-r--r-- 1 syoung bioinfo   91 Mar  4 08:37 out.$LSB_JOBINDEX.txt
+-rw-r--r-- 1 syoung bioinfo    0 Mar  4 01:45 out.txt
+-rw-r--r-- 1 syoung bioinfo  407 Mar  4 01:31 test.sh
+-rw-r--r-- 1 syoung bioinfo  400 Mar  3 10:40 test.sh~
+-rw-r--r-- 1 syoung bioinfo  212 Mar  3 10:38 test.x
+
+
+
+
+3. CREATE TEST SCRIPT
+
+#BSUB -e %J.err
+
+redirect std error to a specified file
+
+
+mkdir /nethome/syoung/base/pipeline/lsf/test
+cd /nethome/syoung/base/pipeline/lsf/test
+
+rm -fr test.x
+
+emacs test.x
+#!/usr/bin/perl -w
+
+use strict;
+
+my $a = $ARGV[0];
+my $b = $ARGV[1];
+my $c = $ARGV[2];
+
+
+print "A: $a\n";
+print "B: $b\n";
+print "C: $c\n";
+
+print "Sleeping 10 seconds\n";
+sleep(10);
+print "Completed $0\n";
+exit;
+
+
+
+ARRAY JOB TIPS
+==============
+
+
+0. SUBMIT AN ARRAY JOB
+
+Create a job array named myArray made up of 1000 jobs.
+% bsub -J "myArray[1-1000]" myJob
+
+
+1. INDEXED INPUT FILES:
+
+You must escape LSB_JOBINDEX with a backslash, \, to prevent the shell interpreting bsub from expanding the variable. For example, the following command submits a job array of 1000 jobs whose input files are named input.1, input.2, input.3, ..., input.1000 and located in the current working directory.
+
+Pass the executable the name of the input files as an argument:
+
+% bsub -J "myArray[1-1000]" myJob -f input.\$LSB_JOBINDEX
+
+
+2. INDEXED OUTPUT FILES:
+
+Submit a job array of 1000 jobs whose output files will be located in CWD and named output.123.1, output.123.2, output.123.3, ..., output.123.1000 (the job ID of the job array is 123):
+
+% bsub -J "myArray[1-1000]" -o "output.%J.%I" myJob
+
+
+3. GET jobs OR hist:
+
+% bjobs "123[5]"
+JOBID  USER   STAT   QUEUE     FROM_HOST  EXEC_HOST   JOB_NAME    SUBMIT_TIME
+123    user1  RUN    default   hostA      hostL       myArray[5]  Feb 29 12:34
+
+% bhist "456[5]"
+Summary of time in seconds spent in various states:
+JOBID  USER    JOB_NAME   PEND    PSUSP   RUN     USUSP   SSUSP   UNKWN   TOTAL
+456[5] user1   *rray[5]   214     0       29      0       0       0       243
+
+
+4. KILL JOBS
+
+kill whole job array:
+% bkill 123
+
+kill individual jobs:
+% bkill "123[5]"
+% bkill "123[1-5, 239, 487]"
+
+
+5. SET SLOT LIMITS
+
+Set a job array job slot limit of 100 jobs for a job array of 1000 jobs:
+% bsub -J "jobArrayName[1000]%100" myJob
+
+After submission, set a job array job slot limit of 100 jobs for an array with job ID 123:
+% bmod -J "%100" 123
+
+Change a job array job slot limitto 250 for a job array with job ID 123:
+% bmod -J "%250" 123
+
+View job array job slot limits (-A and -l options of bjobs)
+% bjobs -A -l 123
+Job <123>, Job Name <myArray[1-1000]%100>, User <user1>, Project <default>, Sta
+                     tus <PEND>, Queue <normal>, Job Priority <20>, Command <my
+                     Job>
+Wed Feb 29 12:34:56: Submitted from host <hostA>, CWD <$HOME>;
+ 
+ COUNTERS:
+ NJOBS PEND DONE RUN EXIT SSUSP USUSP PSUSP
+    10    9   0    1    0     0     0     0
+
+
+6. SET DEPENDENCIES
+
+Make an array dependent on the completion of a job or job array with job ID 123:
+% bsub -w "done(123)" -J "myArray2[1-1000]" myJob
+
+Start a job named myJob when 100 or more elements in a job array with job ID 123 have completed successfully:
+% bsub -w "numdone(123, >= 100)" myJob
+
+ALSO:
+numrun(jobArrayJobId, op num)
+numpend(jobArrayJobId, op num)
+numdone(jobArrayJobId, op num)
+numexit(jobArrayJobId, op num)
+numended(jobArrayJobId, op num)
+numhold(jobArrayJobId, op num)	Evaluate the number of jobs in PSUSP state
+numstart(jobArrayJobId, op num)	Evaluate the number of jobs in RUN and SSUSP and USUSP state
+
+Use one the following operators (op) combined with a positive integer (num) to build a condition:
+== | > | < | >= |<= | !=
+Optionally, an asterisk (*) can be used in place of num to mean all jobs submitted from the job array.
+
+
+7. REQUEUE
+(brequeue is not supported across clusters.)
+
+Requeue jobs with job ID 123 and DONE status
+brequeue -J "myarray[1-10]" -d 123 
+
+Requeue jobs in EXIT state with job ID 123:
+brequeue -J "myarray[1-10]" -e 
+
+Requeue all jobs in a job array with job ID 123 regardless of their job state
+brequeue  -J myarray[1-10]" -a 123 
+
+Requeuing RUN jobs to PSUSP state
+brequeue -J "myarray[1-10]" -H 123 
+
+Requeue jobs with job ID 123 and RUN status.
+brequeue -J "myarray[1-10]" -r 123 
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 20:21:45 EST 2010] RUN A TEST LSF JOB>
+
+
+
+
+1. SET ENVIRONMENT VARIABLES
+
+export LSF_BINDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin
+export LSF_ENVDIR=/share/apps/lsf/conf
+export LSF_LIBDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib
+export LSF_SERVERDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/etc
+export XLSF_UIDDIR=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib/uid
+
+export LD_LIBRARY_PATH=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/lib:$LD_LIBRARY_PATH
+export MANPATH=/share/apps/lsf/7.0/man:$MANPATH
+export PATH=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/etc:/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin:$PATH
+
+
+2. CREATE DATA DIRECTORY
+
+/nethome/syoung/base/pipeline/lsf
+
+
+3. CREATE TEST SCRIPT
+
+mkdir /nethome/syoung/base/pipeline/lsf/test
+cd /nethome/syoung/base/pipeline/lsf/test
+
+rm -fr test.x
+emacs test.x
+#!/usr/bin/perl -w
+
+use strict;
+
+my $a = $ARGV[0];
+my $b = $ARGV[1];
+my $c = $ARGV[2];
+
+
+print "A: $a\n";
+print "B: $b\n";
+print "C: $c\n";
+
+print "Sleeping 10 seconds\n";
+sleep(10);
+print "Completed $0\n";
+exit;
+
+
+
+chmod 755 test.x
+
+
+
+4. CREATE SHELL SCRIPT
+
+
+/nethome/syoung/base/pipeline/lsf/test/test.sh
+
+
+rm -fr test.sh
+emacs test.sh
+
+#!/bin/sh
+#BSUB -J test1 
+#BSUB -o %J.out   
+#BSUB -e %J.err  
+#BSUB -W 1:00   
+#BSUB -q priority
+#BSUB -n 1      
+#BSUB -B       
+#BSUB -N      
+#
+
+echo "Running serial executable on 1 cpu of one node"
+
+# Run serial executable on 1 cpu of one node
+cd /nethome/syoung/base/pipeline/lsf/test
+
+/usr/bin/perl /nethome/syoung/base/pipeline/lsf/test.x a b c > /nethome/syoung/base/pipeline/lsf/out.txt
+
+exit;
+
+chmod 755 test.sh
+
+
+
+
+5. SUBMIT SHELL SCRIPT
+
+bsub < test.sh
+bpeek 
+
+bjobs 	Displays running and pending jobs in the queue.
+
+bhist 	Displays historical information about your finished jobs.
+
+bkill 	Removes/cancels a job or jobs from the class.
+
+
+bhosts 	Shows the load on each node.
+
+    n0137              ok              -      8      0      0      0      0      0
+    n0138              ok              -      8      0      0      0      0      0
+    n0139              ok              -      8      0      0      0      0      0
+    n0140              ok              -      8      0      0      0      0      0
+
+
+bqueues 	Shows the current configuration of queues.
+
+    [syoung@m1 test]$ bqueues
+    QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+    owners           43  Open:Active       -    -    -    -     0     0     0     0
+    priority         43  Open:Active       -    -    -    -     0     0     0     0
+    night            40  Open:Active       -    -    -    -     0     0     0     0
+    chkpnt_rerun_qu  40  Open:Active       -    -    -    -     0     0     0     0
+    short            35  Open:Active       -    -    -    -     0     0     0     0
+    license          33  Open:Active       -    -    -    -     0     0     0     0
+    normal           30  Open:Active       -    -    -    -     0     0     0     0
+    idle             20  Open:Active       -    -    -    -     0     0     0     0
+
+
+bpeek 	Displays stderr and stdout from your unfinished job.
+
+
+
+JOBS QUEUE, RUN AND FINISH BUT LEAVE NO OUTPUT.
+
+
+
+[syoung@m1 test]$ bsub < test.sh
+
+    Job <4461> is submitted to queue <priority>.
+
+[syoung@m1 test]$ bjobs
+
+    JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+    4461    syoung  PEND  priority   m1                      test1      Mar  2 20:51
+
+[syoung@m1 test]$ bqueues
+    QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+    owners           43  Open:Active       -    -    -    -     0     0     0     0
+    priority         43  Open:Active       -    -    -    -     1     0     1     0
+    night            40  Open:Active       -    -    -    -     0     0     0     0
+    chkpnt_rerun_qu  40  Open:Active       -    -    -    -     0     0     0     0
+    short            35  Open:Active       -    -    -    -     0     0     0     0
+    license          33  Open:Active       -    -    -    -     0     0     0     0
+    normal           30  Open:Active       -    -    -    -     0     0     0     0
+    idle             20  Open:Active       -    -    -    -     0     0     0     0
+
+
+[syoung@m1 test]$ bhosts
+    HOST_NAME          STATUS       JL/U    MAX  NJOBS    RUN  SSUSP  USUSP    RSV 
+    m1                 closed          -      4      0      0      0      0      0
+    n0001              ok              -      8      0      0      0      0      0
+    n0002              ok              -      8      0      0      0      0      0
+    ...
+    n0137              ok              -      8      0      0      0      0      0
+    n0138              ok              -      8      0      0      0      0      0
+    n0139              ok              -      8      0      0      0      0      0
+    n0140              ok              -      8      0      0      0      0      0
+
+
+[syoung@m1 test]$ bjobs
+
+    No unfinished job found
+
+
+[syoung@m1 test]$ ll
+
+    drwxr-xr-x 2 syoung root  33 Mar  2 20:47 .
+    drwxr-xr-x 3 syoung root  14 Mar  2 20:24 ..
+    -rw-r--r-- 1 syoung root 348 Mar  2 20:47 test.sh
+    -rw-r--r-- 1 syoung root 212 Mar  2 20:32 test.x
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 20:20:45 EST 2010] LSF ENVIRONMENT VARIABLES ARE HERE>
+
+
+
+cd /share/apps/modules/Modules/3.2.7/modulefiles
+
+cat lsf
+    
+    #%Module1.0#####################################################################
+    ##
+    ## modules modulefile
+    ##
+    ## modulefiles/modules.  Generated from modules.in by configure.
+    ##
+    proc ModulesHelp { } {
+            global version
+    
+            puts stderr "LSF Job Scheduler"
+            puts stderr "\nVersion $version\n"
+    }
+    
+    module-whatis   "LSF Job Scheduler"
+    
+    # for Tcl script use only
+    set     version         7.0
+    set     install         /share/apps/lsf
+    
+    setenv          LSF_BINDIR      $install/$version/linux2.6-glibc2.3-x86_64/bin
+    setenv          LSF_ENVDIR      $install/conf
+    setenv          LSF_LIBDIR      $install/$version/linux2.6-glibc2.3-x86_64/lib
+    setenv          LSF_SERVERDIR   $install/$version/linux2.6-glibc2.3-x86_64/etc
+    setenv          XLSF_UIDDIR     $install/$version/linux2.6-glibc2.3-x86_64/lib/uid
+    
+    prepend-path    LD_LIBRARY_PATH $install/$version/linux2.6-glibc2.3-x86_64/lib
+    prepend-path    MANPATH         $install/$version/man
+    prepend-path    PATH            $install/$version/linux2.6-glibc2.3-x86_64/etc:$install/$version\
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 16:20:45 EST 2010] ADD PATH TO LSF BINARIES TO $PATH IN .bash_profile>
+
+
+
+
+emacs ~/.bash_profile
+export PATH=/share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin:/share/apps/lsf/conf:$PATH
+
+
+export LSF_LICENSE_FILE=/share/apps/lsf/conf/lsf.conf
+
+</entry>
+
+
+
+<entry [Tue Mar  2 16:17:45 EST 2010] LSF SUBMISSION INSTRUCTIONS AT CCS WEBSITE>
+
+
+
+http://www.ccs.miami.edu/hpc/pegasus_jobs.html
+
+Running Production Jobs
+
+Overview of the LSF Batch System
+
+All production jobs on the pegasus cluster is run using the LSF batch system. Generally, each user is allowed to submit a maximum number of 2 jobs to LSF. If you need to have your job limit increased, please contact us. You can run interactive jobs (LSF queue "ldebug") to debug your progrm before submitting it to the cluster. After you have tested your jobs, you can run batch jobs for production. Unlike interactive jobs, batch jobs are controlled via scripts. These scripts tell the system which resources a job will require and how long they will be needed. Then the requests are submitted to the LSF queue manager to be processed. This table lists all the queues available in Pegasus.
+
+Table 9: Common LSF commands and description
+Command 	Purpose
+bsub < ScriptFile 	Submits a job via script file to LSF to be run. NOTE: the redirection symbol, "<", is a must when submitting the job
+bjobs 	Displays running and pending jobs in the queue.
+bhist 	Displays historical information about your finished jobs.
+bkill 	Removes/cancels a job or jobs from the class.
+bqueues 	Shows the current configuration of queues.
+bhosts 	Shows the load on each node.
+bpeek 	Displays stderr and stdout from your unfinished job.
+
+
+Example Usage:
+
+The command bsub < ScriptFile will submit the given script for processing. You must write a script containing the information LSF needs to allocate the resources your job requires, to handle standard I/O streams, and to run the job. Please see the example scripts below. On submission, LSF will return the job id.
+
+[user@kronos]:>bsub < test.job
+Job <4225> is submitted to default queue .
+
+The commands bjobs will show all jobs currently running or queued on the system.
+
+[user@m1 roms]$ bjobs
+JOBID  USER   STAT  QUEUE    FROM_HOST  EXEC_HOST   JOB_NAME  SUBMIT_TIME
+4225   user   RUN   normal   m1         8*n0060     testjob   Mar  2 11:53
+                                        8*n0061
+                                        8*n0063
+                                        8*n0064
+
+
+For details about your particular job, issue the command bjobs -l JobID where JobID is obtained from the "JOBID" field of the above bjobs output. The command bkill JobID will remove the job from the quue and terminate the job if it is running.
+
+[xwu@m1 roms]$ bkill 4225
+Job <4225> is being terminated
+
+An example script for a serial Job
+
+#!/bin/bash
+#BSUB -J serialjob 
+#BSUB -o %J.out   
+#BSUB -e %J.err  
+#BSUB -W 1:00   
+#BSUB -q normal 
+#BSUB -n 1      
+#BSUB -B       
+#BSUB -N      
+#
+# Run serial executable on 1 cpu of one node
+cd ${HOME}/path/to/current/directory
+./test.x a b c
+
+Here is a detailed line-by-line breakdown of the keywords and their assigned values listed in this script:
+
+#!/bin/bash
+
+Specifies the shell to be used when executing the command portion of the script. The default is Bash shell.
+
+BSUB -J serialjob
+
+assigns a name to job. The name of the job will show in the bjobs output.
+
+#BSUB -o %J.out
+
+redirect std output to a specified file. In this example, %J is the JobID.
+
+#BSUB -e %J.err
+
+redirect std error to a specified file
+
+#BSUB -W 1:00
+
+set wallclock time limit of 1 hour
+
+#BSUB -q normal
+
+specify queue to be used
+
+#BSUB -n 1
+
+specify number of processors. For serial job, it would be 1.
+
+#BSUB -B
+
+Send email at job start
+
+#BSUB -N
+
+Send email at job end
+
+LSF stops reading directives at the first executable (i.e. non-blank, and doesn't begin with #) line. The last two lines simply say to change to the current directory, and then run the executable "test.x" with arguments "a b c".
+
+An example script for an MPI Job
+
+#!/bin/bash
+#BSUB -J mpijob          
+#BSUB -o %J.out         
+#BSUB -e %J.err        
+#BSUB -a openmpi          
+#BSUB -W 1:30   
+#BSUB -q normal
+#BSUB -n 32   
+#BSUB -R "span[ptile=8]" 
+#
+# Run an MPI job with the "mpirun.lsf" MPI job starter.
+mpirun.lsf ./test.x mpi.in
+
+Here is a line-by-line breakdown of the keywords and their assigned values listed in this script:
+
+#!/bin/bash
+
+Specifies the shell to be used when executing the command portion of the script. The default is Bash shell.
+
+BSUB -J mpijob
+
+assigns a name to job. The name of the job will show in the bjobs output.
+
+#BSUB -o %J.out
+
+redirect std output to a specified file. In this example, %J is the JobID.
+
+#BSUB -e %J.err
+
+redirect std error to a specified file
+
+#BSUB -a openmpi
+
+specify serial/parallel job options
+
+#BSUB -W 1:30
+
+set wallclock time limit of 1 hour and 30 mins.
+
+#BSUB -q normal
+
+specify queue to be used for the job
+
+#BSUB -n 32
+
+specify number of processors. For MPI jobs, it is the total number of processes initialized.
+
+#BSUB -R "span[ptile=8]"
+
+specify MPI resource requirementsr. For MPI jobs, is tells the number of processors used in each node.
+
+LSF stops reading directives at the first executable (i.e. non-blank, and doesn't begin with #) line. The last line simply says to run the executable "test.x" under the current directory with input file "mpi.in".
+
+An example script for an OpenMP Job
+
+#!/bin/csh
+#BSUB -J openmpjob       
+#BSUB -o %J.out         
+#BSUB -e %J.err        
+#BSUB -W 4:00         
+#BSUB -q normal      
+#BSUB -n 8          
+#BSUB -R "span[ptile=8]"
+#
+# Run the OpenMP job with OMP_NUM_THREADS specified
+export OMP_NUM_THREADS=8
+./test.x openmp.in
+
+Here is a line-by-line breakdown of the keywords and their assigned values listed in this script:
+
+#!/bin/bash
+
+Specifies the shell to be used when executing the command portion of the script. The default is Bash shell.
+
+BSUB -J openmpjob
+
+assigns a name to job. The name of the job will show in the bjobs output.
+
+#BSUB -o %J.out
+
+redirect std output to a specified file. In this example, %J is the JobID.
+
+#BSUB -e %J.err
+
+redirect std error to a specified file
+
+#BSUB -W 4:00
+
+set wallclock time limit of 4 hours
+
+#BSUB -q normal
+
+specify queue to be used for the job #BSUB -n 8
+
+specify number of processors. For openMP jobs, it could be the total number of threads.
+
+#BSUB -R "span[ptile=8]"
+
+specify openMP resource requirements per node.
+
+LSF stops reading directives at the first executable (i.e. non-blank, and doesn't begin with #) line. At the end of the LSF portion of the script, the environment variable OMP_NUM_THREADS is set to 8. This will result in the job running over 8 threads. The last line simply says to run the executable "test.x" under the current directory with input file "openmp.in".
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 12:46:23 EST 2010] MIHG EXECUTABLES HAVE ALSO BEEN COPIED OVER TO PEGASUS>
+
+
+
+
+[syoung@m1 ~]$ ls /mihg/analysis/
+bin               GAPipeline-1.5.1  nextgen        R2.7     software  tnsnames.ora
+bin1              java              Pipeline       sas      src
+GAPipeline-1.3.2  linkage           quantisnp_v11  scripts  src1
+GAPipeline-1.4.0  local.tar         R              share    src2
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 12:45:23 EST 2010] USE add.modules TO ADD LINES IN .bashrc (TO SPECIFY PATHS, ENV VARIABLES, ETC.)>
+
+
+
+
+[syoung@m1 ~]$ add.modules 
+
+/usr/local/bin/add.modules
+        adds a few lines to the beginning of your
+        /nethome/syoung/.cshrc, /nethome/syoung/.login,
+        /nethome/syoung/.profile, /nethome/syoung/.bashrc, and
+        possibly your /nethome/syoung/.kshenv (or whatever is
+        specified by the ENV environment variable).
+        Also your /nethome/syoung/.bash_profile will be processed.
+        The lines are prepended for sourcing the /share/apps/modules/global/csh.modules or
+        /share/apps/modules/global/profile.modules files or to define the module alias or function.
+        Why is it necessary?
+        To insure that you will have access to modules for all subshells,
+        these lines need to be added to some of your 'dot' files.
+
+        Your old .cshrc, .login, .profile, .bashrc and .kshenv will be
+        renamed to .login.old, .cshrc.old, .profile.old, .bashrc.old and
+        .kshenv.old respectively.  So if you have any problems you will
+        can easily restore them.
+
+        This is version $Id: add.modules.in,v 1.2.20.1 2008/02/12 00:06:12 rkowen Exp $ .
+
+Continue on (type n for no - default=yes)?\c
+
+
+Processing your .bash_profile (your old one is .bash_profile.old)
+Cleaning .bash_profile
+Adding sourcing lines at beginning of .bash_profile
+You had no .profile as I see it.  Copying /etc/skel/.profile for you.
+/bin/cp: cannot stat `/etc/skel/.profile': No such file or directory
+
+Processing your .bashrc (your old one is .bashrc.old)
+Cleaning .bashrc
+Adding alias or function lines at beginning of .bashrc
+You had no .kshenv as I see it.  Copying /etc/skel/.kshenv for you.
+/bin/cp: cannot stat `/etc/skel/.kshenv': No such file or directory
+You had no .login as I see it.  Copying /etc/skel/.login for you.
+/bin/cp: cannot stat `/etc/skel/.login': No such file or directory
+You had no .cshrc as I see it.  Copying /etc/skel/.cshrc for you.
+/bin/cp: cannot stat `/etc/skel/.cshrc': No such file or directory
+[syoung@m1 ~]$ vi .bash_profile
+if [ -f /share/apps/modules/global/profile.modules ]
+then
+        . /share/apps/modules/global/profile.modules
+# put your own module loads here
+        module load null
+fi
+# .bash_profile
+# User specific aliases and functions
+
+# ADD bioinfo TOOLS TO PATH
+export PATH=/home/bioinfo/apps/ngs/bin:$PATH
+export PATH=/home/bioinfo/apps/ngs/bin/utils:$PATH
+export PATH=/home/bioinfo/apps/ngs/bin/exome:$PATH
+export PATH=/home/bioinfo/apps/ngs/bin/nextgen:$PATH
+
+#alias 'qstat=~/qstat'
+
+# DATE
+alias DATE='date'
+
+# ADD ALTA-CYCLIC PERL MODS TO PATH
+#export PATH=/home/apps/alta-cyclic/0.1.0/perlexternal:$PATH
+#export PATH=/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto:$PATH
+
+# ADD blat TO PATH
+export PATH=/home/apps/alta-cyclic/0.1.0/blat/bin/i386:$PATH
+
+# ADD libsvm TO PATH
+export PATH=/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:$PATH
+
+#export LD_LIBRARY_PATH=/home/apps/alta-cyclic/0.1.0/gsl/lib:$LD_LIBRARY_PATH
+#export PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8:$PERL5LIB
+#export PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/:$PERL5LIB
+
+
+[root@m1 syoung]# ls /share/apps/lsf/7.0/linux2.6-glibc2.3-x86_64/bin
+augmentstarter  brequeue           lseligible             pam
+bacct           bresize            lsfrestart             pipeclient
+badmin          bresources         lsfshutdown            pjllib.sh
+bapp            brestart           lsfstartup             preservestarter
+batch-acct      bresume            lsgrun                 pvmjob
+bbot            brlainfo           lshosts                qdel
+bchkpnt         brsvadd            lsid                   qjlist
+bclusters       brsvdel            lsinfo                 qlimit
+bgadd           brsvmod            lsload                 qmapmgr
+bgdel           brsvs              lsloadadj              qmgr
+bgmod           brun               lslockhost             qps
+bhist           bsla               lslogin                qrestart
+bhosts          bslots             lsltasks               qrun
+bhpart          bstatus            lsmake                 qsa
+bjdepinfo       bstop              lsmakerm               qsnapshot
+bjgroup         bsub               lsmon                  qstat
+bjobs           bswitch            lsplace                qsub
+bkill           btop               lsrcp                  qwatch
+blaunch         bugroup            lsreconfig             sca_mpimon_wrapper
+blimits         busers             lsrtasks               TaskStarter
+bmgroup         ch                 lsrun                  tspeek
+bmig            clnqs              lsrun.sh               tssub
+bmod            dnssec-keygen      lstcsh                 user_post_exec_prog
+bmodify         egoconfig          lsunlockhost           user_pre_exec_prog
+bparams         egosh              mpdstartup             xagent
+bpeek           gmmpirun_wrapper   mpich2_wrapper         xbmod
+bpost           intelmpi_wrapper   mpich_mx_wrapper       xbmodify
+bqc             lammpirun_wrapper  mpichp4_wrapper        xbsub
+bqueues         lsacct             mpichsharemem_wrapper  xlsbatch
+bread           lsacctmrg          mpirun.lsf             xlsf
+breboot         lsadmin            mvapich_wrapper        xlsmon
+breconfig       lsclusters         openmpi_wrapper        zapit
+
+
+
+[warner@kronos ~]$ more .bashrc
+case "$0" in
+          -sh|sh|*/sh)  modules_shell=sh ;;
+       -ksh|ksh|*/ksh)  modules_shell=ksh ;;
+       -zsh|zsh|*/zsh)  modules_shell=zsh ;;
+    -bash|bash|*/bash)  modules_shell=bash ;;
+esac
+module() { eval `/nethome/apps//Modules/$MODULE_VERSION/bin/modulecmd $modules_sh
+ell $*`; }
+#module() { eval `/bin/modulecmd $modules_shell $*`; }
+#module() { eval `/bin/modulecmd $modules_shell $*`; }
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+# User specific aliases and functions
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 12:44:23 EST 2010] LSF commands>
+
+
+
+These are the most important LSF user commands :
+
+bsub
+Submit a batch job to the LSF system
+bkill
+Kill a running job
+bjobs
+See the status of jobs in the LSF queue
+bpeek
+Access the output and error files of a job
+bhist
+History of one or more LSF jobs
+bqueues
+Information about LSF batch queues
+
+
+To submit a job : bsub < jobfile. By default, the job output is sent by mail.
+
+
+Defining the LSF job parameters
+===============================
+
+The job parameters define the status of the job. Job parameters are recognized because they have to be written in the following way:
+
+#BSUB-option value
+
+as in
+
+#BSUB-c 100
+
+which means a per process timelimit of 100 CPU minutes.
+
+The options are the same that can be specified as arguments to the bsub command. Here are a few examples of frequently used options (also see the machine specific limits):
+
+#BSUB-q SMP1
+Job queue; See the list of available queues
+#BSUB-c 100
+Time limit for the job (specified in [hour:]minutes)
+#BSUB-F 100
+File Size Limit for each process within the batch job (in Kbytes)
+#BSUB-M 64000
+Memory Size Limit for the whole job (in Kbytes)
+#BSUB-S 128000
+Stack segment size limit for each process in the batch job (in Kbytes)
+#BSUB-D 64000
+Data segment size limit for each process within the batch job (in Kbytes)
+#BSUB-o filename
+redirect stdout to the file filename
+Add this option or the output of the job will be sent to you by email
+#BSUB-e filename
+redirect stderr to the file filename
+#BSUB-J jobname
+name of the job
+You can find explanations of these and other job parameters in the bsub man-page. If you do not specify any limits, the queue's limits in which the job is submitted will be applicable.
+
+Note that if you do not specify any of the above limits in your batch job, the maximum limit of the specified queue will be used.
+
+LSF Limits at the Computing Centre
+
+HYDRA
+Following the job progress
+
+With the command bjobs, you can examine the progress of all batch jobs. It is most frequently invoked as
+
+bjobs -u all
+With the command bpeek, you can inspect the outputfile of a specific batch job.
+
+Examples of LSF jobs
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 12:43:23 EST 2010] COPIED /nethome/bioinfo TO PEGAGUS FROM KRONOS>
+
+
+
+OK
+
+

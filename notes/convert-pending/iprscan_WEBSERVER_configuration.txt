@@ -1,0 +1,64 @@
+INTERPROSCAN WEB SERVER CONFIGURATION
+=====================================
+
+! InterProScan can be launched through a web interface. It can also be launched through secure HTTP (https)
+!
+    Do you want to run InterProScan using a web interface? [n] /y|n/? : y
+    Do you want to run InterProScan through a secure HTTP server? [n] /y|n/? : n
+    Enter the name of your server. You can specify a specific port to listen to. (e.g. "foo.bar.com:4000") [foobar.com] /[\w\.\_\-\:\d]+/? : dlc-genomics.rsmas.miami.edu
+!
+! Please add the following lines to your web server configuration (httpd.conf):
+#--------------------------------------
+ Alias /doc/ "/Users/young/FUNNY    BASE/bin/iprscan/doc/html/"
+ Alias /images/ "/Users/young/FUNNYBASE/bin/iprscan/images/"
+ Alias /tmp/ "/Users/young/FUNNYBASE/bin/iprscan/tmp/"
+
+ ScriptAlias /iprscan/ "/Users/young/FUNNYBASE/bin/iprscan/bin/"
+
+ <Directory "/Users/young/FUNNYBASE/bin/iprscan/images">
+   Options Indexes MultiViews
+   AllowOverride None
+   Order allow,deny
+   Allow from all
+ </Directory>
+
+ <Directory "/Users/young/FUNNYBASE/bin/iprscan/tmp/">
+   Options FollowSymLinks Includes SymLinksIfOwnerMatch
+    IndexIgnore */.??* *~ *# */HEADER* */README* */RCS
+    AllowOverride AuthConfig Limit FileInfo
+
+    Order deny,allow
+    Deny from all
+    Allow from .rsmas.miami.edu
+ </Directory>
+#--------------------------------------
+
+
+! Be sure that 'apache' or 'httpd' virtual user (uid/gid) have right to read/write into your /Users/young/FUNNYBASE/bin/iprscan iprscan directory.
+
+sudo niutil -appendprop / /groups/young users httpd
+
+
+! Otherwise, if you are running a standalone http(s) web server, be sure also the user running it have to enough
+! rights to read/wrtie /Users/young/FUNNYBASE/bin/iprscan iprscan directory
+! If you encoutered problem with your web server running iprscan, read the FAQ or contact your system administrator.
+
+RESTART THE WEB SERVER:
+
+sudo apachectl graceful
+
+! After restarting your web server try:
+
+http://dlc-genomics.rsmas.miami.edu/iprscan/iprscan
+
+
+RESET PERMISSIONS TO 777:
+
+sudo chmod -R 777 iprscan
+
+THEN RAN UPDATEDB:
+
+sudo /usr/libexec/locate.updatedb   
+
+
+

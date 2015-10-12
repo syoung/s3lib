@@ -1,0 +1,336 @@
+$VAR1 = {
+          'workflow' => 'Workflow3-indels',
+          'sessionId' => '1228791394.7868.158',
+          'mode' => 'saveWorkflow',
+          'project' => 'Project1',
+          'applications' => '[
+	{
+		"name": "image2eland.pl", 
+		"location": "bin/image2eland.pl", 
+		"description": "Process images into base calls with Bustard and align reads against reference sequence with Eland", 
+		"executor": "wperl", 
+		"inputs": {
+			"type": {
+				"type": "parameter", 
+				"value": "single", 
+				"args": [
+					"arguments.type.value"
+				]
+			}, 
+			"rundir": {
+				"type": "directory", 
+				"value": "Project1/Workflow3-indels", 
+				"args": [
+					"arguments.rundir.value"
+				]
+			}, 
+			"geraldfile": {
+				"type": "parameter", 
+				"value": "/run2lane6-test/geraldfile.txt", 
+				"args": [
+					"arguments.geraldfile.value"
+				]
+			}, 
+			"referencefile": {
+				"type": "file", 
+				"format": "fasta", 
+				"value": "/Project1/Workflow3-indels/CCDS_nucleotide.20080430.fa", 
+				"args": [
+					"arguments.referencefile.value"
+				]
+			}, 
+			"outputdir": {
+				"type": "directory", 
+				"value": "Project1/Workflow3-indels", 
+				"args": [
+					"arguments.outputdir.value"
+				]
+			}, 
+			"readlength": {
+				"type": "parameter", 
+				"value": "30", 
+				"args": [
+					"arguments.readlength.value"
+				]
+			}, 
+			"tiles": {
+				"type": "parameter", 
+				"args": [
+					"arguments.tiles.value"
+				]
+			}
+		}, 
+		"arguments": {
+			"type": {
+				"option": "--type", 
+				"value": "single", 
+				"type": "parameter", 
+				"description": "Either single or paired reads", 
+				"required": true, 
+				"args": [
+					"inputs.type.value"
+				]
+			}, 
+			"rundir": {
+				"option": "--rundir", 
+				"value": "Project1/Workflow3-indels", 
+				"type": "file", 
+				"format": "eland-sorted", 
+				"description": "", 
+				"required": true, 
+				"args": [
+					"inputs.rundir.value"
+				]
+			}, 
+			"geraldfile": {
+				"option": "--geraldfile", 
+				"value": "/run2lane6-test/geraldfile.txt", 
+				"type": "file", 
+				"format": "gerald", 
+				"description": "/full/path/to/eland_sorted.txt (output from Eland alignment)", 
+				"required": true, 
+				"args": [
+					"inputs.geraldfile.value"
+				]
+			}, 
+			"outputdir": {
+				"option": "--outputdir", 
+				"value": "Project1/Workflow3-indels", 
+				"type": "directory", 
+				"format": "eland-sorted", 
+				"description": "/full/path/to/eland_sorted.txt (output from Eland alignment)", 
+				"required": true, 
+				"args": [
+					"inputs.outputdir.value"
+				]
+			}, 
+			"referencefile": {
+				"option": "--referencefile", 
+				"value": "/Project1/Workflow3-indels/CCDS_nucleotide.20080430.fa", 
+				"type": "file", 
+				"format": "fasta", 
+				"description": "/full/path/to/reference fasta file", 
+				"required": true, 
+				"args": [
+					"inputs.referencefile.value"
+				]
+			}, 
+			"readlength": {
+				"option": "--readlength", 
+				"type": "parameter", 
+				"value": "30", 
+				"format": "", 
+				"description": "Run Eland with \\"--readlength\\" option (Boolean)", 
+				"required": false, 
+				"args": [
+					"inputs.readlength.value"
+				]
+			}, 
+			"tiles": {
+				"option": "--tiles", 
+				"type": "parameter", 
+				"value": "s_6_150", 
+				"format": "", 
+				"description": "Process images for these tiles only", 
+				"required": false, 
+				"args": [
+					"inputs.tiles.value"
+				]
+			}
+		}, 
+		"outputs": {
+			"geraldfile": {
+				"type": "file", 
+				"format": "text", 
+				"args": [
+					"arguments.geraldfile.value"
+				], 
+				"value": "/run2lane6-test/geraldfile.txt"
+			}, 
+			"sequencefile": {
+				"type": "file", 
+				"format": "sequence", 
+				"args": [
+					"arguments.tiles.value", 
+					"arguments.outputdir.value"
+				], 
+				"params": "tiles, outputdir", 
+				"function": "var tilesArray = tiles.split(\\",\\"); var sequenceFiles = new Array; var sequenceFiles = \\"\\"; for ( var i = 0; i < tilesArray.length; i++ ) {   sequenceFile = tilesArray[i] + \\"_sequence.txt\\"; sequenceFiles += outputdir + \\"/\\" + sequenceFile + \\",\\"; } sequenceFiles = sequenceFiles.replace(/,$/, \\"\\"); return sequenceFiles;", 
+				"value": "Project1/Workflow3-indels/s_6_150_sequence.txt"
+			}, 
+			"sortedfile": {
+				"type": "file", 
+				"format": "sorted", 
+				"args": [
+					"arguments.tiles.value", 
+					"arguments.outputdir.value"
+				], 
+				"params": "tiles, outputdir", 
+				"function": "var tilesArray = tiles.split(\\",\\"); var sortedFiles = new Array; var sortedFiles = \\"\\"; for ( var i = 0; i < tilesArray.length; i++ ) {   sortedFile = tilesArray[i] + \\"_sorted.txt\\"; sortedFiles += outputdir + \\"/\\" + sortedFile + \\",\\"; } sortedFiles = sortedFiles.replace(/,$/, \\"\\"); return sortedFiles;", 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.txt"
+			}, 
+			"make-error": {
+				"type": "file", 
+				"format": "error", 
+				"args": [
+					"arguments.outputdir.value"
+				], 
+				"params": "outputdir", 
+				"function": "var file = outputdir + \\"/make.error\\"; return file;", 
+				"value": "Project1/Workflow3-indels/make.error"
+			}, 
+			"make-out": {
+				"type": "file", 
+				"format": "error", 
+				"args": [
+					"arguments.outputdir.value"
+				], 
+				"params": "outputdir", 
+				"function": "var file = outputdir + \\"/make.out\\"; return file;", 
+				"value": "Project1/Workflow3-indels/make.out"
+			}, 
+			"makefile-error": {
+				"type": "file", 
+				"format": "error", 
+				"args": [
+					"arguments.outputdir.value"
+				], 
+				"params": "outputdir", 
+				"function": "var file = outputdir + \\"/makefile.error\\"; return file;", 
+				"value": "Project1/Workflow3-indels/makefile.error"
+			}, 
+			"makefile-out": {
+				"type": "file", 
+				"format": "error", 
+				"args": [
+					"arguments.outputdir.value"
+				], 
+				"params": "outputdir", 
+				"function": "var file = outputdir + \\"/makefile.out\\"; return file;", 
+				"value": "Project1/Workflow3-indels/makefile.out"
+			}
+		}, 
+		"project": "Project1", 
+		"workflow": "Workflow3-indels"
+	}, 
+	{
+		"name": "eland2ace.pl", 
+		"location": "bin/eland2ace.pl", 
+		"description": "Convert Eland output \'sorted.txt\' file into an .ace file", 
+		"executor": "wperl", 
+		"inputs": {
+			"sortedfile": {
+				"format": "sorted", 
+				"type": "file", 
+				"args": [
+					"outputs.sortedfile.value"
+				], 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.txt"
+			}, 
+			"referencefile": {
+				"type": "file", 
+				"format": "fasta", 
+				"args": [
+					"inputs.referencefile.value"
+				], 
+				"value": "/Project1/Workflow3-indels/CCDS_nucleotide.20080430.fa"
+			}
+		}, 
+		"arguments": {
+			"inputfile": {
+				"option": "--inputfile", 
+				"type": "file", 
+				"format": "eland-sorted", 
+				"description": "/full/path/to/eland_sorted.txt (output from Eland alignment)", 
+				"required": true, 
+				"args": [
+					"inputs.sortedfile.value"
+				], 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.txt"
+			}, 
+			"referencefile": {
+				"option": "--referencefile", 
+				"type": "directory", 
+				"format": "fasta", 
+				"description": "/full/path/to/directory/containing/reference_sequences.2bpb, .idx and .vld files", 
+				"required": true, 
+				"args": [
+					"inputs.referencefile.value"
+				], 
+				"value": "/Project1/Workflow3-indels/CCDS_nucleotide.20080430.fa"
+			}
+		}, 
+		"outputs": {
+			"acefile": {
+				"format": "ace", 
+				"type": "file", 
+				"args": [
+					"arguments.inputfile.value"
+				], 
+				"params": "inputfile", 
+				"function": "var acefile = inputfile; acefile = acefile.replace(/\\\\.txt/, \\".ace\\"); return acefile;", 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.ace"
+			}
+		}, 
+		"project": "Project1", 
+		"workflow": "Workflow3-indels"
+	}, 
+	{
+		"name": "splitace.pl", 
+		"location": "bin/splitace.pl", 
+		"description": "Convert .ace file into multiple ace files", 
+		"executor": "wperl", 
+		"inputs": {
+			"acefile": {
+				"format": "ace", 
+				"type": "file", 
+				"args": [
+					"outputs.acefile.value"
+				], 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.ace"
+			}
+		}, 
+		"outputs": {
+			"acefiles": {
+				"format": "ace", 
+				"type": "file", 
+				"args": [
+					"arguments.inputfile.value"
+				], 
+				"params": "inputfile", 
+				"function": "var acefile = inputfile; acefile = acefile.replace(/\\\\.ace/, \\".*.ace\\"); return acefile;", 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.*.ace"
+			}
+		}, 
+		"arguments": {
+			"inputfile": {
+				"option": "-i", 
+				"value": "Project1/Workflow3-indels/s_6_150_sorted.ace", 
+				"type": "file", 
+				"format": "ace", 
+				"description": "/full/path/to/input_file", 
+				"required": true, 
+				"args": [
+					"inputs.acefile.value"
+				]
+			}, 
+			"outputdir": {
+				"option": "-o", 
+				"value": "Project1/Workflow3-indels", 
+				"type": "directory", 
+				"format": "inputfile", 
+				"description": "/full/path/to/directory/containing/reference_sequences.2bpb, .idx and .vld files", 
+				"required": false, 
+				"args": [
+					"inputs.acefile.value"
+				], 
+				"params": "acefile", 
+				"function": "var outputdir = acefile; outputdir = outputdir.replace(/\\\\\\\\/[^\\\\/]+$/, \\"\\"); return outputdir;"
+			}
+		}, 
+		"project": "Project1", 
+		"workflow": "Workflow3-indels"
+	}
+]',
+          'username' => 'syoung'
+        };

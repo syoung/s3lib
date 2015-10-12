@@ -1,0 +1,318 @@
+Notes-database-karenia6
+
+</entry>
+
+
+
+<entry [Thu Jul  5 22:28:22 EDT 2007] SUBJECT: SKarenia6 - RESEQUENCED READS FROM karenia5>
+
+
+
+MSG: Tim
+CC: Doug, Jeff
+
+Hi Tim,
+
+I've finished processing the resequences you gave me. Here are the results and
+brief notes on the processing stages.
+
+GOT 192 READ FILES FROM THESE DIRECTORIES:
+
+/Users/mclean/531-007-070407
+/Users/mclean/531-008-070407
+
+PROCESSED 178 READS FROM EXPERIMENT 531 (PLATES 7 AND 8) AND ADDED TO THE
+reads TABLE:
+
+	select count(*) from reads where length(filteredsequence) > 75;
+	+----------+
+	| count(*) |
+	+----------+
+	|       19 |
+	+----------+
+	1 row in set (0.00 sec)
+	
+	mysql> select count(*) from reads where length(filteredsequence) > 50;
+	+----------+
+	| count(*) |
+	+----------+
+	|       20 |
+	+----------+
+
+	select count(*) from reads where length(filteredsequence) > 25;
+	+----------+
+	| count(*) |
+	+----------+
+	|      110 |
+	+----------+
+
+	BEFORE EXCISION OF 'XXXXXXXXXXX', 'AAAAAAAAAA', ETC.:
+	
+	select avg(length(screenedsequence)) from reads;
+	+-------------------------------+
+	| avg(length(screenedsequence)) |
+	+-------------------------------+
+	|                      573.7865 |
+	+-------------------------------+
+
+	AFTER EXCISION OF 'XXXXXXXXXXX', 'AAAAAAAAAA', ETC.:
+
+	select avg(length(filteredsequence)) from reads;
+	+-------------------------------+
+	| avg(length(filteredsequence)) |
+	+-------------------------------+
+	|                       68.2416 |
+	+-------------------------------+
+	1 row in set (0.01 sec)
+	
+
+MUCH OF THE REDUCTION IN SEQUENCE LENGTH IS DUE TO THE PRESENCE OF VECTOR:
+
+http://genomics.rsmas.miami.edu/sandbox18/sandbox18.html#search:simple_search?mode=simple_search&database=karenia6&search_menu=Read&all_words=531-007-A12
+	
+
+AFTER BLASTING karenia6 READS AGAINST karenia5 READS, THERE WERE ONLY 10 HITS:
+
+SELECT COUNT(*) FROM readsblast;
++----------+
+| COUNT(*) |
++----------+
+|       10 |
++----------+
+
+
+THE IDENTITY VALUES WERE HIGH THOUGH:
+
+select distinct experiment, plate, well, identity from readsblast;
++------------+-------+------+----------+
+| experiment | plate | well | identity |
++------------+-------+------+----------+
+|        531 |     7 | A10  |       90 |
+|        531 |     7 | B03  |       86 |
+|        531 |     7 | C08  |       89 |
+|        531 |     7 | F05  |       87 |
+|        531 |     7 | H05  |       94 |
+|        531 |     7 | H08  |       99 |
+|        531 |     8 | A08  |       88 |
+|        531 |     8 | B03  |       86 |
+|        531 |     8 | C02  |       91 |
+|        531 |     8 | E12  |       97 |
++------------+-------+------+----------+
+
+
+
+I could only find 531 plates 7 and 8 but the Excel file seems to contain
+plates 1 to 8:
+
+Exp	Plate	Well	to Plate	Well
+500	1	    A01	      1001	    A1
+...
+505	5	    F05	      1008	    H12
+						|
+                        |
+						|
+						+- JUST TO CONFIRM, DOES THIS MEAN: PLATE 8 OF EXP 531?
+
+Do you have the rest stored in another location? Let me know and I'll run the
+whole lot.
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Thu Jul  5 21:48:49 EDT 2007] DO karenia6 - SELECTED RESEQUENCES OF karenia5>
+
+
+
+1. COPY READS
+
+	COPIED CHROMATS AND .PHD FILES FROM PLATES 7 AND 8 OF EXPERIMENT 531
+	
+	cp /Users/mclean/531-007-070407/*.phd.1 /Users/young/FUNNYBASE/pipeline/karenia5reads/phd_dir/
+	cp /Users/mclean/531-007-070407/*.ab1 /Users/young/FUNNYBASE/pipeline/karenia5reads/chromat_dir/
+
+	cp /Users/mclean/531-008-070407/*.phd.1 /Users/young/FUNNYBASE/pipeline/karenia5reads/phd_dir/
+	cp /Users/mclean/531-008-070407/*.ab1 /Users/young/FUNNYBASE/pipeline/karenia5reads/chromat_dir/
+
+2. SCREEN READS
+
+sudo ./readsarrayvectorscreen.pl -d karenia6
+
+	Task file 1:    /common/pipeline/karenia6/collection/karenia6.screenreads.taskfile.1
+	Shell script printed:
+	
+	/common/pipeline/karenia6/collection/readsarrayscreen.karenia6.sh
+	
+	qsub command: qsub -sync y -t 1-1 /common/pipeline/karenia6/collection/readsarrayscreen.karenia6.sh
+	Completed qsub.
+	Job ID: Your job-array 897130.1-1:1 ("readsarrayscreen.karenia6.sh") has been submitted
+	Job 897130 exited with exit code 0.
+	
+	Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+	
+	Expt: 531
+	TSV file: /common/pipeline/karenia6/collection/karenia6.screenreads.out.1.tsv
+	
+	RUN TIME: 00:00:26
+	Completed ./readsarrayvectorscreen.pl
+	9:47PM, 5 July 2007
+	****************************************
+	
+4. LOAD SCREENED READS INTO screenedreads TABLE
+
+./arrayreadsloadscreenedreads.pl -d karenia6
+
+	select count(*) from screenedreads;
+	+----------+
+	| count(*) |
+	+----------+
+	|      178 |
+	+----------+
+	
+5. FILTER SCREENED READS AND LOAD INTO reads TABLE:
+
+./reads.pl -d karenia6
+
+	Database: karenia6
+	Creating database 'karenia6' if not exists... done.
+	Creating table 'reads'... done.
+	No. experiments: 1
+	531 
+	Experiment: 531
+	No. reads: 178
+	0
+	10
+	20
+	30
+	40
+	50
+	60
+	70
+	80
+	90
+	100
+	110
+	120
+	130
+	140
+	150
+	160
+	170
+	Output .tsv file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia6/collection/karenia6.exp531.reads.tsv
+	
+	Deleting from table 'reads'... done.
+	Loading data from experiment '531' into table 'reads'... done.
+	
+	RUN TIME: 00:00:00
+	Completed ./reads.pl
+	10:17PM, 5 July 2007
+	****************************************
+
+
+	select count(*) from reads where length(filteredsequence) > 75;
+	+----------+
+	| count(*) |
+	+----------+
+	|       19 |
+	+----------+
+	1 row in set (0.00 sec)
+	
+	mysql> select count(*) from reads where length(filteredsequence) > 50;
+	+----------+
+	| count(*) |
+	+----------+
+	|       20 |
+	+----------+
+
+	select count(*) from reads where length(filteredsequence) > 25;
+	+----------+
+	| count(*) |
+	+----------+
+	|      110 |
+	+----------+
+	
+
+
+6. CREATE READS.FASTA FILE:
+
+
+./readsfasta.pl -d karenia6
+
+	Experiment: 531
+	No. reads: 178
+	0
+	100
+	Fasta file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia6/edit_dir/karenia6.fasta
+	
+	Qual file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/karenia6/edit_dir/karenia6.fasta.qual
+	
+	
+	RUN TIME: 00:00:00
+	Completed ./readsfasta.pl
+	10:22PM, 5 July 2007
+	****************************************
+	
+7. BLAST karenia6 READS AGAINST karenia5 READS
+
+sudo ./readsarrayblast.pl -d karenia6 -t karenia5
+
+	
+	Merging output files into single outputfile: /common/pipeline/karenia6/blast/karenia6-karenia5.blast.tsv... done.
+	Cleaning up... done.
+	Output file printed:
+	
+	/common/pipeline/karenia6/blast/karenia6-karenia5.blast.tsv
+	
+	
+	Run time: 00:00:19
+	Completed ./readsarrayblast.pl
+	10:23PM, 5 July 2007
+	****************************************
+
+
+8. LOAD DATA INTO readsblast TABLE:
+
+sudo ./readsarrayblastloaddata.pl -d karenia6 -t karenia5
+
+	Doing target database: karenia5
+	TSV file: /common/pipeline/karenia6/blast/karenia6-karenia5.blast.tsv
+	Deleting from readsblast WHERE targetsource='karenia5'...done.
+	Loading 'karenia5' hits data into table 'readsblast'...done.
+	
+	Run time: 00:00:00
+	Completed ./readsarrayblastloaddata.pl
+	10:24PM, 5 July 2007
+	****************************************
+	
+
+9. CHECK RESULTS
+
+SELECT COUNT(*) FROM readsblast;
++----------+
+| COUNT(*) |
++----------+
+|       12 |
++----------+
+
+select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=99;
++-----------------------------------------+
+| count(distinct experiment, plate, well) |
++-----------------------------------------+
+|                                       1 |
++-----------------------------------------+
+
+
+
+
+

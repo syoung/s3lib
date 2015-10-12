@@ -1,0 +1,664 @@
+[workflow novosnp]
+2011-01-18 15:24:38
+
+
+Workflow:
+name           novosnp
+owner          anonymous
+outputdir      /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run
+wkfile         /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/novosnp.wk
+outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/novosnp.wk.bkp
+start          2
+stop           7
+	
+  Application:
+  name           copysplit
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Link split file subdirectories and generate splitfile.txt file in target directory
+  ordinal        1
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    loop           distributed
+    looplabel      eland-copysplit
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-copysplit.out
+    maxjobs        2000
+    mode           link
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+    queue          small
+    replicates     1-33
+    source         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    target         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    walltime       24
+
+	
+  Application:
+  name           novo
+  owner          anonymous
+  type           aligner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through 1-33 files doing NOVOALIGN alignment with split read input files
+  ordinal        2
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    deviation      50
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/NOVOALIGN.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          novoalign-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-novoalign.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    params         "-r All 1"
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/novoalign/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/novoalign.out
+    walltime       24
+
+	
+  Application:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        3
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-binbam.out
+    maxjobs        2000
+    queue          small
+    reference      chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/binbam.out
+    walltime       48
+
+	
+  Application:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively merge .bam files, can use UCSC bins or user-defined genomic intervals
+  ordinal        4
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33
+    label          novoalign-cumulative
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/cumulative.out
+    walltime       48
+
+	
+  Application:
+  name           bamtosnp
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Call SNPs from .bam files using samtools
+  ordinal        5
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/bamToSnp.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-bamtosnp.out
+    maxdepth       500
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22
+    queue          small
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/bamtosnp.out
+    walltime       48
+
+	
+  Application:
+  name           snptosav
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+  ordinal        6
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    dbsnp          snp130
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/loop-sav.out
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/sav-%REPLICATE%.out
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/snp130
+    walltime       24
+
+	
+  Application:
+  name           unbinsav
+  owner          anonymous
+  location       perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+  description    Join binned .sav files into a single .sav file for each cumulative iteration
+  ordinal        7
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    suffix         sav
+    walltime       48
+
+
+
+[app novo]
+2011-01-18 15:24:38
+
+  Application:
+  name           novo
+  owner          anonymous
+  type           aligner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through 1-33 files doing NOVOALIGN alignment with split read input files
+  ordinal        2
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/2-novo.app.bkp
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    deviation      50
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/NOVOALIGN.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          novoalign-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-novoalign.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    params         "-r All 1"
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/novoalign/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/novoalign.out
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/NOVOALIGN.pl \
+ --replicates 1-33 \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+ --matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+ --reference /nethome/bioinfo/data/sequence/chromosomes/human/hg19/novoalign/chr22 \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+ --loop parallel \
+ --params "-r All 1" \
+ --distance 200 \
+ --deviation 50 \
+ --species human \
+ --label novoalign-%REPLICATE% \
+ --maxjobs 1000 \
+ --queue small \
+ --cluster LSF \
+ --walltime 24 \
+ --cpus 1 \
+ --reads 250000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/novoalign.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-novoalign.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-novoalign.out
+
+
+
+[app binbam]
+2011-01-19 16:03:29
+
+  Application:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        3
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/3-binbam.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-binbam.out
+    maxjobs        2000
+    queue          small
+    reference      chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/binbam.out
+    walltime       48
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/binBam.pl \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+ --binlevel 500000 \
+ --reference chr22 \
+ --maxjobs 2000 \
+ --walltime 48 \
+ --queue small \
+ --cluster LSF \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/binbam.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-binbam.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-binbam.out
+
+
+
+[app cumulativebam]
+2011-01-19 16:21:30
+
+  Application:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively merge .bam files, can use UCSC bins or user-defined genomic intervals
+  ordinal        4
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/4-cumulativebam.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33
+    label          novoalign-cumulative
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/cumulative.out
+    walltime       48
+
+Command:
+
+perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl \
+ --binlevel 500000 \
+ --filename hit.bam \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33 \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative \
+ --species human \
+ --label novoalign-cumulative \
+ --walltime 48 \
+ --cluster LSF \
+ --queue small \
+ --cpus 1 \
+ --maxjobs 2000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/cumulative.out 
+
+
+Output:
+
+cumulativeBam.pl    Printing STDOUT to stdoutfile:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/cumulative.out
+
+
+
+[app bamtosnp]
+2011-01-20 02:58:07
+
+  Application:
+  name           bamtosnp
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Call SNPs from .bam files using samtools
+  ordinal        5
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/5-bamtosnp.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/snp/bamToSnp.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-bamtosnp.out
+    maxdepth       500
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22
+    queue          small
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/bamtosnp.out
+    walltime       48
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/bamToSnp.pl \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22 \
+ --maxdepth 500 \
+ --binlevel 500000 \
+ --filename hit.bam \
+ --species human \
+ --maxjobs 2000 \
+ --walltime 48 \
+ --queue small \
+ --cluster LSF \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%/bamtosnp.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-bamtosnp.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/loop-bamtosnp.out
+
+
+
+[app snptosav]
+2011-01-21 03:26:10
+
+  Application:
+  name           snptosav
+  owner          anonymous
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Annotate SNPs, including coincidence with dbSNP
+  ordinal        6
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/6-snptosav.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    dbsnp          snp130
+    executable     /nethome/syoung/0.5/bin/apps/snp/SAV.pl
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/loop-sav.out
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/sav-%REPLICATE%.out
+    tempfile       /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/snp130
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/SAV.pl \
+ --binlevel 500000 \
+ --filename hit.bam \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative \
+ --tempfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/snp130 \
+ --referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22 \
+ --dbsnp snp130 \
+ --species human \
+ --maxjobs 2000 \
+ --queue small \
+ --cluster LSF \
+ --walltime 24 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/sav-%REPLICATE%.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/loop-sav.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/loop-sav.out
+
+
+
+[app unbinsav]
+2011-01-21 12:57:05
+
+  Application:
+  name           unbinsav
+  owner          anonymous
+  location       perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+  description    Join binned .sav files into a single .sav file for each cumulative iteration
+  ordinal        7
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/novo/run/7-unbinsav.app.bkp
+
+    Parameters:
+    binlevel       500000
+    cluster        LSF
+    cpus           1
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33
+    maxjobs        1000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+    queue          small
+    suffix         sav
+    walltime       48
+
+Command:
+
+perl /nethome/syoung/0.5/bin/apps/snp/unbin.pl \
+ --binlevel 500000 \
+ --suffix sav \
+ --filename hit.bam \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/2,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/3,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/4,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/5,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/6,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/7,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/8,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/9,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/10,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/11,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/12,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/13,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/14,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/15,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/16,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/17,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/18,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/19,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/20,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/21,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/22,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/23,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/24,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/25,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/26,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/27,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/28,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/29,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/30,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/31,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/32,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/33 \
+ --walltime 48 \
+ --cluster LSF \
+ --queue small \
+ --cpus 1 \
+ --maxjobs 1000 
+
+
+Output:
+
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+UCSCBin::setBinsByRange    UCSCBin::setBinsByRange(bins, rangefile)
+
+UCSCBin::unbin    Running 33 jobs
+Cluster::execute    executing 33 jobs
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-1-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-1.sh
+Job <3300515> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-2-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-2.sh
+Job <3300516> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-3-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-3.sh
+Job <3300517> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-4-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-4.sh
+Job <3300518> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-5-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-5.sh
+Job <3300519> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-6-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-6.sh
+Job <3300520> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-7-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-7.sh
+Job <3300521> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-8-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-8.sh
+Job <3300522> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-9-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-9.sh
+Job <3300523> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-10-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-10.sh
+Job <3300524> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-11-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-11.sh
+Job <3300525> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-12-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-12.sh
+Job <3300526> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-13-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-13.sh
+Job <3300527> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-14-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-14.sh
+Job <3300528> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-15-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-15.sh
+Job <3300529> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-16-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-16.sh
+Job <3300530> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-17-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-17.sh
+Job <3300531> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-18-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-18.sh
+Job <3300532> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-19-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-19.sh
+Job <3300533> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-20-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-20.sh
+Job <3300534> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-21-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-21.sh
+Job <3300535> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-22-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-22.sh
+Job <3300536> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-23-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-23.sh
+Job <3300537> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-24-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-24.sh
+Job <3300538> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-25-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-25.sh
+Job <3300539> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-26-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-26.sh
+Job <3300540> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-27-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-27.sh
+Job <3300541> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-28-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-28.sh
+Job <3300542> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-29-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-29.sh
+Job <3300543> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-30-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-30.sh
+Job <3300544> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-31-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-31.sh
+Job <3300545> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-32-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-32.sh
+Job <3300546> is submitted to queue <small>.
+Monitor::LSF::submit    command: bsub -n 1 -q small -o /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/stdout/unbin-chr22-33-stdout.txt /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/scripts/unbin-chr22-33.sh
+Job <3300547> is submitted to queue <small>.
+Cluster::runJobs    doing check 0 with checkCompleted(jobs, label)
+Cluster::checkCompleted    Cluster::checkCompleted(jobs, label)
+Cluster::checkCompleted    label: unbin
+Cluster::checkCompleted    no. jobs: 33
+Cluster::runJobs    completed: 0
+Cluster::runJobs    Sleeping for 10 seconds
+Cluster::runJobs    doing check 1 with checkCompleted(jobs, label)
+Cluster::checkCompleted    Cluster::checkCompleted(jobs, label)
+Cluster::checkCompleted    label: unbin
+Cluster::checkCompleted    no. jobs: 33
+Cluster::runJobs    completed: 0
+Cluster::runJobs    Sleeping for 10 seconds
+Cluster::runJobs    doing check 2 with checkCompleted(jobs, label)
+Cluster::checkCompleted    Cluster::checkCompleted(jobs, label)
+Cluster::checkCompleted    label: unbin
+Cluster::checkCompleted    no. jobs: 33
+Cluster::runJobs    completed: 0
+Cluster::runJobs    Sleeping for 10 seconds
+Cluster::runJobs    Final value of completed: 0
+
+------------------------------------------------------------
+---[completed unbin: 0 unbin]---
+------------------------------------------------------------
+Cluster::printCheckfiles    Opening logfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/check/unbin/check.log
+Cluster::runJobs    Completed unbin at 11-01-21 13:00:09, duration: 00:02:51
+Cluster::usageStats    Checking non-batch stdout file
+Cluster::runJobs    Doing printUsage       11-01-21 13:00:10
+Cluster::printUsage    printUsage(jobs, label)
+Cluster::printUsage    BEFORE outputdir: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative
+Cluster::printUsage    AFTER outputdir: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22
+Cluster::printUsage    usagefile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/usage/unbin-usage.txt
+Cluster::printUsage    No. batchstats: 1
+Cluster::printUsage    batchstats[0]: 
+Cluster::printUsage    Printing USAGE file: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22/usage/unbin-usage.txt
+Cluster::runJobs    After printUsage       11-01-21 13:00:10
+Cluster::runJobs    cleanup not defined. Leaving scriptfiles.
+unbin.pl    Run time: 00:03:04
+unbin.pl    Completed /nethome/syoung/0.5/bin/apps/snp/unbin.pl
+unbin.pl    1:00PM, 21 January 2011
+unbin.pl    ****************************************
+
+
+
+
+
+Completed workflow novosnp

@@ -1,0 +1,10 @@
+#!/usr/bin/perl -w
+
+use Devel::REPL;
+
+my $repl = Devel::REPL->new;
+
+$repl->load_plugin($_) for qw(History LexEnv);
+
+$repl->run
+

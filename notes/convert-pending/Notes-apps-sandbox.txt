@@ -1,0 +1,695 @@
+Notes-apps-sandbox.txt
+
+++++++++++++</entry>
+
+
+
+<entry [Fri Jun 27 17:26:15 EDT 2008] BLOCKED OUT EXTERNAL DATABASES FROM blast.js>
+
+
+
+NOW DOES NOT ADD SWISSPROT AND OTHER DATABASES, WHICH WOULD REQUIRE
+
+/var/www/html/blast/swissprot-all.fa.x*
+
+FORMATTED BLAST DATABASES
+
+
+++++++++++++</entry>
+
+
+
+<entry [Wed Jun 11 21:52:43 EDT 2008] ADDED FULLTEXT INDICES TO KEGG AND EC TABLES>
+
+
+
+ALTER TABLE collectionsequencesannotationec ADD FULLTEXT toid (toid)
+
+NB: DIDN'T WORK FOR EC TABLE PROBABLY DUE TO IDIOSYNCRACIES OF FULLTEXT SO USED 'LIKE' INSTEAD.
+
+
+++++++++++++</entry>
+
+
+
+<entry [Sun Jun  8 16:13:14 EDT 2008] FIXED WORKFLOW>
+
+
+
+CHANGED ALL net TO Ajax OBJECTS
+
+
+++++++++++++</entry>
+
+
+
+<entry [Sat Jun  7 23:57:31 EDT 2008] FIXED DIV TOGGLE FOR SEARCH DISPLAYS>
+
+
+
+1. CHANGED toggle(...) TO Search.toggle(...) 
+
+2. MADE SURE DIVS HAD <BR> </DIV> <BR> </DIV> ENDS FOR CORRECT FOLDUP WHEN TOGGLED
+
+RERAN FOR funnybase11, karenia5 AND aplysia4
+blastdiv
+framediv
+swissprotfeaturediv
+
+TO DO:
+featurediv
+iprscandiv
+iprscandomaindiv
+sequencediv
+pathwaydiv
+
+
+
+
+++++++++++++</entry>
+
+
+
+<entry [Thu Mar 13 19:29:29 EDT 2008] ADDED KEGG PATHWAYS TO pathwaydiv FOR funnybase7K AND funnybase11>
+
+
+
+SOLUTION:
+
+1. PARSE KEGG ID TO KEGG PATHWAY ID MAPPINGS FROM ko FILE WITH kegg2pathway.pl (NEW)
+
+2. CALCULATE KEGG pathway MAPPINGS WITH collectionsequencesannotationmapping.pl
+
+    ./
+
+3. REDO PATHWAY DIV TO INCLUDE ec AND pathway, THE LATTER LINKING TO:
+    
+    http://www.kegg.com/dbget-bin/show_pathway?map04614+3.4.17.1
+    
+    http://www.kegg.com/dbget-bin/show_pathway?map04614+3.6.3.-
+
+
+    http://www.genome.jp/dbget-bin/www_bget?pathway+map00071
+
+    
+    GENERAL PATHWAY URL:
+    
+    http://www.kegg.com/kegg/pathway.html
+
+
+NB: CHECKED 2.5 G DOWNLOAD (BUT ABORTED BECAUSE TOO BIG AND NOT NECESSARY) OF KEGG PATHWAY INFO:
+
+wget ftp://ftp.genome.jp/pub/kegg/release/current/pathway.tar.gz
+
+
+NNB: KEGG FTP SITE:
+
+ftp://ftp.genome.jp/pub/kegg/
+
+
+PROBLEM:
+
+dcrawford@rsmas.miami.edu
+Sent: 	Tue 3/11/08 12:19 AM
+To: 	youngstuart@hotmail.com
+Security scan upon download 	Trend Micro ® logo
+Attachments: 7k-data.xls (5.4 MB)
+
+Stuart,
+    I still need accession number for 7K array.    I have attached an
+Excel sheet that you could add the accession number to.
+Additionally, can we use KO terms and not number.  That is, can we list
+pathways instead of pathway numbers.
+ 
+dlc
+ 
+USE funnybase7K;
+select distinct toid from collectionsequencesannotationkegg where tosource = outputsource order by toid;
+
+| K09583 |
+| K09584 |
+| K09585 |
+| K09662 |
+| K09708 |
+| K09782 |
+| K09783 |
++--------+
+1347 rows in set (0.07 sec)
+
+
+USE indexer;
+select * from ec2kegg;
+
+| K10011 | UDP-GlcUA decarboxylase/UDP-L-Ara4N formyltransferase                | 2.1.2.-     |        |
+| K10012 | undecaprenyl-phosphate 4-deoxy-4-formamido-L-arabinose transferase   | 2.7.8.-     |        |
+| K10017 | histidine transport system ATP-binding protein                       | 3.6.3.21    |        |
+| K10021 | octopine/nopaline transport system ATP-binding protein               | 3.6.3.-     |        |
+| K10025 | arginine/ornithine transport system ATP-binding protein              | 3.6.3.-     |        |
++--------+----------------------------------------------------------------------+-------------+--------+
+4140 rows in set (0.04 sec)
+
+
+
+
+
+
+++++++++++++</entry>
+
+
+
+<entry [Thu Mar  6 20:46:46 EST 2008] REDID collectionsequencesannotationmapping.pl TO REUSE MAPPINGS AND DO IT NON-RECURSIVELY, THEN RAN collectionsequencesdownloadpathway.pl AND pathwaydiv.pl>
+
+
+
+aplysia4
+========
+
+./readsassemblyCAP3.pl -d aplysia4
+
+./collectionsequencesalignment -d aplysia4
+
+./assemblyreadstartstop.pl -d aplysia4
+
+./collectionsequencesdownload.pl -d aplysia4
+
+./collectionsequencesannotationmapping.pl -d aplysia4 -t ec
+./collectionsequencesannotationmapping.pl -d aplysia4 -t kegg
+
+./collectionsequencesdownloadpathway.pl -d aplysia4
+
+(NB: Some read sequences not defined at end )
+
+    Run time: 00:00:31
+    Completed ./collectionsequencesdownloadpathway.pl
+    10:40PM, 6 March 2008
+    ****************************************
+
+./pathwaydiv.pl -d aplysia4
+ 
+    Completed ./pathwaydiv.pl
+    Run time: 00:00:23
+    10:44PM, 6 March 2008
+    ****************************************
+ 
+ 
+ funnybase11
+ ===========
+ 
+ ./collectionsequencesannotationmapping.pl -d funnybase11 -t ec
+    
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:06:04
+    9:01PM, 6 March 2008
+    ****************************************
+    
+./collectionsequencesannotationmapping.pl -d funnybase11 -t kegg
+        
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:10:42
+    9:14PM, 6 March 2008
+    ****************************************
+
+./collectionsequencesdownloadpathway.pl -d funnybase11
+    
+    Run time: 00:04:28
+    Completed ./collectionsequencesdownloadpathway.pl
+    9:25PM, 6 March 2008
+    ****************************************
+    
+    
+./pathwaydiv.pl -d funnybase11
+    
+    Completed ./pathwaydiv.pl
+    Run time: 00:01:07
+    10:14PM, 6 March 2008
+    ****************************************
+
+
+
+karenia5
+ ===========
+ 
+./collectionsequencesannotationmapping.pl -d karenia5 -t ec
+    
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:01:13
+    10:52PM, 6 March 2008
+    ***************************************
+    
+./collectionsequencesannotationmapping.pl -d karenia5 -t kegg
+            
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:02:14
+    10:54PM, 6 March 2008
+    ****************************************
+    
+
+./collectionsequencesdownloadpathway.pl -d karenia5
+        
+    Run time: 00:01:57
+    Completed ./collectionsequencesdownloadpathway.pl
+    10:58PM, 6 March 2008
+    ****************************************
+
+
+./pathwaydiv.pl -d karenia5
+
+    ~ 3 mins
+
+
+
+funnybase7K
+===========
+
+ 
+./collectionsequencesannotationmapping.pl -d funnybase7K -t ec
+    
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:04:54
+    11:28PM, 6 March 2008
+    ****************************************
+    
+./collectionsequencesannotationmapping.pl -d funnybase7K -t kegg
+            
+
+    Completed ./collectionsequencesannotationmapping.pl
+    Run time: 00:08:44
+    11:39PM, 6 March 2008
+    ****************************************
+
+./collectionsequencesdownloadpathway.pl -d funnybase7K
+    
+    Run time: 00:00:43
+    Completed ./collectionsequencesdownloadpathway.pl
+    11:43PM, 6 March 2008
+    ****************************************
+
+./pathwaydiv.pl -d funnybase7K
+
+
+
+
+++++++++++++</entry>
+
+
+
+<entry [Wed Feb 27 13:33:15 EST 2008] COMPLETED est WORKFLOW DIVS>
+
+
+
+SEE Notes-workflow-est.txt
+
+
+
+
+
+
+++++++++++++</entry>
+
+
+
+<entry [Wed Feb 27 13:33:02 EST 2008] FIXED FIELD NAMES IN collectionsequencesannotation (CHANGED FROM targetname, targetid)>
+
+
+
+use funnybase11;
+use funnybase7K;
+use aplysia4;
+use karenia5;
+
+show create table collectionsequencesannotation\G
+alter table collectionsequencesannotation change targetid targetaccession varchar(20);
+alter table collectionsequencesannotation change targetname targetid varchar(20);
+drop index collectionannotation on collectionsequencesannotation;
+alter table collectionsequencesannotation add fulltext collectionannotation (targetannotation , targetsource , targetaccession, targetid); 
+
+++++++++++++</entry>
+
+
+
+<entry [Wed Feb 27 12:56:11 EST 2008] DISCOVERED 'ERROR' WHEN SEARCHING DATABASES OTHER THAN funnybase11 WITH 'protein' WAS DUE TO FULLTEXT IGNORING SEARCH TERMS THAT APPEAR IN MORE THAN HALF OF THE ROWS>
+
+
+
+
+
+NO MATCHES FOR FULLTEXT SEARCHES:
+
+SELECT collectionid, collectionaccession, targetannotation,
+MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein') AS relevance
+FROM collectionsequencesannotation
+WHERE  MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein')
+GROUP BY relevance, collectionid;
+
+Empty set (0.01 sec)
+
+
+use karenia5;
+
+SELECT collectionid, collectionaccession, targetannotation
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein')
+GROUP BY collectionid;
+
+Empty set (0.01 sec)
+
+
+BUT MATCHES USING 'LIKE':
+
+select count(collectionid) from collectionsequencesannotation where targetannotation like '%protein%';
+
++---------------------+
+| count(collectionid) |
++---------------------+
+|                 536 |
++---------------------+
+
+
+SHOW CREATE TABLE IS IDENTICAL FOR funnybase11 AND karenia5:
+
+    show create table collectionsequencesannotation\G
+    *************************** 1. row ***************************
+           Table: collectionsequencesannotation
+    Create Table: CREATE TABLE `collectionsequencesannotation` (
+      `collectionid` int(8) NOT NULL default '0',
+      `collectionaccession` int(2) NOT NULL default '0',
+      `collectionversion` decimal(4,2) NOT NULL default '0.00',
+      `targetannotation` text,
+      `targetsource` varchar(20) default NULL,
+      `targetid` varchar(20) NOT NULL default '',
+      `targetname` varchar(20) NOT NULL default '',
+      `hitevaluedec` decimal(4,2) NOT NULL default '0.00',
+      `hitevalueexp` smallint(4) NOT NULL default '0',
+      `support` int(1) default '0',
+      `supportsource` varchar(20) default '',
+      `queryhitstart` int(6) default NULL,
+      `queryhitstop` int(6) default NULL,
+      `targethitstart` int(6) default NULL,
+      `targethitstop` int(6) default NULL,
+      PRIMARY KEY  (`collectionid`,`collectionaccession`,`collectionversion`),
+      FULLTEXT KEY `collectionannotation` (`targetannotation`,`targetsource`,`targetid`),
+      FULLTEXT KEY `targetannotation` (`targetannotation`,`targetsource`,`targetid`,`targetname`)
+    ) TYPE=MyISAM
+    1 row in set (0.00 sec)
+    
+
+
+BUT FULLTEXT WORKS WITH funnybase11:
+
+use funnybase11;
+
+SELECT collectionid, collectionaccession, targetannotation
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein')
+GROUP BY collectionid;
+
+2465 rows in set (0.14 sec)
+
+AS DOES 'LIKE' SEARCH:
+
+select count(collectionid) from collectionsequencesannotation where targetannotation like '%protein%';
++---------------------+
+| count(collectionid) |
++---------------------+
+|                2582 |
++---------------------+
+
+CHECK 'LIKE' RESULTS FOR karenia5:
+
+select collectionid, targetannotation from collectionsequencesannotation where targetannotation like '%protein%' LIMIT 5;
+
+
++--------------+--------------------------------------------------------------------------+
+| collectionid | targetannotation                                                         |
++--------------+--------------------------------------------------------------------------+
+|            2 | Heat shock protein 90                                                    |
+|            6 | Negative elongation factor E (NELF-E) (RD protein)                       |
+|            9 | 30S ribosomal protein S19                                                |
+|           27 | Probable serine/threonine-protein kinase pknA (EC 2.7.1.37)              |
+|           33 | Fucoxanthin-chlorophyll A-C binding protein, chloroplast precursor (FCP) |
++--------------+--------------------------------------------------------------------------+
+
+
+UPDATE FULLTEXT FOR karenia5.collectionsequencesannotation
+
+FULLTEXT KEY: targetannotation` (`targetannotation`,`targetsource`,`targetid`,`targetname`)
+
+cd ~/FUNNYBASE/bin/orthologues
+./addfulltext.pl -d karenia5 -t collectionsequencesannotation -n targetannotation -f targetannotation,targetsource,targetid,targetname
+
+    
+TEST FULLTEXT AGAIN ON karenia5:
+
+SELECT collectionid, collectionaccession, targetannotation
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein')
+GROUP BY collectionid;
+
+Empty set (0.01 sec)
+
+
+SELECT *
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation, targetsource, targetname, targetid)
+AGAINST ('protein');
+
+
+
+TEST OTHER FULLTEXT KEYS:
+
+FULLTEXT KEY `collectionannotation` (`targetannotation`,`targetsource`,`targetid`),
+
+SELECT COUNT(DISTINCT collectionid)
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation, targetsource, targetid)
+AGAINST ('protein');
+
+
+TRIED REPAIR TABLE BUT NO CHANGE:
+
+repair table collectionsequencesannotation;
++----------------------------------------+--------+----------+----------+
+| Table                                  | Op     | Msg_type | Msg_text |
++----------------------------------------+--------+----------+----------+
+| karenia5.collectionsequencesannotation | repair | status   | OK       |
++----------------------------------------+--------+----------+----------+
+1 row in set (0.16 sec)
+
+SELECT collectionid, collectionaccession, targetannotation
+    -> FROM collectionsequencesannotation
+    -> WHERE MATCH(targetannotation, targetsource, targetname, targetid)
+    -> AGAINST ('protein')
+    -> GROUP BY collectionid;
+Empty set (0.02 sec)
+
+
+
+
+
+TEST BY ADDING FULLTEXT FOR targetannotation ONLY:
+
+cd ~/FUNNYBASE/bin/orthologues
+./addfulltext.pl -d karenia5 -t collectionsequencesannotation -n annotation -f targetannotation
+
+SELECT COUNT(DISTINCT collectionid)
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation)
+AGAINST('protein');
+
++------------------------------+
+| COUNT(DISTINCT collectionid) |
++------------------------------+
+|                            0 |
++------------------------------+
+
+
+TRY INCORRECT FULLTEXT INDEX:
+
+SELECT COUNT(DISTINCT collectionid)
+FROM collectionsequencesannotation
+WHERE MATCH(targetid)
+AGAINST('protein');
+
+ERROR 1191: Can't find FULLTEXT index matching the column list
+
+
+
+TRY WITH ACTUAL ENTRY:
+
+
+select * from collectionsequencesannotation where collectionid = 1\G
+*************************** 1. row ***************************
+       collectionid: 1
+collectionaccession: 1
+  collectionversion: 0.00
+   targetannotation: Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)
+       targetsource: swissprot
+           targetid: P68540
+         targetname: COX1_AEGCO
+       hitevaluedec: 1.01
+       hitevalueexp: -59
+            support: 1
+      supportsource: 
+      queryhitstart: 0
+       queryhitstop: 0
+     targethitstart: 292
+      targethitstop: 465
+
+
+SELECT COUNT(DISTINCT collectionid)
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation)
+AGAINST('Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)');
+
++------------------------------+
+| COUNT(DISTINCT collectionid) |
++------------------------------+
+|                          379 |
++------------------------------+
+
+select count(distinct collectionid) from collectionsequencesannotation where targetannotation like '%Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)%';
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                            4 |
++------------------------------+
+
+CHECK HITS RETURN BY FULLTEXT TO FIND REASON FOR DISCREPANCY:
+
+SELECT DISTINCT collectionid,
+MATCH(targetannotation)
+AGAINST ('Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)') AS relevance
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation)
+AGAINST('Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)')
+ORDER BY relevance DESC;
+
++--------------+-------------------+
+| collectionid | relevance         |
++--------------+-------------------+
+|           17 |  25.1643085479736 |
+|          171 |  25.1643085479736 |
+|         1272 |  25.1643085479736 |
+|         1511 |  25.1643085479736 |
+|         2555 |  25.1643085479736 |
+|            1 |  24.5176448822021 |
+
+SELECT collectionid, targetannotation FROM collectionsequencesannotation WHERE collectionid = 17 OR collectionid = 171 or collectionid = 1272 or collectionid = 1511 or collectionid = 2555  or collectionid = 1;
+
++--------------+------------------------------------------------------------------------------------+
+| collectionid | targetannotation                                                                   |
++--------------+------------------------------------------------------------------------------------+
+|            1 | Cytochrome c oxidase subunit 1 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide I)   |
+|           17 | Cytochrome c oxidase subunit 3 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide III) |
+|          171 | Cytochrome c oxidase subunit 3 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide III) |
+|         1272 | Cytochrome c oxidase polypeptide III (EC 1.9.3.1) (Cytochrome oxidase subunit 3)   |
+|         1511 | Cytochrome c oxidase polypeptide III (EC 1.9.3.1) (Cytochrome oxidase subunit 3)   |
+|         2555 | Cytochrome c oxidase subunit 3 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide III) |
++--------------+------------------------------------------------------------------------------------+
+
+
+TRY AGAIN WITH 'protein':
+
+select count(*) from collectionsequencesannotation where targetannotation like '%protein%';
++----------+
+| count(*) |
++----------+
+|      536 |
++----------+
+
+SELECT DISTINCT collectionid,
+MATCH(targetannotation)
+AGAINST ('protein') AS relevance
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation)
+AGAINST('protein')
+ORDER BY relevance DESC;
+
+Empty set (0.01 sec)
+
+
+
+TRY WITH LONGER SEARCH TERM:
+
+SELECT DISTINCT collectionid,
+MATCH(targetannotation)
+AGAINST ('incompatibility protein') AS relevance
+FROM collectionsequencesannotation
+WHERE MATCH(targetannotation)
+AGAINST('incompatibility protein')
+ORDER BY relevance DESC;
+
+
++--------------+------------------+
+| collectionid | relevance        |
++--------------+------------------+
+|         1477 | 4.63115406036377 |
+|         2029 | 4.63115406036377 |
+|         3196 | 4.63115406036377 |
+|         3283 | 4.63115406036377 |
+|         3298 | 4.63115406036377 |
+|         3562 | 4.63115406036377 |
+|         4207 | 4.63115406036377 |
+|         4496 | 4.63115406036377 |
++--------------+------------------+
+8 rows in set (0.01 sec)
+
+
+
+YES!!! SO ITS THE SIZE OF THE TERM OR THE 'protein' TERM APPEARS TOO FREQUENTLY (IN MORE THAN HALF OF THE ROWS) TO SHOW UP IN THE SEARCH:
+
+
+Neither word is present in more than half the verses, so sheer frequency of occurrence doesn't account for the failure of a FULLTEXT search to find them. What's really happening is that by default, the indexing engine doesn't include words less than four characters long. On a MySQL 3.23 server, there's nothing you can do about that (at least, nothing short of messing around with the MySQL source code and recompiling). As of MySQL 4.0, the minimum word length is a configurable parameter, which you can change by setting the ft_min_word_len server variable. For example, to tell the indexing engine to include words containing three or more characters, add a set-variable line to the [mysqld] group of the /etc/my.cnf file (or whatever option file you put server settings in): 
+
+
+SELECT Count(distinct collectionid) from collectionsequencesannotation;
++------------------------------+
+| Count(distinct collectionid) |
++------------------------------+
+|                         1024 |
++------------------------------+
+
+
+SELECT Count(distinct collectionid) from collectionsequencesannotation where targetannotation like '%protein%';
++------------------------------+
+| Count(distinct collectionid) |
++------------------------------+
+|                          536 |
++------------------------------+
+1 row in set (0.01 sec)
+
+
+
+SETTINGS IN my.cnf FILE:
+
+my.cnf FILE LOCATION: /Volumes/Backup/young/FUNNYBASE/mysql/data/my.cnf
+
+emacs -nw /Volumes/Backup/young/FUNNYBASE/mysql/data/my.cnf
+
+[mysqld]
+ft_min_word_len=2
+
+[myisamchk]
+ft_min_word_len=2
+
+[mysqld]
+max_allowed_packet=4000000
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+Permission denied to call method XMLHttpRequest.open
+
+In IE you can get around this by placing the code in an HTA container (which loosens restrictions) or by checking the "Allow active content to run on files on my computer" option in the "Tools" menu, "Internet Options" item, "Advanced" tab, "Security" group.

@@ -1,0 +1,153 @@
+Notes-project42-pipeline454.txt
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jun 30 16:29:22 EDT 2009] DOWNLOAD TITANIUM CLUSTER ISO FILE>
+
+
+
+/store/Data01/NGS/syoung/base/pipeline/cluster
+
+wget --user 454software --password GF2ds4eus ftp://ftp.454.com/ClusterTest/PN-05346738001.iso
+
+ftp://ftp.454.com
+Username: 454software
+Password: GF2ds4eus
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jun  9 13:35:22 EDT 2009] INSTALL AND RUN CABOG ON 454 DATA>
+
+
+
+
+1. DOWNLOAD VERSION 5.3 FROM SOURCEFORGE
+
+MAIN wgs SOFTWARE PAGE
+http://apps.sourceforge.net/mediawiki/wgs-assembler/index.php?title=Main_Page
+
+DOWNLOAD PAGE
+http://sourceforge.net/project/showfiles.php?group_id=106905
+
+2. UNZIP AND INSTALL
+
+tar xvfj wgs-5.3.tar.bz2
+
+cd wgs-5.3
+cd kmer
+sh configure.sh
+gmake install
+cd ../src
+gmake
+cd ..
+
+  OK
+
+
+NB: ALSO DOWNLOADED TAMPA CHROMOSOMAL REARRANGMENT DETECTOR
+
+/home/syoung/base/apps/wgs/TAMPAResults_1.0
+
+emacs README.txt
+
+  This directory contains results from the Tool for Analyzing Mate Pairs
+  in Assemblies (TAMPA) applied to several assemblies of the human
+  genome based on Celera-generated reads and public BAC ends. All
+  genomes are or were publicly available via GenBank or other online
+  sources. The directories/assemblies are listed below.
+  
+  Assembly        Producer       Method            Data              Date
+  HG05              UCSC      hierarchical         public           Oct-00
+  WGA              Celera     whole-genome    Celera and public     Nov-00
+  HG06              UCSC      hierarchical         public           Dec-00
+  CSA              Celera      component      Celera and public     Jan-01
+  WGSA-assembly    Celera     whole-genome    Celera and BAC ends   Dec-01
+  WGSA-ESTmapper   Celera     whole-genome    Celera and BAC ends   Dec-01
+  NCBI28            NCBI      hierarchical         public           Dec-01
+  NCBI33            NCBI      hierarchical         public           Apr-03
+  NCBI34            NCBI      hierarchical         public           Oct-03
+  
+  WGSA-assembler uses mate pairs as placed by the Celera
+  assembler. WGSA-ESTmapper uses mate pairs as placed by the ESTmapper
+  software, which is a variation of the sim4 program.
+  ...
+
+NOTES:
+
+http://sourceforge.net/project/showfiles.php?group_id=106905
+
+
+Check out and Compile
+From wgs-assembler
+Jump to: navigation, search
+
+This page describes how to check out the latest unreleased version of the Celera Assembler from our CVS repository.
+
+1) Make a place to build the assembler. All further steps should start from within this directory.
+
+% mkdir wgs
+% cd wgs
+
+2) Download the assembler.
+
+% cvs -d:pserver:anonymous@wgs-assembler.cvs.sf.net:/cvsroot/wgs-assembler login
+% cvs -d:pserver:anonymous@wgs-assembler.cvs.sf.net:/cvsroot/wgs-assembler co -P src
+
+3) Optional, download, configure, compile and install kmer.
+
+% svn co https://kmer.svn.sourceforge.net/svnroot/kmer/trunk kmer
+% cd kmer
+% sh configure.sh
+% gmake
+% gmake install
+% cd ..
+
+4) Optional, download, configure, compile and install the UMD Overlapper. UMD Overlapper is developed at the University of Maryland. For detailed usage and run instructions, visit http://www.genome.umd.edu/overlapper.htm.
+
+% mkdir -p UMDOverlapper/Linux-amd64
+% cd UMDOverlapper/Linux-amd64
+% curl -o completeUMDDist.tar.gz \
+  ftp://genomepc2.umd.edu/pub/completeUMDDist.tar.gz
+% gzip -dc completeUMDDist.tar.gz | tar -xf -
+% perl Install.perl
+% cd ../..
+
+5) Optional, download, configure, compile and install Figaro. Figaro is developed at the University of Maryland. For detailed usage and run instructions, visit http://amos.sourceforge.net/Figaro/Figaro.html.
+
+% curl -o Figaro.tar.gz \
+  http://internap.dl.sourceforge.net/sourceforge/amos/Figaro-1.05.tar.gz
+% gzip -dc Figaro.tar.gz | tar -xf -
+% mkdir -p figaro
+% mv Figaro-1.05 figaro/Linux-amd64
+% cd figaro/Linux-amd64
+% make install
+% cd ../..
+
+6) Compile and install the Celera Assembler. Binaries are installed into an architecture specific directory, for example, Linux-amd64. If kmer or UMD Overlapper or figaro are compiled, this step will also copy those modules to the architecture specific directory.
+
+% cd src
+% gmake
+
+7) Check that several key executables exist. overmerry is built if kmer is installed, runUMDOverlapper is built if the UMD overlapper is installed, figaro is built if figaro is installed. This directory can be moved to a system-wide location if desired.
+
+% cd ..
+% ls -l Linux-amd64/bin/gatekeeper
+% ls -l Linux-amd64/bin/consensus
+% ls -l Linux-amd64/bin/cgw
+% ls -l Linux-amd64/bin/overmerry
+% ls -l Linux-amd64/bin/runUMDOverlapper
+% ls -l Linux-amd64/bin/figaro
+

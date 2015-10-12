@@ -1,0 +1,310 @@
+
+
+funnybase8
+++++++++++
+Tue Nov  7 12:51:14 EST 2006
+
+NB: SAME SEQUENCES AS funnybase7
+
+Total sequences	18102
+Blast E-value cutoff	1.00E-05
+Unannotated sequences	8809
+Annotated sequences	9293
+Unique sequences	2853
+
+
+BLAST WITH E-VALUE 1E-05 (NOT 1E-10 AS IN funnybase7):
+
+use funnybase8;
+select count(*) from funnybaseblast;
++----------+
+| count(*) |
++----------+
+|  1967283 |
++----------+
+
+select distinct targetsource from funnybaseblast;
++--------------+
+| targetsource |
++--------------+
+| refseq-dog   |
+| refseq-human |
+| refseq-mouse |
+| refseq-rat   |
+| swissprot    |
++--------------+
+
+use funnybase7;
+select count(*) from funnybaseblast where targetsource!='funnybase7';
++----------+
+| count(*) |
++----------+
+|  1311281 |
++----------+
+
+select distinct targetsource from funnybaseblast;
++--------------+
+| targetsource |
++--------------+
+| funnybase7   |
+| refseq-dog   |
+| refseq-human |
+| refseq-mouse |
+| refseq-rat   |
+| swissprot    |
++--------------+
+use funnybase7;
+Database changed
+mysql> select avg(length(sequence)) from funnybasesequences;
++-----------------------+
+| avg(length(sequence)) |
++-----------------------+
+|              372.3556 |
++-----------------------+
+1 row in set (23.45 sec)
+
+mysql> select min(length(sequence)) from funnybasesequences;
++-----------------------+
+| min(length(sequence)) |
++-----------------------+
+|                    51 |
++-----------------------+
+1 row in set (1.49 sec)
+
+
+funnybase7
+++++++++++
+Blast E-value cutoff	1.00E-10
+Total all sequences: 18102
+Unannotated sequences: 9754
+Annotated sequences: 8348
+Unique sequences: 2522 (by BLAST best hit target_id)
+
+
+MSG Doug Sun 1st Sept, 2006
++++++++++++++++++++++++++++
+Hi Doug,
+
+Here's my summary of this past week:
+
+- Assembled and BLASTed 'funnybase7' - 126-159 experiments (not 127).
+- Completed SVG blast display, including SVG titles and drag-n-drop.
+- Did 'Plater' for funnybase7: http://genomics.rsmas.miami.edu/plater9/plater9.html 
+- BLASTed the sequences (~20,000 in total) against 8 external databases:
+
+select count(distinct targetannotation), targetsource from funnybaseblast group by targetsource;
++----------------------------------+---------------+
+| count(distinct targetannotation) | targetsource  |
++----------------------------------+---------------+
+|                                1 | ensembl-human |
+|                           160303 | genbank       |
+|                            10365 | refseq-dog    |
+|                             7131 | refseq-human  |
+|                             6367 | refseq-mouse  |
+|                             5877 | refseq-rat    |
+|                            14970 | swissprot     |
+|                                1 | unigene-hydra |
++----------------------------------+---------------+
+8 rows in set (5 min 12.88 sec)
+
+The BLASTs took a bit longer than I'd hoped but they finished yesterday. 
+
+
+My goal for this week is to finish the web interface.
+
+- AJAX enable it (for fast and flexible use)
+- display one BLAST result for each database
+- click to download FASTA or TSV files
+- add updated pages: 'About', etc.
+- link to Plater and Fileseek for internal lab use
+
+Are you free at 2PM on Tuesday for our weekly 1/2 hour meeting?
+
+Stuart.
+
+
+FUNNYBASE7 funnybaseblast
++++++++++++++++++++++++++
+(Sat 30 Sept, 2006)
+
+mysql> select count(distinct targetannotation), targetsource from funnybaseblast group by targetsource;
++----------------------------------+---------------+
+| count(distinct targetannotation) | targetsource  |
++----------------------------------+---------------+
+|                                1 | ensembl-human |
+|                           160303 | genbank       |
+|                            10365 | refseq-dog    |
+|                             7131 | refseq-human  |
+|                             6367 | refseq-mouse  |
+|                             5877 | refseq-rat    |
+|                            14970 | swissprot     |
+|                                1 | unigene-hydra |
++----------------------------------+---------------+
+8 rows in set (5 min 12.88 sec)
+
+
+
+select count(distinct targetannotation), targetsource from funnybaseblast where hitevalueexp>-30 group by targetsource;
++----------------------------------+---------------+
+| count(distinct targetannotation) | targetsource  |
++----------------------------------+---------------+
+|                                1 | ensembl-human |
+|                           125329 | genbank       |
+|                             8370 | refseq-dog    |
+|                             5831 | refseq-human  |
+|                             5190 | refseq-mouse  |
+|                             4832 | refseq-rat    |
+|                            12958 | swissprot     |
++----------------------------------+---------------+
+
+
+
+
+WHICH BLAST TO USE?
++++++++++++++++++++
+Tues 26th Sept, 2006
+
+            WU-BLAST                       vs                  NCBI-BLAST
+            Higher e-value (check method)
+                                                            More commonly used (comparable)?
+            Faster
+            Multiple CPU on Mac                             Multiple CPU on Mac?
+            More sensitive (see below)?
+
+
+DECISION: For the time being, stick with WU-BLAST.
+
+
+select experiment, date, plate, well, targetannotation, hitevalueexp, querystart, querystop, querystop - querystart as length, blastapp from readsblast where blastapp='ncbi' and well='A01' and date='40904' group by experiment, date, plate, well, targetannotation, blastapp limit 10;
++------------+-------+-------+------+---------------------+--------------+------------+-----------+--------+----------+
+| experiment | date  | plate | well | targetannotation    | hitevalueexp | querystart | querystop | length | blastapp |
++------------+-------+-------+------+---------------------+--------------+------------+-----------+--------+----------+
+|        127 | 40904 |     2 | A01  | Actin               |          -39 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin (Fragment)    |          -38 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 1             |          -39 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 2             |          -40 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 3             |          -34 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 3-sub 2       |          -38 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 54 (Fragment) |          -40 |        469 |       843 |    374 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin 75            |          -31 |        469 |       816 |    347 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin A             |          -37 |        472 |       816 |    344 | ncbi     |
+|        127 | 40904 |     2 | A01  | Actin B             |          -38 |        472 |       816 |    344 | ncbi     |
++------------+-------+-------+------+---------------------+--------------+------------+-----------+--------+----------+
+10 rows in set (0.24 sec)
+
+mysql> select experiment, date, plate, well, targetannotation, hitevalueexp, querystart, querystop, querystop - querystart as length, blastapp from readsblast where blastapp='wu' and well='A01' and date='40904' group by experiment, date, plate, well, targetannotation, blastapp limit 10;
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+| experiment | date  | plate | well | targetannotation                                                                               | hitevalueexp | querystart | querystop | length | blastapp |
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+|        127 | 40904 |     1 | A01  | NADH-ubiquinone oxidoreductase B22 subunit (EC 1.6.5.3) (EC 1.6.99.3) (Complex I-B22) (CI-B22) |         -107 |         41 |       556 |    515 | wu       |
+|        127 | 40904 |     2 | A01  | Actin                                                                                          |          -56 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin (Fragment)                                                                               |          -55 |        813 |       469 |   -344 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 1                                                                                        |          -56 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 1 (Beta-actin)                                                                           |          -53 |        816 |       466 |   -350 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 1/2                                                                                      |          -54 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 1/3                                                                                      |          -56 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 1/4                                                                                      |          -54 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 100 (Fragment)                                                                           |          -53 |        816 |       469 |   -347 | wu       |
+|        127 | 40904 |     2 | A01  | Actin 101                                                                                      |          -53 |        816 |       469 |   -347 | wu       |
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+10 rows in set (0.27 sec)
+
+select experiment, date, plate, well, targetannotation, hitevalueexp, querystart, querystop, querystop - querystart as length, blastapp from readsblast where blastapp='wu' and well='A01' and date='40904' and plate = 1 group by experiment, date, plate, well, targetannotation, blastapp limit 10;
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+| experiment | date  | plate | well | targetannotation                                                                               | hitevalueexp | querystart | querystop | length | blastapp |
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+|        127 | 40904 |     1 | A01  | NADH-ubiquinone oxidoreductase B22 subunit (EC 1.6.5.3) (EC 1.6.99.3) (Complex I-B22) (CI-B22) |         -107 |         41 |       556 |    515 | wu       |
++------------+-------+-------+------+------------------------------------------------------------------------------------------------+--------------+------------+-----------+--------+----------+
+1 row in set (0.24 sec)
+
+mysql> select experiment, date, plate, well, targetannotation, hitevalueexp, querystart, querystop, querystop - querystart as length, blastapp from readsblast where blastapp='ncbi' and well='A01' and date='40904' and plate = 1 group by experiment, date, plate, well, targetannotation, blastapp limit 10;
+Empty set (0.23 sec)
+
+
+
+
+
+
+pipeline 2 HAS THE FOLLOWING IMPROVEMENTS ON pipeline 1 
+
+    1. One-step or multistep execution argument.
+    2. SNP prediction and DIV generatation.
+    3. Plates and platesdiv added for graphical plate check
+    
+    
+    TO DO:
+    1. Fix WU-Blast no error on Blastp using nucleotide query
+    
+    
+pipeline2 CORRESPONDS TO THE FOLLOWING DATABASES:
+
+sandbox6	complete blast display
+sandbox7	contig display
+    		optimised blast display
+sandbox8    DATABASE: 127 (384 genes) but *** error with WU-BLAST blastx (became blastp) ***
+            Optimised speed by preprocessing BLAST output divs
+sandbox9    AJAX-enabled
+
+plater5     AJAX plate view, fast access to data without reloading page
+plater6     with or without 'date' (i.e., for 384 genes)
+            improved layout
+            simplified calling (most of work done by plater.cgi on server)
+plater7     Basic AJAX-enabled functionality
+plater8     DATABASE: 127 (384 genes) but *** error with WU-BLAST blastx (became blastp) ***
+            Complete AJAX-enabled functionality:
+            1. Plate load at page startup
+            2. One-click callup of plate info
+            3. Select database, date or experiment to update list of plates
+plater9     See documentation in plater.html
+
+
+
+DATABASES AND ASSEMBLIES
+++++++++++++++++++++++++
+funnybase3  127
+funnybase4  151
+funnybase5  152
+funnybase6  159
+funnybase7  126,130,151-159
+
+
+CHANGES TO DATABASE TABLES
+alter table readsinfo change experimentdatetime datetime datetime;
+alter table readsinfo change experimentname experiment int(8) not null;
+alter table readsinfo change experimentdescription description text;
+alter table reads drop experimentdescription ;
+alter table reads change wellid well varchar(6) not null;
+alter table reads change platenumber plate int(11) not null;
+alter table reads change experimentname experiment int(8) not null;
+
+desc reads;
++-----------------------+--------------+------+-----+---------+-------+
+| Field                 | Type         | Null | Key | Default | Extra |
++-----------------------+--------------+------+-----+---------+-------+
+| experimentname        | varchar(20)  |      | PRI |         |       |
+| plate                 | int(11)      |      | PRI | 0       |       |
+| well                  | varchar(6)   |      | PRI |         |       |
+| readnumber            | int(11)      |      |     | 0       |       |
+| readsequence          | text         | YES  |     | NULL    |       |
+| readquality           | text         | YES  |     | NULL    |       |
+| averagereadquality    | decimal(4,2) | YES  |     | NULL    |       |
+| screenedsequence      | text         | YES  |     | NULL    |       |
+| trimmedsequence       | text         | YES  |     | NULL    |       |
+| trimmedquality        | text         | YES  |     | NULL    |       |
+| averagetrimmedquality | decimal(4,2) | YES  |     | NULL   
++-----------------------+--------------+------+-----+---------+-------+
+11 rows in set (0.00 sec)
+
+
+desc readsinfo;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| experiment  | int(8)      |      | PRI | 0       |       |
+| description | text        | YES  |     | NULL    |       |
+| datetime    | datetime    | YES  |     | NULL    |       |
+| chemistry   | varchar(20) | YES  |     | NULL    |       |
+| dye         | varchar(20) | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+

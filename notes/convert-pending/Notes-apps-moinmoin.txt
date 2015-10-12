@@ -1,0 +1,135 @@
+Notes-apps-moinmoin.txt
+
+</entry>
+
+
+
+<entry [Sat Aug  2 18:34:44 EDT 2008] DOWNLOAD AND INSTALL moinmoin ON LINUX>
+
+
+
+
+
+1. DOWNLOAD AND UNTAR
+
+http://moinmoin.wikiwikiweb.de/
+
+    moin-1.7.1.zip
+
+2. DOWNLOAD AND INSTALL PYTHON
+
+http://www.python.org
+
+OR
+
+www.activestate.com (ACTIVEPYTHON)
+
+
+3. DOWNLOAD AND INSTALL APACHE
+
+    http://httpd.apache.org/download.cgi
+
+    C:\DATA\06.ng.wiki\moinmoin\download\apache_2.2.9-win32-x86-openssl-0.9.8h-r2.msi
+
+    RUN MSI INSTALLER:
+    
+        Network Domain    
+        ad.med.miami.edu
+        
+        Server Name
+        your-a9279112e3.ad.med.miami.edu
+        
+        Administrator email
+        syoung@med.miami.edu
+    
+4. INSTALL MOINMOIN
+
+    UNZIP TO:
+    
+    C:\DATA\06.ng.wiki\moinmoin\download\moin-1.7.1
+    
+    IN TERMINAL:
+    
+    cd C:\DATA\06.ng.wiki\moinmoin\download\moin-1.7.1
+    
+    C:\Python25\python setup.py install --record=install.log
+
+
+5. CREATE A WIKI INSTANCE
+
+    Creating a Wiki Instance
+    Start an DOS window and enter the commands below. This will create a clone of the MoinMoin wiki in the mywiki folder. 
+    
+    cd C:\
+    md DATA\Moin
+    md DATA\Moin\mywiki
+    md DATA\Moin\mywiki\data
+    md DATA\Moin\mywiki\underlay
+    cd \Python25\share\moin
+    xcopy data        C:\DATA\Moin\mywiki\data /E
+    xcopy underlay    C:\DATA\Moin\mywiki\underlay /E
+    copy  config\*.* C:\DATA\Moin\mywiki\*.*
+    copy  server\*.* C:\DATA\Moin\mywiki\*.*
+
+
+</entry>
+
+
+
+<entry [Sat Aug  2 18:34:44 EDT 2008] DOWNLOAD AND INSTALL moinmoin ON LINUX>
+
+
+
+1. DOWNLOAD AND UNTAR
+
+http://moinmoin.wikiwikiweb.de/
+
+tar xvfz moin-1.7.1.tar.gz
+cd moin-1.7.1
+
+
+2. CHECK PYTHON IS WORKING
+
+[syoung@solexa01 moin-1.7.1]$ python -V
+Python 2.4.3
+
+
+3. INSTALL TO /usr/local
+
+python setup.py install --prefix='/usr/local' --record=install.log
+
+    ...
+    copying MoinMoin/i18n/hu.MoinMoin.po -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/
+    creating /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/jabberbot
+    copying MoinMoin/i18n/jabberbot/JabberBot.pot -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/jabberbot
+    copying MoinMoin/i18n/jabberbot/Makefile -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/jabberbot
+    copying MoinMoin/i18n/jabberbot/pl.JabberBot.po -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/jabberbot
+    copying MoinMoin/i18n/tools/mail_i18n-maintainers2.txt -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/tools
+    copying MoinMoin/i18n/tools/mail_i18n-maintainers.txt -> /usr/local/lib/python2.4/site-packages/MoinMoin/i18n/tools
+    writing list of installed files to 'install.log'
+
+4. CHECK INSTALLATION
+
+    [syoung@solexa01 moin-1.7.1]$ python
+
+    Python 2.4.3 (#1, Dec 11 2006, 11:39:03) 
+    [GCC 4.1.1 20061130 (Red Hat 4.1.1-43)] on linux2
+    Type "help", "copyright", "credits" or "license" for more information.
+
+    >>> import Moinmoin
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+    ImportError: No module named Moinmoin
+    >>> 
+
+
+    EDIT /var/www/html/moinmoin/wiki/server/moin.cgi TO ADD:
+    
+    import sys
+    sys.path.insert(0, 'C:/moin')
+
+
+
+
+
+

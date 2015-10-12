@@ -1,0 +1,355 @@
+Notes-project12-aphid.txt
+
+
+</entry>
+
+
+
+<entry [Thu Apr  2 13:42:50 EDT 2009] RERUN BASE CALLS FOR APHID DATA>
+
+
+
+
+    RUNNING AT    1:56PM, 2 April 2009
+
+
+
+APHID RUN DIRECTORIES
+
+run1    /mihg/data/solexa/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+run2    /mihg/data/solexa/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+run3    /mihg/data/solexa/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+
+
+
+RUN 1
+
+1. CREATE NEW aphid-run1 DIRECTORY 
+
+mkdir -p /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data
+cd /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH.params /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Images /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Images
+
+
+2. CREATE GERALDFILE
+
+emacs /nethome/syoung/base/pipeline/aphid-run1/geraldfile.txt
+
+12345678:ANALYSIS sequence
+
+12345678:SEQUENCE_FORMAT --fastq
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+12345678:USE_BASES nY*n
+
+
+3. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/aphid-run1
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH \
+--imagedir /nethome/syoung/base/pipeline/aphid-run1/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Images \
+--outputdir /nethome/syoung/base/pipeline/aphid-run1 \
+--geraldfile /nethome/syoung/base/pipeline/aphid-run1/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    qsub -q psmall /nethome/syoung/base/pipeline/aphid-run1/run-image2eland.sh
+    14727.kronos.ccs.miami.edu
+    
+    Run time: 00:00:02
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    1:56PM, 2 April 2009
+    ****************************************
+
+
+
+RUN 2
+
+1. CREATE NEW aphid-run2 DIRECTORY 
+
+mkdir -p /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/Data
+cd /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH.params /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/Images /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/Images
+
+
+2. CREATE GERALDFILE
+
+emacs /nethome/syoung/base/pipeline/aphid-run2/geraldfile.txt
+
+12345678:ANALYSIS sequence
+
+12345678:SEQUENCE_FORMAT --fastq
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+12345678:USE_BASES nY*n
+
+
+3. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/aphid-run2
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH \
+--imagedir /nethome/syoung/base/pipeline/aphid-run2/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH/Images \
+--outputdir /nethome/syoung/base/pipeline/aphid-run2 \
+--geraldfile /nethome/syoung/base/pipeline/aphid-run2/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    qsub -q psmall /nethome/syoung/base/pipeline/aphid-run2/run-image2eland.sh
+    14729.kronos.ccs.miami.edu
+    
+    Run time: 00:00:01
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    1:59PM, 2 April 2009
+    ****************************************
+    
+
+
+
+RUN 3
+
+1. CREATE NEW aphid-run3 DIRECTORY 
+
+mkdir -p /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Data
+cd /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH.params /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Images /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Images
+
+
+2. CREATE GERALDFILE
+
+emacs /nethome/syoung/base/pipeline/aphid-run3/geraldfile.txt
+
+12345678:ANALYSIS sequence
+
+12345678:SEQUENCE_FORMAT --fastq
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+12345678:USE_BASES nY*n
+
+
+3. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/aphid-run3
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH \
+--imagedir /nethome/syoung/base/pipeline/aphid-run3/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Images \
+--outputdir /nethome/syoung/base/pipeline/aphid-run3 \
+--geraldfile /nethome/syoung/base/pipeline/aphid-run3/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    /nethome/syoung/base/pipeline/aphid-run3/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/aphid-run3/run-image2eland.sh
+    14731.kronos.ccs.miami.edu
+    
+    Run time: 00:00:02
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    2:09PM, 2 April 2009
+    ****************************************
+
+
+
+
+
+
+
+Location on kronos:
+(But we only have sequence.txt files for lanes 5-8)
+
+/mihg/data/solexa/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data/C1-36_Firecrest1.9.2_20-06-2008_dhedges/Bustard1.9.2_20-06-2008_dhedges/GERALD_20-06-2008_dhedges
+
+Lane 1: 1pM ApLSRI
+Lane 2: 2pM ApLSRI
+Lane 3: 2pM ApLSRI
+Lane 4: phiX control [2pM]
+Lane 5: 3pM ApLSRI
+Lane 6: 3pM ApLSRI
+Lane 7: 4pM ApLSRI
+Lane 8: 4pM ApLSRI
+
+
+APHID RUN 2
+
+Location on kronos: 
+(The image files are there, but nothing else!!!)
+
+/mihg/data/solexa/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+
+Lane 1: 1pM W002
+Lane 2: 2pM W002
+Lane 3: 2pM W002
+Lane 4: 2pM phiX control
+Lane5: 3pM W002
+Lane 6: 3pM W002
+Lane 7: 4pM W002
+Lane 8: 4pM W002
+
+
+APHID RUN 3
+
+Location on kronos:
+All the image files are there.  
+
+/mihg/data/solexa/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Data/C1-36_Firecrest1.9.2_03-06-2008_jhoffman/Bustard1.9.2_03-06-2008_jhoffman/GERALD_03-06-2008_jhoffman
+
+Lane 1: 1pM G006
+Lane 2: 1pM G006
+Lane 3: 1pM G006
+Lane 4: 2pM phiX control
+Lane 5: 2pM G006
+Lane 6: 2pM G006
+Lane 7: 2pM G006
+Lane 8: 2pM JIA
+
+
+
+
+
+From: Hulme, William 
+Sent: Wednesday, April 01, 2009 2:23 PM
+To: Young, Stuart
+Cc: Hedges, Dale
+Subject: RE: questions-sorry
+
+HEY STUART,  That would be awesome.  All the image files are there.  Could you just do the base calling for now, for lanes 1-4 of the FIRST RUN and all of the SECOND RUN.
+
+Is it possible to get it done by Friday morning for Dales meeting?  Sorry to bother you.  Once we figure out how to runit on kronos I will take it off your hands.  
+
+Bill
+
+William Hulme
+Core Director of Sequencing
+Miami Institute for Human Genomics
+12500 SW 152nd St
+UM South Campus Building A
+Miami, FL 33177
+work: (305) 243-8718
+cell: (305) 213-7799
+fax: (305) 378-8248
+________________________________________
+From: Young, Stuart 
+Sent: Wednesday, April 01, 2009 4:43 AM
+To: Hulme, William
+Subject: RE: questions-sorry
+
+Hi Bill,
+
+I’ve not had a look at these runs before but, if the image files are there, I can rerun the base calls and Eland alignments so you’ll have sequence for all lanes. Which reference sequence should I use?
+
+Cheers,
+
+Stuart.
+
+
+
+From: Hulme, William 
+Sent: Tuesday, March 31, 2009 6:44 PM
+To: Young, Stuart
+Cc: Hoffman, Josh D
+Subject: questions-sorry
+
+Hi Stuart, 
+
+Dale’s 3 Aphid runs were never re-analyzed.  These Runs do not show up on wiki.  They came before RUN1, so to speak. I know you are swamped so I won’t ask you to tackle this (we do need to get some training on running it on kronos, I think)  but I had some other more pressing questions, especially since he is meeting with his collaborators on Friday.  Please see the bold text and let me know your thoughts briefly.  Thanks a bunch.  Bill
+
+
+First RUN
+
+Lane 1: 1pM ApLSRI
+Lane 2: 2pM ApLSRI
+Lane 3: 2pM ApLSRI
+Lane 4: phiX control [2pM]
+Lane 5: 3pM ApLSRI
+Lane 6: 3pM ApLSRI
+Lane 7: 4pM ApLSRI
+Lane 8: 4pM ApLSRI
+
+Location on kronos:
+
+/mihg/data/solexa/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data/C1-36_Firecrest1.9.2_20-06-2008_dhedges/Bustard1.9.2_20-06-2008_dhedges/GERALD_20-06-2008_dhedges
+
+But we only have sequence.txt files for lanes 5-8.  
+
+
+Second RUN
+
+Lane 1: 1pM W002
+Lane 2: 2pM W002
+Lane 3: 2pM W002
+Lane 4: 2pM phiX control
+Lane5: 3pM W002
+Lane 6: 3pM W002
+Lane 7: 4pM W002
+Lane 8: 4pM W002
+
+Location on kronos: 
+
+/mihg/data/solexa/2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+
+The image files are there, but nothing else!!!
+
+
+Third RUN
+
+Lane 1: 1pM G006
+Lane 2: 1pM G006
+Lane 3: 1pM G006
+Lane 4: 2pM phiX control
+Lane 5: 2pM G006
+Lane 6: 2pM G006
+Lane 7: 2pM G006
+Lane 8: 2pM JIA
+
+
+Location on kronos:
+
+/mihg/data/solexa/201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH/Data/C1-36_Firecrest1.9.2_03-06-2008_jhoffman/Bustard1.9.2_03-06-2008_jhoffman/GERALD_03-06-2008_jhoffman
+
+Complete- we can re-run later.
+
+
+
+William Hulme
+Core Director of Sequencing
+Miami Institute for Human Genomics
+12500 SW 152nd St
+UM South Campus Building A
+Miami, FL 33177
+work: (305) 243-8718
+cell: (305) 213-7799
+fax: (305) 378-8248

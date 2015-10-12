@@ -1,0 +1,87 @@
+Notes-apps-sendmail.txt
+
++++++++</entry>
+
+
+
+<entry [Fri Jul 11 21:22:35 EDT 2008] FIX "DSN: Data format error" DURING twiki SET UP >
+
+
+
+
+this error appears to be caused in several ways, most related to DNS
+name service. A few:
+
+1. if your sending machine does not have it's own name/IPaddress in
+its /etc/hosts file, it will cause the upstream target/relay host
+to reject the message with something which means: "I don't know who
+you are".
+
+The sending MTA sendmail then issues the error in the
+maillog "...dsn=5.6.0 stat=Data Format Error". The fix for this is
+to have a correct /etc/hosts
+
+
+
+1. CHECK sendmail ERROR LOG:
+
+tail /var/log/maillog
+
+Jul 11 18:34:45 solexa01 sendmail[9636]: m6BMYjA2009636: from=apache, size=496, class=0, nrcpts=1, msgid=<200807112234.m6BMYjA2009636@localhost.localdomain>, relay=apache@localhost
+Jul 11 18:34:45 solexa01 sendmail[9637]: m6BMYjLY009637: from=<apache@localhost.localdomain>, size=695, class=0, nrcpts=1, msgid=<200807112234.m6BMYjA2009636@localhost.localdomain>, proto=ESMTP, daemon=MTA, relay=solexa01 [127.0.0.1]
+Jul 11 18:34:45 solexa01 sendmail[9636]: m6BMYjA2009636: to=AnonymousUser <syoung@med.miami.edu>, ctladdr=apache (48/48), delay=00:00:00, xdelay=00:00:00, mailer=relay, pri=30496, relay=[127.0.0.1] [127.0.0.1], dsn=2.0.0, stat=Sent (m6BMYjLY009637 Message accepted for delivery)
+Jul 11 18:34:45 solexa01 sendmail[9639]: STARTTLS=client, relay=medip01.med.miami.edu., version=TLSv1/SSLv3, verify=FAIL, cipher=DHE-RSA-AES256-SHA, bits=256/256
+Jul 11 18:34:45 solexa01 sendmail[9639]: m6BMYjLY009637: to=<syoung@med.miami.edu>, ctladdr=<apache@localhost.localdomain> (48/48), delay=00:00:00, xdelay=00:00:00, mailer=esmtp, pri=120695, relay=medip01.med.miami.edu. [129.171.88.226], dsn=5.6.0, stat=Data format error
+Jul 11 18:34:45 solexa01 sendmail[9639]: m6BMYjLY009637: m6BMYjLY009639: DSN: Data format error
+Jul 11 18:34:45 solexa01 sendmail[9639]: m6BMYjLY009639: to=root, delay=00:00:00, xdelay=00:00:00, mailer=local, pri=31939, dsn=2.0.0, stat=Sent
+
+
+2. CHECK IP ADDRESS AND HOST NAME:
+
+
+[root@solexa01 log]# /sbin/ifconfig | grep inet
+
+    inet addr:10.150.8.95  Bcast:10.150.8.255  Mask:255.255.255.0
+
+[root@solexa01 log]# hostname
+
+    solexa01
+
+
+
+3. EDIT /etc/hosts
+
+[root@solexa01 log]# cat /etc/hosts
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1       solexa01 localhost.localdomain localhost
+::1   localhost6.localdomain6 localhost6
+[root@solexa01 log]# 
+
+emacs /etc/hosts
+# Do not remove the following line, or various programs
+# that require network functionality will fail.
+127.0.0.1               solexa01 localhost.localdomain localhost
+127.0.0.1               solexa01.med.miami.edu solexa01 SOLEXA01
+::1             localhost6.localdomain6 localhost6
+
+
+4. RESTART sendmail
+
+/etc/init.d/sendmail restart
+
+
+5. TEST sendmail ON THE COMMAND LINE
+
+
+/usr/lib/sendmail -v -d8.99 -d38.99 syoung@med.miami.edu
+
+### /usr/lib/sendmail -t -oi -oeq  ### didn't work
+
+
+
+
+
+
+
+

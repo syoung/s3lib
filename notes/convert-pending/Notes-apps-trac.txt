@@ -1,0 +1,4915 @@
+Notes-apps-trac.txt
+
+
+</entry>
+
+
+
+<entry [Thu Jun 10 13:16:08 EDT 2010] SET CSS FOR TRAC>
+
+
+
+
+http://trac.edgewall.org/wiki/CookBook/SiteStyleCss
+
+ENABLE PROJECT site.css
+http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+
+
+
+1. SAVE THIS AS templates/site.html
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+
+  <!--! Add site-specific style sheet -->
+  <head py:match="head" py:attrs="select('@*')">
+    ${select('*|comment()|text()')}
+    <link rel="stylesheet" type="text/css"
+          href="${href.chrome('site/style.css')}" />
+  </head>
+
+  <body py:match="body" py:attrs="select('@*')">
+    <!--! Add site-specific header -->
+    <div id="siteheader">
+      <!--! Place your header content here... -->
+    </div>
+
+    ${select('*|text()')}
+
+    <!--! Add site-specific footer -->
+    <div id="sitefooter">
+      <!--! Place your footer content here... -->
+    </div>
+  </body>
+</html>
+
+
+2. CREATE A style.css FILE AND PLACE IT IN htdocs/style.css
+
+
+html {
+margin: 0px;
+padding: 0px;
+}
+
+	body {
+font-family: "Gill Sans", Tahoma, Geneva, Trebuchet MS, Verdana, Arial, sans-serif;
+font-size: 0.85em;
+width: 100%;
+margin-right: auto;
+margin-left: auto;
+padding: 0px;
+color: #000000;
+background-color: #ffffff;
+}
+	
+	img {
+border: none;
+}
+
+table {
+	margin: 0;
+	border: none;
+	border-collapse: collapse;
+}
+
+	tt {
+background-color: white;
+}
+	
+	span {
+white-space: nowrap;
+}
+		
+	#footer {
+width: 100%;
+clear: both;
+text-align: left;
+color: #000000;
+background-color: #ffffff;
+font-size: 0.75em;
+padding: 0px 0px 30px 30px;
+}
+	
+	#header {
+float: left;
+width: 100%;
+color: #000000;
+}
+	
+	#header #logo {
+margin: 20px 10px 10px 30px;
+float: left;
+}
+
+	#header #title {
+float: left;
+margin: 20px 0 30px 30px;
+}
+	
+	#header h1#maintitle {
+font-family: "Gill Sans", Tahoma, Geneva, Trebuchet MS, Verdana, Arial, sans-serif;
+font-size: 3.0em;
+margin-bottom: 0;
+margin-top: 27px;
+}
+
+	#header h3#subtitle {
+font-size: 1.2em;
+font-family: Georgia;
+font-weight: normal;
+margin-top: 5px;
+}
+	
+	
+	#features {
+clear: both;
+}
+	
+	#container {
+width: 1120px;
+float: left;
+padding-bottom: 15px;
+color: #000000;
+max-width: none;
+}
+
+	#content {
+float: left;
+background-color: #e5e5db;
+padding: 10px 20px 30px;
+min-height: 400px;
+width: 800px;
+	}
+	
+	.ext {
+background: url(http://media.cyberduck.ch/img/extlink.gif) no-repeat 0 50%;
+padding-bottom: 1px;
+padding-left: 16px
+}
+	
+	.version3 {
+		/* background:url(http://media.cyberduck.ch/img/badge.png) no-repeat 100% 50%; */
+		/* padding-right:25px;*/
+}
+	
+	#download {
+text-align: right;
+float: right;
+}
+
+	#teaser {
+float: left;
+width: 280px;
+}
+
+	.box-shadow-start {
+background: transparent url(http://media.cyberduck.ch/img/teaserbgstart.png) no-repeat scroll 0 100%;
+margin-left: -45px;
+padding-left: 45px;
+height: 40px;
+}
+	.box-shadow-end {
+background: transparent url(http://media.cyberduck.ch/img/teaserbgend.png) no-repeat scroll 0 0;
+margin-left: -45px;
+padding-left: 45px;
+height: 83px;
+}
+	
+	.box-shadow {
+background: transparent url(http://media.cyberduck.ch/img/teaserbg.png) repeat-y scroll 0 0;
+margin-left: -45px;
+padding-left: 45px;
+}
+	
+	#teaser p {
+text-align: right;
+padding-right: 15px;
+margin: 0;
+}
+		
+	input#paypal {
+width: 62px;
+height: 31px;
+}
+	
+	img#amazon {
+position: relative;
+float: right;
+width: 62px;
+}
+	
+	#navigation {
+float: left;
+clear: both;
+width: 1120px;
+text-align: right;
+}
+	
+	body#index a#navigation-index, 
+	body#features a#navigation-features,
+	body#changelog a#navigation-changelog,
+	body#source a#navigation-source, 		
+	body#reviews a#navigation-reviews, 
+	body#license a#navigation-license, 
+	body#donate a#navigation-donate {
+color: #0066cc;
+}
+	
+	#screenshots {
+text-align: center;
+}
+	
+	div.figure {
+float: left;
+width: 50%;
+}
+	
+	div.figure p {
+text-align: center;
+font-style: italic;
+font-size: smaller;
+text-indent: 0;
+padding: 0 !important;
+margin: 0 !important;
+}
+	
+	a.swissmade {
+float: right;
+}
+
+	#sidebar {
+float: right;
+width: 280px;
+}
+	
+	#navigation ul {
+padding: 2px 0 2px 0;
+background-color: #EFEFEF;
+min-height: 18px;
+margin: 0;
+}
+	
+	#navigation ul li {
+list-style: none;
+display: inline;
+font-weight: normal;
+border-left: 1px solid #555555;
+padding: 0 10px;
+}
+	
+	#navigation a {
+text-decoration: none;
+font-family: "Gill Sans", Tahoma, Geneva, Trebuchet MS, Verdana, Arial, sans-serif;
+font-weight: bold;
+		/*color: #4E4E4E;*/
+}
+	
+	#navigation ul > li:first-child {
+padding-left: 0px;
+border-left: none;
+}
+	
+	tr {
+border-bottom: 1px solid white;
+}
+	
+	td {
+text-align: left;
+vertical-align: top;
+}
+	
+	input#mailinglist {
+width: 120px;
+}
+	
+	.emphasized {
+color: #000000;
+}
+	
+	.underline {
+border-width: 0px 0px 1px 0px;
+border-color: #000000;
+border-style: dotted;
+color: #000000;
+}
+	
+	div.citation {
+text-align: right;
+font-style: italic;
+}
+
+	p {
+text-align: left;
+padding-left: 5px;
+padding-right: 5px;
+}
+	
+	form {
+text-align: center;
+margin: 0;
+}
+
+	#maincolumn {
+float: left;
+width: 800px;
+}
+	
+	#maincolumn p {
+padding-left: 10px;
+padding-right: 10px;
+}
+
+	p.lead strong {
+		/*color: #4e4e4e;*/
+		font-size: 1.3em;
+}
+	
+	p.lead a {
+		/*color: #4e4e4e;*/
+}
+	
+
+	strong {
+color: #000000;
+font-family: "Gill Sans", Tahoma, Geneva, Trebuchet MS, Verdana, Arial, sans-serif;
+}
+	
+	.box-filled {
+color: #4e4e4e;;
+background-color: #e5e5db;
+margin-bottom: 5px;
+}
+
+	#sidebar .box-solid {
+float: left;
+width: 270px;
+padding-left: 10px;
+border-left: 0;
+}
+
+	.box-solid {
+border: 1px solid #e2e2e2;
+margin-bottom: 5px;
+}
+
+	ul {
+padding-left: 20px;
+padding-right: 5px;
+list-style-type: disc;
+list-style-position: inside;
+}
+	
+	div.image a,
+ 	div.image a:link,
+	div.image a:visited,
+	div.image a:active,
+	div.image a:hover {
+color: #000000;;
+background-color: transparent;
+text-decoration: none;
+}
+
+	a:link, a:visited {
+color: #000000;;
+background-color: transparent;
+text-decoration: underline;
+border: none;
+}
+
+	a:hover {
+color: #0066cc;;
+background-color: transparent;
+text-decoration: none;
+border: none;
+}
+
+	b.light {
+color: #ffffff;
+}
+	
+	blockquote {
+/*	  	quotes: '\201C' '\201D' '\2018' '\2019';*/
+		display:block;
+margin-left: 15px;
+color: #4e4e4e;
+font-style: italic;
+font-weight: bold;
+}
+	
+	/*
+	q:before, q:after {
+color: #69c;;
+font-size: 500%;
+display: block;
+font-weight: normal;
+height: 0px;
+}
+	
+	q:before {
+display: block;
+content: open-quote;
+margin-left: -25px;
+}
+
+	q:after {
+display: block;
+content: close-quote;
+margin-left: 90%;
+margin-top: -10px;
+margin-bottom: 40px;
+}
+	*/
+
+	div.feature {
+position: relative;
+float: left;
+width: 33%;
+}
+
+	#sidebar div.feature {
+width: 100%;
+	}
+	
+	img.feature {
+position: relative;
+float: left;
+clear: both;
+padding-right: 6px;
+height: 16px;
+}
+
+	img.sidebar {
+padding-right: 6px;
+float: left;
+}
+	
+   .google {
+border-top: 10px solid white;
+height: 100px;
+background-color: white;
+}
+	
+	p.align-right {
+text-align: right;
+font-style: italic;
+}
+	
+	div.amzn_wdgt {
+width: 100% !important;
+border: none !important;
+}
+	
+	div.amzn_wdgt div.wdgt_brdr div {
+text-align: left !important;
+}
+	
+	div.amzn_wdgt div.wdgt_ft, div.amzn_wdgt div.wdgt_hd {
+display: none;
+}
+
+	.hidden {
+display: none;
+}
+	
+	li.removed {
+text-decoration: line-through;
+}
+
+	td.y {
+background: url(img/checkmark.png) no-repeat scroll 0 0;
+	}
+
+	td.n {
+background: url(img/no.png) no-repeat scroll 0 0;
+	}
+	
+	th {
+		text-align: left;
+	}
+	
+	.version {
+		display: block;
+		padding: 3px 10px 3px 10px;
+		background-color: #fff3f3;
+		border: 1px solid red;
+		color: #cc0000;
+	}
+
+
+
+2. RESTART APACHE
+
+
+
+
+
+http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+
+Customizing the Trac Interface
+
+
+This page is meant to give users suggestions on how they can customize the look of Trac. Topics on this page cover editing the HTML templates and CSS files, but not the program code itself. The topics are intended to show users how they can modify the look of Trac to meet their specific needs. Suggestions for changes to Trac's interface applicable to all users should be filed as tickets, not listed on this page.
+
+Project Logo and Icon
+
+The easiest parts of the Trac interface to customize are the logo and the site icon. Both of these can be configured with settings in trac.ini.
+
+The logo or icon image should be put in a folder named "htdocs" in your project's environment folder. (Note: in projects created with a Trac version prior to 0.9 you will need to create this folder)
+
+Note: you can actually put the logo and icon anywhere on your server (as long as it's accessible through the web server), and use their absolute or server-relative URLs in the configuration.
+
+Now configure the appropriate section of your trac.ini:
+
+Logo
+
+Change the src setting to site/ followed by the name of your image file. The width and height settings should be modified to match your image's dimensions (the Trac chrome handler uses "site/" for files within the project directory htdocs and "common/" for the common ones).
+
+[header_logo]
+src = site/my_logo.gif
+alt = My Project
+width = 300
+height = 100
+Icon
+
+Icons should be a 16x16 image in .gif or .ico format. Change the icon setting to site/ followed by the name of your icon file. Icons will typically be displayed by your web browser next to the site's URL and in the Bookmarks menu.
+
+[project]
+icon = site/my_icon.ico
+Note though that this icon is ignored by Internet Explorer, which only accepts a file named favicon.ico at the root of the host. To make the project icon work in both IE and other browsers, you can store the icon in the document root of the host, and reference it from trac.ini as follows:
+
+[project]
+icon = /favicon.ico
+Should your browser have issues with your favicon showing up in the address bar, you may put a "?" (less the quotation marks) after your favicon file extension.
+
+[project]
+icon = /favicon.ico?
+Custom Navigation Entries
+
+The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them (but not for adding new ones).
+
+In the following example, we rename the link to the Wiki start "Home", and hide the "Help/Guide?". We also make the "View Tickets" entry link to a specific report .
+
+[mainnav]
+wiki.label = Home
+tickets.href = /report/24
+
+[metanav]
+help = disabled
+See also TracNavigation for a more detailed explanation of the mainnav and metanav terms.
+
+Site Appearance
+
+Trac is using  Genshi as the templating engine. Documentation is yet to be written, in the meantime the following tip should work.
+
+Say you want to add a link to a custom stylesheet, and then your own header and footer. Save the following content as 'site.html' inside your projects templates directory (each Trac project can have their own site.html), e.g. /path/to/env/templates/site.html:
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+
+  <!--! Add site-specific style sheet -->
+  <head py:match="head" py:attrs="select('@*')">
+    ${select('*|comment()|text()')}
+    <link rel="stylesheet" type="text/css"
+          href="${href.chrome('site/style.css')}" />
+  </head>
+
+  <body py:match="body" py:attrs="select('@*')">
+    <!--! Add site-specific header -->
+    <div id="siteheader">
+      <!--! Place your header content here... -->
+    </div>
+
+    ${select('*|text()')}
+
+    <!--! Add site-specific footer -->
+    <div id="sitefooter">
+      <!--! Place your footer content here... -->
+    </div>
+  </body>
+</html>
+Those who are familiar with XSLT may notice that Genshi templates bear some similarities. However, there are some Trac specific features - for example ${href.chrome('site/style.css')} attribute references template placed into environment's htdocs/ In a similar fashion ${chrome.htdocs_location} is used to specify common htdocs/ directory from Trac installation.
+
+site.html is one file to contain all your modifications. It usually works by the py:match (element or attribute), and it allows you to modify the page as it renders - the matches hook onto specific sections depending on what it tries to find and modify them. See  this thread for a detailed explanation of the above example site.html. A site.html can contain any number of such py:match sections for whatever you need to modify. This is all  Genshi, so the docs on the exact syntax can be found there.
+
+Example snippet of adding introduction text to the new ticket form (hide when preview):
+
+<form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')">
+  <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)">
+    <p>Please make sure to search for existing tickets before reporting a new one!</p>
+  </py:if>
+  ${select('*')} 
+</form>
+This example illustrates a technique of using req.environ['PATH_INFO'] to limit scope of changes to one view only. For instance, to make changes in site.html only for timeline and avoid modifying other sections - use req.environ['PATH_INFO'] == '/timeline' condition in <py:if> test.
+
+More examples snippets for site.html can be found at CookBook/SiteHtml.
+
+Example snippets for style.css can be found at CookBook/SiteStyleCss.
+
+If the environment is upgraded from 0.10 and a site_newticket.cs file already exists, it can actually be loaded by using a workaround - providing it contains no ClearSilver processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a <div> block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
+
+<form py:match="div[@id='content' and @class='ticket']/form" py:attrs="select('@*')"
+        xmlns:xi="http://www.w3.org/2001/XInclude">
+  <py:if test="req.environ['PATH_INFO'] == '/newticket' and (not 'preview' in req.args)"> 
+    <xi:include href="site_newticket.cs"><xi:fallback /></xi:include>
+  </py:if>
+  ${select('*')} 
+</form>
+Also note that the site.html (despite its name) can be put in a common templates directory - see the [inherit] templates_dir option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global site.html file can be made to include any existing header, footer and newticket snippets.
+
+Project List
+
+You can use a custom Genshi template to display the list of projects if you are using Trac with multiple projects.
+
+The following is the basic template used by Trac to display a list of links to the projects. For projects that could not be loaded it displays an error message. You can use this as a starting point for your own index template.
+
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <head>
+    <title>Available Projects</title>
+  </head>
+  <body>
+    <h1>Available Projects</h1>
+    <ul>
+      <li py:for="project in projects" py:choose="">
+        <a py:when="project.href" href="$project.href"
+           title="$project.description">$project.name</a>
+        <py:otherwise>
+          <small>$project.name: <em>Error</em> <br /> ($project.description)</small>
+        </py:otherwise>
+      </li>
+    </ul>
+  </body>
+</html>
+Once you've created your custom template you will need to configure the webserver to tell Trac where the template is located (pls verify ... not yet changed to 0.11):
+
+For FastCGI:
+
+FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects \
+              -initial-env TRAC_ENV_INDEX_TEMPLATE=/path/to/template
+For mod_python:
+
+PythonOption TracEnvParentDir /parent/dir/of/projects
+PythonOption TracEnvIndexTemplate /path/to/template
+For CGI:
+
+SetEnv TRAC_ENV_INDEX_TEMPLATE /path/to/template
+For TracStandalone, you'll need to set up the TRAC_ENV_INDEX_TEMPLATE environment variable in the shell used to launch tracd:
+
+Unix
+$ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
+Windows
+$ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
+Project Templates
+
+The appearance of each individual Trac environment (that is, instance of a project) can be customized independently of other projects, even those hosted by the same server. The recommended way is to use a site.html template (see #SiteAppearance) whenever possible. Using site.html means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of theme.html or any other Trac template, you need to migrate your modifiations to the newer version - if not, new Trac features or bug fixes may not work as expected.
+
+With that word of caution, any Trac template may be copied and customized. The default Trac templates are located inside the installed Trac egg (/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ++). The #ProjectList template file is called index.html, while the template responsible for main layout is called theme.html. Page assets such as images and CSS style sheets are located in the egg's trac/htdocs directory.
+
+However, do not edit templates or site resources inside the Trac egg - installing Trac again can completely delete your modifications. Instead use one of two alternatives:
+
+For a modification to one project only, copy the template to project templates directory.
+For a modification shared by several projects, copy the template to a shared location and have each project point to this location using the [inherit] templates_dir = trac.ini option.
+Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
+
+Trac caches templates in memory by default to improve performance. To apply a template you need to restart the server.
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jun 10 13:15:08 EDT 2010] BACKUP agua IN SUBVERSION AND TRAC ON ngsdev>
+
+
+
+
+CREATE A SVN BACKUP USING hotcopy
+=================================
+NB: 'svnadmin dump' doesn't include the repo's control files:
+http://stackoverflow.com/questions/33055/what-is-the-best-way-to-backup-subversion-repositories
+
+
+WINDOWS
+=======
+ON hplaptop
+
+E:\svn-export>svnadmin hotcopy E:/svn/aqwa E:/svn-export/agua.100314
+
+WHICH CREATES THE FOLLOWING DIRECTORY STRUCTURE:
+
+dir E:\svn-export\agua.100314
+
+    03/14/2010  08:56 PM    <DIR>          conf
+    03/14/2010  08:56 PM    <DIR>          db
+    03/14/2010  08:56 PM                 2 format
+    03/14/2010  08:56 PM    <DIR>          hooks
+    03/14/2010  08:56 PM    <DIR>          locks
+    03/14/2010  08:56 PM               234 README.txt
+
+
+LINUX
+=====
+ON ngsdev
+
+cd /nethome/syoung/base/pipeline/svn-export
+time svnadmin hotcopy /srv/svn/aqwa agua.100314
+
+real    0m17.529s
+user    0m0.059s
+sys     0m1.504s
+
+[syoung@ngsdev svn-export]$ ll agua.100314/
+
+    drwxr-xr-x 2 syoung bioinfo 16K Mar 14 21:12 conf
+    drwxr-xr-x 3 syoung bioinfo 16K Mar 14 21:12 dav
+    drwxr-sr-x 6 syoung bioinfo 16K Mar 14 21:13 db
+    -r--r--r-- 1 syoung bioinfo   2 Mar 14 21:13 format
+    drwxr-xr-x 2 syoung bioinfo 16K Mar 14 21:12 hooks
+    drwxr-xr-x 2 syoung bioinfo 16K Mar 14 21:12 locks
+    -rw-r--r-- 1 syoung bioinfo 229 Mar 14 21:12 README.txt
+
+
+
+CREATE A trac BACKUP USING trac-admin hotcopy
+=============================================
+trac-admin will lock the database while copying.
+
+
+1. MAKE DIRECTORY FOR hotcopy BACKUPS
+
+mkdir -p /nethome/syoung/base/pipeline/trac-export
+cd /nethome/syoung/base/pipeline/trac-export
+
+
+2. DO hotcopy BACKUP
+
+trac-admin /srv/svn/agua hotcopy /nethome/syoung/base/pipeline/trac-export/agua-100314
+
+
+3. TAR/ZIP BACKUP
+
+cd /nethome/syoung/base/pipeline/trac-export
+tar cvfz agua-100314.tar.gz agua-100314
+
+Please, note, that hotcopy command does not overwrite target directory and when such exists, hotcopy ends with error: Command failed: [Errno 17] File exists: This is discussed in #3198.
+
+
+RESTORE FROM BACKUP
+===================
+THE BACKUP INCLUDES THE ENTIRE PROJECT ENVIRONMENT DIRECTORY (e.g., /srv/svn/agua) INCLUDING ITS SQLite DATABASE
+
+TO RESTORE agua FROM BACKUP:
+
+1. STOP apache
+
+2. UNZIP/UNTAR BACKUP TO /srv/svn/agua
+
+3. RESTART apache
+
+
+    Note: Automatic backup of environments that don't use SQLite as database backend is not supported at this time. As a workaround, we recommend that you stop the server, copy the environment directory, and make a backup of the database using whatever mechanism is provided by the database system.
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+INSTALL fullblog PLUGIN ON ngsdev
+
+http://trac-hacks.org/wiki/FullBlogPlugin#DownloadandInstall
+
+1. GET BY SVN
+=============
+
+cd /root/software/trac
+svn co http://trac-hacks.org/svn/fullblogplugin
+
+
+2. INSTALL
+==========
+
+cd /root/software/trac/fullblogplugin/0.11
+python setup.py install
+
+    ...
+    Processing TracFullBlogPlugin-0.1.1_r7774-py2.4.egg
+    creating /usr/lib/python2.4/site-packages/TracFullBlogPlugin-0.1.1_r7774-py2.4.egg
+    Extracting TracFullBlogPlugin-0.1.1_r7774-py2.4.egg to /usr/lib/python2.4/site-packages
+    Adding TracFullBlogPlugin 0.1.1-r7774 to easy-install.pth file
+    
+    Installed /usr/lib/python2.4/site-packages/TracFullBlogPlugin-0.1.1_r7774-py2.4.egg
+    Processing dependencies for TracFullBlogPlugin==0.1.1-r7774
+
+
+WHICH CREATED THE EGG IN THE dist FOLDER:
+
+cd /root/software/trac/fullblogplugin/0.11
+ll dist
+
+    -rw-r--r-- 1 root root 73957 Mar 14 23:53 TracFullBlogPlugin-0.1.1_r7774-py2.4.egg
+
+
+NB: To update the plugin later, you can then just do svn up to pull down the latest source from repository and install it again.
+
+
+NNB: THIS DIDN'T WORK (COMPLAINED THAT URL WAS HTML PAGE)
+easy_install --always-unzip http://trac-hacks.org/svn/fullblogplugin/0.11
+
+
+3. COPY THE EGG TO THE trac PLUGINS DIRECTORY
+=============================================
+
+cp /root/software/trac/fullblogplugin/0.11/dist/TracFullBlogPlugin-0.1.1_r7774-py2.4.egg \
+/srv/trac/agua/plugins
+
+
+4. ADD TO trac.ini
+==================
+Trac configuration is done by editing the trac.ini config file, located in <projectenv>/conf/trac.ini.
+
+
+emacs /srv/trac/agua/conf/trac.ini
+
+ADD THIS ENTRY:
+
+[components]
+tracfullblog.* = enabled
+
+
+5. UPGRADE TO UPDATE TRAC WITH FULLBLOG PLUGIN
+==============================================
+
+trac-admin /srv/trac/agua upgrade
+
+    Upgrade done.
+
+
+6. RESTART APACHE
+=================
+
+
+/usr/sbin/apachectl -k restart
+
+
+CHECK Admin->Plugins FOR TraFullBlogPlugin
+
+OK!!
+
+
+Add one or more permissions to let users view, create, comment and modify posts (see list above).
+
+
+7. MOVE THE 'Blog' BUTTON TO THE BEGINNING OF THE TOOLBAR
+=========================================================
+
+EDIT trac.ini:
+
+emacs /srv/trac/agua/conf/trac.ini
+
+[trac]
+mainnav = blog,wiki,timeline,roadmap,browser,tickets,newticket,search
+
+REFRESH PAGE TO SEE Blog BUTTON IN NEW POSITION
+
+OK!
+
+
+
+8. MAKE THE BLOG THE DEFAULT HOME PAGE FOR THE PROJECT
+======================================================
+
+UPDATE trac.ini:
+
+emacs /srv/trac/agua/conf/trac.ini
+
+ADD THIS ENTRY:
+
+[trac]
+default_handler = FullBlogModule
+
+OK!
+
+
+
+
+FULLBLOGPLUGIN INFO PAGE
+========================
+http://trac-hacks.org/wiki/FullBlogPlugin#DownloadandInstall
+
+Self-contained Blog plugin
+Description
+
+This plugin provides a project Blog, but unlike TracBlogPlugin and SimpleBlogPlugin it does not use Wiki pages to store the content. It has no dependencies on other plugins.
+
+This is a production-ready release, available for an up-to-date Trac 0.11 installation. The implemented features should work as expected.
+
+Basic features are:
+
+Create, edit and view blog posts under a new 'Blog' menu a.
+Browse post by month, category and author + and Archive page for all posts.
+Attachments on blog posts.
+Comments for blog posts.
+Posts and comments appear in Timeline / RSS.
+Search for blog posts and comments.
+Admin page for basic settings and editing informational text in sidebar.
+Permissions for BLOG_VIEW, BLOG_COMMENT, BLOG_MODIFY_OWN, BLOG_MODIFY_ALL, BLOG_ADMIN.
+Support for Trac fine-grained permissions security checks (based on resource / realm).
+Special handling of a post named 'about'.
+Area in sidebar for information text, blogroll, links and similar.
+TracLink provider. Examples: [blog:this_is_my_post], [blog:category/trac], [blog:2007/10].
+Delete post version, delete post and delete comment.
+A tags provider for TagsPlugin if plugin is available.
+A [[BlogList]] news-listing macro with various display modes for pulling blog posts into the wiki.
+Change listener and manipulator APIs for hooking on to changes.
+Spamfilter implementation included - thanks to athomas, ([3106] - forgot commit message...)
+Sample plugin provided illustrating how to use the hooks.
+FullBlogNotificationPlugin adds email notification of changes to posts and comments.
+FullBlogAnnouncementsPlugin does the same as FullBlogNotificationPlugin except it uses the AnnouncerPlugin to do it's work.
+Sample plugin that implements blog post 'draft' functionality (BlogDraftPlugin.py).
+Some planned features are not yet done:
+
+Diff between version of the post.
+XmlRpcPlugin support.
+Feedback is most welcome - see osimons to get in touch with me by mail or on the #trac channel.
+
+
+</entry>
+
+
+
+<entry [Sun Mar 14 17:01:44 EDT 2010] INSTALL subversion AND trac ON linode>
+
+
+
+Setup Subversion and Trac on CentOS 5
+
+1. Fresh install of CentOS.
+===========================
+
+http://www.daniel-skinner.co.uk/setup-subversion-and-trac-on-centos-5/06/01/2008
+I followed most of the Perfect Setup Guide, except the mail and ISPConfig stuff. The important part is setting up the Apache2 web server.
+
+
+
+2. INSTALL SVN AND mod_dav_svn
+==============================
+
+AS root:
+
+yum install mod_dav_svn subversion
+
+    ...
+    Dependencies Resolved    
+    =====================================================================================================================
+     Package                        Arch                  Version                           Repository              Size
+    =====================================================================================================================
+    Installing:
+     mod_dav_svn                    x86_64                1.4.2-4.el5_3.1                   base                    70 k
+     subversion                     x86_64                1.4.2-4.el5_3.1                   base                   2.4 M
+     subversion                     i386                  1.4.2-4.el5_3.1                   base                   2.3 M
+    Updating:
+     db4                            x86_64                4.3.29-10.el5                     base                   898 k
+     expat                          x86_64                1.95.8-8.3.el5_4.2                updates                 76 k
+     libstdc++                      x86_64                4.1.2-46.el5_4.2                  updates                352 k
+     sqlite                         x86_64                3.3.6-5                           base                   206 k
+    Installing for dependencies:
+     apr                            i386                  1.2.7-11.el5_3.1                  base                   123 k
+     apr-util                       i386                  1.2.7-7.el5_3.2                   base                    76 k
+     cyrus-sasl-lib                 i386                  2.1.22-5.el5                      base                   126 k
+     db4                            i386                  4.3.29-10.el5                     base                   909 k
+     expat                          i386                  1.95.8-8.3.el5_4.2                updates                 77 k
+     libstdc++                      i386                  4.1.2-46.el5_4.2                  updates                361 k
+     ncurses                        i386                  5.5-24.20060715                   base                   1.1 M
+     neon                           i386                  0.25.5-10.el5_4.1                 updates                101 k
+     neon                           x86_64                0.25.5-10.el5_4.1                 updates                100 k
+     openldap                       i386                  2.3.43-3.el5                      base                   293 k
+     perl-URI                       noarch                1.35-3                            base                   116 k
+     postgresql-libs                i386                  8.1.18-2.el5_4.1                  updates                196 k
+     sqlite                         i386                  3.3.6-5                           base                   213 k
+    
+    Transaction Summary
+    =====================================================================================================================
+    Install     16 Package(s)         
+    Update       4 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total download size: 10 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    (1/20): mod_dav_svn-1.4.2-4.el5_3.1.x86_64.rpm                                                |  70 kB     00:00     
+    (2/20): apr-util-1.2.7-7.el5_3.2.i386.rpm                                                     |  76 kB     00:00     
+    (3/20): expat-1.95.8-8.3.el5_4.2.x86_64.rpm                                                   |  76 kB     00:00     
+    (4/20): expat-1.95.8-8.3.el5_4.2.i386.rpm                                                     |  77 kB     00:00     
+    (5/20): neon-0.25.5-10.el5_4.1.x86_64.rpm                                                     | 100 kB     00:00     
+    (6/20): neon-0.25.5-10.el5_4.1.i386.rpm                                                       | 101 kB     00:00     
+    (7/20): perl-URI-1.35-3.noarch.rpm                                                            | 116 kB     00:00     
+    (8/20): apr-1.2.7-11.el5_3.1.i386.rpm                                                         | 123 kB     00:00     
+    (9/20): cyrus-sasl-lib-2.1.22-5.el5.i386.rpm                                                  | 126 kB     00:00     
+    (10/20): postgresql-libs-8.1.18-2.el5_4.1.i386.rpm                                            | 196 kB     00:00     
+    (11/20): sqlite-3.3.6-5.x86_64.rpm                                                            | 206 kB     00:00     
+    (12/20): sqlite-3.3.6-5.i386.rpm                                                              | 213 kB     00:00     
+    (13/20): openldap-2.3.43-3.el5.i386.rpm                                                       | 293 kB     00:00     
+    (14/20): libstdc++-4.1.2-46.el5_4.2.x86_64.rpm                                                | 352 kB     00:00     
+    (15/20): libstdc++-4.1.2-46.el5_4.2.i386.rpm                                                  | 361 kB     00:00     
+    (16/20): db4-4.3.29-10.el5.x86_64.rpm                                                         | 898 kB     00:00     
+    (17/20): db4-4.3.29-10.el5.i386.rpm                                                           | 909 kB     00:00     
+    (18/20): ncurses-5.5-24.20060715.i386.rpm                                                     | 1.1 MB     00:00     
+    (19/20): subversion-1.4.2-4.el5_3.1.i386.rpm                                                  | 2.3 MB     00:00     
+    (20/20): subversion-1.4.2-4.el5_3.1.x86_64.rpm                                                | 2.4 MB     00:00     
+    ---------------------------------------------------------------------------------------------------------------------
+    Total                                                                                2.5 MB/s |  10 MB     00:03     
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Updating       : expat                                           [ 1/24] 
+      Updating       : libstdc++                                       [ 2/24] 
+      Installing     : expat                                           [ 3/24] 
+      Updating       : db4                                             [ 4/24] 
+      Installing     : neon                                            [ 5/24] 
+      Installing     : apr                                             [ 6/24] 
+      Updating       : sqlite                                          [ 7/24] 
+      Installing     : neon                                            [ 8/24] 
+      Installing     : postgresql-libs                                 [ 9/24] 
+      Installing     : ncurses                                         [10/24] 
+      Installing     : sqlite                                          [11/24] 
+      Installing     : cyrus-sasl-lib                                  [12/24] 
+      Installing     : openldap                                        [13/24] 
+      Installing     : libstdc++                                       [14/24] 
+      Installing     : perl-URI                                        [15/24] 
+      Installing     : subversion                                      [16/24] 
+      Installing     : db4                                             [17/24] 
+      Installing     : apr-util                                        [18/24] 
+      Installing     : subversion                                      [19/24] 
+      Installing     : mod_dav_svn                                     [20/24] 
+      Cleanup        : libstdc++                                       [21/24] 
+      Cleanup        : expat                                           [22/24] 
+      Cleanup        : sqlite                                          [23/24] 
+      Cleanup        : db4                                             [24/24] 
+    
+    Installed: mod_dav_svn.x86_64 0:1.4.2-4.el5_3.1 subversion.x86_64 0:1.4.2-4.el5_3.1 subversion.i386 0:1.4.2-4.el5_3.1
+    Dependency Installed: apr.i386 0:1.2.7-11.el5_3.1 apr-util.i386 0:1.2.7-7.el5_3.2 cyrus-sasl-lib.i386 0:2.1.22-5.el5 db4.i386 0:4.3.29-10.el5 expat.i386 0:1.95.8-8.3.el5_4.2 libstdc++.i386 0:4.1.2-46.el5_4.2 ncurses.i386 0:5.5-24.20060715 neon.i386 0:0.25.5-10.el5_4.1 neon.x86_64 0:0.25.5-10.el5_4.1 openldap.i386 0:2.3.43-3.el5 perl-URI.noarch 0:1.35-3 postgresql-libs.i386 0:8.1.18-2.el5_4.1 sqlite.i386 0:3.3.6-5
+    Updated: db4.x86_64 0:4.3.29-10.el5 expat.x86_64 0:1.95.8-8.3.el5_4.2 libstdc++.x86_64 0:4.1.2-46.el5_4.2 sqlite.x86_64 0:3.3.6-5
+    Complete!
+
+
+3. EDIT httpd.conf TO USE dav_svn MODULE
+========================================
+
+
+If the following two lines are not present, add them:
+
+emacs /etc/httpd/conf/httpd.conf
+
+    LoadModule dav_svn_module modules/mod_dav_svn.so
+    LoadModule authz_svn_module modules/mod_authz_svn.so
+
+NB: CAN REMOVE THIS? RESTART OF APACHE SAYS THESE MODULES ARE ALREADY LOADED:
+    
+[root@li77-81 Trac-0.11.7]# /usr/sbin/apachectl -k restart
+
+    [Sun Mar 14 23:28:35 2010] [warn] module dav_svn_module is already loaded, skipping
+    [Sun Mar 14 23:28:35 2010] [warn] module authz_svn_module is already loaded, skipping
+
+
+
+5. INSTALL PYTYHON AND PYTHON MODULES
+=====================================
+
+1. Use yum to install the base package:
+
+sudo su
+yum install python
+
+    Updated: python.x86_64 0:2.4.3-27.el5
+    Complete!
+
+   ###Package python - 2.4.3-21.el5.x86_64 is already installed.
+   ###Nothing to do
+
+2. Install mod_python. This is so Apache can run the python scripts as a module:
+
+   yum install mod_python
+
+        Package mod_python-3.2.8-3.1.x86_64 already installed and latest version
+        Nothing to do
+
+       ####Package mod_python - 3.2.8-3.1.x86_64 is already installed.
+       ####Nothing to do
+      
+      
+
+3. INSTALL setuptools TO INSTALL MySQL-python LATER. DOWNLOAD FROM
+
+   http://cheeseshop.python.org/packages/2.4/s/setuptools
+
+   THIS VERSION OF MySQL-python REQUIRES setuptools version 0.6c5 
+
+       mkdir -p /root/software/trac/setuptools
+       cd /root/software/trac/setuptools
+       wget http://pypi.python.org/packages/2.4/s/setuptools/setuptools-0.6c5-py2.4.egg
+       ls
+           setuptools-0.6c5-py2.4.egg
+
+       chmod 755 setuptools-0.6c5-py2.4.egg
+       ./setuptools-0.6c5-py2.4.egg
+
+           Processing setuptools-0.6c5-py2.4.egg
+           creating /usr/lib/python2.4/site-packages/setuptools-0.6c5-py2.4.egg
+           Extracting setuptools-0.6c5-py2.4.egg to /usr/lib/python2.4/site-packages
+           Adding setuptools 0.6c5 to easy-install.pth file
+           Installing easy_install script to /usr/bin
+           Installing easy_install-2.4 script to /usr/bin
+           
+           Installed /usr/lib/python2.4/site-packages/setuptools-0.6c5-py2.4.egg
+           Processing dependencies for setuptools==0.6c5
+
+4. INSTALL python-devel
+
+   yum install python-devel
+
+    OK
+
+
+5. INSTALL mysql-devel
+
+yum install mysql-devel
+    
+    OK
+
+        Installed: mysql-devel.x86_64 0:5.0.77-4.el5_4.2 mysql-devel.i386 0:5.0.77-4.el5_4.2
+        Dependency Installed: e2fsprogs-devel.x86_64 0:1.39-23.el5 keyutils-libs-devel.x86_64 0:1.2-1.el5 krb5-devel.x86_64 0:1.6.1-36.el5_4.1 libselinux-devel.x86_64 0:1.33.4-5.5.el5 libsepol-devel.x86_64 0:1.15.2-2.el5 mysql.i386 0:5.0.77-4.el5_4.2 openssl-devel.x86_64 0:0.9.8e-12.el5_4.1 zlib-devel.x86_64 0:1.2.3-3
+        Updated: e2fsprogs.x86_64 0:1.39-23.el5 e2fsprogs-libs.x86_64 0:1.39-23.el5 e2fsprogs-libs.i386 0:1.39-23.el5 krb5-libs.x86_64 0:1.6.1-36.el5_4.1 krb5-libs.i386 0:1.6.1-36.el5_4.1 libselinux.x86_64 0:1.33.4-5.5.el5 libselinux.i386 0:1.33.4-5.5.el5 libselinux-python.x86_64 0:1.33.4-5.5.el5 libselinux-utils.x86_64 0:1.33.4-5.5.el5 mysql.x86_64 0:5.0.77-4.el5_4.2 mysql-server.x86_64 0:5.0.77-4.el5_4.2 openssl.x86_64 0:0.9.8e-12.el5_4.1 openssl.i686 0:0.9.8e-12.el5_4.1
+        Complete!
+
+
+6. INSTALL ssl
+
+yum install openssl
+
+    Parsing package install arguments
+    Package openssl-0.9.8e-12.el5_4.1.x86_64 already installed and latest version
+    Package openssl-0.9.8e-12.el5_4.1.i686 already installed and latest version
+    Nothing to do
+
+
+   ####Setting up Install Process
+   ####Parsing package install arguments
+   ####Package openssl - 0.9.8b-10.el5.i686 is already installed.
+   ####Package openssl - 0.9.8b-10.el5.x86_64 is already installed.
+   ####Nothing to do
+
+
+
+yum install openssl-devel
+
+    Installing     : openssl-devel                                     [1/1] 
+    
+    Installed: openssl-devel.i386 0:0.9.8e-12.el5_4.1
+    Complete!
+
+
+   ####Installed: openssl-devel.x86_64 0:0.9.8b-10.el5
+   ####Complete!
+
+   
+INSTALL zlib-devel:
+
+   yum install zlib-devel
+
+        Installed: zlib-devel.i386 0:1.2.3-3
+        Complete!
+
+
+7. Install MySQL-python so that python can interact with mysql
+
+   Download and untar MySQL-python from http://sourceforge.net/projects/mysql-python:
+
+    mkdir -p /root/software/trac/mysql-python
+    cd /root/software/trac/mysql-python
+    wget http://downloads.sourceforge.net/mysql-python/MySQL-python-1.2.2.tar.gz?modtime=1172959928&big_mirror=0
+
+   tar xvfz MySQL-python-1.2.2.tar.gz
+
+    INSTALL gcc:
+    
+    yum install gcc
+
+        Running Transaction
+          Updating       : libgcc                                          [ 1/17] 
+          Updating       : glibc-common                                    [ 2/17] 
+          Updating       : libgcc                                          [ 3/17] 
+          Updating       : glibc                                           [ 4/17] 
+          Updating       : glibc                                           [ 5/17] 
+          Installing     : cpp                                             [ 6/17] 
+          Installing     : libgomp                                         [ 7/17] 
+          Installing     : binutils                                        [ 8/17] 
+          Installing     : kernel-headers                                  [ 9/17] 
+          Installing     : glibc-headers                                   [10/17] 
+          Installing     : glibc-devel                                     [11/17] 
+          Installing     : gcc                                             [12/17] 
+          Cleanup        : libgcc                                          [13/17] 
+          Cleanup        : glibc-common                                    [14/17] 
+          Cleanup        : glibc                                           [15/17] 
+          Cleanup        : glibc                                           [16/17] 
+          Cleanup        : libgcc                                          [17/17] 
+        
+        Installed: gcc.x86_64 0:4.1.2-46.el5_4.2
+        Dependency Installed: binutils.x86_64 0:2.17.50.0.6-12.el5 cpp.x86_64 0:4.1.2-46.el5_4.2 glibc-devel.x86_64 0:2.5-42.el5_4.3 glibc-headers.x86_64 0:2.5-42.el5_4.3 kernel-headers.x86_64 0:2.6.18-164.11.1.el5 libgomp.x86_64 0:4.4.0-6.el5
+        Updated: glibc.x86_64 0:2.5-42.el5_4.3 glibc.i686 0:2.5-42.el5_4.3 glibc-common.x86_64 0:2.5-42.el5_4.3 libgcc.i386 0:4.1.2-46.el5_4.2 libgcc.x86_64 0:4.1.2-46.el5_4.2
+        Complete!
+
+
+    cd /root/software/trac/mysql-python/MySQL-python-1.2.2
+    python setup.py build && python setup.py install
+
+
+        Installing easy_install script to /usr/bin
+        Installing easy_install-2.4 script to /usr/bin
+        
+        Installed /usr/lib64/python2.4/site-packages/setuptools-0.6c5-py2.4.egg
+        Processing dependencies for setuptools==0.6c5
+        Processing MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+        Copying MySQL_python-1.2.2-py2.4-linux-x86_64.egg to /usr/lib64/python2.4/site-packages
+        Adding MySQL-python 1.2.2 to easy-install.pth file
+        
+        Installed /usr/lib64/python2.4/site-packages/MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+        Processing dependencies for MySQL-python==1.2.2
+
+OK
+
+           ####...
+           ####removing 'build/bdist.linux-x86_64/egg' (and everything under it)
+           ####Processing MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+           ####Copying MySQL_python-1.2.2-py2.4-linux-x86_64.egg to /usr/lib64/python2.4/site-packages
+           ####Adding MySQL-python 1.2.2 to easy-install.pth file
+           ####
+           ####Installed /usr/lib64/python2.4/site-packages/MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+           ####Processing dependencies for MySQL-python==1.2.2
+
+
+
+6. INSTALL SOME DEVEL PACKAGES FOR COMPILING trac AND svn INTEGRATION
+=====================================================================
+
+   yum install neon neon-devel python-devel swig
+
+        Running Transaction
+          Installing     : pkgconfig                                         [1/5] 
+          Installing     : swig                                              [2/5] 
+          Installing     : expat-devel                                       [3/5] 
+          Installing     : neon-devel                                        [4/5] 
+          Installing     : neon-devel                                        [5/5] 
+        
+        Installed: neon-devel.i386 0:0.25.5-10.el5_4.1 neon-devel.x86_64 0:0.25.5-10.el5_4.1 swig.x86_64 0:1.3.29-2.el5
+        Dependency Installed: expat-devel.x86_64 0:1.95.8-8.3.el5_4.2 pkgconfig.x86_64 1:0.21-2.el5
+        Complete!
+
+
+       ####Running Transaction
+       ####  Installing: expat-devel                  ######################### [1/4] 
+       ####  Installing: swig                         ######################### [2/4] 
+       ####  Installing: neon-devel                   ######################### [3/4] 
+       ####  Installing: neon-devel                   ######################### [4/4] 
+       ####
+       ####Installed: neon-devel.x86_64 0:0.25.5-5.1 neon-devel.i386 0:0.25.5-5.1 swig.x86_64 0:1.3.29-2.el5
+       ####Dependency Installed: expat-devel.x86_64 0:1.95.8-8.2.1
+       ####Complete!
+
+
+7. INSTALL CLEARSILVER
+======================
+
+Install Trac: Follow Nick's guide with the alternative Clearsilver installation below. Skip the Apache Configuration part.
+
+
+DOWNLOAD INSTALL RPMS:
+
+mkdir -p /root/software/trac
+cd /root/software/trac
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+    warning: clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+    warning: python-clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+
+
+    ###### DO THIS
+    ##cd /home/syoung/base/apps/trac/clearsilver
+    ##wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+    ##rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+    ##    warning: clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+    ##wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+    ##rpm -i python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+    ##    warning: python-clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+
+
+
+
+
+8. INSTALL trac
+===============
+
+1. Download and untar trac (NB: VERSION 11.7, NOT 11.3 AS PREVIOUSLY USED)
+
+    http://trac.edgewall.org/wiki/TracDownload
+
+    cd /root/software/trac
+    ####wget ftp://ftp.edgewall.com/pub/trac/Trac-0.11.3.tar.gz
+    wget ftp://ftp.edgewall.com/pub/trac/Trac-0.11.7.tar.gz
+    tar xvfz Trac-0.11.7.tar.gz
+    cd Trac-0.11.7        
+    ll
+        -rw-r--r--  1 root root   694 Mar  9 22:49 AUTHORS
+        drwxr-xr-x  2 root root  4096 Mar  9 22:49 cgi-bin
+        -rw-r--r--  1 root root 24876 Mar  9 22:49 ChangeLog
+        drwxr-xr-x  4 root root  4096 Mar  9 22:49 contrib
+        -rw-r--r--  1 root root  1417 Mar  9 22:49 COPYING
+        drwxr-xr-x  2 root root  4096 Mar  9 22:49 doc
+        -rw-r--r--  1 root root  5047 Mar  9 22:49 INSTALL
+        -rw-r--r--  1 root root   972 Mar  9 22:49 PKG-INFO
+        -rw-r--r--  1 root root   689 Mar  9 22:49 README
+        -rw-r--r--  1 root root 10847 Mar  9 22:49 RELEASE
+        drwxr-xr-x  4 root root  4096 Mar  9 22:49 sample-plugins
+        -rw-r--r--  1 root root   103 Mar  9 22:49 setup.cfg
+        -rwxr-xr-x  1 root root  3818 Mar  9 22:49 setup.py
+        -rw-r--r--  1 root root 39982 Mar  9 22:49 setup_wininst.bmp
+        -rw-r--r--  1 root root  5342 Mar  9 22:49 TESTING-README
+        -rw-r--r--  1 root root  3871 Mar  9 22:49 THANKS
+        drwxr-xr-x 17 root root  4096 Mar  9 22:49 trac
+        drwxr-xr-x  2 root root  4096 Mar  9 22:49 Trac.egg-info
+        -rw-r--r--  1 root root  8325 Mar  9 22:49 UPGRADE
+        drwxr-xr-x  2 root root  4096 Mar  9 22:49 wiki-macros
+
+
+2. Install trac
+
+    python ./setup.py install
+    
+        ...
+        Installing trac-admin script to /usr/bin
+        Installing tracd script to /usr/bin
+        
+        Installed /usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg
+        Processing dependencies for Trac==0.11.7
+        Searching for Genshi>=0.5
+        Reading http://cheeseshop.python.org/pypi/Genshi/
+        Reading http://genshi.edgewall.org/
+        Reading http://genshi.edgewall.org/wiki/Download
+        Reading http://cheeseshop.python.org/pypi/Genshi/0.5.1
+        Best match: Genshi 0.5.1
+        Downloading http://ftp.edgewall.com/pub/genshi/Genshi-0.5.1-py2.4-linux-x86_64.egg
+        Processing Genshi-0.5.1-py2.4-linux-x86_64.egg
+        Moving Genshi-0.5.1-py2.4-linux-x86_64.egg to /usr/lib/python2.4/site-packages
+        Adding Genshi 0.5.1 to easy-install.pth file
+        
+        Installed /usr/lib/python2.4/site-packages/Genshi-0.5.1-py2.4-linux-x86_64.egg
+
+
+        ####...
+        ####Searching for Genshi>=0.5
+        ####Reading http://cheeseshop.python.org/pypi/Genshi/
+        ####Reading http://genshi.edgewall.org/
+        ####Reading http://genshi.edgewall.org/wiki/Download
+        ####Reading http://cheeseshop.python.org/pypi/Genshi/0.5.1
+        ####Best match: Genshi 0.5.1
+        ####Downloading http://ftp.edgewall.com/pub/genshi/Genshi-0.5.1-py2.4-linux-x86_64.egg
+        ####Processing Genshi-0.5.1-py2.4-linux-x86_64.egg
+        ####Moving Genshi-0.5.1-py2.4-linux-x86_64.egg to /usr/lib/python2.4/site-packages
+        ####Adding Genshi 0.5.1 to easy-install.pth file
+        ####
+        ####Installed /usr/lib/python2.4/site-packages/Genshi-0.5.1-py2.4-linux-x86_64.egg
+
+
+9. CREATE THE agua SVN REPOSITORY
+============================
+
+mkdir -p /srv/svn
+svnadmin create --fs-type fsfs /srv/svn/agua
+
+
+
+10. CREATE A TRAC PROJECT FOR THE agua SVN REPOSITORY
+=====================================================
+
+#trac-admin /srv/trac/<project> initenv
+#For the trac-admin command use the defaults if not sure, giving a descriptive name for the project.
+
+
+NB: THE 'Path to repository IS /srv/svn/agua
+
+
+mkdir -p /srv/trac
+trac-admin /srv/trac/agua initenv
+
+
+    ---------------------------------------------------------------------
+    Project environment for 'Agua' created.
+    
+    You may now configure the environment by editing the file:
+    
+      /srv/trac/agua/conf/trac.ini
+    
+    If you'd like to take this new project environment for a test drive,
+    try running the Trac standalone web server `tracd`:
+    
+      tracd --port 8000 /srv/trac/agua
+    
+    Then point your browser to http://localhost:8000/agua.
+    There you can also browse the documentation for your installed
+    version of Trac, including information on further setup (such as
+    deploying Trac to a real web server).
+    
+    The latest documentation can also always be found on the project
+    website:
+    
+      http://trac.edgewall.org/
+    
+    Congratulations!
+
+
+
+    ####Project environment for 'agua 1' created.
+    ####
+    ####You may now configure the environment by editing the file:
+    ####
+    ####  /srv/trac/agua/conf/trac.ini
+    ####
+    ####If you'd like to take this new project environment for a agua drive,
+    ####try running the Trac standalone web server `tracd`:
+    ####
+    ####  tracd --port 8000 /srv/trac/agua
+    ####
+    ####Then point your browser to http://localhost:8000/agua.
+    ####There you can also browse the documentation for your installed
+    ####version of Trac, including information on further setup (such as
+    ####deploying Trac to a real web server).
+    ####
+    ####The latest documentation can also always be found on the project
+    ####website:
+    ####
+    ####  http://trac.edgewall.org/
+    ####
+    ####Congratulations!
+
+
+
+11. Set the correct file permissions for apache
+===============================================
+
+chown -R apache.apache /srv/svn/agua
+chown -R apache.apache /srv/trac/agua
+
+
+
+12. Tell apache where to find the new repository
+================================================
+
+Here we create an additional Apache configuration file specifically for the SVN repositories.
+
+#emacs /etc/httpd/conf.d/subversion.conf
+#
+#Add the following directive:
+#
+#<Location /svn/<project>>
+#	DAV svn
+#	SVNPath /srv/svn/<project>
+#	AuthType Basic
+#	AuthName "<project> Repository"
+#	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+#	AuthUserFile /srv/svn/<project>.htpasswd
+#	Require valid-user
+#</Location>
+
+
+emacs /etc/httpd/conf.d/subversion.conf
+
+Add the following directive:
+
+<Location /svn/agua>
+	DAV svn
+	SVNPath /srv/svn/agua
+	AuthType Basic
+	AuthName "Agua Repository"
+	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+	AuthUserFile /srv/svn/agua.htpasswd
+	Require valid-user
+</Location>
+
+
+13. Add a repository user
+=========================
+
+touch /srv/svn/agua.htpasswd
+htpasswd -m /srv/svn/agua.htpasswd syoung
+
+htpasswd -m /srv/svn/aqwa.htpasswd syoung
+    
+    New password: a*
+    Re-type new password: 
+    Adding password for user syoung
+
+
+14. Create the Access Control List for the SVN Repository
+=========================================================
+
+emacs /srv/svn/svn-acl-conf
+
+Add the following directives:
+
+[agua:/]
+syoung =  rw
+
+
+15. Tell apache where to find the new Trac project 
+==================================================
+
+Here we create an additional Apache configuration file specifically for the Trac projects.
+
+emacs /etc/httpd/conf.d/trac.conf
+
+Add the following directives:
+
+<Location /trac/agua>
+	SetHandler mod_python
+	PythonHandler trac.web.modpython_frontend
+	PythonOption TracEnv /srv/trac/agua
+	PythonOption TracUriRoot /trac/agua
+</Location>
+
+<Location "/trac/agua/login">
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /srv/trac/agua.htpasswd
+	Require valid-user
+</Location>
+
+
+16. Add a Trac user
+===================
+
+touch /srv/trac/agua.htpasswd
+htpasswd -m /srv/trac/agua.htpasswd syoung
+
+    New password: a*
+    Re-type new password: 
+    Adding password for user syoung
+
+17. Give admin permissions to the Trac user you just created
+============================================================
+
+#trac-admin /srv/trac/<project> permission add <username> TRAC_ADMIN
+#Where <username> represents the username of the Trac user you just created.
+
+trac-admin /srv/trac/agua permission add syoung TRAC_ADMIN
+
+COMPLAINING ABOUT DUPLICATE LINE?
+    
+    New password: 
+    Re-type new password: 
+    Updating password for user syoung
+    [root@li77-81 ~]# trac-admin /srv/trac/agua permission add syoung TRAC_ADMIN
+    Traceback (most recent call last):
+      File "/usr/bin/trac-admin", line 7, in ?
+        sys.exit(
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/admin/console.py", line 1321, in run
+        return admin.onecmd(command)
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/admin/console.py", line 138, in onecmd
+        rv = cmd.Cmd.onecmd(self, line) or 0
+      File "/usr/lib64/python2.4/cmd.py", line 219, in onecmd
+        return func(arg)
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/admin/console.py", line 431, in do_permission
+        self._do_permission_add(user, action)
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/admin/console.py", line 468, in _do_permission_add
+        self._permsys.grant_permission(user, action)
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/perm.py", line 332, in grant_permission
+        self.store.grant_permission(username, action)
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/perm.py", line 229, in grant_permission
+        (username, action))
+      File "/usr/lib/python2.4/site-packages/Trac-0.11.7-py2.4.egg/trac/db/util.py", line 64, in execute
+        return self.cursor.execute(sql_escape_percent(sql), args)
+      File "/usr/lib64/python2.4/site-packages/sqlite/main.py", line 255, in execute
+        self.rs = self.con.db.execute(SQL % parms)
+    _sqlite.IntegrityError: columns username, action are not unique
+
+
+
+13. Restart Apache:
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+OK
+
+http://stuartpyoung.com/svn/agua
+
+    OK
+    
+http://stuartpyoung.com/trac/agua
+
+    OK
+
+
+
+
+14. IMPORT FILES INTO agua PROJECT
+
+###mkdir -p /nethome/syoung/base/pipeline/trac/agua/branches
+###mkdir -p /nethome/syoung/base/pipeline/trac/agua/tags 
+###mkdir -p /nethome/syoung/base/pipeline/trac/agua/trunk
+
+AS root
+
+svn import /data/agua/0.4 file:///srv/svn/agua -m "Agua first import"
+
+    Adding         /nethome/syoung/base/pipeline/trac/agua/trunk
+    Adding         /nethome/syoung/base/pipeline/trac/agua/branches
+    Adding         /nethome/syoung/base/pipeline/trac/agua/tags
+    
+    Committed revision 1.
+
+
+15. VIEW NEW DIRECTORIES INSIDE agua PROJECT:
+
+http://www.stuartpyoung.com/trac/agua/browser
+
+    OK!
+    
+#### DIDN'T HAVE TO DO THIS
+####Fix permissions to the repository:
+####
+####find /var/svn/project -type f -exec chmod 660 {} \;
+####find /var/svn/project -type d -exec chmod 2770 {} \;
+####chown -R root.www-data /var/svn/project
+
+
+
+
+TROUBLESHOOTING
+
+
+ERROR Cannot load /etc/httpd/modules/mod_dav_svn.so into server
+
+
+/usr/sbin/apachectl -k restart
+
+    httpd: Syntax error on line 202 of /etc/httpd/conf/httpd.conf:
+        Cannot load /etc/httpd/modules/mod_dav_svn.so into server:
+            /etc/httpd/modules/mod_dav_svn.so: cannot open shared object file: No such file or directory
+
+
+SOLUTION
+
+yum install mod_dav_svn
+
+    Loaded plugins: fastestmirror
+    Loading mirror speeds from cached hostfile
+     * rpmforge: ftp-stud.fht-esslingen.de
+     * base: centos.mirror.nac.net
+     * updates: hpc.arc.georgetown.edu
+     * addons: www.gtlib.gatech.edu
+     * extras: centos.omnispring.com
+    Setting up Install Process
+    Parsing package install arguments
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package mod_dav_svn.x86_64 0:1.6.11-0.1.el5.rf set to be updated
+    --> Finished Dependency Resolution
+    
+    Dependencies Resolved
+    
+    ==========================================================================================
+     Package              Arch            Version                     Repository         Size
+    ==========================================================================================
+    Installing:
+     mod_dav_svn          x86_64          1.6.11-0.1.el5.rf           rpmforge          250 k
+    
+    Transaction Summary
+    ==========================================================================================
+    Install      1 Package(s)         
+    Update       0 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total download size: 250 k
+    Is this ok [y/N]: y
+    Downloading Packages:
+    mod_dav_svn-1.6.11-0.1.el5.rf.x86_64.rpm                           | 250 kB     00:00     
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Installing     : mod_dav_svn                                       [1/1] 
+    warning: /etc/httpd/conf.d/subversion.conf created as /etc/httpd/conf.d/subversion.conf.rpmnew
+    
+    Installed: mod_dav_svn.x86_64 0:1.6.11-0.1.el5.rf
+    Complete!
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon June  1 13:08:36 EST 2009] ADD cvaldes USER TO TRAC>
+
+
+
+
+1. ADD SVN USER
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd cvaldes
+    
+    wolverine
+
+2. ADD NEW SNV USER TO THE ACCESS CONTROL LIST FOR THE SVN REPOSITORY
+
+emacs /srv/svn/svn-acl-conf
+
+ADD THE FOLLOWING:
+
+[aqwa:/]
+cvaldes =  rw
+
+SO THE FILE NOW CONTAINS:
+
+[aqwa:/]
+syoung =  rw
+rloredo =  rw
+lalachkar = rw
+krichards =  rw
+cvaldes =  rw
+
+[test:/]
+syoung =  rw
+rloredo =  rw
+
+
+4. ADD TRAC USER
+
+touch /srv/trac/aqwa.htpasswd
+htpasswd -m /srv/trac/aqwa.htpasswd cvaldes
+
+    wolverine
+    
+
+13. Restart Apache:
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+</entry>
+
+
+
+<entry [Mon June  1 13:08:36 EST 2009] ADD krichards USER TO TRAC>
+
+
+
+
+1. ADD SVN USER
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd krichards
+    
+    roxygirl
+
+2. ADD NEW SNV USER TO THE ACCESS CONTROL LIST FOR THE SVN REPOSITORY
+
+emacs /srv/svn/svn-acl-conf
+
+ADD THE FOLLOWING:
+
+[aqwa:/]
+krichards =  rw
+
+SO THE FILE NOW CONTAINS:
+
+[aqwa:/]
+syoung =  rw
+rloredo =  rw
+lalachkar = rw
+krichards =  rw
+
+[test:/]
+syoung =  rw
+rloredo =  rw
+
+
+4. ADD TRAC USER
+
+touch /srv/trac/aqwa.htpasswd
+htpasswd -m /srv/trac/aqwa.htpasswd krichards
+
+    roxygirl
+    
+
+5. RESTART APACHE
+
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+
+</entry>
+
+
+
+<entry [Thurs May 14 14:08:36 EST 2009] ADD lalachkar USER TO TRAC>
+
+
+
+1. ADD SVN USER
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd lalachkar
+    
+    maftouh
+
+2. ADD NEW SNV USER TO THE ACCESS CONTROL LIST FOR THE SVN REPOSITORY
+
+emacs /srv/svn/svn-acl-conf
+
+ADD THE FOLLOWING:
+
+[aqwa:/]
+lalachkar =  rw
+
+SO THE FILE NOW CONTAINS:
+
+[aqwa:/]
+syoung =  rw
+rloredo =  rw
+lalachkar = rw
+
+[test:/]
+syoung =  rw
+rloredo =  rw
+
+
+4. ADD TRAC USER
+
+touch /srv/trac/aqwa.htpasswd
+htpasswd -m /srv/trac/aqwa.htpasswd lalachkar
+
+    maftouh
+    
+
+13. Restart Apache:
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+
+
+
+</entry>
+
+
+
+<entry [Tues Mar 24 14:30:36 EST 2009] ADD NEW TRAC AND SUBVERSION USERS TO ngsdev>
+
+
+
+1. ADD SVN USER
+
+#touch /srv/svn/<project>.htpasswd
+#htpasswd -m /srv/svn/<project>.htpasswd <username>
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd syoung
+    
+    New password: 
+    Re-type new password: 
+    Adding password for user syoung
+
+
+touch /srv/svn/aqwa.htpasswd
+htpasswd -m /srv/svn/aqwa.htpasswd rloredo
+
+    codemaster
+
+touch /srv/svn/test.htpasswd
+htpasswd -m /srv/svn/test.htpasswd rloredo
+
+    codemaster
+
+NOW rloredo AND syoung CAN CHECK OUT TEST
+
+    [rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/test
+    Checked out revision 1.
+
+
+
+BUT CAN'T FIND aqwa
+
+[rloredo@ngsdev test4]$ svn co http://ngsdev.ccs.miami.edu/svn/aqwa
+svn: Server sent unexpected return value (405 Method Not Allowed) in response to PROPFIND request for '/svn/aqwa'
+
+
+
+2. Create the Access Control List for the SVN Repository
+#emacs /srv/svn/svn-acl-conf
+#
+#Add the following directives:
+#
+#[<project>:/]
+#<username> =  rw
+#
+#Where <username> represents the username of the repository user you created earlier.
+
+
+emacs /srv/svn/svn-acl-conf
+
+Add the following directives:
+
+[aqwa:/]
+syoung =  rw
+
+
+3. Tell apache where to find the new Trac project. Here we create an additional Apache configuration file specifically for the Trac projects.
+#emacs /etc/httpd/conf.d/trac.conf
+#
+#Add the following directives:
+#
+#<Location /trac/<project>>
+#	SetHandler mod_python
+#	PythonHandler trac.web.modpython_frontend
+#	PythonOption TracEnv /srv/trac/<project>
+#	PythonOption TracUriRoot /trac/<project>
+#</Location>
+#
+#<Location "/trac/<project>/login">
+#	AuthType Basic
+#	AuthName "trac"
+#	AuthUserFile /srv/trac/<project>.htpasswd
+#	Require valid-user
+#</Location>
+
+
+# Add the following directives to trac.conf:
+
+emacs /etc/httpd/conf.d/trac.conf
+<Location /trac/aqwa>
+	SetHandler mod_python
+	PythonHandler trac.web.modpython_frontend
+	PythonOption TracEnv /srv/trac/aqwa
+	PythonOption TracUriRoot /trac/aqwa
+</Location>
+
+<Location "/trac/aqwa/login">
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /srv/trac/aqwa.htpasswd
+	Require valid-user
+</Location>
+
+
+4. Add a Trac user:
+#touch /srv/trac/<project>.htpasswd
+#htpasswd -m /srv/trac/<project>.htpasswd <username>
+
+touch /srv/trac/aqwa.htpasswd
+htpasswd -m /srv/trac/aqwa.htpasswd syoung
+
+touch /srv/trac/aqwa.htpasswd
+htpasswd -m /srv/trac/aqwa.htpasswd rloredo
+
+    codemaster
+
+12. Give admin permissions to the Trac user you just created:
+#trac-admin /srv/trac/<project> permission add <username> TRAC_ADMIN
+#Where <username> represents the username of the Trac user you just created.
+
+
+mkdir /srv/svn/aqwa
+mkdir /srv/trac/aqwa
+trac-admin /srv/trac/aqwa initenv
+
+    ---------------------------------------------------------------------
+    Warning: couldn't index the repository.
+    
+    This can happen for a variety of reasons: wrong repository type, 
+    no appropriate third party library for this repository type,
+    no actual repository at the specified repository path...
+    
+    You can nevertheless start using your Trac environment, but 
+    you'll need to check again your trac.ini file and the [trac] 
+    repository_type and repository_path settings in order to enable
+    the Trac repository browser.
+    
+    
+    ---------------------------------------------------------------------
+    Project environment for 'aqwa' created.
+    
+    You may now configure the environment by editing the file:
+    
+      /srv/trac/aqwa/conf/trac.ini
+    
+    If you'd like to take this new project environment for a test drive,
+    try running the Trac standalone web server `tracd`:
+    
+      tracd --port 8000 /srv/trac/aqwa
+    
+    Then point your browser to http://localhost:8000/aqwa.
+    There you can also browse the documentation for your installed
+    version of Trac, including information on further setup (such as
+    deploying Trac to a real web server).
+    
+    The latest documentation can also always be found on the project
+    website:
+    
+      http://trac.edgewall.org/
+    
+    Congratulations!
+
+
+chown -R apache.apache /srv/svn/aqwa
+chown -R apache.apache /srv/trac/aqwa
+trac-admin /srv/trac/aqwa permission add syoung TRAC_ADMIN
+
+
+
+
+13. Restart Apache:
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+
+http://ngsdev.ccs.miami.edu/svn/aqwa
+
+    OK
+    
+http://ngsdev.ccs.miami.edu/trac/aqwa
+
+    OK
+
+
+
+
+
+
+14. IMPORT FILES INTO TEST PROJECT
+
+AS syoung
+
+mkdir -p /nethome/syoung/base/pipeline/trac/aqwa
+cd /nethome/syoung/base/pipeline/trac/aqwa
+mkdir branches
+mkdir tags
+mkdir trunk
+
+AS root
+
+svn import /nethome/syoung/base/pipeline/trac/aqwa file:///srv/svn/aqwa -m "Test import"
+
+    Adding         /nethome/syoung/base/pipeline/trac/aqwa/trunk
+    Adding         /nethome/syoung/base/pipeline/trac/aqwa/branches
+    Adding         /nethome/syoung/base/pipeline/trac/aqwa/tags
+    
+    Committed revision 1.
+
+
+AND VIEW NEW DIRECTORIES INSIDE aqwa PROJECT:
+
+http://ngsdev.ccs.miami.edu/trac/aqwa/browser
+
+    OK!
+    
+#### DIDN'T HAVE TO DO THIS
+####Fix permissions to the repository:
+####
+####find /var/svn/project -type f -exec chmod 660 {} \;
+####find /var/svn/project -type d -exec chmod 2770 {} \;
+####chown -R root.www-data /var/svn/project
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 21 13:16:36 EST 2009] SETUP subversion AND trac NOTES - ADD TO aqwa WIKI>
+
+
+
+SVN 
+http://ngsdev.ccs.miami.edu/svn/test/
+
+
+Trac Wiki
+http://ngsdev.ccs.miami.edu/trac/test/ticket/1
+
+
+
+DOKUWIKI TREE NAVIGATION
+
+http://stuartpyoung.com/dokuwiki/doku.php
+
+indexmenu2
+http://www.dokuwiki.org/plugin:indexmenu2
+
+indexmenu
+http://samuele.netsons.org/dokuwiki/doku.php?id=dokuwiki:plugins:indexmenu
+http://www.dokuwiki.org/plugin:indexmenu
+
+
+INSTALL TRAC/SUBVERSION
+
+
+Subversion on CentOS
+http://wiki.centos.org/HowTos/Subversion
+
+
+Setup Subversion and Trac on CentOS 5
+http://www.daniel-skinner.co.uk/setup-subversion-and-trac-on-centos-5/06/01/2008
+
+
+Installing Trac with subversion on Cent OS 5
+http://www.techyouruniverse.com/software/installing-trac-with-subversion-on-cent-os-5-with-neon-and-quicksilver
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 20 15:33:36 EST 2009] SETUP subversion AND trac ON ngsdev>
+
+
+
+http://www.daniel-skinner.co.uk/setup-subversion-and-trac-on-centos-5/06/01/2008
+Setup Subversion and Trac on CentOS 5
+
+
+
+1. Fresh install of CentOS. I followed most of the Perfect Setup Guide, except the mail and ISPConfig stuff. The important part is setting up the Apache2 web server.
+
+2. Make sure SVN and mod_dav_svn are installed. As root:
+
+yum install mod_dav_svn subversion
+
+    ...
+    =============================================================================
+     Package                 Arch       Version          Repository        Size 
+    =============================================================================
+    Installing:
+     mod_dav_svn             x86_64     1.5.5-0.1.el5.rf  rpmforge          240 k
+     subversion              i386       1.4.2-2.el5      base              2.3 M
+    Installing for dependencies:
+     apr                     i386       1.2.7-11         base              122 k
+     apr-util                i386       1.2.7-7.el5      base               76 k
+     neon                    i386       0.25.5-5.1       base               95 k
+     postgresql-libs         i386       8.1.11-1.el5_1.1  base              196 k
+     sqlite                  i386       3.3.6-2          base              213 k
+     subversion              x86_64     1.5.5-0.1.el5.rf  rpmforge          5.7 M
+    
+    Transaction Summary
+    =============================================================================
+    ...
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Installing: subversion                   ######################### [1/8] 
+      Installing: apr                          ######################### [2/8] 
+      Installing: sqlite                       ######################### [3/8] 
+      Installing: postgresql-libs              ######################### [4/8] 
+      Installing: apr-util                     ######################### [5/8] 
+      Installing: neon                         ######################### [6/8] 
+      Installing: subversion                   ######################### [7/8] 
+      Installing: mod_dav_svn                  ######################### [8/8] 
+    
+    Installed: mod_dav_svn.x86_64 0:1.5.5-0.1.el5.rf subversion.i386 0:1.4.2-2.el5
+    Dependency Installed: apr.i386 0:1.2.7-11 apr-util.i386 0:1.2.7-7.el5 neon.i386 0:0.25.5-5.1 postgresql-libs.i386 0:8.1.11-1.el5_1.1 sqlite.i386 0:3.3.6-2 subversion.x86_64 0:1.5.5-0.1.el5.rf
+    Complete!
+
+
+yum install subversion mod_dav_svn
+
+emacs /etc/httpd/conf/httpd.conf
+
+If the following two lines are not present, add them:
+
+LoadModule dav_svn_module modules/mod_dav_svn.so
+LoadModule authz_svn_module modules/mod_authz_svn.so
+
+
+
+
+3. Install Trac: Follow Nick's guide with the alternative Clearsilver installation below. Skip the Apache Configuration part.
+
+
+Follow all of parts 1 and 2. Instead of part 3 do:
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+========================
+NICK'S GUIDE
+   1. Install python and its goodies.
+         1. Use yum to install the base package: yum install python
+         2. Install mod_python. This is so Apache can run the python scripts as a module:
+            yum install mod_python
+         3. Install MySQL-python so that python can interact with mysql
+               1. Download and untar MySQL-python from http://sourceforge.net/projects/mysql-python
+               2. cd $mysqlpythonsourcedir
+               3. python setup.py build && python setup.py install
+   2. Install some devel packages that are needed for compiling trac and svn integration:
+      yum install neon neon-devel python-devel swig
+   3. Install Clearsilver, a templating package that trac depends on.
+         1. Download and untar clearsilver from http://www.clearsilver.net/downloads/
+         2. Compile cd $clearsilversourcedir; ./configure && make && make install
+   4. Install trac!
+         1. Download and untar trac from http://trac.edgewall.org/wiki/TracDownload
+         2. cd $tracsourcedir; python ./setup.py install
+         3. Initialize your first trac project:
+            trac-admin $pathtoyourtracproject initenv
+         4. Tell Apache about trac.. Add the following lines to your Apache configuration file:
+
+              <Location />
+                SetHandler mod_python
+                PythonHandler trac.web.mod python_frontend
+                PythonOption TracEnv $pathtoyourtracproject
+                PythonOption TracUriRoot /trac/
+              </Location>
+
+Finally, restart httpd and try it out by going to:
+
+http://$yourhost/trac/
+
+If it doesn’t work, check your webserver error log for errors:
+tail -f /var/log/httpd/error_log
+========================
+
+
+   1. Install python and its goodies.
+
+         1. Use yum to install the base package:
+         
+         sudo su
+         yum install python
+
+            Package python - 2.4.3-21.el5.x86_64 is already installed.
+            Nothing to do
+
+         2. Install mod_python. This is so Apache can run the python scripts as a module:
+
+            yum install mod_python
+
+                Package mod_python - 3.2.8-3.1.x86_64 is already installed.
+                Nothing to do
+               
+               
+
+        3. INSTALL setuptools TO INSTALL MySQL-python LATER. DOWNLOAD FROM
+        
+            http://cheeseshop.python.org/packages/2.4/s/setuptools
+    
+            THIS VERSION OF MySQL-python REQUIRES setuptools version 0.6c5 
+    
+                mkdir -p /home/syoung/base/apps/trac/setuptools
+                cd /home/syoung/base/apps/trac/setuptools
+                wget http://pypi.python.org/packages/2.4/s/setuptools/setuptools-0.6c5-py2.4.egg
+                ls
+                    setuptools-0.6c5-py2.4.egg
+    
+                chmod 755 setuptools-0.6c5-py2.4.egg
+                ./setuptools-0.6c5-py2.4.egg
+
+                    Processing setuptools-0.6c5-py2.4.egg
+                    creating /usr/lib/python2.4/site-packages/setuptools-0.6c5-py2.4.egg
+                    Extracting setuptools-0.6c5-py2.4.egg to /usr/lib/python2.4/site-packages
+                    Adding setuptools 0.6c5 to easy-install.pth file
+                    Installing easy_install script to /usr/bin
+                    Installing easy_install-2.4 script to /usr/bin
+                    
+                    Installed /usr/lib/python2.4/site-packages/setuptools-0.6c5-py2.4.egg
+                    Processing dependencies for setuptools==0.6c5
+
+        4. INSTALL python-devel
+        
+            yum install python-devel
+        
+                Setting up Install Process
+                Parsing package install arguments
+                Package python-devel - 2.4.3-21.el5.x86_64 is already installed.
+                Package python-devel - 2.4.3-21.el5.i386 is already installed.
+                Nothing to do
+
+
+            TO AVOID THIS ERROR WITH MySQL-python
+
+            pymemcompat.h:10:20: error: Python.h: No such file or directory
+
+
+        5. INSTALL mysql-devel
+        
+        yum install mysql-devel
+
+            ...
+            Installed: mysql-devel.i386 0:5.0.45-7.el5 mysql-devel.x86_64 0:5.0.45-7.el5
+            Dependency Installed: e2fsprogs-devel.i386 0:1.39-15.el5 keyutils-libs-devel.i386 0:1.2-1.el5 krb5-devel.i386 0:1.6.1-25.el5 libselinux-devel.i386 0:1.33.4-5.el5 libsepol-devel.i386 0:1.15.2-1.el5 openssl-devel.i386 0:0.9.8b-10.el5 zlib-devel.i386 0:1.2.3-3
+            Complete!
+            
+
+        6. INSTALL ssl
+        
+        yum install openssl
+
+            Setting up Install Process
+            Parsing package install arguments
+            Package openssl - 0.9.8b-10.el5.i686 is already installed.
+            Package openssl - 0.9.8b-10.el5.x86_64 is already installed.
+            Nothing to do
+
+        yum install openssl-devel
+
+            Installed: openssl-devel.x86_64 0:0.9.8b-10.el5
+            Complete!
+
+        TO AVOID THIS PROBLEM:
+
+            INSTALL MySQL-python GIVES THIS ERROR:            
+            /usr/bin/ld: cannot find -lssl
+            
+        INSTALL zlib-devel:
+        
+            yum install zlib-devel
+
+            TO AVOID THIS PROBLEM:
+            
+                /usr/bin/ld: skipping incompatible /usr/lib/libz.so when searching for -lz
+                /usr/bin/ld: skipping incompatible /usr/lib/libz.a when searching for -lz
+                /usr/bin/ld: cannot find -lz
+                collect2: ld returned 1 exit status
+                error: command 'gcc' failed with exit status 1
+
+
+        7. Install MySQL-python so that python can interact with mysql
+         
+            Download and untar MySQL-python from http://sourceforge.net/projects/mysql-python:
+
+                cd /home/syoung/base/apps/trac/mysql-python
+                wget http://downloads.sourceforge.net/mysql-python/MySQL-python-1.2.2.tar.gz?modtime=1172959928&big_mirror=0
+
+            Install mySQL-python:
+
+                tar xvfz MySQL-python-1.2.2.tar.gz
+
+                cd /home/syoung/base/apps/trac/mysql-python/MySQL-python-1.2.2
+                python setup.py build && python setup.py install
+
+                    ...
+                    removing 'build/bdist.linux-x86_64/egg' (and everything under it)
+                    Processing MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+                    Copying MySQL_python-1.2.2-py2.4-linux-x86_64.egg to /usr/lib64/python2.4/site-packages
+                    Adding MySQL-python 1.2.2 to easy-install.pth file
+                    
+                    Installed /usr/lib64/python2.4/site-packages/MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+                    Processing dependencies for MySQL-python==1.2.2
+
+
+     
+    2. Install some devel packages that are needed for compiling trac and svn integration:
+   
+        yum install neon neon-devel python-devel swig
+ 
+            Running Transaction
+              Installing: expat-devel                  ######################### [1/4] 
+              Installing: swig                         ######################### [2/4] 
+              Installing: neon-devel                   ######################### [3/4] 
+              Installing: neon-devel                   ######################### [4/4] 
+            
+            Installed: neon-devel.x86_64 0:0.25.5-5.1 neon-devel.i386 0:0.25.5-5.1 swig.x86_64 0:1.3.29-2.el5
+            Dependency Installed: expat-devel.x86_64 0:1.95.8-8.2.1
+            Complete!
+  
+
+
+Continue with parts 4.1 and 4.2 of Nick's guide. Remember, leave out Apache configuration section.
+
+
+
+
+3. Install Clearsilver, a templating package that trac depends on.
+    
+    #### INSTEAD OF THIS
+    ###1. Download and untar clearsilver from http://www.clearsilver.net/downloads/
+    ###2. Compile cd $clearsilversourcedir; ./configure && make && make install
+
+    #### DO THIS
+    cd /home/syoung/base/apps/trac/clearsilver
+    wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+    rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+        warning: clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+    wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+    rpm -i python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+        warning: python-clearsilver-0.10.4-1.el5.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+
+
+
+4. Install trac!
+
+    1. Download and untar trac from
+    
+        http://trac.edgewall.org/wiki/TracDownload
+    
+        cd /home/syoung/base/apps/trac/trac
+        wget ftp://ftp.edgewall.com/pub/trac/Trac-0.11.3.tar.gz
+        tar xvfz Trac-0.11.3.tar.gz
+        cd Trac-0.11.3
+
+    2. Install trac
+
+        python ./setup.py install
+        
+            ...
+            Searching for Genshi>=0.5
+            Reading http://cheeseshop.python.org/pypi/Genshi/
+            Reading http://genshi.edgewall.org/
+            Reading http://genshi.edgewall.org/wiki/Download
+            Reading http://cheeseshop.python.org/pypi/Genshi/0.5.1
+            Best match: Genshi 0.5.1
+            Downloading http://ftp.edgewall.com/pub/genshi/Genshi-0.5.1-py2.4-linux-x86_64.egg
+            Processing Genshi-0.5.1-py2.4-linux-x86_64.egg
+            Moving Genshi-0.5.1-py2.4-linux-x86_64.egg to /usr/lib/python2.4/site-packages
+            Adding Genshi 0.5.1 to easy-install.pth file
+            
+            Installed /usr/lib/python2.4/site-packages/Genshi-0.5.1-py2.4-linux-x86_64.egg
+
+========================
+
+
+4. Create your first SVN Repository:
+#svnadmin create --fs-type fsfs /srv/svn/<project>
+
+mkdir -p /srv/svn
+svnadmin create --fs-type fsfs /srv/svn/test
+
+
+5. Initialise a Trac project for your new repository:
+#trac-admin /srv/trac/<project> initenv
+#For the trac-admin command use the defaults if not sure, giving a descriptive name for the project. The `Path to repository` is: /srv/svn/<project>.
+
+mkdir -p /srv/trac
+trac-admin /srv/trac/test initenv
+
+    Project environment for 'Test 1' created.
+    
+    You may now configure the environment by editing the file:
+    
+      /srv/trac/test/conf/trac.ini
+    
+    If you'd like to take this new project environment for a test drive,
+    try running the Trac standalone web server `tracd`:
+    
+      tracd --port 8000 /srv/trac/test
+    
+    Then point your browser to http://localhost:8000/test.
+    There you can also browse the documentation for your installed
+    version of Trac, including information on further setup (such as
+    deploying Trac to a real web server).
+    
+    The latest documentation can also always be found on the project
+    website:
+    
+      http://trac.edgewall.org/
+    
+    Congratulations!
+
+
+
+6. Set the correct file permissions for apache
+#chown -R apache.apache /srv/svn/<project>
+#chown -R apache.apache /srv/trac/<project>
+
+chown -R apache.apache /srv/svn/test
+chown -R apache.apache /srv/trac/test
+
+7. Tell apache where to find the new repository. Here we create an additional Apache configuration file specifically for the SVN repositories.
+
+#emacs /etc/httpd/conf.d/subversion.conf
+#
+#Add the following directive:
+#
+#<Location /svn/<project>>
+#	DAV svn
+#	SVNPath /srv/svn/<project>
+#	AuthType Basic
+#	AuthName "<project> Repository"
+#	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+#	AuthUserFile /srv/svn/<project>.htpasswd
+#	Require valid-user
+#</Location>
+
+
+emacs /etc/httpd/conf.d/subversion.conf
+
+Add the following directive:
+
+<Location /svn/test>
+	DAV svn
+	SVNPath /srv/svn/test
+	AuthType Basic
+	AuthName "test Repository"
+	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+	AuthUserFile /srv/svn/test.htpasswd
+	Require valid-user
+</Location>
+
+
+8. Add a repository user:
+#touch /srv/svn/<project>.htpasswd
+#htpasswd -m /srv/svn/<project>.htpasswd <username>
+
+touch /srv/svn/test.htpasswd
+htpasswd -m /srv/svn/test.htpasswd syoung
+    
+    New password: 
+    Re-type new password: 
+    Adding password for user syoung
+
+
+9. Create the Access Control List for the SVN Repository
+#emacs /srv/svn/svn-acl-conf
+#
+#Add the following directives:
+#
+#[<project>:/]
+#<username> =  rw
+#
+#Where <username> represents the username of the repository user you created earlier.
+
+
+emacs /srv/svn/svn-acl-conf
+
+Add the following directives:
+
+[test:/]
+syoung =  rw
+
+
+10. Tell apache where to find the new Trac project. Here we create an additional Apache configuration file specifically for the Trac projects.
+#emacs /etc/httpd/conf.d/trac.conf
+#
+#Add the following directives:
+#
+#<Location /trac/<project>>
+#	SetHandler mod_python
+#	PythonHandler trac.web.modpython_frontend
+#	PythonOption TracEnv /srv/trac/<project>
+#	PythonOption TracUriRoot /trac/<project>
+#</Location>
+#
+#<Location "/trac/<project>/login">
+#	AuthType Basic
+#	AuthName "trac"
+#	AuthUserFile /srv/trac/<project>.htpasswd
+#	Require valid-user
+#</Location>
+
+
+
+emacs /etc/httpd/conf.d/trac.conf
+
+Add the following directives:
+
+<Location /trac/test>
+	SetHandler mod_python
+	PythonHandler trac.web.modpython_frontend
+	PythonOption TracEnv /srv/trac/test
+	PythonOption TracUriRoot /trac/test
+</Location>
+
+<Location "/trac/test/login">
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /srv/trac/test.htpasswd
+	Require valid-user
+</Location>
+
+
+11. Add a Trac user:
+#touch /srv/trac/<project>.htpasswd
+#htpasswd -m /srv/trac/<project>.htpasswd <username>
+
+touch /srv/trac/test.htpasswd
+htpasswd -m /srv/trac/test.htpasswd syoung
+
+    New password: 
+    Re-type new password: 
+    Adding password for user syoung
+
+12. Give admin permissions to the Trac user you just created:
+#trac-admin /srv/trac/<project> permission add <username> TRAC_ADMIN
+#Where <username> represents the username of the Trac user you just created.
+
+trac-admin /srv/trac/test permission add syoung TRAC_ADMIN
+
+
+
+13. Restart Apache:
+#You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+####service httpd restart
+
+/usr/sbin/apachectl -k restart
+
+
+http://ngsdev.ccs.miami.edu/svn/test
+
+    OK
+    
+http://ngsdev.ccs.miami.edu/trac/test
+
+    OK
+
+
+
+
+14. IMPORT FILES INTO TEST PROJECT
+
+AS syoung
+
+mkdir -p /nethome/syoung/base/pipeline/trac/test
+cd /nethome/syoung/base/pipeline/trac/test
+mkdir branches
+mkdir tags
+mkdir trunk
+
+AS root
+
+svn import /nethome/syoung/base/pipeline/trac/test file:///srv/svn/test -m "Test import"
+
+    Adding         /nethome/syoung/base/pipeline/trac/test/trunk
+    Adding         /nethome/syoung/base/pipeline/trac/test/branches
+    Adding         /nethome/syoung/base/pipeline/trac/test/tags
+    
+    Committed revision 1.
+
+
+AND VIEW NEW DIRECTORIES INSIDE test PROJECT:
+
+http://ngsdev.ccs.miami.edu/trac/test/browser
+
+    OK!
+    
+#### DIDN'T HAVE TO DO THIS
+####Fix permissions to the repository:
+####
+####find /var/svn/project -type f -exec chmod 660 {} \;
+####find /var/svn/project -type d -exec chmod 2770 {} \;
+####chown -R root.www-data /var/svn/project
+
+
+
+
+
+
+
+
+
+TROUBLESHOOTING MySQL-python INSTALLATION
+=========================================
+
+ERROR:
+
+WHEN INSTALLING MySQL-python
+
+cd /home/syoung/base/apps/trac/mysql-python/MySQL-python-1.2.2
+python setup.py build && python setup.py install
+
+        running build
+        running build_py
+        copying MySQLdb/release.py -> build/lib.linux-x86_64-2.4/MySQLdb
+        running build_ext
+        building '_mysql' extension
+        gcc -pthread -shared build/temp.linux-x86_64-2.4/_mysql.o -L/usr/lib64/mysql -L/usr/lib64 -lmysqlclient_r -lz -lpthread -lcrypt -lnsl -lm -lpthread -lssl -lcrypto -o build/lib.linux-x86_64-2.4/_mysql.so
+        /usr/bin/ld: skipping incompatible /usr/lib/libz.so when searching for -lz
+        /usr/bin/ld: skipping incompatible /usr/lib/libz.a when searching for -lz
+        /usr/bin/ld: cannot find -lz
+        collect2: ld returned 1 exit status
+        error: command 'gcc' failed with exit status 1
+
+
+DIAGNOSIS:
+
+APPEARS TO BE A PROBLEM WITH zlib
+
+    [root@ngsdev setuptools]# yum install zlib
+    Setting up Install Process
+    Parsing package install arguments
+    Package zlib - 1.2.3-3.x86_64 is already installed.
+    Package zlib - 1.2.3-3.i386 is already installed.
+    Nothing to do
+   
+
+
+
+SOLUTION:
+
+    http://hostingaldescubierto.com/wordpress/2008/07/03/usrbinld-skipping-incompatible-usrliblibzso-when-searching-for-lz
+    Al parecer hay algún problema con las versiones de 32 y 64 bits instaladas en la máquina. La solución desinstalar y volver a instalar zlib-devel
+    
+    yum erase zlib-devel
+    yum install zlib-devel
+
+        ---> Package zlib-devel.x86_64 0:1.2.3-3 set to be updated
+        --> Finished Dependency Resolution
+        
+        Dependencies Resolved
+        
+        =============================================================================
+         Package                 Arch       Version          Repository        Size 
+        =============================================================================
+        Installing:
+         zlib-devel              x86_64     1.2.3-3          base              102 k
+        
+        Transaction Summary
+        =============================================================================
+        Install      1 Package(s)         
+        Update       0 Package(s)         
+        Remove       0 Package(s)         
+        
+        Total download size: 102 k
+        Is this ok [y/N]: y
+        Downloading Packages:
+        (1/1): zlib-devel-1.2.3-3 100% |=========================| 102 kB    00:00     
+        Running rpm_check_debug
+        Running Transaction Test
+        Finished Transaction Test
+        Transaction Test Succeeded
+        Running Transaction
+          Installing: zlib-devel                   ######################### [1/1] 
+        
+        Installed: zlib-devel.x86_64 0:1.2.3-3
+        Complete!
+        [root@ngsdev MySQL-python-1.2.2]# 
+
+
+
+
+
+SUMMARY VERSION (WITHOUT MY NOTES)
+
+Recently I set up a virtual server to use as a development machine. It runs on CentOS 5 and hosts several Subversion repositories with associated Trac projects.
+
+There are many guides and plenty of help on the net to help you setup such a system. However, when I tried to do it I came across a few problems and I hope this post may help at least a few people trying to do the same as me. I am not going to rewrite the great tutorials out there, I will just point you to them and note what things I did differently.
+
+This 'guide' should get you from a fresh install of CentOS 5 linux to one or more working Subversion (SVN) repositories and associated Trac wiki's. Apache/WebDAV is used as the network layer. I have only tested this on a fresh install of CentOS 5.
+
+The Environment
+
+I am aiming for the following:
+
+    * CentOS 5, SVN installed. Apache2 as the network layer using mod_dav_svn.
+    * Trac running on Apache with mod_python
+    * SVN repositories located at: /srv/svn (e.g. /srv/svn/my-project), accessible via http://server/svn/my-project
+    * Trac projects located at: /srv/trac (e.g /srv/trac/my-project) accessible via http://server/trac/my-project
+
+How I did it
+
+Not all the steps are vital (probably) but this is how I got it working. Feel free to skip any non-relevant steps (i.e. there is probably no need for a fresh install). Replace any occurence of <project> with the name of your first project.
+
+
+1. Fresh install of CentOS. I followed most of the Perfect Setup Guide, except the mail and ISPConfig stuff. The important part is setting up the Apache2 web server.
+
+2. Make sure SVN and mod_dav_svn are installed. As root:
+
+yum install subversion mod_dav_svn
+
+vim /etc/httpd/conf/httpd.conf
+
+If the following two lines are not present, add them:
+
+LoadModule dav_svn_module modules/mod_dav_svn.so
+LoadModule authz_svn_module modules/mod_authz_svn.so
+
+3. Install Trac
+
+Follow Nick's guide with the alternative Clearsilver installation below. Skip the Apache Configuration part.
+http://www.techyouruniverse.com/software/installing-trac-with-subversion-on-cent-os-5-with-neon-and-quicksilver
+
+
+Follow all of parts 1 and 2. Instead of part 3 do:
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+Continue with parts 4.1 and 4.2 of Nick's guide. Remember, leave out Apache configuration section.
+
+4. Create your first SVN Repository:
+
+svnadmin create --fs-type fsfs /srv/svn/<project>
+
+5. Initialise a Trac project for your new repository:
+
+trac-admin /srv/trac/<project> initenv
+
+For the trac-admin command use the defaults if not sure, giving a descriptive name for the project. The `Path to repository` is: /srv/svn/<project>.
+
+6. Set the correct file permissions for apache
+
+chown -R apache.apache /srv/svn/<project>
+chown -R apache.apache /srv/trac/<project>
+
+7. Tell apache where to find the new repository. Here we create an additional Apache configuration file specifically for the SVN repositories.
+
+vim /etc/httpd/conf.d/subversion.conf
+
+Add the following directive:
+
+<Location /svn/<project>>
+	DAV svn
+	SVNPath /srv/svn/<project>
+	AuthType Basic
+	AuthName "<project> Repository"
+	AuthzSVNAccessFile /srv/svn/svn-acl-conf
+	AuthUserFile /srv/svn/<project>.htpasswd
+	Require valid-user
+</Location>
+
+8. Add a repository user:
+
+touch /srv/svn/<project>.htpasswd
+htpasswd -m /srv/svn/<project>.htpasswd <username>
+
+9. Create the Access Control List for the SVN Repository
+
+vim /srv/svn/svn-acl-conf
+
+Add the following directives:
+
+[<project>:/]
+<username> =  rw
+
+Where <username> represents the username of the repository user you created earlier.
+
+10. Tell apache where to find the new Trac project. Here we create an additional Apache configuration file specifically for the Trac projects.
+
+vim /etc/httpd/conf.d/trac.conf
+
+Add the following directives:
+
+<Location /trac/<project>>
+	SetHandler mod_python
+	PythonHandler trac.web.modpython_frontend
+	PythonOption TracEnv /srv/trac/<project>
+	PythonOption TracUriRoot /trac/<project>
+</Location>
+
+<Location "/trac/<project>/login">
+	AuthType Basic
+	AuthName "trac"
+	AuthUserFile /srv/trac/<project>.htpasswd
+	Require valid-user
+</Location>
+
+11. Add a Trac user:
+
+touch /srv/trac/<project>.htpasswd
+htpasswd -m /srv/trac/<project>.htpasswd <username>
+
+12. Give admin permissions to the Trac user you just created:
+
+trac-admin /srv/trac/<project> permission add <username> TRAC_ADMIN
+
+Where <username> represents the username of the Trac user you just created.
+
+13. Restart Apache:
+
+service httpd restart
+
+You should now have SVN and Trac installed. You will have an SVN repository setup (http://server/svn/<project>) and the Trac wiki (http://server/trac/<project>) associated with the repository.
+
+Please let me know if this helped you. If you come across any problems I will be happy to try and help.
+
+
+
+
+
+
+
+
+
+ADDITIONAL INSTRUCTIONS (SEE APACHED CONFIGURATION)
+http://wiki.centos.org/HowTos/Subversion
+
+1. INSTALL SUBVERSION
+
+AS ROOT
+yum install mod_dav_svn subversion
+
+
+2. Subversion's Apache configs:
+
+The next step is to setup some settings within Apache so Subversion and Apache play nice together. Get yourself to the example configuration file Subversion installed for you.
+
+cd /etc/httpd/conf.d/
+emacs subversion.conf
+
+
+
+# Make sure you uncomment the following if they are commented out
+LoadModule dav_svn_module     modules/mod_dav_svn.so
+LoadModule authz_svn_module   modules/mod_authz_svn.so
+
+# Add the following to allow a basic authentication and point Apache to where the actual
+# repository resides.
+&lt;Location /repos&gt;
+        DAV svn
+        SVNPath /var/www/svn/repos
+        AuthType Basic
+        AuthName "Subversion repos"
+        AuthUserFile /etc/svn-auth-conf
+        Require valid-user
+&lt;/Location&gt;
+
+The location is what Apache will pass in the URL bar. For instance: http://yourmachine/repos points to the SVNPath that you have specified. My examples are just that, so feel free to put things where you want. Make sure you save the file when you are finished editing.
+
+Next we have to actually create the password file that you specified in the previous step. Initially you'll use the -cm arguments. This creates the file and also encrypts the password with MD5. If you need to add users make sure you simply use the -m flag, and not the -c after the initial creation.
+
+[root@lucifer ~] htpasswd -cm /etc/svn-auth-conf yourusername
+New password:
+Re-type new password:
+Adding password for user yourusername
+[root@lucifer ~] htpasswd -m /etc/svn-auth-conf anotherusername
+New password:
+Re-type new password:
+Adding password for user anotherusername
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Nov 24 01:49:59 EST 2008
+SUBVERSION ON CENTOS HOWTO
+
+http://wiki.centos.org/HowTos/Subversion
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Nov 24 01:46:42 EST 2008
+RECHECKING ERROR PythonHandler trac.web.mod: ImportError: No module named mod 
+
+http://www.dojoforum.com/2007/06/20/importerror-no-module-named-mod-python-apache
+
+
+1. INSTALL strace
+
+sudo yum install strace
+
+    Installed: strace.x86_64 0:4.5.16-1.el5_2.2
+    Complete!
+
+2. USE strace TO GET apache ERROR INFO
+
+
+ps aux | grep apache
+    root      9876  0.0  0.0   6000   588 pts/4    S+   01:42   0:00 grep apache
+    apache   21898  0.0  0.0 220648  7072 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21899  0.0  0.0 220512  6340 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21900  0.0  0.0 220512  6336 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21901  0.0  0.0 220512  5384 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21902  0.0  0.0 220512  5384 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21903  0.0  0.0 220512  5384 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21904  0.0  0.0 220512  5384 ?        S    01:22   0:00 /usr/sbin/httpd
+    apache   21905  0.0  0.0 220512  5384 ?        S    01:22   0:00 /usr/sbin/httpd
+
+strace -p 21898
+
+Process 21898 attached - interrupt to quit
+accept(3, 
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Nov 24 01:38:53 EST 2008
+Deploying the Trac Timeline and Browse Source Features
+
+http://cipherdyne.org/blog/2008/02/deploying-the-trac-timeline-and-browse-source-features.html
+
+15 February, 2008
+Deploying the Trac Timeline and Browse Source Features The Trac Project provides an excellent web interface for project documentation, ticket-based project management, and visualization of source code (from a Subversion repository). All of the Cipherdyne open source projects use Trac as the code display mechanism, and allow users to readily see how the projects are developed over time. However, the Cipherdyne projects are not large software engineering efforts with many dedicated developers, and I prefer not to allow my webserver to accept user registrations and tickets even if it is through Trac. The project mailing lists as well as personal email correspondence has been (so far) completely sufficient for bug reporting, and development tasks are tracked within TODO files in each of the top level source directories for each project. Trac also offers a Wiki, but I write all of my own documentation for my projects and I accept enhancements via email as well.
+
+So, why the blog post? Well, it is not immediately obvious how to enable just the Timeline, Browse Source, and Search features in Trac, and disable the remaining features such as the Roadmap, Tickets, and the Wiki. (All of these features can be seen in the Trac site in the navigation bar off to the right.) It turns out that Trac is database driven, and disabling these features can be accomplished from the command line as follows with the trac-admin command:
+
+$ trac-admin /path/to/trac_directory permission remove anonymous TICKET_CREATE TICKET_MODIFY TICKET_VIEW ROADMAP_VIEW REPORT_VIEW MILESTONE_VIEW REPORT_SQL_VIEW WIKI_CREATE WIKI_MODIFY WIKI_VIEW
+
+Also, you will need to set the default_handler variable in the conf/trac.ini file to BrowserModule instead of WikiModule. Using the above command, the Trac navigation bar only includes the Timeline, Browse Source, and Search features as seen here, and this is a valuable configuration for small open source projects. However, if you would like additional functionality in Trac to be enabled for the Cipherdyne projects please email me; perhaps there are benefits here that would justify the change.
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Mon Nov 24 00:21:43 EST 2008
+FIXED /var/log/httpd/error_log ERRORS FROM TRAC
+
+GUIDE TO SUBVERSION ON CENTOS
+http://wiki.centos.org/HowTos/Subversion
+
+TRAC ON FEDORA
+http://trac.edgewall.org/wiki/TracOnFedoraCore
+
+
+
+ERROR IN /var/log/httpd/error_log:
+
+PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 461, in import_module\n    f, p, d = imp.find_module(parts[i], path)
+
+FOUND THIS PAGE:
+
+http://www.techyouruniverse.com/software/installing-trac-with-subversion-on-cent-os-5-with-neon-and-quicksilver
+
+
+EDITED /etc/httpd/conf/httpd.conf TO REMOVE SPACE IN modpython IN LINE: PythonHandler trac.web.mod python_frontend
+AND ADDED ADDITIONAL LINES:
+
+PythonInterpreter main_interpreter
+SetEnv PYTHON_EGG_CACHE /tmp 
+
+
+
+emacs /etc/httpd/conf/httpd.conf 
+
+BEFORE:
+
+<Location />
+    SetHandler mod_python
+    PythonHandler trac.web.mod python_frontend
+    PythonOption TracEnv /srv/trac/bioptic
+    PythonOption TracUriRoot /trac/
+</Location>
+
+AFTER:
+
+<Location />
+    SetHandler mod_python
+# added the following line
+    PythonInterpreter main_interpreter
+    PythonHandler trac.web.modpython_frontend
+    PythonOption TracEnv /srv/trac/bioptic
+    PythonOption TracUriRoot /trac/
+# added the following line
+    SetEnv PYTHON_EGG_CACHE /tmp 
+</Location>
+
+
+NOW GET THIS ERROR:
+
+PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 287, in HandlerDispatch\n    log=debug)
+
+[Mon Nov 24 00:59:35 2008] [notice] mod_python: Creating 4 session mutexes based on 256 max processes and 0 max threads.
+[Mon Nov 24 00:59:35 2008] [notice] Apache/2.2.3 (CentOS) configured -- resuming normal operations
+[Mon Nov 24 00:59:53 2008] [error] [client 10.150.180.101] PythonHandler trac.web.mod: Traceback (most recent call last):
+[Mon Nov 24 00:59:53 2008] [error] [client 10.150.180.101] PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 287, in HandlerDispatch\n    log=debug)
+[Mon Nov 24 00:59:53 2008] [error] [client 10.150.180.101] PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 461, in import_module\n    f, p, d = imp.find_module(parts[i], path)
+[Mon Nov 24 00:59:53 2008] [error] [client 10.150.180.101] PythonHandler trac.web.mod: ImportError: No module named mod
+
+POSSIBLE SOLUTION HERE:
+
+http://www.techyouruniverse.com/software/installing-trac-with-subversion-on-cent-os-5-with-neon-and-quicksilver
+
+I’m having the same problem as John. I get a 500 internal error.
+
+The output of /var/log/httpd/error_log
+
+[Fri May 16 15:49:00 2008] [error] [client 10.10.3.18] PythonHandler trac.web.mod: ImportError: No module named mod
+
+[Fri May 16 15:49:04 2008] [error] [client 10.10.3.18] PythonHandler trac.web.mod: Traceback (most recent call last):
+
+[Fri May 16 15:49:04 2008] [error] [client 10.10.3.18] PythonHandler trac.web.mod: File "/usr/lib/python2.4/site-packages/mod_python/apache.py", line 287, in HandlerDispatch\n log=debug)
+
+[Fri May 16 15:49:04 2008] [error] [client 10.10.3.18] PythonHandler trac.web.mod: File "/usr/lib/python2.4/site-packages/mod_python/apache.py", line 461, in import_module\n f, p, d = imp.find_
+module(parts[i], path)
+
+[Fri May 16 15:49:04 2008] [error] [client 10.10.3.18] PythonHandler trac.web.mod: ImportError: No module named mod
+
+
+The problem I was having was the following:
+
+The Python egg cache directory is currently set to: /root/.python-eggs
+Perhaps your account does not have write access to this directory? You can change the cache directory by setting the PYTHON_EGG_CACHE environment variable to point to an accessible directory.
+
+So I made a directory under /usr/lib/trac/plugins-cache with the right permissions (777) so that the Apache user can write into it.
+
+I’ve added in my httpd.conf:
+
+SetEnv PYTHON_EGG_CACHE /usr/lib/trac/plugin-cache
+
+Restarted Apache and tadaaaa, it works!
+
+More info about Trac Plugins/Problems here: http://trac.edgewall.org/wiki/TracPlugins
+
+
+
+sudo mkdir /srv/trac/plugins-cache
+sudo chmod 777 /srv/trac/plugins-cache
+
+sudo emacs /etc/httpd/conf/httpd.conf
+ADD:
+
+SetEnv PYTHON_EGG_CACHE /srv/trac/plugin-cache
+
+
+sudo su -
+service httpd restart
+OR
+service httpd reload
+
+
+BUT STILL SAME ERROR:
+
+NOTE:
+
+modpython_frontend.py FOUND OKAY: 
+ 
+/usr/lib/python2.4/site-packages/trac/web/modpython_frontend.py
+
+AND DID chmod 755 *py JUST IN CASE BUT NO CHANGE IN error_log MESSAGE.
+
+
+SO TRIED REINSTALL OF mod_python:
+
+sudo yum install mod_python
+
+BUT DIDN'T REINSTALL:
+
+Parsing package install arguments
+Package mod_python - 3.2.8-3.1.x86_64 is already installed.
+Nothing to do
+
+
+
+
+TRIED COMMENTING OUT TRAC STUFF IN httpd.conf:
+
+
+
+
+emacs /etc/httpd/conf/httpd.conf 
+
+
+#<Location />
+#    SetHandler mod_python
+## added the following line
+#    PythonInterpreter main_interpreter
+#    PythonHandler trac.web.modpython_frontend
+#    PythonOption TracEnv /srv/trac/bioptic
+#    PythonOption TracUriRoot /trac/
+## added the following line
+#    SetEnv PYTHON_EGG_CACHE /tmp 
+#</Location>
+
+
+WORKED!!! THE WEB SERVER IS BACK UP.
+
+RESOLVE THE ERROR LATER...
+E.G. upgrade to Python 2.5
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Oct 22 21:48:03 EDT 2008
+INSTALL trac AND subversion ON LINUX
+
+BASED ON THIS PAGE
+http://www.yolinux.com/TUTORIALS/LinuxSubversionAndTracServer.html
+
+1. INSTALL subversion
+
+http://subversion.tigris.org/getting.html
+
+THERE ARE VARIOUS OPTIONS, INCLUDING DOWNLOAD subversion FOR redhat:
+http://www.collab.net/downloads/subversion/redhat.html
+
+OR YOU CAN USE yum TO INSTALL ON fedora (AND CENTOS?):
+sudo yum install subversion
+
+BUT subversion IS ALREADY INSTALLED ON zion:
+
+    [syoung@zion trac]$ svn --version
+    svn, version 1.4.2 (r22196)
+       compiled Mar 14 2007, 20:43:24
+    
+    Copyright (C) 2000-2006 CollabNet.
+    Subversion is open source software, see http://subversion.tigris.org/
+    This product includes software developed by CollabNet (http://www.Collab.Net/).
+    
+    The following repository access (RA) modules are available:
+    
+    * ra_dav : Module for accessing a repository via WebDAV (DeltaV) protocol.
+      - handles 'http' scheme
+      - handles 'https' scheme
+    * ra_svn : Module for accessing a repository using the svn network protocol.
+      - handles 'svn' scheme
+    * ra_local : Module for accessing a repository on local disk.
+      - handles 'file' scheme
+
+
+2. CREATE A subversion REPOSITORY
+
+Create a Subversion repository using the FSFS database format: (as root)
+
+sudo su
+mkdir -p /srv/svn/bioptic
+svnadmin create --fs-type fsfs /srv/svn/bioptic
+chown apache:apache -R /srv/svn/bioptic
+
+#sudo su
+#mkdir -p /srv/svn/projects
+#svnadmin create --fs-type fsfs /srv/svn/projects
+#chown apache:apache -R /srv/svn/projects
+
+
+[root@zion syoung]# ll /srv/svn/bioptic
+
+    -rw-r--r-- 1 apache apache  229 Oct 22 22:41 README.txt
+    drwxr-xr-x 2 apache apache 4096 Oct 22 22:41 conf
+    drwxr-xr-x 2 apache apache 4096 Oct 22 22:41 dav
+    drwxr-sr-x 5 apache apache 4096 Oct 22 22:41 db
+    -r--r--r-- 1 apache apache    2 Oct 22 22:41 format
+    drwxr-xr-x 2 apache apache 4096 Oct 22 22:41 hooks
+    drwxr-xr-x 2 apache apache 4096 Oct 22 22:41 locks
+
+(The Apache web server running as user "apache" is the process owner which will be interfacing with the Subversion repository.)
+
+This will create the default database files, configuration files and directory structure required to support Subversion. The choice of repository type is stored in this file:
+
+/srv/svn/bioptic/db/fs-type
+
+
+If you 'cat' the file it will show 'fsfs':
+
+[root@zion syoung]# cat /srv/svn/bioptic/db/fs-type
+fsfs
+
+    ##* SELinux security attribute assignment: (Red Hat EL4+, Fedora 3+)
+    ##  restorecon -R /srv/svn/repos
+    ##  or
+    ##  chcon -R -h -t httpd_sys_content_t /srv/svn/repos"
+    ##  Options:
+    ##      o -h: affect symbolic links instead of any referenced file
+    ##      o -t: set type TYPE in the target security context
+    ##      o -R: change files and directories recursively
+    ##
+    ##  (Required for SELinux systems so that apache can write to this area or turn off SELinux. For more info see the YoLinux SysAdmin/SELinux tutorial)
+
+
+
+
+3. DOWNLOAD AND INSTALL trac
+
+Installing Trac with subversion on Cent OS 5
+http://www.techyouruniverse.com/software/installing-trac-with-subversion-on-cent-os-5-with-neon-and-quicksilver
+
+
+   1. Install python and its goodies.
+         1. Use yum to install the base package:
+         
+         sudo su
+         yum install python
+
+            Package python - 2.4.3-21.el5.x86_64 is already installed.
+            Nothing to do
+
+         
+         2. Install mod_python. This is so Apache can run the python scripts as a module:
+
+            yum install mod_python
+         
+                Installed: mod_python.x86_64 0:3.2.8-3.1
+                Complete!
+               
+               
+        3. INSTALL setuptools TO INSTALL MySQL-python LATER. DOWNLOAD FROM
+        
+        http://cheeseshop.python.org/packages/2.4/s/setuptools
+
+        THIS VERSION OF MySQL-python REQUIRES setuptools version 0.6c5 
+
+            mkdir /home/syoung/base/apps/trac/setuptools
+            cd /home/syoung/base/apps/trac/setuptools
+            ####wget http://pypi.python.org/packages/2.4/s/setuptools/setuptools-0.6c9-py2.4.egg
+            ##chmod 755 setuptools-0.6c9-py2.4.egg 
+            ##./setuptools-0.6c9-py2.4.egg 
+            ##    Processing setuptools-0.6c9-py2.4.egg
+            ##    creating /usr/lib/python2.4/site-packages/setuptools-0.6c9-py2.4.egg
+            ##    Extracting setuptools-0.6c9-py2.4.egg to /usr/lib/python2.4/site-packages
+            ##    Adding setuptools 0.6c9 to easy-install.pth file
+            ##    Installing easy_install script to /usr/bin
+            ##    Installing easy_install-2.4 script to /usr/bin
+            ##    
+            ##    Installed /usr/lib/python2.4/site-packages/setuptools-0.6c9-py2.4.egg
+            ##    Processing dependencies for setuptools==0.6c9
+            ##    Finished processing dependencies for setuptools==0.6c9
+
+        wget http://pypi.python.org/packages/2.4/s/setuptools/setuptools-0.6c5-py2.4.egg
+
+        ok!
+
+
+        4. INSTALL python-devEL TO AVOID THIS ERROR WITH MySQL-python
+
+            pymemcompat.h:10:20: error: Python.h: No such file or directory
+
+        sudo su
+        yum install python-devel
+        
+            ...
+            Installed: python-devel.i386 0:2.4.3-21.el5 python-devel.x86_64 0:2.4.3-21.el5
+            Complete!
+
+
+        5. INSTALL mysql-devel
+        
+        yum install mysql-devel
+
+            ...
+            Installed: mysql-devel.i386 0:5.0.45-7.el5 mysql-devel.x86_64 0:5.0.45-7.el5
+            Dependency Installed: e2fsprogs-devel.i386 0:1.39-15.el5 keyutils-libs-devel.i386 0:1.2-1.el5 krb5-devel.i386 0:1.6.1-25.el5_2.1 libselinux-devel.i386 0:1.33.4-5.el5 libsepol-devel.i386 0:1.15.2-1.el5 openssl-devel.i386 0:0.9.8b-10.el5
+            Complete!
+
+
+        6. INSTALL ssl
+        
+        yum install openssl
+
+            Package openssl - 0.9.8b-10.el5.i686 is already installed.
+            Package openssl - 0.9.8b-10.el5.x86_64 is already installed.
+
+        yum install openssl-devel
+
+            Installed: openssl-devel.x86_64 0:0.9.8b-10.el5
+            Complete!
+
+        TO AVOID THIS PROBLEM:
+
+            INSTALL MySQL-python GIVES THIS ERROR:        
+            
+            /usr/bin/ld: cannot find -lssl
+                    
+            
+
+
+    ALTERNATELY, DOWNLOAD apt-get FOR CENTOS
+    
+    sudo apt-get install python-dev
+    sudo apt-get install mysqldb-python
+
+    mkdir -p /home/syoung/base/apps/trac/apt-get
+    cd /home/syoung/base/apps/trac/apt-get
+
+    wget http://isoredirect.centos.org/centos/4.7/extras/i386/RPMS/apt-0.5.15lorg3.2-1.el4.centos.i386.rpm
+    wget http://isoredirect.centos.org/centos/4.7/extras/i386/RPMS/apt-devel-0.5.15lorg3.2-1.el4.centos.i386.rpm
+
+    [root@zion apt-get]# rpm -ivh apt-0.5.15lorg3.2-1.el4.centos.i386.rpm 
+warning: apt-0.5.15lorg3.2-1.el4.centos.i386.rpm: Header V3 DSA signature: NOKEY, key ID 443e1821
+error: Failed dependencies:
+        libbeecrypt.so.6 is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        libbz2.so.1 is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        libelf.so.1 is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        libreadline.so.4 is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        librpm-4.3.so is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        librpmdb-4.3.so is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+        librpmio-4.3.so is needed by apt-0.5.15lorg3.2-1.el4.centos.i386
+
+    
+
+    OR UNINSTALL PYTHON BEFORE INSTALLING PYTHON-DEVEL
+    
+    rpm -qa | grep python
+    python-elementtree-1.2.6-5
+    python-2.4.3-21.el5
+    rpm-python-4.4.2-48.el5
+    audit-libs-python-1.6.5-9.el5
+    mod_python-3.2.8-3.1
+    python-sqlite-1.1.7-1.2.1
+    python-iniparse-0.2.3-4.el5
+    libxml2-python-2.6.26-2.1.2.6
+    python-urlgrabber-3.1.0-2
+    libselinux-python-1.33.4-5.el5
+    python-clearsilver-0.10.4-1.el5.rf
+    [root@zion MySQL-python-1.2.2]# 
+
+    
+    
+
+
+         
+         7. Install MySQL-python so that python can interact with mysql
+         
+               1. Download and untar MySQL-python from http://sourceforge.net/projects/mysql-python
+               
+               wget http://downloads.sourceforge.net/mysql-python/MySQL-python-1.2.2.tar.gz?modtime=1172959928&big_mirror=0
+
+            2. cd MySQL-python-1.2.2
+
+            3.  python setup.py build && python setup.py install
+               
+                ...
+                Installed /usr/lib64/python2.4/site-packages/MySQL_python-1.2.2-py2.4-linux-x86_64.egg
+            Processing dependencies for MySQL-python==1.2.2
+     
+   2. Install some devel packages that are needed for compiling trac and svn integration:
+   
+      yum install neon neon-devel python-devel swig
+ 
+        ...
+        Installed: neon-devel.x86_64 0:0.25.5-5.1 neon-devel.i386 0:0.25.5-5.1 swig.x86_64 0:1.3.29-2.el5
+        Dependency Installed: expat-devel.x86_64 0:1.95.8-8.2.1
+        Complete!
+  
+   
+   3. Install Clearsilver, a templating package that trac depends on.
+   
+        1. Download and untar clearsilver from http://www.clearsilver.net/downloads/
+         
+        wget http://www.clearsilver.net/downloads/clearsilver-0.10.5.tar.gz
+        
+        2. cd clearsilver-0.10.5.tar.gz
+        
+        3. ./configure && make && make install
+
+            ...
+             mkdir /usr/local/include/ClearSilver/cgi
+            /usr/bin/install -c -m 644 cgi.h /usr/local/include/ClearSilver/cgi
+            /usr/bin/install -c -m 644 cgiwrap.h /usr/local/include/ClearSilver/cgi
+            /usr/bin/install -c -m 644 date.h /usr/local/include/ClearSilver/cgi
+            /usr/bin/install -c -m 644 html.h /usr/local/include/ClearSilver/cgi
+            /usr/bin/install -c -m 644 ../libs/libneo_cgi.a /usr/local/lib
+            /usr/bin/install -c cs_static.cgi /usr/local/bin
+            make[1]: Leaving directory `/home/syoung/base/apps/trac/clearsilver-0.10.5/cgi'
+            make[1]: Entering directory `/home/syoung/base/apps/trac/clearsilver-0.10.5/python'
+            ../mkinstalldirs /usr/lib64/python2.4/site-packages/site-packages
+            mkdir /usr/lib64/python2.4/site-packages/site-packages
+            /usr/bin/install -c neo_cgi.so /usr/lib64/python2.4/site-packages/site-packages
+            make[1]: Leaving directory `/home/syoung/base/apps/trac/clearsilver-0.10.5/python'
+            make[1]: Entering directory `/home/syoung/base/apps/trac/clearsilver-0.10.5/perl'
+            Installing /usr/local/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto/ClearSilver/ClearSilver.bs
+            Installing /usr/local/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto/ClearSilver/ClearSilver.so
+            Files found in blib/arch: installing files in blib/lib into architecture dependent library tree
+            Installing /usr/local/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/ClearSilver.pm
+            Installing /usr/local/share/man/man3/ClearSilver.3pm
+            Writing /usr/local/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto/ClearSilver/.packlist
+            Appending installation info to /usr/local/lib64/perl5/5.8.8/x86_64-linux-thread-multi/perllocal.pod
+            make[1]: Leaving directory `/home/syoung/base/apps/trac/clearsilver-0.10.5/perl'
+
+         
+   4. Install trac!
+         1. Download and untar trac from http://trac.edgewall.org/wiki/TracDownload
+         
+            wget http://ftp.edgewall.com/pub/trac/Trac-0.11.1.tar.gz
+            tar xvfz Trac-0.11.1.tar.gz
+            cd Trac-0.11.1
+         
+         2. INSTALL trac
+         
+            python ./setup.py install
+
+                ...
+                Extracting Trac-0.11.1-py2.4.egg to /usr/lib/python2.4/site-packages
+                Adding Trac 0.11.1 to easy-install.pth file
+                Installing trac-admin script to /usr/bin
+                Installing tracd script to /usr/bin
+                
+                Installed /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg
+                Processing dependencies for Trac==0.11.1
+                Searching for Genshi>=0.5
+                Reading http://cheeseshop.python.org/pypi/Genshi/
+                Reading http://genshi.edgewall.org/
+                Reading http://genshi.edgewall.org/wiki/Download
+                Reading http://cheeseshop.python.org/pypi/Genshi/0.5.1
+                Best match: Genshi 0.5.1
+                Downloading http://ftp.edgewall.com/pub/genshi/Genshi-0.5.1-py2.4-linux-x86_64.egg
+                Processing Genshi-0.5.1-py2.4-linux-x86_64.egg
+                Moving Genshi-0.5.1-py2.4-linux-x86_64.egg to /usr/lib/python2.4/site-packages
+                Adding Genshi 0.5.1 to easy-install.pth file
+                
+                Installed /usr/lib/python2.4/site-packages/Genshi-0.5.1-py2.4-linux-x86_64.egg
+
+
+         3. Initialize your first trac project
+         
+            trac-admin /srv/trac/bioptic initenv
+         
+                SUMMARY INPUTS:
+                
+                Project Name [My Project]> bioptic
+                Database connection string [sqlite:db/trac.db]>
+                Path to repository [/var/svn/test]> /srv/svn/bioptic
+                Templates directory [/usr/share/trac/templates]>
+                          
+            
+                FULL OUTPUT:
+
+                Creating a new Trac environment at /srv/trac/bioptic
+                
+                Trac will first ask a few questions about your environment 
+                in order to initialize and prepare the project database.
+                
+                 Please enter the name of your project.
+                 This name will be used in page titles and descriptions.
+                
+                Project Name [My Project]> bioptic
+                 
+                 Please specify the connection string for the database to use.
+                 By default, a local SQLite database is created in the environment
+                 directory. It is also possible to use an already existing
+                 PostgreSQL database (check the Trac documentation for the exact
+                 connection string syntax).
+                
+                Database connection string [sqlite:db/trac.db]> 
+                 
+                 Please specify the type of version control system,
+                 By default, it will be svn.
+                
+                 If you don't want to use Trac with version control integration,
+                 choose the default here and don't specify a repository directory.
+                 in the next question.
+                
+                Repository type [svn]> 
+                
+                 Please specify the absolute path to the version control
+                 repository, or leave it blank to use Trac without a repository.
+                 You can also set the repository location later.
+                
+                Path to repository [/path/to/repos]> /srv/svn/bioptic
+                [root@zion Trac-0.11.1]#             trac-admin /srv/trac/bioptic initenv
+                Initenv for '/srv/trac/bioptic' failed. 
+                 Does an environment already exist?
+                [root@zion Trac-0.11.1]#             trac-admin /srv/trac/bioptic initenv
+                Initenv for '/srv/trac/bioptic' failed. 
+                 Does an environment already exist?
+                [root@zion Trac-0.11.1]#             trac-admin /srv/trac/bioptic initenv
+                Creating a new Trac environment at /srv/trac/bioptic
+                
+                Trac will first ask a few questions about your environment 
+                in order to initialize and prepare the project database.
+                
+                 Please enter the name of your project.
+                 This name will be used in page titles and descriptions.
+                
+                Project Name [My Project]> bioptic
+                 
+                 Please specify the connection string for the database to use.
+                 By default, a local SQLite database is created in the environment
+                 directory. It is also possible to use an already existing
+                 PostgreSQL database (check the Trac documentation for the exact
+                 connection string syntax).
+                
+                Database connection string [sqlite:db/trac.db]> 
+                 
+                 Please specify the type of version control system,
+                 By default, it will be svn.
+                
+                 If you don't want to use Trac with version control integration,
+                 choose the default here and don't specify a repository directory.
+                 in the next question.
+                
+                Repository type [svn]> 
+                
+                 Please specify the absolute path to the version control
+                 repository, or leave it blank to use Trac without a repository.
+                 You can also set the repository location later.
+                
+                Path to repository [/path/to/repos]> /srv/svn/bioptic
+                
+                Creating and Initializing Project
+                 Installing default wiki pages
+                 WikiDeletePage imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiDeletePage
+                 TracAccessibility imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracAccessibility
+                 TracSyntaxColoring imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracSyntaxColoring
+                 TracBrowser imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracBrowser
+                 TracPermissions imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracPermissions
+                 TracTicketsCustomFields imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracTicketsCustomFields
+                 InterMapTxt imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/InterMapTxt
+                 TracFineGrainedPermissions imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracFineGrainedPermissions
+                 TracRss imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracRss
+                 TracTickets imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracTickets
+                 TracNavigation imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracNavigation
+                 TracTimeline imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracTimeline
+                 InterTrac imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/InterTrac
+                 InterWiki imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/InterWiki
+                 TracRevisionLog imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracRevisionLog
+                 TracEnvironment imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracEnvironment
+                 TracSearch imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracSearch
+                 TracLinks imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracLinks
+                 TracWiki imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracWiki
+                 WikiRestructuredTextLinks imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiRestructuredTextLinks
+                 TracModPython imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracModPython
+                 WikiProcessors imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiProcessors
+                 TracUpgrade imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracUpgrade
+                 WikiMacros imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiMacros
+                 WikiFormatting imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiFormatting
+                 TitleIndex imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TitleIndex
+                 WikiStart imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiStart
+                 TracWorkflow imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracWorkflow
+                 TracReports imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracReports
+                 TracImport imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracImport
+                 TracChangeset imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracChangeset
+                 WikiPageNames imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiPageNames
+                 PageTemplates imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/PageTemplates
+                 TracQuery imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracQuery
+                 WikiNewPage imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiNewPage
+                 TracGuide imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracGuide
+                 TracIni imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracIni
+                 WikiHtml imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiHtml
+                 TracBackup imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracBackup
+                 SandBox imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/SandBox
+                 WikiRestructuredText imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/WikiRestructuredText
+                 TracFastCgi imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracFastCgi
+                 TracPlugins imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracPlugins
+                 TracCgi imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracCgi
+                 TracInterfaceCustomization imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracInterfaceCustomization
+                 RecentChanges imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/RecentChanges
+                 TracNotification imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracNotification
+                 TracAdmin imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracAdmin
+                 CamelCase imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/CamelCase
+                 TracInstall imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracInstall
+                 TracLogging imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracLogging
+                 TracUnicode imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracUnicode
+                 TracSupport imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracSupport
+                 TracStandalone imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracStandalone
+                 TracRoadmap imported from /usr/lib/python2.4/site-packages/Trac-0.11.1-py2.4.egg/trac/wiki/default-pages/TracRoadmap
+                 Indexing repository
+                
+                ---------------------------------------------------------------------
+                Project environment for 'bioptic' created.
+                
+                You may now configure the environment by editing the file:
+                
+                  /srv/trac/bioptic/conf/trac.ini
+                
+                If you'd like to take this new project environment for a test drive,
+                try running the Trac standalone web server `tracd`:
+                
+                  tracd --port 8100 /srv/trac/bioptic
+
+
+                
+                Then point your browser to http://localhost:8100/bioptic.
+                There you can also browse the documentation for your installed
+                version of Trac, including information on further setup (such as
+                deploying Trac to a real web server).
+                
+                The latest documentation can also always be found on the project
+                website:
+                
+                  http://trac.edgewall.org/
+                
+                Congratulations!
+
+
+        4. START tracd SERVER
+
+tracd --port 8100 /srv/trac/bioptic &
+
+BROWSED TO
+
+http://localhost:8100/bioptic.
+
+ok!
+
+
+
+BUT WHEN RESTARTED GOT THIS ERROR:
+
+
+ raise TracError('The user %s requires read _and_ write ' \
+TracError: The user syoung requires read _and_ write permission to the database file /srv/trac/bioptic/db/trac.db and the directory it is located in.
+
+
+ll /srv/trac/bioptic/db/trac.db
+-rw-r--r-- 1 root root 317K Oct 23 01:25 /srv/trac/bioptic/db/trac.db
+
+[syoung@zion ~]$ sudo chown -R syoung:apache /srv/trac/bioptic/db/
+
+
+ok! TRAC 0.11 PAGE IS BACK ONLINE.
+
+
+
+5. SET UP AUTHENTICATION
+
+
+CREATE AN htdigest PASSWORD FILE
+
+htdigest [-c] passwordfile realm username
+The -c flag creates a new file.
+(SEE 'WHAT IS A REALM?' BELOW)
+
+sudo htdigest -c /srv/trac/bioptic/conf/users.htdigest bioptic admin
+
+
+SET ROOT PERMISSIONS FOR USER
+http://trac.edgewall.org/wiki/TracPermissions
+(GOOD)
+
+sudo trac-admin /srv/trac/bioptic permission add admin TRAC_ADMIN
+
+
+6. ACTIVATE 'Browse source' BY ADDING [components] SECTION TO trac.ini
+http://trac.edgewall.org/wiki/TracIni
+
+sudo emacs /srv/trac/bioptic/conf/trac.ini
+
+[components]
+# trac.ticket.report.ReportModule = disabled
+webadmin.* = enabled
+
+
+http://cipherdyne.org/blog/2008/02/deploying-the-trac-timeline-and-browse-source-features.html
+Also, you will need to set the default_handler variable in the conf/trac.ini file to BrowserModule instead of WikiModule. 
+
+
+
+7. START tracd
+
+sudo tracd -p 8100 --auth=bioptic,/srv/trac/bioptic/conf/users.htdigest,bioptic /srv/trac/bioptic &
+
+0k!
+
+
+
+Example:
+tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+
+
+If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read this page from the Apache manual to get precise instructions. You'll be prompted for a password to enter for each user that you create. For the name of the password file, you can use whatever you like, but if you use something like users.htdigest it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the trac.ini file.
+
+
+The general format for using authentication is:
+
+ $ tracd -p port --auth=base_project_dir,password_file_path,realm project_path
+
+where:
+
+    * base_project_dir is the base directory of the project; note: this doesn't refer to the project name, and it is case-sensitive even for windows environments
+    * password_file_path path of the password file
+    * realm realm
+    * project_path path of the project 
+
+Example:
+
+ $ tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+
+Of course, the digest file can be be shared so that it is used for more than one project:
+
+ $ tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com \
+   --auth=project2,/path/to/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+
+Another way to share the digest file is to specify "*" for the project name:
+
+ $ tracd -p 8080 \
+   --auth=*,/path/to/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+
+
+
+WEB RESOURCE 1:
+WHAT IS A REALM?
+http://tomcat.apache.org/tomcat-5.5-doc/realm-howto.html
+
+A Realm is a "database" of usernames and passwords that identify valid users of a web application (or set of web applications), plus an enumeration of the list of roles associated with each valid user. You can think of roles as similar to groups in Unix-like operating systems, because access to specific web application resources is granted to all users possessing a particular role (rather than enumerating the list of associated usernames). A particular user can have any number of roles associated with their username.
+
+
+
+
+WEB RESOURCE 2:
+http://zion.ccs.miami.edu:8100/bioptic/wiki/TracStandalone
+
+To create a .htpasswd file using htpasswd:
+
+    sudo htpasswd -c /path/to/env/.htpasswd username
+
+then for additional users:
+
+    sudo htpasswd /var/www/html/.htpasswd-users username2
+
+then for starting the tracd:
+
+    tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
+
+
+Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace --auth with --basic-auth in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
+
+    Support for Basic authentication was added in version 0.9.
+
+The general format for using authentication is:
+
+ $ tracd -p port --auth=base_project_dir,password_file_path,realm project_path
+
+where:
+
+    * base_project_dir is the base directory of the project; note: this doesn't refer to the project name, and it is case-sensitive even for windows environments
+    * password_file_path path of the password file
+    * realm realm
+    * project_path path of the project 
+
+Example:
+
+ $ tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+
+Of course, the digest file can be be shared so that it is used for more than one project:
+
+ $ tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com \
+   --auth=project2,/path/to/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+
+Another way to share the digest file is to specify "*" for the project name:
+
+ $ tracd -p 8080 \
+   --auth=*,/path/to/users.htdigest,mycompany.com \
+   /path/to/project1 /path/to/project2
+
+How to set up an htdigest password file ¶
+
+If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read this page from the Apache manual to get precise instructions. You'll be prompted for a password to enter for each user that you create. For the name of the password file, you can use whatever you like, but if you use something like users.htdigest it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the trac.ini file.
+
+Note that you can start tracd without the --auth argument, but if you click on the Login link you will get an error.
+Generating Passwords Without Apache ¶
+
+If you don't have Apache available, you can use this simple Python script to generate your passwords:
+
+from optparse import OptionParser
+import md5
+
+# build the options
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage)
+parser.add_option("-u", "--username",action="store", dest="username", type = "string",
+                  help="the username for whom to generate a password")
+parser.add_option("-p", "--password",action="store", dest="password", type = "string",
+                  help="the password to use")
+(options, args) = parser.parse_args()
+
+# check options
+if (options.username is None) or (options.password is None):
+   parser.error("You must supply both the username and password")
+   
+# Generate the string to enter into the htdigest file
+realm = 'trac'
+kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+
+Note: If you use the above script you must use the --auth option to tracd, not --basic-auth, and you must set the realm in the --auth value to 'trac' (without the quotes). Example usage (assuming you saved the script as trac-digest.py):
+
+python trac-digest.py -u username -p password >> c:\digest.txt
+tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
+
+Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there). If you do not have Apache, htpasswd.py may help. (Note that it requires a crypt or fcrypt module; see the source comments for details.)
+
+It is possible to use md5sum utility to generate digest-password file using such method:
+
+echo -e "${user}:trac:${password}\c" | md5sum - >>to-file
+
+and manually delete " -" from the end and add "${user}:trac:" to the start of line from 'to-file'. You can see attachment:trac-digest-corrected.sh for detail.
+Tips ¶
+Serving static content ¶
+
+If tracd is the only webserver used for the project, it can also be used to distribute static content (tarballs, Doxygen documentation, etc.)
+
+This static content should be put in the $TRAC_ENV/htdocs folder, and is accessed by URLs like <project_URL>/chrome/site/....
+
+Example: given a $TRAC_ENV/htdocs/software-0.1.tar.gz file, the corresponding relative URL would be /<project_name>/chrome/site/software-0.1.tar.gz, which in turn can be written using the relative link syntax in the Wiki: [/<project_name>/chrome/site/software-0.1.tar.gz]
+
+The development version of Trac supports a new htdocs: TracLinks syntax for the above. With this, the example link above can be written simply htdocs:software-0.1.tar.gz.
+Using apache rewrite rules ¶
+
+In some situations when you choose to use tracd behind apache, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the [trac] use_base_url_for_redirect to true can help, as this will force Trac to use the value of [trac] base_url for doing the redirects.
+Serving a different base path than / ¶
+
+Tracd supports serving projects with different base urls then /<project>. The parameter name to change this is
+
+tracd --base-path=/some/path
+
+
+
+
+WEB RESOURCE 3:
+http://zion.ccs.miami.edu:8100/bioptic/wiki/TracCgi#AddingAuthentication
+
+
+
+Adding Authentication ¶
+
+The simplest way to enable authentication with Apache is to create a password file. Use the htpasswd program to create the password file:
+
+$ htpasswd -c /somewhere/trac.htpasswd admin
+New password: <type password>
+Re-type new password: <type password again>
+Adding password for user admin
+
+After the first user, you dont need the "-c" option anymore:
+
+$ htpasswd /somewhere/trac.htpasswd john
+New password: <type password>
+Re-type new password: <type password again>
+Adding password for user john
+
+    See the man page for htpasswd for full documentation.
+
+After you've created the users, you can set their permissions using TracPermissions.
+
+Now, you'll need to enable authentication against the password file in the Apache configuration:
+
+<Location "/trac/login">
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+</Location>
+
+If you're hosting multiple projects you can use the same password file for all of them:
+
+<LocationMatch "/trac/[^/]+/login">
+  AuthType Basic
+  AuthName "Trac"
+  AuthUserFile /somewhere/trac.htpasswd
+  Require valid-user
+</LocationMatch>
+
+For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the Apache HTTPD documentation to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section in apache configuration can look like this:
+
+<Location "/trac/login">
+    LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
+    AuthType Digest
+    AuthName "trac"
+    AuthDigestDomain /trac
+    AuthDigestFile /somewhere/trac.htpasswd
+    Require valid-user
+</Location>
+
+and you'll have to create your .htpasswd file with htdigest instead of htpasswd as follows:
+
+# htdigest /somewhere/trac.htpasswd trac admin
+
+where the "trac" parameter above is the same as AuthName above ("Realm" in apache-docs).
+
+
+
+
+
+
+
+
+
+         
+         4. Tell Apache about trac.. Add the following lines to your Apache configuration file:
+
+            <Location />
+              SetHandler mod_python
+              PythonHandler trac.web.mod python_frontend
+              PythonOption TracEnv /srv/trac/bioptic
+              PythonOption TracUriRoot /trac/
+            </Location>
+
+Finally, restart httpd and try it out by going to:
+
+http://$yourhost/trac/
+
+If it doesn’t work, check your webserver error log for errors:
+tail -f /var/log/httpd/error_log
+
+
+    ERRORS:
+
+# tail -f /var/log/httpd/error_log
+
+...
+[Thu Oct 23 01:23:11 2008] [notice] child pid 15951 exit signal Segmentation fault (11)
+[Thu Oct 23 01:23:11 2008] [notice] child pid 15952 exit signal Segmentation fault (11)
+    
+[root@zion httpd]# /usr/sbin/apachectl -k restart
+[root@zion httpd]# tail -f  error_log
+[Thu Oct 23 01:23:18 2008] [notice] child pid 16198 exit signal Segmentation fault (11)
+[Thu Oct 23 01:23:18 2008] [notice] SIGHUP received.  Attempting to restart
+[Thu Oct 23 01:23:18 2008] [notice] Digest: generating secret for digest authentication ...
+[Thu Oct 23 01:23:18 2008] [notice] Digest: done
+[Thu Oct 23 01:23:18 2008] [notice] mod_python: Creating 4 session mutexes based on 256 max processes and 0 max threads.
+[Thu Oct 23 01:23:18 2008] [notice] Apache/2.2.3 (CentOS) configured -- resuming normal operations
+[Thu Oct 23 01:23:18 2008] [error] [client 10.150.180.142] PythonHandler trac.web.mod: Traceback (most recent call last):
+[Thu Oct 23 01:23:18 2008] [error] [client 10.150.180.142] PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 287, in HandlerDispatch\n    log=debug)
+[Thu Oct 23 01:23:18 2008] [error] [client 10.150.180.142] PythonHandler trac.web.mod:   File "/usr/lib64/python2.4/site-packages/mod_python/apache.py", line 461, in import_module\n    f, p, d = imp.find_module(parts[i], path)
+[Thu Oct 23 01:23:18 2008] [error] [client 10.150.180.142] PythonHandler trac.web.mod: ImportError: No module named mod
+^[[A
+
+
+
+
+THE FOLLOWING ATTEMPTS DID NOT WORK:
+
+
+3. DOWNLOAD AND INSTALL trac
+
+yum DOESN'T WORK:
+#### FAILED TO FIND trac ####
+
+sudo su
+yum install -y trac
+
+    ...
+    No package trac available.
+
+CHECK Notes-apps-linux.txt
+Wed Oct 22 23:03:08 EDT 2008
+HOW TO USE Apt AND yum
+
+BASED ON THIS PAGE:
+http://dag.wieers.com/rpm/FAQ.php#B4
+
+TRIED AGAIN BUT NO LUCK:
+
+sudo su
+yum update
+yum install -y trac
+
+    ...
+    No package trac available.
+
+
+
+SO DOWNLOAD FROM http://dag.wieers.com/rpm/packages/trac/
+
+DEPENDENCIES:
+python-clearsilver >= 0.9.3 is needed by trac-0.10.4-1.el5.rf.noarch
+clearsilver = 0.9.13 is needed by python-clearsilver-0.9.13-1.1.el3.rf.i386
+
+
+
+sudo su
+cd /home/syoung/base/apps/trac
+
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.9.13-1.1.el3.rf.i386.rpm
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.9.13-1.1.el3.rf.i386.rpm
+
+wget http://dag.wieers.com/rpm/packages/trac/trac-0.10.4-1.el5.rf.noarch.rpm
+
+
+rpm -ivh clearsilver-0.9.13-1.1.el3.rf.i386.rpm   \
+    python-clearsilver-0.9.13-1.1.el3.rf.i386.rpm \
+    trac-0.10.4-1.el5.rf.noarch.rpm
+
+    warning: clearsilver-0.9.13-1.1.el3.rf.i386.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+    Preparing...                ########################################### [100%]
+       1:clearsilver            ########################################### [ 33%]
+       2:python-clearsilver     ########################################### [ 67%]
+       3:trac                   ########################################### [100%]
+
+
+ok!
+
+REINSTALL CLEARSILVER FROM SOURCE:
+
+
+sudo su
+cd /home/syoung/base/apps/trac
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.9.13-1.rf.src.rpm
+
+
+
+UNINSTALL PREVIOUS CLEARSILVER RPM:
+
+
+rpm -ev clearsilver-0.9.13-1.1.el3.rf.i386 \
+    python-clearsilver-0.9.13-1.1.el3.rf.i386 \
+    trac-0.10.4-1.el5.rf.noarch
+
+    warning: /etc/httpd/conf.d/trac.conf saved as /etc/httpd/conf.d/trac.conf.rpmsave
+
+
+INSTALL SOURCE CLEARSILVER WITH CONFIGURE OPTIONS:
+
+
+[root@zion trac]# rpm --help | grep configure
+  --with=<option>                  enable configure <option> for build
+  --without=<option>               disable configure <option> for build
+
+
+BUT CAN'T INSTALL SOURCE:
+
+rpm -ivh clearsilver-0.9.13-1.rf.src.rpm \
+
+    warning: clearsilver-0.9.13-1.rf.src.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+    error: cannot create %sourcedir /usr/src/redhat/SOURCES
+
+[root@zion trac]# rpm -ev clearsilver-0.9.13-1.rf.src    
+
+    error: package clearsilver-0.9.13-1.rf.src is not installed
+
+
+SO DOWNLOADED A LATER VERSION (10.4) OF CLEARSILVER:
+
+ wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+ 
+rpm -ivh clearsilver-0.10.4-1.el5.rf.i386.rpm 
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -i clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+
+AND REINSTALLED python-clearsilver
+
+wget http://dag.wieers.com/rpm/packages/clearsilver/python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+rpm -ivh python-clearsilver-0.10.4-1.el5.rf.i386.rpm
+
+AND REINSTALLED trac
+
+rpm -ivh trac-0.10.4-1.el5.rf.noarch.rpm
+
+
+
+
+
+
+
+
+   ./configure --disable-apache --disable-csharp --disable-ruby --prefix=/usr
+ 
+   # we all hate broken makefiles... hooray!
+   sed -i "s@/usr/local/bin/python@/usr/bin/env python@g" scripts/document.py
+ 
+   make || return 1
+   make install
+ 
+   cd python
+   python setup.py install
+
+
+
+4. CREATE A PROJECT DIRECTORY WITH trac-admin
+
+    Note:
+
+        * The directory /srv/trac MUST exist.
+        * The directory /srv/trac/projectX MUST not exist before execution of command.
+
+    Trac repository directories:
+
+        * SuSE: /srv/trac/
+        * Red Hat: /usr/share/trac/proj_trac/
+
+This command will initialize the Trac data repository and create a directory structure and default configuration files.
+
+
+mkdir /srv/trac
+cd /srv/trac
+trac-admin /srv/trac/bioptic initenv  
+
+
+    SUMMARY INPUTS:
+    
+    Project Name [My Project]> bioptic
+    Database connection string [sqlite:db/trac.db]>
+    Path to repository [/var/svn/test]> /srv/svn/bioptic
+    Templates directory [/usr/share/trac/templates]>
+              
+
+    FULL OUTPUT:
+    
+    [root@zion trac]# trac-admin /srv/trac/bioptic initenv  
+
+    Creating a new Trac environment at /srv/trac/bioptic
+    
+    Trac will first ask a few questions about your environment 
+    in order to initalize and prepare the project database.
+    
+     Please enter the name of your project.
+     This name will be used in page titles and descriptions.
+    
+    Project Name [My Project]> bioptic
+    
+     Please specify the connection string for the database to use.
+     By default, a local SQLite database is created in the environment 
+     directory. It is also possible to use an already existing 
+     PostgreSQL database (check the Trac documentation for the exact 
+     connection string syntax).
+    
+    Database connection string [sqlite:db/trac.db]> 
+    
+     Please specify the type of version control system,
+     By default, it will be svn.
+    
+     If you don't want to use Trac with version control integration, 
+     choose the default here and don't specify a repository directory. 
+     in the next question.
+    
+    Repository type [svn]> 
+    
+     Please specify the absolute path to the version control 
+     repository, or leave it blank to use Trac without a repository.
+     You can also set the repository location later.
+    
+    Path to repository [/path/to/repos]> /srv/svn/bioptic
+    
+     Please enter location of Trac page templates.
+     Default is the location of the site-wide templates installed with Trac.
+    
+    Templates directory [/usr/share/trac/templates]> 
+    
+    Creating and Initializing Project
+     Installing default wiki pages
+     /usr/share/trac/wiki-default/WikiDeletePage => WikiDeletePage
+     /usr/share/trac/wiki-default/TracAccessibility => TracAccessibility
+     /usr/share/trac/wiki-default/TracSyntaxColoring => TracSyntaxColoring
+     /usr/share/trac/wiki-default/TracBrowser => TracBrowser
+     /usr/share/trac/wiki-default/TracPermissions => TracPermissions
+     /usr/share/trac/wiki-default/TracTicketsCustomFields => TracTicketsCustomFields
+     /usr/share/trac/wiki-default/InterMapTxt => InterMapTxt
+     /usr/share/trac/wiki-default/TracRss => TracRss
+     /usr/share/trac/wiki-default/TracTickets => TracTickets
+     /usr/share/trac/wiki-default/TracTimeline => TracTimeline
+     /usr/share/trac/wiki-default/InterTrac => InterTrac
+     /usr/share/trac/wiki-default/InterWiki => InterWiki
+     /usr/share/trac/wiki-default/TracRevisionLog => TracRevisionLog
+     /usr/share/trac/wiki-default/TracEnvironment => TracEnvironment
+     /usr/share/trac/wiki-default/TracSearch => TracSearch
+     /usr/share/trac/wiki-default/TracLinks => TracLinks
+     /usr/share/trac/wiki-default/TracWiki => TracWiki
+     /usr/share/trac/wiki-default/WikiRestructuredTextLinks => WikiRestructuredTextLinks
+     /usr/share/trac/wiki-default/TracModPython => TracModPython
+     /usr/share/trac/wiki-default/WikiProcessors => WikiProcessors
+     /usr/share/trac/wiki-default/TracUpgrade => TracUpgrade
+     /usr/share/trac/wiki-default/WikiMacros => WikiMacros
+     /usr/share/trac/wiki-default/WikiFormatting => WikiFormatting
+     /usr/share/trac/wiki-default/TitleIndex => TitleIndex
+     /usr/share/trac/wiki-default/WikiStart => WikiStart
+     /usr/share/trac/wiki-default/TracReports => TracReports
+     /usr/share/trac/wiki-default/TracImport => TracImport
+     /usr/share/trac/wiki-default/TracChangeset => TracChangeset
+     /usr/share/trac/wiki-default/WikiPageNames => WikiPageNames
+     /usr/share/trac/wiki-default/TracQuery => TracQuery
+     /usr/share/trac/wiki-default/WikiNewPage => WikiNewPage
+     /usr/share/trac/wiki-default/TracGuide => TracGuide
+     /usr/share/trac/wiki-default/TracIni => TracIni
+     /usr/share/trac/wiki-default/WikiHtml => WikiHtml
+     /usr/share/trac/wiki-default/TracBackup => TracBackup
+     /usr/share/trac/wiki-default/SandBox => SandBox
+     /usr/share/trac/wiki-default/WikiRestructuredText => WikiRestructuredText
+     /usr/share/trac/wiki-default/TracFastCgi => TracFastCgi
+     /usr/share/trac/wiki-default/TracPlugins => TracPlugins
+     /usr/share/trac/wiki-default/TracCgi => TracCgi
+     /usr/share/trac/wiki-default/TracInterfaceCustomization => TracInterfaceCustomization
+     /usr/share/trac/wiki-default/RecentChanges => RecentChanges
+     /usr/share/trac/wiki-default/TracNotification => TracNotification
+     /usr/share/trac/wiki-default/TracAdmin => TracAdmin
+     /usr/share/trac/wiki-default/CamelCase => CamelCase
+     /usr/share/trac/wiki-default/TracInstall => TracInstall
+     /usr/share/trac/wiki-default/TracLogging => TracLogging
+     /usr/share/trac/wiki-default/TracUnicode => TracUnicode
+     /usr/share/trac/wiki-default/TracSupport => TracSupport
+     /usr/share/trac/wiki-default/TracStandalone => TracStandalone
+     /usr/share/trac/wiki-default/TracRoadmap => TracRoadmap
+     Indexing repository
+    
+    ---------------------------------------------------------------------
+    Project environment for 'bioptic' created.
+    
+    You may now configure the environment by editing the file:
+    
+      /srv/trac/bioptic/conf/trac.ini
+    
+    If you'd like to take this new project environment for a test drive,
+    try running the Trac standalone web server `tracd`:
+    
+      tracd --port 8000 /srv/trac/bioptic
+    
+    Then point your browser to http://localhost:8000/bioptic.
+    There you can also browse the documentation for your installed
+    version of Trac, including information on further setup (such as
+    deploying Trac to a real web server).
+    
+    The latest documentation can also always be found on the project
+    website:
+    
+      http://trac.edgewall.org/
+    
+    Congratulations!
+
+
+WENT TO trac.cgi
+http://zion.ccs.miami.edu/cgi-bin/trac.cgi
+
+BEFORE CHANGING OWNERSHIP TO APACHE AND GOT THIS ERROR:
+
+Trac detected an internal error: 'NoneType' object has no attribute 'log'
+
+AFTER CHANGING OWNERSHIP TO APACHED
+
+chown -R apache:apache /srv/trac/bioptic
+
+... GOT THIS ERROR:
+
+
+
+SUGGESTED WORKAROUND:
+
+https://launchpad.net/ubuntu/+source/clearsilver/+bug/86685
+
+
+
+
+
+To summarise the work around:
+
+Install the build dependencies
+$ sudo apt-get build-dep python-clearsilver
+$ sudo apt-get install python-dev
+
+Download the 0.10.4 version (as it contains fixes for python2.5)
+$ wget http://www.clearsilver.net/downloads/clearsilver-0.10.4.tar.gz
+$ tar xzvf clearsilver-0.10.4.tar.gz
+
+Edit the configure files as listed by Antonio Censi above
+
+    
+     Antonio Censi wrote on 2007-03-01: (permalink)
+    
+    Probably the text below would be better to be in Tutorials section in forums, but it could be helpful to have it here in case someone hits the same bug reported here.
+    
+    In order to get Trac 0.10.3 running in amd64 Feisty, I have compiled , in the traditional way (./configure, make and make install) clearsilver-0.10.4, downloaded from its site.
+    
+    To get it to compile with python2.5, i had to change 1 line in configure file and another in configure.in, to add version 2.5 to the allowed python versions:
+    configure:6560: python_versions="2.5 2.4 2.3 2.2 2.1 2.0 1.5 24 23 22 21 20 15"
+    
+    and
+    
+    configure.in:250: python_versions="2.5 2.4 2.3 2.2 2.1 2.0 1.5 24 23 22 21 20 15"
+    
+    Original ones do not have the 2.5 I have added.
+    
+    As I have ruby installed, it was necessary too install ruby1.8-dev, to get a required mkmf util for ruby interface build:
+    sudo apt-get install ruby1.8-dev
+    
+    I tried to disable ruby and csharp compilations in configure, but it does not worked. If you have csharp (mono), probably it will be necessary to add other packages. I do not have it installed and so the build process skipped the csharp part.
+    
+    Now Trac is running ok in x86_64 Feisty, with several plugins, like it is in another x86 Feisty I have installed before.
+    
+    
+     peterdv wrote on 2007-03-27: (permalink)
+    
+    In addition to the comment from Antonio Censi, I had to:
+    sudo apt-get install zlib1g-dev
+    sudo apt-get install autoconf
+    sudo apt-get install python-dev
+    
+    and edit Makefile lines 23,26 to read:
+            ./configure --disable-perl --with-python=/usr/bin/python
+
+
+
+Build the new version
+$ cd clearsilver-0.10.4
+$ ./configure
+$ make
+$ sudo make install
+
+Copy the new shared object over the packaged version
+$ sudo cp -bi python/neo_cgi.so /usr/lib/python2.5/site-packages/neo_cgi.so
+
+Enjoy!
+
+
+
+LOOKS COMPLICATED, SO RETURN TO CENTOS-SPECIFIC INSTALLATION ABOVE...
+
+
+(SEE ALSO http://projects.edgewall.com/trac/wiki/TracIni)
+([Potential Pitfall]: Once Trac is configured and used (i.e. it has tickets, etc), it can not be pointed to a different Subversion repository. If you point "repository_dir" to a new Subversion repository, you will not have a Trac database which is in sync with Subversion and Trac will fail. The name of the directory path and the "repository_dir" can be renamed with matching names, but the actual Subversion repository must remain the same.)
+
+
+5. EDIT /srv/trac/bioptic/conf/trac.ini (CREATED BY trac-admin ABOVE)
+
+emacs /srv/trac/bioptic/conf/trac.ini 
+
+
+..
+...
+
+[trac]
+...
+repository_dir = /srv/svn/bioptic       - This ties Trac to Subversion
+
+...
+...
+
+[notification]
+Set email and SMTP information here  --- DO THIS LATER
+
+...
+...
+
+[project]
+url = http://example.org
+
+
+6. ALLOW trac.cgi TO BE EXECUTED BY THE WEB SERVER
+
+Two methods. Pick one:
+
+   1. Copy the CGI to the default CGI bin directory:
+   
+
+    [root@zion trac]#    ll /usr/share/trac/cgi-bin
+    total 8
+    -rwxr-xr-x 1 root root 1071 Apr 27  2007 trac.cgi
+    -rwxr-xr-x 1 root root 1027 Apr 27  2007 trac.fcgi
+
+   sudo su
+   cp /usr/share/trac/cgi-bin/trac.cgi /var/www/cgi-bin
+
+   # OR
+   #
+   #2. Enable Apache to execute the CGI:
+   #
+   #       ..
+   #       ScriptAlias /trac /usr/share/trac/cgi-bin/trac.cgi
+   #       ..
+
+Note:The CGI trac.fcgi is for debugging using Python debugging.
+
+
+
+
+Apache Web Server configuration file for Trac integration:
+
+Trac can be run using the stand-alone Trac daemon "tracd". This configuration shows the use of Apache with Trac.
+
+USE THIS METHOD TO RUN trac ON apache WITHOUT AUTHENTICATION
+
+File: /etc/httpd/conf.d/trac.conf
+
+ll /etc/httpd/conf.d/trac.conf
+-rw-r--r-- 1 root root 379 Apr 27  2007 /etc/httpd/conf.d/trac.conf
+
+emacs /etc/httpd/conf.d/trac.conf
+
+    BEFORE EDITING:
+
+    Alias /trac/ "/usr/share/trac/htdocs/"
+    
+    ### Trac need to know where the database is located
+    <Location "/cgi-bin/trac.cgi">
+            SetEnv TRAC_ENV "/usr/share/trac/myproject.db"
+    </Location>
+    
+    ### You need this to allow users to authenticate
+    <Location "/cgi-bin/trac.cgi/login">
+            AuthType Basic
+            AuthName "trac"
+            AuthUserFile /usr/share/trac/trac.htpasswd
+            Require valid-user
+    </location>
+
+    AFTER EDITING:
+
+      Alias /trac/ "/usr/share/trac/htdocs/"
+      <Location "/cgi-bin/trac.cgi">
+         SetEnv TRAC_ENV "/srv/trac/bioptic"
+      </Location>
+
+      ####or Red Hat Dag.Wieers.com rpm installation example:
+      ####
+      ####ScriptAlias /trac /usr/share/trac/cgi-bin/trac.cgi
+      ####<Location "/trac">
+      ####   SetEnv TRAC_ENV "/srv/trac/projectX"
+      ####</Location>
+
+
+RESTART APACHE:
+
+/usr/sbin/apachectl -k restart
+
+
+BROWSED TO http://zion.ccs.miami.edu/cgi-bin/trac.cgi AND GOT THIS ERROR:
+
+
+    Traceback (most recent call last):
+      File "/usr/lib/python2.4/site-packages/trac/web/main.py", line 406, in dispatch_request
+        dispatcher.dispatch(req)
+      File "/usr/lib/python2.4/site-packages/trac/web/main.py", line 206, in dispatch
+        req.hdf = HDFWrapper(loadpaths=chrome.get_all_templates_dirs())
+      File "/usr/lib/python2.4/site-packages/trac/web/clearsilver.py", line 135, in __init__
+        raise TracError, "ClearSilver not installed (%s)" % e
+    TracError: ClearSilver not installed (No module named neo_cgi)
+
+
+SOLUTION:
+
+http://trac.edgewall.org/wiki/TracFaq
+
+
+How do I install Clearsilver? ¶
+
+The following Trac error message indicates that Clearsilver is not installed correctly.
+
+   TracError: ClearSilver not installed (No module named neo_cgi)
+
+Check first our ClearSilver wiki page. Clearsilver has some bugs in its build process. The following process may help:
+
+   ./configure --disable-apache --disable-csharp --disable-ruby --prefix=/usr
+ 
+   # we all hate broken makefiles... hooray!
+   sed -i "s@/usr/local/bin/python@/usr/bin/env python@g" scripts/document.py
+ 
+   make || return 1
+   make install
+ 
+   cd python
+   python setup.py install
+
+See also http://groups.yahoo.com/group/ClearSilver/message/589 - it appears that PYTHON_SITE is not being set properly in the clearsilver-0.10.2 makefile so neo_cgi.so is not installed. Try:
+
+   PYTHON_SITE=`/path/to/python -c \
+   "import sys; print [path for path in sys.path if path.find('site-packages') != -1][0]"` \
+
+   ./configure --with-python=/path/to/python --disable-ruby \
+   --disable-java --disable-apache --disable-csharp
+
+
+
+
+
+
+  $ mkdir /var/svn
+  $ mkdir /var/svn/project
+  $ mkdir /tmp/project
+  $ mkdir /tmp/project/branches
+  $ mkdir /tmp/project/tags
+  $ mkdir /tmp/project/trunk
+  $ svnadmin create /var/svn/project
+  $ svn import /tmp/project file:///var/svn/project -m "initial import"
+  $ rm -rf /tmp/project
+
+Fix permissions to the repository:
+
+  $ find /var/svn/project -type f -exec chmod 660 {} \;
+  $ find /var/svn/project -type d -exec chmod 2770 {} \;
+  $ chown -R root.www-data /var/svn/project
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Oct 22 21:48:03 EDT 2008
+DOWNLOAD AND INSTALL trac WITH subversion ON WINDOWS
+
+BASED ON THIS WEBPAGE:
+http://trac.edgewall.org/wiki/TracOnWindows
+
+1.DOWNLOADED FILES ON WEBPAGE
+
+
+2. INSTALLED easy_setup.py
+
+WRITTEN TO C:\Python25\Scripts
+
+
+3. INSTALLED Genshi
+
+cd C:\DATA\22-bioptic\trac\download\Genshi-0.4.4\Genshi-0.4.4
+C:\Python25\python.exe setup.py install
+
+    setup.py install
+    running install
+    running bdist_egg
+    running egg_info
+    writing requirements to Genshi.egg-info\requires.txt
+    writing Genshi.egg-info\PKG-INFO
+    ...
+    creating 'dist\Genshi-0.4.4-py2.5.egg' and adding 'build\bdist.win32\egg' to it
+    removing 'build\bdist.win32\egg' (and everything under it)
+    Processing Genshi-0.4.4-py2.5.egg
+    Copying Genshi-0.4.4-py2.5.egg to c:\python25\lib\site-packages
+    Adding Genshi 0.4.4 to easy-install.pth file
+    
+    Installed c:\python25\lib\site-packages\genshi-0.4.4-py2.5.egg
+    Processing dependencies for Genshi==0.4.4
+    Finished processing dependencies for Genshi==0.4.4
+
+
+4. INSTALLED pysqlite
+
+C:\Python25\python.exe pysqlite
+
+ok
+
+
+5. INSTALLED subverson PYTHON LIBRARY
+
+DOUBLE-CLICKED ON DOWNLOADED FILE:
+
+svn-python-1.5.2.win32-py2.5.exe
+
+ok
+
+
+6. DOWNLOAD trac USING subversion AND INSTALL
+
+cd C:\svn_repository
+svn checkout http://svn.edgewall.org/repos/trac/trunk
+cd trunk
+C:\Python25\python.exe setup.py install
+
+    ...
+    Installing easy_install-2.5-script.py script to C:\Python25\Scripts
+    Installing easy_install-2.5.exe script to C:\Python25\Scripts
+    
+    Using c:\python25\lib\site-packages\setuptools-0.6c9-py2.5.egg
+    Finished processing dependencies for Trac==0.12dev-r7601
+
+...WHICH INSTALLED ALL THE trac EXECUTABLES TO
+
+    C:\Python25\Scripts
+
+
+7. CREATE A subversion PROJECTS FOLDER
+
+mkdir c:\svn
+svnadmin create c:\svn\bioptic
+
+
+dir C:\svn\bioptic
+
+    10/22/2008  04:17 PM    <DIR>          .
+    10/22/2008  04:17 PM    <DIR>          ..
+    10/22/2008  04:17 PM    <DIR>          conf
+    10/22/2008  04:17 PM    <DIR>          db
+    10/22/2008  04:17 PM                 2 format
+    10/22/2008  04:17 PM    <DIR>          hooks
+    10/22/2008  04:17 PM    <DIR>          locks
+    10/22/2008  04:17 PM               234 README.txt
+                   2 File(s)            236 bytes
+
+
+8. CREATE A NEW trac PROJECT DIRECTORY ('projects') WITH ALL ITS REQUIREMENTS IN C:\trac\projects
+
+mkdir C:\trac
+cd C:\trac
+C:\Python25\Scripts\trac-admin.exe projects initenv
+
+
+   Creating a new Trac environment at C:\trac\projects
+   
+   Trac will first ask a few questions about your environment
+   in order to initialize and prepare the project database.
+   
+    Please enter the name of your project.
+    This name will be used in page titles and descriptions.
+   
+   Project Name [My Project]> bioptic
+   
+    Please specify the connection string for the database to use.
+    By default, a local SQLite database is created in the environment
+    directory. It is also possible to use an already existing
+    PostgreSQL database (check the Trac documentation for the exact
+    connection string syntax).
+   
+   Database connection string [sqlite:db/trac.db]>
+   
+    Please specify the type of version control system,
+    By default, it will be svn.
+   
+    If you don't want to use Trac with version control integration,
+    choose the default here and don't specify a repository directory.
+    in the next question.
+   
+   Repository type [svn]>
+   
+    Please specify the absolute path to the version control
+    repository, or leave it blank to use Trac without a repository.
+    You can also set the repository location later.
+   
+   Path to repository [/path/to/repos]> c:\svn\bioptic
+   
+   Creating and Initializing Project
+    Installing default wiki pages
+    ...
+    egg\trac\wiki\default-pages\WikiStart
+   
+   ---------------------------------------------------------------------
+   Warning: couldn't index the repository.
+   
+   This can happen for a variety of reasons: wrong repository type,
+   no appropriate third party library for this repository type,
+   no actual repository at the specified repository path...
+   
+   You can nevertheless start using your Trac environment, but
+   you'll need to check again your trac.ini file and the [trac]
+   repository_type and repository_path settings in order to enable
+   the Trac repository browser.
+   
+   
+   ---------------------------------------------------------------------
+   Project environment for 'My Project' created.
+   
+   You may now configure the environment by editing the file:
+   
+     C:\trac\projects\conf\trac.ini
+   
+   If you'd like to take this new project environment for a test drive,
+   try running the Trac standalone web server `tracd`:
+   
+     tracd --port 8000 C:\trac\projects
+   
+   Then point your browser to http://localhost:8000/projects.
+   There you can also browse the documentation for your installed
+   version of Trac, including information on further setup (such as
+   deploying Trac to a real web server).
+   
+   The latest documentation can also always be found on the project
+   website:
+   
+     http://trac.edgewall.org/
+   
+   Congratulations!
+      
+   C:\trac>
+   
+
+8. GET webadmin UP AND RUNNING
+
+RUN tracd SERVER
+
+C:\Python25\Scripts\tracd.exe --port 8000 C:\trac\projects
+##### tracd -p 8000 --auth=myproj,c:\digest.txt,trac c:\myproj[[BR]]
+
+... AND BROWSE TO projects
+
+http://localhost:8000/projects
+
+And you'll be able to see the Admin tab if you log in with 'admin' user to be created below...
+
+
+PROBLEM:
+
+ERROR WHEN CLICK LOGIN BUTTONG -- NB: THIS IS trac-0.12-dev!!!
+
+SOLUTION:
+
+INSTALL VERSION 0.11
+
+
+
+
+
+ok~!
+
+
+9. CREATE THE admin USER AND GIVE IT PRIVILEGES
+
+cd C:\trac
+C:\Python25\Scripts\trac-admin.exe projects permission add admin TRAC_ADMIN
+
+ok
+
+WHERE TO PUT bioptic?????
+C:\Python25\Scripts\trac-admin.exe c:\trac\projects\bioptic permission add admin TRAC_ADMIN[[BR]]
+
+
+
+sudo trac-admin projects permission add yourname TRAC_ADMIN
+sudo trac-admin colt permission add ariejan TRAC_ADMIN
+
+
+
+
+#### NB: OLD VERSION
+#### C:\Python25\python.exe C:\Python25\Scripts\trac-digest.py -u adm -p adm >> c:\trac\digest.txt
+
+
+
+C:\Python25\Scripts\trac-admin.exe c:\trac\projects\bioptic permission add admin TRAC_ADMIN[[BR]]
+
+Now...
+
+
+
+
+Open your browser to http://localhost:8000 to test out your new Trac project. You should see the title "Welcome to Trac 0.11" in your browser, and in the command window from which you just launched tracd there will be a series of status log messages. These messages will continue to update as you move around the Trac site. When you are done, return to the command window from which you launched tracd and press Ctrl+Break to stop tracd.
+
+
+
+
+ADDITIONAL INSTRUCTIONS FROM THIS WEBPAGE:
+http://trac.edgewall.org/wiki/TracOnWindows
+
+
+
+
+Creating authentication with tracd on Windows (Standalone) ¶
+
+If you are running tracd without Apache, you can use this simple Python script to generate your passwords for tracd. Copy the contents below into a new file called 'C:\Python25\scripts\trac-digest.py'.
+
+from optparse import OptionParser
+import md5
+
+# build the options
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage)
+parser.add_option("-u", "--username",action="store", dest="username", type = "string",
+                  help="the username for whom to generate a password")
+parser.add_option("-p", "--password",action="store", dest="password", type = "string",
+                  help="the password to use")
+(options, args) = parser.parse_args()
+
+# check options
+if (options.username is None) or (options.password is None):
+   parser.error("You must supply both the username and password")
+   
+# Generate the string to enter into the htdigest file
+realm = 'trac'
+kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
+
+You can create a new password file, or add new users to the file, by executing this command from the command line:
+
+C:\Python25\Scripts\trac-digest.py -u "My User Name" -p my@user@password >> C:\projects\passwords.txt
+
+
+To start tracd with authentication, execute this command from the command line:
+
+C:\Python25\Scripts\tracd-script.py -p 8000 --auth=my-project,C:\projects\passwords.txt,trac c:\projects\trac\my-project
+
+
+Using SSL with tracd on Windows (Standalone) ¶
+
+(Please fill this section out).
+Troubleshooting ¶
+pkg_resources.DistributionNotFound: Trac==0.11 ¶
+
+You just installed Trac 0.11, now you're trying to use it (e.g. by using tracd.exe fresh from the Scripts/ directory in your Python installation) and you're welcomed by a backtrace featuring the above error...
+
+Chances are that like me you skipped the Genshi installation step, thinking you had a version recent enough (like 0.5dev). But you actually need 0.5 or newer (0.5.1, 0.6dev, etc.), 0.5dev won't work and you'll get the above (a bit misleading) error.
+
+Of course, this problem can only happen when using the binary installer for Trac, it can't happen when you're using easy_install.
+Unsupported version control system "svn" ¶
+
+The Subversion library is not installed properly. Be sure you used the "-Z" option with easy_install when installing the Subversion bindings.
+
+Also, ensure you are using forward slashes for the svn repository directory.
+Error: Setup script exited with error: Python was built with version 7.1 of Visual Studio, and extensions need to be built with the same version of the compiler, but it isn't installed. ¶
+
+Note that something similar is probably happens between the apache 2.2 httpd.exe, python.exe, mod_python.so and the Subversion bindings. See #6739.
+
+From http://www.mail-archive.com/trac-dev@googlegroups.com/msg00997.html
+
+    The problem is that the pre-built Windows binaries for PySQLite are currently not detected by setuptools, so it is trying to download and compile the sources which requires a build environment. Unfortunately
+
+    this is not particularly common or easy on Windows. I have reported the problem to the PySQLite developers, so hopefully they will addresss this soon: http://initd.org/tracker/pysqlite/ticket/191
+
+It appears you can successfully install Trac by following a combination of Method 2: Manual Installation and Method 1: Using Installers, above. The critical step for installing PySQLite is to use the self-installing EXE version, which does not trigger the bogus compile step.
+
+

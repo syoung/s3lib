@@ -1,0 +1,51 @@
+INTERPROSCAN
+************
+INSTALL
++++++++
+SET THE $ENV{IPRSCAN_HOME} VARIABLE IN MOST FILES TO:
+
+$ENV{IPRSCAN_HOME} ='/Users/young/FUNNYBASE/apps/iprscan'
+
+RUN IPRSCAN
++++++++++++ 
+NUCLEOTIDE SEQUENCE
+iprscan -cli -seqtype n -i ../test.nuc.seq  -iprlookup -goterms -o ../test.nuc.out.xml -verbose
+
+PEPTIDE SEQUENCE (DEFAULT)
+iprscan -cli -i ../test.seq -iprlookup -goterms -o iprscan.OUTPUT.xml
+
+OPTIONS
++++++++
+-seqtype 	n for DNA/RNA, p for PROTEINS
+-iprlookup	lookup the corresponding InterPro references to the output
+-goterms 	look up the corresponding entries in GO (Gene Ontology)
+ 
+For more options/informations about what iprscan is able to do type:
+ ./iprscan -cli -h
+
+NB: -cli option is mandatory for command line usage. It specifies to the script
+       that user is using it as command line and not as CGI script.
+
+WHAT IT DOES
+++++++++++++
+ The program will prepare a temporary directory (something like
+ 'tmp/20041011/iprscan-20041011-11123456') where:
+ iprscan-20041011-11123456 is a the session directory in format:
+
+ iprscan : toolname
+ 20041011: date of the day (YYYYMMDD)
+ 
+    11123456: time of the day (hhmmssNN) NN=random number
+
+   When the scanning is finished the results will be displayed on the STDOUT
+   unless you used the -o option to precise an output file where to put results.
+   Anyway the raw file is writen in the session directory. What is displayed on
+   on the screen is just a conversion of this raw file.
+   To check that everything works correctly you can compare your results with
+   the 'merged.xml' file included in the root of the distribution.
+
+   % diff merged.raw tmp/20041011/iprscan-20041011-11123456/merged.raw
+
+
+
+

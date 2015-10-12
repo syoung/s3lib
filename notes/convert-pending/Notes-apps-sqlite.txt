@@ -1,0 +1,548 @@
+Notes-apps-sqlite.txt
+
+
+
+</entry>
+
+
+
+<entry [Thu Oct 21 23:37:04 EDT 2010] DUMPING SQLITE DATABASES AND LOADING INTO OTHER DATABASES>
+
+
+
+Converting An Entire Database To An ASCII Text File
+
+Use the ".dump" command to convert the entire contents of a database into a single ASCII text file. This file can be converted back into a database by piping it back into sqlite3.
+
+A good way to make an archival copy of a database is this:
+
+$ echo '.dump' | sqlite3 ex1 | gzip -c >ex1.dump.gz
+This generates a file named ex1.dump.gz that contains everything you need to reconstruct the database at a later time, or on another machine. To reconstruct the database, just type:
+
+$ zcat ex1.dump.gz | sqlite3 ex2
+The text format is pure SQL so you can also use the .dump command to export an SQLite database into other popular SQL database engines. Like this:
+
+$ createdb ex2
+$ sqlite3 ex1 .dump | psql ex2
+
+</entry>
+
+
+
+<entry [Fri May  7 00:20:58 EDT 2010] FIXED Dynaloader.pm LINE 225 ERROR>
+
+
+
+
+NEED TO FIX C CODE TO GET RID OF THIS ERROR:
+
+DynaLoader.pm: Name "DBD::SQLite::sqlite_version" used only once: possible typo at C:/Perl/lib/DynaLoader.pm line 225.
+
+
+# if ( sv = get_sv("DBD::SQLite::sqlite_version", TRUE | GV_ADDMULTI) );
+
+
+Dynaloader.pm SAYS THIS (LINE 195):
+
+    # Many dynamic extension loading problems will appear to come from
+    # this section of code: XYZ failed at line 123 of DynaLoader.pm.
+    # Often these errors are actually occurring in the initialisation
+    # C code of the extension XS file. Perl reports the error as being
+    # in this perl code simply because this was the last perl code
+    # it executed.
+
+
+
+</entry>
+
+
+
+<entry [Fri May  7 00:20:58 EDT 2010] CREATE TABLE AND LOAD .TSV FILE ON COMMAND LINE>
+
+
+
+
+A) BY COMMAND LINE
+------------------
+
+sqlite3 /nethome/syoung/base/pipeline/dbsnp/snp130-chrY.dbl ".read /nethome/syoung/base/pipeline/dbsnp/snp130_chrY.sql"
+
+sqlite3 -separator $'\t' /nethome/syoung/base/pipeline/dbsnp/snp130-chrY.dbl ".import /nethome/syoung/base/pipeline/dbsnp/snp130-chrY-short.tsv snp130_chrY"
+
+OR:
+
+sqlite3 -separator "<CNTL-V,TAB>" /nethome/syoung/base/pipeline/dbsnp/snp130-chrY.dbl ".import /nethome/syoung/base/pipeline/dbsnp/snp130-chrY-short.tsv snp130_chrY"
+
+
+
+B) BY COMMANDS IN TEXT FILE
+---------------------------
+
+emacs command-snp130-template.txt
+.read /nethome/syoung/base/pipeline/dbsnp/snp130_chr1.sql
+.separator "\t"
+.import /nethome/syoung/base/pipeline/dbsnp/snp130-chr1-short.tsv snp130_chr1
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 21 10:08:33 EDT 2010] FIXED SQL error: database is locked BY COPY AND MOVE BACK>
+
+
+
+
+ERROR
+
+SQL error: database is locked
+
+
+DIAGNOSIS
+
+http://www.sqlite.org/cvstrac/wiki?p=DatabaseIsLocked
+DATABASE IS BEING USED TO DO TWO INCOMPATIBLE THINGS, E.G., WRITE TABLE AND SELECT
+
+
+SOLUTION
+
+COPY TO TEMP FILE, MOVE BACK THEN REOPEN WITH sqlite3
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 20 21:08:33 EDT 2010] REMOVE DUPLICATE LINES WITH uniq>
+
+
+
+GET UNIQUE LINES ONLY
+
+uniq duplicatesFile.txt > uniqueFile.txt
+
+
+SORT FIRST (NOT NECESSARY) AND REMOVE DUPLICATES:
+
+List only the unique lines: sort myfile.txt | uniq -u
+
+
+
+After sorting a file you will often find that some duplicate data, or you may be given various lists that need deduping. sort and uniq will quickly and easily remove duplicates, lsit only the dupilcates or only the unique data.
+
+
+sort myfile.txt | uniq
+
+List only the unique lines: sort myfile.txt | uniq -u
+
+List only the duplicate lines: sort myfile.txt | uniq -d
+
+Get a count of the number of lines by adding the -c option.
+
+sort myfile.txt | uniq -uc
+
+sort myfile.txt | uniq -dc
+
+Skip fields: uniq -f 3 mylogfile. this could be useful with log files to skip the time stamp data
+
+Skip characters. uniq -s 30 myfile.txt. Skip the first 30 characters
+
+Compare characters. uniq -w 30 myfile.txt. Compare the first 30 characters
+
+Share this!  
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Apr 20 21:08:33 EDT 2010] BULK IMPORT DATA>
+
+
+
+THIS WORKS IN PERL (NOTE USING --separator ARGUMENT):
+
+sqlite3 /scratch/syoung/base/pipeline/bixby/run1/tophat/analysis13/stats.dbl --separator "   " .import /scratch/syoung/base/pipeline/bixby/run1/tophat/analysis1/chrY_random/1/accepted_hits.tsv
+
+
+
+Re: Issuing command for bulk import  
+by Dennis Cote Jul 16, 2008; 06:41pm :: Rate this Message:    - Use ratings to moderate (?)
+Reply | Print | View Threaded | Show Only this Message
+gtxy20 wrote: 
+> 
+> I can't help but think that the separator is not being escaped properly to 
+> indicate a tab - I have tried \t, \\t, "\t", '\t' but no luck. 
+> 
+
+For some reason the -separator option on the command line always sets 
+the separator string to \\t (i.e. the literal string entered on the 
+command line). You can use the .show command to see the current 
+separator string. 
+
+You can use a command script file instead. Enter the following into a 
+text file called testcmd.txt: 
+
+   .separator "\t" 
+   .import testdb testtable 
+
+Then use a .read command to process that file. 
+
+   sqlite3 test.db ".read testcmd.txt" 
+
+> Just getting frustrated. - I was originally iterating through the data 
+> programatically and using an INSERT query to place the data but for 5 
+> million rows this was taking far too long. 
+> 
+
+You will probably be better off going back to your program and ensure 
+that you execute your insert statements inside a transactions. 
+
+   sqlite3_exec(db, "begin", 0, 0, 0); 
+   // your code to insert data 
+   sqlite3_exec(db, "commit", 0, 0, 0); 
+
+Without the transaction each insert writes to disk. Inside the 
+transaction the disk is written much less often, and hence the operation 
+is much faster. I would expect 5 million orws to take about 2 minutes on 
+typical hardware.
+
+
+
+
+</entry>
+
+
+
+<entry [Mon June 29 13:25:00 EDT 2009] HOW TO LOAD FILES, PRINT TO OUTFILES AND BACKUP>
+
+
+
+== Export ========================== 
+C:\yourdir> sqlite3 yourdatabase 
+SQLite version 3.6.7 
+Enter ".help" for instructions 
+Enter SQL statements terminated with a ";" 
+sqlite> .header off 
+sqlite> .mode csv 
+sqlite> .output data1.csv 
+sqlite> SELECT * FROM table1; 
+sqlite> .output data2.csv 
+sqlite> SELECT * FROM table2; 
+sqlite> .output stdout 
+sqlite> .quit 
+C:\yourdir> 
+==================================== 
+
+== Import ========================== 
+C:\yourdir> sqlite3 yourdatabase 
+SQLite version 3.6.7 
+Enter ".help" for instructions 
+Enter SQL statements terminated with a ";" 
+-- create and import 
+sqlite> CREATE TABLE table1 (.........); 
+sqlite> CREATE TABLE table2 (.........); 
+sqlite> .import data1.csv table1 
+sqlite> .import data2.csv table2 
+sqlite> .quit 
+C:\yourdir> 
+==================================== 
+
+== Backup ========================== 
+C:\yourdir> sqlite3 yourdatabase .dump >dump.sql 
+==================================== 
+
+== Restore ========================= 
+C:\yourdir> sqlite3 newdatabase <dump.sql 
+== or ============================== 
+C:\yourdir> sqlite3 newdatabase 
+sqlte> .read dump.sql 
+sqlte> .quit 
+==================================== 
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 27 15:25:00 EDT 2009] USE TEMPORARY TABLES FOR OPTIMISED PERFORMANCE>
+
+
+
+CREATE TEMPORARY TABLE 
+
+Use temporary tables for intermediate results. They are fast and stay in cache most of the time. Depending on how your SQLite instance is set up, data will only be swapped into an external file if the cache is saturated.
+
+How do I add or delete columns from an existing table in SQLite.
+
+    SQLite has limited ALTER TABLE support that you can use to add a column to the end of a table or to change the name of a table. If you want to make more complex changes in the structure of a table, you will have to recreate the table. You can save existing data to a temporary table, drop the old table, create the new table, then copy the data back in from the temporary table.
+
+    For example, suppose you have a table named "t1" with columns names "a", "b", and "c" and that you want to delete column "c" from this table. The following steps illustrate how this could be done:
+
+        BEGIN TRANSACTION;
+        CREATE TEMPORARY TABLE t1_backup(a,b);
+        INSERT INTO t1_backup SELECT a,b FROM t1;
+        DROP TABLE t1;
+        CREATE TABLE t1(a,b);
+        INSERT INTO t1 SELECT a,b FROM t1_backup;
+        DROP TABLE t1_backup;
+        COMMIT;
+
+
+
+http://katastrophos.net/andre/blog/2007/01/04/sqlite-performance-tuning-and-optimization-on-embedded-systems/
+
+SQLite performance tuning and optimization on embedded systems
+
+Based on the experience I gained while developing my Zaurus media player, here is a short compendium of optimization rules, tweaks and hints when using SQLite on an embedded system (may apply to other systems as well):
+
+    * Simplify the database schema as much as possible - even if that means redundant data or illogical structure
+    * Don’t generalize the database schema - generalization will mostly sacrifice performance and one can’t afford that on an embedded system with its tight restrictions, even if it is more convenient for the developer.
+    * Only use relations (via IDs etc.) where absolutely necessary. The overhead for lookup and joining tables is considerable, even with an index on the relation.
+    * Order the tables correctly in SELECTs. Put a table left-most if it is lacking an index on the relation. More details are here.
+      In general: Check the order of tables in the SELECT statement. A different permutation may be more optimal. Profile.
+    * Prepare your statements and bind values where applicable. This way you can get rid of the parser and VM creation overhead in tight loops (e.g. when inserting and updating).
+    * Use transactions - even if you’re just reading the data. This may yield a few milliseconds.
+    * Use temporary tables for intermediate results. They are fast and stay in cache most of the time. Depending on how your SQLite instance is set up, data will only be swapped into an external file if the cache is saturated.
+    * Try to avoid using views for data you’re constantly accessing. If you can afford it, create temporary tables and insert data there. This will eliminate the overhead imposed by the view evaluation.
+    * Avoid sub-queries since they tend to create temporary tables and insertion of the intermediate results into those tables may be expensive.
+    * Try to use indices only on static data or data that changes rarely. Building an index on live or temporary data can be expensive performance-wise. Only do so if the time required for the data lookup considerably outweights the time required for building the index.
+    * Alternative to indices: hashkeys - Instead of using indices on very long strings, you may store the hash values of those strings as keys in the same table. A lookup via hash values may be a whole lot more efficient. This method is also very effective when you can’t afford the creation of an index due to performance reasons. Downside: You have to take care of the hashkeys. (See remarks in the comments below.)
+    * No useless indices. Create indices only if your queries actually use the indices on the table (check with EXPLAIN). Having useless indices around may pollute otherwise precious database cache space.
+    * Be cache-friendly. Depending on the memory conditions, creating temporary tables and indices may bash the cache. Reloading data back into the cache is expensive.
+    * Double-check your queries and profile them. The SQLite optimizer doesn’t perform as well as the optimizers of big DBs (Firebird / Interbase, PostgreSQL, Oracle etc.).
+    * Check compiler settings. A higher optimization setting in your C-compiler may very well yield a few tens of milliseconds. Make sure to inline functions (-O3 for GCC 2.95.x, -O2 for GCC 3.x.x and higher). Optimize for architecture and CPU. Omit stack frame pointers (-fomit-frame-pointer) if you’re not producing executables with debug symbols. This may free an additional register for the compiler to use.
+    * Disable unused SQLite features. This helps to reduce binary size and may also affect performance.
+
+Here are some additional docs to consider:
+
+http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuning
+http://www.sqlite.org/cvstrac/wiki?p=PerformanceTuningWindows
+http://www.sqlite.org/cvstrac/wiki?p=PerformanceConsiderations
+http://www.sqlite.org/optoverview.html
+http://web.utk.edu/~jplyon/sqlite/SQLite_optimization_FAQ.html
+
+</entry>
+
+
+
+<entry [Wed Mar 11 16:04:00 EDT 2009] FIXED SQLITE ERROR: DynaLoader.pm: Name "DBD::SQLite::sqlite_version" used only once>
+
+
+
+# NB: C CODE TO GET RID OF THIS ERROR: DynaLoader.pm: Name "DBD::SQLite::sqlite_version" used only once: possible typo at C:/Perl/lib/DynaLoader.pm line 225.
+#
+# if ( sv = get_sv("DBD::SQLite::sqlite_version", TRUE | GV_ADDMULTI) );
+
+
+
+</entry>
+
+
+
+<entry [Sun Mar 08 12:12:08 EDT 2009] OPTIMISATION OF checkSNP.pl USING AN INDEX>
+
+
+
+
+1. TIMING WITHOUT INDEX - 6.5 SECS
+
+QUERY DONE BY checkSNP.pl
+
+    SELECT * FROM pairalign
+    WHERE gene = '$gene'
+    AND genestart <= $position
+    AND genestop >= $position};
+
+
+time ./checkSNP.pl --dbfile /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign.dbl --chromosome chr10 --gene CCDS31147.1 --position 205 --output json
+
+    {"FO91FA401A1ZV1":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401CJI8Q":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401DIVJ1":{"readbase":"C","genebase":"C","snpcall":0},"FO91FA401DNKKT":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401D4NV4":{"readbase":"C","genebase":"C","snpcall":0},"FO91FA401DP4O0":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401AW2K4":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401EB89T":{"readbase":"C","genebase":"A","snpcall":1}}
+
+real    0m6.487s
+user    0m0.508s
+sys     0m0.614s
+
+
+
+2. ADDED gene INDEX
+
+cp /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign.dbl /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign-bkp.dbl
+ll /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign*.dbl
+    -rw-r--r-- 1 syoung bioinfo 175M Mar  8 22:47 /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign-bkp.dbl
+    -rw-r--r-- 1 syoung bioinfo 175M Mar  8 21:44 /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign.dbl
+
+
+sqlite3 /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign.dbl 
+
+    CREATE INDEX gene ON pairalign (gene);
+
+
+
+3. TIMING AFTER ADDED INDEX - 0.5 SECS
+
+ time ./checkSNP.pl --dbfile /nethome/syoung/base/pipeline/nimblegen-run1/SID9637_exon_Map/ccds-readinfo/mapping/pairalign.dbl --chromosome chr10 --gene CCD
+S31147.1 --position 205 --output json
+{"FO91FA401A1ZV1":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401CJI8Q":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401DIVJ1":{"readbase":"C","genebase":"C","snpcall":0},"FO91FA401DNKKT":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401D4NV4":{"readbase":"C","genebase":"C","snpcall":0},"FO91FA401DP4O0":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401AW2K4":{"readbase":"C","genebase":"A","snpcall":1},"FO91FA401EB89T":{"readbase":"C","genebase":"A","snpcall":1}}
+
+real    0m0.499s
+user    0m0.095s
+sys     0m0.025s
+
+
+
+
+NOTES
+=====
+
+SQLITE TUTORIAL - LOOKS INTERESTING
+http://www.squidoo.com/sqlitehammer
+
+GENERAL OPTIMISATION - IN MEMORY, INDEXES, ETC.
+http://web.utk.edu/~jplyon/sqlite/SQLite_optimization_FAQ.html
+
+SOME INFO ON MULTIPLE COLUMN INDEXES
+http://devzone.zend.com/article/863-SQLite-Lean-Mean-DB-Machine
+
+iPHONE SQLITE PROGRAMMING TUTORIAL
+http://icodeblog.com/category/sqlite/
+
+
+If you are going to run a SELECT query using a particular column value (WHERE clause) or are going to perform a JOIN on a specific column, then by all means add an index to that column:
+
+CREATE INDEX col2 ON table1 (col2)
+
+You don't need to alter a table to use an index. You can even create indexes on multiple columns if they are going to be used together in a WHERE or a JOIN. The only column you don't want to ever create an index on is a column that is declared INTEGER PRIMARY KEY (such as the column id above). SQLite automatically creates an index on those columns, and adding an additional index would just slow things down. In fact, this is a good rule of thumb for creating indexes in general. Don't use them unless you are going to perform a WHERE or JOIN on them. The overhead of keeping track to too many indexes on INSERT, UPDATE, or DELETE queries may offset the performance gain you would see on SELECT queries.
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Jan 26 12:12:08 EDT 2009] SQLITE 'SHOW TABLES'>
+
+
+
+    SELECT name FROM sqlite_master WHERE type = 'table'
+
+
+</entry>
+
+
+
+<entry [Mon Jan 26 12:12:08 EDT 2009] LOAD DATA FROM FILE>
+
+
+
+ON COMMAND LINE: .import <file> <tablename>
+
+
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Documents and Settings\syoung>sqlite
+'sqlite' is not recognized as an internal or external command,
+operable program or batch file.
+
+C:\Documents and Settings\syoung>sqlite3
+SQLite version 3.6.4
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> show tables;
+SQL error: near "show": syntax error
+sqlite> show databases;
+SQL error: near "show": syntax error
+sqlite> .HELP
+unknown command or invalid arguments:  "HELP". Enter ".help" for help
+sqlite> .help
+.bail ON|OFF           Stop after hitting an error.  Default OFF
+.databases             List names and files of attached databases
+.dump ?TABLE? ...      Dump the database in an SQL text format
+.echo ON|OFF           Turn command echo on or off
+.exit                  Exit this program
+.explain ON|OFF        Turn output mode suitable for EXPLAIN on or off.
+.header(s) ON|OFF      Turn display of headers on or off
+.help                  Show this message
+.import FILE TABLE     Import data from FILE into TABLE
+.indices TABLE         Show names of all indices on TABLE
+.load FILE ?ENTRY?     Load an extension library
+.mode MODE ?TABLE?     Set output mode where MODE is one of:
+                         csv      Comma-separated values
+                         column   Left-aligned columns.  (See .width)
+                         html     HTML <table> code
+                         insert   SQL insert statements for TABLE
+                         line     One value per line
+                         list     Values delimited by .separator string
+                         tabs     Tab-separated values
+                         tcl      TCL list elements
+.nullvalue STRING      Print STRING in place of NULL values
+.output FILENAME       Send output to FILENAME
+.output stdout         Send output to the screen
+.prompt MAIN CONTINUE  Replace the standard prompts
+.quit                  Exit this program
+.read FILENAME         Execute SQL in FILENAME
+.schema ?TABLE?        Show the CREATE statements
+.separator STRING      Change separator used by output mode and .import
+.show                  Show the current values for various settings
+.tables ?PATTERN?      List names of tables matching a LIKE pattern
+.timeout MS            Try opening locked tables for MS milliseconds
+.width NUM NUM ...     Set column widths for "column" mode
+sqlite> .i
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jun 27 12:50:08 EDT 2007] INSTALLED sqlite 3.37>
+
+
+
+gems:~/FUNNYBASE/dev/plmods/SQlite/sqlite-3.3.7 local$ sudo make install
+Password:
+tclsh ./tclinstaller.tcl 3.3
+/usr/bin/install -c -d /usr/local/lib
+./libtool --mode=install /usr/bin/install -c libsqlite3.la /usr/local/lib
+/usr/bin/install -c .libs/libsqlite3.0.8.6.dylib /usr/local/lib/libsqlite3.0.8.6.dylib
+(cd /usr/local/lib && rm -f libsqlite3.0.dylib && ln -s libsqlite3.0.8.6.dylib libsqlite3.0.dylib)
+(cd /usr/local/lib && rm -f libsqlite3.dylib && ln -s libsqlite3.0.8.6.dylib libsqlite3.dylib)
+/usr/bin/install -c .libs/libsqlite3.lai /usr/local/lib/libsqlite3.la
+/usr/bin/install -c .libs/libsqlite3.a /usr/local/lib/libsqlite3.a
+ranlib /usr/local/lib/libsqlite3.a
+chmod 644 /usr/local/lib/libsqlite3.a
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /usr/local/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the `-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the `DYLD_LIBRARY_PATH' environment variable
+     during execution
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+/usr/bin/install -c -d /usr/local/bin
+./libtool --mode=install /usr/bin/install -c sqlite3 /usr/local/bin
+/usr/bin/install -c .libs/sqlite3 /usr/local/bin/sqlite3
+/usr/bin/install -c -d /usr/local/include
+/usr/bin/install -c -m 0644 sqlite3.h /usr/local/include
+/usr/bin/install -c -d /usr/local/lib/pkgconfig; 
+/usr/bin/install -c -m 0644 sqlite3.pc /usr/local/lib/pkgconfig; 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

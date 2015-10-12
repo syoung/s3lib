@@ -1,0 +1,2089 @@
+Notes-apps-erange.txt
+
+
+</entry>
+
+
+
+<entry [Wed Feb 10 17:43:16 EST 2010] RAN ERANGE.pl PAIRED END TRANSCRIPTOME USING jclarke DATA LANE 1 WITH AND WITHOUT -q gsmall ARGUMENT>
+
+
+
+
+SAMPLE 3 WITHOUT -q
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3
+emacs nq-erg-smp3.sh
+
+#!/bin/sh                                                                                                                  
+#PBS -N nq-erg-smp3
+#PBS -l ncpus=1
+#PBS -j oe
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/ERANGE.pl \
+--label sample3 \
+--species human \
+--outputdir /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3 \
+--inputfiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_1_eland_extended.txt \
+--matefiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_2_eland_extended.txt \
+--knowngene /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3
+msub nq-erg-smp3.sh
+
+
+    [syoung@ngsdev sample3]$ checkjob 228854
+    job 228854
+    
+    AName: nq-erg-smp3
+    State: Running 
+    Creds:  user:syoung  group:bioinfo  account:bioinfo  class:default
+    WallTime:   00:00:46 of 4:00:00
+    SubmitTime: Wed Feb 10 18:05:23
+      (Time Queued  Total: 00:00:01  Eligible: 00:00:00)
+    
+    StartTime: Wed Feb 10 18:05:24
+    Total Requested Tasks: 1
+    
+    Req[0]  TaskCount: 1  Partition: base  
+    Memory >= 0  Disk >= 0  Swap >= 0
+    NodeCount:  1
+    
+    Allocated Nodes:
+    [n14:1]
+    
+    
+    
+    IWD:            $HOME/base/pipeline/erange2/data/rds/paired/sample3
+    Executable:     /opt/moab/spool/moab.job.2Isra3
+    
+    StartCount:     1
+    Partition List: ALL,base
+    Flags:          BACKFILL,GLOBALQUEUE
+    Attr:           BACKFILL,checkpoint
+    StartPriority:  1
+    Reservation '228854' (-00:00:53 -> 3:59:07  Duration: 4:00:00)
+
+
+
+FINISHED WITH OUTPUT :
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3
+cat  nq-erg-smp3.o228854
+
+    ERANGE.pl    erange: /nethome/syoung/base/pipeline/erange2
+    ERANGE.pl    inputfiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_1_eland_extended.txt
+    ERANGE.pl    matefiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_2_eland_extended.txt
+    ERANGE.pl    outputdir: /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3
+    ERANGE.pl    knowngene: /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18
+    ERANGE.pl    ins: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt /nethome/syoung/base/pipeline/erange2/data/reads/s_2_1_eland_extended.txt
+    ERANGE.pl    mates: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt /nethome/syoung/base/pipeline/erange2/data/reads/s_2_2_eland_extended.txt
+    ERANGE.pl    mates_paired: 1
+    ERANGE.pl    no. files: 2
+    FileTools::mergeFiles    FileTools::mergeFiles(outputfile, files, dot)
+    FileTools::mergeFiles    outputfile: /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3_1_eland_extended.txt
+    FileTools::mergeFiles    files: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt /nethome/syoung/base/pipeline/erange2/data/reads/s_2_1_eland_extended.txt
+    FileTools::mergeFiles    Merging input files
+    FileTools::mergeFiles    FileTools::mergeFiles(outputfile, files, dot)
+    FileTools::mergeFiles    outputfile: /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3_2_eland_extended.txt
+    FileTools::mergeFiles    files: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt /nethome/syoung/base/pipeline/erange2/data/reads/s_2_2_eland_extended.txt
+    FileTools::mergeFiles    Merging input files
+    ERANGE::new    ERANGE::new(arguments)
+    ERANGE::new    arguments:
+    ERANGE.pl    RUNNING eland_build_rds()
+    ERANGE::build_rds    paired: 1
+    ERANGE::build_rds    inputfile_command:
+    
+    time /nethome/apps/bioinfo/python/2.6.1/bin/python \
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+    sample3 /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3_1_eland_extended.txt \
+    /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3.rds \
+    -RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+     -paired 1 \
+     -extended 
+    
+    
+    real    9m26.976s
+    user    6m28.611s
+    sys     0m31.338s
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = sample3 and pairID = 1
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3.rds
+    INITIALIZED dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3.rds
+    metadata:
+            dataType        RNA
+            rdsVersion      1.1
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    5090933 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 2
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    1055982 multireads
+    ERANGE::build_rds    matefile_command:
+    
+    time /nethome/apps/bioinfo/python/2.6.1/bin/python \
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+    sample3 /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3_1_eland_extended.txt \
+    /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample3/sample3.rds \
+    -RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+    -paired 2 -append -index \
+     -extended 
+    
+    Epilogue Args:
+    Job ID: 228854.kronos.ccs.miami.edu
+    User ID: syoung
+    Group ID: bioinfo
+    Job Name: nq-erg-smp3
+    Session ID: 20783
+    Resource List: ncpus=1
+    Resources Used: cput=00:16:28,mem=218876kb,vmem=582800kb,walltime=04:09:56
+    Queue Name: default
+    Account String: 
+
+
+
+SAMPLE 4 WITH -q gsmall
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4
+ecmacs q-erg-smp4.sh
+
+#!/bin/sh                                                                                                                  
+#PBS -N q-erg-smp4
+#PBS -l ncpus=1
+#PBS -j oe
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/ERANGE.pl \
+--label sample4 \
+--species human \
+--outputdir /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4 \
+--inputfiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_1_eland_extended.txt \
+--matefiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt,/nethome/syoung/base/pipeline/erange2/data/reads/s_2_2_eland_extended.txt \
+--knowngene /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4
+msub -q gsmall q-erg-smp4.sh
+
+
+    [syoung@ngsdev sample4]$ checkjob 228858
+    job 228858
+    
+    AName: q-erg-smp4
+    State: Running 
+    Creds:  user:syoung  group:bioinfo  account:bioinfo  class:gsmall
+    WallTime:   00:00:19 of 7:00:00:00
+    SubmitTime: Wed Feb 10 18:07:35
+      (Time Queued  Total: 00:00:01  Eligible: 00:00:00)
+    
+    StartTime: Wed Feb 10 18:07:36
+    Total Requested Tasks: 1
+    
+    Req[0]  TaskCount: 1  Partition: base  
+    Memory >= 0  Disk >= 0  Swap >= 0
+    NodeCount:  1
+    
+    Allocated Nodes:
+    [n10:1]
+    
+    
+    
+    IWD:            $HOME/base/pipeline/erange2/data/rds/paired/sample4
+    Executable:     /opt/moab/spool/moab.job.bG4vk4
+    
+    StartCount:     1
+    Partition List: ALL,base
+    Flags:          BACKFILL,GLOBALQUEUE
+    Attr:           BACKFILL,checkpoint
+    StartPriority:  100
+    Reservation '228858' (-00:00:26 -> 6:23:59:34  Duration: 7:00:00:00)
+
+
+STILL RUNNING AFTER 16 HOURS:
+
+-rw-r--r-- 1 syoung bioinfo 1.2G Feb 11  2010 sample4.rds
+
+qstat
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    228858.kronos             q-erg-smp4       syoung          00:16:56 R gsmall         
+
+date
+    Thu Feb 11 03:41:42 EST 2010
+
+
+BUILDING THE RDS TOOK 14 HOURS:
+
+
+    real    838m5.227s
+    user    12m29.909s
+    sys     2m21.015s
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = sample4 and pairID = 2
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4/sample4.rds
+    dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4/sample4.rds
+    metadata:
+            dataType        RNA
+            eland_extended  True
+            eland_mapped    True
+            paired  True
+            rdsVersion      1.1
+            readsize        34
+    
+    5090923 unique reads, 0 spliced reads and 1055980 multireads
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    5090933 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 1055982
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    1055982 multireads
+    building index....
+    built uPosIndex
+    built uChromIndex
+    built mPosIndex
+    built mChromIndex
+    built sPosIndex
+    built sPosIndex2
+    built sChromIndex
+    ERANGE::build_rds    paired: 1
+    ERANGE::runRNAPairedAnalysis    command:
+    /nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human sample4 /nethome/syoung/base\
+    /pipeline/erange2/data/repMask/rmask.db
+    ERANGE.pl    Run time: 14:09:25
+    ERANGE.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/ERANGE.pl
+    ERANGE.pl    8:17AM, 11 February 2010
+    ERANGE.pl    ****************************************
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4
+
+rm -fr ERANGE-runRNAPairedAnalysis.sh
+emacs ERANGE-runRNAPairedAnalysis.sh
+
+#!/bin/sh                                                                                                   
+#PBS -N q-erg-smp4
+#PBS -l ncpus=1
+#PBS -j oe                                                                                    
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4
+
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange2
+export PYTHONPATH=/nethome/syoung/base/pipeline/erange2
+export ERANGEPATH=/nethome/syoung/base/pipeline/erange2/commoncode
+
+/nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human sample4 /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db &> /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample4/runRNAPairedAnalysis.out
+
+
+
+
+
+
+HAD TO CORRECT PERMISSIONS ON /nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh
+
+
+RERAN AS SHELL SCRIPT
+
+msub -q gsmall ERANGE-runRNAPairedAnalysis.sh
+
+
+RUNNING ON FRIDAY MORNING
+
+    [syoung@ngsdev sample4]$ checkjob 231767
+    job 231767
+    
+    AName: q-erg-smp4
+    State: Running 
+    Creds:  user:syoung  group:bioinfo  account:bioinfo  class:gsmall
+    WallTime:   00:01:18 of 7:00:00:00
+    SubmitTime: Fri Feb 12 08:56:09
+      (Time Queued  Total: 00:00:01  Eligible: 00:00:00)
+    
+    StartTime: Fri Feb 12 08:56:10
+    Total Requested Tasks: 1
+    
+    Req[0]  TaskCount: 1  Partition: base  
+    Memory >= 0  Disk >= 0  Swap >= 0
+    NodeCount:  1
+    
+    Allocated Nodes:
+    [n27:1]
+    
+    
+    
+    IWD:            $HOME/base/pipeline/erange2/data/rds/paired/sample4
+    Executable:     /opt/moab/spool/moab.job.XS7WeB
+    
+    StartCount:     1
+    Partition List: ALL,base
+    Flags:          GLOBALQUEUE
+    Attr:           checkpoint
+    StartPriority:  100
+    Reservation '231767' (-00:01:31 -> 6:23:58:29  Duration: 7:00:00:00)
+    
+    [syoung@ngsdev sample4]$ 
+    
+    
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb  9 19:07:16 EST 2010] RAN ERANGE.pl TO BUILD .rds FILE USING jclarke DATA LANE 1>
+
+
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/ERANGE.pl \
+--label sample2 \
+--species human \
+--outputdir /nethome/syoung/base/pipeline/erange2/data/rds/paired \
+--inputfiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt \
+--matefiles /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt \
+--knowngene /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18
+
+
+    ERANGE.pl    erange: /nethome/syoung/base/pipeline/erange2
+    ERANGE.pl    inputfiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt
+    ERANGE.pl    matefiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt
+    ERANGE.pl    outputdir: /nethome/syoung/base/pipeline/erange2/data/rds/paired
+    ERANGE.pl    knowngene: /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18
+    ERANGE.pl    ins: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt
+    ERANGE.pl    mates: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt
+    FileTools::matesPaired    FileTools::matesPaired(inputfiles, matefiles)
+    FileTools::matesPaired    inputfiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt
+    FileTools::matesPaired    matefiles: /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt
+    FileTools::matesPaired    inputfile:
+    /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt
+    FileTools::matesPaired    BEFORE matefile:
+    /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt
+    FileTools::matesPaired    match:
+    1
+    FileTools::matesPaired    AFTER matefile:
+    /nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt
+    ERANGE.pl    mates_paired: 1
+    ERANGE.pl    no. files: 1
+    ERANGE::new    ERANGE::new(arguments)
+    ERANGE::new    arguments:
+    $VAR1 = {
+              'filetype' => 'extended',
+              'sqlite' => undef,
+              'erange' => '/nethome/syoung/base/pipeline/erange2',
+              'inputfile' => '/nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt',
+              'jobs' => 30,
+              'msub' => '/usr/local/bin/msub',
+              'python' => '/nethome/apps/bioinfo/python/2.6.1/bin/python',
+              'qstat' => undef,
+              'matefile' => '/nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt',
+              'knowngene' => '/nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18',
+              'species' => 'human',
+              'outputdir' => '/nethome/syoung/base/pipeline/erange2/data/rds/paired',
+              'queue' => undef,
+              'label' => 'sample2',
+              'cpus' => 4,
+              'dot' => 1,
+              'sleep' => 5
+            };
+    $VAR1 = bless( {
+                     '_python' => '/nethome/apps/bioinfo/python/2.6.1/bin/python',
+                     '_msub' => '/usr/local/bin/msub',
+                     '_jobs' => 30,
+                     '_filetype' => 'extended',
+                     '_species' => 'human',
+                     '_knowngene' => '/nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18',
+                     '_cpus' => 4,
+                     '_erange' => '/nethome/syoung/base/pipeline/erange2',
+                     '_label' => 'sample2',
+                     '_matefile' => '/nethome/syoung/base/pipeline/erange2/data/reads/s_1_2_eland_extended.txt',
+                     '_sleep' => 5,
+                     '_dot' => 1,
+                     '_inputfile' => '/nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt',
+                     '_outputdir' => '/nethome/syoung/base/pipeline/erange2/data/rds/paired'
+                   }, 'ERANGE' );
+    ERANGE.pl    RUNNING eland_build_rds()
+    ERANGE::build_rds    paired: 1
+    ERANGE::build_rds    inputfile_command:
+    
+    /nethome/apps/bioinfo/python/2.6.1/bin/python \
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+    sample2 /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt \
+    /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds \
+    -RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+     -paired 1 \
+     -extended 
+    
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = sample2 and pairID = 1
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds
+    INITIALIZED dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds
+    metadata:
+            dataType        RNA
+            rdsVersion      1.1
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . .
+    2281992 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 2
+    . . . . . . . . . . . . . . .
+    464358 multireads
+    ERANGE::build_rds    matefile_command:
+    
+    /nethome/apps/bioinfo/python/2.6.1/bin/python \
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+    sample2 /nethome/syoung/base/pipeline/erange2/data/reads/s_1_1_eland_extended.txt \
+    /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds \
+    -RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+    -paired 2 -append -index \
+     -extended 
+    
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = sample2 and pairID = 2
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds
+    dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample2.rds
+    metadata:
+            dataType        RNA
+            eland_extended  True
+            eland_mapped    True
+            paired  True
+            rdsVersion      1.1
+            readsize        34
+    
+    2281982 unique reads, 0 spliced reads and 464357 multireads
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . .
+    2281992 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 464359
+    . . . . . . . . . . . . . . .
+    464358 multireads
+    building index....
+    built uPosIndex
+    built uChromIndex
+    built mPosIndex
+    built mChromIndex
+    built sPosIndex
+    built sPosIndex2
+    built sChromIndex
+    ERANGE.pl    Run time: 00:10:16
+    ERANGE.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/ERANGE.pl
+    ERANGE.pl    7:28PM, 9 February 2010
+    ERANGE.pl    ****************************************
+
+
+OUTPUT FILE:
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+ll 
+    -rw-r--r-- 1 syoung bioinfo 780M Feb  9 15:59 s_1_1.rds
+    -rw-r--r-- 1 syoung bioinfo 798M Feb  9 16:26 sample1.rds
+    -rw-r--r-- 1 syoung bioinfo 683M Feb  9 19:27 sample2.rds
+
+
+</entry>
+
+
+
+<entry [Tue Feb  9 15:07:16 EST 2010] TEST MAKE RDS WITH PAIRED FILES>
+
+
+
+mkdir /nethome/syoung/base/pipeline/erange2/data/rds/paired
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+
+sqlite3 s_1_1.rds "create table dummy (integer int)"
+sqlite3 s_1_2.rds "create table dummy (integer int)"
+
+ll
+   -rw-r--r-- 1 syoung bioinfo 2.0K Feb  9  2010 s_1_1.rds
+   -rw-r--r-- 1 syoung bioinfo 2.0K Feb  9  2010 s_1_2.rds
+
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+time /nethome/apps/bioinfo/python/2.6.1/bin/python \
+/nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+sample1 /nethome/syoung/base/pipeline/erange2/data/eland/s_1_1_eland_extended.txt \
+/nethome/syoung/base/pipeline/erange2/data/rds/paired/sample1.rds \
+-RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+-paired 1  -extended
+
+LEFT MATE TAKES 4 MINS:
+
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = s_1_1 and pairID = 1
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/s_1_1.rds
+    INITIALIZED dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/s_1_1.rds
+    metadata:
+            dataType        RNA
+            rdsVersion      1.1
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . .
+    2281992 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 2
+    . . . . . . . . . . . . . . .
+    464358 multireads
+    
+    real    3m41.114s
+    user    2m42.811s
+    sys     0m10.943s
+
+
+LEFT MATE TAKES 27 MINS:
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+time /nethome/apps/bioinfo/python/2.6.1/bin/python \
+/nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py \
+sample1 /nethome/syoung/base/pipeline/erange2/data/eland/s_1_2_eland_extended.txt \
+/nethome/syoung/base/pipeline/erange2/data/rds/paired/sample1.rds \
+-RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 \
+-paired 2 -extended -append -index 
+
+    /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py: version 3.4
+    Treating read IDs as paired with label = sample1 and pairID = 2
+    using eland_extended input - will track mismatches
+    dbfile:  /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample1.rds
+    dataset /nethome/syoung/base/pipeline/erange2/data/rds/paired/sample1.rds
+    metadata:
+            dataType        RNA
+            eland_extended  True
+            eland_mapped    True
+            paired  True
+            rdsVersion      1.1
+            readsize        34
+    
+    2281982 unique reads, 0 spliced reads and 464357 multireads
+    default cache size is 100000 pages
+    not indexed
+    read size: 34 bp
+    mapping unique reads...
+    . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+    3116074 unique reads
+    mapping splices...
+    
+    saw 0 spliced reads accross 0 distinct splices
+    mapping multireads...
+    starting at 464359
+    . . . . . . . . . . . . . . . . . . . .
+    629423 multireads
+    building index....
+    built uPosIndex
+    built uChromIndex
+    built mPosIndex
+    built mChromIndex
+    built sPosIndex
+    built sPosIndex2
+    built sChromIndex
+    
+    real    26m17.701s
+    user    6m10.880s
+    sys     0m29.095s
+
+
+
+FILE SIZES
+==========
+
+INPUT FILES = 631 MB + 669 MB = 1300 MB
+
+cd /nethome/syoung/base/pipeline/erange2/data/eland
+ll -h *extended*
+
+    -rwxr-xr-x 1 syoung bioinfo 631M Feb  7 23:51 s_1_1_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 669M Feb  7 23:52 s_1_2_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 734M Feb  7 23:54 s_2_1_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 766M Feb  7 23:55 s_2_2_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 780M Feb  7 23:56 s_3_1_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 812M Feb  7 23:58 s_3_2_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 671M Feb  7 23:59 s_4_1_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 693M Feb  8 00:01 s_4_2_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 596M Feb  8 00:02 s_8_1_eland_extended.txt
+    -rwxr-xr-x 1 syoung bioinfo 606M Feb  8 00:03 s_8_2_eland_extended.txt
+
+
+OUTPUT FILES = 780 MB
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds/paired
+ll -h
+
+    -rw-r--r-- 1 syoung bioinfo 780M Feb  9 15:59 s_1_1.rds
+    -rw-r--r-- 1 syoung bioinfo 798M Feb  9 16:26 sample1.rds
+
+
+
+
+NB: USING THE -verbose FLAG GIVES THIS OUTPUT:
+
+couldn't pick best read from line: >HWI-EAS185_12_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH:1:63:1086:262/1      TTGGAATGAGTCCACTTTAAATCCTTTACCGAGT  0:1:1   chr7.fa:80800870F28AA3G,chr16.fa:33870555F28A3AG
+couldn't pick best read from line: >HWI-EAS185_12_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH:1:63:1320:1748/1     AAGGCCTGGCGGACAGAAGGCTCTAGAACCTGCT  0:1:1   chr7.fa:132370670F6C6A20,chr11.fa:62091548F13A19C
+
+
+
+
+
+
+
+
+Here are the steps to construct an expanded genome for erange.
+
+Step 1: Download human genome from UCSC
+
+cd ~
+mkdir -p base/pipeline/chromosomes
+cd base/pipeline/chromosomes
+
+# Using an rsync command to download the entire directory:
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/goldenPath/hg19/chromosomes/ .
+Step 2: Download known gene table and repeat mask file from UCSC
+http://genome.ucsc.edu/cgi-bin/hgTables
+Group: Gene and Gene Prediction Tracks
+Track: UCSC Genes
+Table: knownGene
+Group: Variation and Repeats
+Track: RepMask3.2.7
+Table: rmskMS327
+
+Step 3: Download Cistematic core (cistematic and db)
+
+http://cistematic.caltech.edu/index.html
+You will want to download the files for your genome of interest, e.g., for the human genome download hg18.zip
+Step 4: Download erange
+http://woldlab.caltech.edu/rnaseq/
+Step 5: In your home directory set up subdirectories for chromosomes and erange.
+Unpack chromosomes from UCSC in chromosomes/ and erange code in erange1/. Install cistematic and db and the genome from cistematic
+
+in erange1/
+
+Step 6: Construct a splice file
+
+First tell cistematic where to find the cistematic code and the genome downloaded from the cistematic website and where python can find the code for erange. Then cd to the directory where you want to put the splice file.
+
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange2
+export PYTHONPATH=/nethome/syoung/base/pipeline/erange2
+echo $CISTEMATIC_ROOT
+echo $PYTHONPATH
+cd /nethome/syoung/base/pipeline/erange2/commoncode
+Now use erange to create the splice file. The last argument is the length of the
+reads - 4, so in this case, the read length is 32 so the last argument is 28.
+/nethome/apps/bioinfo/python/2.6.1/bin/python \
+/nethome/syoung/base/pipeline/erange2/commoncode/getsplicefa.py human /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 hg18splice32.fa 28
+28
+psyco not running
+/nethome/syoung/base/pipeline/erange2/commoncode/getsplicefa.py: version 3.2
+60922
+545588
+splice chr11:47324771-47325548 too short: 20
+splice chr1:199607792-199607895 too short: 26
+splice chr11:1904287-1904500 too short: 27
+.
+.
+10000enes
+20000enes
+30000enes
+40000enes
+50000enes
+60000enes
+3203 splices too short to be seen
+502 splices will be under-reported
+Now you should have a file names hg18splice32.fa containing splice sequences.
+
+
+Step 7: Squash the genome
+Use Eland to construct a squashed genome containing the genome from UCSC and your splice file; the
+squashed genome files will be placed in the directory myGenome.
+
+mkdir myGenome
+/usr/local/GAPipeline-0.3.0/Eland/squashGenome /nethome/syoung/base/pipeline/erange2/myGenome  /nethome/syoung/base/pipeline/erange2/commoncode/hg18splice32.fa mihg/users/syoung/base/pipeline/erange2/data/chromosomes/H_sapiens/chr1.fa [fastAFile2 ... ]
+
+
+
+
+Step 8: Build rds format files from eland output
+
+It is necessary to create the output file BEFORE generating the output data. So you might use sqlite3 to create the output file and then ask erange to make the rds file.
+
+You will need to build an rds format file for each read. So for read s_1_1_eland_multi.txt you might use the following:
+
+mkdir rds
+sqlite3 s_1_1.rds "create table dummy (integer int)"
+
+/nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/pipeline/erange2/commoncode/makerdsfromeland2.py s_1_1 /nethome/syoung/base/pipeline/erange2/data/eland/s_1_1_eland_multi.txt /nethome/syoung/base/pipeline/erange2/data/rds/s_1_1.rds -RNA /nethome/syoung/base/pipeline/erange2/data/knownGene/knownGene.hg18 -paired 1 -verbose
+
+
+The output will be put in s_1_1.rds. The arguments to makerdsfromeland2.py are a label, the eland read file, the output file, the known gene table, and, for paired reads, -paired and # of pair.
+For the last read you need to run the above code with the argument -index.
+
+
+
+Step 9: Build a repeatmask database using buildrmaskdb.py
+
+Make sure that your input file (downloaded from UCSC) has a name starting with rmsk, otherwise this
+won't work. So you might need to rename the file you downloaded.
+
+
+/nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/pipeline/erange2/commoncode/buildrmaskdb.py /nethome/syoung/base/pipeline/erange2/data/repMask/RepMask3.2.7.hg18 /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db
+
+
+Step 10: Run paired read analysis; runRNAPairedAnalysis.sh
+
+
+Form of function call: runRNAPairedAnalysis.sh genome rdsprefix repeatmaskdb
+
+
+
+# preliminary: set PYTHONPATH to point to the parent directory of the Cistematic, e.g.
+export PYTHONPATH=/nethome/syoung/base/pipeline/erange2
+# preliminary: set CISTEMATIC_ROOT to the directory that contains the genome directories (such as H_sapiens or M_musculus), e.g.
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange2
+# preliminary: set ERANGEPATH, e.g. 
+export ERANGEPATH=/nethome/syoung/base/pipeline/erange2/commoncode
+
+echo $PYTHONPATH
+echo $CISTEMATIC_ROOT
+echo $ERANGEPATH
+
+
+
+1. MOVE TO rds FILES DIR AND RUN
+
+screen -S erange
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds
+
+#/nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human s_1_1 /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db
+
+/nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human s_1_1_1000 /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db
+
+
+
+
+2. DO IT WITH A SHELL SCRIPT AND RENAMED INPUT FILE
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds
+cp s_1_1_1000.rds s_1_1_1000-shell.rds
+
+emacs s_1_1_1000.sh
+
+#!/bin/bash
+
+#PBS -N test-er
+
+#PBS -j oe
+
+# SET ENVIRONMENT VARIABLES
+# preliminary: set PYTHONPATH to point to the parent directory of the Cistematic, e.g.
+export PYTHONPATH=/nethome/syoung/base/pipeline/erange2
+# preliminary: set CISTEMATIC_ROOT to the directory that contains the genome directories (such as H_sapiens or M_musculus), e.g.
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange2
+# preliminary: set ERANGEPATH, e.g. 
+export ERANGEPATH=/nethome/syoung/base/pipeline/erange2/commoncode
+
+echo $PYTHONPATH
+echo $CISTEMATIC_ROOT
+echo $ERANGEPATH
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds
+
+/nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human s_1_1_1000-shell /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db
+
+########  END OF SHELL SCRIPT
+
+
+msub s_1_1_1000.sh
+
+    227486
+
+    Mon Feb  8 01:37:31 EST 2010
+    qstat
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    227486.kronos             test-er          syoung                 0 R default        
+
+
+FINISHED IN 5 MINS
+
+checkjob 227486
+
+AName: test-er
+State: Completed 
+Complete Time:  Mon Feb  8 01:41:11
+  Completion Code: 0
+Creds:  user:syoung  group:bioinfo  account:bioinfo  class:default
+WallTime:   00:04:09 of 4:00:00
+SubmitTime: Mon Feb  8 01:37:02
+  (Time Queued  Total: 00:05:02  Eligible: 00:00:00)
+
+Total Requested Tasks: 1
+
+Req[0]  TaskCount: 1  Partition: base  
+Memory >= 0  Disk >= 0  Swap >= 0
+NodeCount:  1
+
+Allocated Nodes:
+[n05:1]
+
+IWD:            /home/syoung/base/pipeline/erange2/data/rds
+Executable:     /opt/moab/spool/moab.job.6hEiLj
+
+Execution Partition:  base
+StartPriority:  0
+
+
+MANUAL AND CLUSTER OUTPUT FILES ARE IDENTICAL
+
+[syoung@u01 rds]$ diff  s_1_1_1000.uniqs.count  s_1_1_1000-shell.uniqs.count
+
+
+
+
+3. RUN WHOLE LANE ON CLUSTER
+
+
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds
+emacs s_1_1.sh
+
+#!/bin/bash
+
+#PBS -N test-er
+
+#PBS -j oe
+
+# SET ENVIRONMENT VARIABLES
+# preliminary: set PYTHONPATH to point to the parent directory of the Cistematic, e.g.
+export PYTHONPATH=/nethome/syoung/base/pipeline/erange2
+# preliminary: set CISTEMATIC_ROOT to the directory that contains the genome directories (such as H_sapiens or M_musculus), e.g.
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange2
+# preliminary: set ERANGEPATH, e.g. 
+export ERANGEPATH=/nethome/syoung/base/pipeline/erange2/commoncode
+
+echo $PYTHONPATH
+echo $CISTEMATIC_ROOT
+echo $ERANGEPATH
+
+cd /nethome/syoung/base/pipeline/erange2/data/rds
+
+/nethome/syoung/base/pipeline/erange2/commoncode/runRNAPairedAnalysis.sh human s_1_1 /nethome/syoung/base/pipeline/erange2/data/repMask/rmask.db
+
+########  END OF SHELL SCRIPT
+
+
+chmod 755 *.sh
+msub s_1_1.sh; sleep 5; date; qstat
+
+
+msub s_1_1.sh
+
+    227495
+
+sleep 20; date; qstat
+    Mon Feb  8 01:45:12 EST 2010
+
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    227495.kronos             test-er          syoung                 0 R default 
+
+
+STILL RUNNING
+
+
+    [syoung@ngsdev ~]$ qstat
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    227495.kronos             test-er          syoung          03:42:14 R default        
+    [syoung@ngsdev ~]$ date
+    Mon Feb  8 05:28:51 EST 2010
+    [syoung@ngsdev ~]$ 
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 14:10:06 EST 2010] LOCATION FOR BIXBY RUN 1, ANALYSIS #1 (ANALYSIS #2)>
+
+
+
+
+
+COPIED FILES TO HERE
+
+/nethome/syoung/base/pipeline/bixby/run1
+
+
+cd /q/nextGen/GA/EXTERNAL/Bixby/mRNAseq_1x50/091029_HWI-EAS185_0005_42BNYAAXX/Data/C1-54_Firecrest1.4.0_15-12-2009_jcabrera1/Bustard1.4.0_15-12-2009_jcabrera1/GERALD_15-12-2009_jcabrera1/
+
+
+cp *sequence.txt /nethome/syoung/base/pipeline/bixby/run1
+cp *extended.txt /nethome/syoung/base/pipeline/bixby/run1
+cp *multi.txt /nethome/syoung/base/pipeline/bixby/run1
+cp *export.txt /nethome/syoung/base/pipeline/bixby/run1
+cp *finished.txt /nethome/syoung/base/pipeline/bixby/run1
+
+
+
+2.4G    s_5_eland_extended.txt
+2.3G    s_5_eland_multi.txt
+3.7G    s_5_export.txt
+4.0K    s_5_finished.tx
+
+
+
+ORIGINAL LOCATION:
+
+Q:\nextGen\GA\EXTERNAL\Bixby\mRNAseq_1x50
+
+
+/q/nextGen/GA/EXTERNAL/Bixby/mRNAseq_1x50/091029_HWI-EAS185_0005_42BNYAAXX/Data/C1-54_Firecrest1.4.0_15-12-2009_jcabrera1/Bustard1.4.0_15-12-2009_jcabrera1/GERALD_15-12-2009_jcabrera1
+
+
+[syoung@u01 GERALD_15-12-2009_jcabrera1]$ ll *sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.1G Dec 16 19:49 s_1_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.4G Dec 16 19:50 s_2_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.5G Dec 16 19:52 s_3_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.5G Dec 16 19:51 s_4_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.0G Dec 16 19:48 s_5_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.5G Dec 16 19:50 s_6_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.4G Dec 16 19:50 s_7_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.2G Dec 16 20:06 s_8_sequence.txt
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 05:51:06 EST 2010] INSTALLED cufflinks AND tophat >
+
+
+
+*** SEE ALSO: Notes-apps-cufflinks ****
+
+tophat
+
+/home/syoung/base/apps/tophat/1.0.12/bin
+
+-rwxr-xr-x 1 syoung bioinfo    1814 Jan 15 04:47 bed_to_juncs
+-rwxr-xr-x 1 syoung bioinfo 1337491 Jan 15 04:47 closure_juncs
+-rwxr-xr-x 1 syoung bioinfo    4628 Jan 15 04:47 contig_to_chr_coords
+-rwxr-xr-x 1 syoung bioinfo  206540 Jan 15 04:47 extract_reads
+-rwxr-xr-x 1 syoung bioinfo  132785 Jan 15 04:47 fix_map_ordering
+-rwxr-xr-x 1 syoung bioinfo  768791 Jan 15 04:47 gff_juncs
+-rwxr-xr-x 1 syoung bioinfo  320242 Jan 15 04:47 juncs_db
+-rwxr-xr-x 1 syoung bioinfo  817262 Jan 15 04:47 library_stats
+-rwxr-xr-x 1 syoung bioinfo 1030577 Jan 15 04:47 long_spanning_reads
+-rwxr-xr-x 1 syoung bioinfo  630186 Jan 15 04:47 mask_sam
+-rwxr-xr-x 1 syoung bioinfo  189685 Jan 15 04:47 prep_reads
+-rwxr-xr-x 1 syoung bioinfo 2036939 Jan 15 04:47 segment_juncs
+-rwxr-xr-x 1 syoung bioinfo   61659 Jan 15 04:47 tophat
+-rwxr-xr-x 1 syoung bioinfo 1055626 Jan 15 04:47 tophat_reports
+-rwxr-xr-x 1 syoung bioinfo  598261 Jan 15 04:47 wiggles
+
+
+
+cufflinks
+
+/nethome/syoung/base/apps/cufflinks/0.7.0
+
+-rw-r--r-- 1 syoung bioinfo     443 Jan 15 05:50 AUTHORS
+-rw-r--r-- 1 syoung bioinfo    1624 Jan 15 05:50 COPYING
+-rwxr-xr-x 1 syoung bioinfo  925217 Jan 15 05:50 cuffcompare
+-rwxr-xr-x 1 syoung bioinfo 7739828 Jan 15 05:50 cufflinks
+-rw-r--r-- 1 syoung bioinfo    3529 Jan 15 05:50 README
+
+
+
+[syoung@u01 0.7.0]$ ./cufflinks 
+Usage:   cufflinks <hits.sam>
+Options:
+
+-m/--inner-dist-mean         the average inner distance between mates              [ default:     45 ]
+-s/--inner-dist-std-dev      the inner distance standard deviation                 [ default:     20 ]
+-c/--collapse-rounds         rounds of pre-assembly alignment collapse             [ default:      1 ]
+-F/--min-isoform-fraction    suppress transcripts below this abundance level       [ default:   0.05 ]
+-j/--pre-mrna-fraction       suppress intra-intronic transcripts below this level  [ default:   0.05 ]
+-I/--max-intron-length       ignore alignments with gaps longer than this          [ default: 300000 ]
+-Q/--min-map-qual            ignore alignments with lower than this mapping qual   [ default:      0 ]
+-L/--label                   all transcripts have this prefix in their IDs         [ default:   CUFF ]
+-G/--GTF                     quantitate against reference transcript annotations                      
+-p/--num-threads             number of threads used during assembly                [ default:      1 ]
+
+
+
+Usage:
+cuffcompare [-r <reference_mrna.gtf>][-R][-V][-s <seq_path>][-o <stats.txt>] 
+    <input1.gtf> [<input2.gtf> <input3.gtf> ... <inputN.gtf>]
+
+ Provides various statistics for GTF mRNA data.
+ Tracks expression changes of loci across multiple input files, writing
+ matching transcripts (intron chains) into <stats>.tracking.
+ A file <input>.tmap is created for each input file, showing
+ how its transcripts overlap reference transcripts, while the file 
+ <input>.refmap shows the matching and contained transcripts for each
+ reference transcript.
+
+Options:
+-o  write the stats into given file name <stats.txt> (instead of stdout)
+
+-r  a set of known mRNAs to use as a reference for assessing 
+    the accuracy of mRNAs or gene models given in <input.gtf>
+
+-R  for -r option, reduce the set of reference transcripts to 
+    only those found to overlap any of the input loci
+
+-s  look into <seq_dir> for fasta files with the 
+    underlying genomic sequences (one file per contig) and use
+    lower case bases to classify input transcripts as repeats
+
+-V  (mildly) verbose processing mode
+
+
+README:
+
+
+CUFFLINKS
+----------------------------
+Cufflinks is a reference-guided assembler for RNA-Seq experiments. It
+simultaneously assembles transcripts from reads and estimates their relative
+abundances, without using a reference annotation.  The software expects as 
+input RNA-Seq read alignments in SAM format (http://samtools.sourceforge.net).
+
+Here's an example spliced read alignment record:
+s6.25mer.txt-913508     16      chr1    4482736 255     14M431N11M      *       0       0       CAAGATGCTAGGCAAGTCTTGGAAG       IIIIIIIIIIIIIIIIIIIIIIIII       NM:i:0  XS:A:-
+
+This record includes a custom tag used by Cufflinks to determine the strand 
+of the mRNA from which this read originated.  Often, RNA-Seq experiments lose
+strand information, and so reads will map to either strand of the genome.  
+However, strandedness of spliced alignments can often be inferred from the 
+orientation of consensus splice sites, and Cufflinks requires that spliced 
+aligments have the custom strand tag XS, which has SAM attribute type "A", and
+can take values of "+" or "-".  If your RNA-Seq protocol is strand specific,
+including this tag for all alignments, including unspliced alignments, will 
+improve the assembly quality.
+
+The SAM records MUST BE SORTED by reference coordinate, like so:
+
+sort -k 3,3 -k 4,4n hits.sam 
+
+The program is fully threaded, and when running with multiple threads, should
+be run on a machine with plenty of RAM. 4 GB per thread is probably reasonable
+for most experiments.  Since many experiments feature a handful of genes that
+are very abundantly transcribed, Cufflinks will spend much of its time 
+assembling" a few genes.  When using more than one thread, Cufflinks may 
+appear to "hang" while these genes are being assembled.
+
+Cufflinks assumes that library fragment lengths are size selected and normally
+distributed. When using paired end RNA-Seq reads, you must take care to supply
+Cufflinks with the mean and variance on the inner distances between mate 
+pairs. For the moment, Cufflinks doesn't support assembling mixtures of paired
+end reads from different fragment size distributions.  Mixtures of single 
+ended reads (of varying lengths) with paired ends are supported.
+
+Cufflinks also assumes that the donor does not contain major structural 
+variations with respect to the reference.  Tumor genomes are often highly 
+rearranged, and while Cufflinks may eventually identify gene fusions and 
+gracefully handle genome breakpoints, users are encouraged to be careful when
+using Cufflinks on tumor RNA-Seq experiments. 
+
+The full manual may be found at http://cufflinks.cbcb.umd.edu
+
+CUFFCOMPARE
+----------------------------
+Please see http://cufflinks.cbcb.umd.edu/manual.html
+
+REQUIREMENTS
+---------------------------
+
+Cufflinks is a standalone tool that requires gcc 4.0 or greater, and runs on
+Linux and OS X.  It depends on Boost (http://www.boost.org) version 1.38 or 
+higher.
+
+REFERENCES
+---------------------------
+Cufflinks uses some ideas originally proposed by others, particularly in:
+
+Ali Mortazavi, Brian A Williams, Kenneth McCue, Lorian Schaeffer and Barbara 
+Wold, "Mapping and quantifying mammalian transcriptomes by RNA-Seq",Nature 
+Methods, volume 5, 621 - 628 (2008)
+
+Hui Jiang and Wing Hung Wong, "Statistical Inferences for isoform expression", 
+Bioinformatics, 2009 25(8):1026-1032
+
+Nicholas Eriksson, Lior Pachter, Yumi Mitsuya, Soo-Yon Rhee, Chunlin Wang, 
+Baback Gharizadeh, Mostafa Ronaghi, Robert W. Shafer, Niko Beerenwinkel, "Viral 
+population estimation using pyrosequencing", PLoS Computational Biology, 
+4(5):e1000074
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 05:50:06 EST 2010] INSTALLED RNA-MATE (2008 PAPER)>
+
+
+
+/nethome/syoung/base/apps/rnamate/1.1
+
+
+wget http://grimmond.imb.uq.edu.au/RNA-MATE/RNA-MATE_user_manual_v1.1.pdf
+wget http://grimmond.imb.uq.edu.au/RNA-MATE/mammalian_exon_junction_libraries.tar.gz
+wget http://grimmond.imb.uq.edu.au/RNA-MATE/junction_libraries.tar.gz
+wget http://grimmond.imb.uq.edu.au/RNA-MATE/test_data.tar.gz
+wget http://grimmond.imb.uq.edu.au/RNA-MATE/test_results.tar.gz
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 04:13:39 EST 2010] DOWNLOAD BOWTIE INDEX FILES (USES UCSC SHORT CHROMOSOME NAMES) FOR TOPHAT>
+
+
+
+http://tophat.cbcb.umd.edu
+
+
+
+ON kronos-x:
+
+cd /nethome/syoung/base/pipeline/tophat
+
+screen -S bowtie
+
+wget ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/hg18.ebwt.zip
+wget ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/hg19.ebwt.zip
+wget ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/mm9.ebwt.zip
+
+
+DOWNLOAD TOPHAT TO apps FOLDER:
+
+cd /nethome/syoung/base/apps/tophat/tophat-1.0.12
+mkdir /nethome/syoung/base/apps/tophat/1.0.12
+
+./configure --prefix=/nethome/syoung/base/apps/tophat/1.0.12
+
+ETC...
+
+
+Usage:
+    tophat [options] <bowtie_index> <reads1[,reads2,...,readsN]> [reads1[,reads2,...,readsN]]
+    
+Options:
+    -o/--output-dir                <string>    [ default: ./tophat_out ]
+    -a/--min-anchor                <int>       [ default: 8            ]
+    -m/--splice-mismatches         <0-2>       [ default: 0            ]
+    -i/--min-intron                <int>       [ default: 50           ]
+    -I/--max-intron                <int>       [ default: 500000       ]
+    -g/--max-multihits             <int>       [ default: 40           ]
+    -F/--min-isoform-fraction      <float>     [ default: 0.15         ]
+    --solexa-quals                          
+    --solexa1.3-quals
+    -p/--num-threads               <int>       [ default: 1            ]
+    -G/--GFF                       <filename>
+    -j/--raw-juncs                 <filename>
+    -r/--mate-inner-dist           <int>       
+    --mate-std-dev                 <int>       [ default: 20           ]
+    --no-novel-juncs                           
+    --no-gff-juncs                             
+    --no-coverage-search
+    --coverage-search                                              
+    --no-closure-search
+    --closure-search
+    --fill-gaps        
+    --microexon-search
+    --butterfly-search
+    --no-butterfly-search
+    --keep-tmp
+    
+Advanced Options:
+
+    --segment-mismatches           <int>       [ default: 2            ]
+    --segment-length               <int>       [ default: 25           ]
+    --min-closure-exon             <int>       [ default: 100          ]
+    --min-closure-intron           <int>       [ default: 50           ]
+    --max-closure-intron           <int>       [ default: 5000         ]
+    --min-coverage-intron          <int>       [ default: 50           ]
+    --max-coverage-intron          <int>       [ default: 20000        ]
+    --min-segment-intron           <int>       [ default: 50           ]
+    --max-segment-intron           <int>       [ default: 500000       ]    
+
+    for detailed help see http://tophat.cbcb.umd.edu/manual.html
+
+
+
+
+</entry>
+
+
+
+<entry [Thurs Jan 1 19:35:24 EDT 2008] Bixby Samples>
+
+
+
+
+/q/nextGen/GA/EXTERNAL/Bixby/RP/091029_HWI-EAS185_0005_42BNYAAXX/Data/C1-54_Firecrest1.4.0_07-12-2009_jcabrera1.7/Bustard1.4.0_07-12-2009_jcabrera1/GERALD_07-12-2009_jcabrera1
+
+
+drwxrwx---+ 4 jcabrera1 mihg  28K Dec  9 05:46 .
+drwxrwx---+ 8 jcabrera1 mihg  12K Dec  8 22:21 ..
+-rw-rw----+ 1 jcabrera1 mihg  370 Dec  7 17:29 config.txt
+-rw-rw----+ 1 jcabrera1 mihg 5.1K Dec  7 17:29 config.xml
+-rw-rw----+ 1 jcabrera1 mihg  24K Dec  9 05:34 Error.htm
+-rw-rw----+ 1 jcabrera1 mihg    0 Dec  9 05:46 finished.txt
+-rw-rw----+ 1 jcabrera1 mihg  30K Dec  9 05:34 FullError.htm
+-rw-rw----+ 1 jcabrera1 mihg  30K Dec  9 05:34 FullPerfect.htm
+-rw-rw----+ 1 jcabrera1 mihg 179K Dec  9 05:46 GeraldSummary.xml
+-rw-rw----+ 1 jcabrera1 mihg  83K Dec  7 17:29 Makefile
+-rw-rw----+ 1 jcabrera1 mihg  23K Dec  9 05:34 Perfect.htm
+drwxrwx---+ 2 jcabrera1 mihg  16K Dec  9 05:34 Plots
+-rw-rw----+ 1 jcabrera1 mihg 2.3G Dec  9 00:17 s_4_1_eland_query.txt
+-rw-rw----+ 1 jcabrera1 mihg 1.5G Dec  9 04:53 s_4_calsaf.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.4G Dec  9 01:14 s_4_eland_contam.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.3G Dec  9 04:04 s_4_eland_extended.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.1G Dec  9 03:48 s_4_eland_multi.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.7G Dec  9 01:35 s_4_eland_splice.txt
+-rw-rw----+ 1 jcabrera1 mihg 4.7G Dec  9 05:17 s_4_export.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.5G Dec  9 02:03 s_4_extended_contam.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.8G Dec  9 02:24 s_4_extended_splice.txt
+-rw-rw----+ 1 jcabrera1 mihg    0 Dec  9 05:46 s_4_finished.txt
+-rw-rw----+ 1 jcabrera1 mihg  29M Dec  9 01:45 s_4_frag_contam.txt
+-rw-rw----+ 1 jcabrera1 mihg  60M Dec  9 02:13 s_4_frag_splice.txt
+-rw-rw----+ 1 jcabrera1 mihg 237M Dec  9 03:56 s_4_frag.txt
+-rw-rw----+ 1 jcabrera1 mihg 5.9K Dec  9 05:23 s_4_qcalreport.txt
+-rw-rw----+ 1 jcabrera1 mihg   28 Dec  9 05:32 s_4_score_files.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.5G Dec  9 00:21 s_4_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.1G Dec  9 05:46 s_4_sorted.txt
+-rw-rw----+ 1 jcabrera1 mihg 1.8G Dec  9 00:10 s_5_1_eland_query.txt
+-rw-rw----+ 1 jcabrera1 mihg 1.2G Dec  9 02:36 s_5_calsaf.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.4G Dec  9 01:38 s_5_eland_extended.txt
+-rw-rw----+ 1 jcabrera1 mihg 2.3G Dec  9 00:36 s_5_eland_multi.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.7G Dec  9 03:02 s_5_export.txt
+-rw-rw----+ 1 jcabrera1 mihg    0 Dec  9 03:40 s_5_finished.txt
+-rw-rw----+ 1 jcabrera1 mihg  82M Dec  9 01:00 s_5_frag.txt
+-rw-rw----+ 1 jcabrera1 mihg   65 Dec  8 23:08 s_5_genomesize.xml
+-rw-rw----+ 1 jcabrera1 mihg 5.9K Dec  9 03:08 s_5_qcalreport.txt
+-rw-rw----+ 1 jcabrera1 mihg   28 Dec  9 03:14 s_5_score_files.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.0G Dec  9 00:17 s_5_sequence.txt
+-rw-rw----+ 1 jcabrera1 mihg 3.1G Dec  9 03:40 s_5_sorted.txt
+-rw-rw----+ 1 jcabrera1 mihg  40K Dec  9 05:46 Summary.htm
+-rw-rw----+ 1 jcabrera1 mihg 299K Dec  9 05:46 Summary.xml
+-rwxrwx---+ 1 jcabrera1 mihg  19K Dec  9 05:46 Summary.xsl
+drwxrwx---+ 3 jcabrera1 mihg  28K Dec  9 05:46 Temp
+-rw-rw----+ 1 jcabrera1 mihg 2.2K Dec  8 22:21 tiles.txt
+
+
+
+Data location Q:\solexa\091029_HWI-EAS185_0005_42BNYAAXX
+
+Analysis location: Q:\nextGen\GA\EXTERNAL\Bixby\RP\091029_HWI-EAS185_0005_42BNYAAXX
+
+FlowCell ID: 42BNYAAXX
+
+Lane 
+   Sample       
+Conc.
+1 
+CGN LN 7.31.09 
+8 pM 
+2 
+CGN LN 7.31.09 
+8 pM
+3 
+CGN LN 9.3.09 
+8 pM
+4 
+CGN LN 9.3.09 
+8 pM
+5 
+PhiX 
+8 pM 
+6 
+CGN CSPG 7.31.09 
+8 pM
+7 
+CGN CSPG 7.31.09 
+8 pM
+8 
+CGN CSPG 9.3.09 
+8 pM
+For this run we performed a v3 single-read of 54 cycles. A v2 36 cycle kit and a v2 18 cycle kit were combined into one for this run.
+
+Pipeline v1.4 SCS v2.4Summary Information For Experiment091029_HWI-EAS185_0005_42BNYAAXX
+
+Chip Summary
+Machine	 HWI-EAS185
+Run Folder	 091029_HWI-EAS185_0005_42BNYAAXX
+Chip ID	 Unknown
+Chip Results Summary
+Clusters	 Clusters (PF)	 Yield (kbases)
+220448025	 173076089	 9346105
+Lane Results Summary
+Lane Info	 Tile Mean +/- SD for Lane
+Lane	 Lane Yield (kbases)	 Clusters (raw)	 Clusters (PF)	 First Cycle Int (PF)	 % intensity after 20 cycles (PF)	 % PF Clusters
+1	 1132323	 219970 +/- 13595	 176210 +/- 12261	 162 +/- 17	 78.76 +/- 19.42	 80.06 +/- 3.01
+2	 1206412	 230868 +/- 11777	 186175 +/- 7319	 184 +/- 12	 73.75 +/- 1.96	 80.70 +/- 1.47
+3	 1246053	 254287 +/- 12384	 192292 +/- 6973	 195 +/- 13	 72.60 +/- 2.09	 75.69 +/- 2.19
+4	 1232928	 246208 +/- 11371	 190267 +/- 8032	 195 +/- 14	 73.68 +/- 1.98	 77.30 +/- 1.19
+5	 1046341	 191432 +/- 14693	 161473 +/- 11164	 192 +/- 16	 79.06 +/- 5.19	 84.40 +/- 1.14
+6	 1197343	 231772 +/- 12697	 184775 +/- 8287	 191 +/- 13	 73.68 +/- 1.74	 79.78 +/- 1.55
+7	 1165408	 225646 +/- 14304	 179847 +/- 9688	 188 +/- 15	 75.09 +/- 2.22	 79.77 +/- 1.72
+8	 1119297	 236885 +/- 13508	 172731 +/- 6861	 193 +/- 22	 76.37 +/- 2.33	 73.00 +/- 1.68
+Tile mean across chip
+Average	 229634	 180471	 188	 75.37	 78.84
+Expanded Lane Summary
+Lane Info	 Phasing Info	 Raw Data (tile mean)	 Filtered Data (tile mean)
+Lane	 Clusters (tile mean) (raw)	 % Phasing	 % Prephasing	 % Retained	 Cycle 2-4 Av Int (PF)	 Cycle 2-10 Av % Loss (PF)	 Cycle 10-20 Av % Loss (PF)
+1	 219970.10	 0.4585	 0.3344	 80.06	 153.73 +/- 11.12	 -0.14 +/- 6.68	 1.10 +/- 2.40
+2	 230868.00	 0.5348	 0.3440	 80.70	 175.24 +/- 9.68	 1.39 +/- 0.21	 1.59 +/- 0.14
+3	 254287.00	 0.5325	 0.3421	 75.69	 186.13 +/- 10.09	 1.66 +/- 0.20	 1.41 +/- 2.32
+4	 246207.50	 0.5264	 0.3845	 77.30	 186.40 +/- 10.91	 1.74 +/- 0.69	 1.48 +/- 0.15
+5	 191431.60	 0.4425	 0.2676	 84.40	 182.03 +/- 11.41	 1.11 +/- 0.19	 1.05 +/- 0.12
+6	 231771.80	 0.4976	 0.3624	 79.78	 181.26 +/- 10.42	 1.76 +/- 0.21	 1.37 +/- 0.12
+7	 225645.70	 0.4801	 0.3684	 79.77	 179.27 +/- 12.41	 1.84 +/- 0.25	 1.17 +/- 0.14
+8	 236885.20	 0.4543	 0.3582	 73.00	 186.14 +/- 21.56	 2.14 +/- 0.27	 0.97 +/- 0.19
+
+
+
+
+
+
+
+Run: 611F3AAXX_Lemmon_Samples
+Data location:
+
+Analysis location:
+
+FlowCell ID: 611F3AAXX
+
+Lane 
+Sample  (Investigator)      
+Conc.
+1 
+E27-2DIV 
+8 pM 
+2 
+E27-2DIV	 8 pM
+3 
+E27-16DIV	 8 pM
+4 
+E27-16DIV	 8 pM
+5 
+PhiX 
+8 pM 
+6 
+E31-2DIV	 8 pM
+7 
+E31-2DIV	 8 pM
+8 
+E41-2DIV 	 8 pM
+Paired End Run
+
+For this run we performed a v4 single-read run of 54 cycles. One v4 36-cycle kit and one v4 18-cycle kit were combined into one for each read of this run.  Pipeline v1.5 SCS v2.5
+
+
+
+</entry>
+
+
+
+<entry [Wed Jan 21 19:35:24 EDT 2008] RUNNING erange>
+
+
+
+
+ANALYSIS STEPS:
+
+# analysis steps for an ERANGE analysis of RNA-seq data
+# This is an example of the command-line settings used to run each of the scripts in runStandardAnalysis.sh
+
+# preliminary: create splice file using getsplicefa.py
+
+# preliminary: build expanded genome using Eland's squashGenome
+
+# preliminary: build repeatmask database using buildrmaskdb.py
+
+#run eland2 on expanded genome, i.e. eland_25
+/proj/genome/experiments/eland64/ElandPL03/Eland/eland_25 FC11048.s1.25mer.txt /woldlab/myod/data1/alim/genomes/mm9sp25 FC11048.s1.25mer.mm9.eland2 --multi
+
+#create bed file of unique reads
+python2.5 ../commoncode/maketrackfromeland2.py c2c12rna24R.comb.eland2 c2c12rna24R c2c12rna.24R.uniqs.bed
+
+#create bed file of multi reads
+python2.5 ../commoncode/maketrackmulti.py c2c12rna24R.comb.eland2 c2c12rna24Rmulti c2c12rna.24R.multi.bed
+
+#create bed file of spliced reads
+python2.5 ../commoncode/remapSplicesEland2.py ../mm9splices/knownGene.txt c2c12rna24R.comb.eland2 c2c12rna24Rsplices c2c12rna.24R.splices.bed
+
+# count the unique reads falling on the gene models ; the nomatch files are 
+# mappable reads that fell outside of the Cistematic gene models and not the 
+# unmappable of Eland (i.e, the "NM" reads)
+python2.5 ../commoncode/geneMrnaCounts.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.count c2c12rna.24R.nomatch.bed
+
+# count splice reads
+python2.5 ../commoncode/geneMrnaCounts.py mouse c2c12rna.24R.splices.bed c2c12rna.24R.splices.count c2c12rna.24R.nomatchsplices.bed
+
+# calculate a first-pass RPKM to re-weigh the unique reads,
+# using 'none' for the splice count
+python2.5 ../commoncode/normalizeExpandedExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.count none c2c12rna.24R.firstpass.rpkm -cache
+
+# recount the unique reads with weights calculated during the first pass
+python2.5 ../commoncode/geneMrnaCountsWeighted.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.firstpass.rpkm c2c12rna.24R.uniqs.recount -cache
+
+# There is a choice of either identifying new regions from the data alone 
+# (Alternative 1), or using a pre-computed list of new regions (presumably 
+# pooled from multiple nomatch.bed files, or literature) against the nomatch.bed
+# file (Alternative 2)
+
+# Alternative 1: find new regions outside of gene models with reads piled up 
+python2.5 ../commoncode/findallnocontrol.py RNA24R c2c12rna.24R.nomatch.bed c2c12rna.24R.newregions.txt 25 40
+
+# Alternative 1: filter out new regions that overlap repeats more than a certain fraction
+python2.5 ../commoncode/checkrmask.py ../mm9repeats/rmask.db c2c12rna.24R.newregions.txt c2c12rna.24R.newregions.repstatus c2c12rna.24R.newregions.good 1
+
+# Alternative 2: use a precomputed list of "new" regions (outside of gene models)
+python2.5 ../commoncode/regionCounts.py ../RNAFAR/all.newregions.good c2c12rna.24R.nomatch.bed c2c12rna.24R.newregions.good c2c12rna.24R.stillnomatch.bed
+
+# map all candidate regions that are within a 20kb radius of a gene in bp
+# take out -cache if running locally
+python2.5 ../commoncode/getallgenes.py mouse c2c12rna.24R.newregions.good c2c12rna.24R.candidates.txt 20001 -trackfar -cache
+
+# calculate expanded exonic read density
+python2.5 ../commoncode/normalizeExpandedExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.recount c2c12rna.24R.splices.count c2c12rna.24R.expanded.rpkm c2c12rna.24R.candidates.txt c2c12rna.24R.accepted.rpkm -cache
+
+# create bed file of accepted candidate regions
+python2.5 ../commoncode/regiontobed.py RNAFAR c2c12rna.24R.accepted.rpkm RNAFAR.bed 255,0,0
+
+# weigh multi-reads
+python2.5 ../commoncode/geneMrnaCountsWeighted.py mouse c2c12rna.24R.multi.bed c2c12rna.24R.expanded.rpkm c2c12rna.24R.accepted.rpkm c2c12rna.24R.multi.count -cache
+
+# calculate final exonic read density
+python2.5 ../commoncode/normalizeFinalExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.splices.bed c2c12rna.24R.multi.bed c2c12rna.24R.expanded.rpkm c2c12rna.24R.multi.count c2c12rna.24R.final.rpkm 
+
+
+
+
+README:
+
+http://woldlab.caltech.edu/rnaseq/rnaseqREADME.txt
+
+The latest version of this software is available at 
+
+http://woldlab.caltech.edu
+
+please check the website for updates.
+
+This is the core of the RNA-seq analysis code described in Mortazavi 
+et al (2008). Please make sure that you have read Figure 3 and the 
+methods / supplemental methods of that paper before attempting to 
+use this package for RNA-Seq data analysis. 
+
+ERANGE should run on any Unix-like system supporting python 2.5 or 
+better. The code is developed on Linux and MacOS X on python 2.5. 
+
+Historically, the code for ERANGE grew out of the ChIPSeqMini 
+package from Johnson et al (2007), and some of the key scripts 
+(findallnocontrol.py and getallgenes.py) are shared between the two. 
+This is why ERANGE is "dual-use" and is also why the code for both 
+analyses were kept in common as much as possible. This should be 
+helpful when someone tries to combine ChIP-seq and RNA-seq 
+analyses !
+
+This code is made available as open-source, as described in the 
+copyright file ERANGE.COPYRIGHT.
+
+
+SETTING EXPECTATIONS
+
+ERANGE is not a point-and-click, turn-key package. 
+
+It is a set of python scripts that, when run in order as a pipeline 
+on the "right" input, will take read data in bed format and 
+calculate gene expression levels in RPKM (Reads Per kb per Million 
+reads). This pipeline is embodied in a shell script called 
+runStandardAnalysis.sh, which only takes a few inputs, described in 
+the ANALYSIS and PIPELINE section below.
+
+You should be able to download the data from our website and run the 
+analysis through the pipeline.Whether you decide to start from the 
+bed files or the eland files is up to you, but the later will 
+require running the eland to bed conversion scripts manually, 
+described in the MAPPING ELAND OUTPUT INTO BED FILES section below.
+
+Because you will likely want to run this package on other genomes 
+(or builds) than the one described in our original paper, you will 
+need to do several additional steps, such as:
+
+- build expanded genomes with splices and spikes
+- check overlap of RNAFAR predictions with repeats
+
+This will require some comfort with running and, if necessary, 
+editing scripts. While the code is sparsely documented, we are 
+making it available so that you can *read it*. We'll be happy to 
+help modifying and updating the code within a reasonable extent 
+and will try to provide more in depth documentation and tutorials 
+on our web site.
+
+While the scripts produce several forms of RPKM, we suggest that 
+the "final" RPKM are the values that most people will be interested 
+in.
+
+
+REQUIREMENTS
+
+1) reads in bed format. We assume and for now only  provide scripts 
+for parsing ELAND (0.3 or higher) output run with the --multi option 
+into bed files. If you decide to use any other read mapper or 
+another platform, you will need to generate 3 bed files for unique, 
+spliced, and multireads. Note that multireads are flagged with an 
+identifier of the form:
+
+ReadIDxMultiplicity 
+
+where every entry in the bed file for that particular read at each 
+possible location has the same identifier.
+
+1) Python 2.5 is required because some of the scripts and 
+Cistematic (see below) need pysqlite, which is now bundled in 
+Python.
+
+2) You will also need to use Cistematic 2.0 for some of the scripts 
+marked below that use genes and genomic sequence; in particular, you 
+will also need the Cistematic version of the genomes. Cistematic is 
+available at http://cistematic.caltech.edu 
+
+3) You will need genomic sequences to build the expanded genome, as 
+well as gene models from UCSC. 
+
+(Optional) Python is very slow on large datasets. Use of the psyco 
+module (psyco.sf.net) on 32-bit Linux or all Mac Intel machines to 
+significantly speed up runtime is highly recommended.
+
+(Optional) Several of the ploting scripts also rely on Matplotlib, 
+which is available at matplotlib.sf.net.
+
+
+COMMAND LINE OPTIONS
+
+You can find out more about the settings for each python script by 
+typing:
+
+python commoncode/<scriptname> 
+
+to see the command line options. 
+
+For example, if you wanted to know the command line options of the 
+script used to generate supplementary datasets 2-4, combineRPKMs.py , 
+you would type:
+
+python commoncode/combineRPKMs.py
+
+and get back a version number and all possible command line options:
+
+version 1.0
+usage: python commoncode/combineRPKMs.py firstRPKM expandedRPKM finalRPKM combinedOutfile [-withmultifraction]
+
+where fields in brackets are optional.
+
+
+BUILDING EXPANDED GENOMES AND RUNNING ELAND
+
+You will need to build an expanded genome consisting of genomic 
+sequences, spike sequences, and splice-spanning sequences in order 
+to run ERANGE on your own datasets. This expanded genome is specific 
+to the read size used, i.e. there will be a different expanded 
+genome for mouse when using 25bp reads or 32bp reads.
+
+Download the chromosomes from UCSC, as well as the knownGene.txt (or 
+equivalent table) and a directory of repeatmask annotations for each 
+chromosome (also from UCSC) for your genome of interest.
+
+You will need to build a splice fasta file using the script 
+getsplicefa.py, which needs Cistematic, the knownGene table, and a 
+paremeter for splice radius, which is 4 bp shorter than the length 
+of the reads.
+
+Once you have the splice fasta file, drop it into the same directory 
+as well as a fasta file for your spikes. Then use squashGenome 
+(part of Eland), to build the expanded genome.
+
+You will also build a repeat database using buildrmaskdb.py for use 
+in the candidate exon analysis.
+
+Please refer to the Illumina documentation for the details on 
+running squashGenome and ELAND.
+
+
+MAPPING ELAND OUTPUT INTO BED FILES
+
+Once you have run ELAND with the --multi option (which we 
+colloquially call "eland2") for each RNA-seq lane against the 
+expanded genome, combine all of the outputs for one sample into a 
+single file e.g. test.comb.eland2
+
+The following scripts are then used to map the reads onto bed files:
+
+maketrackfromeland2.py   
+maketrackmulti.py
+
+and 
+
+remapSplicesEland2.py
+
+for example, assuming that the UCSC gene model description are in 
+../mm9splices/knownGene.txt, we would run:
+
+python2.5 ../commoncode/maketrackfromeland2.py test.comb.eland2 test test.uniqs.bed
+python2.5 ../commoncode/maketrackmulti.py test.comb.eland2 testmulti test.multi.bed
+python2.5 ../commoncode/remapSplicesEland2.py ../mm9splices/knownGene.txt test.comb.eland2 testsplices test.splices.bed
+
+It is important to stick to the naming convention of the bed files, 
+as the pipeline assumes that all of the bed files have the same 
+prefix (in this case "test"), and will use the appropriate file 
+extensions (e.g. ".uniqs.bed") with the right scripts.
+
+You can also create a bed-formatted WIG file, for display on the 
+UCSC browser:
+
+makewiggle.py
+
+
+ANALYSIS
+
+The main steps of a typical analysis using ERANGE is shown in 
+analysisSteps.txt, where each script would be run in order, with the 
+caveat that there are two ways to do the candidate exon analysis 
+(RNAFAR), creatively called "alternative 1" and "alternative 2". 
+
+In alternative 1, we use the .nomatch.bed file computed in the 
+previous step to identify candidate regions:
+
+# Alternative 1: find new regions outside of gene models with reads piled up 
+python2.5 ../commoncode/findallnocontrol.py test test.nomatch.bed test.newregions.txt 25 40
+# Alternative 1: filter out new regions that overlap repeats more than a certain fraction
+python2.5 ../commoncode/checkrmask.py ../mm9repeats/rmask.db test.newregions.txt test.newregions.repstatus test.newregions.good 1
+
+In alternative 2, we pool multiple .nomatch.bed into a single 
+nomatch.bed, run it through the two scripts of alternative 1 above, 
+and then use these precomputed candidates to count reads falling in 
+these regions:
+
+# Alternative 2: use a precomputed list of "new" regions (outside of gene models)
+python2.5 ../commoncode/regionCounts.py ../RNAFAR/all.newregions.good test.nomatch.bed test.newregions.good test.stillnomatch.bed
+
+Alternative 2 is the one used by the pipeline 
+script described below.
+
+The scripts will generate a set of intermediate files, the most 
+interesting of which are the gene RPKM values. These will be in the 
+following files for the test example:
+
+test.firstpass.rpkm (the unique reads only)
+test.expanded.rpkm (the unique reads + spliced reads  + RNAFAR)
+test.final.rpkm (uniques + spliced + RNAFAR + multireads)
+
+
+PIPELINE
+
+Most of the analysis steps described in the section above are 
+automated in a pipeline shell script called runStandardAnalysis.sh .
+Note that the pipeline assumes that candidate exons have already 
+been identified (e.g. from pooled data), which is called 
+"alternative 2" in the ANALYSIS section.
+
+The pipeline assumes that the bed files for the uniq, multi, and 
+spliced reads exist andare named as described in the MAPPING ELAND 
+OUTPUT INTO BED FILES section.
+
+We assume that Cistematic 2.0 is installed, including a version of 
+the appropriate Cistematic genome.
+
+We will also need a radius (e.g. 20000 bp) within which a candidate 
+exon will be consolidated with an existing gene.
+
+For example, for the test dataset from the ANALYSIS section, we 
+could run the pipeline as:
+
+. ./runStandardAnalysis.sh mouse test ../RNAFAR/all.newregions.good 20001
+
+This could run from an hour to a whole day depending on how many 
+reads are involved (1M vs 80M) and how big a consolidation radius 
+is used. 
+
+
+RELEASE HISTORY
+
+version 2.0 May 2008 - First public release of ERANGE
+
+
+</entry>
+
+
+
+<entry [Tue Aug 12 12:35:24 EDT 2008] DOWNLOAD AND INSTALLATION>
+
+
+
+1. GET erange AND SPIKE FILES
+
+The code
+wget http://woldlab.caltech.edu/rnaseq/ERANGE2.tgz
+
+The files for building the expanded genomes and remapping splices
+wget http://woldlab.caltech.edu/rnaseq/mm9splices_spikes.tgz
+
+The consolidated RNAFAR analysis, includes repeat library from UCSC - large!
+wget http://woldlab.caltech.edu/rnaseq/RNAFAR.tgz
+
+2. UNZIP FILES
+
+tar xvfz ERANGE2.tgz
+ls commoncode/
+    altSpliceCounts.py  ERANGE.copyright              geneNeighbors.py          getsplicesites.py           normalizeFinalExonic.py  regiontobed.py
+    analysisSteps.txt   featureIntersects.py          geneStallingBins.py       gointersects.py             normalizeLocus.py        remapSplicesEland1.py
+    analyzego.py        findallnocontrol.py           geneStartBins.py          intersects.py               peakstoregion.py         remapSplicesEland2.py
+    bedtoregion.py      findall.py                    geneUpstreamBins.py       intronicratio.py            plotbardist.py           rerunStandardAnalysis.sh
+    binstocdf.py        findMotifs.py                 getallgenes.py            listGeneFeatures.py         plotnomogram.py          runStandardAnalysis.sh
+    buildrmaskdb.py     fraction.py                   getallNRSE.py             makesitetrack.py            plotprofile.py           runWormAnalysis.sh
+    cdfdist.py          geneDnaUpstreamCounts.py      getallsites.py            makeslidegraph.py           predictSpliceCount.py    scatterfields.py
+    checkrmask.py       geneDownstreamBins.py         getfasta.py               maketrackfromeland2.py      profilebins.py           scattersolexaruns.py
+    colsum.py           geneLocusBins.py              getGOgenes.py             maketrackfromeland.py       ratio.py                 siteintersects.py
+    combineRPKMs.py     geneLocusCountsMultireads.py  getgosig.py               maketrackfromrealign.py     README.chip-seq          stallCategory.py
+    commoncode.py       geneLocusCounts.py            getmers.py                maketrackmulti.py           README.rna-seq           transcripts.py
+    commoncode.pyc      geneLocusPeaks.py             getpossiblesplicesfsa.py  maketrackscaffold.py        regionBins.py            translatespikes.py
+    complexity.py       geneMrnaCounts.py             getsplicefa.py            makewiggle.py               regionCounts.py          utrChanges.py
+    crossmatch.py       geneMrnaCountsWeighted.py     getsplicefsanocis.py      normalizeExpandedExonic.py  regionintersects.py
+
+tar xvfz mm9splices_spikes.tgz
+ls mm9splices
+    knownGene.txt  mm9splice25.fa  mm9splice32.fa  spikeresults.txt  spikes.fa
+
+tar xvfz RNAFAR.tgz
+ls RNAFAR
+    all.newregions.good  all.newregions.repstatus  all.newregions.txt  all.nomatch.bed  rmask.db  RNAFAR.bed
+
+
+
+
+REQUIRED
+========
+
+cistematic
+==========
+
+To install, create a directory (for example /proj/genome), cd into it, and unpack each file using tar xzvf.
+
+1. CREATE erange DIRECTORY
+
+mkdir /home/syoung/base/apps/erange
+cd /home/syoung/base/apps/erange
+
+2. DOWNLOAD AND UNZIP cistematic
+
+wget http://cistematic.caltech.edu/cistematic2.0.tgz
+tar xvfz cistematic2.0.tgz
+
+cd cistematic
+ls
+    core  experiments  genomes  __init__.py  __init__.pyo  programs  stat
+
+3. DOWNLOAD AND UNZIP DATABASE db2.0
+
+wget http://cistematic.caltech.edu/db2.0.tgz
+tar xvfz db2.0.tgz
+ls db
+    cbcr.py  cecr.py  dmdv.py    fixdm.old.py  gene_info.db  homologene.db           homologene.preyeastdb  hscf.py  hstn.py          known_motifs.py  mmcf.py
+    cecb.py  dmdp.py  dogfaa.py  fixdm.py      gene_info.py  homologene.preupdatedb  homologene.py          hsgg.py  known_motifs.db  load_tfd.py      mmrefaa.py
+
+
+4. DOWNLOAD AND UNZIP motif finding binaries (not required for RNA-seq, but definitely for ChIP-seq):
+
+wget http://cistematic.caltech.edu/ programsMin.linux32.tgz
+tar xvfz  programsMin.linux32.tgz
+ls programs
+    blast  paircomp  workdir
+
+
+5. DOWNLOAD MEME (for motif-finding with ChIP-seq data)
+
+Modify the parameter memePath in $CISTEMATIC_ROOT/cistematic/programs/meme.py to the appriate path for the meme top-level script.
+
+
+
+6. DOWNLOAD AND UNZIP cistematic HUMAN GENOME
+
+cd /home/syoung/base/apps/erange
+wget http://cistematic.caltech.edu/hg18.tgz
+tar xvfz hg18.tgz
+ls H_sapiens/
+
+chromo10.bin      chromo13.bin      chromo16.bin      chromo18rand.bin  chromo20.bin      chromo2.bin      chromo4rand.bin  chromo7.bin      chromo9rand.bin  pseudos.txt
+chromo10rand.bin  chromo13rand.bin  chromo16rand.bin  chromo19.bin      chromo21.bin      chromo2rand.bin  chromo5.bin      chromo7rand.bin  chromoX.bin
+chromo11.bin      chromo14.bin      chromo17.bin      chromo19rand.bin  chromo21rand.bin  chromo3.bin      chromo5rand.bin  chromo8.bin      chromoXrand.bin
+chromo11rand.bin  chromo15.bin      chromo17rand.bin  chromo1.bin       chromo22.bin      chromo3rand.bin  chromo6.bin      chromo8rand.bin  chromoY.bin
+chromo12.bin      chromo15rand.bin  chromo18.bin      chromo1rand.bin   chromo22rand.bin  chromo4.bin      chromo6rand.bin  chromo9.bin      human.genedb
+
+
+
+7. ADD ENVIRONMENT VARIABLES
+
+Add the directory in which you installed the Cistematic python code to your PYTHONPATH environment!
+
+
+If you use a root directory different from /proj/genome, you will need to tell Cistematic where to find it by setting up the environmental variable CISTEMATIC_ROOT
+
+export CISTEMATIC_ROOT=/home/syoung/base/pipeline/erange/mm9Brain1
+echo $CISTIMATIC_ROOT
+
+export PYTHONPATH=/home/syoung/base/apps/erange:/home/syoung/base/apps/erange/cistematic
+echo $PYTHONPATH
+
+TEST - OK :
+
+cd /home/syoung/base/apps/erange/commoncode
+python getsplicefa.py 
+    psyco not running
+    version 1.1
+    usage: python getsplicefa.py genome ucscModels outfilename maxBorder
+    
+            where maxBorder should be readlen - 4
+    
+
+
+
+
+
+Python Imaging Library (PIL)    -   OK
+============================
+
+1. WEBPAGE
+
+http://www.pythonware.com/products/pil/
+
+2. DOWNLOAD
+
+cd /home/syoung/base/apps/erange
+wget http://effbot.org/downloads/Imaging-1.1.6.tar.gz
+
+3. INSTALL
+
+tar xvfz Imaging-1.1.6.tar.gz
+cd Imaging-1.1.6
+python setup.py install
+
+    ...
+    --------------------------------------------------------------------
+    PIL 1.1.6 BUILD SUMMARY
+    --------------------------------------------------------------------
+    version       1.1.6
+    platform      linux2 2.5.2 (r252:60911, Aug  8 2008, 14:34:59)
+                  [GCC 4.1.2 20070626 (Red Hat 4.1.2-14)]
+    --------------------------------------------------------------------
+    *** TKINTER support not available
+    --- JPEG support ok
+    --- ZLIB (PNG/ZIP) support ok
+    --- FREETYPE2 support ok
+    --------------------------------------------------------------------
+    To add a missing option, make sure you have the required
+    library, and set the corresponding ROOT variable in the
+    setup.py script.    
+    ...
+
+
+
+
+
+
+OPTIONAL
+
+matplotlib  -   OK
+==========
+
+1. REQUIRED DEPENDENCIES - numpy
+
+    * You must install numpy 1.1 or later to build
+    * matplotlib.
+
+SOURCE PAGE
+http://numpy.scipy.org/
+
+DOWNLOAD PAGE
+http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=175103
+
+INSTALL
+cd /store/home/syoung/base/apps/erange/numpy-1.1.1
+sudo python setup.py install
+    ...
+    copying build/src.linux-x86_64-2.5/numpy/core/include/numpy/ufunc_api.txt -> /usr/local/lib/python2.5/site-packages/numpy/core/include/numpy
+    running install_egg_info
+    Writing /usr/local/lib/python2.5/site-packages/numpy-1.1.1-py2.5.egg-info
+
+1. DOWNLOAD matplotlib
+
+SOURCEFORGE PAGE
+http://matplotlib.sourceforge.net/
+
+DOWNLOAD LINK
+http://sourceforge.net/project/showfiles.php?group_id=80706&package_id=278194&release_id=617552
+
+2. INSTALL matplotlib
+
+tar xvfz cd matplotlib-0.98.3.tar.gz
+cd /store/home/syoung/base/apps/erange/matplotlib-0.98.3
+ls
+agg24        CHANGELOG  doc       __init__.py  INTERACTIVE  lib      Makefile     matplotlibrc.template  README.txt          setupegg.py  setup.py  TODO
+API_CHANGES  CXX        examples  INSTALL      KNOWN_BUGS   license  MANIFEST.in  PKG-INFO               setup.cfg.template  setupext.py  src       ttconv
+
+sudo python setup.py install
+    ...
+    copying build/src.linux-x86_64-2.5/numpy/core/include/numpy/ufunc_api.txt -> /usr/local/lib/python2.5/site-packages/numpy/core/include/numpy
+    running install_egg_info
+    Writing /usr/local/lib/python2.5/site-packages/numpy-1.1.1-py2.5.egg-info
+
+
+
+
+psycho
+======
+
+CAN'T INSTALL - DOES NOT WORK ON 64-BIT
+
+1. DOWNLOAD psycho
+
+wget -r http://codespeak.net/svn/psyco/dist/ -I /svn/psyco/dist
+
+2. INSTALL psycho
+
+cd /store/home/syoung/base/apps/erange/codespeak.net/svn/psyco/dist
+ls
+    c  COPYING.txt  doc  index.html  MANIFEST  py-support  py-utils  README.txt  setup.py  test
+
+python setup.py install
+
+    ...
+    In file included from c/dispatcher.h:12,
+                 from c/codemanager.h:10,
+                 from c/psyco.c:3:
+    c/codegen.h:15:3: error: #error "-----------------------------------------------------"
+    c/codegen.h:16:3: error: #error "Sorry, non-32-bit platforms are not supported at all."
+    c/codegen.h:17:3: error: #error "You may try with a Python compiled in 32-bit         "
+    c/codegen.h:18:3: error: #error "compatibility mode.  Note that Psyco will probably   "
+    c/codegen.h:19:3: error: #error "never support non-32-bit platforms, as it is no      "
+    c/codegen.h:20:3: error: #error "longer actively developed.  Instead, the PyPy group  "
+    c/codegen.h:21:3: error: #error "plans to replace it with a more flexible and easily  "
+    c/codegen.h:22:3: error: #error "retargettable Psyco-for-PyPy during the year 2006.   "
+    c/codegen.h:23:3: error: #error "See http://codespeak.net/pypy/                       "
+    c/codegen.h:24:3: error: #error "-----------------------------------------------------"
+    In file included from c/initialize.h:46,
+    ...
+    
+
+cistematic INSTALL NOTES AT http://cistematic.caltech.edu/
+==========================================================
+    
+Cistematic Pre-requisites
+Required
+
+Cistematic currently runs on Linux and Macintosh; it also runs under Cygwin in Microsoft Windows. In addition to python, the current version of Cistematic is heavily dependent on sqlite and its python interface, pysqlite (which is now part of python 2.5+). You will therefore need:
+
+    * Any Unix-compatible OS such as Linux and MacOS 10.3-10.4
+    * Python 2.5 or better
+    * Python Imaging Library: 1.1.6+
+
+Note that earlier versions of python did not include pysqlite, which we rely on heavily. You might be able to get Cistematic to run with older versions of python if you separately install sqlite/pysqlite, but we do not support it any longer.
+Optional (Can be installed later)
+
+In addition to the requirements listed above, three additional packages will allow you to get the most out of Cistematic and the example code for the upcoming paper. psyco, which only runs on Intel 32-bit CPUs and on ALL Macintosh Intel platforms, will give you approximately 9-fold speed up running Cistematic code and is highly recommended, if it's available for your platform. Matplotlib was used to generate the figures in the papers and is hence also recommended. The actual version numbers are:
+
+    * psyco 1.6+ HIGHLY RECOMMENDED ON INTEL 32-bit AND ALL MAC INTEL PLATFORMS
+    * matplotlib 0.9+
+
+Cistematic core
+
+You will need to download the following packages:
+
+    * cistematic2.0.tgz
+    * db2.0.tgz
+
+as well as a set of motif finding binaries (not required for RNA-seq, but definitely for ChIP-seq):
+
+    * programsMin.mac10_4.tgz
+    * programsMin.linux32.tgz (32bit)
+
+For motif-finding with ChIP-seq data, you will also want to download Meme and modify the parameter memePath in $CISTEMATIC_ROOT/cistematic/programs/meme.py to the appriate path for the meme top-level script.
+
+To install, create a directory (for example /proj/genome), cd into it, and unpack each file using tar xzvf.
+
+You will need to add the directory in which you installed the Cistematic python code to your PYTHONPATH environment!
+
+If you use a root directory different from /proj/genome, you will need to tell Cistematic where to find it by setting up the environmental variable CISTEMATIC_ROOT.
+Cistematic Genomes
+
+To make full use of Cistematic, you will need to use genomes that are either installed from scratch, or that are installed from the following packages:
+
+    * mouse mm9
+    * human hg18
+    * dog cf2
+    * C elegans ce4 (WS170)
+    * D melanogaster dm3
+
+which are unpacked in the same manner as the other Cistematic files.

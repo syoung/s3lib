@@ -1,0 +1,569 @@
+</entry>
+
+
+
+<entry [Tue Jan 23 16:21:52 EST 2007] APLYSIA DOWNLOAD AND PROCESSING>
+
+
+
+1. DOWNLOADED AS A FASTA FILE FROM dbEST:
+    
+    http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?CMD=Display&DB=nucest
+
+    SEARCH 'EST' FOR 'aplysia'
+    
+    ALSO DOWNLOADED AS est_others.gz FROM:
+    
+    ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/est_others.gz    
+    
+    FINISHED --20:20:35--
+    Downloaded: 5,368,793,885 bytes in 1 files
+    Download quota (104,857,600 bytes) EXCEEDED!
+
+    UNZIP 5GB FILE:
+    
+    dlc-genomics:/Volumes/Backup/young/FUNNYBASE/dev/aplysia/data/ftp.ncbi.nlm.nih.gov/blast/db/FASTA young$ gunzip est_others.gz
+
+
+
+2. CLEANED UP THE DOWNLOADED dbEST ENTRIES (from Entrez)
+    Removed all entries that did not have 'Aplysia/aplysia' in the fasta header
+ 
+    2.1 WEB INTERFACE DOWNLOADED (SPECIES-SPECIFIC) FILE
+    
+        cd /Users/young/FUNNYBASE/bin/aplysia
+        ./remove.nonaplysia.pl -i /Users/young/FUNNYBASE/dev/aplysia1/data/aplysia.dbEST.fa
+
+    Output file:
+
+    /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+
+    CHECK NUMBER OF RECORDS IN OUTPUT FILE:
+
+    records /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+    51084 records.
+
+    CHECK NUMBER OF RECORDS IN INPUT FILE:    
+
+    records /Users/young/FUNNYBASE/dev/aplysia/data/aplysia.dbEST.fa
+    51111 records.
+
+    (!!!!)
+
+    MOVE THIS OUTPUT TO SAVE IT FROM BEING WRITTEN OVER:
+    
+    mv /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia.web
+
+    2.2 FTP INTERFACE DOWNLOADED (MULTIPLE SPECIES) FILE
+    
+        cd /Users/young/FUNNYBASE/bin/aplysia
+        ./remove.nonaplysia.pl -i /Volumes/Backup/young/FUNNYBASE/dev/aplysia/data/ftp.ncbi.nlm.nih.gov/blast/db/FASTA/est_others
+
+        179193 out of 28225000
+        Output file printed:
+        
+        /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+
+        CHECK NUMBER OF RECORDS IN OUTPUT FILE:
+
+        records /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+        179193 records (114 MB)
+    
+
+        RECLEAN FILE TO REMOVE [Aplysia... ENTRIES:
+
+        mv /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia.v1
+        cd /Users/young/FUNNYBASE/bin/aplysia
+        ./remove.nonaplysia.pl -i /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia.v1
+
+        Output file printed:
+        
+        /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+    
+        records /Users/young/FUNNYBASE/pipeline/aplysia1/blast/dbest-aplysia
+        179065 records.
+
+3. TRANSFER dbest-aplysia TO gems AND FORMAT AS NUCLEOTIDE DATABASE
+
+ON genomics:
+cd /Users/young/FUNNYBASE/pipeline/aplysia1/blast
+scp dbest-aplysia local@129.171.101.102:
+local
+
+ON gems:
+sudo mv ~/dbest-aplysia /common/data
+cd /common/data
+sudo formatdb -i dbest-aplysia -p F -o T
+
+
+
+4. MYSQL EXTRACTION OF APLYSIA SEQUENCES:
+
+mysql>
+use alice_aplysia;
+
+select unique_est_id, contig_set, is_contig, singlet_seqid, est_sequence from master_seq2_unique_est into outfile '/private/tmp/aplysia.tsv';
+Query OK, 4335 rows affected (0.03 sec)
+
+desc master_seq2;
++-----------------------+-------------+------+-----+---------+----------------+
+| Field                 | Type        | Null | Key | Default | Extra          |
++-----------------------+-------------+------+-----+---------+----------------+
+| Sequence_ID           | int(11)     |      | PRI | NULL    | auto_increment |
+| Sequence_Name         | varchar(50) | YES  | MUL | NULL    |                |
+| Sequence_Raw          | blob        | YES  |     | NULL    |                |
+| Sequence_Raw_Screened | blob        | YES  |     | NULL    |                |
+| phd_quality_file      | blob        | YES  |     | NULL    |                |
+| Exp_Set_ID            | varchar(20) | YES  | MUL | NULL    |                |
+| Plate_ID              | int(11)     | YES  | MUL | NULL    |                |
+| Well_ID               | int(11)     | YES  | MUL | NULL    |                |
+| Length_bp             | int(11)     | YES  |     | NULL    |                |
+| Sequence_Raw_Trimmed  | blob        | YES  |     | NULL    |                |
++-----------------------+-------------+------+-----+---------+----------------+
+10 rows in set (0.00 sec)
+
+mysql> desc master_seq2_unique_est;
++------------------+------------+------+-----+---------+----------------+
+| Field            | Type       | Null | Key | Default | Extra          |
++------------------+------------+------+-----+---------+----------------+
+| unique_est_id    | int(11)    |      | PRI | NULL    | auto_increment |
+| contig_set       | int(11)    | YES  |     | NULL    |                |
+| is_contig        | tinyint(4) | YES  |     | NULL    |                |
+| contig_id        | int(11)    | YES  |     | NULL    |                |
+| singlet_seqid    | int(11)    | YES  |     | NULL    |                |
+| est_sequence     | blob       | YES  |     | NULL    |                |
+| contig_alignment | mediumtext | YES  |     | NULL    |                |
++------------------+------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+5. CONVERT .tsv APLYSIA FILE TO FASTA
+
+cd /Users/young/FUNNYBASE/pipeline/aplysia1/edit_dir
+tsv2fasta -f aplysia1.tsv -s 4
+em aplysia1.fasta
+>>>
+>1
+TAAACGATCTCCTCCTTCCCAGAAAAACACCATAACACAGTAGATTGTACATAACAGGCAGGTGATTGAGATTATTTATCAAAGTCTTCGCACAAAAACCTCTGCTAGTAAGAGAAGCACGATTAATCATAGTGACAAATATCAAATCCCACACAATGTAC\
+AGCTGTATGTAATCAACCAAAAATTTCTGTGCTTTCTTACTTTCAAGTAGCTCTGTCATCTGCTGTCCACTGGAGTTTGAGATGTTGGCAAAAGATTTACATTTTTGAGAGGAAAAAACAAGGAAAAAAACTGTTGTGTTGCTAGGAGTAGGAGCAACACA\
+GTACAAGAAAAAGGAGTTCTTTTTGTCATATAAGATGTTTTATTTTCTTAATAAGAATCAGTCCTTCGTACTTCTCACAACAGATCTTCCTTCACAACGTAGGTTGACCTCTTGGGGCTGTG
+>2
+TCAGTCATAGTTTTTTTAAAGTAATGATCATGCTTGGGCATACTATTGTTATCGTTTTTCTCGTCGTTGTTGTTGTTGTTGTCGTTGTCGTTGTCGTTGTGATTGTTGTTGTGACGTACCTAACCGTGAATGTTTCCGTCTTGAAGTCTTTATGCTGAGCG\
+GACAAGCCATACTATACCAATTGAATTGACCGTACTTTTGTATAGCTAAGCATTGTTATAACGATGTATGATACTGACGTGTAGCCCGATCCATT
+>3
+CTTAAATCTACTTTTTCTCAAACAATTACTTTGATTTTATTCCTGTAATGTCGGTGTTCTAATTCTCTGTTGTCATGACTCTTTTGCCTAAGACACCCCCCCCCCCCGCACCTTCCTCAACTCCAGGGGGCTTATGATGACTTTGTTATTTGCCTGTTTGT\
+...<<<
+
+
+6. CREATE ASSEMBLY SEQUENCES TABLE IN aplysia1 DATABASE FROM .FASTA FILE
+
+cd /Users/young/FUNNYBASE/bin/pipeline3
+./fasta2assemblysequences.pl -d aplysia1 -f /Users/young/FUNNYBASE/pipeline/aplysia1/edit_dir/aplysia1.fasta
+
+TSV file printed:
+
+/Users/young/FUNNYBASE/pipeline/aplysia1/edit_dir/aplysia1.assemblysequences.tsv
+
+7. CREATE COLLECTION SEQUENCES TABLE IN aplysia1 FROM ASSEMBLY SEQUENCES TABLE
+
+cd /Users/young/FUNNYBASE/bin/pipeline3
+./funnybasesequences.pl -d aplysia1
+
+Output .tsv file printed:
+/Users/young/FUNNYBASE/pipeline/aplysia1/edit_dir/aplysia1.funnybasesequences.tsv
+
+8. TRANSFER aplysia1.funnybasesequences.* MYSQL FILES TO gems
+
+ON genomics:
+cd /usr/local/mysql/data
+sudo scp aplysia1/funnybasesequences.MYD local@129.171.101.102:
+sudo scp aplysia1/funnybasesequences.MYI local@129.171.101.102:
+sudo scp aplysia1/funnybasesequences.frm local@129.171.101.102:
+local
+
+ON gems:
+cd /private/var/mysql
+sudo mkdir aplysia1
+sudo mv ~/funnybasesequences* aplysia1/
+sudo ls aplysia1
+sudo chmod -R 660 aplysia1
+sudo chmod 700 aplysia1
+sudo chown -R mysql:wheel aplysia1
+sudo ls -alR
+
+9. RESTART MYSQL ON gems
+
+sudo mysqladmin -u root -p shutdown
+sudo mysqld_safe &
+
+10. RUN funnybasearrayblast ON aplysia1 AGAINST aplysia.dbEST
+
+cd /Users/local/FUNNYBASE/bin/pipeline3
+./funnybasearrayblast.pl -d aplysia1 -t dbest-aplysia
+
+    Output file printed:
+    
+    /Users/local/FUNNYBASE/pipeline/aplysia1/blast/aplysia1-dbest-aplysia.blast.tsv
+
+11. COPY OUTPUT FILE TO genomics:
+
+    put /Users/local/FUNNYBASE/pipeline/aplysia1/blast/aplysia1-dbest-aplysia.blast.tsv 
+
+12. LOAD .TSV FILE INTO funnybaseblast TABLE OF aplysia1
+
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./funnybaseblastloaddata.pl -d aplysia1 -t dbest-aplysia
+
+13. GET COUNT OF HITS FROM aplysia1.funnybaseblast TABLE
+
+    SELECT COUNT(DISTINCT funnybaseid) FROM funnybaseblast;
+    1603
+    
+    SELECT COUNT(DISTINCT funnybaseid) FROM funnybasesequences;    
+    2091
+        
+    SELECT COUNT(DISTINCT funnybaseid) FROM assemblysequences;    
+
+
+14. CREATE NEW aplysia2 DATABASE WHILE RESETTING THE FILTER ON funnybaseassemblysequences.pl TO LET THROUGH ALL THE SEQUENCES REGARDLESS OF LENGTH
+
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./fasta2assemblysequences.pl -d aplysia2 -f /Users/young/FUNNYBASE/pipeline/aplysia1/edit_dir/aplysia1.fasta -l no -o /Users/young/FUNNYBASE/pipeline/aplysia2/edit_dir/aplysia2.assemblysequences.tsv -w
+    >>> ...
+    TSV file printed:
+    /Users/young/FUNNYBASE/pipeline/aplysia2/edit_dir/aplysia2.assemblysequences.tsv
+    Loading tsvfile into database table 'assemblysequences'... done.
+    ...<<<
+
+    CHECK NUMBER OF SEQUENCES LOADED INTO MYSQL aplysia2.assemblysequences:
+
+    use aplysia2;        
+    SELECT COUNT(DISTINCT funnybaseid) FROM assemblysequences;    
+    4335
+
+15. REDO STEPS 7 TO 13 WITH aplysia2 INSTEAD OF aplysia1
+
+    15.7 CREATE COLLECTION SEQUENCES TABLE IN aplysia2 FROM ASSEMBLY SEQUENCES TABLE
+    
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./funnybasesequences.pl -d aplysia2
+    
+    Output .tsv file printed:
+    /Users/young/FUNNYBASE/pipeline/aplysia2/edit_dir/aplysia2.funnybasesequences.tsv
+    
+    15.8 TRANSFER aplysia2.funnybasesequences.* MYSQL FILES TO gems
+    
+    ON genomics:
+    cd /usr/local/mysql/data
+    sudo scp aplysia2/funnybasesequences.MYD local@129.171.101.102:
+    sudo scp aplysia2/funnybasesequences.MYI local@129.171.101.102:
+    sudo scp aplysia2/funnybasesequences.frm local@129.171.101.102:
+    local
+    
+    ON gems:
+    cd /private/var/mysql
+    sudo mkdir aplysia2
+    sudo mv ~/funnybasesequences* aplysia2/
+    sudo ls aplysia2
+    sudo chmod -R 660 aplysia2
+    sudo chmod 700 aplysia2
+    sudo chown -R mysql:wheel aplysia2
+    sudo ls -alR
+    
+    15.9. RESTART MYSQL ON gems
+    
+    sudo mysqladmin -u root -p shutdown
+    sudo mysqld_safe &
+    
+    15.10 RUN funnybasearrayblast ON aplysia2 AGAINST aplysia.dbEST
+    
+    cd /Users/local/FUNNYBASE/bin/pipeline3
+    sudo ./funnybasearrayblast.pl -d aplysia2 -t dbest-aplysia
+    
+        Output file printed:
+        
+        /Users/local/FUNNYBASE/pipeline/aplysia2/blast/aplysia2-dbest-aplysia.blast.tsv
+    
+    15.11 COPY OUTPUT FILE TO genomics:
+    
+        cd /Users/local/FUNNYBASE/pipeline/aplysia2/blast
+        put /Users/local/FUNNYBASE/pipeline/aplysia2/blast/aplysia2-dbest-aplysia.blast.tsv 
+    
+    15.12 LOAD .TSV FILE INTO funnybaseblast TABLE OF aplysia2
+        
+        ON genomics:
+    
+        cd /Users/young/FUNNYBASE/bin/pipeline3
+        ./funnybaseblastloaddata.pl -d aplysia2 -t dbest-aplysia
+    
+    15.13 GET COUNT OF HITS FROM aplysia2.funnybaseblast MYSQL TABLE
+
+        use aplysia2;    
+        SELECT COUNT(DISTINCT funnybaseid) FROM funnybaseblast;
+        1650        
+
+        SELECT COUNT(DISTINCT funnybaseid) FROM funnybasesequences;    
+        4332
+            
+        SELECT COUNT(DISTINCT funnybaseid) FROM assemblysequences;    
+        4335
+
+
+16. DO STATS FOR aplysia1 AND aplysia2
+
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./stats.pl -d aplysia1 -q /Users/young/FUNNYBASE/bin/aplysia/sql/stats.queries    
+
+    Database statistics for aplysia1
+    Genes 	                                    2091
+    Assembly sequences                          2093
+    Total BLAST hits (against dbest-aplysia)    336877
+    Unique blast hits                           1603
+
+    ./stats.pl -d aplysia2 -q /Users/young/FUNNYBASE/bin/aplysia/sql/stats.queries    
+
+    Database statistics for aplysia2
+    
+    Genes                                       4332
+    Assembly sequences                          4335
+    Total BLAST hits (against dbest-aplysia)    349834
+    Unique blast hits                           1650
+
+
+17. DO DIVS FOR sandbox11.html OUTPUT
+
+    cd /Users/local/FUNNYBASE/bin/pipeline3
+    
+    ./funnybasesequencesannotation.pl -d aplysia2
+    ./funnybasesequencesdiv.pl -d aplysia2
+    ./funnybasesequencesblastdiv.pl -d aplysia2
+    
+    ./funnybasesequencesannotation.pl -d aplysia1
+    ./funnybasesequencesdiv.pl -d aplysia1
+    ./funnybasesequencesblastdiv.pl -d aplysia1
+
+
+18. GET LIST OF UNIQUE AND UNKNOWN SEQUENCES
+
+    ./funnybasesequencesuniquesequences.pl -d aplysia1
+
+        Output file printed:    
+        /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.uniquesequences.tsv
+    
+        lines /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.uniquesequences.tsv
+        1542 lines
+
+    ./funnybasesequencesuniquesequences.pl -d aplysia2
+
+        Output file printed:    
+        /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.uniquesequences.tsv
+    
+        lines /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.uniquesequences.tsv
+        1568 lines
+
+
+    ./funnybasesequencesunknownsequences.pl -d aplysia1
+    
+        Output file printed:    
+        /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.unknownsequences.tsv
+
+        lines /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.unknownsequences.tsv
+        489 lines
+
+
+    ./funnybasesequencesunknownsequences.pl -d aplysia2
+
+        Output file printed:
+        /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.unknownsequences.tsv
+
+        lines /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.unknownsequences.tsv
+        2683 lines
+        
+    COPY OUTPUT FILES TO DOWNLOADS FOLDER:
+    
+    cp /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.uniquesequences.tsv /var/www/html/downloads
+    cp /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.unknownsequences.tsv /var/www/html/downloads
+    cp /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.uniquesequences.tsv /var/www/html/downloads
+    cp /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.unknownsequences.tsv /var/www/html/downloads
+
+    http://genomics.rsmas.miami.edu/downloads/aplysia1.uniquesequences.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia1.unknownsequences.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia2.uniquesequences.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia2.unknownsequences.tsv
+        
+        
+</entry>
+
+
+
+<entry [Wed Jan 24 00:09:25 EST 2007    ] MSG: Doug>
+
+
+CC: Jeff
+    
+Hi Doug,
+
+Here are the aplysia BLAST stats:
+
+    Database statistics for aplysia1 (only sequences > 50 bp)
+    Genes 	                                    2091
+    Assembly sequences                          2093
+    Total BLAST hits (against dbest-aplysia)    336877
+    Unique blast hits                           1603
+
+
+    Database statistics for aplysia2 (all sequences)
+    
+    Genes                                       4332
+    Assembly sequences                          4335
+    Total BLAST hits (against dbest-aplysia)    349834
+    Unique blast hits                           1650
+    
+You'll notice that the number of database sequences is reduced by half (i.e., in 'aplysia1') if a length cutoff of 50bp is used but it doesn't really affect the number of unique sequences with BLAST hits, suggesting that the length cutoff filtered sequences are either too small or have too low complexity (and so are filtered out by BLAST) to have a noticeable number of BLAST hits.
+
+Here are the 'unique' and 'unknown' sequences:
+
+Aplysia1 (length cutoff = 50bp)
+    http://genomics.rsmas.miami.edu/downloads/aplysia1.uniquesequences.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia1.unknownsequences.tsv
+
+Aplysia2 (no length cutoff)
+    http://genomics.rsmas.miami.edu/downloads/aplysia2.uniquesequences.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia2.unknownsequences.tsv
+
+
+Btw, NCBI's Entrez web page didn't download correctly the whole set of aplysia ESTs so I had to extract the Aplysia entries from this general dbEST file (5 GB):
+
+    ftp://ftp.ncbi.nlm.nih.gov/blast/db/FASTA/est_others.gz    
+
+Stuart.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+REPLY FROM DOUG:
+
+Stuart,
+   Is it correct that of the 2091 EST sequence (> 50bp) that 1541 have a hit.
+
+That is 75% have a hit?
+
+What are the 25% without a hit and what are their lengths.
+
+dlc
+
+
+</entry>
+
+
+
+<entry [Wed Jan 24 11:56:27 EST 2007] 19. GET AVERAGE LENGTH OF aplysia1 AND aplysia2 SEQUENCES THAT DON'T HAVE HITS>
+
+
+
+
+
+20. BLAST aplysia1 AND aplysia2 AGAINST swissprot
+
+ON gems:
+
+    cd /Users/local/FUNNYBASE/bin/pipeline3
+    sudo ./funnybasearrayblast.pl -d aplysia1 -t swissprot
+
+        Output file printed:    
+        /Users/local/FUNNYBASE/pipeline/aplysia1/blast/aplysia1-swissprot.blast.tsv
+
+    cd /Users/local/FUNNYBASE/pipeline/aplysia1/blast/
+    put aplysia1-swissprot.blast.tsv
+
+    sudo ./funnybasearrayblast.pl -d aplysia2 -t swissprot
+
+        Output file printed:    
+        /Users/local/FUNNYBASE/pipeline/aplysia2/blast/aplysia2-swissprot.blast.tsv
+
+    cd /Users/local/FUNNYBASE/pipeline/aplysia2/blast/
+    put aplysia2-swissprot.blast.tsv
+
+
+ON genomics:
+
+LOAD .TSV FILES INTO funnybaseblast TABLE OF aplysia2 AND aplysia2
+    
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./funnybaseblastloaddata.pl -d aplysia1 -t swissprot
+    ./funnybaseblastloaddata.pl -d aplysia2 -t swissprot
+
+21. USE funnybaseblastexclusivehits.pl TO:
+
+    1. FIND WHICH OF THE UNKNOWN SEQUENCES (DID NOT HAVE A HIT AGAINST dbest-aplysia) HAVE SWISSPROT HITS
+
+    2. OUTPUT IN SAME FORMAT AS PREVIOUSLY WITH funnybasesequencesunknownsequences.pl 
+
+    cd /Users/young/FUNNYBASE/bin/pipeline3
+    ./funnybaseblastexclusivehits.pl -d aplysia1 -t swissprotOutput file: /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.swissprot.exclusivehits.tsv
+
+        Total 'swissprot' hits: 477
+        Exclusive 'swissprot' hits: 73
+        Getting funnybase sequences for exclusive 'swissprot' hits (total 73) in database 'aplysia1'
+        0
+        Output file printed:
+        
+        /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.swissprot.exclusivehits.tsv
+
+    COPY TO DOWNLOADS FOLDER
+    cp /Users/young/FUNNYBASE/pipeline/aplysia1/annotation/aplysia1.swissprot.exclusivehits.tsv /var/www/html/downloads/
+
+    DID SAME AGAIN FOR aplysia2, PUT IN DOWNLOADS FOLDER:
+    cp /Users/young/FUNNYBASE/pipeline/aplysia2/annotation/aplysia2.swissprot.exclusivehits.tsv /var/www/html/downloads/
+
+
+    http://genomics.rsmas.miami.edu/downloads/aplysia1.swissprot.exclusivehits.tsv
+    http://genomics.rsmas.miami.edu/downloads/aplysia2.swissprot.exclusivehits.tsv        
+    
+    
+</entry>
+
+
+
+<entry [Wed Jan 24 16:46:43 EST 2007] MSG: Doug>
+
+
+CC: Jeff
+SUBJECT: Re: aplysia BLAST stats - exclusive hits against Swissprot (73 hits)
+
+Hi Doug,
+
+There are 477 sequences in aplysia1 (length cutoff = 50 bp) that have hits against Swissprot but only 73 of them are exclusive hits, i.e., they also don't have hits against dbEST-aplysia:
+
+Total 'swissprot' hits: 477
+Exclusive 'swissprot' hits: 73
+
+Here's the download file:
+
+http://genomics.rsmas.miami.edu/downloads/aplysia1.swissprot.exclusivehits.tsv
+
+Stuart. 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+</entry>
+
+
+
+<entry [Wed Jan 24 16:59:28 EST 2007] MSG: Doug>
+
+
+CC: Jeff
+SUBJECT: 'aplysia2' (no length cutoff) exclusive hits against Swissprot (73 hits)
+
+Hi Doug,
+
+There are also 477 sequences in aplysia2 (no length cutoff) that have hits against Swissprot and only 73 exclusive hits.
+
+Here's the download file:
+
+http://genomics.rsmas.miami.edu/downloads/aplysia2.swissprot.exclusivehits.tsv
+
+The funnybase id's are out of sync between the 'aplysia2.swissprot.exclusivehits.tsv' and the 'aplysia1.swissprot.exclusivehits.tsv' files because of the order they were entered into the database (with additional 'short' sequences added into 'aplysia2') but the Swissprot hits are identical so they're probably the same sequences (I could check to make sure if you want).
+
+Stuart. 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

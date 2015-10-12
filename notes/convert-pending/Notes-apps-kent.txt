@@ -1,0 +1,178 @@
+Notes-apps-kent.txt
+
+
+</entry>
+
+
+
+<entry [Thu Feb 11 00:44:46 EST 2010] INSTALLED kent AND CREATED twoBitToFa AND faToTwoBit BINARIES>
+
+
+
+
+CREATED HERE:
+
+/nethome/syoung/bin/x86_64/twoBitToFa
+/nethome/syoung/bin/x86_64/faToTwoBit
+
+
+
+
+DOWNLOAD
+wget http://hgdownload.cse.ucsc.edu/admin/jksrc.zip
+
+
+/nethome/syoung/base/apps/kent/1.3.0/src/utils/faToTwoBit
+
+
+#### SET ENVIRONMENT VARIABLES
+
+export MACHTYPE=x86_64
+export MYSQLINC=/usr/include/mysql
+export MYSQLLIBS='/usr/lib/mysql/libmysqlclient.a -lz'
+
+#### MAKE jkweb.a, ETC. FILES
+
+cd src
+make libs
+
+
+#### MAKE faToTwoBit AND twoBitToFa
+
+
+cd /nethome/syoung/base/apps/kent/1.3.0/src/utils/faToTwoBit
+make
+
+#### MAKE twoBitToFa
+
+cd /nethome/syoung/base/apps/kent/1.3.0/src/utils/twoBitToFa
+make
+
+
+BINARIES ARE PUT HERE:
+
+ll ~/bin/x86_64
+
+	-rwxr-xr-x 1 syoung bioinfo 183920 Feb 11 02:27 faToTwoBit
+	-rwxr-xr-x 1 syoung bioinfo 242928 Feb 11  2010 twoBitToFa
+
+	
+
+
+twoBitToFa
+
+NB: GET MYSQL ENVIRONMENT VARIABLES
+
+mysql_config --libs
+mysql_config --include
+
+
+Many other programs are available in the source tree. For any particular program, go to its source directory and type: make. The resulting binary will be moved to your subdirectory ~/bin/$MACHTYPE as a convenience. You can move these files elsewhere as desired.
+
+There are hundreds of utilities used for processing genome assemblies and preparing data for creating tracks in the browser. The file ./kent/src/README is a general guideline to the major processing categories in the source tree file.
+
+
+$ mkdir ~/bin/$MACHTYPE
+Set the MYSQLINC and MYSQLLIBS environment variables:
+MYSQLINC should be set to point to the mySQL include files. For example:
+MYSQLINC=/usr/include/mysql
+-or-
+MYSQLINC=/usr/local/mysql/include
+MYSQLLIBS should point to the location of the libmysqlclient.a library and any other libraries needed on your platform to link network applications.
+MYSQLLIBS='/usr/lib/mysql/libmysqlclient.a -lz'
+For example, Solaris often needs:
+MYSQLLIBS='/usr/local/mysql/lib/mysql/libmysqlclient.a -lz -lsocket -lnsl'
+
+
+
+
+Go to the kent/src directory and type: make libs. This builds the libraries from the source directories:
+jkweb.a from kent/src/lib
+jkOwnLib.a from kent/src/jkOwnLib
+jkhgap.a from kent/src/hg/lib
+jkhpap.a from kent/src/hg/protein/lib
+Placing those lib.a files into src/lib/$MACHTYPE
+Go to the kent/src/hg directory and type: make compile.
+Then, type: make install DESTDIR=/destination/prefix CGI_BIN=/cgi-bin/path.
+
+The resulting binaries are moved to /destination/prefix/cgi-bin/path, with additional data and custom track loader binaries also being installed in this cgi-bin hierarchy.
+
+Pre-compiled Red-Hat (2.6.12-1.1381_FC3smp) AMD Opteron x86_64 64-bit binaries can be fetched with the rsync command:
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/cgi-bin/ $CGI_BIN/ 
+
+There are a number of data files that are also used in this directory. This rsync will fetch them all. If you need i386 (x86) 32-bit binaries, please use the following rsync in addition to and after the above rsync, to replace the 64 bit binaries:
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/cgi-bin-i386/ $CGI_BIN/
+
+
+
+
+
+INSTALL
+
+Build and Installation Instructions
+ 	
+NOTE: These instructions are intended for Unix/Linux systems only. Building the source on other systems is beyond the scope of these instructions.
+
+SEE ALSO: README files in the source tree describing the build process:
+
+src/README
+src/product/README.*
+src/hg/makeDb/trackDB/README
+src/hg/makeDb/doc/<db>.txt (plain text files)
+Check that the environment variable MACHTYPE exists on your system. It should be present on Unix systems. On Linux systems, MACHTYPE will probably be i686, and for a Sun it will probably be sparc. If necessary, set this environment variable in your shell environment:
+MACHTYPE=i686
+It should be a simple non-hyphenated word such as: i386 i686 sparc alpha x86_64 ppc, etc...
+Create a subdirectory named /bin/$MACHTYPE in your home directory. During the build, binaries will be moved to this subdirectory. 
+$ mkdir ~/bin/$MACHTYPE
+Set the MYSQLINC and MYSQLLIBS environment variables:
+MYSQLINC should be set to point to the mySQL include files. For example:
+MYSQLINC=/usr/include/mysql
+-or-
+MYSQLINC=/usr/local/mysql/include
+MYSQLLIBS should point to the location of the libmysqlclient.a library and any other libraries needed on your platform to link network applications.
+MYSQLLIBS='/usr/lib/mysql/libmysqlclient.a -lz'
+For example, Solaris often needs:
+MYSQLLIBS='/usr/local/mysql/lib/mysql/libmysqlclient.a -lz -lsocket -lnsl'
+
+If available, the commands
+mysql_config --libs
+mysql_config --include
+will display the appropriate arguments to use in these environment variables.
+Create a directory named jksrc and go to it.
+Unzip jksrc.zip. This creates the source hierarchy ./kent (the source tree is also available via CVS).
+Go to the kent/src directory and type: make libs. This builds the libraries from the source directories:
+jkweb.a from kent/src/lib
+jkOwnLib.a from kent/src/jkOwnLib
+jkhgap.a from kent/src/hg/lib
+jkhpap.a from kent/src/hg/protein/lib
+Placing those lib.a files into src/lib/$MACHTYPE
+Go to the kent/src/hg directory and type: make compile.
+Then, type: make install DESTDIR=/destination/prefix CGI_BIN=/cgi-bin/path.
+
+The resulting binaries are moved to /destination/prefix/cgi-bin/path, with additional data and custom track loader binaries also being installed in this cgi-bin hierarchy.
+
+Pre-compiled Red-Hat (2.6.12-1.1381_FC3smp) AMD Opteron x86_64 64-bit binaries can be fetched with the rsync command:
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/cgi-bin/ $CGI_BIN/ 
+
+There are a number of data files that are also used in this directory. This rsync will fetch them all. If you need i386 (x86) 32-bit binaries, please use the following rsync in addition to and after the above rsync, to replace the 64 bit binaries:
+
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/cgi-bin-i386/ $CGI_BIN/
+
+Many other programs are available in the source tree. For any particular program, go to its source directory and type: make. The resulting binary will be moved to your subdirectory ~/bin/$MACHTYPE as a convenience. You can move these files elsewhere as desired.
+There are hundreds of utilities used for processing genome assemblies and preparing data for creating tracks in the browser. The file ./kent/src/README is a general guideline to the major processing categories in the source tree file.
+
+To see examples of how the various programs are used and how tracks are created, examine any of the <db>.txt files in ./kent/src/hg/makeDb/doc/<db>.txt (these are ordinary text files, not Microsoft word doc files).
+
+Should you have any comments or questions, please contact genome-mirror@cse.ucsc.edu . 
+This page last modified: Friday, 23-Mar-2007 11:21:56 PDT. 
+
+
+
+
+ALSO DOWNLOADED CGI-BIN:
+
+cd ~/base/apps/kent/cgi-bin
+rsync -avzP rsync://hgdownload.cse.ucsc.edu/cgi-bin/ ./

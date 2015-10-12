@@ -1,0 +1,3231 @@
+Notes-project36-solexa.rerun.txt
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 27 11:50:11 EDT 2009] MESSAGE RE: ADDED --control PARAMETER TO cluster-image2eland.pl>
+
+
+
+
+    clusterSubmit.pl --command /nethome/syoung/base/pipeline/test-cluster/run.sh --outputdir /nethome/syoung/base/pipeline/test-cluster --scriptfile /nethome/syoung/base/pipeline/test-cluster/test6.sh
+
+
+Hi all,
+
+I’ve added the ‘—control’ parameter to image2eland.pl so you can use the control lane to improve the base calls (thanks Bill and Josh for pointing that out!).
+
+http://gouda.ccs.miami.edu:8090/display/NextGen/image2eland.pl
+
+I just tried it with this command and it worked okay:
+
+
+1. Set up input files
+
+mkdir -p /nethome/syoung/base/pipeline/image2eland/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Data
+
+
+2. Link ‘Images’ folder and copy .params file (i.e., steps 1 and 2 here: http://gouda.ccs.miami.edu:8090/display/NextGen/Run+GA+Pipeline )
+
+ln –s /mihg/data/solexa/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Images /nethome/syoung/base/pipeline/image2eland/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+
+cp /mihg/data/solexa/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH.params  /nethome/syoung/base/pipeline/image2eland/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+
+
+3. Test run image2eland.pl on kronos (NB: Just run it for a few seconds, then kill it (CNTL+C or CNTL+Z)!!!!)
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/image2eland/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH \
+--geraldfile=/nethome/syoung/base/pipeline/image2eland/phix-config.txt \
+--outputdir /nethome/syoung/base/pipeline/image2eland \
+--referencefile /nethome/syoung/base/pipeline/phix/phiFasta.fa \
+--readlength 26 \
+--tiles s_5_015 \
+--control 5
+
+
+
+1. Set up input files
+
+mkdir -p /nethome/syoung/base/pipeline/test-image2eland/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+cp /nethome/syoung/base/pipeline/phix/phix-config.txt /nethome/syoung/base/pipeline/test-image2eland/phix-config.txt
+
+
+2. Link ‘Images’ folder and copy .params file (i.e., steps 1 and 2 here: http://gouda.ccs.miami.edu:8090/display/NextGen/Run+GA+Pipeline )
+
+ln –s /mihg/data/solexa/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/Images /nethome/syoung/base/pipeline/test-image2eland
+
+cp /mihg/data/solexa/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH.params  /nethome/syoung/base/pipeline/test-image2eland
+
+
+3. Test run image2eland.pl on kronos (NB: Just run it for a few seconds, then kill it (CNTL+C or CNTL+Z)!!!!)
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/test-image2eland \
+--geraldfile=/nethome/syoung/base/pipeline/test-image2eland/phix-config.txt \
+--outputdir /nethome/syoung/base/pipeline/test-image2eland \
+--referencefile /nethome/syoung/base/pipeline/phix/phiFasta.fa \
+--readlength 26 \
+--tiles s_5_015 \
+--control 5
+
+
+
+4. Run image2eland.pl on the cluster with clusterSubmit.pl
+
+
+I’ve added a page on the GA Pipeline with a download for the software manual:
+
+http://gouda.ccs.miami.edu:8090/display/NextGen/GA+Pipeline
+
+Cheers,
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 27 11:40:11 EDT 2009] PATY'S DATA - DO RUN 2 LANE 4 AGAINST CCDS AND OUTPUT UNPAIRED ELAND HITS>
+
+
+
+
+    run 2 human
+    SAMPLES
+    
+    FlowCell ID: 20GVYAAXX
+    
+    Run Folder:
+    1) 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+    2) 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+    Lane 	Sample
+    1 	Jia_Human normalized cDNA #8*
+    2 	Jia_Human normalized cDNA #8*
+    3 	Jia_Human normalized cDNA #8*
+    4 	Jia_Human normalized cDNA #8* 
+    5 	 PhiX control
+    6 	Total mtDNA
+    7 	Small mtDNA
+    8 	Medium mtDNA
+    
+        * Paired-end run
+        * Same human subject as in 'human run 1'
+        
+    
+
+
+
+
+-----Original Message-----
+From: Buendia, Patricia 
+Sent: Wednesday, March 25, 2009 5:15 PM
+To: Young, Stuart
+Subject: RE: Unpaired sequence files
+
+Hi Stuart,
+
+Thanks for the info. I was interested in the unpaired mRNA reads (after you tried to pair them up). I don't need the whole set, just one file with some unpaired reads (with no match to the genome) no matter what chromosome. 
+
+As for Solexa, I heard it from a professor at the University of Washington, James Mullins, he said the 150bp kit is out and that he was therefore switching from 454 to Solexa. I even expressed surprise that that read length was possible now and he said sure, just contact Solexa.
+
+Paty
+
+
+
+> -----Original Message-----
+> From: Young, Stuart
+> Sent: Wednesday, March 25, 2009 4:59 PM
+> To: Buendia, Patricia
+> Subject: RE: Unpaired sequence files
+> 
+> Hi Paty,
+> 
+> Sorry it's taken so long - we've been sorting out the data archive and the
+> run directories have only recently become available to me on kronos.
+> 
+> As it happens, we've got a lot more data to play with now. Check out the
+> runs on the wiki:
+> 
+> http://gouda.ccs.miami.edu:8090/display/NextGen/Runs
+> 
+> Only some of it is nuclear mRNA and I'm not sure which run/lanes would
+> work best for you. Jia Huang has a lot of samples (jhuang1@med.miami.edu),
+> as does Uzoezi Ozomaro (uozomaro@med.miami.edu). You could try contacting
+> them to find out more details on their samples.
+> 
+> Just let me know which lanes you want and I'll make them available to you
+> asap.
+> 
+> About the Solexa 150 bp reads, I heard that they were projecting that for
+> the end of this year... but I'm not sure if it'll really arrive that soon.
+> At the moment, the Genome Analyzer can do 75bp although the recent runs
+> have only gone up to 42 bp or so because of cost constraints but hopefully
+> we'll see some long reads runs shortly.
+> 
+> Cheers,
+> 
+> Stuart.
+> 
+
+
+</entry>
+
+
+
+<entry [Mon Apr 27 11:40:11 EDT 2009] FIXED JIA'S PROBLEM RUNNING ON CLUSTER>
+
+
+
+
+qsub /nethome/jhuang1/base/pipeline/run5/run-image2eland.sh
+
+    20191.kronos.ccs.miami.edu
+
+
+CHECK STATUS OF ALL YOUR JOBS:
+
+qstat
+
+
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    20191.kronos              ...mage2eland.sh jhuang1                0 Q gsmall
+
+
+GET DETAILED STATUS OF JOB 20191:
+
+qstat -f 20191
+
+
+    Job Id: 20191.kronos.ccs.miami.edu
+    Job_Name = run-image2eland.sh
+    Job_Owner = jhuang1@kronos.ccs.miami.edu
+    job_state = Q
+    queue = gsmall
+    server = kronos.ccs.miami.edu
+    Checkpoint = u
+    ctime = Mon Apr 27 11:13:27 2009
+    Error_Path = kronos.ccs.miami.edu:/nethome/jhuang1/run-image2eland.sh.e201
+        91
+    Hold_Types = n
+    Join_Path = n
+    Keep_Files = n
+    Mail_Points = a
+    mtime = Mon Apr 27 11:13:27 2009
+    Output_Path = kronos.ccs.miami.edu:/nethome/jhuang1/run-image2eland.sh.o20
+        191
+    Priority = 0
+    qtime = Mon Apr 27 11:13:27 2009
+    Rerunable = True
+    Resource_List.ncpus = 8
+    Variable_List = PBS_O_HOME=/nethome/jhuang1,PBS_O_LANG=en_US.UTF-8,
+        PBS_O_LOGNAME=jhuang1,
+        PBS_O_PATH=/home/syoung/base/bin/utils:/usr/local/bin:/bin:/usr/bin:/
+        nethome/jhuang1/bin,PBS_O_MAIL=/var/spool/mail/jhuang1,
+        PBS_O_SHELL=/bin/bash,PBS_SERVER=kronos.ccs.miami.edu,
+        PBS_O_HOST=kronos.ccs.miami.edu,PBS_O_WORKDIR=/nethome/jhuang1,
+        PBS_O_QUEUE=gsmall
+    etime = Mon Apr 27 11:13:27 2009
+    submit_args = /nethome/jhuang1/base/pipeline/run5/run-image2eland.sh     
+
+
+CHECK POSITION IN QUEUE:
+
+mshow
+
+    ...    
+    eligible jobs----------------------
+    JOBID              USERNAME      STATE PROCS     WCLIMIT            QUEUETIME
+    
+    19607                rsingh       Idle    16  5:00:00:00  Fri Apr 24 17:54:06
+    20126                rchung       Idle     8  4:00:00:00  Sat Apr 25 17:53:50
+    20127                rchung       Idle     8  4:00:00:00  Sat Apr 25 17:54:09
+    20128                rchung       Idle     8  4:00:00:00  Sat Apr 25 17:54:31
+    19000               wcooper       Idle     8  2:00:00:00  Fri Apr 24 12:42:33
+    20174               abarman       Idle    16  7:00:00:00  Sun Apr 26 16:51:03
+    20175               abarman       Idle    16  7:00:00:00  Sun Apr 26 16:54:17
+    20171               omitnik       Idle     8    10:00:00  Sun Apr 26 16:27:34
+    20172               omitnik       Idle     8    10:00:00  Sun Apr 26 16:27:43
+    20176               cflores       Idle     8    10:00:00  Sun Apr 26 22:56:01
+    20177               cflores       Idle     8    10:00:00  Sun Apr 26 22:56:06
+    20178              cheminfo       Idle    32  7:00:00:00  Mon Apr 27 09:19:12
+    20179                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:20:01
+    20180                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:20:06
+    20181                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:20:10
+    20182                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:20:15
+    20183                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:20:19
+    20184                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:21:59
+    20185                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:22:03
+    20186                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:22:07
+    20187                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:22:12
+    20188                rchung       Idle     8  4:00:00:00  Mon Apr 27 09:22:16
+    20191               jhuang1       Idle     8  7:00:00:00  Mon Apr 27 11:13:27
+    ...
+
+
+</entry>
+
+
+
+<entry [Mon Mar 31 00:40:11 EDT 2009] RERUN OF PAIRED RUN 8 AS SINGLE RUN>
+
+
+
+1. CREATE NEW run8 DIRECTORY FILE STRUCTURE WITH LINKS TO OLD RUN DIR (090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH):
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Data
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH.params /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Images /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Images
+
+
+2. CREATE GERALDFILE
+
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt
+
+7:ANALYSIS eland_extended
+
+1234568:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+7:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+1234568:USE_BASES nY*n
+
+7:USE_BASES nnnnnY28
+
+
+3. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH \
+--imagedir /nethome/syoung/base/pipeline/solexa-reruns/run8/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+    14119.kronos.ccs.miami.edu
+    
+    Run time: 00:00:00
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    4:18PM, 31 March 2009
+    ****************************************
+
+
+</entry>
+
+
+
+<entry [Mon Mar 31 00:40:11 EDT 2009] RERUN OF PAIRED RUN 8 AS SINGLE RUN>
+
+
+
+
+(**** NB: WRONG RUN FOLDER USED - RUN 9 INSTEAD OF RUN 8)
+
+
+1. CREATE NEW run8 DIRECTORY FILE STRUCTURE WITH LINKS TO OLD RUN DIR (090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH):
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH.params /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images
+
+
+2. CREATE GERALDFILE
+
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt
+
+7:ANALYSIS eland_extended
+
+1234568:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+7:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+1234568:USE_BASES nY*n
+
+7:USE_BASES nnnnnY28
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /nethome/syoung/base/pipeline/solexa-reruns/run8/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+    13610.kronos.ccs.miami.edu
+    
+    Run time: 00:00:00
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    1:18AM, 31 March 2009
+    ****************************************
+
+
+MESSAGE Jia RERUN OF RUN 8
+
+Hi Jia,
+
+Sorry, my mistake. I’ll redo run8 now and will update you once it’s done (this evening or tomorrow morning).
+
+Fyi, the old and new base calling and alignment results for run9 are quite comparable (see below).
+
+Cheers,
+
+Stuart.
+
+	
+run 9
+------
+
+RUN WITH GA Pipeline v1.0:
+
+cd /mihg/data/solexa/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data/IPAR_1.3/Bustard1.3.2_26-02-2009_whulme/GERALD_26-02-2009_whulme
+
+lines s_7_sorted.txt
+727797
+
+records s_7_sequence.txt "@HWI"
+3637834
+
+
+RERUN WITH GA Pipeline v1.3.2
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8/outdir
+
+lines s_7_sorted.txt 
+768282
+
+records s_7_sequence.txt "@HWI-EAS185"
+3837034
+
+ 
+
+</entry>
+
+
+
+<entry [Tues Mar 24 13:16:11 EDT 2009] RERUN OF REDISCOVERED RUN 5>
+
+
+
+1. CREATE RUN DIRECTORY COPIED OVER FROM /mihg/data/solexa
+==========================================================
+
+CREATE DIRECTORIES (<NEW RUN DIRECTORY>/Data/Firecrest.../Bustard...) IN base/pipeline/solexa-reruns/run5 DIRECTORY
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run5/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/Data
+
+##/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/Images /nethome/syoung/base/pipeline/solexa-reruns/run5/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/Images
+
+
+COPY THE .params FILE TO THE NEW RUN DIRECTORY
+
+cp /mihg/data/solexa/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples.params /nethome/syoung/base/pipeline/solexa-reruns/run5/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/
+
+
+2. CREATE GERALD FILE
+=====================
+
+RUN 5 SAMPLES
+* Single-read run
+
+Lane    Sample
+1	Jia_Brain unenriched 	 2pM
+2	Jia_let-7a brain 	2pM
+3	Jia_mir-133b HEK293 	2pM
+4	Jia_let-7a HEK293 	2pM
+5	PhiX 2pM 	2pM
+6	Jia_Capture trial-2 	2pM
+7	RNA_Test5ug 	2pM
+8	RNA_Test10ug 	2pM 	
+
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+*** 5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+*** 5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+))) 7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+))) 8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+))) 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+))) 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+1. GERALD FILE
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt
+
+17:ANALYSIS eland_extended
+
+234568:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+17:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+234568:USE_BASES nY*n
+
+17:USE_BASES nY28
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples \
+--imagedir /mihg/data/solexa/081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run5/run-image2eland.sh
+    12064.kronos.ccs.miami.edu
+    
+    Run time: 00:00:00
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    1:45PM, 24 March 2009
+    ****************************************
+
+
+qstat -f 12064
+Job Id: 12064.kronos.ccs.miami.edu
+    Job_Name = run-image2eland.sh
+    Job_Owner = syoung@kronos.ccs.miami.edu
+    resources_used.cput = 00:00:32
+    resources_used.mem = 40952kb
+    resources_used.vmem = 389080kb
+    resources_used.walltime = 00:00:37
+    job_state = R
+    queue = psmall
+    server = kronos.ccs.miami.edu
+    Checkpoint = u
+    ctime = Tue Mar 24 13:45:20 2009
+    Error_Path = kronos.ccs.miami.edu:/nethome/syoung/base/pipeline/solexa-rer
+        uns/run5/run-image2eland.sh.e12064
+    exec_host = n03/0
+    Hold_Types = n
+    Join_Path = n
+    Keep_Files = n
+    Mail_Points = a
+    mtime = Tue Mar 24 13:45:24 2009
+    Output_Path = kronos.ccs.miami.edu:/nethome/syoung/base/pipeline/solexa-re
+        runs/run5/run-image2eland.sh.o12064
+    Priority = 0
+    qtime = Tue Mar 24 13:45:20 2009
+    Rerunable = True
+    Resource_List.ncpus = 8
+    session_id = 13694
+    Variable_List = PBS_O_HOME=/nethome/syoung,PBS_O_LANG=en_US.UTF-8,
+        PBS_O_LOGNAME=syoung,
+        PBS_O_PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/s
+        young/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/a
+        pps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/external.p
+        rograms/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/a
+        pps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linu
+        x-thread-multi/auto:/home/apps/alta-cyclic/0.1.0/perlexternal:/usr/loc
+        al/bin:/bin:/usr/bin,PBS_O_MAIL=/var/spool/mail/syoung,
+        PBS_O_SHELL=/bin/bash,PBS_SERVER=kronos.ccs.miami.edu,
+        PBS_O_HOST=kronos.ccs.miami.edu,
+        PBS_O_WORKDIR=/nethome/syoung/base/pipeline/solexa-reruns/run5,
+        PBS_O_QUEUE=psmall
+    etime = Tue Mar 24 13:45:20 2009
+    submit_args = -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run5/r
+        un-image2eland.sh 
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 21 11:48:11 EDT 2009] FIX ERROR - "Argument list too long">
+
+
+
+ADDED TO image2eland.pl
+
+E.G.:
+
+find run9/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data/C1-36_Firecrest1.3.2_20-03-2009_syoung.2/Bustard1.3.2_20-03-2009_syoung -type f -name '*seq.txt' -exec mv {} run9/outdir/seqfiles/. \;
+
+
+find $directory -type f -name '*' -exec mv {} $directory2/. \;
+
+
+
+FROM:
+"Argument list too long": Beyond Arguments and Limitations
+http://www.linuxjournal.com/article/6060
+
+At some point during your career as a Linux user, you may have come across the following error:
+
+[user@localhost directory]$ mv * ../directory2
+bash: /bin/mv: Argument list too long
+
+The "Argument list too long" error, which occurs anytime a user feeds too many arguments to a single command, leaves the user to fend for oneself, since all regular system commands (ls *, cp *, rm *, etc...) are subject to the same limitation. This article will focus on identifying four different workaround solutions to this problem, each method using varying degrees of complexity to solve different potential problems. The solutions are presented below in order of simplicity, following the logical principle of Occam's Razor: If you have two equally likely solutions to a problem, pick the simplest.
+Method #1: Manually split the command line arguments into smaller bunches.
+
+Example 1
+
+[user@localhost directory]$ mv [a-l]* ../directory2
+[user@localhost directory]$ mv [m-z]* ../directory2
+
+This method is the most basic of the four: it simply involves resubmitting the original command with fewer arguments, in the hope that this will solve the problem. Although this method may work as a quick fix, it is far from being the ideal solution. It works best if you have a list of files whose names are evenly distributed across the alphabet. This allows you to establish consistent divisions, making the chore slightly easier to complete. However, this method is a poor choice for handling very large quantities of files, since it involves resubmitting many commands and a good deal of guesswork.
+
+Method #2: Use the find command.
+
+Example 2
+
+[user@localhost directory]$ find $directory -type f -name '*' -exec mv
+{} $directory2/. \;
+
+Method #2 involves filtering the list of files through the find command, instructing it to properly handle each file based on a specified set of command-line parameters. Due to the built-in flexibility of the find command, this workaround is easy to use, successful and quite popular. It allows you to selectively work with subsets of files based on their name patterns, date stamps, permissions and even inode numbers. In addition, and perhaps most importantly, you can complete the entire task with a single command.
+
+The main drawback to this method is the length of time required to complete the process. Unlike Method #1, where groups of files get processed as a unit, this procedure actually inspects the individual properties of each file before performing the designated operation. The overhead involved can be quite significant, and moving lots of files individually may take a long time.
+
+Method #3: Create a function. *
+
+Example 3a
+
+function large_mv ()
+{       while read line1; do
+                mv directory/$line1 ../directory2
+        done
+}
+ls -1 directory/ | large_mv
+
+Although writing a shell function does involve a certain level of complexity, I find that this method allows for a greater degree of flexibility and control than either Method #1 or #2. The short function given in Example 3a simply mimics the functionality of the find command given in Example 2: it deals with each file individually, processing them one by one. However, by writing a function you also gain the ability to perform an unlimited number of actions per file still using a single command:
+
+Example 3b
+
+function larger_mv ()
+{       while read line1; do
+                md5sum directory/$line1 >>  ~/md5sums
+                ls -l directory/$line1 >> ~/backup_list
+                mv directory/$line1 ../directory2
+        done
+}
+ls -1 directory/ | larger_mv
+
+Example 3b demonstrates how you easily can get an md5sum and a backup listing of each file before moving it.
+
+Unfortunately, since this method also requires that each file be dealt with individually, it will involve a delay similar to that of Method #2. From experience I have found that Method #2 is a little faster than the function given in Example 3a, so Method #3 should be used only in cases where the extra functionality is required.
+Method #4: Recompile the Linux kernel. **
+
+</entry>
+
+
+
+<entry [Sat Mar 21 11:38:11 EDT 2009] MISSING RUNS FOUND ON mighstore>
+
+
+
+
+From: Baringer, John 
+Sent: Friday, March 20, 2009 3:31 PM
+To: Young, Stuart; Hulme, William
+Cc: Hahn, Justin; Zuchner, Stephan; Edwards, Yvonne
+Subject: Re: !!!
+
+Bill, Stuart
+
+Justin located two folders in /d2/xfer-pipeline-out/  on mighstore:
+
+drwxrwxr-x 8 Mihglabtech users 4096 Dec 20 22:26 081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples
+drwxrwxr-x 8 Mihglabtech users 4096 Dec 24 17:04 081222_HWI-EAS185_0011_20BEM_new_phiX_old_SeqReagents
+
+This is what we are looking for, correct?  I am moving these to pluto now.
+
+This all took place just before the automatic transfer was setup and data was being moved around manually which is obviously prone to errors.
+
+The tool in use for the transfer,  rsync,  is very robust and provides options for controlling when the data is removed from the source.  It can be configured to remove the data only after it has been copied.  I believe this is the default mode of operation and will verify this.
+
+If we want to setup a procedure which includes the copy being manually inspected on the data server before being deleted from solexa01,  I suggest coping the data to the xfer folder and letting it be moved with rsync -- just like we do it now,  then delete the original after the verification.
+
+Regards,
+-warner
+-- 
+Warner Baringer
+Center for Computational Science
+Univ. of Miami 
+1120 NW 14th Street
+Miami, FL 33136
+305.243.1640
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar 19 21:38:11 EDT 2009] TABLE OF RUNS>
+
+
+
+
+
+RUN 3   COMPLETED 
+RUN 5   XXX 11337.kronos.ccs.miami.edu  9:40PM, 19 March 2009
+RUN 7   11347.kronos.ccs.miami.edu  0:54AM, 20 March 2009
+RUN 8   11334.kronos.ccs.miami.edu  9:31PM, 19 March 2009
+RUN 9   11348.kronos.ccs.miami.edu  1:03AM, 20 March 2009
+
+
+
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+*** 5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+*** 5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+))) 7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+))) 8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+))) 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+))) 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+
+RUN 3
+
+cd /nethome/syoung/base/bin/nextgen
+image2eland.pl --type single \
+--rundir      /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH \
+--geraldfile  /nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt \
+--outputdir   /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir \
+--tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+--cpus 8
+
+    time /mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py \
+    --GERALD=/nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt \
+    /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH  \
+    --tiles=s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+    --make**
+
+
+RUN 5  -- WRONG DIRECTORY
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+WHERE IS RUN 5?
+
+ll /nethome/syoung/base/pipeline/solexa-reruns/run5/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH 
+ll /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test 
+
+
+
+
+cd /nethome/syoung/base/bin/nextgen
+
+image2eland.pl --type single --rundir /nethome/syoung/base/pipeline/solexa-reruns/run5/081015_HWI-EAS185_0\
+0035test --outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5/outdir --geraldfile /nethome/syoung/\
+base/pipeline/solexa-reruns/run5/geraldfile.txt --cpus 8 --tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8
+
+
+    cd /nethome/syoung/base/bin/nextgen
+
+    image2eland.pl --type single --rundir /nethome/syoung/base/pipeline/solexa-reruns/run5/081015_HWI-EAS185_00035test \
+    --outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5/outdir -\
+    -geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt --cpus 8 --tiles s_1,s_2,s_3,s\
+    _4,s_5,s_6,s_7,s_8
+
+    --rundir 
+    /nethome/syoung/base/pipeline/solexa-reruns/run5/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+
+    COMPARE WITH RUN 9:
+
+    image2eland.pl --type single --rundir /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0\
+    001_20EBNAAXX_Pearl_11-15_Jia_ENJH --outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9/outdir --g\
+    eraldfile /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt --cpus 8 --tiles s_1,s_2,s_3,s_4\
+    ,s_5,s_6,s_7,s_8
+    
+
+    RUN 5 goat_pipeline.py CALL:
+    
+        time /mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py \
+        --GERALD=/nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+        /nethome/syoung/base/pipeline/solexa-reruns/run5/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH \
+        --tiles=s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+        --make**
+        
+
+
+
+RUN 7
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run7
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run7 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run7/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+RUN 8
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt \
+--cpus 7 \
+--queue "-q psmall"
+
+
+image2eland.pl --readlength 72 --type single --rundir /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH --outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 --geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt --cpus 7 --tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8
+
+
+
+
+RUN 9
+
+/nethome/syoung/base/bin/nextgen
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    
+    cd /nethome/syoung/base/bin/nextgen
+    
+    image2eland.pl --type single --rundir /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0\
+    001_20EBNAAXX_Pearl_11-15_Jia_ENJH --outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9/outdir --g\
+    eraldfile /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt --cpus 8 --tiles s_1,s_2,s_3,s_4\
+    ,s_5,s_6,s_7,s_8
+    
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar 19 23:54:11 EDT 2009] FIXED RUN 5 ERROR - ValueError: A folder list is required>
+
+
+
+
+ERROR:
+
+em /nethome/syoung/base/pipeline/solexa-reruns/run5/outdir/makefile.error
+
+Traceback (most recent call last):
+  File "/mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py", line 946, in ?
+    imagingProtocol.addImagingFolder(run_folder, cycleFolderList, run_params.NewReadCycleList)
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 31, in addImagingFolder
+    self.imagingFolderList.append(ImagingFolder(folderName, cycleFolderList, firstCycle, restartCycleList))
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 74, in __init__
+    self.checkParameters(folderName, cycleFolderList, firstCycle, restartCycleList)
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 109, in checkParameters
+    raise ValueError("A folder list is required")
+ValueError: A folder list is required
+
+real    0m0.490s
+user    0m0.103s
+sys     0m0.048s
+
+
+DIAGNOSIS:
+
+USED WRONG RUNDIR FOR cluster-image2eland.pl:
+
+BAD:
+--rundir /mihg/data/solexa_xfer/pipeline_out/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH \
+
+GOOD:
+--rundir /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test \
+
+
+
+BUT STILL GET THE SAME ERROR, UNLESS CHECK LINKS
+
+ll /nethome/syoung/base/pipeline/solexa-reruns/run5/081015_HWI-EAS185_00035test
+
+
+Traceback (most recent call last):
+  File "/mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py", line 946, in ?
+    imagingProtocol.addImagingFolder(run_folder, cycleFolderList, run_params.NewReadCycleList)
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 31, in addImagingFolder
+    self.imagingFolderList.append(ImagingFolder(folderName, cycleFolderList, firstCycle, restartCycleLi\
+st))
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 74, in __init__
+    self.checkParameters(folderName, cycleFolderList, firstCycle, restartCycleList)
+  File "/mihg/analysis/GAPipeline-1.3.2/lib/python/ImagingProtocol.py", line 109, in checkParameters
+    raise ValueError("A folder list is required")
+ValueError: A folder list is required
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar 19 21:29:11 EDT 2009] FIXED RUN 8 PAIRED END ERROR - Perhaps you do not have the permissions?>
+
+
+
+
+ERROR:
+
+Error: Encountered error while creating folder
+
+/mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data/C1-36_Firecrest1.3.2_19-03-2009_syoung.
+
+Perhaps you do not have the permissions?
+Warning: Failed to write to
+
+/mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/error.txt.
+
+
+
+SOLUTION:
+
+CREATE NEW run8-origin DIRECTORY FILE STRUCTURE WITH LINKS TO OLD RUN DIR (090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH):
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data
+
+COPY .params FILE
+
+cp /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH.params /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images
+
+
+
+REDO RUN 8 WITH 'run8-origin' AS rundir
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--readlength 72 \
+--type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /nethome/syoung/base/pipeline/solexa-reruns/run8-origin/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt \
+--cpus 7 \
+--queue "-q psmall"
+
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+    11334.kronos.ccs.miami.edu
+    
+    Run time: 00:00:01
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    9:31PM, 19 March 2009
+    ****************************************
+    
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 19 15:46:44 EST 2009] RERUN RUN 5 (USING GUESSED DIRECTORY: 081015_HWI-EAS185_00035test)>
+
+
+
+DIDN'T WORK -- WRONG DIRECTORY -- FOUND CORRECT DIRECTORY
+SEE ABOVE:
+Tues Mar 24 13:16:11 EDT 2009
+RERUN OF REDISCOVERED RUN 5
+
+
+NB: IMAGE FILES ARE IN THIS DIRECTORY:
+
+ls /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest
+    L001  L002  L003  L004  L005  L006  L007  L008
+
+
+RUN 5 SAMPLES
+* Single-read run
+
+Lane    Sample
+1	Jia_Brain unenriched 	 2pM
+2	Jia_let-7a brain 	2pM
+3	Jia_mir-133b HEK293 	2pM
+4	Jia_let-7a HEK293 	2pM
+5	PhiX 2pM 	2pM
+6	Jia_Capture trial-2 	2pM
+7	RNA_Test5ug 	2pM
+8	RNA_Test10ug 	2pM 	
+
+
+Jia's miRNA RUN LANE SPREADSHEET
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+*** 5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+*** 5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+))) 7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+))) 8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+))) 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+))) 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+1. GERALD FILE
+
+mkdir /nethome/syoung/base/pipeline/solexa-reruns/run5
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt
+
+17:ANALYSIS eland_extended
+
+234568:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+17:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+234568:USE_BASES nY*n
+
+17:USE_BASES nY28
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+    ...
+    /nethome/syoung/base/pipeline/solexa-reruns/run5/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run5/run-image2eland.sh
+    11337.kronos.ccs.miami.edu
+    
+    Run time: 00:00:01
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    9:40PM, 19 March 2009
+    ****************************************
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 19 14:37:11 EDT 2009] RUN 8 WITH cluster-image2eland.pl >
+
+
+
+ERROR FIXED - SEE ABOVE 
+
+####Run: Mito1-4;Jia;Uzoezi;Dale
+####Flowcell ID: 20DNUAAXX
+####Run Folder: 090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+####
+####Lane 1) Mito1 	2pM
+####Lane 2) Mito2 	2pM
+####Lane 3) Mito3 	2pM
+####Lane 4) Mito4 	2pM
+####Lane 5) PhiX 	2pM
+####Lane 6)Dale 2 	2pM
+####Lane 7) Jia_mir-133b HEK293 	2pM
+####Lane 8) Uzoezi 	2pM 	
+####
+####* Paired-end run
+####
+####We had a power outage Friday night during the third cycle of Read1 that left the Genome Analyzer idle over the weekend. We started the sequencer from where the run left off using the reagents that were previously on the machine, and it seemed to run smoothly. Read2 was then performed and completed without any problems. Post analysis showed higher error rates during Read2. This could have been due to the scan mix that sat idle in the flowcell from over the weekend which could have possibly damaged the template. The template is necessary not just for the sequencing-by-synthesis but also for  cluster amplification during read2.
+####
+####
+####Jia's miRNA RUN LANE SPREADSHEET
+####))) = done
+####*** = doing now
+####Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+####))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+####))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+####5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+####5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+####))) 7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+####*** 8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+####))) 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+####))) 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+####
+####
+######## 1. WRITE GERALD FILE:
+####
+####mkdir /nethome/syoung/base/pipeline/solexa-reruns/run8
+####cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+####emacs /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt
+####
+####7:ANALYSIS eland_extended
+####
+####1234568:ANALYSIS sequence
+####
+####1234678:SEQUENCE_FORMAT --fastq
+####
+####5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+####
+####7:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+####
+####GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+####
+####1234568:USE_BASES nY*n
+####
+####7:USE_BASES nnnnnY28
+####
+####
+######## 2. RUN cluster-image2eland.pl 
+####
+####cd /nethome/syoung/base/pipeline/solexa-reruns/run8
+####perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+####--readlength 72 \
+####--type single \
+####--rundir /mihg/data/solexa_xfer/pipeline_out/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH \
+####--imagedir /mihg/data/solexa_xfer/pipeline_out/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH/Images \
+####--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run8 \
+####--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run8/geraldfile.txt \
+####--cpus 7 \
+####--queue "-q psmall"
+####
+####
+####    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run8/run-image2eland.sh
+####    11321.kronos.ccs.miami.edu
+####    
+####    Run time: 00:00:00
+####    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+####    4:15PM, 19 March 2009
+####    ****************************************
+
+
+</entry>
+
+
+
+<entry [Thurs Mar 19 14:37:11 EDT 2009] RUN 7 WITH cluster-image2eland.pl >
+
+
+
+
+Flowcell ID: 20F1GAAXX
+Run Folder: 090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH
+* Single-read run
+
+Lane 1) Pearl:  75T-25L-2 	2pM
+Lane 2) Pearl : 75T-25L-3 	2pM
+Lane 3) Pearl : 50T-50L-1 	2pM
+Lane 4) Pearl : 50T-50L-2 	2pM
+Lane 5) PhiX 	2pM
+Lane 6)Pearl : 50T-50L-3 	2pM
+Lane 7) Pearl : 25T-75L-1 	2pM
+Lane 8) Jia_let-7a HEK293 	2pM 	
+
+
+Jia's miRNA RUN LANE SPREADSHEET
+))) = done
+*** = doing now
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+*** 7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+))) 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+))) 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+#### 1. WRITE GERALD FILE:
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run7
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run7/geraldfile.txt
+
+8:ANALYSIS eland_extended
+
+1234567:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+8:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+1234567:USE_BASES nY*n
+
+8:USE_BASES nY28
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run7
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run7 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run7/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+    ...
+    /nethome/syoung/base/pipeline/solexa-reruns/run7/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run7/run-image2eland.sh
+    11347.kronos.ccs.miami.edu
+    
+    Run time: 00:00:01
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    0:54AM, 20 March 2009
+    ****************************************
+
+
+</entry>
+
+
+
+<entry [Tue Mar 17 22:29:11 EDT 2009] RUN 9 WITH cluster-image2eland.pl >
+
+
+
+
+RUN 9
+SUMMARY: Pearl Seo 11-15;Jia mir133b and Let7a
+FlowCell ID: 20EBNAAXX
+
+Run Folder: 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+Lane 1)Pearl Seo 25T-75L-2 	2pM
+Lane 2) Pearl Seo 25T-75L-3 	2pM
+Lane 3) Pearl Seo 0T-100L-1 	2pM
+Lane 4) Pearl Seo 0T-100L-2 	2pM
+Lane 5)phiX control 	2pM
+Lane 6) Pearl Seo 0T-100L-3 	2pM
+Lane 7) Jia_Brain_mir-133b 	2pM
+Lane 8) Jia_Brain_let-7a 	2pM 	
+
+* Single-read run
+Run completed successfully
+
+
+Jia's miRNA RUN LANE SPREADSHEET
+))) = done
+*** = doing now
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+))) 3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+))) 3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+*** 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+*** 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+
+
+#### 1. WRITE GERALD FILE:
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run9
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt
+
+78:ANALYSIS eland_extended
+
+123456:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+78:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+123456:USE_BASES nY*n
+
+78:USE_BASES nY28
+
+
+#### 2. RUN cluster-image2eland.pl 
+
+/nethome/syoung/base/bin/nextgen
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+    ...
+    /nethome/syoung/base/pipeline/solexa-reruns/run9/run-image2eland.sh
+    
+    qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run9/run-image2eland.sh
+    11348.kronos.ccs.miami.edu
+    
+    Run time: 00:00:02
+    Completed /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+    1:03AM, 20 March 2009
+    ****************************************
+
+
+
+
+	APPLICATION     cluster-image2eland
+	    
+    PURPOSE
+  
+        WRAPPER TO RUN image2eland.pl, WHICH DOES THE FOLLOWING:
+        
+            1. PROCESS THE IMAGE FILES (Firecrest)
+
+            2. DO THE BASE CALLING (Bustard)
+            
+            3. ALIGN AGAINST A REFERENCE GENOME (Eland)
+            
+    INPUT
+    
+        1. LOCATION OF SOLEXA RUN DIRECTORY
+
+        2. LOCATION OF Images DIRECTORY
+        
+        3. NUMBER OF CPUs TO USE FOR THE DATA PROCESSING
+
+        4. OUTPUT DIRECTORY
+        
+        5. GERALD CONFIGURATION FILE
+
+    OUTPUT
+    
+        1. Data, Firecrest, Bustard AND GERALD DIRECTORIES
+
+        2. LINK TO Images DIRECTORY
+        
+        3. COPY *.params FILE TO Data DIRECTORY
+
+        4. OUTPUT OF image2eland.pl (BASE CALLS, ALIGNED READS)
+        
+        
+    NOTES
+
+        THE MANUALLY-CREATED geraldfile.txt CAN CONTAIN ANY OF THE FOLLOWING:
+        
+            QUALITY_FORMAT      Two options: 'numeric' or 'symbolic'
+            ANALYSIS            Type of alignment to be performed (default (phageAlign),
+                                none ('8:ANALYSIS none' will ignore lane 8), sequence,
+                                sequence_pair, eland, eland_extended, eland_pair)
+            ELAND_GENOME        Name of the directory containing a compressed (“squashed”)
+                                reference for Eland 
+            READ_LENGTH         Read length to use for alignment (has to be less than or
+                                equal to the number of sequencing cycles).
+            USE_BASES nY[YY…]   Specifies which of the bases to align to the reference sequence.
+                                “n” means the first base will not be used (maybe part of the
+                                primer). Number of Y’s has to be equal to the read length.
+            CONTAM_FILE         Switch contaminant filtering on
+            CONTAM_DIR          Specifies location of CONTAM_FILE
+
+    USAGE
+    
+        cluster-image2eland.pl <--type String> <--rundir String> <--imagedir String> <--outputdir String> <--geraldfile String> <--cpus> [--queue] [--help]
+
+        --type              single or paired
+        --rundir            /FULL/PATH/TO/SOLEXA/RUN/DIRECTORY        
+        --imagedir          /FULL/PATH/TO/Images DIRECTORY
+        --outputdir         /FULL/PATH/TO/DESTINATION/DIRECTORY (COPY SELECTED RUN FILES TO HERE)
+        --geraldfile        /FULL/PATH/TO/GERALD_CONFIG.txt FILE
+        --cpus              NUMBER OF CPUs TO USE
+        --help              PRINT OUT THIS HELP INFORMATION
+        
+    EXAMPLES
+
+
+SINGLE READ
+
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type single \
+--rundir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--imagedir /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9 \
+--geraldfile /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt \
+--cpus 8 \
+--queue "-q psmall"
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 17 16:52:04 EDT 2009] MESSAGE TO Josh,Jia,Bill,Stephan,Warner,Justin: Can't find run folders for run 5 and run 7>
+
+
+
+Hi guys,
+
+I can't locate these two solexa run folders:
+
+RUN 5
+Run: Jia 5 samples and RNA test with New Sequencing Reagents (re-do of Run 4)
+FLOWCELL ID: 20F3VAAXX
+RUN FOLDER:  Something along the lines of ? newSeqReagents_RNA_test_JIAs_5_samples_20F3VAAXX_12_18_08
+
+RUN 7
+Run: Pearl Seo 5-10;Hek_L2_let7a
+FLOWCELL ID: 20F1GAAXX (???)
+RUN FOLDER: 090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH
+
+
+Do you know if they might have been renamed or moved somewhere?
+
+Cheers,
+
+Stuart.
+
+
+
+
+Here's the list of archived run directories:
+
+[syoung@kronos run3]$ ll -tr /mihg/data/solexa_xfer/pipeline_out/ | grep HWI
+drwxrwxr-x+ 10   831 users                4.0K Mar  5 10:18 090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+drwxrwxr-x+  8   831 users                4.0K Mar  5 20:00 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+drwxrwxr-x+  4 jhahn mihg-data-drive-full   83 Mar 13 09:56 080930_HWI-EAS185_0001
+drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 081015_HWI-EAS185_00035test
+
+
+080620_HWI-EAS185_0001_JIA_cDNA_JH
+
+
+
+EXTRA INFO ABOUT RUNS CAN BE FOUND IN THE /store/data/Reports DIRECTORY:
+
+/store/data/Reports/newSeqReagents_RNA_test_JIAs_5_samples_12_18_08
+/store/data/Reports/new_phiX_oldSeqReagents_122208
+
+
+[syoung@solexa01 nextgen]$ ll /store/data/Reports/
+total 112K
+drwxrwxr-x 14 Mihglabtech users 4.0K Mar 17 15:49 .
+drwxrwxr-x 12 Mihglabtech users 4.0K Feb  9 14:13 ..
+drwxrwxr-x  3 Mihglabtech users 4.0K Mar 11 17:50 APHID_2023BAAXX_JH
+drwxrwxr-x  2 Mihglabtech users 4.0K Jun  3  2008 G006_JIA_201UNAAXX_6_3_08_JH
+drwxrwxr-x  2 Mihglabtech users 4.0K Jun 20  2008 JIA_cDNA_20FGPAAXX
+drwxrwxr-x  2 Mihglabtech users 4.0K Aug  6  2008 Jia_cDNA2_mtDNA_Total_Small_Medium_20GVYAAXX
+drwxrwxr-x  2 Mihglabtech users 4.0K Mar  9 09:56 mito1-4_DH_Jia_Uz_20DNUAAXX_013109_ENJH
+drwxrwxr-x  2 Mihglabtech users 4.0K Mar  3 12:45 newSeqReagents_RNA_test_JIAs_5_samples_20F3VAAXX_12_18_08
+drwxrwxr-x  2 Mihglabtech users 4.0K Jan 26 09:15 Pearl2_Jia_20F1GAAXX_012309_ENJH
+drwxrwxr-x  2 Mihglabtech users 4.0K Mar  2 14:23 Pearl_Seo_11-15_JIA_20EBNAAXX_022409_ENJH
+drwxrwxr-x  2 Mihglabtech users 4.0K Jan 20 09:36 Pearl_Seo_Uzoezi_Dale_20DTMAAXX_011309_ENJH
+drwxrwxr-x  2 Mihglabtech users 4.0K Dec 17 10:55 RNA_test_JIAs_5_2087JAAXX_samples_11_26_08
+drwxrwxr-x  2 Mihglabtech users 4.0K Aug 14  2008 SeqCapture_Barcoding_RNA_20BTLAAXX
+drwxrwxr-x  8 Mihglabtech users 4.0K Mar 17 15:28 Test_Runs
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 17 16:18:38 EDT 2009] COPYING RUN 8 UP FROM solexa01 TO kronos>
+
+
+
+
+RUN DIRECTORY:
+
+090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+
+COPY LOG ON solexa01:
+
+tail -f /tmp/solexa.log
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 17 15:43:38 EDT 2009] MESSAGE Bill,Jia,Josh,Stephan>
+
+
+
+
+Number 	 Type 	 Experiments 	 FlowCell id 	 Date of Run    Run folder
+1 	single 	human cDNA 	20FGPAAXX 	6-19-08
+                kronos: /mihg/data/solexa_xfer/pipeline_out/080620_HWI-EAS185_0001_JIA_cDNA_JH
+2 	paired 	human cDNA, human mtDNA 	20GVYAAXX 	8-01-08
+                kronos: /mihg/data/solexa_xfer/pipeline_out/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+                kronos: /mihg/data/solexa_xfer/pipeline_out/080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+3 	single 	barcoding, capture, miRNA 	20BTLAAXX 	8-13-08
+                kronos: /mihg/data/solexa_xfer/pipeline_out/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+4 	single 	Jia 1-5, RNA test 	208JAAXX 	11-26-08
+                DELETED
+5 	single 	Jia 1-5,RNA test, resequence 	20F3VAAXX 	12-18-08    
+                MISSING ??? 081218_HWI-EAS185_0010_20F3VAAXX_newSeqReagents_RNA_test_Jia_5_samples
+6 	paired 	Pearl1-4,Dale,Jia,Uzoezi 	20DTMAAXX 	01-13-09
+                pluto:  /store/Data01/core/external/PearlSoe/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+                kronos: /mihg/data/solexa_xfer/pipeline_out/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+7 	single 	Pearl 5-10, Hek-L2-let7a 	20F1GAAXX 	01-23-09
+                bacchus:  /bacchus_zpool/mihg/solexa-data/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH
+                kronos:     /mihg/data/solexa_xfer/pipeline_out/090123_HWI-EAS185_0013_20F1GAAXX_Pearl2_Jia_ENJH
+8 	paired 	Mito1-4,Jia,Uzoezi,Dale 	20DNUAAXX 	01-31-09
+                kronos: /mihg/data/solexa_xfer/pipeline_out/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+9 	single 	Pearl 11-15, Jia mir133b_let7a 	20EBNAAXX 	02-24-09 
+                kronos: /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+
+
+
+Hi guys,
+
+I'll go ahead with run 9 but I can't do runs 5, 7 and 8 because I can't figure out which run directory corresponds to which run. After run 3, it's not clear to me which run corresponds to which run directory (and flowcell ID) because the flowcell IDs are either missing or they don't match the flowcell IDs included in the run directory names.
+
+Could someone update the Wiki with the missing flowcell IDs and the corresponding run directories for runs 4-9? (Unfortunately, we can't guess by the date of the run directory as it corresponds to the time it was copied, which is the same for most directories.)
+
+http://gouda.ccs.miami.edu:8090/display/NextGen/Runs
+
+Here's the list of archived run directories:
+
+[syoung@kronos run3]$ ll -tr /mihg/data/solexa_xfer/pipeline_out/ | grep HWI
+drwxrwxr-x+ 10   831 users                4.0K Mar  5 10:18 090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+drwxrwxr-x+  8   831 users                4.0K Mar  5 20:00 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+drwxrwxr-x+  4 jhahn mihg-data-drive-full   83 Mar 13 09:56 080930_HWI-EAS185_0001
+drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 081015_HWI-EAS185_00035test
+
+
+And here are the runs from 4-10
+
+
+RUN 4
+Run: Jia 1-5, RNA test (FAILED)
+FLOWCELL ID: 
+RUN FOLDER: 
+
+
+RUN 5
+
+Run: Jia 5 samples and RNA test with New Sequencing Reagents (re-do of Run 4)
+FLOWCELL ID: 
+RUN FOLDER: 
+
+
+RUN 6
+Run: Pearl1-4,Dale,Uzoezi
+FLOWCELL ID: 20DTMAAXX (???)
+
+
+RUN 7
+Run: Pearl Seo 5-10;Hek_L2_let7a
+FLOWCELL ID: 20F1GAAXX (???)
+RUN FOLDER: 
+
+
+RUN 8
+Run: Mito1-4;Jia;Uzoezi;Dale
+FLOWCELL ID: 20DNUAAXX (???)
+RUN FOLDER: 
+
+
+RUN 9 ( OKAY! )
+Run: Pearl Seo 11-15;Jia mir133b and Let7a
+FLOWCELL ID: 20EBNAAXX 
+RUN FOLDER: 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Tues Mar 17 15:05:44 EST 2009] RERUN RUN 9>
+
+
+
+
+Experiments: Pearl Seo 11-15;Jia mir133b and Let7a
+FLOWCELL ID: 20EBNAAXX
+RUN FOLDER: /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+
+Jia's miRNA RUN LANE SPREADSHEET
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+*** 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+*** 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+1. CREATE OUTPUT DIRECTORY FOR RUN 9 (LANES 6, 7 ARE miRNA) AND COPY .params FILE
+=================================================================================
+
+
+CREATE DIRECTORIES (<NEW RUN DIRECTORY>/Data/Firecrest.../Bustard...) IN base/pipeline/solexa-reruns/run9 DIRECTORY
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung
+
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/Images
+
+
+COPY THE .params FILE TO THE NEW RUN DIRECTORY
+
+cp /mihg/data/solexa_xfer/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH.params /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH/
+
+
+
+2. CREATE GERALD FILE FOR RUN 9 
+===============================
+
+
+RUN 9 LANES:
+
+Lane    Sample
+Lane 1)Pearl Seo 25T-75L-2 	 2pM
+Lane 2) Pearl Seo 25T-75L-3 	2pM
+Lane 3) Pearl Seo 0T-100L-1 	2pM
+Lane 4) Pearl Seo 0T-100L-2 	2pM
+Lane 5)phiX control 	2pM
+Lane 6) Pearl Seo 0T-100L-3 	2pM
+Lane 7) Jia_Brain_mir-133b 	2pM
+Lane 8) Jia_Brain_let-7a 	2pM 	
+
+* Single-read run
+Run completed successfully
+
+
+RUN 9 miRNA LANES:
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+*** 9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+*** 9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+WRITE GERALD FILE:
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run9
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt
+
+78:ANALYSIS eland_extended
+
+123456:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+78:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+123456:USE_BASES nY*n
+
+78:USE_BASES nY28
+
+
+
+3. CREATE SHELL SCRIPT 
+======================
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run9
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run9/run9.sh
+#!/bin/sh
+
+#### USE THE BIG MEM NODE
+##PBS -l host=n30
+
+## Request N CPUs (instead of nodes). CPUs are always on one machine.
+#PBS -l ncpus=8
+
+HOST=`hostname`
+echo $HOST
+
+echo "Doing image2eland.pl..."
+
+cd /nethome/syoung/base/bin/nextgen
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run9/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH \
+--geraldfile=/nethome/syoung/base/pipeline/solexa-reruns/run9/geraldfile.txt \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run9/outdir \
+--tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+--cpus 8
+
+
+
+4. RUN BUSTARD & ELAND ON PhiX AND miRNA SAMPLES
+
+qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run9/run9.sh
+
+    10941.kronos.ccs.miami.edu
+    [syoung@kronos run9]$ date
+    Tue Mar 17 15:58:37 EDT 2009
+
+
+
+</entry>
+
+
+
+<entry [Tues Mar 17 13:22:44 EST 2009] RERUN RUN 5>
+
+
+
+NB: IMAGE FILES ARE IN THIS DIRECTORY:
+
+ls /mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest
+    L001  L002  L003  L004  L005  L006  L007  L008
+
+
+Jia's miRNA RUN LANE SPREADSHEET
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+*** 5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+*** 5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+1. CREATE OUTPUT DIRECTORY FOR RUN 5 (LANES 6, 7 ARE miRNA) AND COPY .params FILE
+=================================================================================
+
+
+CREATE DIRECTORIES (<NEW RUN DIRECTORY>/Data/Firecrest.../Bustard...) IN base/pipeline/solexa-reruns/run5 DIRECTORY
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run5/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+
+(NOTE THAT APPLICATON GENERATES NEW Firecrest DIRECTORY WITH INCREMENTED NUMBER SUFFIX:
+/nethome/syoung/base/pipeline/solexa-reruns/run5/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung.2/Bustard1.3.2_17-03-2009_syoung)
+
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/solexa_xfer/pipeline_out/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Images 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Images
+
+
+COPY THE .params FILE TO THE NEW RUN DIRECTORY
+
+cp /mihg/data/solexa_xfer/pipeline_out/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH.params /nethome/syoung/base/pipeline/solexa-reruns/run5/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/
+
+
+
+2. CREATE GERALD FILE FOR RUN 5 
+===============================
+
+/mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest
+
+
+RUN 5 SAMPLES
+* Single-read run
+
+Lane    Sample
+1	Jia_Brain unenriched 	 2pM
+2	Jia_let-7a brain 	2pM
+3	Jia_mir-133b HEK293 	2pM
+4	Jia_let-7a HEK293 	2pM
+5	PhiX 2pM 	2pM
+6	Jia_Capture trial-2 	2pM
+7	RNA_Test5ug 	2pM
+8	RNA_Test10ug 	2pM 	
+
+RUN 5 miRNA SAMPLES
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+
+
+
+/mihg/data/solexa_xfer/pipeline_out/081015_HWI-EAS185_00035test/Data/IPAR_1.01/Firecrest
+
+
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt
+
+17:ANALYSIS eland_extended
+
+234568:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+17:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+234568:USE_BASES nY*n
+
+17:USE_BASES nY28
+
+
+
+
+3. CREATE SHELL SCRIPT 
+======================
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run5
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run5/run5.sh
+#!/bin/sh
+
+#### USE THE BIG MEM NODE
+##PBS -l host=n30
+
+## Request N CPUs (instead of nodes). CPUs are always on one machine.
+#PBS -l ncpus=8
+
+HOST=`hostname`
+echo $HOST
+echo "Sleeping..."
+sleep 2;
+echo "Completed"
+
+echo "Doing image2eland.pl..."
+
+cd /nethome/syoung/base/bin/nextgen
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run5/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH \
+--geraldfile=/nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run5/outdir \
+--tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+--cpus 8
+
+
+##/mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py \
+##--GERALD=/nethome/syoung/base/pipeline/solexa-reruns/run5/geraldfile.txt \
+##/nethome/syoung/base/pipeline/solexa-reruns/run5/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+
+
+4. RUN BUSTARD & ELAND ON PhiX AND miRNA SAMPLES
+
+qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run5/run5.sh
+
+
+
+</entry>
+
+
+
+<entry [Tues Mar 17 13:09:44 EST 2009] RERUN RUN 3 TROUBLESHOOTING>
+
+
+
+
+ERROR:
+
+ON NODE 16
+
+sh: line 1: /mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py: No such file or directory
+
+SOLUTION:
+
+NODE 16 IS NOT IN THE CLUSTER STARTUP FILE SO IT DOESN'T AUTOMATICALLY MOUNT pluto AND neptune
+
+MOUNT MANUALLY:
+mount pluto:/mihg /mihg
+mount neptune:/store/Data01 /mihg/data
+
+NODE 16 WAS ADDED TO THE CLUSTER STARTUP FILE SO IF ITS REBOOTED IN THE FUTURE IT SHOULD HAVE THE RIGHT MOUNTS
+
+
+
+
+ERROR:
+
+Error: Not enough image files found.
+
+grep -n "Not enough image files found." /mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py 
+    495:    common.error("Not enough image files found.")
+
+emacs /mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py
+
+
+SOLUTION:
+
+DELETE OLD Images DIRECTORY (PERMISSION DENIED /mihg/data/2sort ) AND LINK NEW Images DIRECTORY:
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+rm Images 
+    rm: remove symbolic link `Images'? y
+ln -s /mihg/data/solexa_xfer/pipeline_out/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Images Images
+
+
+#### LINK Instruments DIRECTORY   - NO Instruments DIRECTORY
+#### ln -s /mihg/data/solexa_xfer/pipeline_out/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Instruments 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Instruments
+
+
+COPY .params FILE
+
+cp /mihg/data/2sort/solexa/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH.params /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/
+
+
+
+
+ERROR:
+
+cd /nethome/syoung/base/bin/nextgen
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH \
+--geraldfile=/nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir \
+--tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+--cpus 8
+
+    RUNS, CREATES MAKEFILE BUT DOES NOT COMPLETE
+    
+    STDOUT:
+    
+        s_8_0298  168     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+        s_8_0299  168     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+        s_8_0300  168     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+        Analysis folder: /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung
+        Sequence folder: /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung
+        Instrument:    HWI-EAS185
+        Auto-generating offset file...
+        Offset file:   /nethome/syoung/base/pipeline/solexa-reruns/run3/Instruments/HWI-EAS185/default_offsets.txt
+          Using automatic offset calibration.
+          Will update offsets file /nethome/syoung/base/pipeline/solexa-reruns/run3/Instruments/HWI-EAS185/default_offsets.txt after run!
+        Matrix :       Using automatic matrix estimation.
+        Phasing:       Using automatic phasing estimation.
+        Generating journals, Makefiles and parameter files ...
+        /mihg/analysis/GAPipeline-1.3.2/bin/GERALD.pl /nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt --EXPT_DIR /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung --compression gzip --FORCE
+        ...
+        
+        *************************************************************************
+        *************************************************************************
+        
+        Setting macro PAIR to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        Changing value of macro PAIR from 1 to 1
+        2 [/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung/GERALD_17-03-2009_syoung]
+        [/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung/GERALD_17-03-2009_syoung]
+        [/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung]
+        make: Nothing to be done for `self_test'.
+        Processing file path information...
+        No makefile path in output file:
+        
+        /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir/makefile.out
+        
+        Please also check error file:
+        
+        /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir/makefile.error
+        
+        Use of uninitialized value in pattern match (m//) at /home/syoung/base/bin/nextgen/image2eland.pl line 479.
+        Use of uninitialized value in pattern match (m//) at /home/syoung/base/bin/nextgen/image2eland.pl line 480.
+        Use of uninitialized value in pattern match (m//) at /home/syoung/base/bin/nextgen/image2eland.pl line 481.
+        Use of uninitialized value in chdir at /home/syoung/base/bin/nextgen/image2eland.pl line 484.
+        Use of chdir('') or chdir(undef) as chdir() is deprecated at /home/syoung/base/bin/nextgen/image2eland.pl line 484.
+        PWD:
+        /home/syoung
+        Make command:
+        
+        make recursive -j8
+        
+        Running make...
+        Finished running make.
+        
+        Make output file: /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir/make.out
+        
+        Make error file: /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir/make.error
+        
+        Could not create destination dir:
+        
+        /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir/intfiles
+
+
+THE FOLLOWING OUTPUT FILES WERE GENERATED, INCLUDING THE Makefile:
+    
+    ll /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung/GERALD_17-03-2009_syoung
+        -rw-rw-rw- 1 syoung bioinfo  352 Mar 17 11:36 config.txt
+        -rw-rw-rw- 1 syoung bioinfo 5.7K Mar 17 11:36 config.xml
+        -rw-rw-rw- 1 syoung bioinfo 127K Mar 17 11:36 Makefile
+        drwxrwxrwx 2 syoung bioinfo  16K Mar 17 11:36 Plots
+        drwxrwxrwx 2 syoung bioinfo  16K Mar 17 11:36 Temp
+
+
+DIAGNOSIS:
+
+THE APPLICATION WAS NOT PARSING OUT THE Firecrest, Bustard AND GERALD FILE DIRECTORIES FROM THE MAKEFILE STDOUT (makefile.out)
+
+
+SOLUTION:
+
+CHANGE THE PARSING OF THE MAKEFILE STDOUT makefile.out FILE TO ACCOMODATE NEW FORMAT:
+
+    #### MATCH THIS LINE:
+    #### [/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_17-03-2009_syoung/Bustard1.3.2_17-03-2009_syoung/GERALD_17-03-2009_syoung]
+    if ( $line =~ /^\[(.+Firecrest[^\/]+)\/(Bustard[^\/]+)\/(GERALD[^\/]+)\]\s*$/ )
+    {
+        # THIS WORKS
+        $firecrest_directory = $1;
+        $bustard_directory = $2;
+        $gerald_directory = $3;
+        last;
+    }
+
+
+
+</entry>
+
+
+
+<entry [Tues Mar 17 08:52:44 EST 2009] RERUN RUN 3 NOW ACCESS TO solexa_xfer OKAY>
+
+
+
+Lane 	 Sample
+1 	AD0*
+2 	Barcodes (AD1, AD2, AD3)
+3 	AD2
+4 	PhiX control
+5 	Jia_Capture Trial-1
+6 	Jia_mir133-brain
+7 	Jia_let7a-brain
+8 	Jia_Control-brain 
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+
+9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+
+1. CREATE OUTPUT DIRECTORY FOR RUN 3 (LANES 6, 7 ARE miRNA) AND COPY .params FILE
+=================================================================================
+
+
+CREATE DIRECTORIES (<NEW RUN DIRECTORY>/Data/Firecrest.../Bustard...) IN base/pipeline/solexa-reruns/run3 DIRECTORY
+
+mkdir -p /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_13-03-2009_syoung/Bustard1.3.2_13-03-2009_syoung
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run3
+
+(NOTE THAT APPLICATON GENERATES NEW Firecrest DIRECTORY WITH INCREMENTED NUMBER SUFFIX:
+/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.3.2_13-03-2009_syoung.2/Bustard1.3.2_13-03-2009_syoung)
+
+
+LINK THE Images DIRECTORY
+
+ln -s /mihg/data/2sort/solexa/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Images 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Images
+
+
+COPY THE .params FILE TO THE NEW RUN DIRECTORY
+
+cp /mihg/data/2sort/solexa/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH.params /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/
+
+
+
+2. CREATE GERALD FILE FOR RUN 3 
+===============================
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run3
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt
+
+4678:ANALYSIS eland_extended
+
+1235:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+4:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+
+678:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/refSeq3UTR_genome
+
+GENOME_DIR /nethome/syoung/base/pipeline/solexa-reruns/genomes
+
+12345:USE_BASES nY*n
+
+678:USE_BASES nY28
+
+
+
+
+3. CREATE SHELL SCRIPT 
+======================
+
+cd /nethome/syoung/base/pipeline/solexa-reruns/run3
+emacs /nethome/syoung/base/pipeline/solexa-reruns/run3/run3.sh
+#!/bin/sh
+
+#### USE THE BIG MEM NODE
+##PBS -l host=n30
+
+## Request N CPUs (instead of nodes). CPUs are always on one machine.
+#PBS -l ncpus=8
+
+HOST=`hostname`
+echo $HOST
+echo "Sleeping..."
+sleep 2;
+echo "Completed"
+
+echo "Doing image2eland.pl..."
+
+cd /nethome/syoung/base/bin/nextgen
+
+image2eland.pl --type single \
+--rundir /nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH \
+--geraldfile=/nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt \
+--outputdir /nethome/syoung/base/pipeline/solexa-reruns/run3/outdir \
+--tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8 \
+--cpus 8
+
+
+##/mihg/analysis/GAPipeline-1.3.2/bin/goat_pipeline.py \
+##--GERALD=/nethome/syoung/base/pipeline/solexa-reruns/run3/geraldfile.txt \
+##/nethome/syoung/base/pipeline/solexa-reruns/run3/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+
+
+4. RUN BUSTARD & ELAND ON PhiX AND miRNA SAMPLES
+
+qsub -q psmall /nethome/syoung/base/pipeline/solexa-reruns/run3/run3.sh
+
+    10903.kronos.ccs.miami.edu
+    Tue Mar 17 13:18:58 EDT 2009
+
+mshow
+10903                syoung    Running     8  4:23:57:01  Tue Mar 17 13:18:41
+
+
+
+
+make.error IF TERMINATED:
+
+Makefile:5: Reading Makefile variables.
+Makefile:85: Reading Makefile rules.
+Makefile:5: Reading Makefile variables.
+Makefile:85: Reading Makefile rules.
+make[1]: *** wait: No child processes.  Stop.
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** wait: No child processes.  Stop.
+make[1]: *** [support_trace] Error 2
+make: *** [nonrecursive] Terminated
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 14 23:41:44 EST 2009] solexa_xfer ACCESS OKAY BUT OTHERS PERMISSION DENIED STILL>
+
+
+
+
+$ ll /mihg/data/2sort/solexa            #### I could access this before
+ls: /mihg/data/2sort/solexa: Permission denied
+$ll /mihg/data/core/external/PearlSoe
+ls: /mihg/data/core/external/PearlSoe: Permission denied
+$ll /mihg/data/solexa_xfer/pipeline_out/
+
+    drwxrwx---+  3 root  mihg-data-drive-full   25 Feb 13 20:01 ..
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:55 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full   83 Mar 13 09:56 080930_HWI-EAS185_0001
+    drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 081015_HWI-EAS185_00035test
+    drwxrwxr-x+ 10   831 users                4.0K Mar  5 10:18 090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+    drwxrwxr-x+  8   831 users                4.0K Mar  5 20:00 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   47 Mar 13 09:56 AMOS
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   43 Mar 13 09:56 GSL
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full   66 Mar 13 09:56 hit_files
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 humanRef
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   23 Mar 13 09:56 Instruments
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 Overnightrun
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 perl_scripts
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full   43 Mar 13 09:56 pipeline_out
+    drwxrwxr-x+ 15 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 SGE
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 split_files
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   50 Mar 13 09:56 Velvet
+    drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Mar 13 09:56 workflow1
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   19 Mar 13 09:56 workflow2
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 14 23:41:44 EST 2009] PERMISSION DENIED STILL>
+
+
+
+Hi Warner/Justin,
+
+I still can't access these file systems:
+
+/mihg/data/2sort/solexa            #### I could access this before
+/mihg/data/solexa_xfer
+/mihg/data/core/external/PearlSoe
+
+Here's the results of some ls's I did:
+
+ll /mihg/data/2sort/solexa/
+    ls: /mihg/data/2sort/solexa/: Permission denied
+ll /mihg/data/2sort/from_solexa01/
+    ls: /mihg/data/2sort/from_solexa01/: Permission denied
+ll /mihg/data/solexa_xfer/pipeline_out
+    ls: /mihg/data/solexa_xfer/pipeline_out: Permission denied
+ll /mihg/data/solexa_xfer
+    ls: /mihg/data/solexa_xfer: Permission denied
+
+
+ll /mihg/data/solexa_xfer
+    ls: /mihg/data/solexa_xfer: Permission denied
+
+
+ll /mihg/data/core/external/PearlSoe
+    ls: /mihg/data/core/external/PearlSoe: Permission denied
+ll /mihg/data/core/external
+    ls: /mihg/data/core/external: Permission denied
+ll /mihg/data/core
+    ls: /mihg/data/core: Permission denied
+ll /mihg/data
+    total 64K
+    drwxrwxr-x+  10 root  mihg-data-drive-full 4.0K Mar 14 23:44 .
+    drwxr-xr-x   10    27 mysql                 114 Mar 14 23:44 ..
+    drwxrwxrwx   11 jhahn mihg                 4.0K Jan 26 11:55 2sort
+    drwxrwx---+   5 jhahn mihg-data-drive-full   77 Mar 12 11:50 core
+    drwxrwx---+   2 jhahn mihg-data-drive-full    6 Feb 11 13:59 DukeArchive
+    drwxrws---+ 248  9750                  112 8.0K Feb 26 13:22 genolist
+    drwxrwsr-x+ 202  9750                  112 8.0K Feb 26 11:26 platefiles
+    drwxrwx---+   3 root  mihg-data-drive-full   25 Feb 13 20:01 solexa_xfer
+    drwxrwxr-x+   2  1801 mihg-data-drive-full   49 Mar  3 09:42 test-genolist
+    drwxrwx---+   5 jhahn mihg-data-drive-full   69 Feb 23 11:58 vendor
+
+Cheers,
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 13 22:34:44 EST 2009] PBS QSUB OPTIONS - SELECT EXEC HOST, NUMBER OF CPUS>
+
+
+
+
+http://www.cs.uni-potsdam.de/bs/research/labs/howtos/example-einstein-highland.pbs
+
+###### PBS options ######
+
+## Name of job
+#PBS -N myjob
+
+## Type of shell
+#PBS -S /bin/bash
+
+## Export environment variables to job
+##PBS -V
+#
+## To give "arguments" to the PBS script, you can define environment 
+## variables and then export them to the script using -v var_list:
+##PBS -v ARG1 ARG2 ARG3
+
+## Request resources
+##PBS -l nodes=10
+ ## Request specific nodes
+ ##PBS -l select=host=node009+host=node010
+ ## Request n CPUs (instead of nodes). CPUs are always on one machine.
+ ##PBS -l ncpus=2
+ ## Request 5 processors on specific nodes.
+ ##PBS -l nodes=node005+node006+node007+node008+node009
+ ## nodes=n:ppn=p - Request n nodes with p CPUs per node.
+ ##                 PBS_NODEFILE will have each node entry p times.
+ #PBS -l nodes=4:ppn=2
+#PBS -l walltime=00:30:00
+
+## Path for input/output files
+## If not specified, new files will be created 
+## in the current directory (directory from which 
+## qsub was issued) for each job.
+## Attention: Torque/Maui (highland) treats 
+##            absolute paths incorrectly, i.e.
+##            paths are always relative the the
+##            current directory.
+##PBS -o pbs-stdout
+##PBS -e pbs-stderr
+
+
+## Job may not be repeated after PBS restart.
+#PBS -r n
+
+###### Cleanup function ###############
+# Do some cleanup. Used in the signal handler and on script exit.
+
+cleanup()
+{
+  # Stop process managers (mpds).
+  # This step is important! If omitted, the PBS job might not exit (and stay in "RUNNING").
+  # In general, all processes started by this PBS script must be terminated in order to allow  
+  # the PBS job to exit. If all fails, use 'dsh' and 'kill' to terminate all of your
+  # processes.
+  ${MPIDIR}mpdallexit
+
+  # Delete temporary nodefiles
+  rm -f $PBS_NODEFILE_SORTED
+  rm -f $PBS_NODEFILE_UNIQUE
+
+  exit 0
+}
+
+# install signal handler
+trap 'cleanup' SIGTERM
+
+###### MPICH2 setup ###################
+
+# Set cluster specific paths.
+source /etc/default/cluster.sh
+
+# Set specific MPICH version if needed (different version than in your path).
+#MPIDIR=/usr/local/mpich2-1.0.7/bin/
+
+# Determine number of mpds to be started 
+# (one mpd per physical node).
+MPD_NODES=`sort $PBS_NODEFILE | uniq | wc -l`
+HOST=`hostname`
+
+echo Local MPD console on $HOST
+
+echo "Number of nodes allocated (duplicates removed): $MPD_NODES"
+echo "List of processors allocated (PBS_NODEFILE):"
+cat $PBS_NODEFILE
+
+# Start process managers (mpds) on all allocated nodes.
+${MPIDIR}mpdboot --verbose --totalnum=$MPD_NODES --file=$PBS_NODEFILE
+sleep 3
+# Inspect if all MPI nodes have been activated.
+${MPIDIR}mpdtrace -l
+
+# Change into directory qsub was issued from.
+cd ${PBS_O_WORKDIR}
+
+
+###### Nodefile generation for Highland (dual processor nodes) ######
+
+# If you want consecutive MPI ranks to be executed on the same
+# machine (in order to exploit shared memory communication), 
+# you need to use a sorted nodefile.
+# Note that for mpiexec, it is equivalent (with regard to process-to-node 
+# allocation and use of shared memory communication) to use a nodefile of 
+# either form:
+# node1                         # node1:2
+# node1                         # node2:2
+# node2                         # node3
+# node2                         # node4:3
+# node3                         #
+# node4                         #
+# node4                         #
+# node4                         #
+
+PBS_NODEFILE_SORTED=sortednodefile.${PBS_JOBNAME}.${PBS_JOBID}
+sort $PBS_NODEFILE > $PBS_NODEFILE_SORTED
+echo 
+echo Sorted nodefile generated for Highland:
+cat $PBS_NODEFILE_SORTED
+echo
+
+# For benchmarking purposes, when using only one processor per node, 
+# both processors should still be requested (-l nodes=n:ppn=2). 
+# Otherwise (one processor per node requested), the other processor 
+# could be allocated to a different pbs job.
+# In order to instruct MPI to start only one MPI process per node,
+# you need to use the following nodefile which includes every allocated 
+# node only once instead of twice as by default.
+
+PBS_NODEFILE_UNIQUE=uniquenodefile.${PBS_JOBNAME}.${PBS_JOBID}
+sort $PBS_NODEFILE | uniq > $PBS_NODEFILE_UNIQUE
+echo 
+echo Unique nodefile generated for Highland:
+cat $PBS_NODEFILE_UNIQUE
+echo
+
+
+###### Actual script starts here. ######
+
+# Determine number of MPI processes to start
+N=`wc -l < $PBS_NODEFILE`
+#N=`wc -l < $PBS_NODEFILE_UNIQUE`
+
+# Set path to executable.
+EXEC=${PBS_O_WORKDIR}/myexecutable
+
+# Set other variables.
+its=8000
+
+echo "Results for $EXEC (nodes lines elapsed-time):" >> results.${PBS_JOBNAME}.${PBS_JOBID}
+
+# Execute MPI program in a loop with different parameters and measure execution time.
+# Results will be written directly into the file named "results.[...]".
+# To run with a series of number of MPI processes, e.g.: for nodes in 2 4 6 8; do
+for nodes in $N; do
+  for lines in 2000 4000 8000; do
+    echo $nodes $lines >> results.${PBS_JOBNAME}.${PBS_JOBID}
+    echo $nodes $lines ":" >> stdout.${PBS_JOBNAME}.${PBS_JOBID}
+    echo $nodes $lines ":" >> stderr.${PBS_JOBNAME}.${PBS_JOBID}
+    /usr/bin/time -a -f %e -o results.${PBS_JOBNAME}.${PBS_JOBID} --quiet ${MPIDIR}mpiexec -machinefile $PBS_NODEFILE -n $nodes $EXEC $lines $its 0 0 1>> stdout.${PBS_JOBNAME}.${PBS_JOBID} 2>> stderr.${PBS_JOBNAME}.${PBS_JOBID} < /dev/null
+  done
+done
+
+# call cleanup function
+cleanup
+
+</entry>
+
+
+
+<entry [Thu Mar  5 18:03:44 EST 2009] MESSAGE FROM WARNER: DATA IN /mihg/data/solexa_xfer/pipeline_out>
+
+
+
+
+From: Baringer, John 
+Sent: Friday, March 13, 2009 3:12 PM
+To: Young, Stuart; Hahn, Justin
+Cc: Hulme, William
+Subject: Re: access to archived solexa data
+
+
+The data has been consolidated slightly into 
+
+/mihg/data/solexa_xfer/pipeline_out:    
+
+779G    080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+651G    080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+797G    080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+1.3T     080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+28K      080930_HWI-EAS185_0001
+22G     081015_HWI-EAS185_00035test
+170M   090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+659G    090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+852G   201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+651G    2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+
+/mihg/data/2sort/solexa
+
+896G    080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+798G    080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+1.3T   080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+[these three seem to be duplicated in both this directory and pipeline_out;  080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH looks to be identical while 080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH and  080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH have more data in this directory; please see if we can tell which one is the final copy; presumable the larger ones in this directory]
+
+/mihg/data/core/external/PearlSoe
+
+1.6T    090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+
+-warner
+
+
+</entry>
+
+
+
+<entry [Thu Mar  5 18:03:44 EST 2009] MESSAGE WARNER: Transfer script on solexa01>
+
+
+
+Hi Warner,
+
+I noticed that run 6 and run 9 are in pipeline_out on solexa01:
+
+drwxrwxr-x  4 Mihglabtech users 4.0K Mar  5 10:18 090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+drwxrwxr-x  8 Mihglabtech users 4.0K Mar  5 20:00 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+Have they been moved up yet by the transfer script?
+
+That just leaves run 5 and run 7 unaccounted for – I couldn’t find them on solexa01 so I guess they’re in the folders I don’t have permission to access?
+
+Cheers,
+
+Stuart.
+
+
+RUN 5
+=====
+
+??? deleted from solexa01 ???
+
+
+RUN 6
+=====
+
+ON solexa01
+
+/store/data/pipeline_out/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+
+
+RUN 7
+=====
+
+??? deleted from solexa01 ???
+
+
+RUN 8
+=====
+
+ON solexa01
+
+/store/data/pipeline_in/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+
+RUN 9
+=====
+
+ON solexa01
+
+/store/data/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  5 18:03:44 EST 2009] ***>
+
+
+miRNA RUNS
+
+
+Hi Stuart,
+
+That’s great. I really hope the pipeline gets installed soon as I’m really trying to get the miRNA study published before someone else does it. 
+Josh has been running the pipeline for me for all the runs, he has all the parameters as well as the reference file I want to use. 
+Josh could you please provide the files/parameters needed to Stuart? Thanks a lot.
+
+Meanwhile I made a spreadsheet with all the lanes I need to analyze and attached it here. 
+Thanks again!
+
+Jia
+
+SPREADSHEET
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+
+Attached is a typical config file that I have been using for Jia’s runs. Also, don’t forget to assign a control lane during the analysis with --control-lane=# in the command line. 
+
+for_bill_config.txt
+
+
+
+578:ANALYSIS eland_extended
+
+12346:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /store/data/genomes/phiXgenome
+
+78:ELAND_GENOME /store/data/genomes/refSeq3UTR_genome
+
+GENOME_DIR /store/data/genomes
+
+123456:USE_BASES nY*n
+
+78:USE_BASES nY28
+
+
+
+
+REFERENCE FASTA FILE (REFSEQ mRNA)
+
+refseq3UTRSequenceNoDup_modified_new_NoAmb.txt
+
+COPIED FROM solexa01 TO kronos:
+
+/nethome/syoung/base/pipeline/solexa-reruns/
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  5 18:03:44 EST 2009] PEARL SOH DATA AWAITING TRANSFER>
+
+
+
+From: Hulme, William 
+Sent: Thursday, March 05, 2009 10:51 AM
+To: Baringer, John
+Cc: Young, Stuart
+Subject: ga
+
+Hi Warner, I moved 090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH into the pipeline out folder for transfer.
+
+Note.  This run does not have to be re analyzed.  It was already done with new pipeline.
+
+William Hulme
+Core Director of Sequencing
+Miami Institute for Human Genomics
+12500 SW 152nd St
+UM South Campus Building A
+Miami, FL 33177
+work: (305) 243-8718
+cell: (305) 213-7799
+fax: (305) 378-8248
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  5 18:02:44 EST 2009] TEST CLUSTER RUN OF GAPipeline V1.3.2 ON kronos>
+
+
+
+
+From: customerservice@illumina.com [mailto:customerservice@illumina.com] 
+Sent: Friday, March 06, 2009 2:41 AM
+To: Young, Stuart
+Subject: Password Reminder (http://www.illumina.com )
+Importance: Low
+
+Thank you for your inquiry at http://www.illumina.com
+
+Username: syoung@med.miami.edu
+Password: GOHOVBLI
+
+Illumina Customer Solutions
+800-809-ILMN (toll-free)
+858-202-4566 (outside North America)
+orders@illumina.com
+
+
+README.txt:
+
+IMPORTANT CHANGES IN 1.3:
+
+- A new build system is used. The installation still involves installing the
+  prerequisites and then typing "make" and "make install" in the top-level
+  pipeline folder. The executables can now be found in the bin/ directory
+  (e.g. bin/goat_pipeline.py).
+
+- The Bustard output formats have changed; a new file format called "qseq.txt"
+  is used to store read IDs, sequence and quality information as well as
+  filter information. The old file formats can be produced optionally with the
+  "--with-seq", "--with-prb", "--with-siq2", "--with-qval" options.
+
+- For base-call auto-calibration, the option "--with-qval" needs to be
+  specified at the goat_pipeline.py or bustard.py command line.
+
+- The Gerald analysis modes "expression" and "eland" are deprecated. They are
+  replaced by "eland_tag" and "eland_extended" respectively.
+
+- The "CONTAM_FILE" feature in PhageAlign mode is deprecated.
+
+
+
+GA PIPELINE
+===========
+
+/mihg/analysis/GAPipeline-1.3.2/bin
+
+
+DATA SOURCES
+============
+
+KRONOS
+======
+
+/mihg/data/2sort/solexa
+/mihg/data/2sort/from_solexa01
+
+/mihg/data/core         ??? NO ACCESS PERMISSIONS
+/mihg/data/solexa_xfer  ??? NO ACCESS PERMISSIONS
+
+
+DATA IN /mihg/data/2sort/solexa
+===============================
+
+RUN1
+
+080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+
+... COPYING FROM mihgstore TO /nethome/syoung/base/pipeline
+
+
+
+RUN 2
+
+/mihg/data/2sort/solexa
+
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Oct  9 19:02 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Oct  9 22:23 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+
+
+
+RUN 3
+
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Aug 25  2008 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+
+
+RUN 4
+
+/mihg/data/2sort/solexa/081015_HWI-EAS185_00035test
+
+
+
+ll /mihg/data/2sort/solexa -tr
+    total 255M
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   23 Mar 21  2008 Instruments
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K May 12  2008 080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K May 25  2008 2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Jun  2  2008 201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   50 Jul  1  2008 Velvet
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   47 Jul  7  2008 AMOS
+    -rw-rwxr-x+  1 jhahn mihg-data-drive-full  217 Jul 12  2008 error.txt
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   43 Jul 18  2008 GSL
+    drwxrwxr-x+ 15 jhahn mihg-data-drive-full 4.0K Jul 18  2008 SGE
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Aug 25  2008 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full 4.0K Sep 11 11:54 split_files
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full   66 Sep 12 12:36 hit_files
+    -rw-rwxr-x+  1 jhahn mihg-data-drive-full 3.4M Sep 15 15:58 3UTR_map_file.txt
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 1.2M Sep 15 16:28 3UTR_allgenes.txt
+    -rw-rwxr-x+  1 jhahn mihg-data-drive-full    0 Sep 15 16:45 s_6_hits.txt
+    drwxrwxr-x+  2 jhahn mihg-data-drive-full 4.0K Sep 22 10:10 perl_scripts
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full 4.0K Sep 23 16:05 humanRef
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Sep 29 18:55 08-09-29_18-48-08
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Sep 29 19:11 08-09-29_19-04-02
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full   83 Sep 30 19:26 080930_HWI-EAS185_0001
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Oct  1 05:35 Overnightrun
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Oct  9 19:02 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+    drwxrwxr-x+  3 jhahn mihg-data-drive-full   19 Oct  9 21:33 workflow2
+    drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Oct  9 22:23 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+    drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Oct 10 16:24 workflow1
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.9K Oct 14 14:19 08-10-14_14-07-22
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Oct 14 14:47 08-10-14_14-40-07
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Oct 14 15:06 08-10-14_14-59-06
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Oct 14 15:19 08-10-14_15-11-32
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Oct 14 16:08 08-10-14_15-24-09
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 2.2K Oct 14 17:06 08-10-14_16-22-24
+    drwxrwxr-x+  8 jhahn mihg-data-drive-full 4.0K Oct 15 10:41 081015_HWI-EAS185_00035test
+    -rwxrwxr-x+  1 jhahn mihg-data-drive-full 1.8K Oct 15 13:25 08-10-15_13-18-14
+    drwxrwxr-x+  4 jhahn mihg-data-drive-full   43 Nov 17 09:23 pipeline_out
+    -rw-rwxr-t+  1 jhahn mihg-data-drive-full 250M Jan  7 16:45 dsm_test_file
+    drwxrwxrwx  11 jhahn mihg                 4.0K Jan 26 11:55 ..
+    drwxrwxr-x+ 23 jhahn mihg-data-drive-full 4.0K Feb 11 14:31 .
+
+
+
+DATA IN /mihg/data/2sort/from_solexa01
+======================================
+
+RUN 1
+
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Aug 25  2008 080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+RUN 2
+
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Jan 12 16:01 080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH
+drwxrwxr-x+  6 jhahn mihg-data-drive-full 4.0K Jan 12 16:02 080805_HWI-EAS185_0006_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+
+
+
+PLUTO
+=====
+
+ll /store/Data01/solexa_xfer        ??? NO ACCESS PERMISSIONS
+ll /store/Data01/core               ??? NO ACCESS PERMISSIONS
+
+
+
+
+SOLEXA01
+========
+
+RUN 5
+=====
+
+??? deleted from solexa01?
+
+Jia 5 samples and RNA test with New Sequencing Reagents (re-do of Run 4)
+
+Lane 1: Jia_Brain unenriched 	2pM
+Lane 2: Jia_let-7a brain 	2pM
+Lane 3: Jia_mir-133b HEK293 	2pM
+Lane 4: Jia_let-7a HEK293 	2pM
+Lane 5: PhiX 2pM 	2pM
+Lane 6: Jia_Capture trial-2 	2pM
+Lane 7: RNA_Test5ug 	2pM
+Lane 8: RNA_Test10ug 	2pM 	
+
+    * Single-read run
+
+
+
+RUN 6
+=====
+
+ON solexa01
+
+/store/data/pipeline_out/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH
+
+
+Pearl1-4,Dale,Uzoezi
+
+Flowcell ID: 20DTMAAXX
+Lane 1) Pearl: 100T-0L-1 	2pM
+Lane 2) Pearl 2: 100T-0L-2 	2pM
+Lane 3) Pearl 3: 100T-0L-3 	2pM
+Lane 4) Pearl 4:  75T-25L-1 	2pM
+Lane 5) Uzoezi 13 	2pM
+Lane 6)Uzoezi 22 	2pM
+Lane 7) Dale Alu 	2pM
+Lane 8) PhiX 	2pM 	
+
+Run appeared to complete successfully
+
+
+
+RUN 7
+=====
+
+
+Pearl Seo 5-10;Hek_L2_let7a
+
+Flowcell ID: 20F1GAAXX
+Lane 1) Pearl:  75T-25L-2 	2pM
+Lane 2) Pearl : 75T-25L-3 	2pM
+Lane 3) Pearl : 50T-50L-1 	2pM
+Lane 4) Pearl : 50T-50L-2 	2pM
+Lane 5) PhiX 	2pM
+Lane 6)Pearl : 50T-50L-3 	2pM
+Lane 7) Pearl : 25T-75L-1 	2pM
+Lane 8) Jia_let-7a HEK293 	2pM 	
+
+    * Single-read run
+
+Run completed successfully
+
+
+RUN 8
+=====
+
+ON solexa01
+
+/store/data/pipeline_in/090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+090130_HWI-EAS185_0014_20DNUAAXX_mito1-4_DH_Jia_Uz_ENJH
+
+Run: Mito1-4;Jia;Uzoezi;Dale
+
+Flowcell ID: 20DNUAAXX
+Lane 1) Mito1 	2pM
+Lane 2) Mito2 	2pM
+Lane 3) Mito3 	2pM
+Lane 4) Mito4 	2pM
+Lane 5) PhiX 	2pM
+Lane 6)Dale 2 	2pM
+Lane 7) Jia_mir-133b HEK293 	2pM
+Lane 8) Uzoezi 	2pM 	
+
+    * Paired-end run
+
+We had a power outage Friday night during the third cycle of Read1 that left the Genome Analyzer idle over the weekend. We started the sequencer from where the run left off using the reagents that were previously on the machine, and it seemed to run smoothly. Read2 was then performed and completed without any problems. Post analysis showed higher error rates during Read2. This could have been due to the scan mix that sat idle in the flowcell from over the weekend which could have possibly damaged the template. The template is necessary not just for the sequencing-by-synthesis but also for  cluster amplification during read2.
+
+
+RUN 9
+=====
+
+/store/data/pipeline_out/090224_HWI-EAS185_0001_20EBNAAXX_Pearl_11-15_Jia_ENJH
+
+Pearl Seo 11-15;Jia mir133b and Let7a
+
+ FlowCell ID: 20EBNAAXX
+Lane 1)Pearl Seo 25T-75L-2 	2pM
+Lane 2) Pearl Seo 25T-75L-3 	2pM
+Lane 3) Pearl Seo 0T-100L-1 	2pM
+Lane 4) Pearl Seo 0T-100L-2 	2pM
+Lane 5)phiX control 	2pM
+Lane 6) Pearl Seo 0T-100L-3 	2pM
+Lane 7) Jia_Brain_mir-133b 	2pM
+Lane 8) Jia_Brain_let-7a 	2pM 	
+
+
+DATA DESTINATIONS
+=================
+/nethome
+/mihg/data/core
+
+
+
+
+
+From: Baringer, John 
+Sent: Wednesday, March 04, 2009 11:47 PM
+To: Hulme, William; Young, Stuart
+Cc: Hoffman, Josh D; Huang, Jia; Hahn, Justin
+Subject: Re: GA pipeline
+
+Bill, Stuart,
+
+I’ve built the GAPipeline V1.3.2 software on kronos.  The path is /mihg/analysis/GAPipeline-1.3.2/bin.  The data folders are located under /mihg/data/2sort/solexa and from_solexa01. 
+
+You should have read access to the data.  You can run tests using /nethome for output while we get the folders set up under /mihg/data/core.
+
+-warner
+
+
+
+
+
+From: Huang, Jia 
+Sent: Thursday, March 05, 2009 9:32 AM
+To: Young, Stuart
+Cc: Hoffman, Josh D
+Subject: RE: new pipeline on CCS server?
+
+Hi Stuart,
+Sounds good. I would like to do some comparisons too, Josh and I actually did a comparison for one lane and it looks weird – I got 1/3 less data with the new pipeline, I’ll talk to you about the details when I see you.
+Anyway, I appreciate your help on re-processing the data, do you have everything you need? Just want to make sure, the reference file you want to use should be named: refseq3UTRSequenceNoDup_modified_new_NoAmb.txt, sorry about the long name. If you don’t have it I can send you a copy. Thanks again!!
+Jia
+
+
+
+
+
+________________________________________
+From: Young, Stuart 
+Sent: Wednesday, March 04, 2009 8:18 PM
+To: Huang, Jia; Hoffman, Josh D
+Subject: RE: new pipeline on CCS server?
+
+Hi Jia,
+
+That’s fine though I’ll still need the original parameters + reference info as we need to rerun using the original parameters in order to make the comparison. 
+
+As it’s urgent, I’ll do the rerun with the same parameter/reference set for all runs first and then do the reruns with the original params/ref.
+
+Cheers,
+
+Stuart.
+
+
+From: Huang, Jia 
+Sent: Wednesday, March 04, 2009 1:16 PM
+To: Young, Stuart; Hoffman, Josh D
+Subject: RE: new pipeline on CCS server?
+
+Hi Stuart and Josh,
+Just want to make sure: when you re-process the data, they should all be run with the same parameters and the same reference file; it doesn’t matter whether Josh has used different parameters/reference files for each run previously.
+Thanks,
+Jia
+
+
+
+
+________________________________________
+From: Hoffman, Josh D 
+Sent: Wednesday, March 04, 2009 1:08 PM
+To: Young, Stuart; Huang, Jia
+Cc: Hulme, William
+Subject: Solexa Runs
+
+Hi Stuart,
+
+Attached is a typical config file that I have been using for Jia’s runs. Also, don’t forget to assign a control lane during the analysis with --control-lane=# in the command line. 
+
+Thanks,
+
+Josh
+
+
+for_bill_config.txt
+
+
+
+578:ANALYSIS eland_extended
+
+12346:ANALYSIS sequence
+
+1234678:SEQUENCE_FORMAT --fastq
+
+5:ELAND_GENOME /store/data/genomes/phiXgenome
+
+78:ELAND_GENOME /store/data/genomes/refSeq3UTR_genome
+
+GENOME_DIR /store/data/genomes
+
+123456:USE_BASES nY*n
+
+78:USE_BASES nY28
+
+
+
+
+
+________________________________________
+From: Young, Stuart 
+Sent: Wednesday, March 04, 2009 1:06 PM
+To: Huang, Jia; Hoffman, Josh D
+Subject: RE: new pipeline on CCS server?
+
+Hi Jia/Josh,
+
+Thanks for the Excel, Jia - looks good.
+
+When you have a moment, Josh, could you let me know the locations of the config files and any other parameters you used for each run?
+
+Cheers,
+
+Stuart.
+
+
+
+From: Huang, Jia 
+Sent: Wednesday, March 04, 2009 12:08 PM
+To: Young, Stuart; Hoffman, Josh D
+Subject: RE: new pipeline on CCS server?
+
+Hi Stuart,
+That’s great. I really hope the pipeline gets installed soon as I’m really trying to get the miRNA study published before someone else does it. 
+Josh has been running the pipeline for me for all the runs, he has all the parameters as well as the reference file I want to use. 
+Josh could you please provide the files/parameters needed to Stuart? Thanks a lot.
+Meanwhile I made a spreadsheet with all the lanes I need to analyze and attached it here. 
+Thanks again!
+Jia
+
+SPREADSHEET
+
+Run # on Wiki	Approximate Run Date	Run type	Lane #	Lane Description	Bases to be analyzed
+3	8/14/2008	single read	6	Jia_mir133-brain	First 28 bases
+3	8/14/2008	single read	7	Jia_let7a-brain	First 28 bases
+5	12/22/2008	single read	1	Jia_Brain unenriched	First 28 bases
+5	12/22/2008	single read	7	HEK293 unenriched	First 28 bases
+7	1/21/2009	single read	8	Jia_let-7a HEK293	First 28 bases
+8	1/30/2009	paired-end	7	Jia_mir-133b HEK293	bases 5-32 (the first 4 bases were taken out due to the power outage), only the first read direction
+9	2/24/2009	single read	7	Jia_Brain_mir-133b	First 28 bases
+9	2/24/2009	single read	8	Jia_Brain_let-7a	First 28 bases
+
+
+
+________________________________________
+From: Young, Stuart 
+Sent: Wednesday, March 04, 2009 10:48 AM
+To: Huang, Jia
+Subject: RE: new pipeline on CCS server?
+
+Hi Jia,
+
+I’ll be running the reprocessing. Do you have any notes of the parameters (Gerald, Bustard, Eland) you used for your data for all runs to date? Or do you have any particular parameters you’d like to use?
+
+Cheers,
+
+Stuart.
+
+
+
+From: Huang, Jia 
+Sent: Wednesday, March 04, 2009 10:36 AM
+To: Young, Stuart
+Subject: RE: new pipeline on CCS server?
+
+I see, that makes sense. Do you know who will be running the pipeline after it’s installed then?
+Thanks,
+Jia
+
+
+________________________________________
+From: Young, Stuart 
+Sent: Wednesday, March 04, 2009 10:28 AM
+To: Huang, Jia
+Subject: RE: new pipeline on CCS server?
+
+Hi Jia,
+
+Warren’s working on it right now. We won’t be doing on Solexa because of the logistics of transferring all the data and because it’s supposed to be dedicated to sequencing.
+
+Cheers,
+
+Stuart.
+
+From: Huang, Jia 
+Sent: Wednesday, March 04, 2009 10:26 AM
+To: Young, Stuart
+Subject: new pipeline on CCS server?
+
+Hi Stuart,
+Do you by any chance know the status of re-processing the old data with the new pipeline? Did Warren install the new pipeline on CCS or did they decide to move data back to S?
+Thanks,
+Jia
+
+
+Jia Huang, Ph.D.
+Miami Institute for Human Genomics
+Miller School of Medicine
+University of Miami
+Tel: (305) 243-8676
+Email: jhuang1@med.miami.edu
+
+
+
+

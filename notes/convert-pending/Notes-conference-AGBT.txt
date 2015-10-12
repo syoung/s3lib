@@ -1,0 +1,150 @@
+Notes-conference-AGBT.txt
+
+
+</entry>
+
+
+
+<entry [Thurs Feb 5 10:18:42 EST 2006] DETECTING HIV VARIANTS WITH NGS>
+
+
+
+Thurs 5th Feb
+
+HIV variant detection threshold = 0.2%
+
+
+SHENZHEN BGI
+
+BGI will do 3 terabases this year for 1000 genomes
+
+2.4 terabases needed to get 400X coverage to detect variants in transcripts with copy number of 1
+
+Panda - all solexa sequences, 2kb, 5kb, 10kb inserts. Assembly algorithms:  
+
+
+ABI SYMPOSIUM
+
+80% of SNPs matched dbSNP
+
+4m SNPs found in human
+
+50bp reads show 0.1% error at 50th cycle
+
+
+
+Tom Hudson: Genbiomic variation and cancer
+
+Won't call SNP unless at least 10X
+
+
+Andy Futreal, Sanger Center. Structural Somatic Variations in Cancer.
+
+Use paired end 400bp for ends of chromosomes where expect structural rearrangements
+
+400bp is a nice distance because can design PCR primers for it
+
+Solexa copy number variation more reliable than Affy array
+
+
+
+Bioinformatics
+
+Dave Dooling, Wash U. "Next Generation Informatics" 
+Design and implementation of a generalized laboratory data model
+
+object relational mapping (ORM) layer
+Workflows in XML
+massively parallel across a cluster - atuomatically spawn jobs
+
+Allow analysts to create a thin wrapper around tools and then run with automated job tracking, retries, failure logging
+
+Easy Perl API
+
+
+Circos - an informati
+
+http://mkweb.bcgsc.ca/circos/
+
+genome.wustle.edu
+
+politigenomics.com
+
+
+
+
+EVENING BIOINFORMATICS SECTION
+
+David Mcbride, Sanger
+
+
+both 400 kb 
+
+whole genome amplification does not affect 400 bp paired end results, didn't try 3kb yet
+
+
+Structural varian mapping - need to exhaustively map pairs
+Simulations as acontrol for FP
+
+
+Aaron Quinlan, U Virginia
+
+Tracing mappings from LTR's takes up most of the data processing
+
+20,000 pairs generate 9 billion hits
+
+1. Wrote own pipeline, tested BWA from Heng Li (MAQ) gapped alignment finds all optimal hits - gets concordant pairs (normal) and discordant pairs (downside: doesn't find all the suboptimal hits - e.g., labelled as discordant because didn't find the suboptimal hits.)
+
+2. Novoaligh (colin hercus et al) --> RefMapper (Clark, Quinlan, Hall) - get concordant pairs missed by BWA, and get discordant pairs, then use MASV (mapping based assembly of SV) to cluster by mapping distance and orientation and position on chromosome
+
+31.4 mill, 30.3m concord, 98k discorandt, etc
+
+12 million discordant mappings -> 614 putative SVs:
+
+half a re due to genome assembly problems due to repeats (collpased), 6% span gaps in genome (false positives), 
+92 treu SVs, most due to transposon insertions 
+
+this vaariation was seen after just 10 generation of mice
+
+Bowtie Benjamin Langmead
+
+
+
+
+Sohrab Shah
+
+Tried denovo on T lympocytes reads but unmapped reads highly unmined
+
+HMM - transition matrix: transition between loss, neutral and gain, diagonal on matrix should contain most of the probability
+
+
+
+Todd Wylie, Wash U Technology develoment. miRNA deep sequencing
+
+
+Jay Shendure
+
+calling 84% of bases, so False Negative theoretically is at least 16%
+dbSNP correspondence 93% (CEU), 83% (YOR)
+HapMap 2+3 99.8%
+
+FDR of ~ 5% (i.e., among all non-dbSNP, novel variants based on cross-validation.??? )
+
+
+
+NEXT YEAR
+ FEB 24-27
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+

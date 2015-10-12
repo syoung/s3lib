@@ -1,0 +1,249 @@
+Notes-apps-twiki.txt
+
+</entry>
+
+
+
+<entry [Fri Jul 11 15:36:08 EDT 2008] INSTALL AND CONFIGURE twiki>
+
+
+
+
+1. INSTALL THE CENTOS 5 BINARY
+
+cd /home/syoung/apps/twiki
+sudo su
+./setupTwiki.install
+
+THIS WILL CREATE THE FOLLOWING DIRECTORY:
+
+/var/www/twiki
+
+    THE MAIN PAGE IS AT:
+
+    http://solexa01.med.miami.edu/twiki
+    
+    WHICH LINKS TO THE CGI-APP:
+    
+    http://solexa01.med.miami.edu/twiki/bin/view
+    
+
+    NB: /var/www/twiki/bin IS THE CGI-BIN FOR Twiki
+
+
+
+2. RUN THE configure SCRIPT USING THE BROWSER AND FIX {DefaultUrlHost} ERROR
+
+http://solexa01.med.miami.edu/twiki/bin/configure
+
+    PASS: i*****lg
+    
+ERROR
+
+Access check on Main.WebHome failed. Action "redirect": unsafe redirect to http://solexa01.med.miami.edu/twiki/bin/oops/Main/WebPreferences?t=1215804527;template=oopsaccessdenied;def=topic_access;param1=CHANGE;param2=access not allowed on topic;template=oopsaccessdenied;def=topic_access;param1=CHANGE;param2=access not allowed on topic: host does not match {DefaultUrlHost} , and is not in {PermittedRedirectHostUrls}"http://localhost"
+
+SOLUTION
+
+General Path Settings --> {DefaultUrlHost}, CHANGE TO:
+
+http://solexa01.med.miami.edu
+
+AND SAVE.
+
+
+
+3. EDIT LEFT BAR
+
+PERSONAL 
+http://solexa01.med.miami.edu/twiki/bin/view/Main/StuartYoungLeftBar
+
+MAIN
+http://solexa01.med.miami.edu/twiki/bin/view/TWiki/WebLeftBar
+http://twiki.org/cgi-bin/view/TWiki/WebLeftBar
+
+4. SET MAIL HANDLER
+
+    ON configure PAGE
+
+    http://solexa01.med.miami.edu/twiki/bin/configure
+
+    Mail and Proxies --> {Mail Program} SET TO:
+    
+    /usr/bin/sendmail -t -oi -oeq
+
+
+    Mail and Proxies --> {SMTP}{MAILHOST} SET TO:
+
+    mail.solexa01.med.miami.edu
+
+    Next --> Save
+    
+        Updating configuration
+
+        $TWiki::cfg{WebMasterEmail} = 'syoung@med.miami.edu'
+        $TWiki::cfg{WebMasterName} = 'TWiki Administrator'
+        $TWiki::cfg{MailProgram} = ''
+        $TWiki::cfg{SMTP}{MAILHOST} = 'solexa01.med.miami.edu' 
+        $TWiki::cfg{SMTP}{SENDERHOST} = 'solexa01.med.miami.edu' 
+        $TWiki::cfg{SMTP}{Username} = ''
+        $TWiki::cfg{SMTP}{Password} = '' 
+
+TESTED BY CLICKING RESET PASSWORD:
+
+http://solexa01.med.miami.edu/twiki/bin/view/TWiki/ResetPassword
+
+THE FOLLOWING MAIL WAS SENT:
+
+
+    -----Original Message-----
+    From: TWiki Administrator [mailto:syoung@med.miami.edu] 
+    Sent: Friday, July 11, 2008 9:19 PM
+    To: Young, Stuart
+    Subject: TWiki password reset for Anonymous User
+    
+    Dear Anonymous User
+    
+    
+    
+    Login name "anonymous"
+    Your password has been changed to "8046430339". 
+    
+    Please visit http://solexa01.med.miami.edu/twiki/bin/view/TWiki/ChangePassword?username=anonymous to change your password to something more memorable for you.
+    
+    If you have any questions, please contact syoung@med.miami.edu.
+
+
+
+5. CHANGE PERMISSIONS
+
+    ACCESS CONTROL
+    http://solexa01.med.miami.edu/twiki/bin/view/TWiki/TWikiAccessControl
+
+    SITE PERMISSIONS
+    http://solexa01.med.miami.edu/twiki/bin/view/TWiki/SitePermissions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+How to add the first administrator
+If you haven't previously set up an administrator, follow these steps:
+
+   1. Authenticate as the internal TWiki administrator:
+          * internal admin login (use the username suggested and the password set in configure).
+          
+    http://solexa01.med.miami.edu/twiki/bin/login?sudo=sudo
+    http://solexa01.med.miami.edu/twiki/bin/login?sudo=sudo;origurl=http://solexa01.med.miami.edu/twiki/bin/view/Main/TWikiAdminGroup
+
+   2. Edit this topic
+
+
+   3. Insert the wikinames of admin users in the TWiki Administrator Group by listing them in the GROUP setting
+      (example * Set GROUP = JohnSmith, JamesBond)
+
+   4. Save this topic
+
+   5. Logout from the Internal TWikiAdminUser
+
+   6. Verify that new members show up properly in the group listing at TWikiGroups
+
+   7. Make sure always to keep this topic write protected by keeping the already defined ALLOWTOPICCHANGE setting
+
+   8. The ALLOWTOPICHANGE and ALLOWTOPICRENAME settings in TWiki.TWikiPreferences and Main.TWikiPreferences have already been set to this group (TWikiAdminGroup), restricting edit of site-wide preferences to the TWiki Administrator Group 
+
+
+**** HOW TO RESET TwikiAdminUser PASSWORD *****
+
+*** NOTE: If you lock yourself out of TWikiAdminUser during setup activities or have forgotten the configure password, you can unset the configure password by editing the lib/LocalSite.cfg file and deleting the line that starts with $TWiki::cfg{Password} and then set it again by saving your settings in configure. 
+
+
+
+
+
+1. CREATE A NEW USER
+
+THIS WILL ADD THE CamelCase WIKINAME TO THE .htaccess AND .htpasswd FILES:
+
+>>>
+StuartYoung:fkF/mQeZ4RHj.:syoung@med.miami.edu
+TWikiGuest:Ie1a6QvK2mvoI:
+<<<
+
+/var/www/twiki/data/.htpasswd
+>>>
+StuartYoung:fkF/mQeZ4RHj.:syoung@med.miami.edu
+TWikiGuest:Ie1a6QvK2mvoI:
+<<<
+
+2. DEFINE THE ADMIN USER
+
+LOG IN AS INTERNAL ADMIN:
+
+http://solexa01.med.miami.edu/twiki/bin/login?sudo=sudo
+
+StuartYoung
+<pass>
+
+THIS WILL LOAD THE WECOME PAGE:
+
+http://solexa01.med.miami.edu/twiki/bin/view/Main/WebHome
+
+
+CLICK THE TwikiGroups LINK TO GO TO THIS PAGE:
+
+http://solexa01.med.miami.edu/twiki/bin/view/Main/TWikiGroups
+
+
+CLICK THE TWikiAdminGroup IN THE TWiki Groups TABLE TO GO HERE:
+
+TWikiGroups - list of groups used for access control 
+
+http://solexa01.med.miami.edu/twiki/bin/view/Main/TWikiAdminGroup
+
+
+CLICK THE 'edit' LINK AT THE BOTTOM OF THE PAGE TO ADD:
+
+
+
+
+
+
+
+Define the Administrator User(s)
+
+Administrators have read and write access to any topic in TWiki, irrespectively of TWiki access controls. When you install TWiki one of the first things you will want to do is define yourself as an administrator. You become an administrator simply by adding yourself to the TWikiAdminGroup. It is the WikiName and not the login name you add to the group.
+
+Editing the Main.TWikiAdminGroup topic requires that you are an administrator. So to add the first administrator you need to login using the internal TWiki admin user login and the password you defined in configure.
+
+    * Navigate to the Main.TWikiAdminGroup topic
+    * Follow carefully the steps Main.TWikiAdminGroup of how to become an admin
+    * Note that if you use ApacheLogin you have to be registered and logged in before you use the internal admin login
+    
+
+GO TO Main page
+http://solexa01.med.miami.edu/twiki/bin/view/Main/WebHome
+
+GO TO Permissions settings
+http://solexa01.med.miami.edu/twiki/bin/view/TWiki/SitePermissions
+    
+GO TO TWiki Administrator Group
+http://solexa01.med.miami.edu/twiki/bin/view/Main/TWikiAdminGroup
+    
+CLICK ON 'configure' IN 'Enter the TWiki Administrator user or login as set in configure' TEXT ON PAGe:
+
+http://solexa01.med.miami.edu/twiki/bin/login?sudo=sudo;origurl=http://solexa01.med.miami.edu/twiki/bin/view/Main/TWikiAdminGroup   
+
+
+
+    http://solexa01.med.miami.edu/twiki/bin/view/TWiki/TWikiRegistration

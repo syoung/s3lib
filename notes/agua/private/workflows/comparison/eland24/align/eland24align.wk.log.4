@@ -1,0 +1,101 @@
+[workflow eland24align]
+2011-02-09 13:33:00
+
+Workflow:	eland24align
+Started: 2011-02-09 11:49:46
+Stopped: 2011-02-09 11:51:18
+Duration: 0 hrs 1 mins 32 secs
+
+
+	Application	1	copysplit
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl 
+	status: completed
+	locked: 0
+	started: 2011-02-09 11:49:46
+	stopped: 2011-02-09 11:50:43
+	duration: 0 hrs 0 mins 57 secs
+
+
+
+	Application	2	eland24
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-02-09 11:50:43
+	stopped: 2011-02-09 11:51:18
+	duration: 0 hrs 0 mins 35 secs
+
+
+
+	Application	3	checkeland24
+	/nethome/syoung/0.5/bin/apps/aligners/ELANDcheck.pl
+	locked: 0
+
+
+
+	Application	4	cleanup
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl
+	locked: 0
+
+
+
+
+[app 2 eland24]
+2011-02-09 13:33:00
+
+  Application:
+  name           eland24
+  owner          anonymous
+  ordinal        2
+  status         unknown
+  started        2011-02-09 11:50:43
+  stopped        2011-02-09 11:51:18
+  duration       0 hrs 0 mins 35 secs
+  locked         0
+  type           alignment
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through 1-33 files doing ELAND alignment with split read input files
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/ELAND.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    inputtype      fastq
+    label          eland24-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/loop-eland24.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE%
+    queue          small
+    reads          250000
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE%/eland24.out
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/ELAND.pl \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+ --matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+ --referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chr22 \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE% \
+ --inputtype fastq \
+ --species human \
+ --label eland24-%REPLICATE% \
+ --maxjobs 2000 \
+ --walltime 24 \
+ --queue small \
+ --cluster LSF \
+ --cpus 1 \
+ --reads 250000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/%REPLICATE%/eland24.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland24/loop-eland24.out 
+
+

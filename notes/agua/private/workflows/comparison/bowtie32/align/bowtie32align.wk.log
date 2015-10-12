@@ -1,0 +1,202 @@
+[workflow bowtie32align]
+2011-01-24 15:30:34
+
+
+Workflow:
+name           bowtie32align
+owner          anonymous
+wkfile         align.wk
+outputfile     bowtie32align.wk.bkp
+start          1
+	
+  Application:
+  name           copysplit
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  ordinal        1
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    loop           distributed
+    looplabel      eland-copysplit
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-copysplit.out
+    maxjobs        2000
+    mode           link
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+    queue          small
+    replicates     1-33
+    source         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    target         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%
+    walltime       24
+
+	
+  Application:
+  name           bowtie32
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  ordinal        2
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          bowtie32-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-bowtie32.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%
+    params         "--seedlen 32"
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%/bowtie32.out
+    walltime       24
+
+	
+  Application:
+  name           checkbowtie
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/aligners/BOWTIEcheck.pl
+  ordinal        3
+
+    Parameters:
+    distance       200
+    label          BOWTIE
+    max            2
+    min            0.5
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32
+    paired         
+    params         "--seedlen 32"
+    referencedir   /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/bowtiecheck.out
+
+	
+  Application:
+  name           cleanup
+  owner          anonymous
+  location       /nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl
+  ordinal        4
+
+    Parameters:
+    directory      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32
+    mode           subdirs
+    references     chr22
+
+
+
+[app 1 copysplit]
+2011-01-24 15:30:34
+
+  Application:
+  name           copysplit
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  ordinal        1
+  outputfile     1-copysplit.app.bkp
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    executable     /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    loop           distributed
+    looplabel      eland-copysplit
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-copysplit.out
+    maxjobs        2000
+    mode           link
+    outdir         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+    queue          small
+    replicates     1-33
+    source         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%
+    target         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop distributed \
+ --looplabel eland-copysplit \
+ --outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland \
+ --maxjobs 2000 \
+ --walltime 24 \
+ --queue small \
+ --cluster LSF \
+ --cpus 1 \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-copysplit.out \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl \
+ --source /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE% \
+ --target /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE% \
+ --mode link 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-copysplit.out
+
+
+
+[app 2 bowtie32]
+2011-01-24 15:35:17
+
+  Application:
+  name           bowtie32
+  owner          anonymous
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  ordinal        2
+  outputfile     2-bowtie32.app.bkp
+
+    Parameters:
+    cluster        LSF
+    cpus           1
+    distance       200
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt
+    label          bowtie32-%REPLICATE%
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-bowtie32.out
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt
+    maxjobs        2000
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%
+    params         "--seedlen 32"
+    queue          small
+    reads          250000
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%/bowtie32.out
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+ --matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+ --species human \
+ --distance 200 \
+ --label bowtie32-%REPLICATE% \
+ --maxjobs 2000 \
+ --walltime 24 \
+ --queue small \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE% \
+ --reference /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22 \
+ --cluster LSF \
+ --params "--seedlen 32" \
+ --cpus 1 \
+ --reads 250000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/%REPLICATE%/bowtie32.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie32/loop-bowtie32.out 
+
+

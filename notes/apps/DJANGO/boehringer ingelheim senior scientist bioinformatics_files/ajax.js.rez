@@ -1,0 +1,251 @@
+// Copyright � Hanover Capital Management Corp. 2006. All Rights Reserved.
+
+//
+// Ajax tag semantics
+//
+// NOTE on 'providers' -- for siteman apps, can be an Ajax guid -- eg: dothis.ajax
+//                        for all apps, can be a JSP -- eg: /jsp/spartner/dothis.page
+//                                                          /jsp/superuser/sourcingcontexts_groups.page
+//
+// NOTE -- script requires that these variables have been appropriately set:
+//
+//         Ajax_applicationURL
+//         Ajax emailAddress
+//         Ajax_password
+//         Ajax_isa
+//         Ajax_oemID
+//         Ajax_siteCached
+//         Ajax_siteLive
+//
+// $Author: jtrow $
+// $Date: 2011-10-28 04:33:18 $
+// $Revision: 1.28 $
+//
+
+// Inject HTML/JavaScript content into a <DIV> or <SPAN> tag
+//
+// @param target          -- name of <DIV> or <SPAN> tag whose contents will be entirely replaced
+// @param provider        -- webapp-relative URL of service that will supply content
+// @param standByProvider -- optional snipped of HTML for standby content (null if none)
+// @param callback        -- optional JavaScript function call to be eval'd when the content load is complete
+// @param vargs           -- zero or more pairs of name/value arguments to be passed to 'provider'
+//                           OR an array of pairs of name/value arguments
+//                           OR an already-encoded string of the form name=value&name=value&...
+//
+function Ajax_inject(target, provider, standByProvider, callback, vargs) {
+  if (eval("window.Ajax_applicationURL")) {
+    // load standby content
+    if (standByProvider && (standByProvider != 'null')) {
+      // stuff the standby content into the element
+      $(target).innerHTML = standByProvider;
+    }
+    // this is what happens when the content load completes
+    var onComplete = function(req) {
+      // special assist for SiteController
+      if (target == 'Site_pageMaskContent2') {
+        var img = $('Site_pageMaskContent');
+        if (img)
+          img.style.display = 'none';
+        var shad = $('Site_pageMaskShadow');
+        if (shad)
+          shad.style.display = 'none';
+        var hand = $('Site_pageMaskHandle');
+        if (hand)
+          hand.style.visibility = 'hidden';
+      }
+      
+      var prev = null;
+      if (target === 'Site_pageMaskContent2')
+    	  prev = $(target).innerHTML;
+      Element.update(target, req.responseText);
+      // If this is a popup...
+      if (target === 'Site_pageMaskContent2') {
+    	// and it is the standby HTML...
+        if ($(target).innerHTML == $('Site_pageMaskStandby').innerHTML) {
+          // and we already have content in the mask container
+          if (prev != '') {
+            try {
+            	// then the data returned before 'please wait', so error and allow them to go on
+            	Site_maskPopup('An error occurred, please try again');
+            } catch (e) {}
+            return;
+          }
+        }
+      }
+      // otherwise, just do as normal
+      Ajax_invokeCallback(callback)
+    };
+    // now invoke 'provider'
+    var url = Ajax_url(provider);
+    var argi = (!vargs || (typeof vargs == 'string'))? 4 : 0;
+    var args = (!vargs || (typeof vargs == 'string'))? arguments : vargs;
+    var pars = Ajax_parameters(argi, args);
+    var cookies = new Array();
+    cookies[0] = "Cookie";
+    cookies[1] = document.cookie;
+    var ajax = new Ajax.Request(url, {method: 'post', onComplete: onComplete, parameters: pars, requestHeaders: cookies} );
+  }
+}
+
+// Fetch Data (JSON?) and pass it as a parameter to the callback().
+//
+// @param provider        -- webapp-relative URL of service that will supply content
+// @param vargs           -- zero or more pairs of name/value arguments to be passed to 'provider'
+//                           OR an array of pairs of name/value arguments
+//                           OR an already-encoded string of the form name=value&name=value&...
+// @param callback        -- JavaScript function called with results. Your function may optionally specify parm to receive the results i.e. - "my_callback(results)".
+// @param dataTarget        -- optional elementID to be completely replaced by the ajax results.
+//
+function Ajax_data(provider, vargs, callback, dataTarget) {
+  if (eval("window.Ajax_applicationURL")) {
+    // now invoke 'provider'
+    var url = Ajax_url(provider);
+    var argi = (!vargs || (typeof vargs == 'string'))? 1 : 0;
+    var args = (!vargs || (typeof vargs == 'string'))? arguments : vargs;
+    var pars = Ajax_parameters(argi, args);
+    var cookies = new Array();
+    cookies[0] = "Cookie";
+    cookies[1] = document.cookie;
+    var ajax = new Ajax.Request(url, {method: 'post', onComplete: callback, parameters: pars, requestHeaders: cookies} );
+  }
+}
+
+// Inject <OPTION> tags into a <SELECT> tag
+//
+// NOTE on wrapper: we would much rather just set innerHTML on the <SELECT> but there's a well-known bug in IE that prevents us
+//
+// @param wrapper         -- name of <DIV> or <SPAN> tag which wraps the <SELECT> tag
+// @param ctrl            -- name of the <SELECT> tag
+// @param provider        -- webapp-relative URL of service that will supply content
+// @param standByText     -- text that will be injected between <option> tags while waiting for the content to arrive
+// @param callback        -- optional JavaScript function call to be eval'd when the load is complete
+// @param vargs           -- zero or more pairs of name/value arguments to be passed to 'provider'
+//                           OR an array of pairs of name/value arguments
+//                           OR an already-encoded string of the form &name=value&name=value
+//
+function Ajax_injectSelect(wrapper, ctrl, provider, standByText, callback, vargs) {
+  if (eval("window.Ajax_applicationURL")) {
+    // disable the <SELECT> tag
+    var unknownStuff = "";
+    var wasDisabled = false;
+    var objs = document.getElementsByName(ctrl);
+    for (var i = 0; i < objs.length; i++) {
+      var obj = objs[i];
+      if (obj.options) {
+        wasDisabled = obj.disabled;
+        obj.disabled = true;
+        // now, extract the 'unknown' options so we can insert them later
+        for (var j = 0; j < obj.options.length; j++) {
+          var opt = obj.options[j];
+          if (opt.getAttribute("_unknown"))
+            unknownStuff += "<option _unknown=true value='" + opt.value + "' " + (opt.selected? "selected" : "") + ">" + opt.text + "</option>";
+        }
+        break;
+      }
+    }
+    // load standby text
+    if (standByText && (standByText != 'null')) {
+      var old = $(wrapper).innerHTML;
+      var ix = old.indexOf(">", old.indexOf("select"));
+      Element.update(wrapper, old.substring(0, ix + 1) + '<option>' + standByText + '</option></select>');
+    }
+    // this is what happens when the content load is complete
+    var onComplete = function(req) {
+      var old = $(wrapper).innerHTML;
+      if (!wasDisabled)
+        old = old.replace(/disabled/i, '');
+      var ix = old.indexOf(">", old.indexOf("select"));
+      Element.update(wrapper, old.substring(0, ix) + " _injectComplete=true>" + unknownStuff + req.responseText + '</select>');
+      Ajax_invokeCallback(callback);
+    };
+    // now invoke 'provider'
+    var url = Ajax_url(provider);
+    var argi = (!vargs || (typeof vargs == 'string'))? 5 : 0;
+    var args = (!vargs || (typeof vargs == 'string'))? arguments : vargs;
+    var pars = Ajax_parameters(argi, args)
+    var cookies = new Array();
+    cookies[0] = "Cookie";
+    cookies[1] = document.cookie;
+    var ajax = new Ajax.Request(url, {method: 'post', onComplete: onComplete, parameters: pars, requestHeaders: cookies} );
+  }
+}
+
+
+// Are all the injected <SELECT> tags completely loaded?
+//
+// @return true or false, as appropriate
+//
+function Ajax_injectSelectsComplete() {
+  var allComplete = true;
+  var objs = document.getElementsByTagName("SELECT");
+  for (var i = 0; i < objs.length; i++) {
+    var obj = objs[i];
+    if (("true" == obj.getAttribute("_injected")) && ("false" == obj.getAttribute("_injectLazily")) && !obj.getAttribute("_injectComplete")) {
+      allComplete = false;
+      break;
+    }
+  }
+  return allComplete;
+}
+
+// Utility method to invoke a callback
+//
+// @param callback -- optional JavaScript function call to be eval'd when the load is complete
+//
+function Ajax_invokeCallback(callback) {
+  if (callback && (callback != 'null'))
+    setTimeout("Ajax_invokeCallbackImpl('" + callback + "',100)");
+}
+
+// Utility method to invoke a callback
+//
+// @see Ajax_invokeCallback above
+//
+// @param callback -- optional JavaScript function call to be eval'd when the load is complete
+function Ajax_invokeCallbackImpl(callback) {
+  try {
+    eval(callback);
+  }
+  catch (ignored) { }
+}
+
+// Utility method to gather constant parameters to be passed to 'provider'
+//
+// @see com.airs.portal.taglib.Ajax.java
+//
+// @param argi -- start index into args
+// @param args -- array of name/value argument pairs
+//                OR an already-encoded string of the form name=value&name=value&...
+//
+// @return parameter string
+//
+function Ajax_parameters(argi, args) {
+  var pars = 'x=' + Math.random();
+  if ((args.length - argi) == 1) {
+    var encoded = args[argi];
+    if (encoded && (encoded.length > 0) && (encoded.indexOf("&") != 0))
+      pars += "&";
+    pars += encoded;
+  }
+  else {
+    for (var i = argi; i < args.length; i += 2)
+      pars += '&' + args[i] + '=' + encodeURIComponent(args[i + 1]);
+  }
+  return pars;
+}
+
+// Utility method to convert 'provider' into a full URL
+//
+// @param provider
+//
+// @see com.airs.portal.taglib.Ajax.java
+//
+// @return URL string
+//
+function Ajax_url(provider) {
+  if (provider.indexOf('.') == -1)
+    return Ajax_applicationURL + '/' + provider + '.ajax';
+  else if (provider.indexOf('/') == 0)
+    return Ajax_applicationURL + provider;
+  else return Ajax_applicationURL + '/' + provider;
+}

@@ -1,0 +1,720 @@
+
+>CC: jvanwye@rsmas.miami.edu, dcrawford@rsmas.miami.edu, moleksiak@rsmas.miami.edu
+>Subject: RE: Annotations
+>Date: Mon, 6 Nov 2006 12:58:55 -0500 (EST)
+>
+>Stuart,
+>   ORIGINAL STATS for Fundulus ESTs prior to Jeff's sequencing of new EST
+>libraries:
+>44,204 sequences
+>3,774   clusters (with two or more members)
+>9,042   singletons
+>3,423   annotated sequences
+>2,115   unique sequences with one or more GO terms assigned
+>70,818 total GO terms assiged
+>
+>  I am wondering why there is only 2522 "best".
+>Originally there were >9,000 cluster,  approximatel 3,400 annotations.  We
+>have added >10,000 more sequence from other tissues and stresses.
+>So why 2522?
+>
+>2nd you suggest that there are 8,348 annotations.  How does this get
+>reduced to 2522?
+>
+>
+>MY Questions:
+>18,000 sequences ( is this the 6,000 PLUS the most recent sequences?)
+>What are these sequences?
+>How many clusters and how many singletons?
+>How many annotations of these (in each group: cluster and singleton)?
+>How many are unique (are different genes)?  How did you know they were the
+>same but not clusters.
+>
+>MY PROBLEM is we have gone from 4,000+ annotations to 2,000.  What is
+>going on?
+>
+>dlc
+>
+>
+>
+> > Hi Jeff/Doug,
+> >
+> > Here's the list of the sequences we have that are not annotated:
+> >
+> > http://genomics.rsmas.miami.edu/downloads/funnybase7.noannotation.tsv
+> >
+> > And here's the breakdown of sequences by annotation:
+> >
+> > Total all sequences: 18102
+> > No. unannotated sequences: 9754
+> > No. annotated sequences: 8348
+> > No. of unique annotations: 2522 (by BLAST best hit target_id)
+> >
+> > Stuart.
+> >
+> > _________________________________________________________________
+> > Don't just search. Find. Check out the new MSN Search!
+> > http://search.msn.click-url.com/go/onm00200636ave/direct/01/
+> >
+>
+>
+>--
+>Douglas L. Crawford
+>Director Marine Genomics
+>Rosenstiel School of Marine & Atmospheric Science
+>Unversity of Miami
+>4600 Rickenbacker Cswy.
+>Miami, FL  33149
+>305-421-4121
+>dcrawford@rsmas.miami.edu
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Nov 10 08:16:18 EST 2006
+
+1. INSERTED BLAST RESULTS FOR supercraw0 (experiments: 1 123 124 125 189 190 199 999) INTO funnybaseblast TABLE:
+
+BREAKDOWN BY BLAST TARGET SOURCE:
++--------------+--------------------------+
+| targetsource | count(distinct targetid) |
++--------------+--------------------------+
+| refseq-dog   |                    14888 |
+| refseq-human |                    10813 |
+| refseq-mouse |                     9547 |
+| refseq-rat   |                     9098 |
+| swissprot    |                    44341 |
++--------------+--------------------------+
+
+2. GOT 'best sequences' FROM supercraw0
+
+Total sequences        12741
+Unannotated sequences   9450
+Annotated sequences     3291
+Unique sequences        2457
+
+All annotated sequences:
+http://genomics.rsmas.miami.edu/downloads/supercraw0.annotatedsequences.tsv
+
+Best annotated sequences:
+http://genomics.rsmas.miami.edu/downloads/supercraw0.uniquesequences.tsv
+
+Unknown sequences:
+http://genomics.rsmas.miami.edu/downloads/supercraw0.unknownsequences.tsv
+
+3. COMPARED BLAST RESULTS OF supercraw0 WITH supercraw5 AND funnybase7:
+
+comparefunnybaseannotation.pl -d supercraw0 -t supercraw5
+
+Same sequence found: 2053
+Total 'supercraw0' sequences: 2457
+Total 'supercraw5' sequences: 3668
+Output file printed:
+
+http://genomics.rsmas.miami.edu/downloads/supercraw0-supercraw5.compare.tsv
+
+comparefunnybaseannotation.pl -d supercraw0 -t funnybase7
+
+Same sequence found: 1111
+Total 'supercraw0' sequences: 2457
+Total 'funnybase7' sequences: 2522
+Output file printed:
+
+http://genomics.rsmas.miami.edu/downloads/supercraw0-funnybase7.compare.tsv
+
+
+BREAKDOWN BY SEQUENCE TYPE:
+
+supercraw0
++--------------+-----------------------+
+| sequencetype | count(sequencenumber) |
++--------------+-----------------------+
+| contig       |                  2828 |
+| singlet      |                  9913 |
++--------------+-----------------------+
+
+supercraw5
++--------------+-----------------------+
+| sequencetype | count(sequencenumber) |
++--------------+-----------------------+
+| contig       |                 13568 |
+| singlet      |                 36223 |
++--------------+-----------------------+
+
+funnybase7
+
++--------------+-----------------------+
+| sequencetype | count(sequencenumber) |
++--------------+-----------------------+
+| contig       |                   586 |
+| singlet      |                 17516 |
++--------------+-----------------------+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Nov  9 13:27:24 EST 2006
+
+1. USED APPLICATION TO EXTRACT RAW SEQUENCE FROM super_craw5 AND PRINT TO A SINGLE FASTA FILE:
+
+    ./supercraw2fasta.pl -n supercraw0 -e 1,123,124,125,189,190,199,999
+
+NB: STRANGE PLATE NUMBERS - CHANGE ASSEMBLY READS TABLE TO ACCOMMODATE IF REQUIRE DISPLAY OF READS LATER:
+
+Total experiments: 1 123 124 125 189 190 199 999
+Doing experiment 1
+Plate: 100276
+Plate: 100275
+Plate: 100274
+Plate: 100269
+Plate: 100258
+Plate: 100257
+Plate: 100256
+Plate: 100255
+...
+
+
+2. REFINED assembler.pl TO UPDATE pipeline TABLE WHILST SCREENING FASTA FILE:
+
+    ./assembler.pl -n supercraw0 -s 4.
+
+
+3. REWROTE assemblysequences.pl TO WRITE TO .TSV FILE THEN DO BULK UPLOAD (20X FASTER THAN BEFORE)
+   
+ ./pipeline.pl -s 4. -d supercraw0 -w
+
+ 
+4. TRANSFERRED funnybasesequences TABLE TO gems AND DID ARRAYBLAST:
+
+sudo ./funnybasearrayblast.pl -d supercraw0 -t refseq-human,refseq-rat,refseq-mouse,refseq-dog,swissprot
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Nov  8 21:25:19 EST 2006
+
+./supercraw2fasta.pl -n supercraw0 -e 1,123,124,125,189,190,199,999
+
+/Users/young/FUNNYBASE/pipeline/supercraw0/edit_dir/supercraw0.fasta
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Msg Doug, CC Jeff
+
+Hi Doug,
+
+Here are the results of my preliminary comparison of 'funnybase7' and 'supercraw5':
+
+6. GET 'best sequences' FROM supercraw5
+
+Total sequences         49791
+Unannotated sequences   37239
+Annotated sequences     12552
+Unique sequences         3668
+
+7. COMPARE BLAST RESULTS BASED ON target_source, target_id - WHAT ARE THE COMMON GENES AND WHAT ARE THE OTHERS?
+
+Using:
+
+comparefunnybaseannotation.pl
+
+Same sequence found: 1882
+Total 'funnybase7' sequences: 2522
+Total 'supercraw5' sequences: 3668
+
+The 'total ... sequences' represent the unique sequences found by clustering the assembled sequences according to best blast hit and then choosing 1) most 5-prime, 2) longest, 3) highest quality, in that order.
+
+Here is the output file:
+
+http://genomics.rsmas.miami.edu/downloads/funnybase7-supercraw5.compare.tsv
+
+I'm next going to look into the possbility that it might be that the extra annotations come from sequences in the earlier experiments (1, 123, etc.) that weren't included in funnybase7 because they either didn't have .phd files or were normalised:
+
+Experiments in supercraw5
++------------+--------------------+
+| Exp_Set_ID | count(Sequence_Id) |
++------------+--------------------+
+|          1 |              17557 |
+|        123 |               3473 |
+|        124 |               1152 |
+|        125 |              15726 |
+|        126 |               5849 |
+|        127 |               2014 |
+|        128 |                 96 |
+|        129 |                 96 |
+|        130 |                165 |
+|        151 |                960 |
+|        152 |                960 |
+|        153 |               1152 |
+|        154 |                768 |
+|        155 |                944 |
+|        156 |                960 |
+|        157 |                960 |
+|        158 |                960 |
+|        159 |              12282 |
+|        189 |                 96 |
+|        190 |                192 |
+|        199 |                 96 |
+|        999 |                 96 |
++------------+--------------------+
+
+Experiments in funnybase7:
++------------+-------------+
+| experiment | count(well) |
++------------+-------------+
+|        126 |        5947 |
+|        130 |        8995 |
+|        151 |         959 |
+|        152 |         959 |
+|        153 |        1152 |
+|        154 |         768 |
+|        155 |         942 |
+|        156 |         954 |
+|        157 |         945 |
+|        158 |         956 |
+|        159 |       12233 |
++------------+-------------+
+
+
+Stuart.
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Nov  8 13:04:16 EST 2006
+
+super_craw5 EXPERIMENTS
++++++++++++++++++++++++
+
+select Exp_Set_ID, count(Sequence_Id) from master_seq2 group by Exp_Set_ID;
++------------+--------------------+
+| Exp_Set_ID | count(Sequence_Id) |
++------------+--------------------+
+|          1 |              17557 |
+|        123 |               3473 |
+|        124 |               1152 |
+|        125 |              15726 |
+|        126 |               5849 |
+|        127 |               2014 |
+|        128 |                 96 |
+|        129 |                 96 |
+|        130 |                165 |
+|        151 |                960 |
+|        152 |                960 |
+|        153 |               1152 |
+|        154 |                768 |
+|        155 |                944 |
+|        156 |                960 |
+|        157 |                960 |
+|        158 |                960 |
+|        159 |              12282 |
+|        189 |                 96 |
+|        190 |                192 |
+|        199 |                 96 |
+|        999 |                 96 |
++------------+--------------------+
+22 rows in set (0.60 sec)
+
+funnybase7, funnybase8 EXPERIMENTS
+++++++++++++++++++++++++++++++++++
+
+SELECT experiment, count(well) from reads group by experiment;
++------------+-------------+
+| experiment | count(well) |
++------------+-------------+
+|        126 |        5947 |
+|        130 |        8995 |
+|        151 |         959 |
+|        152 |         959 |
+|        153 |        1152 |
+|        154 |         768 |
+|        155 |         942 |
+|        156 |         954 |
+|        157 |         945 |
+|        158 |         956 |
+|        159 |       12233 |
++------------+-------------+
+
+
+EXPERIMENTS IN supercraw5 AND NOT IN funnybase7
+
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID =1 into outfile '/private/tmp/supercraw5.exp1.reads.tsv';
+Query OK, 17557 rows affected (1.03 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 123 into outfile '/private/tmp/supercraw5.exp123.reads.tsv';
+Query OK, 3473 rows affected (0.08 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 124 into outfile '/private/tmp/supercraw5.exp124.reads.tsv';
+Query OK, 1152 rows affected (0.02 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 125 into outfile '/private/tmp/supercraw5.exp125.reads.tsv';
+Query OK, 15726 rows affected (0.42 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 189 into outfile '/private/tmp/supercraw5.exp189.reads.tsv';
+Query OK, 96 rows affected (0.01 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 190 into outfile '/private/tmp/supercraw5.exp190.reads.tsv';
+Query OK, 192 rows affected (0.01 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 199 into outfile '/private/tmp/supercraw5.exp199.reads.tsv';
+Query OK, 96 rows affected (0.00 sec)
+
+mysql> select Exp_Set_ID, Plate_ID, Well_ID from master_seq2 where Exp_Set_ID = 999 into outfile '/private/tmp/supercraw5.exp999.reads.tsv';
+Query OK, 96 rows affected (0.00 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 1;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                  0 |
++--------------------+
+1 row in set (1.02 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 123;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                  0 |
++--------------------+
+1 row in set (0.06 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 124;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                  0 |
++--------------------+
+1 row in set (0.03 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 125;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|              15726 |
++--------------------+
+1 row in set (0.41 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 189;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                 96 |
++--------------------+
+1 row in set (0.01 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 190;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                192 |
++--------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 199;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                 96 |
++--------------------+
+1 row in set (0.00 sec)
+
+mysql> select count(Sequence_ID) from master_seq2 where phd_quality_file IS NOT NULL and Exp_Set_ID = 999;
++--------------------+
+| count(Sequence_ID) |
++--------------------+
+|                 96 |
++--------------------+
+1 row in set (0.00 sec)
+
+
+
+5. BLAST AGAINST swissprot,refseq-human,refseq-rat,refseq-mouse,refseq-dog
+
+Getting funnybase sequences without annotations (total 37239) in database 'supercraw5'
+
+SUPERCRAW5
+select count(targetid), targetsource from funnybasesequencesannotation group by targetsource ;
++-----------------+--------------+
+| count(targetid) | targetsource |
++-----------------+--------------+
+|              68 | refseq-dog   |
+|            3558 | refseq-human |
+|            3593 | refseq-mouse |
+|            1027 | refseq-rat   |
+|            4306 | swissprot    |
++-----------------+--------------+
+
+FUNNYBASE7
++-----------------+--------------+
+| count(targetid) | targetsource |
++-----------------+--------------+
+|              36 | refseq-dog   |
+|            1453 | refseq-human |
+|            1753 | refseq-mouse |
+|             598 | refseq-rat   |
+|            4508 | swissprot    |
++-----------------+--------------+
+
+FUNNYBASE8
++-----------------+--------------+
+| count(targetid) | targetsource |
++-----------------+--------------+
+|              54 | refseq-dog   |
+|            2215 | refseq-human |
+|             526 | refseq-mouse |
+|            1310 | refseq-rat   |
+|            5188 | swissprot    |
++-----------------+--------------+
+
+
+6. GET 'best sequences' FROM supercraw5
+
+Total sequences         49791
+Unannotated sequences   37239
+Annotated sequences     12552
+Unique sequences         3668
+
+7. COMPARE BLAST RESULTS BASED ON target_source, target_id - WHAT ARE THE COMMON GENES AND WHAT ARE THE OTHERS?
+
+Using:
+
+comparefunnybaseannotation.pl
+
+Same sequence found: 1882
+Total 'funnybase7' sequences: 2522
+Total 'supercraw5' sequences: 3668
+
+The 'total ... sequences' represent the unique sequences found by clustering the assembled sequences according to best blast hit and then choosing 1) most 5-prime, 2) longest, 3) highest quality, in that order.
+
+Here is the output file:
+
+http://genomics.rsmas.miami.edu/downloads/funnybase7-supercraw5.compare.tsv
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Hi Doug,
+
+>1:  are you blasting the contig or the "best sequence from the contig?
+
+I'm first blasting all of the contigs/singlets to get their annotation and then going through them to see which of them have the same database target hit (i.e., same target_id) as their best hit. These I consider a 'cluster of contigs' and I go through each cluster to see which is the 'best' sequence based on most 5-prime, length and quality, in that order.
+
+>2: below the bottom line:  are we doing the best job at annoating or
+>"where has the annotations gone"  please read the message below and
+>address all questions when I get back on Friday morning.
+
+I've been working on a way of at least comparing 'super_craw5' and 'funnybase7' today. I've taken all of the 'unique_est's from 'super_craw5' and am currently BLASTing them against our chosen databases (swissprot, refseq) with a cutoff of 1e-05. Tomorrow I'll make a 'set comparison' to see what is the 'join' between supercraw5 and funnybase8 and try to figure out any discrepancies.
+
+Here's the methodology I'm following (I'm currently running stage 5):
+
+supercraw5
+++++++++++
+
+1. select unique_est_id, is_contig, singlet_seqid, est_sequence from master_seq2_unique_est into outfile '/private/tmp/supercraw5.tsv';
+
+2. MOVED TO ~/FUNNYBASE/pipeline/supercraw5/edit_dir/supercraw5.tsv
+
+3. PARSED INTO FASTA FILE USING:
+
+supercraw5/supercraw5.tsv2fasta.pl
+
+69813 lines in .tsv file 
+59567 sequences added to fasta file (i.e., ~10,000 'unique_est's did not have sequences) 
+
+4. PARSED .FASTA FILE INTO assemblysequences TABLE OF NEW DATABASE 'supercraw5' (NB: ***NOT*** 'super_craw5') USING:
+
+supercraw5/fasta2assemblysequences.pl
+
+WITH length cutoff = 50bp
+
+Total sequences: 59567 records.
+Contigs added to 'assemblysequences' table: 13568
+Singlets added to 'assemblysequences' table: 36223
+Total sequences added to 'assemblysequences' table: 49791
+
+5. BLAST AGAINST swissprot,refseq-human,refseq-rat,refseq-mouse,refseq-dog
+
+6. GET 'best sequences' FROM supercraw5
+
+7. COMPARE BLAST RESULTS BASED ON target_source, target_id - WHAT ARE THE COMMON GENES AND WHAT ARE THE OTHERS?
+
+
+Btw, here are the sequence files for 'funnybase8' (same as funnybase7 except that the BLAST cutoff is lowered to 1e-05 from 1e-10):
+
+http://genomics.rsmas.miami.edu/downloads/funnybase8.annotatedsequences.tsv
+http://genomics.rsmas.miami.edu/downloads/funnybase8.uniquesequences.tsv
+http://genomics.rsmas.miami.edu/downloads/funnybase8.unknownsequences.tsv
+
+
+I'm also thinking we could maybe lower our quality value cutoff for including assembled sequences into the database as a way of increasing our number of sequences. Here's the original numbers and what passed through our filter:
+
+              assembled   filtered
+Singlets     24187      17516
+Contigs       1779          586
+
+Here are the parameters I used to filter assembled sequences before adding them to the database:
+
+# TRIM PARAMETERS
+my $window_size = 30;		# bp
+my $quality_cutoff = 20;	# phred score
+
+# ASSEMBLY PARAMETERS
+my $length_cutoff = 50;     # minimum length of 'assemblysequences' sequence
+
+>1:  we need "real"/best GOOD annotations to compare to evolution and
+>protein annotations
+>2: you have to ask:  is the annotation scheme we are using
+>    A: proving the best annotations  (how would one know, how does it
+>compare to previous annotations, to TIGR)  That is,  how do you do good
+>science (empirically test your annotation scheme.    Providing rigorous
+>annotations should  be a high priority.   I also need to know that the
+>result are store and accessible to "untrained" scientist.  That is,
+>beyond doing good science for annotations, you need to think about how
+>other can readily access this results.
+
+I'd like to compare our latest assembly to TIGR's annotations, which are here:
+
+http://www.tigr.org/tigr-scripts/tgi/tc_ann.pl?db=fhest
+http://snhs-plin.barry.edu/Research/TIGR_Killifish_Gene_Index.htm
+
+
+>B:  provide annotations from separate database and synonym.  One of the
+>more important point of your Qual, was that different database give
+>different answer.
+>For example, previous we had STAR (steriogenic .... response),  we do not
+>have this gene name anymore.  What is it current name?  This is not
+>trivial because STAR is an important toxicology gene, yet it probably has
+>a new name.
+
+I'm working on building a synonym list from existing available lists and by compiling our own.
+
+Stuart.
+
+
+
+
+>From: dcrawford@rsmas.miami.edu
+>To: "stuart young" <youngstuart@hotmail.com>
+>Subject: Re: Annotations at BLAST cutoff 1e-05
+>Date: Tue, 7 Nov 2006 15:44:19 -0500 (EST)
+>
+>Stuart,
+>   Two messages:  1 in response to this message, one written this morning.
+>
+>1:  are you blasting the contig or the "best sequence from the contig?
+>2: below the bottom line:  are we doing the best job at annoating or
+>"where has the annotations gone"  please read the message below and
+>address all questions when I get back on Friday morning.
+>
+>dlc
+>
+>
+>
+>youngstuart@hotmail.com
+>
+>Stuart,
+>      You need to think critically about the annotations.
+>
+>1:  we need "real"/best GOOD annotations to compare to evolution and
+>protein annotations
+>2: you have to ask:  is the annotation scheme we are using
+>    A: proving the best annotations  (how would one know, how does it
+>compare to previous annotations, to TIGR)  That is,  how do you do good
+>science (empirically test your annotation scheme.    Providing rigorous
+>annotations should  be a high priority.   I also need to know that the
+>result are store and accessible to "untrained" scientist.  That is,
+>beyond doing good science for annotations, you need to think about how
+>other can readily access this results.
+>
+>B:  provide annotations from separate database and synonym.  One of the
+>more important point of your Qual, was that different database give
+>different answer.
+>For example, previous we had STAR (steriogenic .... response),  we do not
+>have this gene name anymore.  What is it current name?  This is not
+>trivial because STAR is an important toxicology gene, yet it probably has
+>a new name.
+>
+>MY POINT:  Take responsibility to do the best science to annotate Funny
+>EST and you will know more about the how and whys of annotation providing
+>you with a rare and worthwhile expertise.
+>
+>PLEASE, think about the results,  question their validity and provide a
+>mechanisms that people like me and your colleagues in my lab can visualize
+>and understand the output.
+>
+>dlc
+>
+>
+>
+>
+> > Hi Doug,
+> >
+> > Here's the breakdown of the annotated sequences using a BLAST cutoff of
+> > 1e-05:
+> >
+> > funnybase8
+> > +++++++
+> > Blast E-value cutoff	    1.00E-05
+> > Total sequences	            18102
+> > Unannotated sequences	8809
+> > Annotated sequences	  9293
+> > Unique sequences	   2853
+> >
+> > This is compared to the previous annotation I did using a BLAST cutoff of
+> > 1e-10:
+> >
+> > funnybase7
+> > +++++++
+> > Blast E-value cutoff	     1.00E-10
+> > Total all sequences          18102
+> > Unannotated sequences   9754
+> > Annotated sequences       8348
+> > Unique sequences           2522
+> >
+> > The 'unique sequences' are simply the best assembled sequences (most
+> > 5-prime, longest, highest quality) among the clusters of singlets/contigs
+> > that have their best hit against the same BLAST target sequences.
+> >
+> > Stuart.
+> >
+> > _________________________________________________________________
+> > Express yourself instantly with MSN Messenger! Download today it's FREE!
+> > http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >
+>
+>
+>--
+>Douglas L. Crawford
+>Director Marine Genomics
+>Rosenstiel School of Marine & Atmospheric Science
+>Unversity of Miami
+>4600 Rickenbacker Cswy.
+>Miami, FL  33149
+>305-421-4121
+>dcrawford@rsmas.miami.edu
+
+
+funnybase9
+++++++++++
+DIFFERENT SEQUENCES FROM funnybase7 AND funnybase8 BECAUSE OF LOWER SEQUENCE AVERAGE QUALITY THRESHOLD (15 INSTEAD OF 20)
+TOTAL SEQUENCES: 
+
+
+
+
+select count(*) from  blast_master_seq2_unique_est_swiss_prot
+    -> ;
++----------+
+| count(*) |
++----------+
+|     9636 |
++----------+
+1 row in set (0.00 sec)
+
+
+
+

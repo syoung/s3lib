@@ -1,0 +1,201 @@
+</entry>
+
+
+
+<entry [Mon Mar 12 13:24:45 EDT 2007] MSG: Tim>
+
+
+CC: Doug, Jeff, Margie
+SJT: Karenia2 download with additional databases
+
+Hi all,
+
+The download of karenia2 now includes the following BLAST databases:
+
+arabidopsis
+neurospora
+pberghei
+pfalciparum
+pvivax
+pyoelii
+tgondii
+unigene-hydra
+yeast
+zebrafish6
+
+as well as the 'core' database:
+
+swissprot
+refseq-human
+refseq-mouse
+refseq-rat
+refseq-dog
+
+You can download it at:
+http://genomics.rsmas.miami.edu/sandbox11/sandbox11.html
+
+First, select the 'karenia2' database: File --> Open --> Database --> karenia2
+
+Then, download the TSV file: File --> Save --> Collection sequences
+
+and open in Excel.
+
+Cheers,
+
+Stuart.
+
+</entry>
+
+
+
+<entry [Mon Mar 12 13:00:11 EDT 2007] BLASTED karenia2 AGAINST arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6, LOADED INTO MYSQL AND CREATED DOWNLOAD FILE>
+
+
+
+COPIED TO /common/data AND FORMATTED:
+
+sudo cp arabidopsis /common/data
+sudo cp neurospora /common/data
+sudo cp pberghei /common/data
+sudo cp pfalciparum /common/data
+sudo cp pvivax /common/data
+sudo cp pyoelii /common/data
+sudo cp tgondii /common/data
+sudo cp yeast /common/data
+
+ON gems OR genomics (SLOW):
+cd /common/data
+sudo /common/bin/formatdb -i arabidopsis -p T -o T
+sudo /common/bin/formatdb -i neurospora -p T -o T
+sudo /common/bin/formatdb -i pberghei -p T -o T
+sudo /common/bin/formatdb -i pfalciparum -p T -o T
+sudo /common/bin/formatdb -i pvivax -p T -o T
+sudo /common/bin/formatdb -i pyoelii -p T -o T
+sudo /common/bin/formatdb -i tgondii -p T -o T
+sudo /common/bin/formatdb -i yeast -p T -o T
+
+RAN collectionarrayblast ON ALL DATABASES (arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6):
+
+cd /Users/local/FUNNYBASE/bin/pipeline4
+sudo ./collectionarrayblast.pl -d karenia2 -t arabidopsis
+sudo ./collectionarrayblast.pl -d karenia2 -t neurospora
+sudo ./collectionarrayblast.pl -d karenia2 -t pberghei
+sudo ./collectionarrayblast.pl -d karenia2 -t pfalciparum,pvivax,pyoelii
+sudo ./collectionarrayblast.pl -d karenia2 -t tgondii
+sudo ./collectionarrayblast.pl -d karenia2 -t unigene-hydra
+sudo ./collectionarrayblast.pl -d karenia2 -t yeast
+sudo ./collectionarrayblast.pl -d karenia2 zebrafish6
+
+LOAD INTO DATABASE ON GENOMICS:
+
+sudo ./collectionblastloaddata.pl -d karenia2 -t arabidopsis,neurospora,pberghei,pfalciparum,pvivax,pyoelii,tgondii,unigene-hydra,yeast,zebrafish6
+
+select targetsource, count(*) from collectionblast group by targetsource ;
++---------------+----------+
+| targetsource  | count(*) |
++---------------+----------+
+| arabidopsis   |    32631 |
+| neurospora    |    24272 |
+| pberghei      |    15127 |
+| pfalciparum   |    57416 |
+| pvivax        |    25679 |
+| pyoelii       |    25124 |
+| refseq-dog    |    73378 |
+| refseq-human  |    41284 |
+| refseq-mouse  |    36255 |
+| refseq-rat    |    33992 |
+| swissprot     |   124854 |
+| tgondii       |    49341 |
+| unigene-hydra |     3718 |
+| yeast         |    12145 |
+| zebrafish6    |     7179 |
++---------------+----------+
+15 rows in set (1.85 sec)
+
+CREATED DOWNLOAD FILE:
+
+sudo ./collectionsequencesdownload.pl -d karenia2
+
+
+</entry>
+
+
+
+<entry [Mon Mar 12 10:31:48 EDT 2007] REFORMATED ALL DATABASES TO CONFORM TO THE FORMAT:>
+
+
+(USING reformat (reformat.fasta.pl) )
+
+>id name|annotation
+sequence
+
+reformat -t arabidopsis -i arabidopsis.fa -o arabidopsis
+reformat -t neurospora -i neurospora.fa -o neurospora
+reformat -t pberghei -i pberghei.fa -o pberghei
+reformat -t pfalciparum -i pfalciparum.fa -o pfalciparum
+reformat -t pvivax -i pvivax.fa -o pvivax
+reformat -t pyoelii -i pyoelii.fa -o pyoelii
+reformat -t tgondii -i tgondii.fa -o tgondii
+reformat -t yeast -i yeast.fa -o yeast
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Mar  9 18:53:37 EST 2007
+
+
+cp PbergheiAnnotatedProteins_plasmoDB-5.0.fasta		pberghei.fa
+cp PfalciparumAnnotatedProteins_plasmoDB-5.0.fasta		pfalciparum.fa
+cp PvivaxAnnotatedProteins_plasmoDB-5.0.fasta			pvivax.fa
+cp PyoeliiAnnotatedProteins_plasmoDB-5.0.fasta			pyoelii.fa
+cp TgondiiAnnotatedProteins.fa							tgondii.fa
+cp orf_trans.fasta  	yeast.fa
+cp neurospora_crassa_7_proteins.fasta       neurospora.fa
+cp TAIR6_pep_20060907      arabidopsis.fa
+
+
+
+FIVE APICOCOMPLEXANS - FOUR PLASMODIA AND TOXOGONDII
+General
+http://www.apidb.org/apidb/
+Downloads
+http://www.apidb.org/common/downloads/release2.1/CryptoPlasmoToxo_downloads/
+
+PbergheiAnnotatedProteins_plasmoDB-5.0.fasta		--> pberghei.fa
+PbergheiAnnotatedTranscripts_plasmoDB-5.2.fasta
+PfalciparumAnnotatedProteins_plasmoDB-5.0.fasta		--> pfalciparum.fa
+PfalciparumAnnotatedTranscripts_plasmoDB-5.2.fasta
+PvivaxAnnotatedProteins_plasmoDB-5.0.fasta			--> pvivax.fa
+PvivaxAnnotatedTranscripts_plasmoDB-5.2.fasta
+PyoeliiAnnotatedProteins_plasmoDB-5.0.fasta			--> pyoelii.fa
+PyoeliiAnnotatedTranscripts_plasmoDB-5.2.fasta
+TgondiiAnnotatedProteins.fa							--> tgondii.fa
+TgondiiAnnotatedTranscripts_toxoDb-4.1.fasta
+
+
+YEAST
+http://www.broad.mit.edu/annotation/genome/neurospora/Home.html
+orf_trans.fasta  	--> yeast.fa
+orf_trans_all.fasta.gz
+
+
+NEUROSPORA
+http://www.broad.mit.edu/annotation/genome/neurospora/Home.html
+neurospora_crassa_7_genes.fasta.gz
+neurospora_crassa_7_proteins.fasta       --> neurospora.fa
+neurospora_crassa_7_transcripts.gtf.gz
+
+
+ARABIDOPSIS
+chromosome 2: TIGR ftp://ftp.tigr.org/pub/data/a_thaliana/
+all at TAIR: ftp://ftp.arabidopsis.org/home/tair/Genes/TAIR6_genome_release/TAIR6_pep_20060907
+
+TAIR6_pep_20060907      --> arabidopsis.fa
+
+
+ALREADY INSTALLED MARINE GENOMES:
+unigene-hydra
+zebrafish6
+
+
+pine (photosyn) - DELETED by BioTeam...
+rice    - DELETED by BioTeam...

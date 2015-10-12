@@ -1,0 +1,2499 @@
+Notes-apps-amos.txt
+
+
+</entry>
+
+
+
+<entry [Mon Sep  8 16:03:12 EDT 2008] FIX error while loading shared libraries: libqt.so.3 PROBLEM>
+
+
+
+
+PROBLEM
+
+error while loading shared libraries: libqt.so.3: cannot open shared object 
+file: No such file or directory
+
+DIAGNOSIS
+
+WAS NOT FINDING qt LIB IN 'LD_LIBRARY_PATH' ENVIRONMENT VARIABLE
+
+SOLUTION
+
+ADD TO .bash_profile:
+
+export LD_LIBRARY_PATH=/usr/local/qt/lib:$LD_LIBRARY_PATH
+
+
+** DIDN'T WORK **
+
+1) Chances are you forgot to put the path to libqt.so.3 into your 
+/etc/ld.so.conf.
+
+e.g. if you installed qt 3.x to /usr/lib/qt3, do (as root)
+
+echo "/usr/lib/qt3/lib" >>/etc/ld.so.conf
+/sbin/ldconfig
+
+
+</entry>
+
+
+
+<entry [Fri Sep  5 01:48:34 EDT 2008] HOW TO CREATE A SCAFFOLD IN AMOS WITH PAIRED END READS>
+
+
+
+Taken from 'Running Celera Assembler'
+http://www.cbcb.umd.edu/research/CeleraAssembler.shtml#pipeline
+
+AMOS Assembly Viewer
+
+Unlike Consed or other ACE based viewer, the AMOS Assembly Viewer works natively from AMOS datatypes, and can display all relevant assembly information in a single interactive tool- including contigs and inserts within scaffolds, the multiple-alignment of reads within contigs, and even the chromatograms of the individual reads. To view a Celera Assembler assembly with the AMOS Assembly Viewer, you first must convert to AMOS format, but then you can immediately view the assembly.
+
+toAmos -f genome.trim.frg -a genome.trim.asm -o genome.trim.afg
+bank-transact -m genome.trim.afg -b genome.bnk -c
+bankViewer genome.bnk
+
+
+[syoung@solexa01 Pipeline]$ toAmos -h
+
+.USAGE.
+  toAmos (-m mates|-x traceinfo.xml|-f frg|-acc)
+         (-c contig|-a asm [-S]|-ta tasm|-ace ace|-s fasta|-q qual) 
+         (-arachne assembly.links|-scaff file.scaff)
+         -o outfile 
+         [-i insertfile | -map dstmap]
+         [-gq goodqual] [-bq badqual]
+         [-pos posfile] [-phd]
+
+.DESCRIPTION.
+  toAmos is primarily designed for converting the output of an assembly
+  program into the AMOS format so that it can be stored in an AMOS bank.  
+
+  If you simply need a program to generate assembly inputs for one the 
+  AMOS-based assemblers (e.g. minimus or AMOS-cmp) use tarchive2amos. 
+
+  toAmos reads the inputs specified on the command line and converts the 
+  information into AMOS message format.  The following types of 
+  information can be provided to toAmos:
+    -> Sequence and quality data (options -f, -s,  -q, -gq, or -bq)
+    -> Library and mate-pair data (options -m, -x, -f, -i,  or  -map)
+    -> Contig  data (options -c, -a, -ta, or -ace)
+    -> Scaffold data (option -a)    
+
+.OPTIONS.
+  -o <outfile> - place output in <outfile>
+  -m <matefile> - library and mate-pair information in Bambus format
+  -x <trace.xml> - ancilliary data (library, mate-pair, clear range) 
+     in Trace Archive format
+  -f <frg file> - library, mate-pair, sequence, quality, and clear 
+     range data in Celera Assembler message format
+
+
+
+  ASM File Options:
+    -S Include Surrogate Unitigs as AMOS Contigs
+    -utg Include all UTG Unitig messages as AMOS Contigs
+
+
+'scaff' APPS IN amos/bin:
+
+[syoung@solexa01 amos]$ ls bin | grep scaff
+arachne2scaff
+bank2scaff
+ca2scaff
+scaff2fasta
+scaffoldRange2Ungapped
+
+
+[syoung@solexa01 amos]$ bank2scaff -h
+
+.USAGE.
+  bank2scaff  [options]  <bank path>
+
+.DESCRIPTION.
+  Takes an AMOS bank directory and prints the scaffolds to stdout.
+
+  Default format:
+  >scaffid numcontigs scaffbases scaffspan
+  contigid orientation contiglen leftgapsize
+
+.OPTIONS.
+  -h      Display help information
+  -v      Display the compatible bank version
+  -e      Use EIDs for names (DEFAULT)
+  -i      Use IIDs for names
+  -E file Print just the contig eids listed in file
+  -I file Print just the contig iids listed in file
+  -u      Show the ungapped contig lengths in the scaff file
+  -l      Create a Arachne links file
+
+  -f      Print the scaffold consensus sequences in multi-fasta format
+  -g      Use the estimated gaps size to space contigs
+  -G val  Gaps < val will have val N's between them (-g)
+  -N val  Specify number of N's to place between contigs
+
+.KEYWORDS.
+  bank, converters, scaffolds
+
+
+
+
+CHECK SCAFFOLD USE IN AMOS PIPELINE CONFIG FILES:
+
+
+    cd /store/home/syoung/base/apps/amos/src/Pipeline
+    
+    [syoung@solexa01 Pipeline]$ grep -n scaffold *
+    AMOScmp-shortReads.acf:31:SCAFFFASTA = $(PREFIX).scaffold.fasta
+    AMOScmp-shortReads-alignmentTrimmed.acf:37:SCAFFFASTA = $(PREFIX).scaffold.fasta
+
+    runCA.clean.acf:7:TEMPS = $(PREF).inp $(PREF).ovl $(PREF).erate $(PREF).ofg $(PREF).ofglist $(PREF).cgb $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds $(PREF).cgw_total $(PREF).cns $(PREF).map $(PREF).ign $(PREF).err $(PREF).range $(PREF).corr $(PREF).cgb_chimeras $(PREF).cgb_crappies $(PREF).cgi $(PREF).cgi.clg $(PREF).cns.clg $(PREF).cus.0 $(PREF).cam $(PREF).cam.0 $(PREF).cga.0 $(PREF).stderr $(PREF).timing $(PREF).fgv $(PREF).fge $(PREF).dregs.cam $(PREF).asm.cam
+
+    runCA.euk.acf:36:TEMPS = $(PREF).inp $(PREF).ovl $(PREF).erate $(PREF).ofg $(PREF).ofglist $(PREF).cgb $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds $(PREF).cgw_total $(PREF).cns $(PREF).map $(PREF).ign $(PREF).err $(PREF).range $(PREF).corr $(PREF).cgb_chimeras $(PREF).cgb_crappies $(PREF).cgi $(PREF).cgi.clg $(PREF).cns.clg $(PREF).cus.0 $(PREF).cam $(PREF).cam.0 $(PREF).cga.0 $(PREF).stderr $(PREF).timing $(PREF).fgv $(PREF).fge $(PREF).dregs.cam $(PREF).asm.cam
+    runCA.euk.acf:77:## Running scaffolder
+    runCA.euk.acf:80:cat $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds > $(PREF).cgw_total
+    runCA.euk.acf:83:## Running scaffold consensus
+    runCA.meta.acf:36:TEMPS = $(PREF).inp $(PREF).ovl $(PREF).erate $(PREF).ofg $(PREF).ofglist $(PREF).cgb $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds $(PREF).cgw_total $(PREF).cns $(PREF).map $(PREF).ign $(PREF).err $(PREF).range $(PREF).corr $(PREF).cgb_chimeras $(PREF).cgb_crappies $(PREF).cgi $(PREF).cgi.clg $(PREF).cns.clg $(PREF).cus.0 $(PREF).cam $(PREF).cam.0 $(PREF).cga.0 $(PREF).stderr $(PREF).timing $(PREF).fgv $(PREF).fge $(PREF).dregs.cam $(PREF).asm.cam
+
+    runCA.meta.acf:77:## Running scaffolder
+    runCA.meta.acf:80:cat $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds > $(PREF).cgw_total
+    runCA.meta.acf:83:## Running scaffold consensus
+    runCA.prok.acf:36:TEMPS = $(PREF).inp $(PREF).ovl $(PREF).erate $(PREF).ofg $(PREF).ofglist $(PREF).cgb $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds $(PREF).cgw_total $(PREF).cns $(PREF).map $(PREF).ign $(PREF).err $(PREF).range $(PREF).corr $(PREF).cgb_chimeras $(PREF).cgb_crappies $(PREF).cgi $(PREF).cgi.clg $(PREF).cns.clg $(PREF).cus.0 $(PREF).cam $(PREF).cam.0 $(PREF).cga.0 $(PREF).stderr $(PREF).timing $(PREF).fgv $(PREF).fge $(PREF).dregs.cam $(PREF).asm.cam
+
+    runCA.prok.acf:77:## Running scaffolder
+    runCA.prok.acf:80:cat $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds > $(PREF).cgw_total
+    runCA.prok.acf:83:## Running scaffold consensus
+
+    runCA.stub.acf:36:TEMPS = $(PREF).inp $(PREF).ovl $(PREF).erate $(PREF).ofg $(PREF).ofglist $(PREF).cgb $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds $(PREF).cgw_total $(PREF).cns $(PREF).map $(PREF).ign $(PREF).err $(PREF).range $(PREF).corr $(PREF).cgb_chimeras $(PREF).cgb_crappies $(PREF).cgi $(PREF).cgi.clg $(PREF).cns.clg $(PREF).cus.0 $(PREF).cam $(PREF).cam.0 $(PREF).cga.0 $(PREF).stderr $(PREF).timing $(PREF).fgv $(PREF).fge $(PREF).dregs.cam $(PREF).asm.cam
+    runCA.stub.acf:77:## Running scaffolder
+    runCA.stub.acf:80:cat $(PREF).cgw $(PREF).cgw_contigs $(PREF).cgw_scaffolds > $(PREF).cgw_total
+    runCA.stub.acf:83:## Running scaffold consensus
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Sep  4 16:01:11 EDT 2008] PROBLEM WITH EAGLEVIEW - WON'T LOAD .ace FILES PRODUCED BY amos2ace AND splitace.pl>
+
+
+
+DIAGNOSIS:
+
+EAGLEVIEW CRASHES IF THE READS EXTEND PAST THE END OF THE CONTIG
+
+I.E., READ OFFSET + READ LENGTH > CONTIG LENGTH
+
+SOLUTION:
+
+CREATED ace2eagleview.pl TO CONVERT TO ACCEPTABLE FORMAT FOR EAGLEVIEW
+
+
+NOTES
+=====
+
+
+1) TRIED REMOVING:
+
+EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH
+
+
+REPLACED WITH :
+
+run2-lane6-mtdna-velvet
+
+
+2) ALTERNATELY SPLIT UP .afg FILE INTO INDIVIDUAL CONTIGS FOR TEST INPUT:
+
+cd /home/syoung/base/pipeline/run2-lane8-mtdna-velvet/assembly
+/home/syoung/base/apps/velvet/third-party/afg_handling/asmbly_splitter.pl 3 velvet_assy.afg
+
+WHICH CREATES THE FOLLOWING FILE:
+
+emacs velvet_assy.afg_3.afg
+
+
+{CTG
+iid:3
+eid:3
+seq:
+GCAGAAACTCTACAAGCCAGAAGAGAGTGGGGGCCAATATTCAACATTCTTAAAGAAAAG
+...
+CTGGCCAGGGCAATCAGGCAGGAGAAGGAAATAAAGGGTATTCAATTAGGAAAAGAGGAA
+GTCAAATTGTCCCTGTTTGCAGATGACATGATTGTATATCTAGAAAACCCCAT
+.
+qlt:
+GCAGAAACTCTACAAGCCAGAAGAGAGTGGGGGCCAATATTCAACATTCTTAAAGAAAAG
+AATTTTCAACCCAGAATTTCATATCCAGCCAAACTAAGCTTCATAAGTGAAGGAGAAATA
+AAATCCTTTACAGACAAGCAAATGCTGAGAGATTTTGTCACCACCAGGCCTGCCCTAAAA
+...
+GTCAAATTGTCCCTGTTTGCAGATGACATGATTGTATATCTAGAAAACCCCAT
+.
+{TLE
+src:90
+off:1054
+clr:0,25
+}
+{TLE
+src:187
+off:1984
+clr:0,25
+}
+
+
+WHICH CAN BE CONVERTED INTO AN .ace FILE USING amos2ace 
+
+BEFORE DOING SO, MAKE SURE THE SEQUENCE .afg FILE HAS BEEN CREATED:
+
+    cd run2-lane8-mtdna-velvet/data/
+    ls
+    s_8_1.seq       s_8_1_sequence.afg           s_8_1_sequence.solexa.fasta.qual  s_8_2_sequence.solexa.fasta       s_8_2_sequence.txt       tarchive2amos.log
+    s_8_1.seq.qual  s_8_1_sequence.solexa.fasta  s_8_1_sequence.txt                s_8_2_sequence.solexa.fasta.qual  s_8_paired.solexa.fasta
+
+IF NOT, CREATE IT:
+
+    cd /home/syoung/base/pipeline/run2-lane8-mtdna-velvet/data
+    cp s_8_1_sequence.solexa.fasta s_8_1.seq
+    cp s_8_1_sequence.solexa.fasta.qual s_8_1.seq.qual
+    tarchive2amos -o s_8_1_sequence s_8_1.seq s_8_1.seq.qual
+
+
+THEN RUN amos2ace TO CREATE .ace FILES FROM .afg FILES
+
+    cd /home/syoung/base/pipeline/run2-lane8-mtdna-velvet/data
+    amos2ace s_8_1_sequence.afg ../assembly/velvet_assy.afg_3.afg
+
+
+
+</entry>
+
+
+
+<entry [Thu Sep  4 15:59:12 EDT 2008] CREATED ace2bnk.pl TO CONVERT .ace FILES INTO .bnk FILES>
+
+
+
+
+ ./ace2bnk.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/assembly/acefiles
+ 
+ 
+NB: AFTER RUNNING THERE WERE A LOT OF tmp.* FILES LEFT IN THE CURRENT DIRECTORY
+
+
+ace2bnk.pl               dummy.afg           mira.pl                  tmp.15094.ctg  tmp.15933.scf  tmp.4806.seq  tmp.5118.ctg  tmp.5441.scf  tmp.5721.seq  trimfasta.pl
+amos2ace.pl              eland2genomatix.pl  nucmer-deltafilter.pl    tmp.15094.scf  tmp.15933.seq  tmp.4809.ctg  tmp.5118.scf  tmp.5441.seq  tmp.5724.ctg  uniquefasta.pl
+amos2ace.pl~             eland2gff.pl        nucmer.pl                tmp.15094.seq  tmp.23873.ctg  tmp.4809.scf  tmp.5118.seq  tmp.5444.ctg  tmp.5724.scf  vcake.pl
+amos2ace.pl.error        elandfasta.pl       nucmer-showcoords.pl     tmp.15097.ctg  tmp.23873.scf  tmp.4809.seq  tmp.5424.ctg  tmp.5444.scf  tmp.5724.seq  velvet-paired.pl
+AMOS_AmosLib.pm          elandgff2stats.pl   s_1_paired.solexa.fasta  tmp.15097.scf  tmp.23873.seq  tmp.4812.ctg  tmp.5424.scf  tmp.5444.seq  tmp.6296.ctg  velvet.pl
+AmosLib.pm               eland.pl            sortgff.pl               tmp.15097.seq  tmp.23876.ctg  tmp.4812.scf  tmp.5424.seq  tmp.5447.ctg  tmp.6296.scf  warning.txt
+barcode2fastq.pl         error.txt           splitace.pl              tmp.15927.ctg  tmp.23876.scf  tmp.4812.seq  tmp.5427.ctg  tmp.5447.scf  tmp.6296.seq
+bustard-eland.pl         euler.pl            t                        tmp.15927.scf  tmp.23876.seq  tmp.5112.ctg  tmp.5427.scf  tmp.5447.seq  tmp.6299.ctg
+cdna2gff.pl              exons-refseq.pl     test_forin.pl            tmp.15927.seq  tmp.23879.ctg  tmp.5112.scf  tmp.5427.seq  tmp.5718.ctg  tmp.6299.scf
+chromosomegff.pl         fastq2fasta.pl      TIGR_Foundation.pm       tmp.15930.ctg  tmp.23879.scf  tmp.5112.seq  tmp.5430.ctg  tmp.5718.scf  tmp.6299.seq
+chromosome_positions.pl  Foundation.pm       tmp.15091.ctg            tmp.15930.scf  tmp.23879.seq  tmp.5115.ctg  tmp.5430.scf  tmp.5718.seq  tmp.6302.ctg
+compare-reference.pl     gff2bed.pl          tmp.15091.scf            tmp.15930.seq  tmp.4806.ctg   tmp.5115.scf  tmp.5430.seq  tmp.5721.ctg  tmp.6302.scf
+coords2gff.pl            log_assembly.txt    tmp.15091.seq            tmp.15933.ctg  tmp.4806.scf   tmp.5115.seq  tmp.5441.ctg  tmp.5721.scf  tmp.6302.seq
+[syoung@solexa01 nextgen]$ sudo rm -fr tmp.*.c*
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep  2 21:59:41 EDT 2008] HOW TO CONVERT VELVET OUTPUT INTO .ace FILES>
+
+
+
+INTRODUCTION
+
+WE WANT TO CREATE .ace FILES FOR velvet ASSEMBLED CONTIGS.
+
+OUR VELVET OUTPUT FILES ARE HERE:
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/assembly
+ll
+    total 1.3G
+    drwxrwxrwx 2 syoung users 4.0K Sep  2 10:57 .
+    drwxr-xr-x 6 syoung users 4.0K Sep  2 11:23 ..
+    -rw-rw-rw- 1 syoung users  94K Sep  2 10:57 contigs.fa
+    -rw-rw-rw- 1 syoung users  24M Sep  2 10:57 Graph4
+    -rw-rw-rw- 1 syoung users  22M Sep  2 10:57 LastGraph
+    -rw-rw-rw- 1 syoung users  250 Sep  2 10:55 Log
+    -rw-rw-rw- 1 syoung users 6.8M Sep  2 10:55 PreGraph
+    -rw-rw-rw- 1 syoung users 143M Sep  2 10:55 Roadmaps
+    -rw-rw-rw- 1 syoung users 356M Sep  2 10:54 Sequences
+    -rw-rw-rw- 1 syoung users 385K Sep  2 10:57 stats.txt
+    -rw-rw-rw- 1 syoung users 719M Sep  2 10:58 velvet_assy.afg
+    -rw-rw-rw- 1 syoung users 451K Sep  2 10:58 velvetg_log.txt
+    -rw-rw-rw- 1 syoung users 2.7K Sep  2 10:55 velveth_log.txt
+
+IN ORDER TO CONVERT THEM INTO .ace FILES USING amos2ace WE HAVE TO FIRST CREATE .afg FILES FROM THE ORIGINAL SHORT READ FILES USED AS INPUT FOR velvet TO CREATE THE ASSEMBLY (AND THEIR QUALITY VALUE FILES).
+
+OUR ORIGINAL SHORT READ FILES ARE HERE:
+
+cd/home/syoung/base/pipeline/run2-lane6-mtdna-velvet/data
+ll
+[syoung@solexa01 data]$ ll
+total 6.3G
+drwxr-xr-x 2 syoung users 4.0K Sep  3 01:01 .
+drwxr-xr-x 6 syoung users 4.0K Sep  2 11:23 ..
+-rw-r--r-- 1 syoung users  73K Sep  3 01:01 out
+-rw-r--r-- 1 syoung users 349M Sep  2 22:49 s_6_1.seq
+-rw-r--r-- 1 syoung users 505M Sep  2 23:00 s_6_1.seq.qual
+-rw-r--r-- 1 syoung users 242M Sep  3 00:33 s_6_1_sequence.ace
+-rw-r--r-- 1 syoung users 1.5G Sep  2 23:19 s_6_1_sequence.afg
+-rw-r--r-- 1 syoung users    0 Sep  2 22:50 s_6_1_sequence.amos.afg
+-rw-rw-rw- 1 syoung users 349M Aug 29 22:57 s_6_1_sequence.solexa.fasta
+-rw-rw-rw- 1 syoung users 505M Aug 29 22:57 s_6_1_sequence.solexa.fasta.qual
+-rw-r--r-- 1 syoung users 704M Aug 29 22:35 s_6_1_sequence.txt
+-rw-rw-rw- 1 syoung users 349M Aug 29 23:05 s_6_2_sequence.solexa.fasta
+-rw-rw-rw- 1 syoung users 496M Aug 29 23:05 s_6_2_sequence.solexa.fasta.qual
+-rw-r--r-- 1 syoung users 704M Aug 29 22:35 s_6_2_sequence.txt
+-rw-r--r-- 1 syoung users 697M Aug 29 23:48 s_6_paired.solexa.fasta
+-rw-r--r-- 1 syoung users    0 Sep  2 23:02 tarchive2amos.log
+-rw-r--r-- 1 syoung users 9.7M Sep  2 22:50 tmp.11095.red
+-rw-r--r-- 1 syoung users 6.1M Sep  2 23:00 tmp.16986.red
+
+
+
+1. ADD AMOS DIRECTORY TO PATH BY EDITING ~/.bash_profile FILE
+
+IN ORDER TO CALL AMOS APPLICATIONS BY NAME (E.G., tarchive2amos) INSTEAD OF HAVING TO SUPPLY THEIR FULL LOCATION (E.G., /home/syoung/base/apps/amos/bin/tarchive2amos), OPEN YOUR ~/.bash_profile FILE (OR CREATE IT IF IT DOESN'T EXIST):
+
+    emacs ~/.bash_profile
+
+AND AT THE TOP OF THE FILE, ADD THE LINES:
+
+    # ADD AMOS TO PATH
+    export PATH=/home/syoung/base/apps/amos/bin:$PATH
+
+
+2. RUN tarchive2amos
+
+Convert files from the NCBI Trace Archive format into the AMOS message format.
+
+USAGE
+
+    tarchive2amos -o <prefix> [options] fasta1 ... fastan
+
+DESCRIPTION
+
+    tarchive2amos will read one or more fasta-format sequence files and place the ouptut in a file called <prefix>.afg. Note that the -o option is required.        
+    
+    <prefix> - prefix for the output files
+    
+    fasta1 ... fastan - list of files to be converted.
+             
+    The program assumes that for each file called <file>.seq there
+    is a <file>.qual and a <file>.xml. (alternatively the files may
+    be called fasta.<file>, qual.<file> and xml.<file>).
+    If no .xml file is present the program will only produce a set of
+    RED (read) records.
+
+
+OPTIONS
+
+  -assembly <assembly> - XML file containing assembly in assembly archive format
+                   http://www.ncbi.nlm.nih.gov/Traces/assembly/assmbrowser.cgi
+                   usually named ASSEMBLY.xml in the tar-ball downloaded from NCBI
+
+  -tracedir <tracedir> - directory containing the trace information as downloaded
+                   from the NCBI, either from the assembly archive or through
+                   a direct query in the trace archive.  This directory must contain
+                   a file named TRACEINFO.xml as well as one or more subdirs
+                   containing the trace information for the organism(s) whose
+                   traces are being processed.
+
+  -c <clip>      - file containing clear ranges for the reads.  If this file
+                   is provided, any sequence that does not appear in it is
+                   excluded from the output.
+    
+                    The clip file is in the format:
+    
+                    <read id> <clip_left> <clip_right>
+    
+                    These values will overwrite any value specified in the XML or sequence files.
+
+  -m <mates>     - file containing mate-pair information as specified in the
+                   BAMBUS documentation.  This file replaces information
+                   provided in .xml files
+
+  -l <lib>       - file containing mean/stdev information for libraries.
+                    Overrides .xml input.
+    
+                    The library file is formatted as follows:
+                    
+                    <lib_id>  <mean_size>   <size_stdev>
+                    
+  -i <id>        - start numbering messages with id <id>
+                   (useful when appending to a bank)
+
+  -min <minlen>  - reads shorter than <minlen> are rejected (default $MINSEQ)
+  -max <maxlen>  - reads longer than <maxlen> are rejected (default no limit)
+
+  -qual <qval>   - default quality value assigned when no quality file is
+                   provided (default $DEFAULT_QUAL)
+
+
+INPUT FILES
+
+  1. FASTA FILES
+  
+    Sequence data in one or more multi-fasta formatted files. These files must be named fasta.* (Trace Archive standard) or *.seq.
+
+  2. QUAL FILES
+  
+    Quality data in zero or more multi-fasta formatted files. These files must be named qual.* (Trace Archive standard) or *.qual and must match the names of the sequence files.
+    Note that the quality files are not necessary: if they are absent all bases will be assigned quality value of 20 (1 error in 100 bp).
+
+  3. XML FILES
+    These files must be named xml.* (Trace Archive standard) or *.xml and must match the names of the sequence files. The information specified in these files includes (but is not limited to) clipping information, library size information, etc.
+    For more information please refer to the Trace Archive documentation. Like the quality information, the XML files are not required.
+
+    In addition to these files, the user can provide a list of clear ranges (clipping coordinates) in a separate file. This information will override any set by the xml files. Furthermore, reads not present in the clear range file will be excluded from the conversion.
+
+    Note that if a clear range file is not specified, reads with no clear range set in the XML or the sequence file (see below) will be assigned a clear range that spans the entire extent of the read.
+
+
+INPUT FILE FORMATS
+
+tarchive2amos accepts four different formats for the header lines in the sequence file:
+
+    1. Trace Archive format generated by a query (either through website or query_tracedb script)
+      >gnl|ti|145655111 name:38245161 ...
+      The first identifier is the TRACE_ID in the XML file and the second one is the name assigned to the trace (TRACE_NAME) in the xml file.
+
+    2. Trace Archive format:
+      >gnl|ti|145655111 38245161
+      The first identifier is the trace identifier (TRACE_ID in the XML file) while the second one is the assigned name for the trace (TRACE_NAME in the XML file). The output message file will only contain the trace name (in the eid: field of each read record).
+      
+    3. TIGR sequence format (also produced by the trimming package lucy) :
+      >GBRAA01TF 1000 2000 1500 17 823
+      The first identifier is the trace name, followed by three numbers representing the library size estimates (ignored by tarchive2amos), then followed by the clear range.
+    
+    4. Generic multi-fasta
+      >GBRAA01TF
+
+
+CONVERT FILES TO .seq
+
+LANE 6
+======
+
+cd /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/data
+cp s_6_1_sequence.solexa.fasta s_6_1.seq
+cp s_6_1_sequence.solexa.fasta.qual s_6_1.seq.qual
+tarchive2amos -o s_6_1_sequence s_6_1.seq s_6_1.seq.qual
+
+LANE 7
+======
+
+cd /home/syoung/base/pipeline/run2-lane7-mtdna-velvet/data
+cp s_7_1_sequence.solexa.fasta s_7_1.seq
+cp s_7_1_sequence.solexa.fasta.qual s_7_1.seq.qual
+tarchive2amos -o s_7_1_sequence s_7_1.seq s_7_1.seq.qual
+
+LANE 8
+======
+
+cd /home/syoung/base/pipeline/run2-lane8-mtdna-velvet/data
+cp s_8_1_sequence.solexa.fasta s_8_1.seq
+cp s_8_1_sequence.solexa.fasta.qual s_8_1.seq.qual
+tarchive2amos -o s_8_1_sequence s_8_1.seq s_8_1.seq.qual
+
+
+THE OUTPUT FILES SHOULD HAVE THE FOLLOWING FORMAT:
+    
+
+    head s_6_1_sequence.afg 
+    
+    {UNV
+    iid:1
+    com:
+    Generated by syoung with tarchive2amos on Tue Sep  2 23:02:24 2008
+    .
+    }
+    {RED
+    iid:1
+    eid:HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:589:870/1
+    seq:
+    [syoung@solexa01 data]$ head -n 20 s_6_1_sequence.afg 
+    {UNV
+    iid:1
+    com:
+    Generated by syoung with tarchive2amos on Tue Sep  2 23:02:24 2008
+    .
+    }
+    {RED
+    iid:1
+    eid:HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:589:870/1
+    seq:
+    AAAAAAAAAAAAAAAAAAAAAAAAA
+    .
+    qlt:
+    DDDDDDDDDDDDDDDDDDDDDDDDD
+    .
+    clr:0,25
+    }
+    {RED
+    iid:2
+    eid:HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:318:968/1
+
+
+
+4. RUN amos2ace TO CREATE .ace FILES FROM .afg FILES
+
+    cd /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/data
+    amos2ace s_6_1_sequence.afg ../assembly/velvet_assy.afg
+    
+
+WHICH WILL OUTPUT THE FILE:
+
+    s_6_1_sequence.ace
+
+
+USING THE COMMAND:
+    
+    head -n 50 s_6_1_sequence.ace
+
+
+THE CONTENTS OF THE FILE SHOULD LOOK LIKE:
+
+    AS 801 519120
+    
+    CO 7 64 130 37 U
+    GAATGAATTGAATGCAATCAACGAATGGTCTCGAATGGAACCACCTCCAA
+    ATGGAATGGAATGG
+    
+    BQ
+     23 17 17 36 23 17 17 36 36 23 17 17 36 23 19 17 17 36 19 17 17 19 23 17 17 36 23 23 36 19 36 19 23 17 17 36 23 23 17 17 19 19 17 19 19 36 19 19 17 17
+     17 36 23 23 17 17 36 23 23 17 17 36 23 23
+    
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:155:923/1 U 7
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:1:816:918/1 U 2
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:3:198:294/1 U 7
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:9:675:368/1 U 12
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:46:119:488/1 U 31
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:85:548:805/1 U 7
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:101:474:865/1 U 29
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:103:848:213/1 U -1
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:104:87:292/1 U 23
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:116:434:469/1 U 41
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:118:649:990/1 U 10
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:137:401:505/1 U -3
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:155:866:747/1 U 18
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:170:333:144/1 U 37
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:176:897:614/1 U 22
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:178:741:512/1 U 7
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:189:335:476/1 U 25
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:192:668:782/1 U 31
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:201:670:14/1 U -3
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:202:825:299/1 U -3
+    AF HWI-EAS185_6_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_read2_JH:6:214:817:554/1 U 19
+
+
+THE FIRST LINE INDICATES THAT THE FILE CONTAINS 801 CONTIGS WITH A TOTAL OF 519120 BASES.
+
+
+5. SPLIT UP LARGE .ace FILE INTO INDIVIDUAL CONTIG .ace FILES
+
+/home/syoung/base/bin/nextgen/splitace.pl -i /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/data/s_6_1_sequence.ace -o /home/syoung/base/pipeline/run2-lane6-mtdna-velvet/acefiles
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Aug 27 19:10:08 EDT 2008] INSTALL amos ON zion>
+
+
+
+
+1. INSTALL qt IN /usr/local
+
+    sudo mv qt-x11-free-3.3.8.tar.gz  /usr/local
+    cd /usr/local
+    sudo tar xvfz qt-x11-free-3.3.8.tar
+    sudo mv qt-x11-free-3.3.8 qt
+    
+2. Set some environment variables in .bash_profile
+
+EDIT .bash_profile:
+
+    emacs ~/.bash_profile
+
+ADD:
+    
+    QTDIR=/usr/local/qt
+    PATH=$QTDIR/bin:$PATH
+    MANPATH=$QTDIR/doc/man:$MANPATH
+    LD_LIBRARY_PATH=$QTDIR/lib:/usr/lib/:/usr/lib64:/usr/local/lib:$LD_LIBRARY_PATH
+
+    export QTDIR PATH MANPATH LD_LIBRARY_PATH
+
+
+CHECK PLATFORM NOTES
+
+ http://www.trolltech.com/developer/platforms/
+ 
+ 
+
+CONFIGURE qt:    
+    
+    cd /usr/local/qt    
+    sudo ./configure
+
+    #sudo ./configure -no-xinerama
+
+
+OK
+
+sudo make
+
+    ...
+    /usr/bin/ld: cannot find -lXext
+    collect2: ld returned 1 exit status
+    make[2]: *** [../lib/libqt.so.3.3.8] Error 1
+    make[2]: Leaving directory `/usr/local/qt/src'
+    make[1]: *** [sub-src] Error 2
+    make[1]: Leaving directory `/usr/local/qt'
+    make: *** [init] Error 2
+    [syoung@zion qt]$ 
+
+1. TRY ./configure -platform linux-g++
+ 
+sudo ./configure -platform linux-g++
+
+OK
+
+sudo /usr/bin/gmake
+
+SAME ERROR
+
+
+sudo make
+
+
+2. TRY SETTING LD_LIBRARY_PATH_64
+
+
+    emacs ~/.bash_profile
+
+ADD:
+    
+    QTDIR=/usr/local/qt
+    PATH=$QTDIR/bin:$PATH
+    MANPATH=$QTDIR/doc/man:$MANPATH
+    LD_LIBRARY_PATH=$QTDIR/lib:/usr/lib/:/usr/lib64:/usr/local/lib:$LD_LIBRARY_PATH
+    LD_LIBRARY_PATH_64=/usr/lib64:$LD_LIBRARY_PATH
+
+    export QTDIR PATH MANPATH LD_LIBRARY_PATH LD_LIBRARY_PATH_64
+
+
+3. TRY INSTALL X11-devel WITH yum
+
+    yum install info libX11-devel
+
+        ...
+        Package info - 4.8-14.el5.x86_64 is already installed.
+        Package libX11-devel - 1.0.3-9.el5.x86_64 is already installed.
+        Resolving Dependencies
+        --> Running transaction check
+        ---> Package libX11-devel.i386 0:1.0.3-9.el5 set to be updated
+        --> Finished Dependency Resolution
+        
+        Dependencies Resolved
+        
+        =============================================================================
+         Package                 Arch       Version          Repository        Size 
+        =============================================================================
+        Installing:
+         libX11-devel            i386       1.0.3-9.el5      base              666 k
+        
+        Transaction Summary
+        =============================================================================
+        Install      1 Package(s)         
+        Update       0 Package(s)         
+        Remove       0 Package(s)         
+        
+        Total download size: 666 k
+        Is this ok [y/N]: y
+        Downloading Packages:
+        (1/1): libX11-devel-1.0.3 100% |=========================| 666 kB    00:00     
+        Running rpm_check_debug
+        Running Transaction Test
+        Finished Transaction Test
+        Transaction Test Succeeded
+        Running Transaction
+          Installing: libX11-devel                 ######################### [1/1] 
+        
+        Installed: libX11-devel.i386 0:1.0.3-9.el5
+        Complete!
+
+
+
+
+2.
+
+cat /etc/ld.so.conf
+include ld.so.conf.d/*.conf
+
+
+TRY CHANGING TO:
+
+include ld.so.conf.d/*.conf
+/usr/X11R6/lib
+/usr/lib/qt3/lib
+
+
+--------------
+
+
+> First off I  have to say I am a newbie who knows nothing about Qt!  I am just following the instructions to install qt-x11-free-3.0.7 because it is a prerequisite for another application I will be installing.  The application specifies exactly v3.0.7.  No one in my IT department uses Qt so I am on my own here.  Also I am only a beginner with UNIX systems :-$
+
+Newbie on Qt + Unix + extremely old Qt version ? Nice recipe to shoot 
+yourself in the foot ;)
+
+
+> /usr/local/qt/bin/moc kernel/qapplication_x11.cpp -o .moc/release-shared/qapplication_x11.moc
+> ld.so.1: moc: fatal: /usr/local/lib/libstdc++.so.6: wrong ELF class: ELFCLASS32
+
+This means that the system is trying to use 32-bit libraries to run moc, 
+which has been compiled in 64-bit mode (since you're using the 
+solaris-g++-64 config). If you're certain you need to have a 64-bit 
+version of the software, then you'll have to set LD_LIBRARY_PATH_64 
+accordingly. If that variable is not set, Solaris uses LD_LIBRARY_PATH, 
+which by default usually points to 32-bit libraries.
+
+Otherwise, you should reconfigure Qt with the 32-bit config (should be 
+solaris-g++ instead of solaris-g++-64, I guess). Which is probably what 
+you're really after - just because the operating system is 
+64-bit-capable doesn't mean everything *has* to be 64-bit.
+
+
+
+---------
+
+ORIGIN OF libXext FILES
+
+[kuba@kuba lib]$ ls libXext* -la
+libXext.a
+libXext.so -> libXext.so.6.4
+libXext.so.6 -> libXext.so.6.4
+libXext.so.6.4
+
+[kuba@kuba lib]$ rpm -qf libXext*
+XFree86-devel-4.2.0-72
+XFree86-devel-4.2.0-72
+XFree86-libs-4.2.0-72
+XFree86-libs-4.2.0-72
+
+As you can see, the first two (.a, .so) are from XFree86-devel, the next two 
+(.so.6, .so.6.4) are from XFree86-libs.
+
+
+---------
+
+
+What's the output of:
+	ls -l /usr/X11R6/lib65/libXext*
+
+You may be missing the developers' X11 package for the 64-bit subsystem, 
+that is, you may have libXext.so on your system but still miss 
+libXext.so.6 and libXext.a.
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 22 00:04:17 EDT 2008 ] CONVERT Amos FILE FORMAT TO .ace WITH AMOS::AmosLib>
+
+
+
+AMOS-formatted files can be easily parsed in Perl with the AMOS::AmosLib module, and in C++ through the Message_t class.
+
+
+.AFG (AMOS) FILE FORMAT
+=======================
+
+For a more general description of the AMOS file format see the specification documents at http://amos.sourceforge.net/docs/specs/.
+
+Example:
+
+{CTG
+iid:1
+eid:1
+seq:
+CCTCTCCTGTAGAGTTCAACCGA-GCCGGTAGAGTTTTATCA
+.
+qlt:
+DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+.
+{TLE
+src:1027
+off:0
+clr:618,0
+gap:
+250 612
+.
+}
+}
+
+DESCRIPTION:
+
+    * The contigs are identified both by an internal identifier (IID, of int_32 type) and by and external string identifier (EID)
+    * The consensus (provided in the seq: field) contains all the necessary gaps.
+    * The consensus quality values (provided in the qlt: field) are provided for every single base in the consensus sequence, including the gaps.  Each quality value (any value between 0 and 60 is allowed) is represented as a single character representing the character with the ASCII code of '0' summed with the actual quality value (qv = 0 is represented by '0', while qv = 40 is represented by 'D').
+    * The alignment of each read to the consensus (the TLE record) refers to the original read provided as input to the assembler through the src: field.  The alignment information consists of:
+          o off: field - 0-based offset of the beginning of the read within the consensus (off: field)
+          o clr: field - 0-based range representing the aligned portion of the read,  with respect to the ungapped/unpadded read sequence (as provided in the input to the assembler).  If this range is increasing (left end is smaller than right end) the read is aligned in the forward orientation, otherwise in the reverse orientation.
+          o gap: field - 0-based coordinates of all the gaps added to the read.  The coordinates are with respect to the ungapped clear range AFTER the read was reverse complemented (if necessary).  For example, in the case of read acgACA-T--AC (the lower case letters are outside the clear range), the gap positions are: 3, 4, 4 (think of the gaps between the upper case letters)
+
+
+</entry>
+
+
+
+<entry [Thu Aug 21 23:53:49 EDT 2008] DOWNLOAD AND INSTALL AMOS>
+
+
+
+
+DOWNLOAD AND INSTALL QT3
+========================
+
+1. DOWNLOAD qt3 AND PLACE IN /usr/local
+
+    http://linux.softpedia.com/progDownload/Qt-3-Download-18942.html
+    qt-x11-free-3.3.8.tar.gz
+    
+        sudo mv qt-x11-free-3.3.8.tar.gz  /usr/local
+
+2. INSTALL Qt/X11 Version 3.3.8
+
+        cd /usr/local
+        sudo gunzip qt-x11-free-3.3.8.tar.gz # uncompress the archive
+        sudo tar xvf qt-x11-free-3.3.8.tar   # unpack it
+
+    This creates the directory /usr/local/qt-x11-free-3.3.8 containing the
+    files from the main archive.
+    
+    Rename qt-x11-free-3.3.8 to qt (or make a symlink):
+    
+        sudo mv qt-x11-free-3.3.8 qt
+    
+    The rest of this file assumes that Qt is installed in /usr/local/qt.
+
+
+3.  Set some environment variables in .bash_profile
+
+    emacs ~/.bash_profile
+
+    ADDED:
+    
+        QTDIR=/usr/local/qt
+        PATH=$QTDIR/bin:$PATH
+        MANPATH=$QTDIR/doc/man:$MANPATH
+        LD_LIBRARY_PATH=$QTDIR/lib:$LD_LIBRARY_PATH
+
+        export QTDIR PATH MANPATH LD_LIBRARY_PATH
+
+    WHERE:
+
+        QTDIR              - the directory in which you're building Qt
+        PATH               - to locate the moc program and other Qt tools
+        MANPATH            - to access the Qt man pages
+        LD_LIBRARY_PATH    - for the shared Qt library
+
+
+4.  BUILD qt3
+
+    (SEE TROUBLESHOOTING BELOW)
+        
+    sudo make clean
+    sudo ./configure -no-xinerama
+    sudo make
+        
+
+    ...
+    make[3]: Leaving directory `/usr/local/qt/examples/desktop'
+    ...
+    make[2]: Leaving directory `/usr/local/qt/examples'
+    
+    The Qt library is now built in ./lib
+    The Qt examples are built in the directories in ./examples
+    The Qt tutorials are built in the directories in ./tutorial
+    
+    Enjoy!   - the Trolltech team
+
+
+    ./configure will configure the Qt library for your machine. Note that
+    GIF support is turned off by default. Run ./configure -help
+    to get a list of configuration options. Read PLATFORMS for a
+    list of supported platforms.
+
+    make will create the library and compile all the examples and the
+    tutorial.
+
+    At this point you have binaries created in $QTDIR (eg. $QTDIR/lib/
+    contains libqt.so).
+
+        sudo make install
+
+        make[3]: Leaving directory `/usr/local/qt/plugins/src/sqldrivers'
+        ( [ -d styles ] && cd styles ; make -f Makefile install; ) || true
+        make[3]: Entering directory `/usr/local/qt/plugins/src/styles'
+        make[3]: Nothing to be done for `install'.
+        make[3]: Leaving directory `/usr/local/qt/plugins/src/styles'
+        make[2]: Leaving directory `/usr/local/qt/plugins/src'
+        make[1]: Leaving directory `/usr/local/qt'
+
+
+5.  In very few cases you may need to run /sbin/ldconfig or something
+    similar at this point if you are using shared libraries.
+
+    If you have problems running the example programs, e.g. messages like
+
+         can't load library 'libqt.so.3'
+
+    you probably need to put a reference to the qt library in a
+    configuration file and run /sbin/ldconfig as root on your system.
+    And don't forget to set LD_LIBRARY_PATH as explained in (2) above.
+
+
+6.  The online HTML documentation is installed in /usr/local/qt/doc/html/
+    The main page is /usr/local/qt/doc/html/index.html
+    The man pages are installed in /usr/local/qt/doc/man/
+
+
+
+
+TROUBLESHOOTING
+
+1) make FAILED WITH ERROR:
+
+/usr/bin/ld: cannot find -lXinerama
+collect2: ld returned 1 exit status
+make[2]: *** [../lib/libqt.so.3.3.8] Error 1
+make[2]: Leaving directory `/usr/local/qt/src'
+make[1]: *** [sub-src] Error 2
+make[1]: Leaving directory `/usr/local/qt'
+make: *** [init] Error 2
+
+DIAGNOSIS:
+
+    XINERAMA IS PRESENT:
+    
+    locate Xinerama
+    /usr/include/X11/extensions/Xinerama.h
+    /usr/lib/libXinerama.so.1
+    /usr/lib/libXinerama.so.1.0.0
+    /usr/lib64/libXinerama.so.1
+    /usr/lib64/libXinerama.so.1.0.0
+    /usr/share/doc/libXinerama-1.0.1
+    /usr/share/doc/libXinerama-1.0.1/AUTHORS
+    /usr/share/doc/libXinerama-1.0.1/COPYING
+    /usr/share/doc/libXinerama-1.0.1/ChangeLog
+    /usr/share/doc/libXinerama-1.0.1/INSTALL
+    /usr/share/doc/libXinerama-1.0.1/README
+
+    BUT IS NOT FOUND, PERHAPS BECAUSE OF MISSING -L IN MAKEFILE
+
+SOLUTION:
+
+    COMPILE WITHOUT XINERAMA, THEN DO make, E.G.:
+    
+        ./configure -h 
+        
+            -no-xinerama ....... Do not compile Xinerama (multihead) support.
+        
+        
+        sudo make clean
+        sudo ./configure -no-xinerama
+        sudo make
+
+
+2) DISTRIBUTION DOES NOT CONTAIN THE REQUIRED FILES
+
+DIAGNOSIS:
+
+WRONG DOWNLOAD
+
+http://kde-cygwin.sourceforge.net/qt3/download.php
+
+    How to perform a manual installation    
+    Before you are going to start installing QT 3 make sure you have meet the Requirements.
+    
+       1. Download the qt 3.3.8 binary package to a local dir
+       2. unpack the binary archive into the cygwin root. This will install the qt release into /opt/qt/3.2
+    
+          tar -C / -xjf qt-3.3.8.tar.bz2
+    
+    
+       3. reread profile
+    
+          . /etc/profile
+    
+    Now you are ready to use qt3. Please read the Using QT section how to go on. 
+
+
+3) g++ NOT FOUND
+
+PROBLEM:
+
+    gmake: g++: Command not found
+
+SOLUTION:
+
+    sudo yum install gcc-c++
+
+
+
+END OF INSTALL QT3
+
+
+
+
+DOWNLOAD AND INSTALL AMOS
+=========================
+
+1. DOWNLOAD VERSION 
+http://sourceforge.net/projects/amos
+
+
+2. INSTALL (FROM AMOS 'INSTALL' FILE)
+
+# to build AMOS except for the bankViewer directory
+# from the top level source directory
+# Note the QT configure tests will fail.
+
+./configure
+
+
+3. DO WORKAROUND FOR make ERROR "/usr/bin/ld: cannot find -lXi"
+
+cd /home/syoung/base/apps/amos/src/Validation
+g++  -g -O2   -o cestat-cov  cestat-cov.o  ../../src/Contig/libDataStore.a ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a
+
+WHICH CREATES THESE FILES:
+
+    [syoung@solexa01 Validation]$ ll -t
+    total 52M
+    drwxr-xr-x  3 syoung users 4.0K Sep  2 15:27 .
+    drwxr-xr-x  2 root   root  4.0K Sep  2 15:27 .deps
+    -rwxr-xr-x  1 root   root  3.3M Sep  2 15:27 read-cov-plot
+    -rw-r--r--  1 root   root  739K Sep  2 15:27 read-cov-plot.o
+    -rwxr-xr-x  1 root   root  2.0M Sep  2 15:27 scaffoldRange2Ungapped
+    -rw-r--r--  1 root   root  488K Sep  2 15:27 scaffoldRange2Ungapped.o
+    -rwxr-xr-x  1 root   root  4.0M Sep  2 15:27 list-linked-contigs
+    -rw-r--r--  1 root   root  536K Sep  2 15:27 list-linked-contigs.o
+    -rwxr-xr-x  1 root   root  4.1M Sep  2 15:27 library-histogram
+    -rw-r--r--  1 root   root  527K Sep  2 15:27 library-histogram.o
+    -rwxr-xr-x  1 root   root  4.0M Sep  2 15:27 listSingletonMates
+    -rw-r--r--  1 root   root  443K Sep  2 15:27 listSingletonMates.o
+    -rwxr-xr-x  1 root   root  4.2M Sep  2 15:27 insert-sizes
+    -rw-r--r--  1 root   root  807K Sep  2 15:27 insert-sizes.o
+
+
+NOTE THAT THESE FILES WERE CREATED EARLIER DURING TESTING:
+
+    -rwxr-xr-x  1 root   root  4.0M Sep  2 15:25 cestat-cov
+    -rw-r--r--  1 root   root  549K Sep  2 01:56 cestat-cov.o
+    -rwxr-xr-x  1 root   root  1.6M Sep  2 01:56 find-duplicate-reads
+    -rw-r--r--  1 root   root  352K Sep  2 01:56 find_duplicate_reads-find-duplicate-reads.o
+    -rwxr-xr-x  1 root   root  3.1M Sep  2 01:55 analyze-read-depth
+    -rw-r--r--  1 root   root  796K Sep  2 01:55 analyze-read-depth.o
+    -rwxr-xr-x  1 root   root  4.0M Sep  2 01:55 astats
+    -rw-r--r--  1 root   root  629K Sep  2 01:55 astats.o
+    -rwxr-xr-x  1 root   root  3.6M Sep  2 01:55 asmQC
+    -rw-r--r--  1 root   root  2.5M Sep  2 01:55 asmQC.o
+    -rwxr-xr-x  1 root   root  3.1M Sep  2 01:55 asmQC2
+    -rw-r--r--  1 root   root  2.0M Sep  2 01:55 asmQC2.o
+    -rw-r--r--  1 root   root   30K Sep  2 01:47 Makefile
+
+
+4. RUN make
+
+cd /home/syoung/base/apps/amos
+sudo make
+
+
+5. BUILD THE bankViewer DIRECTORY
+
+cd src/bankViewer
+#qmake-qt3
+make
+
+
+WHICH WILL FAIL WITH THIS ERROR:
+
+    ...
+    g++  -g -O2   -o hawkeye  main.o ChromoStore.o UIElements.o NChartStats.o AssemblyStats.o BufferedLineEdit.o CGraphContig.o CGraphEdge.o CGraphView.o CGraphWindow.o ChromoField.o ChromoPicker.o ConsensusField.o ContigCanvasItem.o ContigPicker.o CoverageCanvasItem.o CoverageRectCanvasItem.o DetailWidget.o FeatureBrowser.o FeatureCanvasItem.o HistogramWidget.o HistogramWindow.o InsertCanvasItem.o InsertField.o InsertPosition.o InsertWidget.o InsertWindow.o LaunchPad.o LaunchPadBase.o LibraryPicker.o MainWindow.o NChartWindow.o NChartWindowBase.o NChartWidget.o NetworkCom.o OverviewField.o QueryWidget.o RangeScrollBar.o ReadInfo.o ReadPicker.o RenderSeq.o ScaffoldPicker.o SelectionWidget.o SplashScreen.o TilingField.o TilingFrame.o AssemblyStats.moc.o BufferedLineEdit.moc.o CGraphContig.moc.o CGraphEdge.moc.o CGraphView.moc.o CGraphWindow.moc.o ChromoField.moc.o ChromoPicker.moc.o ConsensusField.moc.o ContigCanvasItem.moc.o ContigPicker.moc.o CoverageCanvasItem.moc.o CoverageRectCanvasItem.moc.o DetailWidget.moc.o FeatureBrowser.moc.o FeatureCanvasItem.moc.o HistogramWidget.moc.o HistogramWindow.moc.o InsertCanvasItem.moc.o InsertField.moc.o InsertPosition.moc.o InsertWidget.moc.o InsertWindow.moc.o LaunchPad.moc.o LaunchPadBase.moc.o LibraryPicker.moc.o MainWindow.moc.o NChartWindow.moc.o NChartWindowBase.moc.o NChartWidget.moc.o NetworkCom.moc.o OverviewField.moc.o QueryWidget.moc.o RangeScrollBar.moc.o ReadInfo.moc.o ReadPicker.moc.o RenderSeq.moc.o ScaffoldPicker.moc.o SelectionWidget.moc.o SplashScreen.moc.o TilingField.moc.o TilingFrame.moc.o -L/usr/local/qt/lib -lqt  -lSM -lICE  -L/usr/lib64 -lX11 -lXext -lXmu -lXt -lXi   ../../src/Contig/libDataStore.a ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a ../../src/Slice/libSlice.a ../../src/Staden/read/libread.a -lz -lc -lm 
+    
+
+RERUN THIS LAST COMMAND WITHOUT THE -lXi PARAMETER:
+
+sudo g++  -g -O2   -o hawkeye  main.o ChromoStore.o UIElements.o NChartStats.o AssemblyStats.o BufferedLineEdit.o CGraphContig.o CGraphEdge.o CGraphView.o CGraphWindow.o ChromoField.o ChromoPicker.o ConsensusField.o ContigCanvasItem.o ContigPicker.o CoverageCanvasItem.o CoverageRectCanvasItem.o DetailWidget.o FeatureBrowser.o FeatureCanvasItem.o HistogramWidget.o HistogramWindow.o InsertCanvasItem.o InsertField.o InsertPosition.o InsertWidget.o InsertWindow.o LaunchPad.o LaunchPadBase.o LibraryPicker.o MainWindow.o NChartWindow.o NChartWindowBase.o NChartWidget.o NetworkCom.o OverviewField.o QueryWidget.o RangeScrollBar.o ReadInfo.o ReadPicker.o RenderSeq.o ScaffoldPicker.o SelectionWidget.o SplashScreen.o TilingField.o TilingFrame.o AssemblyStats.moc.o BufferedLineEdit.moc.o CGraphContig.moc.o CGraphEdge.moc.o CGraphView.moc.o CGraphWindow.moc.o ChromoField.moc.o ChromoPicker.moc.o ConsensusField.moc.o ContigCanvasItem.moc.o ContigPicker.moc.o CoverageCanvasItem.moc.o CoverageRectCanvasItem.moc.o DetailWidget.moc.o FeatureBrowser.moc.o FeatureCanvasItem.moc.o HistogramWidget.moc.o HistogramWindow.moc.o InsertCanvasItem.moc.o InsertField.moc.o InsertPosition.moc.o InsertWidget.moc.o InsertWindow.moc.o LaunchPad.moc.o LaunchPadBase.moc.o LibraryPicker.moc.o MainWindow.moc.o NChartWindow.moc.o NChartWindowBase.moc.o NChartWidget.moc.o NetworkCom.moc.o OverviewField.moc.o QueryWidget.moc.o RangeScrollBar.moc.o ReadInfo.moc.o ReadPi././cker.moc.o RenderSeq.moc.o ScaffoldPicker.moc.o SelectionWidget.moc.o SplashScreen.moc.o TilingField.moc.o TilingFrame.moc.o -L/usr/local/qt/lib -lqt  -lSM -lICE  -L/usr/lib64 -lX11 -lXext -lXmu -lXt ../../src/Contig/libDataStore.a ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a ../../src/Slice/libSlice.a ../../src/Staden/read/libread.a -lz -lc -lm 
+
+WHICH WIILL GIVE THIS OUTPUT:
+
+    ../../src/Staden/read/libread.a(compress.o): In function `fopen_compressed':
+    /store/home/syoung/base/apps/amos/src/Staden/read/compress.c:321: warning: the use of `tempnam' is dangerous, better use `mkstemp'
+
+
+AND RERUN make:
+
+sudo make
+
+
+WHICH WILL GIVE THIS OUTPUT:
+
+    make  all-am
+    make[1]: Entering directory `/store/home/syoung/base/apps/amos/src/bankViewer'
+    make[1]: Nothing to be done for `all-am'.
+    make[1]: Leaving directory `/store/home/syoung/base/apps/amos/src/bankViewer'
+
+
+
+5. RUN make install
+
+cd /home/syoung/base/apps/amos
+sudo make install
+
+    /usr/bin/install -c 'kmer-cov-plot' '/store/home/syoung/base/apps/amos/bin/kmer-cov-plot'
+    /usr/bin/install -c 'make-consensus' '/store/home/syoung/base/apps/amos/bin/make-consensus'
+    /usr/bin/install -c 'make-consensus_poly' '/store/home/syoung/base/apps/amos/bin/make-consensus_poly'
+    /usr/bin/install -c 'merge-contigs' '/store/home/syoung/base/apps/amos/bin/merge-contigs'
+    /usr/bin/install -c 'missing-reads' '/store/home/syoung/base/apps/amos/bin/missing-reads'
+    /usr/bin/install -c 'ovl-degr-dist' '/store/home/syoung/base/apps/amos/bin/ovl-degr-dist'
+    /usr/bin/install -c 'po-align' '/store/home/syoung/base/apps/amos/bin/po-align'
+    /usr/bin/install -c 'readinfo2cam' '/store/home/syoung/base/apps/amos/bin/readinfo2cam'
+    /usr/bin/install -c 'running-cmp' '/store/home/syoung/base/apps/amos/bin/running-cmp'
+    /usr/bin/install -c 'show-ma-asm' '/store/home/syoung/base/apps/amos/bin/show-ma-asm'
+    /usr/bin/install -c 'sim-cover-depth' '/store/home/syoung/base/apps/amos/bin/sim-cover-depth'
+    /usr/bin/install -c 'sim-cover2' '/store/home/syoung/base/apps/amos/bin/sim-cover2'
+    /usr/bin/install -c 'sim-shotgun' '/store/home/syoung/base/apps/amos/bin/sim-shotgun'
+    /usr/bin/install -c 'simple-overlap' '/store/home/syoung/base/apps/amos/bin/simple-overlap'
+    /usr/bin/install -c 'verify-layout' '/store/home/syoung/base/apps/amos/bin/verify-layout'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Align'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Align'
+  test -z "/store/home/syoung/base/apps/amos/include/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/include/AMOS"
+   /usr/bin/install -c -m 644 'align.hh' '/store/home/syoung/base/apps/amos/include/AMOS/align.hh'
+   /usr/bin/install -c -m 644 'align_poly.hh' '/store/home/syoung/base/apps/amos/include/AMOS/align_poly.hh'
+   /usr/bin/install -c -m 644 'matrix.hh' '/store/home/syoung/base/apps/amos/include/AMOS/matrix.hh'
+  test -z "/store/home/syoung/base/apps/amos/lib/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/lib/AMOS"
+   /usr/bin/install -c -m 644 'libAlign.a' '/store/home/syoung/base/apps/amos/lib/AMOS/libAlign.a'
+   /usr/bin/install -c -m 644 'libAlign_poly.a' '/store/home/syoung/base/apps/amos/lib/AMOS/libAlign_poly.a'
+   ranlib '/store/home/syoung/base/apps/amos/lib/AMOS/libAlign.a'
+   ranlib '/store/home/syoung/base/apps/amos/lib/AMOS/libAlign_poly.a'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Align'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Align'
+  Making install in Tigger
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'tigger' '/store/home/syoung/base/apps/amos/bin/tigger'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Tigger'
+  Making install in Compare
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Compare'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Compare'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'contig-cmp' '/store/home/syoung/base/apps/amos/bin/contig-cmp'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Compare'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Compare'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Compare'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Compare'
+  Making install in Bambus
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  Making install in Bundler
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'Bundler' '/store/home/syoung/base/apps/amos/bin/Bundler'
+    /usr/bin/install -c 'clk' '/store/home/syoung/base/apps/amos/bin/clk'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'Chainer.pl' '/store/home/syoung/base/apps/amos/bin/Chainer.pl'
+   /usr/bin/install -c 'Joiner.pl' '/store/home/syoung/base/apps/amos/bin/Joiner.pl'
+  make  install-exec-hook
+  make[5]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+   configuring perl 'Chainer'
+   configuring perl 'Joiner'
+  make[5]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+  make[4]: Nothing to be done for `install-data-am'.
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus/Bundler'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  make[4]: Nothing to be done for `install-exec-am'.
+  make[4]: Nothing to be done for `install-data-am'.
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Bambus'
+  Making install in Casm
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Casm'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Casm'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'casm-layout' '/store/home/syoung/base/apps/amos/bin/casm-layout'
+    /usr/bin/install -c 'casm-breaks' '/store/home/syoung/base/apps/amos/bin/casm-breaks'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Casm'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Casm'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Casm'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Casm'
+  Making install in CtgTrim
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'excl_seqs.pl' '/store/home/syoung/base/apps/amos/bin/excl_seqs.pl'
+   /usr/bin/install -c 'findChimeras.pl' '/store/home/syoung/base/apps/amos/bin/findChimeras.pl'
+   /usr/bin/install -c 'find_ends.pl' '/store/home/syoung/base/apps/amos/bin/find_ends.pl'
+   /usr/bin/install -c 'fixfrg.pl' '/store/home/syoung/base/apps/amos/bin/fixfrg.pl'
+   /usr/bin/install -c 'iterate.pl' '/store/home/syoung/base/apps/amos/bin/iterate.pl'
+   /usr/bin/install -c 'kmers.pl' '/store/home/syoung/base/apps/amos/bin/kmers.pl'
+   /usr/bin/install -c 'singles.pl' '/store/home/syoung/base/apps/amos/bin/singles.pl'
+   /usr/bin/install -c 'tab2ovls.pl' '/store/home/syoung/base/apps/amos/bin/tab2ovls.pl'
+   /usr/bin/install -c 'trimends.pl' '/store/home/syoung/base/apps/amos/bin/trimends.pl'
+   /usr/bin/install -c 'trimfrg.pl' '/store/home/syoung/base/apps/amos/bin/trimfrg.pl'
+   /usr/bin/install -c 'vecfix.pl' '/store/home/syoung/base/apps/amos/bin/vecfix.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+   configuring perl 'excl_seqs'
+   configuring perl 'findChimeras'
+   configuring perl 'find_ends'
+   configuring perl 'fixfrg'
+   configuring perl 'iterate'
+   configuring perl 'kmers'
+   configuring perl 'singles'
+   configuring perl 'tab2ovls'
+   configuring perl 'trimends'
+   configuring perl 'trimfrg'
+   configuring perl 'vecfix'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/CtgTrim'
+  Making install in Sim
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Sim'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Sim'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'pyrosim' '/store/home/syoung/base/apps/amos/bin/pyrosim'
+    /usr/bin/install -c 'tandemCollapse' '/store/home/syoung/base/apps/amos/bin/tandemCollapse'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'rerunMultiTest.pl' '/store/home/syoung/base/apps/amos/bin/rerunMultiTest.pl'
+   /usr/bin/install -c 'runMultiTest.pl' '/store/home/syoung/base/apps/amos/bin/runMultiTest.pl'
+   /usr/bin/install -c 'runTest.pl' '/store/home/syoung/base/apps/amos/bin/runTest.pl'
+   /usr/bin/install -c 'summarizeMultiTest.pl' '/store/home/syoung/base/apps/amos/bin/summarizeMultiTest.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Sim'
+   configuring perl 'rerunMultiTest'
+   configuring perl 'runMultiTest'
+   configuring perl 'runTest'
+   configuring perl 'summarizeMultiTest'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Sim'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Sim'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Sim'
+  Making install in Staden
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden'
+  Making install in read
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  make  install-exec-hook
+  make[5]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  make[5]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  make[4]: Nothing to be done for `install-data-am'.
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/read'
+  Making install in progs
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'trace_comment' '/store/home/syoung/base/apps/amos/bin/trace_comment'
+    /usr/bin/install -c 'trace_comments' '/store/home/syoung/base/apps/amos/bin/trace_comments'
+    /usr/bin/install -c 'trace_convert' '/store/home/syoung/base/apps/amos/bin/trace_convert'
+    /usr/bin/install -c 'trace_seq' '/store/home/syoung/base/apps/amos/bin/trace_seq'
+    /usr/bin/install -c 'trace_scf_dump' '/store/home/syoung/base/apps/amos/bin/trace_scf_dump'
+  make  install-exec-hook
+  make[5]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  make[5]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  make[4]: Nothing to be done for `install-data-am'.
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden/progs'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden'
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Staden'
+  make[4]: Nothing to be done for `install-exec-am'.
+  make[4]: Nothing to be done for `install-data-am'.
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Staden'
+  Making install in Contig
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Contig'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Contig'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'fattenContig' '/store/home/syoung/base/apps/amos/bin/fattenContig'
+    /usr/bin/install -c 'insertGapColumn' '/store/home/syoung/base/apps/amos/bin/insertGapColumn'
+    /usr/bin/install -c 'manageContigs' '/store/home/syoung/base/apps/amos/bin/manageContigs'
+    /usr/bin/install -c 'revContig' '/store/home/syoung/base/apps/amos/bin/revContig'
+    /usr/bin/install -c 'rotateContig' '/store/home/syoung/base/apps/amos/bin/rotateContig'
+    /usr/bin/install -c 'splitContig' '/store/home/syoung/base/apps/amos/bin/splitContig'
+    /usr/bin/install -c 'stitchContigs' '/store/home/syoung/base/apps/amos/bin/stitchContigs'
+    /usr/bin/install -c 'trimContig' '/store/home/syoung/base/apps/amos/bin/trimContig'
+    /usr/bin/install -c 'zipContigs' '/store/home/syoung/base/apps/amos/bin/zipContigs'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'zipalign.pl' '/store/home/syoung/base/apps/amos/bin/zipalign.pl'
+   /usr/bin/install -c 'autoJoiner.pl' '/store/home/syoung/base/apps/amos/bin/autoJoiner.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Contig'
+   configuring perl 'zipalign'
+   configuring perl 'autoJoiner'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Contig'
+  test -z "/store/home/syoung/base/apps/amos/include/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/include/AMOS"
+   /usr/bin/install -c -m 644 'ContigUtils.hh' '/store/home/syoung/base/apps/amos/include/AMOS/ContigUtils.hh'
+   /usr/bin/install -c -m 644 'DataStore.hh' '/store/home/syoung/base/apps/amos/include/AMOS/DataStore.hh'
+   /usr/bin/install -c -m 644 'CoverageStats.hh' '/store/home/syoung/base/apps/amos/include/AMOS/CoverageStats.hh'
+   /usr/bin/install -c -m 644 'Insert.hh' '/store/home/syoung/base/apps/amos/include/AMOS/Insert.hh'
+   /usr/bin/install -c -m 644 'InsertStats.hh' '/store/home/syoung/base/apps/amos/include/AMOS/InsertStats.hh'
+  test -z "/store/home/syoung/base/apps/amos/lib/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/lib/AMOS"
+   /usr/bin/install -c -m 644 'libContigUtils.a' '/store/home/syoung/base/apps/amos/lib/AMOS/libContigUtils.a'
+   /usr/bin/install -c -m 644 'libDataStore.a' '/store/home/syoung/base/apps/amos/lib/AMOS/libDataStore.a'
+   ranlib '/store/home/syoung/base/apps/amos/lib/AMOS/libContigUtils.a'
+   ranlib '/store/home/syoung/base/apps/amos/lib/AMOS/libDataStore.a'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Contig'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Contig'
+  Making install in Validation
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Validation'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Validation'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'asmQC2' '/store/home/syoung/base/apps/amos/bin/asmQC2'
+    /usr/bin/install -c 'asmQC' '/store/home/syoung/base/apps/amos/bin/asmQC'
+    /usr/bin/install -c 'astats' '/store/home/syoung/base/apps/amos/bin/astats'
+    /usr/bin/install -c 'analyze-read-depth' '/store/home/syoung/base/apps/amos/bin/analyze-read-depth'
+    /usr/bin/install -c 'find-duplicate-reads' '/store/home/syoung/base/apps/amos/bin/find-duplicate-reads'
+    /usr/bin/install -c 'cestat-cov' '/store/home/syoung/base/apps/amos/bin/cestat-cov'
+    /usr/bin/install -c 'insert-sizes' '/store/home/syoung/base/apps/amos/bin/insert-sizes'
+    /usr/bin/install -c 'listSingletonMates' '/store/home/syoung/base/apps/amos/bin/listSingletonMates'
+    /usr/bin/install -c 'library-histogram' '/store/home/syoung/base/apps/amos/bin/library-histogram'
+    /usr/bin/install -c 'list-linked-contigs' '/store/home/syoung/base/apps/amos/bin/list-linked-contigs'
+    /usr/bin/install -c 'scaffoldRange2Ungapped' '/store/home/syoung/base/apps/amos/bin/scaffoldRange2Ungapped'
+    /usr/bin/install -c 'read-cov-plot' '/store/home/syoung/base/apps/amos/bin/read-cov-plot'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'coords2cam.pl' '/store/home/syoung/base/apps/amos/bin/coords2cam.pl'
+   /usr/bin/install -c 'fixlib.pl' '/store/home/syoung/base/apps/amos/bin/fixlib.pl'
+   /usr/bin/install -c 'postCAqc.pl' '/store/home/syoung/base/apps/amos/bin/postCAqc.pl'
+   /usr/bin/install -c 'tiling2cam.pl' '/store/home/syoung/base/apps/amos/bin/tiling2cam.pl'
+   /usr/bin/install -c 'cavalidate.acf' '/store/home/syoung/base/apps/amos/bin/cavalidate.acf'
+   /usr/bin/install -c 'amosvalidate.acf' '/store/home/syoung/base/apps/amos/bin/amosvalidate.acf'
+   /usr/bin/install -c 'findTcovSnp.pl' '/store/home/syoung/base/apps/amos/bin/findTcovSnp.pl'
+   /usr/bin/install -c 'clusterSnps.pl' '/store/home/syoung/base/apps/amos/bin/clusterSnps.pl'
+   /usr/bin/install -c 'listSurrogates.pl' '/store/home/syoung/base/apps/amos/bin/listSurrogates.pl'
+   /usr/bin/install -c 'suspiciousfeat2region.pl' '/store/home/syoung/base/apps/amos/bin/suspiciousfeat2region.pl'
+   /usr/bin/install -c 'find-query-breaks.pl' '/store/home/syoung/base/apps/amos/bin/find-query-breaks.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Validation'
+   configuring perl 'coords2cam'
+   configuring perl 'fixlib'
+   configuring perl 'postCAqc'
+   configuring perl 'tiling2cam'
+   configuring acf 'cavalidate'
+   configuring acf 'amosvalidate'
+   configuring perl 'findTcovSnp'
+   configuring perl 'clusterSnps'
+   configuring perl 'listSurrogates'
+   configuring perl 'suspiciousfeat2region'
+   configuring perl 'find-query-breaks'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Validation'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Validation'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Validation'
+  Making install in Persistant
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Persistant'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Persistant'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'barcode-graph' '/store/home/syoung/base/apps/amos/bin/barcode-graph'
+    /usr/bin/install -c 'build-persistent-bank' '/store/home/syoung/base/apps/amos/bin/build-persistent-bank'
+    /usr/bin/install -c 'auto-fix-contigs' '/store/home/syoung/base/apps/amos/bin/auto-fix-contigs'
+    /usr/bin/install -c 'persistent-read-dist' '/store/home/syoung/base/apps/amos/bin/persistent-read-dist'
+    /usr/bin/install -c 'persistent-fix-contigs' '/store/home/syoung/base/apps/amos/bin/persistent-fix-contigs'
+    /usr/bin/install -c 'read-evolution' '/store/home/syoung/base/apps/amos/bin/read-evolution'
+    /usr/bin/install -c 'gap-closure-reads' '/store/home/syoung/base/apps/amos/bin/gap-closure-reads'
+    /usr/bin/install -c 'mate-evolution' '/store/home/syoung/base/apps/amos/bin/mate-evolution'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'persistent-assembly.pl' '/store/home/syoung/base/apps/amos/bin/persistent-assembly.pl'
+   /usr/bin/install -c 'persistent-fix.pl' '/store/home/syoung/base/apps/amos/bin/persistent-fix.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Persistant'
+   configuring perl 'persistent-assembly'
+   configuring perl 'persistent-fix'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Persistant'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Persistant'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Persistant'
+  Making install in Converters
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Converters'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Converters'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'ace2contig.pl' '/store/home/syoung/base/apps/amos/bin/ace2contig.pl'
+   /usr/bin/install -c 'amos2frg.pl' '/store/home/syoung/base/apps/amos/bin/amos2frg.pl'
+   /usr/bin/install -c 'amos2mates.pl' '/store/home/syoung/base/apps/amos/bin/amos2mates.pl'
+   /usr/bin/install -c 'amos2sq.pl' '/store/home/syoung/base/apps/amos/bin/amos2sq.pl'
+   /usr/bin/install -c 'amos2ace.pl' '/store/home/syoung/base/apps/amos/bin/amos2ace.pl'
+   /usr/bin/install -c 'arachne2ctg.pl' '/store/home/syoung/base/apps/amos/bin/arachne2ctg.pl'
+   /usr/bin/install -c 'arachne2scaff.pl' '/store/home/syoung/base/apps/amos/bin/arachne2scaff.pl'
+   /usr/bin/install -c 'benchmark2arachne.pl' '/store/home/syoung/base/apps/amos/bin/benchmark2arachne.pl'
+   /usr/bin/install -c 'benchmark2ca.pl' '/store/home/syoung/base/apps/amos/bin/benchmark2ca.pl'
+   /usr/bin/install -c 'benchmark2mates.pl' '/store/home/syoung/base/apps/amos/bin/benchmark2mates.pl'
+   /usr/bin/install -c 'benchmark2ta.pl' '/store/home/syoung/base/apps/amos/bin/benchmark2ta.pl'
+   /usr/bin/install -c 'ca2ctg.pl' '/store/home/syoung/base/apps/amos/bin/ca2ctg.pl'
+   /usr/bin/install -c 'ca2mates.pl' '/store/home/syoung/base/apps/amos/bin/ca2mates.pl'
+   /usr/bin/install -c 'ca2scaff.pl' '/store/home/syoung/base/apps/amos/bin/ca2scaff.pl'
+   /usr/bin/install -c 'ca2ta.pl' '/store/home/syoung/base/apps/amos/bin/ca2ta.pl'
+   /usr/bin/install -c 'cgb2ctg.pl' '/store/home/syoung/base/apps/amos/bin/cgb2ctg.pl'
+   /usr/bin/install -c 'contig2contig.pl' '/store/home/syoung/base/apps/amos/bin/contig2contig.pl'
+   /usr/bin/install -c 'ctg2fasta.pl' '/store/home/syoung/base/apps/amos/bin/ctg2fasta.pl'
+   /usr/bin/install -c 'ctg2umdcontig.pl' '/store/home/syoung/base/apps/amos/bin/ctg2umdcontig.pl'
+   /usr/bin/install -c 'frg2fasta.pl' '/store/home/syoung/base/apps/amos/bin/frg2fasta.pl'
+   /usr/bin/install -c 'frg2ta.pl' '/store/home/syoung/base/apps/amos/bin/frg2ta.pl'
+   /usr/bin/install -c 'ta2ace.pl' '/store/home/syoung/base/apps/amos/bin/ta2ace.pl'
+   /usr/bin/install -c 'tarchive2amos.pl' '/store/home/syoung/base/apps/amos/bin/tarchive2amos.pl'
+   /usr/bin/install -c 'tarchive2ca.pl' '/store/home/syoung/base/apps/amos/bin/tarchive2ca.pl'
+   /usr/bin/install -c 'toAmos.pl' '/store/home/syoung/base/apps/amos/bin/toAmos.pl'
+   /usr/bin/install -c 'toArachne.pl' '/store/home/syoung/base/apps/amos/bin/toArachne.pl'
+   /usr/bin/install -c 'scaff2fasta.pl' '/store/home/syoung/base/apps/amos/bin/scaff2fasta.pl'
+   /usr/bin/install -c 'parsecasm.pl' '/store/home/syoung/base/apps/amos/bin/parsecasm.pl'
+   /usr/bin/install -c 'castats.pl' '/store/home/syoung/base/apps/amos/bin/castats.pl'
+   /usr/bin/install -c 'ca2singletons.pl' '/store/home/syoung/base/apps/amos/bin/ca2singletons.pl'
+   /usr/bin/install -c 'phd2afg.pl' '/store/home/syoung/base/apps/amos/bin/phd2afg.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Converters'
+   configuring perl 'ace2contig'
+   configuring perl 'amos2frg'
+   configuring perl 'amos2mates'
+   configuring perl 'amos2sq'
+   configuring perl 'amos2ace'
+   configuring perl 'arachne2ctg'
+   configuring perl 'arachne2scaff'
+   configuring perl 'benchmark2arachne'
+   configuring perl 'benchmark2ca'
+   configuring perl 'benchmark2mates'
+   configuring perl 'benchmark2ta'
+   configuring perl 'ca2ctg'
+   configuring perl 'ca2mates'
+   configuring perl 'ca2scaff'
+   configuring perl 'ca2ta'
+   configuring perl 'cgb2ctg'
+   configuring perl 'contig2contig'
+   configuring perl 'ctg2fasta'
+   configuring perl 'ctg2umdcontig'
+   configuring perl 'frg2fasta'
+   configuring perl 'frg2ta'
+   configuring perl 'ta2ace'
+   configuring perl 'tarchive2amos'
+   configuring perl 'tarchive2ca'
+   configuring perl 'toAmos'
+   configuring perl 'toArachne'
+   configuring perl 'scaff2fasta'
+   configuring perl 'parsecasm'
+   configuring perl 'castats'
+   configuring perl 'ca2singletons'
+   configuring perl 'phd2afg'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Converters'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Converters'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Converters'
+  Making install in Utils
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Utils'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Utils'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+    /usr/bin/install -c 'trimByOvl' '/store/home/syoung/base/apps/amos/bin/trimByOvl'
+    /usr/bin/install -c 'runAmos' '/store/home/syoung/base/apps/amos/bin/runAmos'
+    /usr/bin/install -c 'analyzeSNPs' '/store/home/syoung/base/apps/amos/bin/analyzeSNPs'
+    /usr/bin/install -c 'recallConsensus' '/store/home/syoung/base/apps/amos/bin/recallConsensus'
+    /usr/bin/install -c 'cvgStat' '/store/home/syoung/base/apps/amos/bin/cvgStat'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'benchmark_qual.pl' '/store/home/syoung/base/apps/amos/bin/benchmark_qual.pl'
+   /usr/bin/install -c 'benchmark_seq.pl' '/store/home/syoung/base/apps/amos/bin/benchmark_seq.pl'
+   /usr/bin/install -c 'ctgovl.pl' '/store/home/syoung/base/apps/amos/bin/ctgovl.pl'
+   /usr/bin/install -c 'filter_contig.pl' '/store/home/syoung/base/apps/amos/bin/filter_contig.pl'
+   /usr/bin/install -c 'filterfrg.pl' '/store/home/syoung/base/apps/amos/bin/filterfrg.pl'
+   /usr/bin/install -c 'listcontigreads.sh' '/store/home/syoung/base/apps/amos/bin/listcontigreads.sh'
+   /usr/bin/install -c 'cvgChop.pl' '/store/home/syoung/base/apps/amos/bin/cvgChop.pl'
+   /usr/bin/install -c 'getN50.pl' '/store/home/syoung/base/apps/amos/bin/getN50.pl'
+   /usr/bin/install -c 'getlengths.pl' '/store/home/syoung/base/apps/amos/bin/getlengths.pl'
+   /usr/bin/install -c 'preTA.pl' '/store/home/syoung/base/apps/amos/bin/preTA.pl'
+   /usr/bin/install -c 'pullTArchive.pl' '/store/home/syoung/base/apps/amos/bin/pullTArchive.pl'
+   /usr/bin/install -c 'runTA.pl' '/store/home/syoung/base/apps/amos/bin/runTA.pl'
+   /usr/bin/install -c 'preassembleFrgs.pl' '/store/home/syoung/base/apps/amos/bin/preassembleFrgs.pl'
+   /usr/bin/install -c 'ktrimfrg.pl' '/store/home/syoung/base/apps/amos/bin/ktrimfrg.pl'
+   /usr/bin/install -c 'translate-fasta.pl' '/store/home/syoung/base/apps/amos/bin/translate-fasta.pl'
+   /usr/bin/install -c 'delta2cvg.pl' '/store/home/syoung/base/apps/amos/bin/delta2cvg.pl'
+   /usr/bin/install -c 'delta2clr.pl' '/store/home/syoung/base/apps/amos/bin/delta2clr.pl'
+   /usr/bin/install -c 'updateDeltaClr.pl' '/store/home/syoung/base/apps/amos/bin/updateDeltaClr.pl'
+   /usr/bin/install -c 'nucmerAnnotate.pl' '/store/home/syoung/base/apps/amos/bin/nucmerAnnotate.pl'
+   /usr/bin/install -c 'nucmer2ovl.pl' '/store/home/syoung/base/apps/amos/bin/nucmer2ovl.pl'
+   /usr/bin/install -c 'sort2.pl' '/store/home/syoung/base/apps/amos/bin/sort2.pl'
+   /usr/bin/install -c 'ovl2OVL.pl' '/store/home/syoung/base/apps/amos/bin/ovl2OVL.pl'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Utils'
+   configuring perl 'benchmark_qual'
+   configuring perl 'benchmark_seq'
+   configuring perl 'ctgovl'
+   configuring perl 'filter_contig'
+   configuring perl 'filterfrg'
+   configuring 'listcontigreads'
+   configuring perl 'cvgChop'
+   configuring perl 'getN50'
+   configuring perl 'getlengths'
+   configuring perl 'preTA'
+   configuring perl 'pullTArchive'
+   configuring perl 'runTA'
+   configuring perl 'preassembleFrgs'
+   configuring perl 'ktrimfrg'
+   configuring perl 'translate-fasta'
+   configuring perl 'delta2cvg'
+   configuring perl 'delta2clr'
+   configuring perl 'updateDeltaClr'
+   configuring perl 'nucmerAnnotate'
+   configuring perl 'nucmer2ovl'
+   configuring perl 'sort2'
+   configuring perl 'ovl2OVL'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Utils'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Utils'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Utils'
+  Making install in PerlModules
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  test -z "/store/home/syoung/base/apps/amos/lib/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/lib/AMOS"
+   /usr/bin/install -c 'AmosLib.pm' '/store/home/syoung/base/apps/amos/lib/AMOS/AmosLib.pm'
+   /usr/bin/install -c 'ParseFasta.pm' '/store/home/syoung/base/apps/amos/lib/AMOS/ParseFasta.pm'
+   /usr/bin/install -c 'AmosFoundation.pm' '/store/home/syoung/base/apps/amos/lib/AMOS/AmosFoundation.pm'
+   /usr/bin/install -c 'xfig.pm' '/store/home/syoung/base/apps/amos/lib/AMOS/xfig.pm'
+  test -z "/store/home/syoung/base/apps/amos/lib/TIGR" || mkdir -p -- "/store/home/syoung/base/apps/amos/lib/TIGR"
+   /usr/bin/install -c 'FASTAgrammar.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/FASTAgrammar.pm'
+   /usr/bin/install -c 'FASTAiterator.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/FASTAiterator.pm'
+   /usr/bin/install -c 'FASTAreader.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/FASTAreader.pm'
+   /usr/bin/install -c 'FASTArecord.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/FASTArecord.pm'
+   /usr/bin/install -c 'FASTAwriter.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/FASTAwriter.pm'
+   /usr/bin/install -c 'Foundation.pm' '/store/home/syoung/base/apps/amos/lib/TIGR/Foundation.pm'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/PerlModules'
+  Making install in PythonModules
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  test -z "/store/home/syoung/base/apps/amos/lib/AMOS" || mkdir -p -- "/store/home/syoung/base/apps/amos/lib/AMOS"
+   /usr/bin/install -c 'AMOS.py' '/store/home/syoung/base/apps/amos/lib/AMOS/AMOS.py'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/PythonModules'
+  Making install in Pipeline
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+  test -z "/store/home/syoung/base/apps/amos/bin" || mkdir -p -- "/store/home/syoung/base/apps/amos/bin"
+   /usr/bin/install -c 'AMOScmp.acf' '/store/home/syoung/base/apps/amos/bin/AMOScmp.acf'
+   /usr/bin/install -c 'AMOScmp-shortReads.acf' '/store/home/syoung/base/apps/amos/bin/AMOScmp-shortReads.acf'
+   /usr/bin/install -c 'AMOScmp-shortReads-alignmentTrimmed.acf' '/store/home/syoung/base/apps/amos/bin/AMOScmp-shortReads-alignmentTrimmed.acf'
+   /usr/bin/install -c 'minimus.acf' '/store/home/syoung/base/apps/amos/bin/minimus.acf'
+   /usr/bin/install -c 'minimus2.acf' '/store/home/syoung/base/apps/amos/bin/minimus2.acf'
+   /usr/bin/install -c 'assembleRNAs.acf' '/store/home/syoung/base/apps/amos/bin/assembleRNAs.acf'
+   /usr/bin/install -c 'runCA.clean.acf' '/store/home/syoung/base/apps/amos/bin/runCA.clean.acf'
+   /usr/bin/install -c 'runCA.meta.acf' '/store/home/syoung/base/apps/amos/bin/runCA.meta.acf'
+   /usr/bin/install -c 'runCA.prok.acf' '/store/home/syoung/base/apps/amos/bin/runCA.prok.acf'
+   /usr/bin/install -c 'runCA.euk.acf' '/store/home/syoung/base/apps/amos/bin/runCA.euk.acf'
+   /usr/bin/install -c 'runCA.stub.acf' '/store/home/syoung/base/apps/amos/bin/runCA.stub.acf'
+  make  install-exec-hook
+  make[4]: Entering directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+   configuring acf 'AMOScmp'
+   configuring acf 'AMOScmp-shortReads'
+   configuring acf 'AMOScmp-shortReads-alignmentTrimmed'
+   configuring acf 'minimus'
+   configuring acf 'minimus2'
+   configuring acf 'assembleRNAs'
+   configuring acf 'runCA.clean'
+   configuring acf 'runCA.meta'
+   configuring acf 'runCA.prok'
+   configuring acf 'runCA.euk'
+   configuring acf 'runCA.stub'
+  make[4]: Leaving directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src/Pipeline'
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/src'
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/src'
+  make[3]: Nothing to be done for `install-exec-am'.
+  make[3]: Nothing to be done for `install-data-am'.
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src'
+  make[1]: Leaving directory `/store/home/syoung/base/apps/amos/src'
+  Making install in doc
+  make[1]: Entering directory `/store/home/syoung/base/apps/amos/doc'
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos/doc'
+  make  install-exec-hook
+  make[3]: Entering directory `/store/home/syoung/base/apps/amos/doc'
+  make[3]: Leaving directory `/store/home/syoung/base/apps/amos/doc'
+  test -z "/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8" || mkdir -p -- "/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8"
+   /usr/bin/install -c -m 644 'AMOScmp.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/AMOScmp.README'
+   /usr/bin/install -c -m 644 'runAmos.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/runAmos.README'
+   /usr/bin/install -c -m 644 'minimus.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/minimus.README'
+   /usr/bin/install -c -m 644 'portability.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/portability.README'
+   /usr/bin/install -c -m 644 'hawkeye.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/hawkeye.README'
+   /usr/bin/install -c -m 644 'amosvalidate.README' '/store/home/syoung/base/apps/amos/share/doc/amos-2.0.8/amosvalidate.README'
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos/doc'
+  make[1]: Leaving directory `/store/home/syoung/base/apps/amos/doc'
+  make[1]: Entering directory `/store/home/syoung/base/apps/amos'
+  make[2]: Entering directory `/store/home/syoung/base/apps/amos'
+  make[2]: Nothing to be done for `install-exec-am'.
+  make[2]: Nothing to be done for `install-data-am'.
+  make[2]: Leaving directory `/store/home/syoung/base/apps/amos'
+  make[1]: Leaving directory `/store/home/syoung/base/apps/amos'
+
+
+
+WHICH CREATED FILES IN THE FOLLOWING DIRECTORIES:
+
+Tue Sep  2 21:21:55 EDT 2008
+
+cd /home/syoung/base/apps/amos
+
+ ll -R lib
+lib:
+total 32K
+drwxr-xr-x  4 root   root  4.0K Sep  2 21:17 .
+drwxr-xr-x 10 syoung users 4.0K Sep  2 21:17 ..
+drwxr-xr-x  2 root   root  4.0K Sep  2 21:17 AMOS
+drwxr-xr-x  2 root   root  4.0K Sep  2 21:17 TIGR
+
+lib/AMOS:
+total 28M
+drwxr-xr-x 2 root root 4.0K Sep  2 21:17 .
+drwxr-xr-x 4 root root 4.0K Sep  2 21:17 ..
+-rwxr-xr-x 1 root root 6.5K Sep  2 21:17 AmosFoundation.pm
+-rwxr-xr-x 1 root root  11K Sep  2 21:17 AmosLib.pm
+-rwxr-xr-x 1 root root 3.2K Sep  2 21:17 AMOS.py
+-rw-r--r-- 1 root root 2.4M Sep  2 21:16 libAlign.a
+-rw-r--r-- 1 root root 2.3M Sep  2 21:16 libAlign_poly.a
+-rw-r--r-- 1 root root  13M Sep  2 21:16 libAMOS.a
+-rw-r--r-- 1 root root 3.3M Sep  2 21:16 libAMOSFoundation.a
+-rw-r--r-- 1 root root 1.1M Sep  2 21:16 libCelMsg.a
+-rw-r--r-- 1 root root 1.1M Sep  2 21:16 libCommon.a
+-rw-r--r-- 1 root root 1.1M Sep  2 21:17 libContigUtils.a
+-rw-r--r-- 1 root root 2.3M Sep  2 21:17 libDataStore.a
+-rw-r--r-- 1 root root 867K Sep  2 21:16 libGraph.a
+-rw-r--r-- 1 root root  85K Sep  2 21:16 libSlice.a
+-rwxr-xr-x 1 root root 3.6K Sep  2 21:17 ParseFasta.pm
+-rwxr-xr-x 1 root root 6.5K Sep  2 21:17 xfig.pm
+
+lib/TIGR:
+total 204K
+drwxr-xr-x 2 root root 4.0K Sep  2 21:17 .
+drwxr-xr-x 4 root root 4.0K Sep  2 21:17 ..
+-rwxr-xr-x 1 root root 9.8K Sep  2 21:17 FASTAgrammar.pm
+-rwxr-xr-x 1 root root  25K Sep  2 21:17 FASTAiterator.pm
+-rwxr-xr-x 1 root root  31K Sep  2 21:17 FASTAreader.pm
+-rwxr-xr-x 1 root root  16K Sep  2 21:17 FASTArecord.pm
+-rwxr-xr-x 1 root root  13K Sep  2 21:17 FASTAwriter.pm
+-rwxr-xr-x 1 root root  53K Sep  2 21:17 Foundation.pm
+
+
+
+[syoung@solexa01 amos]$ ll bin
+total 239M
+drwxr-xr-x  2 root   root   12K Sep  2 21:17 .
+drwxr-xr-x 10 syoung users 4.0K Sep  2 21:17 ..
+-rwxr-xr-x  1 root   root  5.5K Sep  2 21:17 ace2contig
+-rwxr-xr-x  1 root   root   13K Sep  2 21:17 amos2ace
+-rwxr-xr-x  1 root   root  4.1K Sep  2 21:17 amos2frg
+-rwxr-xr-x  1 root   root  3.1K Sep  2 21:17 amos2mates
+-rwxr-xr-x  1 root   root  3.0K Sep  2 21:17 amos2sq
+-rwxr-xr-x  1 root   root  1.2K Sep  2 21:17 AMOScmp
+-rwxr-xr-x  1 root   root  1.9K Sep  2 21:17 AMOScmp-shortReads
+-rwxr-xr-x  1 root   root  2.6K Sep  2 21:17 AMOScmp-shortReads-alignmentTrimmed
+-rwxr-xr-x  1 root   root  2.0K Sep  2 21:17 amosvalidate
+-rwxr-xr-x  1 root   root  3.1M Sep  2 21:17 analyze-read-depth
+-rwxr-xr-x  1 root   root  2.6M Sep  2 21:17 analyzeSNPs
+-rwxr-xr-x  1 root   root  1.7K Sep  2 21:17 arachne2ctg
+-rwxr-xr-x  1 root   root  2.0K Sep  2 21:17 arachne2scaff
+-rwxr-xr-x  1 root   root   43K Sep  2 21:16 arrive
+-rwxr-xr-x  1 root   root  151K Sep  2 21:16 arrive2
+-rwxr-xr-x  1 root   root  3.6M Sep  2 21:17 asmQC
+-rwxr-xr-x  1 root   root  3.1M Sep  2 21:17 asmQC2
+-rwxr-xr-x  1 root   root   825 Sep  2 21:17 assembleRNAs
+-rwxr-xr-x  1 root   root  4.0M Sep  2 21:17 astats
+-rwxr-xr-x  1 root   root  6.2M Sep  2 21:17 auto-fix-contigs
+-rwxr-xr-x  1 root   root   45K Sep  2 21:17 autoJoiner
+-rwxr-xr-x  1 root   root  2.6M Sep  2 21:16 bank2contig
+-rwxr-xr-x  1 root   root  2.2M Sep  2 21:16 bank2coverage
+-rwxr-xr-x  1 root   root  1.9M Sep  2 21:16 bank2fasta
+-rwxr-xr-x  1 root   root  2.2M Sep  2 21:16 bank2scaff
+-rwxr-xr-x  1 root   root  4.5M Sep  2 21:16 bank-clean
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:16 bank-combine
+-rwxr-xr-x  1 root   root  4.5M Sep  2 21:16 bank-mapping
+-rwxr-xr-x  1 root   root  4.6M Sep  2 21:16 bank-report
+-rwxr-xr-x  1 root   root  4.6M Sep  2 21:16 bank-transact
+-rwxr-xr-x  1 root   root  2.1M Sep  2 21:16 bank-tutorial
+-rwxr-xr-x  1 root   root  2.2K Sep  2 21:16 bank-unlock
+-rwxr-xr-x  1 root   root  3.0M Sep  2 21:17 barcode-graph
+-rwxr-xr-x  1 root   root  7.0K Sep  2 21:17 benchmark2arachne
+-rwxr-xr-x  1 root   root  6.0K Sep  2 21:17 benchmark2ca
+-rwxr-xr-x  1 root   root  3.7K Sep  2 21:17 benchmark2mates
+-rwxr-xr-x  1 root   root  4.1K Sep  2 21:17 benchmark2ta
+-rwxr-xr-x  1 root   root   853 Sep  2 21:17 benchmark_qual
+-rwxr-xr-x  1 root   root  4.0K Sep  2 21:17 benchmark_seq
+-rwxr-xr-x  1 root   root  4.1M Sep  2 21:17 build-persistent-bank
+-rwxr-xr-x  1 root   root  1.9M Sep  2 21:16 Bundler
+-rwxr-xr-x  1 root   root  5.9K Sep  2 21:17 ca2ctg
+-rwxr-xr-x  1 root   root  3.2K Sep  2 21:17 ca2mates
+-rwxr-xr-x  1 root   root  6.0K Sep  2 21:17 ca2scaff
+-rwxr-xr-x  1 root   root  4.1K Sep  2 21:17 ca2singletons
+-rwxr-xr-x  1 root   root   21K Sep  2 21:17 ca2ta
+-rwxr-xr-x  1 root   root  3.4M Sep  2 21:16 casm-breaks
+-rwxr-xr-x  1 root   root  3.0M Sep  2 21:16 casm-layout
+-rwxr-xr-x  1 root   root   24K Sep  2 21:17 castats
+-rwxr-xr-x  1 root   root  1.3K Sep  2 21:17 cavalidate
+-rwxr-xr-x  1 root   root  4.0M Sep  2 21:17 cestat-cov
+-rwxr-xr-x  1 root   root  3.1K Sep  2 21:17 cgb2ctg
+-rwxr-xr-x  1 root   root  9.8K Sep  2 21:16 Chainer
+-rwxr-xr-x  1 root   root  2.9M Sep  2 21:16 clk
+-rwxr-xr-x  1 root   root  2.4K Sep  2 21:17 clusterSnps
+-rwxr-xr-x  1 root   root  1.5K Sep  2 21:17 contig2contig
+-rwxr-xr-x  1 root   root  313K Sep  2 21:16 contig-cmp
+-rwxr-xr-x  1 root   root  4.6K Sep  2 21:17 coords2cam
+-rwxr-xr-x  1 root   root  3.5M Sep  2 21:16 count-kmers
+-rwxr-xr-x  1 root   root   354 Sep  2 21:17 ctg2fasta
+-rwxr-xr-x  1 root   root  1.9K Sep  2 21:17 ctg2umdcontig
+-rwxr-xr-x  1 root   root  6.5K Sep  2 21:17 ctgovl
+-rwxr-xr-x  1 root   root  9.2K Sep  2 21:17 cvgChop
+-rwxr-xr-x  1 root   root  3.4M Sep  2 21:17 cvgStat
+-rwxr-xr-x  1 root   root  3.1K Sep  2 21:17 delta2clr
+-rwxr-xr-x  1 root   root  3.1K Sep  2 21:17 delta2cvg
+-rwxr-xr-x  1 root   root  2.1M Sep  2 21:16 dumpContigsAsReads
+-rwxr-xr-x  1 root   root  3.5M Sep  2 21:16 dumpFeatures
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:16 dumpmates
+-rwxr-xr-x  1 root   root  1.7M Sep  2 21:16 dumpreads
+-rwxr-xr-x  1 root   root  1.1K Sep  2 21:16 excl_seqs
+-rwxr-xr-x  1 root   root  2.1M Sep  2 21:16 extractContig
+-rwxr-xr-x  1 root   root  4.9M Sep  2 21:16 fattenContig
+-rwxr-xr-x  1 root   root  1.1K Sep  2 21:17 filter_contig
+-rwxr-xr-x  1 root   root  1.7K Sep  2 21:17 filterfrg
+-rwxr-xr-x  1 root   root  4.2K Sep  2 21:16 findChimeras
+-rwxr-xr-x  1 root   root  1.6M Sep  2 21:17 find-duplicate-reads
+-rwxr-xr-x  1 root   root  2.5K Sep  2 21:16 find_ends
+-rwxr-xr-x  1 root   root  2.7M Sep  2 21:16 findMissingMates
+-rwxr-xr-x  1 root   root  7.1K Sep  2 21:17 find-query-breaks
+-rwxr-xr-x  1 root   root  5.8K Sep  2 21:17 findTcovSnp
+-rwxr-xr-x  1 root   root   959 Sep  2 21:16 fixfrg
+-rwxr-xr-x  1 root   root   31K Sep  2 21:17 fixlib
+-rwxr-xr-x  1 root   root   568 Sep  2 21:17 frg2fasta
+-rwxr-xr-x  1 root   root  9.6K Sep  2 21:17 frg2ta
+-rwxr-xr-x  1 root   root  656K Sep  2 21:16 frg-umd-merge
+-rwxr-xr-x  1 root   root  3.4M Sep  2 21:17 gap-closure-reads
+-rwxr-xr-x  1 root   root   94K Sep  2 21:16 gap-links
+-rwxr-xr-x  1 root   root  1.9M Sep  2 21:16 genome-complexity
+-rwxr-xr-x  1 root   root  1.8M Sep  2 21:16 genome-complexity-fast
+-rwxr-xr-x  1 root   root   534 Sep  2 21:17 getlengths
+-rwxr-xr-x  1 root   root  1002 Sep  2 21:17 getN50
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:16 grow-readbank
+-rwxr-xr-x  1 root   root  3.7M Sep  2 21:16 hash-overlap
+-rwxr-xr-x  1 root   root  1.6M Sep  2 21:17 insertGapColumn
+-rwxr-xr-x  1 root   root  4.2M Sep  2 21:17 insert-sizes
+-rwxr-xr-x  1 root   root  2.1K Sep  2 21:16 iterate
+-rwxr-xr-x  1 root   root  3.2K Sep  2 21:16 Joiner
+-rwxr-xr-x  1 root   root  125K Sep  2 21:16 kmer-count
+-rwxr-xr-x  1 root   root  155K Sep  2 21:16 kmer-cov
+-rwxr-xr-x  1 root   root  293K Sep  2 21:16 kmer-cov-plot
+-rwxr-xr-x  1 root   root  1.1K Sep  2 21:16 kmers
+-rwxr-xr-x  1 root   root  7.1K Sep  2 21:17 ktrimfrg
+-rwxr-xr-x  1 root   root  4.1M Sep  2 21:17 library-histogram
+-rwxr-xr-x  1 root   root   111 Sep  2 21:17 listcontigreads
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:16 listGCContent
+-rwxr-xr-x  1 root   root  4.0M Sep  2 21:17 list-linked-contigs
+-rwxr-xr-x  1 root   root  2.1M Sep  2 21:16 listReadPlacedStatus
+-rwxr-xr-x  1 root   root  4.0M Sep  2 21:17 listSingletonMates
+-rwxr-xr-x  1 root   root  1.8K Sep  2 21:17 listSurrogates
+-rwxr-xr-x  1 root   root  3.1M Sep  2 21:16 loadFeatures
+-rwxr-xr-x  1 root   root  1.8M Sep  2 21:16 load-overlaps
+-rwxr-xr-x  1 root   root  4.1M Sep  2 21:16 make-consensus
+-rwxr-xr-x  1 root   root  4.1M Sep  2 21:16 make-consensus_poly
+-rwxr-xr-x  1 root   root  3.6M Sep  2 21:17 manageContigs
+-rwxr-xr-x  1 root   root  5.6M Sep  2 21:17 mate-evolution
+-rwxr-xr-x  1 root   root  3.3M Sep  2 21:16 merge-contigs
+-rwxr-xr-x  1 root   root  411K Sep  2 21:16 message-count
+-rwxr-xr-x  1 root   root  374K Sep  2 21:16 message-extract
+-rwxr-xr-x  1 root   root  332K Sep  2 21:16 message-validate
+-rwxr-xr-x  1 root   root   880 Sep  2 21:17 minimus
+-rwxr-xr-x  1 root   root  2.8K Sep  2 21:17 minimus2
+-rwxr-xr-x  1 root   root  122K Sep  2 21:16 missing-reads
+-rwxr-xr-x  1 root   root  2.3M Sep  2 21:16 normalizeScaffold
+-rwxr-xr-x  1 root   root  6.3K Sep  2 21:17 nucmer2ovl
+-rwxr-xr-x  1 root   root  3.4K Sep  2 21:17 nucmerAnnotate
+-rwxr-xr-x  1 root   root  1.7K Sep  2 21:17 ovl2OVL
+-rwxr-xr-x  1 root   root  102K Sep  2 21:16 ovl-degr-dist
+-rwxr-xr-x  1 root   root   17K Sep  2 21:17 parsecasm
+-rwxr-xr-x  1 root   root  1.8K Sep  2 21:17 persistent-assembly
+-rwxr-xr-x  1 root   root  2.0K Sep  2 21:17 persistent-fix
+-rwxr-xr-x  1 root   root  4.3M Sep  2 21:17 persistent-fix-contigs
+-rwxr-xr-x  1 root   root  3.6M Sep  2 21:17 persistent-read-dist
+-rwxr-xr-x  1 root   root   11K Sep  2 21:17 phd2afg
+-rwxr-xr-x  1 root   root  2.5M Sep  2 21:16 po-align
+-rwxr-xr-x  1 root   root  4.8K Sep  2 21:17 postCAqc
+-rwxr-xr-x  1 root   root  2.3K Sep  2 21:17 preassembleFrgs
+-rwxr-xr-x  1 root   root  8.0K Sep  2 21:17 preTA
+-rwxr-xr-x  1 root   root  3.6K Sep  2 21:17 pullTArchive
+-rwxr-xr-x  1 root   root  340K Sep  2 21:16 pyrosim
+-rwxr-xr-x  1 root   root  3.3M Sep  2 21:17 read-cov-plot
+-rwxr-xr-x  1 root   root  3.3M Sep  2 21:17 read-evolution
+-rwxr-xr-x  1 root   root  504K Sep  2 21:16 readinfo2cam
+-rwxr-xr-x  1 root   root  2.3M Sep  2 21:17 recallConsensus
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:16 renameReads
+-rwxr-xr-x  1 root   root   692 Sep  2 21:16 rerunMultiTest
+-rwxr-xr-x  1 root   root  1.5M Sep  2 21:16 resetFragLibrary
+-rwxr-xr-x  1 root   root  2.6M Sep  2 21:17 revContig
+-rwxr-xr-x  1 root   root  1.5M Sep  2 21:16 revScaffold
+-rwxr-xr-x  1 root   root  1.6M Sep  2 21:17 rotateContig
+-rwxr-xr-x  1 root   root  352K Sep  2 21:17 runAmos
+-rwxr-xr-x  1 root   root   945 Sep  2 21:17 runCA.clean
+-rwxr-xr-x  1 root   root  3.3K Sep  2 21:17 runCA.euk
+-rwxr-xr-x  1 root   root  3.3K Sep  2 21:17 runCA.meta
+-rwxr-xr-x  1 root   root  3.4K Sep  2 21:17 runCA.prok
+-rwxr-xr-x  1 root   root  3.3K Sep  2 21:17 runCA.stub
+-rwxr-xr-x  1 root   root  2.5K Sep  2 21:16 runMultiTest
+-rwxr-xr-x  1 root   root  112K Sep  2 21:16 running-cmp
+-rwxr-xr-x  1 root   root  4.4K Sep  2 21:17 runTA
+-rwxr-xr-x  1 root   root  8.6K Sep  2 21:16 runTest
+-rwxr-xr-x  1 root   root  7.5K Sep  2 21:17 scaff2fasta
+-rwxr-xr-x  1 root   root  2.0M Sep  2 21:17 scaffoldRange2Ungapped
+-rwxr-xr-x  1 root   root  2.2M Sep  2 21:16 select-reads
+-rwxr-xr-x  1 root   root  470K Sep  2 21:16 show-ma-asm
+-rwxr-xr-x  1 root   root  195K Sep  2 21:16 sim-cover2
+-rwxr-xr-x  1 root   root  123K Sep  2 21:16 sim-cover-depth
+-rwxr-xr-x  1 root   root  1.9M Sep  2 21:16 simpleContigLoader
+-rwxr-xr-x  1 root   root  3.3M Sep  2 21:16 simple-overlap
+-rwxr-xr-x  1 root   root  1.5M Sep  2 21:16 simplifyLibraries
+-rwxr-xr-x  1 root   root  121K Sep  2 21:16 sim-shotgun
+-rwxr-xr-x  1 root   root   411 Sep  2 21:16 singles
+-rwxr-xr-x  1 root   root  1.8K Sep  2 21:17 sort2
+-rwxr-xr-x  1 root   root  3.1M Sep  2 21:17 splitContig
+-rwxr-xr-x  1 root   root  4.2M Sep  2 21:17 stitchContigs
+-rwxr-xr-x  1 root   root   860 Sep  2 21:16 summarizeMultiTest
+-rwxr-xr-x  1 root   root  1.6K Sep  2 21:17 suspiciousfeat2region
+-rwxr-xr-x  1 root   root   17K Sep  2 21:17 ta2ace
+-rwxr-xr-x  1 root   root  2.7K Sep  2 21:16 tab2ovls
+-rwxr-xr-x  1 root   root  2.1M Sep  2 21:16 tandemCollapse
+-rwxr-xr-x  1 root   root   29K Sep  2 21:17 tarchive2amos
+-rwxr-xr-x  1 root   root   14K Sep  2 21:17 tarchive2ca
+-rwxr-xr-x  1 root   root  2.9M Sep  2 21:16 tigger
+-rwxr-xr-x  1 root   root  1.7K Sep  2 21:17 tiling2cam
+-rwxr-xr-x  1 root   root   45K Sep  2 21:17 toAmos
+-rwxr-xr-x  1 root   root   18K Sep  2 21:17 toArachne
+-rwxr-xr-x  1 root   root  363K Sep  2 21:16 trace_comment
+-rwxr-xr-x  1 root   root  368K Sep  2 21:16 trace_comments
+-rwxr-xr-x  1 root   root  380K Sep  2 21:16 trace_convert
+-rwxr-xr-x  1 root   root  362K Sep  2 21:16 trace_scf_dump
+-rwxr-xr-x  1 root   root  365K Sep  2 21:16 trace_seq
+-rwxr-xr-x  1 root   root  1.9K Sep  2 21:17 translate-fasta
+-rwxr-xr-x  1 root   root  266K Sep  2 21:17 trimByOvl
+-rwxr-xr-x  1 root   root  3.9M Sep  2 21:17 trimContig
+-rwxr-xr-x  1 root   root  6.0K Sep  2 21:16 trimends
+-rwxr-xr-x  1 root   root  1.7K Sep  2 21:16 trimfrg
+-rwxr-xr-x  1 root   root  1.6M Sep  2 21:16 updateBankPositions
+-rwxr-xr-x  1 root   root  1.5M Sep  2 21:16 updateClrRanges
+-rwxr-xr-x  1 root   root  2.3K Sep  2 21:17 updateDeltaClr
+-rwxr-xr-x  1 root   root  1.3M Sep  2 21:16 updateLibSizes
+-rwxr-xr-x  1 root   root   794 Sep  2 21:16 vecfix
+-rwxr-xr-x  1 root   root  3.3M Sep  2 21:16 verify-layout
+-rwxr-xr-x  1 root   root   12K Sep  2 21:17 zipalign
+-rwxr-xr-x  1 root   root  3.1M Sep  2 21:17 zipContigs
+
+
+[syoung@solexa01 amos]$ ll 
+total 2.5M
+drwxr-xr-x 10 syoung users 4.0K Sep  2 21:17 .
+drwxr-xr-x 28 syoung users 4.0K Aug 28 16:25 ..
+-rw-r--r--  1 syoung users  38K Jun 22 11:53 aclocal.m4
+-rw-r--r--  1 syoung users 1.7M Jul 10 15:13 amos-2.0.8.tar.gz
+-rw-r--r--  1 syoung users  428 May 12  2005 AUTHORS
+drwxr-xr-x  2 root   root   12K Sep  2 21:17 bin
+drwxr-xr-x  2 syoung users 4.0K Jun 22 11:54 config
+-rw-r--r--  1 root   root  6.7K Aug 25 17:05 config.h
+-rw-r--r--  1 syoung users 6.2K Jun 22 11:53 config.h.in
+-rw-r--r--  1 syoung users  49K Sep  2 01:47 config.log
+-rwxr-xr-x  1 root   root   46K Sep  2 01:47 config.status
+-rwxr-xr-x  1 syoung users 338K Jun 22 11:53 configure
+-rw-r--r--  1 syoung users 6.5K Jun 22 11:52 configure.ac
+-rw-r--r--  1 syoung users 5.1K Aug 11  2004 COPYING
+drwxr-xr-x  2 syoung users 4.0K Sep  2 01:47 doc
+drwxr-xr-x  3 root   root  4.0K Aug 26 11:24 include
+-rw-r--r--  1 syoung users  11K Jan 22  2007 INSTALL
+drwxr-xr-x  4 root   root  4.0K Sep  2 21:17 lib
+-rw-r--r--  1 root   root   20K Sep  2 01:47 Makefile
+-rw-r--r--  1 syoung users  20K Aug 25 17:07 #Makefile#
+-rw-r--r--  1 root   root   20K Aug 24 21:30 Makefile~
+-rw-r--r--  1 syoung users  157 Jun 22 11:25 Makefile.am
+-rw-r--r--  1 syoung users  20K Jun 22 11:53 Makefile.in
+-rw-r--r--  1 syoung users 3.7K Mar 19 10:23 NEWS
+-rw-r--r--  1 syoung users 9.3K May 30 10:30 README
+drwxr-xr-x  3 root   root  4.0K Sep  2 21:17 share
+drwxr-xr-x 28 syoung users 4.0K Sep  2 01:47 src
+-rw-r--r--  1 root   root    23 Sep  2 01:47 stamp-h1
+drwxr-xr-x  3 syoung users 4.0K Jun 22 11:54 test
+-rw-r--r--  1 syoung users  839 May 12  2005 THANKS
+
+
+[syoung@solexa01 amos]$ ll -R share
+share:
+total 24K
+drwxr-xr-x  3 root   root  4.0K Sep  2 21:17 .
+drwxr-xr-x 10 syoung users 4.0K Sep  2 21:17 ..
+drwxr-xr-x  3 root   root  4.0K Sep  2 21:17 doc
+
+share/doc:
+total 24K
+drwxr-xr-x 3 root root 4.0K Sep  2 21:17 .
+drwxr-xr-x 3 root root 4.0K Sep  2 21:17 ..
+drwxr-xr-x 2 root root 4.0K Sep  2 21:17 amos-2.0.8
+
+share/doc/amos-2.0.8:
+total 72K
+drwxr-xr-x 2 root root 4.0K Sep  2 21:17 .
+drwxr-xr-x 3 root root 4.0K Sep  2 21:17 ..
+-rw-r--r-- 1 root root 4.0K Sep  2 21:17 AMOScmp.README
+-rw-r--r-- 1 root root   44 Sep  2 21:17 amosvalidate.README
+-rw-r--r-- 1 root root   42 Sep  2 21:17 hawkeye.README
+-rw-r--r-- 1 root root 4.1K Sep  2 21:17 minimus.README
+-rw-r--r-- 1 root root  489 Sep  2 21:17 portability.README
+-rw-r--r-- 1 root root 7.0K Sep  2 21:17 runAmos.README
+
+
+
+
+
+TROUBLESHOOTING
+===============
+
+
+1) make PROBLEM:
+
+ERROR: /usr/bin/ld: cannot find -lXi
+    collect2: ld returned 1 exit status
+    make[3]: *** [cestat-cov] Error 1
+
+
+DIAGNOSIS:
+
+THE Makefile CONTAINS AN EXTRANEOUS LINK TO libXi WHICH APPEARS NOT TO BE NECESSARY FOR FULL INSTALLATION.
+
+    libXi IS THERE BUT NOT BEING FOUND:
+
+    locate libXi
+
+    /usr/lib/libXi.so.6
+    /usr/lib/libXi.so.6.0.0
+    /usr/lib/libXinerama.so.1
+    /usr/lib/libXinerama.so.1.0.0
+    /usr/lib64/libXi.so.6
+    /usr/lib64/libXi.so.6.0.0
+    /usr/lib64/libXinerama.so.1
+    /usr/lib64/libXinerama.so.1.0.0
+
+
+SOLUTION:
+
+USE  --x-libraries=DIR OPTION FOR configure
+
+./configure --x-libraries=/usr/lib64
+
+    ...
+    -- AMOS Assembler 2.0.8 Configuration Results --
+      C compiler:          gcc -g -O2
+      C++ compiler:        g++ -g -O2
+      GCC version:         gcc (GCC) 4.1.2 20070626 (Red Hat 4.1.2-14)
+      Host System type:    x86_64-unknown-linux-gnu
+      Install prefix:      /home/syoung/base/apps/amos
+      Install eprefix:     ${prefix}
+    
+      See config.h for further configuration information.
+      Email <amos-help@lists.sourceforge.net> with questions and bug reports.
+    
+    WARNING! nucmer was not found but is required to run AMOScmp
+       install nucmer if planning on using AMOScmp
+    WARNING! delta-filter was not found but is required to run AMOScmp-shortReads-alignmentTrimmed
+       install delta-filter if planning on using AMOScmp-shortReads-alignmentTrimmed
+    WARNING! show-coords was not found but is required to run minimus2
+       install show-coords if planning on using minimus2
+    WARNING! Qt3 toolkit malfunctioning but is required to run AMOS GUIs
+       try compiling GUIs manually or reinstall Qt3 toolkit to build GUIs
+       see config.log for more information on what went wrong
+    
+
+AND ./configure -h SHOWS THE FOLLOWING:
+
+    Some influential environment variables:
+      PERL        perl command
+      NUCMER      nucmer command
+      DELTAFILTER delta-filter command
+      SHOWCOORDS  show-coords command
+      CXX         C++ compiler command
+      CXXFLAGS    C++ compiler flags
+      LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
+                  nonstandard directory <lib dir>
+      CPPFLAGS    C/C++ preprocessor flags, e.g. -I<include dir> if you have
+                  headers in a nonstandard directory <include dir>
+      CC          C compiler command
+      CFLAGS      C compiler flags
+      CPP         C preprocessor
+
+
+SET ENVIRONMENT VARIABLES:
+
+export NUCMER=/store/home/syoung/base/apps/mummer/nucmer
+export DELTAFILTER=/store/home/syoung/base/apps/mummer/delta-filter
+export SHOWCOORDS=/store/home/syoung/base/apps/mummer/show-coords
+export LDFLAGS=-L/usr/lib
+echo $NUCMER
+echo $DELTAFILTER
+echo $SHOWCOORDS
+echo $LDFLAGS
+
+    
+STILL GOT ERROR:
+
+    WARNING! nucmer was not found but is required to run AMOScmp
+
+SO EDITED Makefile:
+
+    DELTAFILTER = /store/home/syoung/base/apps/mummer/delta-filter
+    ...    
+    LDFLAGS = /usr/lib
+    ..
+    NUCMER = /store/home/syoung/base/apps/mummer/nucmer
+    ...
+    SHOWCOORDS = /store/home/syoung/base/apps/mummer/show-coords
+
+THEN RAN sudo make
+
+
+/usr/bin/ld: skipping incompatible /usr/lib/libSM.so when searching for -lSM
+/usr/bin/ld: skipping incompatible /usr/lib/libICE.so when searching for -lICE
+/usr/bin/ld: skipping incompatible /usr/lib/libX11.so when searching for -lX11
+/usr/bin/ld: skipping incompatible /usr/lib/libXext.so when searching for -lXext
+/usr/bin/ld: skipping incompatible /usr/lib/libXmu.so when searching for -lXmu
+/usr/bin/ld: skipping incompatible /usr/lib/libXt.so when searching for -lXt
+/usr/bin/ld: cannot find -lXi
+collect2: ld returned 1 exit status
+make[3]: *** [cestat-cov] Error 1
+
+
+
+SET LD_LIBRARY_PATH_64 ENVIRONMENT VARIABLE AND RERAN configure AND make:
+
+    sudo make clean
+    sudo ./configure --x-libraries=/usr/lib64
+    sudo make
+
+sudo make 
+THIS TIME DID NOT SKIP incompatible LIBRARIES BUT STILL COULDN'T FIND -lXi
+
+    ...
+            then mv -f ".deps/find_duplicate_reads-find-duplicate-reads.Tpo" ".deps/find_duplicate_reads-find-duplicate-reads.Po"; else rm -f ".deps/find_duplicate_reads-find-duplicate-reads.Tpo"; exit 1; fi
+    g++  -g -O2   -o find-duplicate-reads  find_duplicate_reads-find-duplicate-reads.o ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a ../../src/GNU/libGNU.a -lz -lc -lm 
+    if g++ -DHAVE_CONFIG_H -I. -I. -I../..  -I../../src/Common -I../../src/AMOS -I../../src/GNU -I../../src/Foundation -I../../src/Contig   -g -O2 -MT cestat-cov.o -MD -MP -MF ".deps/cestat-cov.Tpo" -c -o cestat-cov.o cestat-cov.cc; \
+            then mv -f ".deps/cestat-cov.Tpo" ".deps/cestat-cov.Po"; else rm -f ".deps/cestat-cov.Tpo"; exit 1; fi
+    g++  -g -O2   -o cestat-cov  cestat-cov.o -L/usr/local/qt/lib -lqt  -lSM -lICE  -L/usr/lib64 -lX11 -lXext -lXmu -lXt -lXi   ../../src/Contig/libDataStore.a ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a -lz -lc -lm 
+    /usr/bin/ld: cannot find -lXi
+    collect2: ld returned 1 exit status
+    make[3]: *** [cestat-cov] Error 1
+    make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Validation'
+    make[2]: *** [all-recursive] Error 1
+    make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src'
+    make[1]: *** [all-recursive] Error 1
+    make[1]: Leaving directory `/store/home/syoung/base/apps/amos'
+    make: *** [all] Error 2
+
+
+
+
+SET LD_LIBRARY_PATH_64 ENVIRONMENT VARIABLE AND RERAN configure WITH LIBRARIES AT /usr/lib (NOT /usr/lib64) AND make:
+
+sudo make clean
+sudo ./configure --x-libraries=/usr/lib
+sudo make
+
+    GAVE SAME OLD ERROR INCLUDING 'SKIPPING INCOMPATIBLE' MESSAGES:
+
+    ...
+    if g++ -DHAVE_CONFIG_H -I. -I. -I../..  -I../../src/Common -I../../src/AMOS -I../../src/GNU   -g -O2 -MT find_duplicate_reads-find-duplicate-reads.o -MD -MP -MF ".deps/find_duplicate_reads-find-duplicate-reads.Tpo" -c -o find_duplicate_reads-find-duplicate-reads.o `test -f 'find-duplicate-reads.cc' || echo './'`find-duplicate-reads.cc; \
+            then mv -f ".deps/find_duplicate_reads-find-duplicate-reads.Tpo" ".deps/find_duplicate_reads-find-duplicate-reads.Po"; else rm -f ".deps/find_duplicate_reads-find-duplicate-reads.Tpo"; exit 1; fi
+    g++  -g -O2   -o find-duplicate-reads  find_duplicate_reads-find-duplicate-reads.o ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a ../../src/GNU/libGNU.a -lz -lc -lm 
+    if g++ -DHAVE_CONFIG_H -I. -I. -I../..  -I../../src/Common -I../../src/AMOS -I../../src/GNU -I../../src/Foundation -I../../src/Contig   -g -O2 -MT cestat-cov.o -MD -MP -MF ".deps/cestat-cov.Tpo" -c -o cestat-cov.o cestat-cov.cc; \
+            then mv -f ".deps/cestat-cov.Tpo" ".deps/cestat-cov.Po"; else rm -f ".deps/cestat-cov.Tpo"; exit 1; fi
+    g++  -g -O2   -o cestat-cov  cestat-cov.o -L/usr/local/qt/lib -lqt  -lSM -lICE  -L/usr/lib -lX11 -lXext -lXmu -lXt -lXi   ../../src/Contig/libDataStore.a ../../src/Common/libCommon.a ../../src/AMOS/libAMOS.a -lz -lc -lm 
+    /usr/bin/ld: skipping incompatible /usr/lib/libSM.so when searching for -lSM
+    /usr/bin/ld: skipping incompatible /usr/lib/libICE.so when searching for -lICE
+    /usr/bin/ld: skipping incompatible /usr/lib/libX11.so when searching for -lX11
+    /usr/bin/ld: skipping incompatible /usr/lib/libXext.so when searching for -lXext
+    /usr/bin/ld: skipping incompatible /usr/lib/libXmu.so when searching for -lXmu
+    /usr/bin/ld: skipping incompatible /usr/lib/libXt.so when searching for -lXt
+    /usr/bin/ld: cannot find -lXi
+    collect2: ld returned 1 exit status
+    make[3]: *** [cestat-cov] Error 1
+    make[3]: Leaving directory `/store/home/syoung/base/apps/amos/src/Validation'
+    make[2]: *** [all-recursive] Error 1
+    make[2]: Leaving directory `/store/home/syoung/base/apps/amos/src'
+    make[1]: *** [all-recursive] Error 1
+    make[1]: Leaving directory `/store/home/syoung/base/apps/amos'
+    make: *** [all] Error 2
+
+
+
+SEARCHED: centos qt3 "/usr/bin/ld: cannot find -lXext
+
+    ...
+    to solve /usr/bin/ld: cannot find -lXext
+    Code:
+
+    sudo yum install glib-devel
+
+        ...
+        Resolving Dependencies
+        --> Populating transaction set with selected packages. Please wait.
+        ---> Downloading header for glib-devel to pack into transaction set.
+        glib-devel-1.2.10-20.el5. 100% |=========================| 7.3 kB    00:00     
+        ---> Package glib-devel.i386 1:1.2.10-20.el5 set to be updated
+        ---> Downloading header for glib-devel to pack into transaction set.
+        glib-devel-1.2.10-20.el5. 100% |=========================| 7.3 kB    00:00     
+        ---> Package glib-devel.x86_64 1:1.2.10-20.el5 set to be updated
+        --> Running transaction check
+        --> Processing Dependency: libgthread-1.2.so.0()(64bit) for package: glib-devel
+        --> Processing Dependency: libgmodule-1.2.so.0()(64bit) for package: glib-devel
+        --> Processing Dependency: libglib-1.2.so.0()(64bit) for package: glib-devel
+        --> Restarting Dependency Resolution with new changes.
+        --> Populating transaction set with selected packages. Please wait.
+        ---> Downloading header for glib to pack into transaction set.
+        glib-1.2.10-20.el5.x86_64 100% |=========================| 7.5 kB    00:00     
+        ---> Package glib.x86_64 1:1.2.10-20.el5 set to be updated
+        --> Running transaction check
+        
+        Dependencies Resolved
+        
+        =============================================================================
+         Package                 Arch       Version          Repository        Size 
+        =============================================================================
+        Installing:
+         glib-devel              i386       1:1.2.10-20.el5  rhel-x86_64-server-5   39 k
+         glib-devel              x86_64     1:1.2.10-20.el5  rhel-x86_64-server-5   39 k
+        Installing for dependencies:
+         glib                    x86_64     1:1.2.10-20.el5  rhel-x86_64-server-5  144 k
+        
+        Transaction Summary
+        =============================================================================
+        Install      3 Package(s)         
+        Update       0 Package(s)         
+        Remove       0 Package(s)         
+        
+        Total download size: 221 k
+        Is this ok [y/N]: y
+        Is this ok [y/N]: y
+        Downloading Packages:
+        (1/3): glib-devel-1.2.10- 100% |=========================|  39 kB    00:00     
+        (2/3): glib-1.2.10-20.el5 100% |=========================| 144 kB    00:00     
+        (3/3): glib-devel-1.2.10- 100% |=========================|  39 kB    00:00     
+        Running Transaction Test
+        Finished Transaction Test
+        Transaction Test Succeeded
+        Running Transaction
+          Installing: glib                         ######################### [1/3] 
+          Installing: glib-devel                   ######################### [2/3] 
+          Installing: glib-devel                   ######################### [3/3] 
+        
+        Installed: glib-devel.i386 1:1.2.10-20.el5 glib-devel.x86_64 1:1.2.10-20.el5
+        Dependency Installed: glib.x86_64 1:1.2.10-20.el5
+        Complete!
+
+
+THEN REDID make BUT STILL GAVE SAME ERROR.
+
+
+CHECKED ldconfig    
+    
+    
+    /sbin/ldconfig
+    /usr/share/man/man8/ldconfig.8.gz
+    [syoung@solexa01 amos]$ /sbin/ldconfig
+    /sbin/ldconfig: Can't create temporary cache file /etc/ld.so.cache~: Permission denied
+    [syoung@solexa01 amos]$ sudo /sbin/ldconfig
+    Password:
+    [syoung@solexa01 amos]$ sudo /sbin/ldconfig --help
+    Usage: ldconfig [OPTION...]
+    Configure Dynamic Linker Run Time Bindings.
+    
+      -c, --format=FORMAT        Format to use: new, old or compat (default)
+      -C CACHE                   Use CACHE as cache file
+      -f CONF                    Use CONF as configuration file
+      -l                         Manually link individual libraries.
+      -n                         Only process directories specified on the command
+                                 line.  Don't build cache.
+      -N                         Don't build cache
+      -p, --print-cache          Print cache
+      -r ROOT                    Change to and use ROOT as root directory
+      -v, --verbose              Generate verbose messages
+      -X                         Don't generate links
+      -?, --help                 Give this help list
+          --usage                Give a short usage message
+      -V, --version              Print program version
+    
+    Mandatory or optional arguments to long options are also mandatory or optional
+    for any corresponding short options.
+
+
+
+
+make
+
+
+# Then build the bankViewer directory
+
+cd src/bankViewer
+qmake-qt3
+make
+
+
+
+
+AMOS README:
+
+Welcome to AMOS Assembler. A Modular Open Source Assembler.
+website: <http://amos.sourceforge.net>
+contact: <amos-help@lists.sourceforge.net>
+
+   AMOS is open source software. Please see the `COPYING' file for
+details. For documentation, please refer to the Documentation
+section. For building and installation instructions please see the
+Installation section.
+
+
+Brief Summary
+=============
+
+   The AMOS consortium is committed to the development of open-source
+whole genome assembly software. The project acronym (AMOS) represents
+our primary goal -- to produce A Modular, Open-Source whole genome
+assembler. Open-source so that everyone is welcome to contribute and
+help build outstanding assembly tools, and modular in nature so that
+new contributions can be easily inserted into an existing assembly
+pipeline. This modular design will foster the development of new
+assembly algorithms and allow the AMOS project to continually grow and
+improve in hopes of eventually becoming a widely accepted and deployed
+assembly infrastructure. In this sense, AMOS is both a design
+philosophy and a software system.
+
+   Because of its modular nature, AMOS cannot be described in one
+paragraph since it is a composite of many different systems. See the
+Pipeline section for quick descriptions of each pipeline, or the
+Documentation section on where to find comprehensive documentation.
+
+
+Installation
+============
+
+   Please follow the instructions in the `INSTALL' file for building
+and installation. The `INSTALL' file is only a generic installation
+document, so any AMOS specific installation notes are listed below.
+
+   Once `make install' is issued, the installed scripts and Perl
+modules must not be moved. Thus, convince yourself of the installation
+directory beforehand and set the $PREFIX variable for `configure'
+accordingly. AMOS makes use of a few custom installation directories
+not mentioned in `INSTALL', they are as follows. $datadir, $libdir and
+$includedir are set by `configure', see `configure --help' for more
+information.
+
+   - Documentation will be installed in $datadir/doc/amos-[version]
+   - AMOS libraries and Perl modules will be installed in $libdir/AMOS
+   - TIGR libraries and Perl modules will be installed in $libdir/TIGR
+   - AMOS headers will be installed in $includedir/AMOS
+   - TIGR headers will be installed in $includedir/TIGR
+
+  In addition, certain parts of the AMOS package require the X
+windowing system along with the Qt libraries. Parameters for these
+packages may be modified with the following options:
+
+   --x-includes=DIR      X include files are in DIR
+   --x-libraries=DIR     X library files are in DIR
+   --with-x              use the X Window System
+   --with-Qt-dir=DIR     Directory in which to find the Qt /include,
+                         /bin, and /lib subdirectories. Use the below
+                         options to override each of these defaults
+                         individually.
+   --with-Qt-include-dir=DIR
+   --with-Qt-bin-dir=DIR
+   --with-Qt-lib-dir=DIR
+   --with-Qt-lib=LIB     Use -lLIB to link with the Qt library
+
+For example, to build AMOS with its GUIs on an AMD opteron running
+SuSE linux where Qt3 is installed in /usr/lib/qt3 we type:
+
+  `configure --with-Qt-dir=/usr/lib/qt3
+             --with-Qt-lib-dir=/usr/lib/qt3/lib64'
+
+The second option is necessary to identify the 64-bit library for
+compilation instead of the standard 32-bit library.
+
+Please see the INSTALL file for more information and Cygwin and OS X
+specific instructions.
+
+Dependencies
+============
+
+   The AMOS package makes use of Perl (Practical Extraction and Report
+Language). Perl is available on most systems and the latest versions
+can be downloaded free of charge. AMOS requires Perl version 5.6.0 or
+later. If `perl' is available from your system PATH, all is well, if
+not you will need to instruct `configure' where it is located by
+setting the environment variable PERL to the full path of `perl' (see
+the Defining Variables section in the `INSTALL' file).
+
+   AMOScmp makes use of the NUCmer whole genome alignment utility
+which is part of the MUMmer package. If you wish to run AMOScmp, you
+will need download and install MUMmer (available for free from
+<http://mummer.sourceforge.net>). If `nucmer' is available from
+your system PATH, all is well, if not you will need to instruct
+`configure' where it is located by setting the environment variable
+NUCMER to the full path of `nucmer' (see the Defining Variables
+section in the `INSTALL' file).
+
+   The validation pipeline `amosvalidate' also depends on Nucmer, but
+it is not essential to the validation process. If you wish to run
+amosvalidate without the "alignment breakpoints" step, comment out
+steps 600-710 with '#' in the `amosvalidate' script.
+
+   The AMOS assembly viewer Hawkeye relies on X windows and the Qt3 
+toolkit. Note that the Qt toolkit is somewhat volatile, so it is 
+important to install Qt3 and not a newer or older version. If Qt is not 
+centrally installed on your system, you will need to do so to make 
+use of this graphical viewer. The configure script should be able 
+to identify most standard Qt installations, however you may need 
+to set the `--with-Qt-dir' configure option to the location of 
+your Qt package. If all else fails, you may have to build the
+viewer independently. If so, the source resides in AMOS/src/bankViewer.
+
+
+Documentation
+=============
+
+   Basic documentation for the individual pipelines is located in the
+`doc' subdirectory. For comprehensive documentation can be found on
+the AMOS website <http://amos.sourceforge.net>.
+
+
+Pipeline
+========
+
+   Listed here are the current AMOS pipelines available. Source files
+for the pipelines are in `src/Pipeline' and will be installed in
+$bindir as executable scripts. Please see individual documentation for
+each pipeline in the `doc' directory.
+
+   - minimus -
+   Minimus is an assembly pipeline designed specifically for small
+   data-sets, such as the set of reads covering a specific gene. Note
+   that the code will work for larger assemblies (we have used it to
+   assemble bacterial genomes), however, due to its stringency, the
+   resulting assembly will be highly fragmented.  For large and/or
+   complex assemblies the execution of Minimus should be followed by
+   additional processing steps, such as scaffolding.
+
+   - minimus2 
+
+   minimus2 is an assembly pipeline designed for merging two sequence sets
+   (Example: the contigs generated by two assembly processes)
+
+   It uses a nucmer based overlap detector instead of the hash-overlap program 
+   used by the minimus pipeline. 
+
+   Usage:
+         minimus2 prefix \
+            -D REFCOUNT=<n>  \  # Number of sequences is the 1st assembly
+            -D OVERLAP=<n>   \  # Minimum overlap (Default 40bp)
+            -D CONSERR=<f>   \  # Maximum consensus error (0..1) (Def 0.06)
+            -D MINID=<n>     \  # Minimum overlap %id for align. (Def 94)
+            -D MAXTRIM=<n>      # Maximum sequence trimming length (Def 20bp)
+
+   For assembling two sequence sets, REFCOUNT should be the set to the
+   number of sequences in the first set.
+   By default REFCOUNT=0. An all vs all alignment is run is REFCOUNT is not
+   given as input parameter (same as minimus).
+
+   - AMOScmp -
+   AMOScmp provides a general overlap-layout-consensus pipeline for
+   assembly, but with a twist. The overlap phase of the process is
+   replaced with an alignment to a reference, i.e. all sequencing reads
+   are aligned to a finished reference sequence and their alignments are
+   used to determine their layout position.
+
+   - AMOScmp-shortReads -
+   Modified version AMOScmp for assembling short reads
+   Differences compared to AMOScmp:
+     * smaller nucmer alignment cluster size (20 vs 65)
+     * smaller make-consensus alignment wiggle value (2 vs 15)
+
+   - AMOScmp-shortReads-alignmentTrimmed -
+   Very similar to AMOScmp-shortReads but it does a reference based alignment 
+   trimming of the reads prior to the assembly. 
+   Differences compared to AMOScmp-shortReads:
+     * aligns the reads to reference using nucmer
+     * determines zero coverage regions
+     * extracts the read clear ranges from the alignment(delta) file
+     * exrtends the read clear ranges for reads adjacent to zero coverage regions
+     * updates the bank with the new clear ranges
+     * updates the alignment(delta) file with the new read lengths and clear ranges
+
+   - amosvalidate -
+   Amosvalidate is a validation pipeline for genome assemblies. This
+   pipeline includes a collection of methods for ascertaining the
+   quality of an assembly, and examines multiple measures of assembly
+   quality to pinpoint potential mis-assemblies. Validation techniques
+   include mate-pair validation, repeat analysis, coverage analysis,
+   identification of correlated read polymorphisms, and read alignment
+   breakpoint analysis. Regions of the assembly exhibiting multiple
+   signatures of mis-assembly are flagged as suspicious and output by
+   amosvalidate for further examination.
+
+   - hawkeye -
+   Hawkeye is a visual analytics tool for genome assembly analysis and
+   validation, designed to aid in identifying and correcting assembly
+   errors. Hawkeye blends the best practices from information and
+   scientific visualization to facilitate inspection of large-scale
+   assembly data while minimizing the time needed to detect
+   mis-assemblies and make accurate judgments of assembly quality.
+

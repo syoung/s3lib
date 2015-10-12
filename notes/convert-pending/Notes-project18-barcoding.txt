@@ -1,0 +1,141 @@
+Notes-project18-barcoding.txt
+
+</entry>
+
+
+
+<entry [Wed Aug 27 23:55:36 EDT 2008`] CREATED barcode2fastq.pl TO FILTER BARCODED SEQUENCES INTO SEPARATE FASTQ FILES>
+
+
+
+
+1. LOCATION OF FILES AND BARCODE INFORMATION
+
+(TAKEN FROM DOKUWIKI 'Run_log' PAGE)
+
+run 3 human
+
+SAMPLES
+Lane 	Sample
+1 	AD0*
+2 	Barcodes (AD1, AD2, AD3)
+3 	AD2
+4 	PhiX control
+5 	SeqCapture
+6 	mir133
+7 	let7
+8 	Control
+
+* (IDT adapters with original sequence)
+
+Barcodes
+
+AD1: AAGGAT
+AD2: ACACAT
+AD3: AGCTAT
+
+LOCATION
+
+/store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH
+
+  cd /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data\
+  /C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/
+  
+  ls -al | grep sequence
+  -rw-r--r-- 1 syoung users  361M Aug 25 04:46 s_1_sequence.txt
+  -rw-r--r-- 1 syoung users  476M Aug 25 04:47 s_2_sequence.txt
+  -rw-r--r-- 1 syoung users  771M Aug 25 04:47 s_3_sequence.txt
+  -rw-r--r-- 1 syoung users 1010M Aug 25 04:48 s_5_sequence.txt
+  -rw-r--r-- 1 syoung users  993M Aug 25 04:46 s_6_sequence.txt
+  -rw-r--r-- 1 syoung users  985M Aug 25 04:47 s_7_sequence.txt
+  -rw-r--r-- 1 syoung users  966M Aug 25 04:53 s_8_sequence.txt
+
+
+
+2. CREATE PIPELINE DIRECTORY AND COPY FILES
+
+mkdir -p /home/syoung/base/pipeline/18-ng.barcoding/data
+cp /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/s_1_sequence.txt  /home/syoung/base/pipeline/18-ng.barcoding/data
+  
+cp /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/s_2_sequence.txt  /home/syoung/base/pipeline/18-ng.barcoding/data
+
+cp /store/data/pipeline_in/080814_HWI-EAS185_0001_SeqCapture_Barcoding_RNA_JH/Data/C1-42_Firecrest1.9.2_18-08-2008_syoung/Bustard1.9.2_25-08-2008_syoung/GERALD_25-08-2008_syoung/s_3_sequence.txt  /home/syoung/base/pipeline/18-ng.barcoding/data
+
+
+3. CREATE BARCODE FILE
+
+    emacs /home/syoung/base/pipeline/18-ng.barcoding/data/run3-barcodes.tsv
+    
+    AD1	AAGGAT
+    AD2	ACACAT
+    AD3	AGCTAT
+
+
+4. RUN barcode2fastq.pl ON LANES 1, 2 AND 3
+
+cd /home/syoung/base/bin/nextgen
+
+./barcode2fastq.pl -i /home/syoung/base/pipeline/18-ng.barcoding/data/s_1_sequence.txt -i
+
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_1_sequence.AD2.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_1_sequence.AD1.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_1_sequence.AD3.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_1_sequence.unmatched.txt
+    
+    Record counts per barcode:
+    
+    AD2: 1244
+    AD1: 1300
+    AD3: 634
+    Unmatched: 1915481
+
+    Run time: 00:02:19
+    Completed ./barcode2fastq.pl
+    1:32AM, 28 August 2008
+    ****************************************
+
+
+./barcode2fastq.pl -i /home/syoung/base/pipeline/18-ng.barcoding/data/s_2_sequence.txt -i
+
+    ...
+    Output files printed:
+    
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_2_sequence.AD2.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_2_sequence.AD1.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_2_sequence.AD3.txt
+    /home/syoung/base/pipeline/19-ng.barcoding/data/s_2_sequence.unmatched.txt
+    
+    Record counts per barcode:
+    
+    AD2: 1466794
+    AD1: 71500
+    AD3: 647837
+    Unmatched: 346163
+
+    Run time: 00:02:06
+    Completed ./barcode2fastq.pl
+    1:29AM, 28 August 2008
+    ****************************************
+
+
+./barcode2fastq.pl -i /home/syoung/base/pipeline/18-ng.barcoding/data/s_3_sequence.txt -i
+
+    ...
+    /home/syoung/base/pipeline/18-ng.barcoding/data/s_3_sequence.AD2.txt
+    /home/syoung/base/pipeline/18-ng.barcoding/data/s_3_sequence.AD1.txt
+    /home/syoung/base/pipeline/18-ng.barcoding/data/s_3_sequence.AD3.txt
+    /home/syoung/base/pipeline/18-ng.barcoding/data/s_3_sequence.unmatched.txt
+    
+    Record counts per barcode:
+    
+    AD2: 3614322
+    AD1: 6797
+    AD3: 554
+    Unmatched: 478637
+    
+    Run time: 00:02:44
+    Completed ./barcode2fastq.pl
+    1:48AM, 28 August 2008
+    ****************************************
+
+

@@ -1,0 +1,374 @@
+USE 'sysctl' TO LIST PROCESSES:
+
+dlc-genomics:~/FUNNYBASE/apps/iprscan young$ sysctl kern.maxproc
+kern.maxproc = 532
+
+gems:~ local$  sysctl kern.maxproc
+kern.maxproc = 2048
+
+SET MAX NUMBER OF PROCESSES:
+sysctl -w kern.maxproc=1000
+
+SET THIS IN sysctl.conf FILE:
+
+em /etc/sysctl.conf
+>>> ...
+# This sets the system-wide limit on the number of processes.
+#
+kern.maxproc=2048
+
+# This limits the number of processes per user.
+#
+kern.maxprocperuid=2000
+... <<<
+
+THE system clock:
+sysctl kern.clockrate
+
+LOAD AVERAGE history:
+sysctl vm.loadavg
+
+VIEW ALL INFO:
+
+sysctl -a
+kern.ostype = Darwin
+kern.osrelease = 8.7.0
+kern.osrevision = 199506
+kern.version = Darwin Kernel Version 8.7.0: Fri May 26 15:20:53 PDT 2006; root:xnu-792.6.76.obj~1/RELEASE_PPC
+kern.maxvnodes = 17408
+kern.maxproc = 2048
+kern.maxfiles = 12288
+kern.argmax = 262144
+kern.securelevel = 1
+kern.hostname = gems.rsmas.miami.edu
+kern.hostid = 0
+kern.clockrate: hz = 100, tick = 10000, profhz = 100, stathz = 100
+kern.posix1version = 200112
+kern.ngroups = 16
+kern.job_control = 1
+kern.saved_ids = 0
+kern.boottime = Wed Dec 13 21:25:21 2006
+
+kern.nisdomainname = 
+kern.maxfilesperproc = 10240
+kern.maxprocperuid = 2000
+kern.dummy = 0
+kern.dummy = 0
+kern.usrstack = -1073741824
+kern.symfile = \mach.sym
+kern.netboot = 0
+kern.dummy = 0
+kern.dummy = 0
+kern.dummy = 0
+kern.aiomax = 90
+kern.aioprocmax = 16
+kern.aiothreads = 4
+kern.corefile = /cores/core.%P
+kern.coredump = 1
+kern.sugid_coredump = 0
+kern.delayterm = 0
+kern.shreg_private = 1
+kern.proc_low_pri_io = 0
+kern.low_pri_window = 200
+kern.low_pri_delay = 200
+vm.loadavg: 0.14 0.19 0.20
+vm.swapusage: total = 64.00M  used = 0.00M  free = 64.00M  
+vfs.nfs has 4 mounted instances
+vfs.fdesc has 1 mounted instance
+vfs.hfs has 4 mounted instances
+vfs.volfs has 1 mounted instance
+vfs.devfs has 1 mounted instance
+hw.machine = Power Macintosh
+hw.model = RackMac3,1
+hw.ncpu = 2
+hw.byteorder = 4321
+hw.physmem = 1073741824
+hw.usermem = 974397440
+hw.pagesize = 4096
+hw.epoch = 1
+hw.vectorunit = 1
+hw.busfrequency = 1150000000
+hw.cpufrequency = 2300000000
+hw.cachelinesize = 128
+hw.l1icachesize = 65536
+hw.l1dcachesize = 32768
+hw.l2settings = 2147483648
+hw.l2cachesize = 524288
+hw.tbfrequency = 33333335
+hw.memsize = 1073741824
+hw.availcpu = 2
+user.cs_path = /usr/bin:/bin:/usr/sbin:/sbin
+user.bc_base_max = 99
+user.bc_dim_max = 2048
+user.bc_scale_max = 99
+user.bc_string_max = 1000
+user.coll_weights_max = 2
+user.expr_nest_max = 32
+user.line_max = 2048
+user.re_dup_max = 255
+user.posix2_version = 200112
+user.posix2_c_bind = 0
+user.posix2_c_dev = 0
+user.posix2_char_term = 0
+user.posix2_fort_dev = 0
+user.posix2_fort_run = 0
+user.posix2_localedef = 0
+user.posix2_sw_dev = 0
+user.posix2_upe = 0
+user.stream_max = 20
+user.tzname_max = 255
+kern.ipc.maxsockbuf: 262144
+kern.ipc.sockbuf_waste_factor: 8
+kern.ipc.somaxconn: 128
+kern.ipc.nmbclusters: 32768
+kern.ipc.sosendminchain: 16384
+kern.ipc.sorecvmincopy: 16384
+kern.ipc.maxsockets: 512
+kern.dummy: 0
+kern.sysv.shmmax: 4194304
+kern.sysv.shmmin: 1
+kern.sysv.shmmni: 32
+kern.sysv.shmseg: 8
+kern.sysv.shmall: 1024
+kern.sysv.semmni: 87381
+kern.sysv.semmns: 87381
+kern.sysv.semmnu: 87381
+kern.sysv.semmsl: 87381
+kern.sysv.semume: 10
+kern.posix.sem.max: 10000
+kern.hibernatefile: 
+kern.bootsignature: 
+kern.hibernatemode: 0
+kern.sugid_scripts: 0
+kern.always_do_fullfsync: 0
+vfs.generic.nfs.client.initialdowndelay: 12
+vfs.generic.nfs.client.nextdowndelay: 30
+net.local.stream.recvspace: 8192
+net.local.stream.sendspace: 8192
+net.local.dgram.maxdgram: 2048
+net.local.dgram.recvspace: 4096
+net.local.inflight: 0
+net.inet.ip.portrange.first: 49152
+net.inet.ip.portrange.hifirst: 49152
+net.inet.ip.portrange.hilast: 65535
+net.inet.ip.portrange.last: 65535
+net.inet.ip.portrange.lowfirst: 1023
+net.inet.ip.portrange.lowlast: 600
+net.inet.ip.forwarding: 1
+net.inet.ip.redirect: 1
+net.inet.ip.ttl: 64
+net.inet.ip.rtexpire: 3600
+net.inet.ip.rtminexpire: 10
+net.inet.ip.rtmaxcache: 128
+net.inet.ip.sourceroute: 0
+net.inet.ip.intr_queue_maxlen: 50
+net.inet.ip.intr_queue_drops: 0
+net.inet.ip.accept_sourceroute: 0
+net.inet.ip.fastforwarding: 0
+net.inet.ip.keepfaith: 0
+net.inet.ip.gifttl: 30
+net.inet.ip.subnets_are_local: 0
+net.inet.ip.maxfragpackets: 1024
+net.inet.ip.maxfragsperpacket: 128
+net.inet.ip.maxfrags: 2048
+net.inet.ip.check_interface: 0
+net.inet.ip.check_route_selfref: 1
+net.inet.ip.use_route_genid: 1
+net.inet.ip.dummynet.hash_size: 64
+net.inet.ip.dummynet.curr_time: 0
+net.inet.ip.dummynet.ready_heap: 0
+net.inet.ip.dummynet.extract_heap: 0
+net.inet.ip.dummynet.searches: 0
+net.inet.ip.dummynet.search_steps: 0
+net.inet.ip.dummynet.expire: 1
+net.inet.ip.dummynet.max_chain_len: 16
+net.inet.ip.dummynet.red_lookup_depth: 256
+net.inet.ip.dummynet.red_avg_pkt_size: 512
+net.inet.ip.dummynet.red_max_pkt_size: 1500
+net.inet.ip.fw.enable: 1
+net.inet.ip.fw.debug: 1
+net.inet.ip.fw.verbose: 2
+net.inet.ip.fw.verbose_limit: 1000
+net.inet.ip.fw.one_pass: 1
+net.inet.ip.fw.autoinc_step: 100
+net.inet.ip.fw.dyn_buckets: 256
+net.inet.ip.fw.curr_dyn_buckets: 256
+net.inet.ip.fw.dyn_count: 30
+net.inet.ip.fw.dyn_max: 4096
+net.inet.ip.fw.static_count: 28
+net.inet.ip.fw.dyn_ack_lifetime: 300
+net.inet.ip.fw.dyn_syn_lifetime: 20
+net.inet.ip.fw.dyn_fin_lifetime: 1
+net.inet.ip.fw.dyn_rst_lifetime: 1
+net.inet.ip.fw.dyn_udp_lifetime: 10
+net.inet.ip.fw.dyn_short_lifetime: 5
+net.inet.ip.fw.dyn_keepalive: 1
+net.inet.ip.linklocal.in.allowbadttl: 1
+net.inet.ip.maxchainsent: 0
+net.inet.icmp.maskrepl: 0
+net.inet.icmp.icmplim: 250
+net.inet.icmp.timestamp: 0
+net.inet.icmp.bmcastecho: 1
+net.inet.icmp.drop_redirect: 0
+net.inet.icmp.log_redirect: 0
+net.inet.tcp.rfc1323: 1
+net.inet.tcp.rfc1644: 0
+net.inet.tcp.mssdflt: 512
+net.inet.tcp.keepidle: 144000
+net.inet.tcp.keepintvl: 1500
+net.inet.tcp.sendspace: 32768
+net.inet.tcp.recvspace: 32768
+net.inet.tcp.keepinit: 1500
+net.inet.tcp.delacktime: 50
+net.inet.tcp.v6mssdflt: 1024
+net.inet.tcp.always_keepalive: 0
+net.inet.tcp.delayed_ack: 3
+net.inet.tcp.log_in_vain: 0
+net.inet.tcp.pcbcount: 216
+net.inet.tcp.minmss: 216
+net.inet.tcp.minmssoverload: 0
+net.inet.tcp.slowlink_wsize: 8192
+net.inet.tcp.blackhole: 0
+net.inet.tcp.tcp_lq_overflow: 1
+net.inet.tcp.path_mtu_discovery: 1
+net.inet.tcp.slowstart_flightsize: 1
+net.inet.tcp.local_slowstart_flightsize: 4
+net.inet.tcp.newreno: 0
+net.inet.tcp.packetchain: 50
+net.inet.tcp.tcbhashsize: 4096
+net.inet.tcp.do_tcpdrain: 0
+net.inet.tcp.icmp_may_rst: 1
+net.inet.tcp.strict_rfc1948: 0
+net.inet.tcp.isn_reseed_interval: 0
+net.inet.tcp.msl: 600
+net.inet.tcp.drop_synfin: 1
+net.inet.tcp.sockthreshold: 256
+net.inet.tcp.reass.maxsegments: 2048
+net.inet.tcp.reass.cursegments: 0
+net.inet.tcp.reass.overflows: 0
+net.inet.udp.checksum: 1
+net.inet.udp.maxdgram: 9216
+net.inet.udp.recvspace: 42080
+net.inet.udp.log_in_vain: 0
+net.inet.udp.blackhole: 0
+net.inet.udp.pcbcount: 44
+net.inet.ipsec.def_policy: 1
+net.inet.ipsec.esp_trans_deflev: 1
+net.inet.ipsec.esp_net_deflev: 1
+net.inet.ipsec.ah_trans_deflev: 1
+net.inet.ipsec.ah_net_deflev: 1
+net.inet.ipsec.ah_cleartos: 1
+net.inet.ipsec.ah_offsetmask: 0
+net.inet.ipsec.dfbit: 0
+net.inet.ipsec.ecn: 0
+net.inet.ipsec.debug: 0
+net.inet.ipsec.esp_randpad: -1
+net.inet.ipsec.bypass: 1
+net.inet.ipsec.esp_port: 0
+net.inet.raw.maxdgram: 8192
+net.inet.raw.recvspace: 8192
+net.appletalk.routermix: 2000
+net.link.generic.system.ifcount: 6
+net.link.ether.inet.host_down_time: 20
+net.link.ether.inet.max_age: 1200
+net.link.ether.inet.maxtries: 5
+net.link.ether.inet.proxyall: 0
+net.link.ether.inet.prune_intvl: 300
+net.link.ether.inet.useloopback: 1
+net.link.ether.inet.log_arp_warnings: 0
+net.link.ether.inet.apple_hwcksum_tx: 1
+net.link.ether.inet.apple_hwcksum_rx: 1
+net.key.debug: 0
+net.key.spi_trycnt: 1000
+net.key.spi_minval: 256
+net.key.spi_maxval: 268435455
+net.key.int_random: 60
+net.key.larval_lifetime: 30
+net.key.blockacq_count: 10
+net.key.blockacq_lifetime: 20
+net.key.esp_keymin: 256
+net.key.esp_auth: 0
+net.key.ah_keymin: 128
+net.key.prefered_oldsa: 0
+net.key.natt_keepalive_interval: 20
+net.inet6.ip6.forwarding: 0
+net.inet6.ip6.redirect: 1
+net.inet6.ip6.hlim: 64
+net.inet6.ip6.maxfragpackets: 1024
+net.inet6.ip6.accept_rtadv: 0
+net.inet6.ip6.keepfaith: 0
+net.inet6.ip6.log_interval: 5
+net.inet6.ip6.hdrnestlimit: 50
+net.inet6.ip6.dad_count: 1
+net.inet6.ip6.auto_flowlabel: 1
+net.inet6.ip6.defmcasthlim: 1
+net.inet6.ip6.gifhlim: 0
+net.inet6.ip6.kame_version: 20010528/apple-darwin
+net.inet6.ip6.use_deprecated: 1
+net.inet6.ip6.rr_prune: 5
+net.inet6.ip6.v6only: 0
+net.inet6.ip6.rtexpire: 3600
+net.inet6.ip6.rtminexpire: 10
+net.inet6.ip6.rtmaxcache: 128
+net.inet6.ip6.use_tempaddr: 0
+net.inet6.ip6.temppltime: 86400
+net.inet6.ip6.tempvltime: 604800
+net.inet6.ip6.auto_linklocal: 1
+net.inet6.ip6.maxfrags: 8192
+net.inet6.ip6.fw.debug: 1
+net.inet6.ip6.fw.verbose: 0
+net.inet6.ip6.fw.verbose_limit: 0
+net.inet6.ipsec6.def_policy: 1
+net.inet6.ipsec6.esp_trans_deflev: 1
+net.inet6.ipsec6.esp_net_deflev: 1
+net.inet6.ipsec6.ah_trans_deflev: 1
+net.inet6.ipsec6.ah_net_deflev: 1
+net.inet6.ipsec6.ecn: 0
+net.inet6.ipsec6.debug: 0
+net.inet6.ipsec6.esp_randpad: -1
+net.inet6.icmp6.rediraccept: 1
+net.inet6.icmp6.redirtimeout: 600
+net.inet6.icmp6.nd6_prune: 1
+net.inet6.icmp6.nd6_delay: 5
+net.inet6.icmp6.nd6_umaxtries: 3
+net.inet6.icmp6.nd6_mmaxtries: 3
+net.inet6.icmp6.nd6_useloopback: 1
+net.inet6.icmp6.nodeinfo: 3
+net.inet6.icmp6.errppslimit: 100
+net.inet6.icmp6.nd6_maxnudhint: 0
+net.inet6.icmp6.nd6_debug: 0
+debug.bpf_bufsize: 4096
+debug.bpf_maxbufsize: 524288
+debug.bpf_maxdevices: 256
+debug.iokit: 0
+hw.ncpu: 2
+hw.byteorder: 4321
+hw.memsize: 1073741824
+hw.activecpu: 2
+hw.physicalcpu: 2
+hw.physicalcpu_max: 2
+hw.logicalcpu: 2
+hw.logicalcpu_max: 2
+hw.cputype: 18
+hw.cpusubtype: 100
+hw.pagesize: 4096
+hw.busfrequency: 1150000000
+hw.busfrequency_min: 1150000000
+hw.busfrequency_max: 1150000000
+hw.cpufrequency: 2300000000
+hw.cpufrequency_min: 2300000000
+hw.cpufrequency_max: 2300000000
+hw.cachelinesize: 128
+hw.l1icachesize: 65536
+hw.l1dcachesize: 32768
+hw.l2cachesize: 524288
+hw.tbfrequency: 33333335
+hw.optional.floatingpoint: 1
+hw.optional.altivec: 1
+hw.optional.graphicsops: 1
+hw.optional.64bitops: 1
+hw.optional.fsqrt: 1
+hw.optional.stfiwx: 1
+hw.optional.datastreams: 0
+hw.optional.dcbtstreams: 1
+

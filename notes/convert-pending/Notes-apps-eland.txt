@@ -1,0 +1,1167 @@
+Notes-apps-eland.txt
+
+
+</entry>
+
+
+
+<entry [Tue Feb  9 21:38:16 EST 2010] INSTALLED GA PIPELINE 1.5.1 ON KRONOS TO CHECK MOST RECENT ELAND STANDALONE>
+
+
+
+INSTALLED ON NGSDEV:
+
+cd /nethome/syoung/base/apps/GAPipeline/1.5.1
+export NO_FFTW=1
+make
+
+    ...
+    -- Found PTHREAD  header: /usr/include/pthread.h
+    -- Found PTHREAD library: /usr/lib64/libpthread.so
+    -- Found ZLIB  header: /usr/include/zlib.h
+    -- Found ZLIB library: /usr/lib64/libz.so
+    -- gzip compression supported
+    -- Found BZIP2  header: /usr/include/bzlib.h
+    -- Found BZIP2 library: /usr/lib64/libbz2.so
+    -- bzip2 compression supported
+    -- Boost version: 1.33.1
+    -- Found the following Boost libraries:
+    -- Boost 1.37.0 not found. Boost will be built from the distribution...
+    Decompressing /nethome/syoung/base/apps/GAPipeline/1.5.1/opt/boost_1_37_0.tar.gz
+    ...
+    common.copy /nethome/syoung/base/apps/GAPipeline/1.5.1/opt/lib/libboost_wserialization.a
+    ...updated 7340 targets...
+    make[1]: warning:  Clock skew detected.  Your build may be incomplete.
+    make[1]: Leaving directory `/nethome/syoung/base/apps/GAPipeline/1.5.1/opt/boost_1_37_0'
+    Cleaning up /nethome/syoung/base/apps/GAPipeline/1.5.1/opt/boost_1_37_0
+    boost-1_37_0 installed successfully
+    -- Boost version: 1.37.0
+    -- Found the following Boost libraries:
+    --   date_time
+    --   filesystem
+    --   iostreams
+    --   program_options
+    --   regex
+    --   serialization
+    --   system
+    -- mkl_emt64 library: MKL_EM64T_LIBRARY-NOTFOUND
+    -- guide library: GUIDE_LIBRARY-NOTFOUND
+    -- using compiler: gcc version 4.1.2
+    -- CPPUNIT not found. Unit tests disabled.
+    -- Adding the c++    library subdirectory: common
+    CMake Error at c++/imaging/CMakeLists.txt:16 (message):
+      Only fftw version 3.x (float) is supported at the moment
+    
+    -- Configuring incomplete, errors occurred!
+    make: *** [build/Makefile] Error 1
+
+
+HAD PROBLEMS INSTALLING PREREQUISITES:
+
+bzlib
+
+fftw
+
+
+GOT THIS make ERROR:
+
+cd /nethome/syoung/base/apps/GAPipeline/1.5.1
+make 
+
+    CPATH=: LIBRARY_PATH=: ./validate.sh --prereqs 
+    Checking for prerequisites
+    WARNING: prerequisite library bzlib not found
+    WARNING: (Note that on platforms for which bzlib is made available as
+    WARNING:  separate run-time and development packages, this may be due
+    WARNING:  to the development package not having been installed.
+    WARNING:  Check that bzlib.h can be found in the standard include paths.)
+    WARNING: prerequisite library fftw not found
+    WARNING: (Note that on platforms for which fftw is made available as
+    WARNING:  separate run-time and development packages, this may be due
+    WARNING:  to the development package not having been installed.
+    WARNING:  Check that fftw3.h can be found in the standard include paths.)
+    WARNING:  
+    WARNING: The --skip-fftw-check option may be used to bypass
+    WARNING: checking for an FFTW installation, e.g. if some other
+    WARNING: Pipeline-compatible FFT library is installed.
+    Failed prerequisite checking.
+    See /nethome/syoung/base/apps/GAPipeline/1.5.1/validate.sh.out for details.
+    make: *** [prereqs] Error 255
+
+
+
+
+INSTALL GAPipeline 1.5.1 LOCALLY USING YUM
+
+INSTALL PREREQUISITE LIBRARIES BEFORE INSTALLING GA PIPELINE
+
+[syoung@ngsdev 1.5.1]$ make
+
+    CPATH=: LIBRARY_PATH=/nethome/nethome/syoung/base/apps/libs/bzlib/lib: ./validate.sh --prereqs 
+    Checking for prerequisites
+    which: no gnuplot in (/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/usr/kerberos/bin:/usr/local/java/bin:/usr/local/bin:/bin:/usr/bin)
+    WARNING: prerequisite gnuplot not found
+    WARNING: prerequisite library bzlib not found
+    WARNING: (Note that on platforms for which bzlib is made available as
+    WARNING:  separate run-time and development packages, this may be due
+    WARNING:  to the development package not having been installed.
+    WARNING:  Check that bzlib.h can be found in the standard include paths.)
+    WARNING: prerequisite library fftw not found
+    WARNING: (Note that on platforms for which fftw is made available as
+    WARNING:  separate run-time and development packages, this may be due
+    WARNING:  to the development package not having been installed.
+    WARNING:  Check that fftw3.h can be found in the standard include paths.)
+    WARNING:  
+    WARNING: The --skip-fftw-check option may be used to bypass
+    WARNING: checking for an FFTW installation, e.g. if some other
+    WARNING: Pipeline-compatible FFT library is installed.
+    Failed prerequisite checking.
+    See /nethome/syoung/base/apps/GAPipeline/1.5.1/validate.sh.out for details.
+    make: *** [prereqs] Error 255
+
+
+
+INSTALL LOCALLY ON ngsdev THEN TRANSFER TO /nethome/syoung/base/apps/libs
+
+1. INSTALL LOCALLY, NEED bzip2-devel FOR bzlib
+https://www.linuxquestions.org/questions/linux-newbie-8/problems-installing-gcc-712991/
+
+sudo su
+mkdir /zlib
+yum install bzip2-devel --installroot=/zlib
+
+
+Installed: bzip2-devel.i386 0:1.0.3-4.el5_2 bzip2-devel.x86_64 0:1.0.3-4.el5_2
+Dependency Installed: basesystem.noarch 0:8.0-5.1.1.el5.centos bash.x86_64 0:3.2-24.el5 bzip2.x86_64 0:1.0.3-4.el5_2 bzip2-libs.x86_64 0:1.0.3-4.el5_2 bzip2-libs.i386 0:1.0.3-4.el5_2 filesystem.x86_64 0:2.4.0-2.el5.centos glibc.x86_64 0:2.5-34 glibc.i686 0:2.5-34 glibc-common.x86_64 0:2.5-34 libgcc.x86_64 0:4.1.2-44.el5 libtermcap.x86_64 0:2.0.8-46.1 mktemp.x86_64 3:1.5-23.2.2 setup.noarch 0:2.5.58-4.el5 termcap.noarch 1:5.5-1.20060701.1 tzdata.noarch 0:2008i-1.el5
+Complete!
+
+bzlib LIBRARIES INSTALLED HERE:
+
+/zlib/usr/lib
+
+    -rwxr-xr-x   1 root root 70874 Sep 16  2008 libbz2.a
+    lrwxrwxrwx   1 root root    11 Feb  9 21:59 libbz2.so -> libbz2.so.1
+    lrwxrwxrwx   1 root root    15 Feb  9 21:59 libbz2.so.1 -> libbz2.so.1.0.3
+    -rwxr-xr-x   1 root root 70404 Sep 16  2008 libbz2.so.1.0.3
+
+bzlib HEADER FILE INSTALLED HERE:
+
+/zlib/usr/include
+
+[root@ngsdev include]# ls
+bzlib.h
+
+
+
+OTHER LIBRARIES INSTALLED HERE:
+
+/zlib/lib
+/zlib/lib64
+
+ll zlib/lib64
+
+    -rwxr-xr-x  1 root root 135K Jan 21  2009 ld-2.5.so
+    lrwxrwxrwx  1 root root    9 Feb  9 21:59 ld-linux-x86-64.so.2 -> ld-2.5.so
+    -rwxr-xr-x  1 root root  20K Jan 21  2009 libanl-2.5.so
+    lrwxrwxrwx  1 root root   13 Feb  9 21:59 libanl.so.1 -> libanl-2.5.so
+    -rwxr-xr-x  1 root root 8.7K Jan 21  2009 libBrokenLocale-2.5.so
+    ... 
+
+
+yum search fftw
+    
+    fftw3-devel.x86_64 : Header files, libraries and development documentation for fftw3
+    fftw3.x86_64 : Fast Fourier Transform library
+    fftw.x86_64 : Fastest Fourier Transform in the West library
+    fftw-devel.x86_64 : Headers, development libraries and documentation for the FFTW library
+
+
+2. TRANSFER TO apps/libs
+
+COPY /zlib/usr/lib AND /zlib/usr/include TO /nethome/syoung/base/apps/libs/bzlib
+
+mkdir /nethome/syoung/base/apps/libs/bzlib
+cp -r /zlib/usr/lib /nethome/syoung/base/apps/libs/bzlib
+cp -r /zlib/usr/include /nethome/syoung/base/apps/libs/bzlib
+
+
+3. EXPORT LD_RUN_PATH
+
+export LD_RUN_PATH=/nethome/syoung/base/apps/libs/bzlib/lib;/nethome/syoung/base/apps/libs/bzlib/include
+export LD_LIBRARY_PATH=/nethome/syoung/base/apps/libs/bzlib/lib:/nethome/syoung/base/apps/libs/bzlib/include
+export LIBRARY_PATH=/nethome/syoung/base/apps/libs/bzlib/lib:/nethome/syoung/base/apps/libs/bzlib/include
+export PATH=/nethome/syoung/base/apps/libs/bzlib/lib:/nethome/syoung/base/apps/libs/bzlib/include:$PATH
+export CPLUS_INCLUDE_PATH=/nethome/syoung/base/apps/libs/bzlib/include
+echo $CPLUS_INCLUDE_PATH
+export C_INCLUDE_PATH=/nethome/syoung/base/apps/libs/bzlib/include
+echo $C_INCLUDE_PATH
+export LIBRARY_PATH=/nethome/nethome/syoung/base/apps/libs/bzlib/lib
+echo $LIBRARY_PATH
+
+cd /nethome/syoung/base/apps/GAPipeline/1.5.1
+make
+
+
+BZIP IS FOUND ON ngsdev AFTER yum install bzip2-devel BUT STILL NOT FOUND ON kronos-x
+
+
+[syoung@ngsdev 1.5.1]$ make
+
+
+    CPATH=: LIBRARY_PATH=/nethome/nethome/syoung/base/apps/libs/bzlib/lib: ./validate.sh --prereqs 
+    Checking for prerequisites
+    which: no gnuplot in (/nethome/syoung/base/apps/libs/bzlib/lib:/nethome/syoung/base/apps/libs/bzlib/include:/nethome/syoung/base/apps/libs/bzlib/lib:/nethome/syoung/base/apps/libs/bzlib/include:/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/usr/kerberos/bin:/usr/local/java/bin:/usr/local/bin:/bin:/usr/bin)
+    WARNING: prerequisite gnuplot not found
+    WARNING: prerequisite library fftw not found
+    WARNING: (Note that on platforms for which fftw is made available as
+    WARNING:  separate run-time and development packages, this may be due
+    WARNING:  to the development package not having been installed.
+    WARNING:  Check that fftw3.h can be found in the standard include paths.)
+    WARNING:  
+    WARNING: The --skip-fftw-check option may be used to bypass
+    WARNING: checking for an FFTW installation, e.g. if some other
+    WARNING: Pipeline-compatible FFT library is installed.
+    Failed prerequisite checking.
+    See /nethome/syoung/base/apps/GAPipeline/1.5.1/validate.sh.out for details.
+    make: *** [prereqs] Error 255
+    [syoung@ngsdev 1.5.1]$ 
+
+
+DID NOT SEE FFTW LIBS EVEN AFTER INSTALL WITH YUM:
+
+yum install fftw3
+yum install fftw
+
+
+SO SKIPPED FFTW:
+
+export NO_FFTW=1
+make
+
+    CPATH=: LIBRARY_PATH=: ./validate.sh --prereqs --skip-fftw-check
+    Will skip check for FFTW as requested.
+    Checking for prerequisites
+    Prerequisites OK (no further validation requested)
+    make --directory opt cmake
+    make[1]: Entering directory `/nethome/syoung/base/apps/GAPipeline/1.5.1/opt'
+    PATH=/nethome/syoung/base/apps/GAPipeline/1.5.1/opt/bin:$PATH bootstrap/bootstrap.sh cmake
+    Decompressing /nethome/syoung/base/apps/GAPipeline/1.5.1/opt/cmake-2.6.2.tar.gz
+
+
+
+
+CMAKE := PATH=$(optbin):$$PATH LIB=${LIB}:${LIBRARY_PATH} cmake
+
+
+
+
+
+See here: Search Path
+
+Summary:
+
+#include <stdio.h>
+When the include file is in brackets the preprocessor first searches in paths specified via the -I flag. Then it searches the standard include paths (see the above link, and use the -v flag to test on your system).
+
+#include "myFile.h"
+When the include file is in quotes the preprocessor first searches in the current directory, then paths specified by -iquote, then -I paths, then the standard paths.
+
+-nostdinc can be used to prevent the preprocessor from searching the standard paths at all.
+
+Environment variables can also be used to add search paths.
+
+When compiling if you use the -v flag you can see the search paths used.
+
+
+
+ENVIRONMENT VARIABLES
+
+13 Environment Variables
+
+
+This section describes the environment variables that affect how CPP operates. You can use them to specify directories or prefixes to use when searching for include files, or to control dependency output.
+
+Note that you can also specify places to search using options such as -I, and control dependency output with options like -M (see Invocation). These take precedence over environment variables, which in turn take precedence over the configuration of GCC.
+
+CPATH
+C_INCLUDE_PATH
+CPLUS_INCLUDE_PATH
+OBJC_INCLUDE_PATH
+
+Each variable's value is a list of directories separated by a special character, much like PATH, in which to look for header files. The special character, PATH_SEPARATOR, is target-dependent and determined at GCC build time. For Microsoft Windows-based targets it is a semicolon, and for almost all other targets it is a colon.
+
+
+CPATH specifies a list of directories to be searched as if specified with -I, but after any paths given with -I options on the command line. This environment variable is used regardless of which language is being preprocessed.
+
+The remaining environment variables apply only when preprocessing the particular language indicated. Each specifies a list of directories to be searched as if specified with -isystem, but after any paths given with -isystem options on the command line.
+
+In all these variables, an empty element instructs the compiler to search its current working directory. Empty elements can appear at the beginning or end of a path. For instance, if the value of CPATH is :/special/include, that has the same effect as `-I. -I/special/include'.
+
+See also Search Path. 
+
+DEPENDENCIES_OUTPUT
+If this variable is set, its value specifies how to output dependencies for Make based on the non-system header files processed by the compiler. System header files are ignored in the dependency output.
+The value of DEPENDENCIES_OUTPUT can be just a file name, in which case the Make rules are written to that file, guessing the target name from the source file name. Or the value can have the form `file target', in which case the rules are written to file file using target as the target name.
+
+In other words, this environment variable is equivalent to combining the options -MM and -MF (see Invocation), with an optional -MT switch too. 
+
+SUNPRO_DEPENDENCIES
+This variable is the same as DEPENDENCIES_OUTPUT (see above), except that system header files are not ignored, so it implies -M rather than -MM. However, the dependence on the main input file is omitted. See Invocation.
+
+
+
+
+STANDARD PATHS
+
+http://gcc.gnu.org/onlinedocs/cpp/Search-Path.html
+
+GCC looks in several different places for headers. On a normal Unix system, if you do not instruct it otherwise, it will look for headers requested with #include <file> in:
+
+     /usr/local/include
+     libdir/gcc/target/version/include
+     /usr/target/include
+     /usr/include
+     
+For C++ programs, it will also look in /usr/include/g++-v3, first. In the above, target is the canonical name of the system GCC was configured to compile code for; often but not always the same as the canonical name of the system it runs on. version is the version of GCC in use.
+
+You can add to this list with the -Idir command line option. All the directories named by -I are searched, in left-to-right order, before the default directories. The only exception is when dir is already searched by default. In this case, the option is ignored and the search order for system directories remains unchanged.
+
+Duplicate directories are removed from the quote and bracket search chains before the two chains are merged to make the final search chain. Thus, it is possible for a directory to occur twice in the final search chain if it was specified in both the quote and bracket chains.
+
+You can prevent GCC from searching any of the default directories with the -nostdinc option. This is useful when you are compiling an operating system kernel or some other program that does not use the standard C library facilities, or the standard C library itself. -I options are not ignored as described above when -nostdinc is in effect.
+
+GCC looks for headers requested with #include "file" first in the directory containing the current file, then in the directories as specified by -iquote options, then in the same places it would have looked for a header requested with angle brackets. For example, if /usr/include/sys/stat.h contains #include "types.h", GCC looks for types.h first in /usr/include/sys, then in its usual search path.
+
+`#line' (see Line Control) does not change GCC's idea of the directory containing the current file.
+
+You may put -I- at any point in your list of -I options. This has two effects. First, directories appearing before the -I- in the list are searched only for headers requested with quote marks. Directories after -I- are searched for all headers. Second, the directory containing the current file is not searched for anything, unless it happens to be one of the directories named by an -I switch. -I- is deprecated, -iquote should be used instead.
+
+-I. -I- is not the same as no -I options at all, and does not cause the same behavior for `<>' includes that `""' includes get with no special options. -I. searches the compiler's current working directory for header files. That may or may not be the same as the directory containing the current file.
+
+If you need to look for headers in a directory named -, write -I./-.
+
+There are several more ways to adjust the header search path. They are generally less useful. See Invocation.
+
+
+
+
+</entry>
+
+
+
+<entry [Tues Jun 30 01:58:29 EDT 2008] BUILD AN SRF ARCHIVE USING illumina2srf (ALSO: srf2illumina) OR BY GERALD CONFIG FILE>
+
+
+
+FROM GA Pipeline 1.4.0 DOCUMENTATION (Pipeline_CASAVA_User_Guide_1005359_A.pdf):
+
+CAN SPECIFY IN GERALD CONFIG FILE:
+
+With version 1.3, the Pipeline is distributed with a modified version of io_lib
+and allows the generation of SRF archives. This is done by adding the
+following line in the config.txt file:
+
+1:SRF_ARCHIVE_REQUIRED yes
+
+This will create an SRF archive containing the sequences and the quality
+values. To create different archives, for instance including the signal and
+noise, or with a different filter, the tool illumina2srf should be used manually.
+
+Extracting the Data from the Archive
+
+The data is extracted from the archive by an io_lib utility called srf2illumina.
+The standard distribution of io_lib is able to extract the data from the archive
+with the exception of the quality scores. The modified version distributed
+with the Pipeline is required to include the quality scores.
+
+
+</entry>
+
+
+
+<entry [Tues Jun 30 01:58:29 EDT 2008] INSTALLED GAPipeline 1.4.0 ON KRONOS>
+
+
+
+
+1. UNZIPPED AND RAN make
+    
+    [ 85%] Building bustard_corrupted-SE_3x3-56.pl: 
+    [ 85%] Building goat_missing-tile-SFPE_3x3-12.pl: 
+    [ 85%] Building goat-IPAR-SFPE_3x3_Index-31.pl: 
+    [ 85%] Building gerald_comp_1_0-SFPE_3x3_Index-20.pl: 
+    [ 85%] Building basic-IPAR-SFPE_3x3_Index-17.pl: 
+    make[3]: Leaving directory `/home/syoung/base/apps/GAPipeline-1.4.0/build'
+    [100%] Built target test_validation
+    make[2]: Leaving directory `/home/syoung/base/apps/GAPipeline-1.4.0/build'
+
+2. RAN make install (NB: AS syoung, **NOT** AS root)
+
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/create_tile_thumbnails.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/Signal_Means_Tile.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/create_IVC_thumbnail.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/qualityFilter.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/score.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/saf2qref.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/plotIntensity_monotemplates.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/plotInformation.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/plot_error_graphs.pl
+    -- Installing: /home/syoung/base/apps/GAPipeline-1.4.0/bin/legacyMakeQseqs.pl
+    make[1]: Leaving directory `/home/syoung/base/apps/GAPipeline-1.4.0/build'
+
+
+3. TESTED ELAND IN bin DIRECTORY
+
+/home/syoung/base/apps/GAPipeline-1.4.0/bin/eland_32
+ 
+OK!
+
+    ELAND: Efficient Local Alignment of Nucleotide Data
+    Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+    Author: Anthony J. Cox
+    
+    Publications incorporating data generated by the use of
+    this software or modified versions thereof should cite:
+    Anthony J. Cox.
+    Ultra high throughput alignment of short sequence tags.
+    In preparation.
+    
+    WARNING: this software is compiled to process oligos of length 32.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Will use at most 25 bits in hash table
+    Can process at most 2147483647 oligos per batch
+    Will find all matches having 2 errors or less
+    
+    syntax: /home/syoung/base/apps/GAPipeline-1.4.0/bin/eland_32 oligoFile genomeDirectory outputFile[.vmf]
+    [--multi[=N0[,N1,N2]] [repeatFile]
+    
+    oligoFile - file or directory of files
+      file type deduced from first character of each file:
+      '>' - fasta format
+      '#' - single molecule array format
+      [AGCTNagctn] - raw sequence format
+    
+    genomeDirectory - directory of genome files
+      preprocessed to 2-bits-per-base format using squashGenome.
+    
+    outputFile - name of output file
+      if name ends in '.vmf', use verbose match format
+      else use format required by assembly module
+    
+    --multi - output multiple hits per read
+      at most N0,N1,N2 exact, 1-mismatch, 2-mismatch hits per read
+    repeatFile - list of repeats to exclude (optional)
+      must be ASCII and in alphabetical order
+
+
+4. CHANGED GAPipeline LOCATION IN conf/default-linux.conf
+
+IN BOTH THE MAIN REPOSITORY AND AQWA
+    
+    
+    EXECUTION_TEMPDIR       /tmp
+    BIN                     /nethome/syoung/base/bin
+    BINDIR                  /nethome/syoung/base/html/aqwa/bin
+    FILEROOT                /nethome/syoung/base/html/aqwa/fileroot
+    ROOTDIR                 /nethome/syoung/base/pipeline
+    MAQ                     /nethome/syoung/base/apps/maq/0.7.1/maq
+    RUNMAPPING              /nethome/syoung/base/apps/454/2.0.00.20-64/bin/runMapping
+    GAPIPELINE              /nethome/syoung/base/apps/GAPipeline-1.4.0
+    GAPIPELINE_BIN          /nethome/syoung/base/apps/bin/
+    ELAND                   /nethome/syoung/base/apps/bin/ELAND_standalone.pl
+    BUSTARD                 /nethome/syoung/base/apps/bin/bustard.py
+    GOAT_PIPELINE           /nethome/syoung/base/apps/bin/goat_pipeline.py
+    SQUASH                  /nethome/syoung/base/apps/bin/squashGenome
+    MIRA                    /nethome/syoung/base/apps/mira/bin/mira
+    VELVET                  /nethome/syoung/base/apps/velvet/velvet
+    NUCMER                  /nethome/syoung/base/apps/mummer/nucmer
+    DELTAFILTER             /nethome/syoung/base/apps/mummer/delta-filter
+    SHOWCOORDS              /nethome/syoung/base/apps/mummer/show-coords
+    VCAKE                   /nethome/syoung/base/apps/vcake/VCAKE_1.0.pl
+    HTMLURL                 http://ngsdev.ccs.miami.edu
+    HTMLDIR                 /var/www/html
+    CGIDIR                  /var/www/cgi-bin
+    MYSQLDATA               /usr/local/mysql/data
+    CLUSTER_MYSQLDATA       /private/var/mysql
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 9 01:58:29 EDT 2008] RUN TIME FOR human2>
+
+
+
+Eland: /usr/local/Pipeline/Eland/eland
+Output directory: /home/syoung/base/pipeline/human2-eland/assembly
+/usr/local/Pipeline/Eland/eland /home/syoung/base/pipeline/human2-eland/data/human2-1of2.fasta /home/syoung/base/pipeline/human2-eland/data /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-1of2.txt --multi
+
+Run time: 00:12:51
+Completed ./eland.pl
+0:07AM, 16 December 2008
+# EXECUTED FULL COMMAND:
+# ./eland.pl -i /home/syoung/base/pipeline/human2-eland/data/human2-1of2.fasta -r /home/syoung/base/pipeline/human2-eland/data -o /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-1of2.txt
+****************************************
+
+
+</entry>
+
+
+
+<entry [Fri Aug  8 01:58:29 EDT 2008] OUTPUT FILE FORMATS AND VERIFYING TRUE ERROR RATES USING s_1_qreport.txt FILE>
+
+
+
+
+http://seqanswers.com/forums/showthread.php?p=602
+
+To amplify a bit on cgb's posting: If you align your reads to a known, error-free reference (e.g., PhiX), you can then count the true errors and establish a true error rate. Compare this to the estimated error rate embodied in the Q scores. They should match: Out of all the Q30 bases in all the reads, there should be 1 error in 1000, and so on for each Q value.
+
+An easy place to find this information is in the s_<lane>_qreport.txt file produced by Gerald when you do an alignment on the lane (ANALYSIS default or Eland). What you'll see there is that what's called Q40 really has 0.5% errors = Q23.
+
+
+
+</entry>
+
+
+
+<entry [Fri Jul 18 18:37:10 EDT 2008] LOCATION OF SEQUENCE FILES AFTER RUNNING ELAND (goat_pipeline.py WITH CONFIG FILE)>
+
+
+
+ls /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_25-06-2008_jhoffman.2/Bustard1.9.2_25-06-2008_jhoffman
+
+Bustard                     DIRECTORY   -   contains Bustard.log
+finished.txt
+GERALD_25-06-2008_jhoffman  DIRECTORY   -   SOLEXA (ELAND-FORMAT) SEQUENCE FILES FOR EACH LANE (s_1_sequence.txt, s_2_sequence.txt, ETC.)
+Makefile.compress.bustard   
+matrix3.txt                 
+matrix5.txt                 
+params3.xml                 
+params5.xml                 
+Phasing                     DIRECTORY   -   contains mainly s_5_0300_01_cycle.txt files with phasing info for each cycle
+s_3_0001_prb.txt            
+s_3_0001_qhg.txt
+
+
+
+em /usr/local/Pipeline/Gerald/GERALD.pl
+>>>...
+# Parameters for called programs...
+
+# ... phageAlign
+
+PA:=${TOOLS_DIR}/phageAlign${EXE}
+
+PA_PARAMS=$(GENOME) $(READ_LENGTH) $(READ_LENGTH) $(USE_BASES)
+PA_PARAMS_MONO=-tag $(GENOME) $(READ_LENGTH) $(READ_LENGTH) $(USE_BASES)
+...<<<
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 17 20:54:49 EDT 2008] GET QUALITY VALUES>
+
+
+
+
+
+eland QUALITY VALUE REPORT GENERATED BY reportQualitySAF.pl
+
+[syoung@solexa01 C1-36_Firecrest1.9.2_24-06-2008_jhoffman]$ head Bustard1.9.2_24-06-2008_jhoffman/GERALD_24-06-2008_jhoffman/s_4_qreport.txt 
+#RUN_TIME Tue Jun 24 15:51:58 2008
+#SOFTWARE_VERSION @(#) $Id: reportQualitySAF.pl,v 1.3 2007/10/25 12:41:09 rshaw Exp $
+ ** Quality value report **
+
+buildSeq.pl
+
+# Build a fastq/fasta/scarf format file from a set of _seq.txt files and
+# a set of quality files
+
+
+
+INPUTS:
+
+    REQUIRED:
+    
+    s_N_seqpre.txt
+    
+    OPTIONAL (REQUIRED FOR QUALITY VALUES)
+    
+    s_N_qcal.txt [s_N_filt.txt]
+    
+
+my $usage=<<"END";
+Usage: paste s_N_seqpre.txt [s_N_qcal.txt [s_N_filt.txt] ] | $0
+[--qualityFilter ]
+[--contamFilter ]
+
+
+
+buildSeq IS CALLED BY GERALD.pl
+
+
+
+GERALD.pl:1373:# ... buildSeq.pl
+GERALD.pl:1374:BS:=${TOOLS_DIR}/buildSeq.pl
+
+
+
+
+qcal FILE IS IN 'GERALD...' DIRECTORY:
+
+ls /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Bustard1.9.2_24-06-2008_jhoffman/GERALD_24-06-2008_jhoffman/ | grep q
+
+s_4_eland_query.txt
+s_4_qcalreport.txt
+s_4_qcal.txt
+s_4_qraw.txt
+s_4_qreport.txt
+s_4_qtable.txt
+s_4_seqpre.txt
+s_4_sequence.txt
+
+
+[syoung@solexa01 GERALD_24-06-2008_jhoffman]$ head s_4_qcal.txt
+]]]]]]]]]]]]]]]]][]]]]]]][][[[[[[Z
+]][X]]]]][]]][][]]][]]]]]]][]]ZWZZ
+]]]]]]]][]]]]]]]]][[][Y][][[]][[O[
+QJ]M]MQLM[Q]X[LQMNUXIX[]MKXQNKJFUC
+
+
+filt FILE IS ALSO IN 'GERALD...' DIRECTORY:
+
+[syoung@solexa01 Pipeline]$ ls /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Bustard1.9.2_24-06-2008_jhoffman/GERALD_24-06-2008_jhoffman/ | grep filt
+s_4_filt.txt
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Bustard1.9.2_24-06-2008_jhoffman/GERALD_24-06-2008_jhoffman
+[syoung@solexa01 GERALD_24-06-2008_jhoffman]$ head s_4_filt.txt
+>>>
+Y
+Y
+Y
+N
+Y
+N
+Y
+Y
+Y
+Y
+...<<<
+
+GET qcal ENTRIES IN Gerald/* FILES:
+
+grep -n qcal Gerald/*
+Gerald/buildExport.pl:51:Usage: paste s_6_seqpre.txt s_6_qcal.txt s_6_calsaf.txt s_6_filt.txt | $0 
+Gerald/buildSeq.pl:37:Usage: paste s_N_seqpre.txt [s_N_qcal.txt [s_N_filt.txt] ] | $0 
+Gerald/GERALD.pl:1521:QCALREP_SUFFIX:=_qcalreport.txt
+Gerald/GERALD.pl:1524:QCAL_SUFFIX:=_qcal.txt
+Gerald/GERALD.pl:1990:clean_qcal:
+Gerald/GERALD.pl:2000:clean: clean_qcal clean0
+Gerald/GERALD.xml:157:@LANE@_qcals=$(addsuffix $(QCAL_SUFFIX), $(@LANE@_TILES))
+Gerald/GERALD.xml:205:@LANE@_qcals=$(addsuffix $(QCAL_SUFFIX), $(@LANE@_TILES))
+Gerald/GERALD.xml:207:@LANE@$(SEQUENCE_SUFFIX): @LANE@$(SEQPRE_SUFFIX) $(@LANE@_qcals) @LANE@$(FILT_SUFFIX)
+Gerald/GERALD.xml:208:  cat $(@LANE@_qcals) | paste @LANE@$(SEQPRE_SUFFIX) - @LANE@$(FILT_SUFFIX) | \
+Gerald/GERALD.xml:368:@LANE@_qcals@PAIR@=$(addsuffix $(QCAL_SUFFIX)@PAIR@, $(@LANE@_TILES))
+Gerald/GERALD.xml:710:# Calibrated quality report (_qcalreport) is now produced by score.pl.
+Gerald/GERALD.xml:716:#@LANE@$(QCAL_SUFFIX): ${@LANE@_qcals}
+Gerald/score.pl:1450:    my $report_fn = "s_" . $lane_num . $read_str . "_qcalreport.txt";
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Jul 11 22:06:43 EDT 2008
+IMAGE PROCESSING AND BASE CALLING WITH PIPELINE
+
+
+IMAGE PROCESSING AND BASE CALLING
+=================================
+
+<PipelinePath>/ goat/goat_pipeline.py Images_Directory –-make
+
+
+*** __DO_NOT__ RUN IN Data DIRECTORY ***
+
+1. DO chmod ON .params FILE TO MAKE WRITEABLE BY USER syoung
+
+    ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    -rw-r--r-- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+    ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    -rw-rw---- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+
+2. PROCESS IMAGES WITH goat_pipeline.pl AS syoung
+
+#NB: TEST RUN
+#cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+#/usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+/usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_13-07-2008_syoung
+    Instrument:    HWI-EAS185
+    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+      Using automatic offset calibration.
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    Generating journals, Makefiles and parameter files ...
+    
+    TOTAL ~10 MINS.
+
+
+3. THE IMAGE LOCATION FILES FOR EACH LANE ARE IN DIRECTORIES IN THE Firecrest DIRECTORY:
+
+ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Firecrest
+
+total 112
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L001
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L002
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L003
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L005
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L006
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L007
+drwxr-xr-x 2 syoung users 12288 Jul 12 21:30 L008
+
+emacs /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Firecrest/L001/s_1_0300_jnl.xml
+
+>>>
+<?xml version="1.0"?>
+<JournalFile>
+  <Channels Num="4" Order="ACGT" />
+  <Compression>none</Compression>
+  <Cycles Num="36" />
+  <Filename Path="/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L001/C1.1/s_1_300_a.tif" />
+  <Filename Path="/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L001/C1.1/s_1_300_c.tif" />
+  <Filename Path="/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L001/C1.1/s_1_300_g.tif" />
+  <Filename Path="/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L001/C1.1/s_1_300_t.tif" />
+...<<<
+
+
+4. RUN make INSIDE THE 'C1-36_Firecrest1.9.2_15-07-2008_syoung' DIRECTORY
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung
+make
+
+    Found 19175 clusters
+    /usr/local/Pipeline/Gerald/quahog -useBases all -pureBases 12 s_2_0300_sig2.txt > s_2_0300_qhg.txt.tmp && mv s_2_0300_qhg.txt.tmp s_2_0300_qhg.txt
+    About to analyse intensity file s_2_0300_sig2.txt
+    Will send output to standard output
+    Found 19111 clusters
+    Found 19619 clusters
+    touch s_3_finished.txt && echo  s_3
+    Found 19231 clusters
+    Found 19464 clusters
+    s_3
+    touch s_5_finished.txt && echo  s_5
+    s_5
+    touch s_6_finished.txt && echo  s_6
+    s_6
+    touch s_7_finished.txt && echo  s_7
+    s_7
+    touch s_8_finished.txt && echo  s_8
+    s_8
+    touch s_1_finished.txt && echo  s_1
+    s_1
+    Found 19031 clusters
+    Found 19193 clusters
+    Found 18978 clusters
+    Found 19156 clusters
+    touch s_2_finished.txt && echo  s_2
+    s_2
+    touch finished.txt && \
+            echo "Base-calling has completed successfully." && \
+            echo
+    Base-calling has completed successfully.
+    
+    make[2]: Leaving directory `/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung'
+    make[1]: Leaving directory `/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung'
+
+
+
+OUTPUT FILES:
+
+    *_seq.txt FILES IN Bustard1.9.2_15-07-2008_syoung FOLDER:
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+    ls | grep seq.txt
+    >>>...
+    s_8_0091_seq.txt
+    s_8_0092_seq.txt
+    s_8_0093_seq.txt
+    s_8_0094_seq.txt
+    s_8_0095_seq.txt
+    ...<<<
+
+    head s_8_0300_seq.txt
+
+    LANE    TILE    X       Y       SEQUENCE
+    8       300     124     634     TTTGGAAGCAATTCAGCACCCAGTAATTAATTGAGT
+    8       300     125     785     GCTCATGTTTGGTAAACAGAACCTATCATTATCATA
+    8       300     115     328     TAATAAAATATTTTAGAGTAGGTTAAGTGTTTTTAT
+    8       300     105     347     TTATGAGTTTTGATAAATGGATAGAGTTATATAACC
+    8       300     125     406     TCTATCATGTGAAACTACTAAAGGATGTATAGAGTT
+    8       300     216     368     TTCCTTCCTAAAGGATGATTCCATCACCTGAGGTTG
+    8       300     182     270     TATAAAGAAATGTTTATCCCTCAGGAGTCTGTGAGT
+    8       300     214     319     TCTTACTAGAAAAACTCTTACAAGTGTAAAGAATGT
+    8       300     209     305     TATTATCATCAAATAATAAAATTGCTACTTTCTGTA
+
+
+    
+NB: Firecrest IS REALLY /usr/local/Pipeline/Firecrest/run_image_analysis
+
+
+[syoung@solexa01 Firecrest]$ ./run_image_analysis 
+Usage: run_image_analysis [options] <journal filename>
+Options:
+  -fwhm=<x>          set instrumental FWHM
+  -threshold=<x>     set 'Gauss factor'
+  -maxshift=<n>      set maximum shift for alignment (in pixels)
+  -dist=<x>          set distance parameter for colocalisation
+  -prefix=<filename> set prefix for internal filenames
+  -logfile=<filename> set the path to a log file
+  -sample=<text>      set sample id (must not contain underscores)
+  -tile=<lane>,<tile> set lane/tile (0 indexed)
+  -tile=<sample>_<lane>_<tile> set sample/lane/tile (1 indexed)
+
+
+
+
+
+
+BASE CALLING ONLY
+=================
+
+<PipelinePath>/Goat/bustard.py <analysis-folder> [--make] [--matrix=<matrixfile>] [--phasing=<phasingratio>] [--prephasing=<prephasingratio>] [--tiles=tilelist] [--GERALD=<configfile>] 
+
+<PipelinePath>/Goat/bustard.py Image_Analysis_Directory --make
+
+1. MOVE TO *** Data *** DIRECTORY AND GENERATE MAKE FILES
+
+#TEST WITHOUT MAKE (CAN SKIP THIS)
+#cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+#/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+    ...
+    s_8_0298  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+    Instrument:    HWI-EAS185
+    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+      Using automatic offset calibration.
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    Generating journals, Makefiles and parameter files ...
+
+
+2. MOVE TO Bustard DIRECTORY AND RUN MAKE:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_15-07-2008_syoung
+make recursive -j8
+
+    Starting the Bustard base-caller, Bustard version 1.9.2
+    Paramsfile:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+      s_4_0150  36
+      s_4_0151  36
+      s_4_0152  36
+      s_4_0153  36
+      s_4_0154  36
+      s_4_0155  36
+      s_4_0156  36
+      s_4_0157  36
+      s_4_0158  36
+      s_4_0159  36
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Bustard1.9.2_12-07-2008_jhoffman
+    Instrument:    HWI-EAS185
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    You can generate the Makefiles by using the "--make" option.
+
+
+
+
+BASE CALLING AND ALIGNMENT
+==========================
+
+1. MOVE TO *** Data *** DIRECTORY AND GENERATE MAKE FILES
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+/usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_13-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt --make
+
+    ...
+    Running 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung/Makefile
+    make: Nothing to be done for `self_test'.
+    Run 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-31324.txt
+
+
+cat /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt
+    >>>
+    ELAND_GENOME /store/home/jhoffman/human_cDNA
+    
+    ANALYSIS eland_extended
+    
+    USE_BASES nY35
+    
+    GENOME_DIR /store/home/jhoffman
+    <<<
+
+
+2. MOVE TO 'Firecrest...' DIRECTORY AND RUN MAKE:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_13-07-2008_syoung
+make recursive -j8
+
+
+
+
+
+
+
+
+ERRORS
+======
+
+1. PROCESS IMAGES "Unable to open /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params"
+
+PROBLEM:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+/usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --make
+
+    ...
+    s_8_0299  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    s_8_0300  144     4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0 4-0
+    Analysis folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung
+    Sequence folder: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung/Bustard1.9.2_12-07-2008_syoung
+    Instrument:    HWI-EAS185
+    Offset file:   /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt
+      Using automatic offset calibration.
+    Matrix :       Using automatic matrix estimation.
+    Phasing:       Using automatic phasing estimation.
+    Generating journals, Makefiles and parameter files ...
+****    Unable to open /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+DIAGNOSIS:
+
+.params FILE IS NOT WRITEABLE BY users SO USER syoung COULD NOT WRITE .params FILE:
+
+ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+-rw-r--r-- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+SOLUTION:
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+
+2a. BASE CALLING "Could not find run in .params file"
+
+PROBLEM:
+
+    Starting the Bustard base-caller, Bustard version 1.9.2
+    Paramsfile:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+    Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_12-07-2008_syoung
+    Error: Could not find run in .params file
+    Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+    Error: Failed to parse command-line options.
+    Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+
+
+DIAGNOSIS:
+
+USER syoung COULD NOT WRITE .params FILE WHEN DID IMAGE PROCESSING SO THE RUN IS NOT IN THE .params FILE.
+
+
+ll /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+-rw-r--r-- 1 jhoffman users 45517 Jul 12 20:39 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+emacs  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+>>>
+<?xml version="1.0"?>
+<ImageAnalysis>
+  <Run Name="C1-36_Firecrest1.9.2_24-06-2008_jhoffman">
+    <Cycles First="1" Last="36" Number="36" />
+    <ImageParameters>
+      <AutoOffsetFlag>1</AutoOffsetFlag>
+      <AutoSizeFlag>0</AutoSizeFlag>
+      <DataOffsetFile>/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/default_offsets.txt</DataOffsetFile>
+      <Fwhm>2.700000</Fwhm>
+      <InstrumentOffsetFile>/store/data/pipeline_in/Instruments/HWI-EAS185/default_offsets.txt</InstrumentOffsetFile>
+      <OffsetFile>/store/data/pipeline_in/Instruments/HWI-EAS185/default_offsets.txt</OffsetFile>
+      <Offsets X="0.000000" Y="0.000000" />
+...<<<
+
+grep -n "Run Name" /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+    3:  <Run Name="C1-36_Firecrest1.9.2_24-06-2008_jhoffman">
+    59:  <Run Name="C1-36_Firecrest1.9.2_24-06-2008_jhoffman.2">
+    115:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman">
+    176:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman.2">
+    234:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman">
+    295:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman.2">
+    356:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman">
+    412:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman.2">
+    468:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman.3">
+    524:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman">
+    580:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.2">
+    636:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.3">
+    692:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.4">
+    748:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.5">
+    809:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.6">
+    870:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.7">
+    926:  <Run Name="C1-36_Firecrest1.9.2_07-07-2008_jhoffman">
+    982:  <Run Name="C1-36_Firecrest1.9.2_07-07-2008_jhoffman">
+    1038:  <Run Name="C1-36_Firecrest1.9.2_12-07-2008_jhoffman">
+
+
+SOLUTION:
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+SOLUTION:
+
+sudo chmod 660 /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+THEN RERUN IMAGE PROCESSING WITH goat_pipeline.pl AS syoung
+
+grep -n "Run Name" /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/.params
+
+3:  <Run Name="C1-36_Firecrest1.9.2_24-06-2008_jhoffman">
+59:  <Run Name="C1-36_Firecrest1.9.2_24-06-2008_jhoffman.2">
+115:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman">
+176:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman.2">
+234:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman">
+295:  <Run Name="C1-36_Firecrest1.9.2_25-06-2008_jhoffman.2">
+356:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman">
+412:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman.2">
+468:  <Run Name="C1-36_Firecrest1.9.2_30-06-2008_jhoffman.3">
+524:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman">
+580:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.2">
+636:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.3">
+692:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.4">
+748:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.5">
+809:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.6">
+870:  <Run Name="C1-36_Firecrest1.9.2_01-07-2008_jhoffman.7">
+926:  <Run Name="C1-36_Firecrest1.9.2_07-07-2008_jhoffman">
+982:  <Run Name="C1-36_Firecrest1.9.2_07-07-2008_jhoffman">
+1038:  <Run Name="C1-36_Firecrest1.9.2_12-07-2008_jhoffman">
+1094:  <Run Name="C1-36_Firecrest1.9.2_13-07-2008_syoung">
+
+
+
+
+2B. BASE CALLING "Error: Could not find run in .params file"
+
+PROBLEM:
+
+DOESN'T WORK IN *cDNA* DIRECTORY
+
+syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ /usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_24-06-2008_jhoffman --tiles=s_4  --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt
+
+Starting the Bustard base-caller, Bustard version 1.9.2
+Paramsfile:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/C1-36_Firecrest1.9.2_24-06-2008_jhoffman/Data/.params
+Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+FOLDER:  C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+Analysis folder:  /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/C1-36_Firecrest1.9.2_24-06-2008_jhoffman
+Run:  {}
+Error: Could not find run in .params file
+Error: Failed to parse command-line options.
+
+DIAGNOSIS:
+
+YOU ARE IN THE WRONG DIRECTORY
+
+SOLUTION:
+
+CHANGE TO THE 'Data' DIRECTORY BEFORE DOING BASE CALLING WITH bustard.py
+
+
+3. BASE CALLING "Error: Failed to open ../s_1_0007_int.txt.gz.  Error: Error reading signal file ../s_1_0007_int.txt"
+
+PROBLEM:
+
+CAN'T FIND THE IMAGE INTENSITY FILES *int.txt
+
+DIAGNOSIS:
+
+YOU'RE IN THE WRONG DIRECTORY
+
+SOLUTION:
+
+CHANGE TO THE 'Firecrest' DIRECTORY
+
+
+
+
+NOTES
+=====
+
+1. CHECK presentations folder on Y: drive, Justin Hahn
+
+
+2. ORIGINAL CONFIG FILE FOR Jia's DATA:
+
+cat /home/jhoffman/humanGenome/jia_config.txt
+
+    ELAND_GENOME /store/home/jhoffman/human_cDNA
+    
+    ANALYSIS eland_extended
+    
+    USE_BASES nY25 *** nY35 ***
+    
+    GENOME_DIR /store/home/jhoffman
+
+NEW CONFIG FILE FOR Jia's DATA (INSIDE BASE DIRECTORY):
+
+cat /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt
+
+    ELAND_GENOME /store/home/jhoffman/human_cDNA
+    
+    ANALYSIS eland_extended
+    
+    USE_BASES nY35
+    
+    GENOME_DIR /store/home/jhoffman
+
+
+
+3. NB: LANE 4 is PhiX CONTROL
+
+
+4. Lane image files are stored here:
+
+ls /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images
+L001  L002  L003  L004  L005  L006  L007  L008
+
+5. FOR TROUBLESHOOTING, EDIT common.py TO ADD DEBUG INFO:
+
+sudo su 
+
+cp /usr/local/Pipeline/Goat/common.py  /usr/local/Pipeline/Goat/common.py.bkp
+cp /usr/local/Pipeline/Goat/runfolder.py  /usr/local/Pipeline/Goat/runfolder.py.bkp
+
+cd /usr/local/Pipeline/Goat/
+emacs common.py
+
+

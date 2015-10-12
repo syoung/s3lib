@@ -1,0 +1,187 @@
+Notes-project06-wiki.txt
+
+
+</entry>
+
+
+
+<entry [Sat Mar 07 22:26:00 EST 2008] COPY A CONFLUENCE WIKI SPACE>
+
+
+
+http://confluence.atlassian.com/display/DOC/Copy+Or+Rename+A+Space
+
+
+TWO OPTIONS
+
+OPTION 1) Use The Copy Space Plugin
+
+Note that this plugin is still in beta release, and is not officially supported by Atlassian.
+
+Read the developer's notes in the Atlassian blogs.
+
+
+OPTION 2) Manually Clone Or Rename A Space
+
+MODIFY an XML backup of the target space.
+
+
+1. EXPORT SPACE AS XML
+
+Login as an administrator.
+Go to Browse Space -> Advanced -> Export Space 
+Export the target space as XML including attachments.
+Save the space backup and unzip.
+
+
+2. REPLACE OLD SPACE NAME IN entities.xml WITH NEW SPACE NAME
+
+
+
+
+
+Notes
+
+    * May require manually updating external links to that space.
+    * The instructions have been confirmed for Confluence 2.2 onwards. Users running older versions are recommended to upgrade Confluence before continuing.
+    * Where examples are given, they involve changing oldkey:Old Space Name into newkey:New Space Name. You need to substitute your own keys for oldkey and newkey, and your own space names for Old Space Name and New Space Name.
+    * When importing a space export for a space that already exists, the previous space content will be overwritten.
+    * Read the process in full before beginning.
+
+Stage 1: Rename Space
+
+   1. Select a new, unique space key and name for the second space. Space keys may only consist of ASCII letters or numbers (A-Z, a-z, 0-9) and no empty spaces are allowed in the key.
+
+   2. Clone your production Confluence instance to a test server on another computer now. (For instructions, see Migrating Confluence Between Servers.) You should now have a production server and test server both containing the same data and can avoid the risk of corrupting your production Confluence instance.
+
+   3. On the test server, login as an administrator.
+
+   4. Go to Browse Space -> Advanced -> Export Space and export the target space as XML including attachments.
+   5. Save the space backup.
+
+   6. Open the space backup file with a zip file editor and find the file entities.xml.
+
+   7. Edit entities.xml in a text editor.
+
+   8. Do a 'Search & Replace' on the old space name as shown below. Swap out Old Space Name and New Space Name for the actual names.
+      Search For 	Replace With
+      [CDATA[Old Space Name] 	[CDATA[New Space Name]
+
+
+   9. Do a 'Search' for any occurrences of the old space name that occur in user content. You may wish to replace some or all of these references with the new space name. Replace Old Space Name and New Space Name with the actual names.
+      Search For
+      Old Space Name
+
+
+  10. Do four 'Search & Replaces' on each of the references to the old space key as shown below. Swap out oldkey and newkey for your actual keys.
+      Search For 	Replace With
+      [oldkey] 	[newkey]
+      spaceKey=oldkey 	spaceKey=newkey
+      [oldkey: 	[newkey:
+      key=oldkey] 	key=newkey]
+
+
+      For example:
+
+      Space name : Test Space
+      Space key : test
+      New space name : Test Space 2
+      New space key : test2
+
+      <property name="name"><![CDATA[Test Space]]></property>
+      <property name="key"><![CDATA[test]]></property>
+
+
+      The above search and replace ensures that you will change the test oldkey to test2, and change the "Test Space* Old Space Name to Test Space 2.
+  11. Save the modified entities.xml.
+
+  12. Overwrite the original entities.xml in the space backup with the modified version.
+
+  13. Login to the test instance as a Confluence administrator.
+
+  14. Go to Administration -> Backup & Restore. Under 'Upload a zipped backup to Confluence', browse to select to the modified space backup. Check the 'Build index' option and select 'Upload & Restore'.
+
+  15. Once the restore process has completed, access the new space and test that you can access pages, embedded links and attachments. Any error in this step indicates that your search and replace was performed incorrectly and you should to retry from step 2.
+
+Stage 2: Restore On Production
+
+   1. Backup your production instance now.
+
+   2. Login to the production instance as a Confluence administrator.
+
+   3. Go to Administration -> Backup & Restore. Under 'Upload a zipped backup to Confluence', browse to select to the modified space backup. Check the 'Build index' option and select 'Upload & Restore' If any data loss occurs as a result of using this workaround, immediately revert to the backup.
+
+   4. Once the restore process has completed, access the new space and test that you can access pages, embedded links and attachments. If any error occurs during this step, revert to the site backup.
+
+   5. If renaming a space, you can delete the old space by going to Browse Space -> Space Admin -> Remove Space. Click OK to remove the old space.
+
+Stage 3: Rename Space References
+
+Links in other spaces to the old space will remain unchanged. If you are renaming a space, you will need to change these links to point to the new space. Users who are copying a space can leave the links pointing to the original space by skipping this stage.
+
+Changing these links depends on if you want to change every link, or only some. If not all links must be changed or you are unwilling to stop your production instance, this must be done by editing each page individually. If all links must be changed, follow the instructions below.
+
+   1. Create a site XML backup including attachments from Administration -> Backup & Restore.
+
+   2. Save the site XML backup file.
+
+   3. Stop the production instance.
+
+   4. Create two copies of the site backup. Keep one copy as the original, unmodified backup, the other will be modified. Rename the backups so that it is clear which is being modified.
+
+   5. Open the copy for modification and edit entities.xml.
+
+   6. Do four 'Search & Replaces' on each of the references to the old space key as shown below. Swap out oldkey and newkey for the actual keys
+      Search For 	Replace With
+      [oldkey] 	[newkey]
+      spaceKey=oldkey 	spaceKey=newkey
+      [oldkey: 	[newkey:
+      key=oldkey] 	key=newkey]
+
+
+   7. Save the updated entities.xml back into the modified site XML backup file
+
+   8. Start the production instance
+
+   9. Import the modified site XML backup from Administration -> Backup & Restore. If you have any problems, revert to the original unmodified backup and redo the links manually instead
+
+Done.
+
+
+
+https://apps.akeles.com/confluence/display/DOC/Restoring+a+Space
+
+To restore a space,
+
+   1.
+
+      Go to the Confluence 'Administration Console'. To do this:
+          * Open the 'Browse' menu and select 'Confluence Admin'. The 'Administration Console' view will open.
+   2. Select 'Backup and Restore' in the 'Administration' section of the left-hand panel.
+
+You can restore data in one of two ways:
+
+   1. Upload a zipped backup to Confluence:
+          * Browse for the backup file.
+          * Uncheck 'Build Index' if you want to create the index at a later stage.
+          * Click 'Upload and Restore'.
+
+
+   2. Restore a backup from the file system:
+          * Select the backup file from the form field displayed. If you do not see your backup file, make you sure that it has been copied into the /opt/java/src/confluence/deployments/conf.atlassian.com/home/restore directory.
+          * Uncheck 'Build Index' if you want to create the index at a later stage.
+          * Click 'Restore'.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jan  8 23:06:26 EST 2009] SOLEXA WIKI SITE FOR SEQUENCING SERVICES AT UCSF>
+
+
+
+http://cat.ucsf.edu/equipment/solexa/index.html

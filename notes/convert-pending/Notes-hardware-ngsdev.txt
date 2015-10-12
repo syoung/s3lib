@@ -1,0 +1,919 @@
+Notes-hardware-ngsdev.txt
+
+</entry>
+
+
+
+<entry [Tues Dec 15 17:55:44 EDT 2009] NEW ngsdev WITH MERGED OS AND DATA PARTITIONS (21G)>
+
+
+
+IP:204.68.94.222
+
+GET THE IP ADDRESS OF YOUR COMPUTER
+
+emacs /etc/sysconfig/network-scripts/ifcfg-eth0
+
+    # Intel Corporation 82545EM Gigabit Ethernet Controller (Copper)
+    DEVICE=eth0
+    BOOTPROTO=none
+    ONBOOT=yes
+    IPADDR=204.68.94.222
+    NETMASK=255.255.255.0
+    GATEWAY=204.68.94.1
+    TYPE=Ethernet
+
+
+OLD IP ADDRESS OF ngsdev
+
+
+emacs /etc/sysconfig/network-scripts/ifcfg-eth0
+
+    # Intel Corporation 82545EM Gigabit Ethernet Controller (Copper)
+    DEVICE=eth0
+    BOOTPROTO=none
+    ONBOOT=yes
+    IPADDR=204.68.94.167
+    NETMASK=255.255.255.0
+    GATEWAY=204.68.94.1
+    TYPE=Ethernet
+
+
+</entry>
+
+
+
+<entry [Mon Dec 14 14:55:44 EDT 2009] CONNECT TO ngsdev WITH chicken of the VNC>
+
+
+
+START VNC SERVER ON ngsdev
+
+sudo su
+vncserver :2
+
+You will require a password to access your desktops.
+
+Password: a*
+Verify: a*
+
+New 'ngsdev.ccs.miami.edu:2 (root)' desktop is ngsdev.ccs.miami.edu:2
+
+Creating default startup script /root/.vnc/xstartup
+Starting applications specified in /root/.vnc/xstartup
+Log file is /root/.vnc/ngsdev.ccs.miami.edu:2.log
+
+
+BUT CAN'T CONNECT FROM hplaptop WITH TIGHTVNC
+
+
+</entry>
+
+
+
+<entry [Mon Dec 14 14:55:44 EDT 2009] SETUP BACKUP OF ngsdev ON kronos >
+
+
+
+FIRST STRAIGHT COPY:
+
+screen -S rsync
+rsync --archive --perms --delete / /nethome/syoung/base/pipeline/ngsdev/
+
+
+LATER, IN CRONTAB:
+
+To make the automatic snapshots happen, add the following lines to root's crontab file 
+
+AS ROOT:
+
+crontab -e
+
+
+Then add the following line:
+
+SHIFT + i:
+
+0 13 * * *  rsync --archive --perms --delete / /nethome/syoung/base/pipeline/ngsdev/
+
+
+
+NOTES
+-----
+
+
+
+Using rsync to make a backup
+http://www.mikerubel.org/computers/rsync_snapshots/#Isolation
+
+
+rsync --archive --delete source/ destination/
+
+# USE --delete (to delete any file from destination/ that is not in source/)
+#rsync -a source/ destination/
+
+
+
+To run the rsync-with-backup command from the previous section every morning at 4:20 AM, for example, edit the root cron table: (as root)
+
+crontab -e
+
+Then add the following line:
+
+20 4 * * * rsync --archive --delete source/ destination/
+
+
+Finally, save the file and exit. The backup will happen every morning at precisely 4:20 AM, and root will receive the output by email. Don't copy that example verbatim, though; you should use full path names (such as /usr/bin/rsync and /home/source/) to remove any ambiguity.
+
+Incremental backup
+
+rm -rf backup.3
+mv backup.2 backup.3
+mv backup.1 backup.2
+cp -al backup.0 backup.1
+rsync -a --delete source_directory/  backup.0/
+If the above commands are run once every day, then backup.0, backup.1, backup.2, and backup.3 will appear to each be a full backup of source_directory/ as it appeared today, yesterday, two days ago, and three days ago, respectively--complete, except that permissions and ownerships in old snapshots will get their most recent values (thanks to J.W. Schultz for pointing this out). In reality, the extra storage will be equal to the current size of source_directory/ plus the total size of the changes over the last three days--exactly the same space that a full plus daily incremental backup with dump or tar would have taken.
+
+Update (2003.04.23): As of rsync-2.5.6, the --link-dest flag is now standard. Instead of the separate cp -al and rsync lines above, you may now write:
+
+mv backup.0 backup.1
+rsync -a --delete --link-dest=../backup.1 source_directory/  backup.0/
+This method is preferred, since it preserves original permissions and ownerships in the backup. However, be sure to test it--as of this writing some users are still having trouble getting --link-dest to work properly. Make sure you use version 2.5.7 or later.
+
+
+
+
+Basics
+
+Suppose you have a directory called source, and you want to back it up into the directory destination. To accomplish that, you'd use:
+
+rsync -a source/ destination/
+(Note: I usually also add the -v (verbose) flag too so that rsync tells me what it's doing). This command is equivalent to:
+
+cp -a source/. destination/
+except that it's much more efficient if there are only a few differences.
+
+Just to whet your appetite, here's a way to do the same thing as in the example above, but with destination on a remote machine, over a secure shell:
+
+rsync -a -e ssh source/ username@remotemachine.com:/path/to/destination/
+Trailing Slashes Do Matter...Sometimes
+
+This isn't really an article about rsync, but I would like to take a momentary detour to clarify one potentially confusing detail about its use. You may be accustomed to commands that don't care about trailing slashes. For example, if a and b are two directories, then cp -a a b is equivalent to cp -a a/ b/. However, rsync does care about the trailing slash, but only on the source argument. For example, let a and b be two directories, with the file foo initially inside directory a. Then this command:
+
+rsync -a a b
+produces b/a/foo, whereas this command:
+
+rsync -a a/ b
+produces b/foo. The presence or absence of a trailing slash on the destination argument (b, in this case) has no effect.
+
+Using the --delete flag
+
+If a file was originally in both source/ and destination/ (from an earlier rsync, for example), and you delete it from source/, you probably want it to be deleted from destination/ on the next rsync. However, the default behavior is to leave the copy at destination/ in place. Assuming you want rsync to delete any file from destination/ that is not in source/, you'll need to use the --delete flag:
+
+rsync -a --delete source/ destination/
+
+Be lazy: use cron
+
+One of the toughest obstacles to a good backup strategy is human nature; if there's any work involved, there's a good chance backups won't happen. (Witness, for example, how rarely my roommate's home PC was backed up before I created this system). Fortunately, there's a way to harness human laziness: make cron do the work.
+
+To run the rsync-with-backup command from the previous section every morning at 4:20 AM, for example, edit the root cron table: (as root)
+crontab -e
+Then add the following line:
+20 4 * * * rsync -a --delete source/ destination/
+Finally, save the file and exit. The backup will happen every morning at precisely 4:20 AM, and root will receive the output by email. Don't copy that example verbatim, though; you should use full path names (such as /usr/bin/rsync and /home/source/) to remove any ambiguity.
+
+Incremental backups with rsync
+
+Since making a full copy of a large filesystem can be a time-consuming and expensive process, it is common to make full backups only once a week or once a month, and store only changes on the other days. These are called "incremental" backups, and are supported by the venerable old dump and tar utilities, along with many others.
+
+However, you don't have to use tape as your backup medium; it is both possible and vastly more efficient to perform incremental backups with rsync.
+
+The most common way to do this is by using the rsync -b --backup-dir= combination. I have seen examples of that usage here, but I won't discuss it further, because there is a better way. If you're not familiar with hard links, though, you should first start with the following review.
+
+Review of hard links
+
+We usually think of a file's name as being the file itself, but really the name is a hard link. A given file can have more than one hard link to itself--for example, a directory has at least two hard links: the directory name and . (for when you're inside it). It also has one hard link from each of its sub-directories (the .. file inside each one). If you have the stat utility installed on your machine, you can find out how many hard links a file has (along with a bunch of other information) with the command:
+
+stat filename
+
+Hard links aren't just for directories--you can create more than one link to a regular file too. For example, if you have the file a, you can make a link called b:
+
+ln a b
+Now, a and b are two names for the same file, as you can verify by seeing that they reside at the same inode (the inode number will be different on your machine):
+
+ls -i a
+  232177 a
+ls -i b
+  232177 b
+So ln a b is roughly equivalent to cp a b, but there are several important differences:
+
+The contents of the file are only stored once, so you don't use twice the space.
+If you change a, you're changing b, and vice-versa.
+If you change the permissions or ownership of a, you're changing those of b as well, and vice-versa.
+If you overwrite a by copying a third file on top of it, you will also overwrite b, unless you tell cp to unlink before overwriting. You do this by running cp with the --remove-destination flag. Notice that rsync always unlinks before overwriting!!. Note, added 2002.Apr.10: the previous statement applies to changes in the file contents only, not permissions or ownership.
+But this raises an interesting question. What happens if you rm one of the links? The answer is that rm is a bit of a misnomer; it doesn't really remove a file, it just removes that one link to it. A file's contents aren't truly removed until the number of links to it reaches zero. In a moment, we're going to make use of that fact, but first, here's a word about cp.
+
+Using cp -al
+
+In the previous section, it was mentioned that hard-linking a file is similar to copying it. It should come as no surprise, then, that the standard GNU coreutils cp command comes with a -l flag that causes it to create (hard) links instead of copies (it doesn't hard-link directories, though, which is good; you might want to think about why that is). Another handy switch for the cp command is -a (archive), which causes it to recurse through directories and preserve file owners, timestamps, and access permissions.
+
+Together, the combination cp -al makes what appears to be a full copy of a directory tree, but is really just an illusion that takes almost no space. If we restrict operations on the copy to adding or removing (unlinking) files--i.e., never changing one in place--then the illusion of a full copy is complete. To the end-user, the only differences are that the illusion-copy takes almost no disk space and almost no time to generate.
+
+2002.05.15: Portability tip: If you don't have GNU cp installed (if you're using a different flavor of *nix, for example), you can use find and cpio instead. Simply replace cp -al a b with cd a && find . -print | cpio -dpl ../b. Thanks to Brage Førland for that tip.
+
+Putting it all together
+
+We can combine rsync and cp -al to create what appear to be multiple full backups of a filesystem without taking multiple disks' worth of space. Here's how, in a nutshell:
+
+rm -rf backup.3
+mv backup.2 backup.3
+mv backup.1 backup.2
+cp -al backup.0 backup.1
+rsync -a --delete source_directory/  backup.0/
+If the above commands are run once every day, then backup.0, backup.1, backup.2, and backup.3 will appear to each be a full backup of source_directory/ as it appeared today, yesterday, two days ago, and three days ago, respectively--complete, except that permissions and ownerships in old snapshots will get their most recent values (thanks to J.W. Schultz for pointing this out). In reality, the extra storage will be equal to the current size of source_directory/ plus the total size of the changes over the last three days--exactly the same space that a full plus daily incremental backup with dump or tar would have taken.
+
+Update (2003.04.23): As of rsync-2.5.6, the --link-dest flag is now standard. Instead of the separate cp -al and rsync lines above, you may now write:
+
+mv backup.0 backup.1
+
+rsync -a --delete --link-dest=../backup.1 source_directory/  backup.0/
+
+This method is preferred, since it preserves original permissions and ownerships in the backup. However, be sure to test it--as of this writing some users are still having trouble getting --link-dest to work properly. Make sure you use version 2.5.7 or later.
+
+Update (2003.05.02): John Pelan writes in to suggest recycling the oldest snapshot instead of recursively removing and then re-creating it. This should make the process go faster, especially if your file tree is very large:
+
+mv backup.3 backup.tmp
+mv backup.2 backup.3
+mv backup.1 backup.2
+mv backup.0 backup.1
+mv backup.tmp backup.0
+cp -al backup.1/. backup.0
+rsync -a --delete source_directory/ backup.0/
+2003.06.02: OOPS! Rsync's link-dest option does not play well with J. Pelan's suggestion--the approach I previously had written above will result in unnecessarily large storage, because old files in backup.0 will get replaced and not linked. Please only use Dr. Pelan's directory recycling if you use the separate cp -al step; if you plan to use --link-dest, start with backup.0 empty and pristine. Apologies to anyone I've misled on this issue. Thanks to Kevin Everets
+
+
+1. CREATE HOURLY AND DAILY BACKUP SCRIPTS
+
+HOURLY BACKUP
+
+
+emacs /nethome/syoung/base/bin/backup/make_snapshot.sh
+
+    #!/bin/bash
+    # ----------------------------------------------------------------------
+    # mikes handy rotating-filesystem-snapshot utility
+    # ----------------------------------------------------------------------
+    # this needs to be a lot more general, but the basic idea is it makes
+    # rotating backup-snapshots of /home whenever called
+    # ----------------------------------------------------------------------
+    
+    # NB: USES AN excludes list FOR THE rsync CALL
+    # This is just to prevent the system from backing up garbage like web browser
+    # caches, which change frequently (so they'd take up space in every snapshot)
+    # but would be no loss if they were accidentally destroyed.
+
+
+    
+    unset PATH	# suggestion from H. Milz: avoid accidental use of $PATH
+    
+    # ------------- system commands used by this script --------------------
+    ID=/usr/bin/id;
+    ECHO=/bin/echo;
+    
+    MOUNT=/bin/mount;
+    RM=/bin/rm;
+    MV=/bin/mv;
+    CP=/bin/cp;
+    TOUCH=/bin/touch;
+    
+    RSYNC=/usr/bin/rsync;
+    
+    
+    # ------------- file locations -----------------------------------------
+    
+    MOUNT_DEVICE=/dev/hdb1;
+    SNAPSHOT_RW=/root/snapshot;
+    EXCLUDES=/usr/local/etc/backup_exclude;
+    
+    
+    # ------------- the script itself --------------------------------------
+    
+    # make sure we're running as root
+    if (( `$ID -u` != 0 )); then { $ECHO "Sorry, must be root.  Exiting..."; exit; } fi
+    
+    # attempt to remount the RW mount point as RW; else abort
+    $MOUNT -o remount,rw $MOUNT_DEVICE $SNAPSHOT_RW ;
+    if (( $? )); then
+    {
+        $ECHO "snapshot: could not remount $SNAPSHOT_RW readwrite";
+        exit;
+    }
+    fi;
+    
+    
+    # rotating snapshots of /home (fixme: this should be more general)
+    
+    # step 1: delete the oldest snapshot, if it exists:
+    if [ -d $SNAPSHOT_RW/home/hourly.3 ] ; then			\
+    $RM -rf $SNAPSHOT_RW/home/hourly.3 ;				\
+    fi ;
+    
+    # step 2: shift the middle snapshots(s) back by one, if they exist
+    if [ -d $SNAPSHOT_RW/home/hourly.2 ] ; then			\
+    $MV $SNAPSHOT_RW/home/hourly.2 $SNAPSHOT_RW/home/hourly.3 ;	\
+    fi;
+    if [ -d $SNAPSHOT_RW/home/hourly.1 ] ; then			\
+    $MV $SNAPSHOT_RW/home/hourly.1 $SNAPSHOT_RW/home/hourly.2 ;	\
+    fi;
+    
+    # step 3: make a hard-link-only (except for dirs) copy of the latest snapshot,
+    # if that exists
+    if [ -d $SNAPSHOT_RW/home/hourly.0 ] ; then			\
+    $CP -al $SNAPSHOT_RW/home/hourly.0 $SNAPSHOT_RW/home/hourly.1 ;	\
+    fi;
+    
+    # step 4: rsync from the system into the latest snapshot (notice that
+    # rsync behaves like cp --remove-destination by default, so the destination
+    # is unlinked first.  If it were not so, this would copy over the other
+    # snapshot(s) too!
+    $RSYNC								\
+        -va --delete --delete-excluded				\
+        --exclude-from="$EXCLUDES"				\
+        /home/ $SNAPSHOT_RW/home/hourly.0 ;
+    
+    # step 5: update the mtime of hourly.0 to reflect the snapshot time
+    $TOUCH $SNAPSHOT_RW/home/hourly.0 ;
+    
+    # and thats it for home.
+    
+    # now remount the RW snapshot mountpoint as readonly
+    
+    $MOUNT -o remount,ro $MOUNT_DEVICE $SNAPSHOT_RW ;
+    if (( $? )); then
+    {
+        $ECHO "snapshot: could not remount $SNAPSHOT_RW readonly";
+        exit;
+    } fi;
+
+
+
+
+DAILY BACKUP
+
+
+emacs /nethome/syoung/base/bin/backup/daily_snapshot_rotate.sh
+
+    #!/bin/bash
+    # ----------------------------------------------------------------------
+    # mikes handy rotating-filesystem-snapshot utility: daily snapshots
+    # ----------------------------------------------------------------------
+    # intended to be run daily as a cron job when hourly.3 contains the
+    # midnight (or whenever you want) snapshot; say, 13:00 for 4-hour snapshots.
+    # ----------------------------------------------------------------------
+    
+    unset PATH
+    
+    # ------------- system commands used by this script --------------------
+    ID=/usr/bin/id;
+    ECHO=/bin/echo;
+    
+    MOUNT=/bin/mount;
+    RM=/bin/rm;
+    MV=/bin/mv;
+    CP=/bin/cp;
+    
+    # ------------- file locations -----------------------------------------
+    
+    MOUNT_DEVICE=/dev/hdb1;
+    SNAPSHOT_RW=/root/snapshot;
+    
+    # ------------- the script itself --------------------------------------
+    
+    # make sure we're running as root
+    if (( `$ID -u` != 0 )); then { $ECHO "Sorry, must be root.  Exiting..."; exit; } fi
+    
+    # attempt to remount the RW mount point as RW; else abort
+    $MOUNT -o remount,rw $MOUNT_DEVICE $SNAPSHOT_RW ;
+    if (( $? )); then
+    {
+        $ECHO "snapshot: could not remount $SNAPSHOT_RW readwrite";
+        exit;
+    }
+    fi;
+    
+    
+    # step 1: delete the oldest snapshot, if it exists:
+    if [ -d $SNAPSHOT_RW/home/daily.2 ] ; then			\
+    $RM -rf $SNAPSHOT_RW/home/daily.2 ;				\
+    fi ;
+    
+    # step 2: shift the middle snapshots(s) back by one, if they exist
+    if [ -d $SNAPSHOT_RW/home/daily.1 ] ; then			\
+    $MV $SNAPSHOT_RW/home/daily.1 $SNAPSHOT_RW/home/daily.2 ;	\
+    fi;
+    if [ -d $SNAPSHOT_RW/home/daily.0 ] ; then			\
+    $MV $SNAPSHOT_RW/home/daily.0 $SNAPSHOT_RW/home/daily.1;	\
+    fi;
+    
+    # step 3: make a hard-link-only (except for dirs) copy of
+    # hourly.3, assuming that exists, into daily.0
+    if [ -d $SNAPSHOT_RW/home/hourly.3 ] ; then			\
+    $CP -al $SNAPSHOT_RW/home/hourly.3 $SNAPSHOT_RW/home/daily.0 ;	\
+    fi;
+    
+    # note: do *not* update the mtime of daily.0; it will reflect
+    # when hourly.3 was made, which should be correct.
+    
+    # now remount the RW snapshot mountpoint as readonly
+    
+    $MOUNT -o remount,ro $MOUNT_DEVICE $SNAPSHOT_RW ;
+    if (( $? )); then
+    {
+        $ECHO "snapshot: could not remount $SNAPSHOT_RW readonly";
+        exit;
+    } fi;
+
+
+
+
+
+HOURLY SCRIPT: Runs every four hours to make and rotate hourly snapshots using rsync
+
+DAILY SCRIPT: Runs once a day and does 'cp -al' from the appropriate hourly one.
+
+
+Run it all with cron
+
+To make the automatic snapshots happen, add the following lines to root's crontab file:
+
+0 */4 * * * /usr/local/bin/make_snapshot.sh
+0 13 * * *  /usr/local/bin/daily_snapshot_rotate.sh
+
+
+They cause make_snapshot.sh to be run every four hours on the hour and daily_snapshot_rotate.sh to be run every day at 13:00 (that is, 1:00 PM). I have included those scripts in the appendix.
+
+If you tire of receiving an email from the cron process every four hours with the details of what was backed up, you can tell it to send the output of make_snapshot.sh to /dev/null, like so:
+
+0 */4 * * * /usr/local/bin/make_snapshot.sh >/dev/null 2>&1
+Understand, though, that this will prevent you from seeing errors if make_snapshot.sh cannot run for some reason, so be careful with it. Creating a third script to check for any unusual behavior in the snapshot periodically seems like a good idea, but I haven't implemented it yet. Alternatively, it might make sense to log the output of each run, by piping it through tee, for example. mRgOBLIN wrote in to suggest a better (and obvious, in retrospect!) approach, which is to send stdout to /dev/null but keep stderr, like so:
+
+0 */4 * * * /usr/local/bin/make_snapshot.sh >/dev/null
+Presto! Now you only get mail when there's an error. :)
+
+
+
+
+Sample output of ls -l /snapshot/home
+
+total 28
+drwxr-xr-x   12 root     root         4096 Mar 28 00:00 daily.0
+drwxr-xr-x   12 root     root         4096 Mar 27 00:00 daily.1
+drwxr-xr-x   12 root     root         4096 Mar 26 00:00 daily.2
+drwxr-xr-x   12 root     root         4096 Mar 28 16:00 hourly.0
+drwxr-xr-x   12 root     root         4096 Mar 28 12:00 hourly.1
+drwxr-xr-x   12 root     root         4096 Mar 28 08:00 hourly.2
+drwxr-xr-x   12 root     root         4096 Mar 28 04:00 hourly.3
+Notice that the contents of each of the subdirectories of /snapshot/home/ is a complete image of /home at the time the snapshot was made. Despite the w in the directory access permissions, no one--not even root--can write to this directory; it's mounted read-only.
+
+Bugs
+
+
+
+
+
+NOTES:
+
+
+NB: USE md5sum TO REVERIFY IMAGE
+
+
+Image Your Hard Drive using dd
+http://www.linuxweblog.com/blogs/sandip/20050211/image-your-hard-drive-using-dd
+
+
+I have backed up my system to an external ximeta drive using "dd" and the well-known linux live cd distribution, Knoppix to boot from. Below are the steps in brief:
+
+1. Boot from the live cdrom distribution.
+
+2. Switch to root.
+
+3. Make sure NO partitions are mounted from the source hard drive.
+
+4. Mount the external HD.
+  # mount -t vfat /dev/sda1 /mnt/sda1
+  
+5. Backup the drive.
+  # dd if=/dev/hda conv=sync,noerror bs=64K | gzip -c  > /mnt/sda1/hda.img.gz
+  
+"dd" is the command to make a bit-by-bit copy of "if=/dev/hda" as the "Input File" to "of=/mnt/sda1/hda.img.gz" as the "Output File". Everything from the partition will go into an "Output File" named "hda.img.gz". "conv=sync,noerror" tells dd that if it can't read a block due to a read error, then it should at least write something to its output of the correct length. Even if your hard disk exhibits no errors, remember that dd will read every single block, including any blocks which the OS avoids using because it has marked them as bad. "bs=64K" is the block size of 64x1024 Bytes. Using this large of block size speeds up the copying process. The output of dd is then piped through gzip to compress it.
+
+To restore your system:
+  # gunzip -c /mnt/sda1/hda.img.gz | dd of=/dev/hda conv=sync,noerror bs=64K 
+  
+Store extra information about the drive geometry necessary in order to interpret the partition table stored within the image. The most important of which is the cylinder size.
+  # fdisk -l /dev/hda > /mnt/sda1/hda_fdisk.info
+  
+Notes:
+
+One of the disadvantages of the dd method over software specifically designed for the job such as Ghost or partimage is that dd will store the entire partition, including blocks not currently used to store files, whereas the likes of Ghost understand the filesystem and don't store these unallocated blocks. The overhead isn't too bad as long as you compress the image and the unallocated blocks have low entropy. In general this will not be the case because the emtpy blocks contain random junk from bygone files. To rectify this, it's best to blank all unused blocks before making the image. After doing that, the unallocated blocks will contain mostly zeros and will therefore compress down to almost nothing.
+
+Mount the partition, then create a file of zeros which fills the entire disk, then delete it again.
+
+# dd if=/dev/zero of=/tmp/delete.me bs=8M; rm delete.me
+References:
+
+backup-hard-disk-partitions
+
+
+</entry>
+
+
+
+<entry [Tue Apr 14 21:38:44 EDT 2009] INSTALLED git TO GET JBROWSE>
+
+
+
+SUMMARY
+-------
+
+1. INSTALL git
+
+sudo su
+yum install git
+
+2.DOWNLOAD jbrowse
+
+git clone git://github.com/jbrowse/jbrowse.git
+    OK
+
+
+EXTENDED VERSION
+----------------
+
+INSTALL GIT ON devx (NOT ngsdev!!)
+
+sudo yum install git
+
+    Loading "installonlyn" plugin
+    Setting up Install Process
+    Setting up repositories
+    rpmforge                  100% |=========================| 1.1 kB    00:00     
+    base                      100% |=========================| 1.1 kB    00:00     
+    updates                   100% |=========================|  951 B    00:00     
+    addons                    100% |=========================|  951 B    00:00     
+    extras                    100% |=========================|  951 B    00:00     
+    Reading repository metadata in from local files
+    primary.xml.gz            100% |=========================| 3.0 MB    00:02     
+    ################################################## 8259/8259
+    primary.xml.gz            100% |=========================| 109 kB    00:00     
+    ################################################## 204/204
+    primary.xml.gz            100% |=========================|  98 kB    00:00     
+    ################################################## 266/266
+    Parsing package install arguments
+    Resolving Dependencies
+    --> Populating transaction set with selected packages. Please wait.
+    ---> Downloading header for git to pack into transaction set.
+    git-1.5.2.1-1.el5.rf.x86_ 100% |=========================|  52 kB    00:00     
+    ---> Package git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Running transaction check
+    --> Processing Dependency: perl(Git) for package: git
+    --> Processing Dependency: perl(SVN::Core) for package: git
+    --> Processing Dependency: rcs for package: git
+    --> Processing Dependency: perl(SVN::Delta) for package: git
+    --> Processing Dependency: perl(SVN::Ra) for package: git
+    --> Restarting Dependency Resolution with new changes.
+    --> Populating transaction set with selected packages. Please wait.
+    ---> Downloading header for perl-Git to pack into transaction set.
+    perl-Git-1.5.2.1-1.el5.rf 100% |=========================| 2.7 kB    00:00     
+    ---> Package perl-Git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    ---> Downloading header for rcs to pack into transaction set.
+    rcs-5.7-30.1.x86_64.rpm   100% |=========================| 7.2 kB    00:00     
+    ---> Package rcs.x86_64 0:5.7-30.1 set to be updated
+    ---> Downloading header for subversion-perl to pack into transaction set.
+    subversion-perl-1.5.6-0.2 100% |=========================|  11 kB    00:00     
+    ---> Package subversion-perl.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    --> Running transaction check
+    --> Processing Dependency: perl(Error) for package: perl-Git
+    --> Processing Dependency: subversion = 1.5.6-0.2.el5.rf for package: subversion-perl
+    --> Restarting Dependency Resolution with new changes.
+    --> Populating transaction set with selected packages. Please wait.
+    ---> Downloading header for subversion to pack into transaction set.
+    subversion-1.5.6-0.2.el5. 100% |=========================|  58 kB    00:00     
+    ---> Package subversion.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    ---> Downloading header for perl-Error to pack into transaction set.
+    perl-Error-0.17015-1.el5. 100% |=========================| 5.3 kB    00:00     
+    ---> Package perl-Error.noarch 0:0.17015-1.el5.rf set to be updated
+    --> Running transaction check
+    --> Processing Dependency: subversion = 1.5.5-0.1.el5.rf for package: mod_dav_svn
+    --> Restarting Dependency Resolution with new changes.
+    --> Populating transaction set with selected packages. Please wait.
+    ---> Downloading header for mod_dav_svn to pack into transaction set.
+    mod_dav_svn-1.5.6-0.2.el5 100% |=========================| 3.4 kB    00:00     
+    ---> Package mod_dav_svn.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    --> Running transaction check
+    
+    Dependencies Resolved
+    
+    =============================================================================
+     Package                 Arch       Version          Repository        Size 
+    =============================================================================
+    Installing:
+     git                     x86_64     1.5.2.1-1.el5.rf  rpmforge           28 M
+    Installing for dependencies:
+     perl-Error              noarch     0.17015-1.el5.rf  rpmforge           27 k
+     perl-Git                x86_64     1.5.2.1-1.el5.rf  rpmforge           18 k
+     rcs                     x86_64     5.7-30.1         base              349 k
+     subversion-perl         x86_64     1.5.6-0.2.el5.rf  rpmforge          2.2 M
+    Updating for dependencies:
+     mod_dav_svn             x86_64     1.5.6-0.2.el5.rf  rpmforge          240 k
+     subversion              x86_64     1.5.6-0.2.el5.rf  rpmforge          5.7 M
+    
+    Transaction Summary
+    =============================================================================
+    Install      5 Package(s)         
+    Update       2 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total download size: 36 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    (1/7): rcs-5.7-30.1.x86_6 100% |=========================| 349 kB    00:00     
+    (2/7): mod_dav_svn-1.5.6- 100% |=========================| 240 kB    00:01     
+    (3/7): subversion-perl-1. 100% |=========================| 2.2 MB    00:02     
+    (4/7): perl-Git-1.5.2.1-1 100% |=========================|  18 kB    00:00     
+    (5/7): git-1.5.2.1-1.el5. 100% |=========================|  28 MB    00:05     
+    (6/7): subversion-1.5.6-0 100% |=========================| 5.7 MB    00:02     
+    (7/7): perl-Error-0.17015 100% |=========================|  27 kB    00:00     
+    Running Transaction Test
+    Finished Transaction Test
+    Transaction Test Succeeded
+    Running Transaction
+      Updating  : subversion                   ######################### [1/9] 
+      Installing: subversion-perl              ######################### [2/9] 
+      Installing: rcs                          ######################### [3/9] 
+      Installing: perl-Error                   ######################### [4/9] 
+      Updating  : mod_dav_svn                  ######################### [5/9] 
+      Installing: git                          ######################### [6/9] 
+      Installing: perl-Git                     ######################### [7/9] 
+      Cleanup   : mod_dav_svn                  ######################### [8/9]
+      Cleanup   : subversion                   ######################### [9/9]
+    
+    Installed: git.x86_64 0:1.5.2.1-1.el5.rf
+    Dependency Installed: perl-Error.noarch 0:0.17015-1.el5.rf perl-Git.x86_64 0:1.5.2.1-1.el5.rf rcs.x86_64 0:5.7-30.1 subversion-perl.x86_64 0:1.5.6-0.2.el5.rf
+    Dependency Updated: mod_dav_svn.x86_64 0:1.5.6-0.2.el5.rf subversion.x86_64 0:1.5.6-0.2.el5.rf
+    Complete!
+
+
+
+TRIED TO INSTALL FROM .tar.gz FILE
+
+mkdir -p /nethome/syoung/base/apps/git
+cd /nethome/syoung/base/apps/git
+
+wget http://kernel.org/pub/software/scm/git/git-1.6.2.3.tar.gz
+    OK
+./configure
+make
+    OK
+make test 
+    FAILED!
+
+
+sudo su
+yum install git
+
+    Setting up Install Process
+    Parsing package install arguments
+    Resolving Dependencies
+    --> Running transaction check
+    ---> Package git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: rcs for package: git
+    --> Processing Dependency: perl(SVN::Core) for package: git
+    --> Processing Dependency: perl(Git) for package: git
+    --> Processing Dependency: perl(SVN::Delta) for package: git
+    --> Processing Dependency: perl(SVN::Ra) for package: git
+    --> Running transaction check
+    ---> Package perl-Git.x86_64 0:1.5.2.1-1.el5.rf set to be updated
+    --> Processing Dependency: perl(Error) for package: perl-Git
+    ---> Package rcs.x86_64 0:5.7-30.1 set to be updated
+    ---> Package subversion-perl.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    --> Processing Dependency: subversion = 1.5.6-0.2.el5.rf for package: subversion-perl
+    --> Running transaction check
+    --> Processing Dependency: subversion = 1.5.5-0.1.el5.rf for package: mod_dav_svn
+    ---> Package subversion.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    ---> Package perl-Error.noarch 0:0.17015-1.el5.rf set to be updated
+    --> Running transaction check
+    ---> Package mod_dav_svn.x86_64 0:1.5.6-0.2.el5.rf set to be updated
+    --> Finished Dependency Resolution
+    
+    Dependencies Resolved
+    
+    =============================================================================
+     Package                 Arch       Version          Repository        Size 
+    =============================================================================
+    Updating:
+     subversion              x86_64     1.5.6-0.2.el5.rf  rpmforge          5.7 M
+    Installing for dependencies:
+     git                     x86_64     1.5.2.1-1.el5.rf  rpmforge           28 M
+     perl-Error              noarch     0.17015-1.el5.rf  rpmforge           27 k
+     perl-Git                x86_64     1.5.2.1-1.el5.rf  rpmforge           18 k
+     rcs                     x86_64     5.7-30.1         base              349 k
+     subversion-perl         x86_64     1.5.6-0.2.el5.rf  rpmforge          2.2 M
+    Updating for dependencies:
+     mod_dav_svn             x86_64     1.5.6-0.2.el5.rf  rpmforge          240 k
+    
+    Transaction Summary
+    =============================================================================
+    Install      5 Package(s)         
+    Update       2 Package(s)         
+    Remove       0 Package(s)         
+    
+    Total download size: 36 M
+    Is this ok [y/N]: y
+    Downloading Packages:
+    (1/7): perl-Error-0.17015 100% |=========================|  27 kB    00:00     
+    (2/7): subversion-1.5.6-0 100% |=========================| 5.7 MB    00:04     
+    (3/7): git-1.5.2.1-1.el5. 100% |=========================|  28 MB    00:05     
+    (4/7): perl-Git-1.5.2.1-1 100% |=========================|  18 kB    00:00     
+    (5/7): subversion-perl-1. 100% |=========================| 2.2 MB    00:02     
+    (6/7): mod_dav_svn-1.5.6- 100% |=========================| 240 kB    00:01     
+    (7/7): rcs-5.7-30.1.x86_6 100% |=========================| 349 kB    00:00     
+    Running rpm_check_debug
+    Running Transaction Test
+    Finished Transaction Test
+    
+    
+    Transaction Check Error:
+      file /usr/share/emacs/site-lisp/psvn.el from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/man/man1/svn.1.gz from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/man/man1/svnadmin.1.gz from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/man/man1/svnlook.1.gz from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/man/man5/svnserve.conf.5.gz from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/man/man8/svnserve.8.gz from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+      file /usr/share/xemacs/site-packages/lisp/psvn.el from install of subversion-1.5.6-0.2.el5.rf conflicts with file from package subversion-1.4.2-2.el5
+    
+    Error Summary
+    -------------
+    
+    [root@ngsdev lazy]# yum force install git
+    usage: yum [options] < grouplist, localinstall, groupinfo, localupdate, resolvedep, erase, deplist, groupremove, makecache, upgrade, provides, shell, install, whatprovides, groupinstall, update, repolist, groupupdate, info, search, check-update, list, remove, clean, grouperase >
+    
+    options:
+      -h, --help            show this help message and exit
+      -t, --tolerant        be tolerant of errors
+      -C                    run entirely from cache, don't update cache
+      -c  [config file]     config file location
+      -R  [minutes]         maximum command wait time
+      -d  [debug level]     debugging output level
+      -e  [error level]     error output level
+      -q, --quiet           quiet operation
+      -v, --verbose         verbose operation
+      -y                    answer yes for all questions
+      --version             show Yum version and exit
+      --installroot=[path]  set install root
+      --enablerepo=[repo]   enable one or more repositories (wildcards allowed)
+      --disablerepo=[repo]  disable one or more repositories (wildcards allowed)
+      -x [package], --exclude=[package]
+                            exclude package(s) by name or glob
+      --disableexcludes=[repo]
+                            disable exclude from main, for a repo or for
+                            everything
+      --obsoletes           enable obsoletes processing during updates
+      --noplugins           disable Yum plugins
+      --nogpgcheck          disable gpg signature checking
+      --disableplugin=[plugin]
+                            disable plugins by name
+
+</entry>
+
+
+
+<entry [Tue Mar 31 21:38:44 EDT 2009] MIGRATION FROM zion TO ngsdev>
+
+
+
+1. COPIED DATA FROM base
+
+
+
+2. COPIED html AND cgi-bin
+
+ll /var/www/html
+    drwxr-xr-x 11 syoung bioinfo 4.0K Dec  5 02:14 Bioptic2
+    drwxrwxrwx  7 root   root    4.0K Aug 20  2008 ajaxgbrowse1
+    drwxrwxrwx  7 root   root    4.0K Aug 20  2008 ajaxgbrowse2
+    drwxrwxrwx  4 root   root    4.0K Aug 17  2008 aps
+    -rw-r--r--  1    500     502 2.9M Nov  3 12:01 bioptic.ppt
+    drwxr-xr-x  5 apache apache  4.0K Nov 24 00:08 bioptic1
+    drwxr-xr-x 11    500 apache  4.0K Nov  3 12:58 bioptic1.old
+    drwxrwxrwx  2 root   root    4.0K Oct  5 22:13 confluence1
+    drwxr-xr-x  9 apache users   4.0K Sep  4  2008 dokuwiki
+    drwxr-xr-x  9 apache users   4.0K Sep  4  2008 dokuwiki2
+    drwxr-xr-x  9 apache users   4.0K Sep  4  2008 dokuwiki3
+    drwxr-xr-x  9 apache users   4.0K Sep  4  2008 dokuwiki4
+    drwxrwxrwx  2 root   root    4.0K Aug  6  2008 download
+    drwxrwxr-x 13    500     500 4.0K Sep 23  2008 galaxy
+    drwxr-xr-x 10 root   root    4.0K Jul 20  2008 gbrowse
+    -rw-r--r--  1 root   root      19 Jul 18  2008 index.php
+    lrwxrwxrwx  1 root   root       2 Nov 24 01:58 ll -> ll
+    drwxrwxrwx 13 root   root    4.0K Oct 21 13:49 sandbox22
+    drwxrwxrwx 22   1000    1000  20K Jul 26  2008 tikiwiki
+
+ll /var/www/cgi-bin
+    lrwxrwxrwx 1 syoung apache     43 Nov 30 05:16 Bioptic -> /home/syoung/base/packaging/Bioptic/cgi-bin
+    drwxr-xr-x 2 syoung apache   4096 Oct  1 16:45 ajaxgbrowse2
+    lrwxrwxrwx 1 syoung apache     34 Nov 29 22:00 bioptic1 -> /home/syoung/base/cgi-bin/bioptic1
+    -rwxr-xr-x 1 syoung apache  29894 Jul 20  2008 das
+    -rwxr-xr-x 1 syoung apache 100642 Jul 20  2008 gbrowse
+    -rwxr-xr-x 1 syoung apache  13617 Jul 20  2008 gbrowse_details
+    -rwxr-xr-x 1 syoung apache   4564 Jul 20  2008 gbrowse_est
+    -rwxr-xr-x 1 syoung apache  33174 Jul 20  2008 gbrowse_img
+    -rwxr-xr-x 1 syoung apache  49937 Jul 20  2008 gbrowse_moby
+    -rwxr-xr-x 1 syoung apache    907 Jul 20  2008 moby_server
+    -rwxr-xr-x 1 syoung apache   1071 Oct 23 00:13 trac.cgi
+    -rwxr-xr-x 1 syoung apache   4166 Jul 20  2008 tutorial_test.pl
+
+
+cd /var/www/html
+scp -r * syoung@kronos.ccs.miami.edu:base/html
+
+cd /var/www/cgi-bin
+scp -r * syoung@kronos.ccs.miami.edu:base/cgi-bin
+
+
+3. COPIED mysql
+
+COPY reactome ONLY
+
+/var/lib/mysql
+ls
+    mysql  mysql.sock  reactome  test  tikiwiki
+
+sudo scp -r reactome syoung@kronos.ccs.miami.edu:mysql
+
+    ok!
+
+
+
+
+4. COPIED confluence
+
+ON zion
+
+cd /home/syoung/base/apps
+tar cvfz confluence confluence.090331.tar.gz 
+tar cvfz confluence-data confluence-data.090331.tar.gz 
+
+scp confluence.090331.tar.gz  syoung@ngsdev.ccs.miami.edu:base/apps
+scp confluence-data.090331.tar.gz  syoung@ngsdev.ccs.miami.edu:base/apps
+
+
+
+
+5. COPIED .bash_profile AND CHECKED ENVIRONMENT VARIABLES
+
+
+COPIED ZION .bash_profile TO NGSDEV
+
+scp .bash_profile syoung@ngsdev.ccs.miami.edu:.bash_profile-zion
+
+
+
+ngsdev
+------
+echo $PATH | sed 's/:/\n/g'
+    /sw/bin
+    /nethome/syoung/base/bin
+    /usr/X11R6/bin
+    /nethome/syoung/base/bin/utils
+    /home/syoung/base/bin/nextgen
+    /home/syoung/base/apps/amos/bin
+    /usr/local/qt/bin
+    /home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86
+    /home/apps/alta-cyclic/0.1.0/blat/bin/i386
+    /home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto
+    /home/apps/alta-cyclic/0.1.0/perlexternal
+    /usr/kerberos/bin
+    /usr/local/java/bin
+    /usr/local/bin
+    /bin
+    /usr/bin
+
+
+zion
+----
+echo $PATH | sed 's/:/\n/g'
+    /usr/share/apps/ActiveTcl/bin
+    /usr/local/mysql/bin
+    /usr/local/bin
+    /sw/bin
+    /usr/X11R6/bin
+    /usr/local/qt/bin
+    /home/syoung/base/apps/jdk/bin
+    /usr/kerberos/bin
+    /usr/local/bin
+    /bin
+    /usr/bin
+    /Users/young/NOTES/tgicl/tgicl_linux/bin
+
+

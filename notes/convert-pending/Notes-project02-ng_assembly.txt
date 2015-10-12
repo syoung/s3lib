@@ -1,0 +1,3635 @@
+Notes-project02-ng_assembly.txt
+
+</entry>
+
+
+
+<entry [Sun Apr 19 12:51:56 EDT 2009] RERUN herpes-eland>
+
+
+
+
+
+#####1. CONVERT HERPES READS FASTA FILE INTO FASTQ:
+#####
+#####cd /home/syoung/base/bin/nextgen
+#####./eland.pl \
+#####--inputfile /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa \
+#####--outputfile /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa \
+#####--refdir /home/syoung/base/pipeline/herpes-eland/data \
+#####--length 30
+#####
+#####
+#####./fasta2dummyfastq.pl --fastafile /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa --outputfile /home/syoung/base/pipeline/herpes-eland/assembly/herpes.fastq
+#####
+#####    97000
+#####    98000
+#####    99000
+#####    Output file printed:
+#####    
+#####    /home/syoung/base/pipeline/herpes-eland/assembly/herpes.fastq
+#####    
+#####    Run time: 00:01:04
+#####    Completed ./fasta2dummyfastq.pl
+#####    2:20PM, 19 April 2009
+#####    ****************************************
+
+1. SQUASH HERPES GENOME
+
+/mihg/analysis/GAPipeline-1.3.2/bin/squashGenome  /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reference.fa
+
+ll
+    -rw-r--r-- 1 syoung bioinfo 60K Jan 16 15:09 Herpesvirus_3.60kb.reference.fa
+    -rw-r--r-- 1 syoung bioinfo 15K Jan 16 15:09 Herpesvirus_3.60kb.reference.fa.2bpb
+    -rw-r--r-- 1 syoung bioinfo  87 Jan 16 15:09 Herpesvirus_3.60kb.reference.fa.vld
+
+
+2. REMOVE WINDOWS LINE END FROM HERPES DATA
+
+cp /home/syoung/base/pipeline/herpes-eland/Herpesvirus_3.60kb.reads.fa /home/syoung/base/pipeline/herpes-eland/Herpesvirus_3.60kb.reads.fa.bkp
+perl -pi -e 's/\r//g' /home/syoung/base/pipeline/herpes-eland/Herpesvirus_3.60kb.reads.fa
+head /home/syoung/base/pipeline/herpes-eland/Herpesvirus_3.60kb.reads.fa
+    OK
+
+
+2. REMOVE READS SHORTER THAN 30 BP TO AVOID SEGMENTATION FAULT
+
+E.G.:
+
+>READ_3843
+GATTCATTTTTAAGAACCTAGAGGAGACCG
+>READ_3844
+AT
+>READ_3845
+AGACCGAGCCAACATGCAAGCAGCGTCCGC
+
+
+filterfasta.pl \
+--sequencelength 30 \
+--inputfile /home/syoung/base/pipeline/herpes-eland/Herpesvirus_3.60kb.reads.fa \
+--outputfile /home/syoung/base/pipeline/herpes-eland/herpes-length30.fa 
+
+    Sequences failing filter: 27
+    Sequences passing filter: 99973
+    Total sequences: 100000
+    Output file printed:
+    
+    /home/syoung/base/pipeline/herpes-eland/herpes-length30.fa
+    
+    
+    Run time: 00:00:01
+    Completed /home/syoung/base/bin/nextgen/filterfasta.pl
+    7:52PM, 19 April 2009
+    ****************************************
+    
+
+3. RUN eland.pl WRAPPER FOR eland_N BINARIES
+
+
+cd /home/syoung/base/bin/nextgen
+./eland.pl \
+--inputfile /home/syoung/base/pipeline/herpes-eland/herpes-length30.fa \
+--outputfile /home/syoung/base/pipeline/herpes-eland/herpes-length30-eland-contigs.fa \
+--refdir /home/syoung/base/pipeline/herpes-eland/data \
+--length 30
+
+    Outputting results: User: 0s System: 0s Actual: 0.000675s Efficiency: 0%
+    ... done User: 0.161975s System: 0.010999s Actual: 0.308944s Efficiency: 55.9888%
+    Run complete! Time now: Sun Apr 19 20:06:19 2009
+    
+    Run time: 00:00:05
+    Completed ./eland.pl
+    8:06PM, 19 April 2009
+    ****************************************
+
+
+
+
+
+
+
+
+NB: TRIED STANDALONE BUT NEEDS MORE WORK
+
+
+cd /home/syoung/base/bin/nextgen
+./elandstandalone.pl \
+--inputfile /home/syoung/base/pipeline/herpes-eland/assembly/herpes.fastq \
+--type fastq \
+--refdir /home/syoung/base/pipeline/herpes-eland/data \
+--length 30 \
+--outputfile /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa
+
+
+        Output directory: /home/syoung/base/pipeline/herpes-eland/assembly
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl --input-file /home/syoung/base/pipeline/herpes-eland/assembly/herpes.fastq --input-type fastq --eland-genome /home/syoung/base/pipeline/herpes-eland/data --output-prefix /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa --read-length 30 
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: single input-file specified, will do single read analysis
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: Setting seed length for /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_extended.txt to 30
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run cat /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_seqpre.txt | /mihg/analysis/GAPipeline-1.3.2/bin/../bin/buildSeq.pl --fasta /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_qseq.txt > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_query.txt
+        
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run /mihg/analysis/GAPipeline-1.3.2/bin/../bin/eland_30 /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_query.txt /home/syoung/base/pipeline/herpes-eland/data /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_multi.txt --multi=
+        
+        ELAND: Efficient Local Alignment of Nucleotide Data
+        Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+        Author: Anthony J. Cox
+        
+        Publications incorporating data generated by the use of
+        this software or modified versions thereof should cite:
+        Anthony J. Cox.
+        Ultra high throughput alignment of short sequence tags.
+        In preparation.
+        
+        WARNING: this software is compiled to process oligos of length 30.
+        To change this value, edit OLIGO_LENGTH and recompile.
+        
+        Will use at most 25 bits in hash table
+        Can process at most 2147483647 oligos per batch
+        Will find all matches having 2 errors or less
+        Error in getOligoSourceFile: could not read first char from file /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_query.txt
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run cat /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_multi.txt | /mihg/analysis/GAPipeline-1.3.2/bin/../bin/unsquashGenome /home/syoung/base/pipeline/herpes-eland/data 30 30 --multi --compact > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_frag.txt
+        
+        cat: /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_multi.txt: No such file or directory
+        Building string index for /home/syoung/base/pipeline/herpes-eland/data
+        end of file reached
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run paste /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_multi.txt /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_frag.txt | /mihg/analysis/GAPipeline-1.3.2/bin/../bin/buildExtendedAlign.pl 30 30 > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_extended.txt
+        
+        paste: /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_multi.txt: No such file or directory
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run /mihg/analysis/GAPipeline-1.3.2/bin/../bin/squashGenome /home/syoung/base/pipeline/herpes-eland/data > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_genomesize.xml
+        
+        User: 0s System: 0s Actual: 5e-06s Efficiency: 0%
+        Trying to open directory /home/syoung/base/pipeline/herpes-eland/data ...
+         ... success, will output file sizes to XML
+        User: 0s System: 0s Actual: 0.010292s Efficiency: 0%
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run /mihg/analysis/GAPipeline-1.3.2/bin/../bin/pickBestAlignment.pl 30 30 /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_genomesize.xml /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_eland_extended.txt /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_qseq.txt > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_calsaf.txt
+        
+        Obtained total genome size of 60000 bp
+        Obtained rest-of-genome correction of 1.04083408558608e-13
+        /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl: About to run /mihg/analysis/GAPipeline-1.3.2/bin/../bin/buildExport.pl --symbolic /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_calsaf.txt /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_qseq.txt > /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa_export.txt
+        
+        $VAR1 = {
+                  'read-length' => [
+                                     30
+                                   ],
+                  'pair-params' => '--circular',
+                  'pipeline-dir' => '/mihg/analysis/GAPipeline-1.3.2/bin/..',
+                  'input-file' => [
+                                    '/home/syoung/base/pipeline/herpes-eland/assembly/herpes.fastq'
+                                  ],
+                  'seed-length' => [
+                                     -1
+                                   ],
+                  'output-prefix' => '/home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland-contigs.fa',
+                  'base-quality' => 30,
+                  'eland-genome' => '/home/syoung/base/pipeline/herpes-eland/data',
+                  'input-type' => 'fastq'
+                };
+        
+        Run time: 00:00:01
+        Completed ./elandstandalone.pl
+        1:45PM, 19 April 2009
+        ****************************************
+
+
+
+elandstandalone.pl IS A WRAPPER FOR ELAND_standalone.pl
+---------------------------------------------
+
+/mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl
+
+    Usage: /mihg/analysis/GAPipeline-1.3.2/bin/ELAND_standalone.pl options
+    --input-file|if 
+      must specify at least one file, specify two for paired analysis
+    --input-type|it 
+      type of input file: fastq, fasta, export or qseq
+    --read-length|rl
+      will work it out from input file(s) if not specified
+    --seed-length|sl
+      length of read used for ELAND alignment 
+      - default is to min of read-length and 32
+    --eland-genome|eg
+      full path of a squashed genome directory
+    --output-prefix|op
+      will produce a set of output files whose names prefixed by this
+      - defaults to 'reanalysis'  
+    --pipeline-dir|pd
+      path of pipeline installation to call 
+      - by default, looks in same dir as executable is found)
+    --base-quality|bq
+      in fasta mode assume all bases have this quality (TBD)
+    --pair-params|pp
+      paired read analysis parameters to pass to pickBestPair
+      - multiple arguments must go in quotes
+      - defaults to '--circular' - treats all chromosomes as circular
+      NB: for a paired read analysis, both reads must share same
+      input-type, read-length and seed-length
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  1 21:39:41 EDT 2008] CREATE eland2bed AND eland2ace >
+
+
+
+Chipper seqanswers:
+
+Don't know about GBrowse, but what I have found useful is to convert the Eland files to .bed files with the sequences and just upload it to the UCSC GB. Just rc the -strand reads and change positions based on sequence length will make it align at the bp view.
+Chipper is offline   	Reply With Quote
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Sep  1 21:39:41 EDT 2008] GENOMICS WORKBENCH ASSEMBLY TIMES - phix, herpes>
+
+
+
+PHIX
+====
+
+WOULD NOT LOAD FASTQ READS FILE:
+
+USED fastq2fasta.pl TO CONVERT TO FASTA FILE:
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Aug 31 03:47:46 EDT 2008] ELAND ASSEMBLY TIMES - run 1, lane 3, human >
+
+
+
+
+./eland.pl -i /home/syoung/base/pipeline/human1-eland/data/human1.fasta -r /home/syoung/base/pipeline/human1-eland/data -o /home/syoung/base/pipeline/human1-eland/assembly/human1-cdna_embl-eland.contigs.fasta
+    
+    Parsed offset=119332960, name=/ENST00000355360
+    Outputting results: User: 0.365944s System: 1.72374s Actual: 2.47093s Efficiency: 84.5708%
+    ... done User: 7.83181s System: 2.38464s Actual: 10.2192s Efficiency: 99.9735%
+    Run complete! Time now: Sun Aug 31 03:57:20 2008
+    
+    Run time: 00:04:48
+    Completed ./eland.pl
+    3:57AM, 31 August 2008
+    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Sat Aug 30 21:15:28 EDT 2008] MIRA ASSEMBLY TIMES - ECOLI, HERPES, PHIX>
+
+
+
+ECOLI
+======
+
+START
+Localtime: Thu Jul  3 02:36:29 2008
+Done.
+Localtime: Thu Jul  3 08:39:08 2008
+
+TOTAL 6:02:39
+= 362 mins 39 secs
+
+
+
+
+HERPES
+======
+
+./mira.pl -i /home/syoung/base/pipeline/herpes-mira/data/herpes_sequence_in.solexa.fasta
+
+    Mira: /home/syoung/base/apps/mira/bin/mira
+    Project: herpes_sequence
+    Backbone file: /home/syoung/base/pipeline/herpes-mira/data/herpes_sequence_backbone_in.fasta
+    /home/syoung/base/apps/mira/bin/mira --project=herpes_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+    
+    Run time: 00:00:58
+    Completed ./mira.pl
+    0:02AM, 31 August 2008
+    ****************************************
+
+
+PHIX
+====
+
+./mira.pl -i /home/syoung/base/pipeline/phix-mira/data/phix_sequence_in.solexa.fasta
+
+    
+    Mira: /home/syoung/base/apps/mira/bin/mira
+    Project: phix_sequence
+    Backbone file: /home/syoung/base/pipeline/phix-mira/data/phix_sequence_backbone_in.fasta
+    /home/syoung/base/apps/mira/bin/mira --project=phix_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+    
+    Run time: 05:33:35
+    Completed ./mira.pl
+    5:36AM, 31 August 2008
+    ****************************************
+
+
+NB: EARLIER RUN WITH PHIX READS AND APHID BACKBONE FAILED DUE TO NUMBER OF SEQUENCES IN REFERENCE BACKBONE:
+
+records s4_sequence_backbone_in.fasta
+9180
+
+
+
+START
+Localtime: Fri Jun 20 18:02:51 2008
+SCAFFOLD22801_bb        106
+Localtime: Fri Jun 20 18:06:43 2008
+
+Generated 0 unique strain ids for 22801 reads.
+Strain "default" has 22801 reads.
+Adding rails to 22801 contigs (this may take a while).
+Out of memory detected, exception message is: St9bad_alloc
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 29 15:20:13 EDT 2008] MIRA FAILED WITH ONE LANE OF HUMAN READS (RUN 1) AGAINST cDNA REFERENCE SEQUENCE>
+
+
+
+REASON: TOO MANY REFERENCE SEQUENCES (~121,345,288 bp IN 43,367 sequences)
+
+./mira.pl -i /home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence_in.solexa.fasta
+
+    Mira: /home/syoung/base/apps/mira/bin/mira
+    Project: /home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence
+    Backbone file: /home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence_backbone_in.fasta
+    /home/syoung/base/apps/mira/bin/mira --project=/home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+    sh: line 1:  5342 Aborted                 /home/syoung/base/apps/mira/bin/mira --project=/home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no >&log_assembly.txt
+    
+    Run time: 08:50:00
+    Completed ./mira.pl
+    0:22AM, 30 August 2008
+    ****************************************
+
+    tail log_assembly.txt
+
+    Creating directory /home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence_d_info ... done.
+    Localtime: Fri Aug 29 15:25:23 2008
+    
+    Loading backbone from FASTA file: /home/syoung/base/pipeline/human1-cdna-mira/data/human1_sequence_backbone_in.fasta (quality: /home/syoung/base/pipeline/human1-cdna-mira/data/h\
+    uman1_sequence_backbone_in.fasta.qual)
+    Counting sequences in FASTA file:
+     [0%] ....|.... [10%] ....|.... [20%] ....|.... [30%] ....|.... [40%] ....|.... [50%] ....|.... [60%] ....|.... [70%] ....|.... [80%] ....|.... [90%] .
+    
+
+
+</entry>
+
+
+
+<entry [Thu Aug 28 17:06:49 EDT 2008] VCAKE ASSEMBLY TIMES>
+
+
+
+HUMAN 1 LANE
+============
+
+./vcake.pl -r /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta -i /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta
+
+    
+
+./vcake.pl -r /home/syoung/base/pipeline/human2-vcake/data/human2_sequence_in.solexa.fasta -i /home/syoung/base/pipeline/human2-vcake/data/human2_sequence_in.solexa.fasta
+
+/home/syoung/base/apps/vcake/VCAKE_1.0.pl -b /nethome/syoung/base/pipeline/herpes-vcake/data/Herpesvirus_3.60kb.reads.fa -f /home/syoung/base/pipeline/herpes-vcake/data/Herpesvirus_3.60kb.reads.fa -s contigs -k 30 -n 20 -m 18 -t 0 -o 100 -l logfile.txt
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 17 20:31:33 EDT 2008] VELVET ASSEMBLY TIMES - HUMAN 1 LANE, ECOLI, PHIX, VELVET>
+
+
+
+HUMAN 1 LANE
+============
+
+./velvet.pl -i /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta -l 21 
+
+    Run time: 00:08:09
+    Completed ./velvet.pl
+    4:08PM, 14 August 2008
+    ****************************************
+
+    records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+    Records: 4532
+
+
+ECOLI
+=====
+
+cd /store/home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/ecoli-velvet/data/ecoli_in.solexa.fasta -l 21 
+
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/ecoli_in.solexa.fasta &> assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 &> assembly/velvetg_log.txt
+    
+    Run time: 00:06:21
+    Completed ./velvet.pl
+    8:24PM, 17 July 2008
+    ****************************************
+
+
+PHIX
+====
+
+cd /store/home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/phix-velvet/data/run1-lane4-phix_in.solexa.fasta -l 21 
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /home/syoung/base/pipeline/phix-velvet/data/run1-lane4-phix_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/phix-velvet
+    Input: data/run1-lane4-phix_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/phix-velvet
+    Input: data/run1-lane4-phix_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth /home/syoung/base/pipeline/phix-velvet 21 data/run1-lane4-phix_in.solexa.fasta &> /home/syoung/base/pipeline/phix-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg /home/syoung/base/pipeline/phix-velvet -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/phix-velvet/assembly/velvetg_log.txt
+    
+    Run time: 00:11:19
+    Completed ./velvet.pl
+    9:09PM, 30 August 2008
+    ****************************************    
+    
+HERPES
+======
+
+cd /store/home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/herpes-velvet/data/herpes.reads_in.solexa.fasta -l 21 
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /home/syoung/base/pipeline/herpes-velvet/data/herpes.reads_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/herpes-velvet
+    Input: data/herpes.reads_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/herpes-velvet
+    Input: data/herpes.reads_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth /home/syoung/base/pipeline/herpes-velvet 21 data/herpes.reads_in.solexa.fasta &> /home/syoung/base/pipeline/herpes-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg /home/syoung/base/pipeline/herpes-velvet -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/herpes-velvet/assembly/velvetg_log.txt
+    
+    Run time: 00:00:07
+    Completed ./velvet.pl
+    9:14PM, 30 August 2008
+    ****************************************
+
+
+</entry>
+
+
+
+<entry [Thu Aug 28 02:41:00 EDT 2008] ELAND ASSEMBLY TIMES - E.Coli, PhiX and Herpes>
+
+
+
+E.Coli
+======
+
+./eland.pl -i /home/syoung/base/pipeline/ecoli-eland/data/ecoli_in.solexa.fasta -r /home/syoung/base/pipeline/ecoli-eland/data -o /home/syoung/base/pipeline/ecoli-eland/assembly/ecoli-eland.contigs.fasta
+
+    Eland: /usr/local/Pipeline/Eland/eland
+    /usr/local/Pipeline/Eland/eland /home/syoung/base/pipeline/ecoli-eland/data/ecoli_in.solexa.fasta /home/syoung/base/pipeline/ecoli-eland/data /home/syoung/base/pipeline/ecoli-eland/assembly/ecoli-eland.contigs.fasta
+    ELAND: Efficient Local Alignment of Nucleotide Data
+    Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+    Author: Anthony J. Cox
+    
+    Publications incorporating data generated by the use of
+    this software or modified versions thereof should cite:
+    Anthony J. Cox.
+    Ultra high throughput alignment of short sequence tags.
+    In preparation.
+    
+    WARNING: this software is compiled to process oligos of length 25.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Will use at most 25 bits in hash table
+    Can process at most 16777215 oligos per batch
+    Will find all matches having 2 errors or less
+    getOligoSourceFile: detected fasta format oligo file
+    WARNING: first sequence of /home/syoung/base/pipeline/ecoli-eland/data/ecoli_in.solexa.fasta contains 34 bases, but only the first 25 bases will be used in the alignment.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Starting run! Time now: Thu Aug 28 02:44:59 2008
+    Will read oligos from file /home/syoung/base/pipeline/ecoli-eland/data/ecoli_in.solexa.fasta
+    Will output assembly format match details to file /home/syoung/base/pipeline/ecoli-eland/assembly/ecoli-eland.contigs.fasta
+    Trying to open directory /home/syoung/base/pipeline/ecoli-eland/data ...
+    made hash table, pointer table sizes = 0, 0
+    About to build hash tables for pass 0: User: 0.001999s System: 0s Actual: 0.001587s Efficiency: 125.961%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 5244764 oligos from source
+    Will hash 5215784 oligos
+    converting count values to pointer arrays
+    will place 10420932 entries in table
+    will place 10421260 entries in table
+    10420932 entries reduced to 10420932 entries
+    10421260 entries reduced to 10421260 entries
+    successful table build
+    Built hash tables: User: 28.5547s System: 1.01385s Actual: 29.5736s Efficiency: 99.9827%
+    Scanning file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta: User: 0s System: 0s Actual: 0.000168s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.2bpb of size 1159920 bytes.
+    squash: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.vld of size 76 bytes.
+    Comment: >gi|49175990|ref|NC_000913.2| Escherichia coli K12, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 6.578s System: 0.005999s Actual: 6.58489s Efficiency: 99.9865%
+    FileReader: unmapping 1159920 bytes of memory
+    FileReader: unmapping 76 bytes of memory
+    made hash table, pointer table sizes = 33554434, 16777218
+    About to build hash tables for pass 1: User: 0s System: 0s Actual: 0.000346s Efficiency: 0%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 5244764 oligos from source
+    Will hash 5081392 oligos
+    converting count values to pointer arrays
+    will place 10155590 entries in table
+    will place 10147906 entries in table
+    10155590 entries reduced to 10155590 entries
+    10147906 entries reduced to 10147906 entries
+    successful table build
+    Built hash tables: User: 28.5907s System: 0.691895s Actual: 29.2874s Efficiency: 99.9833%
+    Scanning file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta: User: 0s System: 0s Actual: 0.00012s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.2bpb of size 1159920 bytes.
+    squash: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.vld of size 76 bytes.
+    Comment: >gi|49175990|ref|NC_000913.2| Escherichia coli K12, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 4.54231s System: 0.002s Actual: 4.54473s Efficiency: 99.9908%
+    FileReader: unmapping 1159920 bytes of memory
+    FileReader: unmapping 76 bytes of memory
+    made hash table, pointer table sizes = 33554434, 16777218
+    About to build hash tables for pass 2: User: 0s System: 0s Actual: 0.000333s Efficiency: 0%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 5244764 oligos from source
+    Will hash 5081392 oligos
+    converting count values to pointer arrays
+    will place 10151657 entries in table
+    will place 10151985 entries in table
+    10151657 entries reduced to 10151657 entries
+    10151985 entries reduced to 10151985 entries
+    successful table build
+    Built hash tables: User: 28.6206s System: 0.696894s Actual: 29.3228s Efficiency: 99.982%
+    Scanning file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta: User: 0s System: 0s Actual: 0.000114s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.2bpb of size 1159920 bytes.
+    squash: opened file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.vld of size 76 bytes.
+    Comment: >gi|49175990|ref|NC_000913.2| Escherichia coli K12, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 4.51931s System: 0.003999s Actual: 4.52347s Efficiency: 99.9966%
+    FileReader: unmapping 1159920 bytes of memory
+    FileReader: unmapping 76 bytes of memory
+    Will look for index file /home/syoung/base/pipeline/ecoli-eland/data/ecoli-genome.fasta.idx
+    ... not found, will not index
+    Outputting results: User: 0s System: 0s Actual: 0.000403s Efficiency: 0%
+    ... done User: 13.238s System: 2.6226s Actual: 15.8639s Efficiency: 99.9791%
+    Run complete! Time now: Thu Aug 28 02:46:58 2008
+    
+    Run time: 00:01:59
+    Completed ./eland.pl
+    2:46AM, 28 August 2008
+    ****************************************
+
+
+PhiX
+====
+
+    head s_4_sequence_in.solexa.fasta
+    >HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:545:94
+    GTTATTTCCTAGACAAATTAGAGCCAATACCATCAG
+    >HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:373:83
+    GTTGATGCTAAAGGTGAGCCGCTTAAAGCTACCAGT
+    >HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:727:152
+    GTAATAAGAACGAACCATAAAAAAGCCTCCAAGATT
+    >HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:164:200
+    GATAAAAATGATTGGCGTATCCAACCTGCAGAGTTT
+    >HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:329:100
+    GAAACAACCTGATTAGCGGCGTTGACAGATGTATCC
+
+
+./eland.pl -i /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta -r /home/syoung/base/pipeline/phix-eland/data -o /home/syoung/base/pipeline/phix-eland/assembly/phix-eland.contigs.fasta
+
+    Eland: /usr/local/Pipeline/Eland/eland
+    /usr/local/Pipeline/Eland/eland /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta /home/syoung/base/pipeline/phix-eland/data /home/syoung/base/pipeline/phix-eland/assembly/phix-eland.contigs.fasta
+    ELAND: Efficient Local Alignment of Nucleotide Data
+    Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+    Author: Anthony J. Cox
+    
+    Publications incorporating data generated by the use of
+    this software or modified versions thereof should cite:
+    Anthony J. Cox.
+    Ultra high throughput alignment of short sequence tags.
+    In preparation.
+    
+    WARNING: this software is compiled to process oligos of length 25.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Will use at most 25 bits in hash table
+    Can process at most 16777215 oligos per batch
+    Will find all matches having 2 errors or less
+    getOligoSourceFile: detected fasta format oligo file
+    WARNING: first sequence of /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta contains 36 bases, but only the first 25 bases will be used in the alignment.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Starting run! Time now: Thu Aug 28 02:50:49 2008
+    Will read oligos from file /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta
+    Will output assembly format match details to file /home/syoung/base/pipeline/phix-eland/assembly/phix-eland.contigs.fasta
+    Trying to open directory /home/syoung/base/pipeline/phix-eland/data ...
+    made hash table, pointer table sizes = 0, 0
+    About to build hash tables for pass 0: User: 0.001s System: 0s Actual: 0.001606s Efficiency: 62.2665%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 4974039 oligos from source
+    Will hash 4970018 oligos
+    converting count values to pointer arrays
+    will place 9937520 entries in table
+    will place 9937559 entries in table
+    9937520 entries reduced to 9937520 entries
+    9937559 entries reduced to 9937559 entries
+    successful table build
+    Built hash tables: User: 24.6453s System: 1.16982s Actual: 25.819s Efficiency: 99.9849%
+    Scanning file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa: User: 0s System: 0s Actual: 0.00021s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.2bpb of size 1348 bytes.
+    squash: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.vld of size 72 bytes.
+    Comment: >gi|9626372|ref|NC_001422.1| Coliphage phiX174, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 1.24081s System: 0s Actual: 1.2417s Efficiency: 99.9285%
+    FileReader: unmapping 1348 bytes of memory
+    FileReader: unmapping 72 bytes of memory
+    made hash table, pointer table sizes = 33554434, 16777218
+    About to build hash tables for pass 1: User: 0s System: 0s Actual: 0.000384s Efficiency: 0%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 4974039 oligos from source
+    Will hash 4970018 oligos
+    converting count values to pointer arrays
+    will place 9939472 entries in table
+    will place 9935468 entries in table
+    9939472 entries reduced to 9939472 entries
+    9935468 entries reduced to 9935468 entries
+    successful table build
+    Built hash tables: User: 25.0922s System: 0.85587s Actual: 25.9526s Efficiency: 99.9826%
+    Scanning file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa: User: 0s System: 0s Actual: 0.000132s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.2bpb of size 1348 bytes.
+    squash: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.vld of size 72 bytes.
+    Comment: >gi|9626372|ref|NC_001422.1| Coliphage phiX174, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 0.114983s System: 0.002s Actual: 0.117018s Efficiency: 99.9701%
+    FileReader: unmapping 1348 bytes of memory
+    FileReader: unmapping 72 bytes of memory
+    made hash table, pointer table sizes = 33554434, 16777218
+    About to build hash tables for pass 2: User: 0s System: 0s Actual: 0.000424s Efficiency: 0%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    read 4974039 oligos from source
+    Will hash 4970018 oligos
+    converting count values to pointer arrays
+    will place 9937450 entries in table
+    will place 9937489 entries in table
+    9937450 entries reduced to 9937450 entries
+    9937489 entries reduced to 9937489 entries
+    successful table build
+    Built hash tables: User: 25.1602s System: 0.764884s Actual: 26.1407s Efficiency: 99.175%
+    Scanning file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa: User: 0s System: 0s Actual: 0.000138s Efficiency: 0%
+    Starting block: 1
+    FileReader: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.2bpb of size 1348 bytes.
+    squash: opened file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.vld of size 72 bytes.
+    Comment: >gi|9626372|ref|NC_001422.1| Coliphage phiX174, complete genome
+    finished making FileReader
+    Finishing block: 2
+    ... done User: 0.115982s System: 0.001s Actual: 0.116867s Efficiency: 100.098%
+    FileReader: unmapping 1348 bytes of memory
+    FileReader: unmapping 72 bytes of memory
+    Will look for index file /home/syoung/base/pipeline/phix-eland/data/phiFasta.fa.idx
+    ... not found, will not index
+    Outputting results: User: 0s System: 0s Actual: 0.000346s Efficiency: 0%
+    ... done User: 13.291s System: 3.08853s Actual: 16.3822s Efficiency: 99.9837%
+    Run complete! Time now: Thu Aug 28 02:52:24 2008
+    
+    Run time: 00:01:35
+    Completed ./eland.pl
+    2:52AM, 28 August 2008
+    ****************************************
+
+
+Herpes
+======
+    
+    head Herpesvirus_3.60kb.reads.fa
+    >READ_1
+    CTTTAGATTCTTGGCGCTCAGCCGCAGATA
+    >READ_2
+    TCTTTCCGCAGCGTCAATTTTTGCTTTGGA
+    >READ_3
+    GCTGCTGCCGAGGCGGAAGAAGCAGATGCA
+    >READ_4
+    CGTCAAGTGGACGAAATGTAGGATATAAAG
+    >READ_5
+    CTGCGAGTTTACTGTAGCGTCCATCGCGAT
+
+    records Herpesvirus_3.60kb.reads.fa
+    100001
+
+    30 bps per read
+
+
+./eland.pl -i /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa \
+-r /home/syoung/base/pipeline/herpes-eland/data \
+-o /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland.contigs.fasta
+
+
+
+FAILED WITH OUTPUT:
+
+    Eland: /usr/local/Pipeline/Eland/eland
+    /usr/local/Pipeline/Eland/eland /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa /home/syoung/base/pipeline/herpes-eland/data /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland.contigs.fasta
+    ELAND: Efficient Local Alignment of Nucleotide Data
+    Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+    Author: Anthony J. Cox
+    
+    Publications incorporating data generated by the use of
+    this software or modified versions thereof should cite:
+    Anthony J. Cox.
+    Ultra high throughput alignment of short sequence tags.
+    In preparation.
+    
+    WARNING: this software is compiled to process oligos of length 25.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Will use at most 25 bits in hash table
+    Can process at most 16777215 oligos per batch
+    Will find all matches having 2 errors or less
+    getOligoSourceFile: detected fasta format oligo file
+    WARNING: first sequence of /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa contains 30 bases, but only the first 25 bases will be used in the alignment.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Starting run! Time now: Thu Aug 28 03:03:02 2008
+    Will read oligos from file /home/syoung/base/pipeline/herpes-eland/data/Herpesvirus_3.60kb.reads.fa
+    Will output assembly format match details to file /home/syoung/base/pipeline/herpes-eland/assembly/herpes-eland.contigs.fasta
+    Trying to open directory /home/syoung/base/pipeline/herpes-eland/data ...
+    made hash table, pointer table sizes = 0, 0
+    About to build hash tables for pass 0: User: 0.001s System: 0s Actual: 0.001587s Efficiency: 63.012%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    
+    Segmentation fault
+
+
+    EVEN THOUGH OUTPUT IS EXACTLY THE SAME AS THE ABOVE ELAND RUN WITH PHIX:
+
+        ...        
+        WARNING: this software is compiled to process oligos of length 25.
+        To change this value, edit OLIGO_LENGTH and recompile.
+        
+        Will use at most 25 bits in hash table
+        Can process at most 16777215 oligos per batch
+        Will find all matches having 2 errors or less
+        getOligoSourceFile: detected fasta format oligo file
+        WARNING: first sequence of /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta contains 36 bases, but only the first 25 bases will be used in the alignment.
+        To change this value, edit OLIGO_LENGTH and recompile.
+        
+        Starting run! Time now: Thu Aug 28 02:50:49 2008
+        Will read oligos from file /home/syoung/base/pipeline/phix-eland/data/s_4_sequence_in.solexa.fasta
+        Will output assembly format match details to file /home/syoung/base/pipeline/phix-eland/assembly/phix-eland.contigs.fasta
+        Trying to open directory /home/syoung/base/pipeline/phix-eland/data ...
+        made hash table, pointer table sizes = 0, 0
+        About to build hash tables for pass 0: User: 0.001s System: 0s Actual: 0.001606s Efficiency: 62.2665%
+        partition hash table will run in split prefix mode, split is 25/1
+        Setting partition hash table size to 25 bits
+        Setting partition hash table size to 24 bits
+        counting oligos
+        read 4974039 oligos from source
+        Will hash 4970018 oligos
+        converting count values to pointer arrays
+        will place 9937520 entries in table
+        will place 9937559 entries in table
+        9937520 entries reduced to 9937520 entries
+        9937559 entries reduced to 9937559 entries
+        ...
+        
+
+TRIED RESQUASHING THE HERPES GENOME:
+
+    cd /home/syoung/base/pipeline/herpes-eland/data
+    /usr/local/GAPipeline-0.3.0/Eland/squashGenome /home/syoung/base/pipeline/herpes-eland/data Herpesvirus_3.60kb.reference.fa
+
+AND RERAN eland BUT GOT SAME segmentation fault ERROR
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 02:15:25 EDT 2008] MSG Sawsan RE TESTED ASSEMBLERS>
+
+
+
+Hi Sawsan,
+
+Here are the assemblers I’ve got data on so far:
+
+    Eland                     
+    Velvet   
+    Mira       
+    Genomics Workbench   
+    NextGene                                                                                                                           
+    Seqman Ngen                    
+    MAQ
+
+I’ve attached an Excel file (assembler-comparison-v4.xls) with my collated results so far. Please note: a lot of the values are missing in the ‘TIMING’ and ‘ASSEMBLIES’ tabs as most of my data is on ‘solexa01’. I’ll be able to fill in a lot of the blanks tomorrow once it’s back up.
+
+Basically, none of these applications can use large reference sequences, e.g., individual chromosomes, which could be a very important issue when we are dealing with non-cDNA samples. Even with cDNA samples, aligning solely using the ~45,000 RefSeqs may not be sufficient because of possible unknown alternate splicing and non-gene transcription units (TUs). I plan to test for the former by using the 300,000 unique exons in the ASTD (http://www.ebi.ac.uk/astd/main.html). One feasible test for the latter involves matching the assembled contigs against the whole human genome.
+
+Regarding speed of assembly, Velvet (de novo assembly only) is the fastest by far, followed by Eland (reference assembly only). The commercial applications (Genomics workbench, Seqman NGen, NextGene) are several times slower than Eland. One of the most significant issues is the rather low number of assembled reads. The commercial packages Seqman NGen and NextGene seem to perform best in terms of the proportion of assembled reads: 22% for Seqman versus 33% for NextGene but that’s on the limited data I can provide just now. However, both Seqman NGen and NextGene have their issues:
+
+-	Both only run on windows, and Seqman NGen only runs on 64-bin systems – not good for pipelining
+-	Seqman NGen crashes with reads in excess of around 16M (~4 lanes)
+-	NextGene does not support paired end reads
+
+My next step is to do a full comparison of the degree of overlap and conflict between the different assemblies. The results of that analysis will allows us to better assess the performance of the different assemblers and inform how we use multiple assemblers (e.g., Eland, Velvet and MAQ) in the pipeline.
+
+And here are some of the other assemblers I’m looking into:
+
+	Erange (installed)
+ VCAKE (installed)
+	EULER-SR (installed)
+    	Novoalign                                                            
+	RMAP
+    	Seqmap                               
+Shore
+    	SHRiMP
+    	SOAP (installed)
+    	SXoligosearch
+
+Cheers,
+
+Stuart.
+
+
+ 
+
+</entry>
+
+
+
+<entry [Tue Aug 26 01:15:25 EDT 2008] SoftGenetics NEXTGENE ASSEMBLY RESULTS>
+
+
+
+DE NOVO
+=======
+
+Instrument Type: Illumina/SOLiD
+Application Type: De-novo Assembly
+Do Condensation: TRUE
+Condensation Cycle Count: 4
+Do Assmebly: TRUE
+Do Alignment: FALSE
+
+[Sample File(s)]:
+C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa.fasta
+[Output]:
+C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa_Output
+
+[Wednesday, August 13, 2008, 18:13:14] Process Start...
+[Wednesday, August 13, 2008, 18:13:26] Saving File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa_Output\human2_sequence_in.solexa_Output_title.txt ...
+[Wednesday, August 13, 2008, 18:13:26] Processing File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa.fasta
+[Wednesday, August 13, 2008, 18:14:16] Saving File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa_Output\human2_sequence_in.solexa_Output_bases.txt ...
+[Wednesday, August 13, 2008, 18:14:35] Condensation Cycle 1...
+[Wednesday, August 13, 2008, 19:38:33] Condensation Cycle 2...
+[Wednesday, August 13, 2008, 20:34:52] Condensation Cycle 3...
+[Wednesday, August 13, 2008, 21:22:52] Condensation Cycle 4...
+[Wednesday, August 13, 2008, 21:44:39] Condensation Finished.
+[Wednesday, August 13, 2008, 21:44:39] Assembling with Method Two...
+[Wednesday, August 13, 2008, 22:09:36] Assembly Finished.
+[Wednesday, August 13, 2008, 22:09:36] Saving Assembled Data to C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa_Output\human2_sequence_in.solexa_Output_AssembledSequences.fasta...
+[Wednesday, August 13, 2008, 22:16:03] Removing Temporary Files...
+
+
+[Condensation & Assembly Statistics Information]
+Matched Reads Count: 10021082
+Unmatched Reads Count: 21918235
+Assembled Sequences Count: 30069
+Assembled Sequences Average Length: 133
+Assembled Sequences Average Coverage: 19
+
+
+
+REFERENCE ASSEMBLY
+==================
+
+
+SoftGenetics NextGENe
+
+Instrument Type: Illumina/SOLiD
+Application Type: Others
+Do Condensation: TRUE
+Condensation Cycle Count: 4
+Do Assmebly: TRUE
+Do Alignment: TRUE
+
+[Sample File(s)]:
+C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference.fasta
+[Reference File(s)]:
+C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\Homo_sapiens.NCBI36.49.cdna.known.fasta
+[Output]:
+C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference_Output
+
+[Sunday, August 17, 2008, 13:30:24] Process Start...
+[Sunday, August 17, 2008, 13:30:36] Saving File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference_Output\human2_sequence_in.solexa-reference_Output_title.txt ...
+[Sunday, August 17, 2008, 13:30:36] Processing File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference.fasta
+[Sunday, August 17, 2008, 13:31:26] Saving File: C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference_Output\human2_sequence_in.solexa-reference_Output_bases.txt ...
+[Sunday, August 17, 2008, 13:31:43] Condensation Cycle 1...
+[Sunday, August 17, 2008, 14:55:11] Condensation Cycle 2...
+[Sunday, August 17, 2008, 15:51:48] Condensation Cycle 3...
+[Sunday, August 17, 2008, 16:40:31] Condensation Cycle 4...
+[Sunday, August 17, 2008, 17:02:02] Condensation Finished.
+[Sunday, August 17, 2008, 17:02:02] Assembling with Method Two...
+[Sunday, August 17, 2008, 17:27:02] Assembly Finished.
+[Sunday, August 17, 2008, 17:27:02] Saving Assembled Data to C:\Documents and Settings\SYoung\Desktop\solexa\human-nextgene\human2_sequence_in.solexa-reference_Output\human2_sequence_in.solexa-reference_Output_AssembledSequences.fasta...
+[Sunday, August 17, 2008, 17:33:30] Removing Temporary Files...
+[Sunday, August 17, 2008, 17:33:30] Alignment Loading File...
+[Sunday, August 17, 2008, 17:33:33] Alignment Creating Hash Table...
+[Sunday, August 17, 2008, 17:34:27] Alignment Processing...
+[Sunday, August 17, 2008, 17:36:29] Alignment Saving Output Files...
+
+[Condensation & Assembly Statistics Information]
+Matched Reads Count: 10019877
+Unmatched Reads Count: 21919440
+Assembled Sequences Count: 30000
+Assembled Sequences Average Length: 133
+Assembled Sequences Average Coverage: 19
+[Alignment Statistics Information]
+Matched Reads Count: 11383
+Unmatched Reads Count: 18617
+Number of Matched Bases: 1684297
+Number of Unmatched Bases That are Recorded as Mutations: 578
+Number of Unmatched Bases That are NOT Recorded as Mutations: 5346
+Average Read Length: 154
+Average Coverage: 1
+Number of Covered Bases: 1615504
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 00:23:10 EDT 2008] LIST OF ASSEMBLERS>
+
+
+
+Shortreads:
+
+Solexa data > VCAKE, Velvet (new!)?
+
+454 data > Newbler (GS FLX Data Processing Software)?
+
+Aligning to reference genome > MUMMER, Vmatc, amosCMP...etc.
+
+Tigr Assembler
+
+
+Low size genomes:
+Minimus from AMOS package
+CAP3
+
+High size genomes:
+PCAP
+Phred/Phrap
+Celera Assembler
+Visualizers:
+Sequencher, Hawkeye from AMOS package...
+
+
+</entry>
+
+
+
+<entry [Tue Aug 26 00:07:17 EDT 2008] SeqMan NGen ASSEMBLY RESULTS>
+
+
+
+
+HUMAN RUN 1
+
+LANES 1-3:
+Layed Out: 5785688  Assembled: 3145555  Unassembled: 10824039  Contigs: 43367
+
+LANES 5-8:
+Layed Out: 8078466  Assembled: 4053335  Unassembled: 14003123  Contigs: 43367
+
+
+
+
+HUMAN RUN 1, LANES 5-8:
+
+sumary:
+Layed Out: 8078466  Assembled: 4053335  Unassembled: 14003123  Contigs: 43367
+Done with alignment
+
+
+SeqMan NGen Builid 1.1.4 build 46
+Assembly Time: 2:44:29 
+
+Assembly Totals		
+ 	Contigs:	43367
+ 	Contigs > 2K:	24669
+ 	Contigs To Reach Genome Length 119335038:	42600
+ 	Assembled Sequences:	4053335
+ 	Unassembled Sequences:	14003123
+ 		Sequences not assembled due to high depth of coverage: 5802433
+ 	All Sequences:	18056458
+ 	Contig N50:	3 Kbases
+ 	Average Coverage:	2
+Average Totals		
+ 	Sequences per Contig:	93
+Average Lengths		
+ 	Contigs:	2756
+ 	Assembled Sequences:	64
+ 	Unassembled Sequences:	35
+ 	All Sequences:	41
+Average Quality		
+ 	Assembled Sequences:	16
+ 	Unassembled Sequences:	16
+ 	All Sequences:	16
+
+Assembly Parameters
+	Match Size: 15 
+	Match Spacing: 10 
+	Minimum Match Percentage: 90 
+	Match Score: 10 
+	Mismatch Penalty: 20 
+	Gap Penalty: 30 
+	Max Gap: 15 
+	Genome Length: 119335038 
+	Expected Coverage: 7 
+
+
+HUMAN RUN 1, LANES 1-3 (DIDN'T PRINT PROPER ASSEMBLY REPORT):
+
+
+SeqMan NGen Assembly Report
+SeqMan NGen Builid 1.1.4 build 46
+Assembly Time: 2:03:15 
+
+Assembly Totals		
+ 	Contigs:	0
+ 	Contigs > 2K:	0
+ 	Assembled Sequences:	0
+ 	Unassembled Sequences:	0
+ 	All Sequences:	0
+ 	Contig N50:	0 Kbases
+ 	Contig N50:	0 Kbases
+
+Assembly Parameters
+	Match Size: 15 
+	Match Spacing: 10 
+	Minimum Match Percentage: 90 
+	Match Score: 10 
+	Mismatch Penalty: 20 
+	Gap Penalty: 30 
+	Max Gap: 15 
+	Genome Length: 0 
+	Expected Coverage: 6 
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug 14 23:02:13 EDT 2008] RERAN velvet ON LANE 3 OF RUN 1>
+
+
+
+# CONTIG COUNTS  - LANE 3 ONLY
+#
+# READS:
+#
+#   records /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta
+#   Records: 4,756,221    
+#
+# ASSEMBLED CONTIGS:
+#
+#   records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+#   Records: 534    *** CHECK THIS ***
+#
+
+
+./velvet.pl -i /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta -l 21 
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human1-velvet
+    Input: data/human1_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human1-velvet
+    Input: data/human1_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/human1_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human1-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/human1-velvet/assembly/velvetg_log.txt
+    
+    Run time: 00:08:09
+    Completed ./velvet.pl
+    4:08PM, 14 August 2008
+    ****************************************
+
+records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+Records: 4532
+
+
+./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+ls -al
+    -rw-rw-rw-  1 syoung users  6152192 Aug 14 19:15 out.cluster
+    -rw-rw-rw-  1 syoung users  2400256 Aug 14 19:33 out.delta
+    -rw-rw-rw-  1 syoung users 48480783 Aug 14 17:10 out.mgaps
+    -rw-rw-rw-  1 syoung users   954512 Aug 14 16:21 out.ntref
+
+
+2. RUN nucmer TO COMPARE velvet CONTIGS TO COMPLETE HUMAN GENOME    
+
+./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+    ~ 2.5 hours
+
+
+
+
+RERAN NUCMER:
+
+[syoung@solexa01 nextgen]$ ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+nucmer: /home/syoung/base/apps/mummer/nucmer
+/home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+1: PREPARING DATA
+2,3: RUNNING mummer AND CREATING CLUSTERS
+# reading input file "out.ntref" of length 938792
+# construct suffix tree for sequence of length 938792
+# (maximum input length is 536870908)
+# process 9387 characters per dot
+#....................................................................................................
+# CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer out.ntref 0.44
+# reading input file "/home/syoung/base/pipeline/human-genome/human.fasta" of length 3080419503
+# matching query-file "/home/syoung/base/pipeline/human-genome/human.fasta"
+# against subject-file "out.ntref"
+# COMPLETETIME /store/home/syoung/base/apps/mummer/mummer out.ntref 2888.43
+# SPACE /store/home/syoung/base/apps/mummer/mummer out.ntref 2997.38
+4: FINISHING DATA
+Run time: 09:05:18
+Completed ./nucmer.pl
+11:28AM, 15 August 2008
+****************************************
+
+
+records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+Filename: /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+Separator: >
+Records: 4532
+
+
+[syoung@solexa01 pipeline_in]$ ll /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+total 50M
+drwxrwxrwx  2 syoung users 4.0K Aug 15 11:28 .
+drwxr-xr-x 11 syoung users 4.0K Aug 14 16:21 ..
+-rw-rw-rw-  1 syoung users    0 Aug 14 23:07 delta.filter
+-rw-rw-rw-  1 syoung users  39M Aug 15 11:28 out.cluster
+-rw-rw-rw-  1 syoung users  11M Aug 15 11:28 out.delta
+
+
+
+[syoung@solexa01 nextgen]$ ./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+
+3. CREATE delta.filter FILE (A one-to-one local mapping of reference to query sequences)
+
+./nucmer-deltafilter.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/out.delta
+
+
+4. GENERATE COORDINATES FOR HITS WITHIN delta.filter FILE
+
+./nucmer-showcoords.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/out.delta
+
+head delta.filter.coords 
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords
+45129
+
+
+5. GENERATE GFF FILE FOR HITS IN delta.filter.coords FILE
+
+./coords2gff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords -s velvet -a nucmer -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -s velvet -a nucmer
+
+
+
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords.gff
+45125
+
+
+6. SORT THE GFF LINES
+
+./sortgff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords.gff -o /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff
+    
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff
+45125
+
+
+7. SPLIT THE GFF LINES INTO PER-CHROMOSOME FILES
+
+./chromosomegff.pl -i /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/human-velvet-sorted.gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/chromosome-gff -o human-velvet-nucmer 
+
+CHECK IF CHROMOSOME 8 OR DOWNSTREAM GFF FILES PRESENT
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+COMPARE COVERAGE AND OVERLAP BETWEEN DIFFERENT ASSEMBLIES WITH compareassembly
+
+INPUT:
+
+    1. ASSEMBLY 1 CONTIG GFF FILES
+
+    2. ASSEMBLY 2 CONTIG GFF FILES
+
+    3. REFERENCE HUMAN cDNA GFF FILES
+
+OUTPUT:
+
+    1. SET 1 - NO. OF HITS IN BOTH ASSEMBLY 1 AND ASSEMBLY 2
+
+    2. SET 2 - NO. OF HITS IN ASSEMBLY 1 AND NOT IN ASSEMBLY 2
+
+    3. SET 3 - NO. OF HITS IN ASSEMBLY 2 AND NOT IN ASSEMBLY 1
+    
+    4. SET 4 - NO. OF HITS IN EITHER ASSEMBLY 1 OR ASSEMBLY 2
+
+
+
+/home/syoung/base/pipeline/human1-velvet/nucmer.whole-human/delta.filter.coords.gff
+
+</entry>
+
+
+
+<entry [Mon Aug 11 09:12:18 EDT 2008] COMPARISON OF ASSEMBLED AND UNASSEMBLED SEQUENCES>
+
+
+
+
+MAQ
+
+    Number of input Sequences: 31,939,318
+
+    mapcheck.txt
+    
+        Number of reference sequences: 43367
+        Length of reference sequences exlcuding gaps: 119335011
+        Length of gaps in the reference sequences: 27
+        Length of non-gap regions covered by reads: 12428619
+        Length of 24bp unique regions of the reference: 4165597
+        Reference nucleotide composition: A: 26.00%, C: 24.65%, G: 24.99%, T: 24.36%
+        Reads nucleotide composition:     A: 30.53%, C: 21.61%, G: 21.47%, T: 26.39%
+        Average depth across all non-gap regions: 0.318
+        Average depth across 24bp unique regions: 0.363
+
+    Assembled sequences in out.alignments file: 1,085,426
+
+    % assembled : 0.033984007
+
+Velvet
+
+    Final graph has 449198 nodes and n50 of 122 max 2320
+
+    Contigs in contigs.fa file: 209542
+
+    Number of input Sequences: 31,939,318
+
+    % assembled = TBA
+
+Eland
+
+    Number of input Sequences: 31,939,318
+	Assembled sequences: 123077
+	Unassembled sequences: 16500001 + 15439317 - 123077
+    
+    % assembled = 0.003853464
+
+NGen
+
+    Number assembled = 4,053,335 + 5,802,433
+    
+    Input sequences: 18056458
+
+    % assembled = 
+
+    LANES 1-3
+    
+        Report not printed. Rerunning.
+    
+    LANES 5-8
+        Assembly Totals		
+            Contigs:	43367
+            Contigs > 2K:	24669
+            Contigs To Reach Genome Length 119335038:	42600
+            Assembled Sequences:	4053335
+            Unassembled Sequences:	14003123
+                Sequences not assembled due to high depth of coverage: 5802433
+            All Sequences:	18056458
+            Contig N50:	3 Kbases
+            Average Coverage:	2
+        Average Totals		
+            Sequences per Contig:	93
+        Average Lengths		
+            Contigs:	2756
+            Assembled Sequences:	64
+            Unassembled Sequences:	35
+            All Sequences:	41
+        Average Quality		
+            Assembled Sequences:	16
+            Unassembled Sequences:	16
+            All Sequences:	16
+        
+        Assembly Parameters
+            Match Size: 15 
+            Match Spacing: 10 
+            Minimum Match Percentage: 90 
+            Match Score: 10 
+            Mismatch Penalty: 20 
+            Gap Penalty: 30 
+            Max Gap: 15 
+            Genome Length: 119335038 
+            Expected Coverage: 7 
+
+
+</entry>
+
+
+
+<entry [Sat Aug  9 06:40:29 EDT 2008] CALCULATED NUMBER OF READS ALIGNED TO HUMAN cDNAs BY ELAND>
+
+
+
+./elandgff2stats.pl -d /home/syoung/base/pipeline/human-eland/assembly/gff
+
+    Chromosome summary: chr9        698     0.305082022361991
+    Printed outputfile: /home/syoung/base/pipeline/human-eland/assembly/gff/eland.stats
+    
+    Run time: 00:12:59
+    Completed ./elandgff2stats.pl
+    6:39AM, 9 August 2008
+    ****************************************
+
+
+NB: 43,368 cDNAs in Homo_sapiens.NCBI36.49.cdna.known.fas FILE BUT ONLY 42514 ARE REGULAR GENOMIC cDNAs
+(there are some mitochondrial, hyper-variable region and 'supercontig' cDNAs which I excluded due to lack of genomic positioning data)
+
+
+cd /home/syoung/base/pipeline/human-cdna-embl/gff
+
+cat * > human-cdna-embl-all.gff
+lines human-cdna-embl-all.gff 
+    42514
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Aug  9 01:10:42 EDT 2008] CONVERT ELAND RESULT INTO GFF WITH eland2gff>
+
+
+
+./eland2gff.pl -i /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1 -d /home/syoung/base/pipeline/human-cdna-embl/gff -o /home/syoung/base/pipeline/human-eland/assembly/gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -l 34
+
+    ...
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr11.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr12.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr13.eland.gff
+    /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr3.eland.gff
+    
+    Run time: 00:02:27
+    Completed ./eland2gff.pl
+    1:09AM, 9 August 2008
+    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 17:34:04 EDT 2008] CONVERT ELAND OUTPUT INTO A CONTIG FASTA FILE>
+
+
+
+UNSQUASH 
+
+Usage: cat elandOutput.txt | /usr/local/GAPipeline-0.3.0/Eland/unsquash squashedFileDir readLength [readLengthUsedForELAND] [--multi] [--read|--align|--compact]
+
+
+cd /home/syoung/base/pipeline/human-eland/assembly
+
+cat human2-cdna_embl-eland-contigs.solexa.fasta.1 | /usr/local/GAPipeline-0.3.0/Eland/unsquash /home/syoung/base/pipeline/human-eland/data 34 > human2-cdna_embl-eland-contigs.solexa.fasta.1.unsquashed
+
+
+CONVERT FROM ELAND ALIGNMENT OUTPUT TO TILE-BY-TILE FILES (NOT USED CURRENTLY):
+
+http://rulai.cshl.edu/xuan/Doc/Solexa/Whole%20genome%20alignments%20using%20ELAND.html
+
+Under the hood a script convertToFasta.pl converts and concatenates all the reads into a single large FASTA file which is then passed as an input to ELAND. A script convertFromELAND.pl converts the results back into the by-tile PhageAlign format expected by the rest of the pipeline.
+
+cd /usr/local/GAPipeline-0.3.0/Gerald
+./convertFromELAND.pl 
+    Usage: paste eland_output.txt unsquash_output.txt | ./convertFromELAND.pl 
+    [ fileName|suffix [readLength [ readLengthELAND ] ] ]
+
+paste human2-cdna_embl-eland-contigs.solexa.fasta.1 human2-cdna_embl-eland-contigs.solexa.fasta.1.unsquashed | /usr/local/GAPipeline-0.3.0/Gerald/convertFromELAND.pl OUTPUT.txt
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 17:15:47 EDT 2008] REASSEMBLED ALL HUMAN READS USING velvet WITH PARAMETERS "-cov_cutoff 1 -read_trkg yes -amos_file yes";>
+
+
+
+1. MOVED OLD assembly DIRECTORY TO assembly.080717.ok
+
+    cd /home/syoung/base/pipeline/human2-velvet
+    mv assembly assembly.080717.ok
+
+2. RAN velvet WITH NEW PARAMETERS TO TRACK READS AND CREATE .afg (AMOS-FORMAT) OUTPUT FILE
+
+    Using read tracking Velvet’s read tracking can be turned on with the readtracking
+    option. This will cost slightly more memory and calculation time, but
+    will have the advantage of producing in the end a more detailed description of
+    the assembly:
+    
+    > ./velvetg output_directory/ -read_trkg yes (... other parameters ...)
+    
+    Producing an .afg file If you turn on the read tracking, you might also want
+    to have all the assembly information in one datastructure. For this purpose
+    Velvet can produce AMOS files (cf 4.2.3). Because the .afg files tend to be very
+    large, they are only produced on demand:
+    
+    > ./velvetg output_directory/ -amos_file yes (... other parameters ...)
+
+cd /home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21  
+    
+    Input file: /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/human2_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 1 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+    
+    Run time: 01:15:16
+    Completed ./velvet.pl
+    5:21PM, 7 August 2008
+    ****************************************
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 14:34:52 EDT 2008] VELVET-NUCMER ASSEMBLY PIPELINE WITH ALL HUMAN DATA>
+
+
+
+1. RAN velvet ON ALL HUMAN LANES TO GET 49638 CONTIGS IN contigs.fa 
+
+**** RERAN USING -cov_cutoff 5 TO REDUCE THE NUMBER OF CONTIGS
+
+
+
+# CONTIG COUNTS  - ALL 7 HUMAN LANES, VELVET PARAM: -cov_cutoff 1
+#
+#
+# READS:
+#
+#   records /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+#   Records: 31,939,318    
+#
+# ASSEMBLED CONTIGS:
+#
+#   records /home/syoung/base/pipeline/human2-velvet/assembly/contigs.fa
+#   Records: 209,542
+#
+
+
+# CONTIG COUNTS  - ALL 7 HUMAN LANES, VELVET PARAM: -cov_cutoff 5
+#
+#
+# READS:
+#
+#   records /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+#   Records: 31,939,318    
+#
+# ASSEMBLED CONTIGS:
+#
+#   records /home/syoung/base/pipeline/human2-velvet/assembly/contigs.fa
+#   Records: 49,638
+#
+
+
+
+
+#NB: my $parameters = "-cov_cutoff 1 -read_trkg yes -amos_file yes";
+#
+#cd /home/syoung/base/bin/nextgen
+#./velvet.pl -i /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21 
+#
+#    ...
+#    Inputting sequences...
+#    /home/syoung/base/apps/velvet/velveth assembly 21 data/human2_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+#    Assembling sequences...
+#    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 &> /home/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+#    
+#    Run time: 00:52:01
+#    Completed ./velvet.pl
+#    7:46PM, 24 July 2008
+#    ****************************************
+#        
+#    cd /home/syoung/base/pipeline/human2-velvet/assembly
+#
+#    ll 
+#    -rw-rw-rw- 1 syoung users  13M Jul 24 19:45 contigs.fa
+#    -rw-rw-rw- 1 syoung users  62M Jul 24 19:45 Graph
+#    -rw-rw-rw- 1 syoung users  25M Jul 24 19:45 LastGraph
+#    -rw-rw-rw- 1 syoung users  200 Jul 24 19:12 Log
+#    -rw-rw-rw- 1 syoung users 119M Jul 24 19:31 PreGraph
+#    -rw-rw-rw- 1 syoung users 1.9G Jul 24 19:12 Roadmaps
+#    -rw-rw-rw- 1 syoung users 2.0G Jul 24 19:02 Sequences
+#    -rw-rw-rw- 1 syoung users 5.8M Jul 24 19:45 stats.txt
+#    -rw-rw-rw- 1 syoung users  90K Jul 24 19:46 velvetg_log.txt
+#    -rw-rw-rw- 1 syoung users  13K Jul 24 19:12 velveth_log.txt
+#
+#    head contigs.fa
+#    
+#        >NODE_1_length_116_cov_17.793104
+#        ATGGAGCTGAAAAATTCCTACCACCCAGTGACATTTGTAGACATCATAACCTCATAGCAC
+#        AACACAATATCTTTTCTACGTTTGAGTATGTTTTGATACACAAATACATAACATTATGTT
+#        ACAACTGCCTACAGTA
+#        >NODE_2_length_219_cov_9.059361
+#        TTTTTTGTTTTTTTGATGCGTAAGAATTTTATTTAACAATGTAACAAACTTTGCAAAGTT
+#        CATTAAGCATTGTGAGACGTGTGGCTTTTATTTAAAGAAGGTTGACTAAATCATAGACAT
+#        TTAAAAGATTTTGAAATATCTCTTTTATTATGAGAAATTTTAAACATATACAAAAGTAGT
+#        GAGAATAGTATAAGAAACCCTCATGCACCCAGACTTAACCTTAACAATTCTCAACATTT
+#        >NODE_3_length_431_cov_13.733179
+#        ...
+#
+#    records contigs.fa  ">"
+#    
+#    Records: 49638
+
+
+NB: my $parameters = "-cov_cutoff 5 -read_trkg yes -amos_file yes";
+
+cd /home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21 
+
+    velvet: /home/syoung/base/apps/velvet/velvet
+    Input file: /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Output directory: /home/syoung/base/pipeline/human2-velvet
+    Input: data/human2_sequence_in.solexa.fasta
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/human2_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 -read_trkg yes -amos_file yes &> /home/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+    
+    Run time: 01:16:04
+    Completed ./velvet.pl
+    8:00PM, 12 August 2008
+    ****************************************
+
+    OUTPUT:
+    
+    cd /home/syoung/base/pipeline/human2-velvet/assembly
+    ll
+        -rw-rw-rw- 1 syoung users   13046256 Aug 12 19:57 contigs.fa
+        -rw-rw-rw- 1 syoung users 3544817192 Aug 12 19:53 Graph2
+        -rw-rw-rw- 1 syoung users 2850968638 Aug 12 19:57 LastGraph
+        -rw-rw-rw- 1 syoung users        230 Aug 12 19:02 Log
+        -rw-rw-rw- 1 syoung users  123981868 Aug 12 19:22 PreGraph
+        -rw-rw-rw- 1 syoung users 1973394846 Aug 12 19:02 Roadmaps
+        -rw-rw-rw- 1 syoung users 2096883812 Aug 12 18:53 Sequences
+        -rw-rw-rw- 1 syoung users    6068286 Aug 12 19:57 stats.txt
+        -rw-rw-rw- 1 syoung users 4242843686 Aug 12 20:00 velvet_assy.afg
+        -rw-rw-rw- 1 syoung users      92019 Aug 12 20:00 velvetg_log.txt
+        -rw-rw-rw- 1 syoung users      12672 Aug 12 19:02 velveth_log.txt
+
+    
+
+2. RUN nucmer TO COMPARE velvet CONTIGS TO COMPLETE HUMAN GENOME    
+
+TEST ON human1
+
+./nucmer.pl -i /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+    nucmer: /home/syoung/base/apps/mummer/nucmer
+    /home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+    1: PREPARING DATA
+    2,3: RUNNING mummer AND CREATING CLUSTERS
+    # reading input file "out.ntref" of length 83350
+    # construct suffix tree for sequence of length 83350
+    # (maximum input length is 536870908)
+    # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer out.ntref 0.02
+    # reading input file "/home/syoung/base/pipeline/human-genome/human.fasta" 
+    
+    of length 3080419503
+    # matching query-file "/home/syoung/base/pipeline/human-genome/human.fasta"
+    # against subject-file "out.ntref"
+    # COMPLETETIME /store/home/syoung/base/apps/mummer/mummer out.ntref 1635.50
+    # SPACE /store/home/syoung/base/apps/mummer/mummer out.ntref 2996.56
+    4: FINISHING DATA    
+    
+
+    Run time: 01:32:55
+    Completed ./nucmer.pl
+    4:46PM, 7 August 2008
+    ****************************************
+
+
+RUN ON human2
+
+./nucmer.pl -i /home/syoung/base/pipeline/human2-velvet/assembly.080717.ok/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human
+
+
+
+    STARTED Thu Aug  7 17:14:34 EDT 2008
+
+    ./nucmer.pl -i /home/syoung/base/pipeline/human2-velvet/assembly.080717.ok/contigs.fa -r /home/syoung/base/pipeline/human-genome/human.fasta -d /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human
+    nucmer: /home/syoung/base/apps/mummer/nucmer
+    /home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human2-velvet/assembly.080717.ok/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+    1: PREPARING DATA
+    2,3: RUNNING mummer AND CREATING CLUSTERS
+    # reading input file "out.ntref" of length 11106321
+    # construct suffix tree for sequence of length 11106321
+    # (maximum input length is 536870908)
+    # process 111063 characters per dot
+    #....................................................................................................
+    # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer out.ntref 13.06
+    # reading input file "/home/syoung/base/pipeline/human-genome/human.fasta" of length 3080419503
+    # matching query-file "/home/syoung/base/pipeline/human-genome/human.fasta"
+    # against subject-file "out.ntref"
+    # COMPLETETIME /store/home/syoung/base/apps/mummer/mummer out.ntref 7489.21
+    # SPACE /store/home/syoung/base/apps/mummer/mummer out.ntref 3007.24
+    4: FINISHING DATA
+    
+    
+    
+    
+    ERROR:  malloc failed, there is not enough memory
+    ERROR: postnuc returned non-zero, please file a bug report
+    
+    Run time: 33:25:32
+    Completed ./nucmer.pl
+    2:38AM, 9 August 2008
+    ****************************************
+
+
+SOLUTION:
+
+    SPLIT contigs.fa INTO MULTIPLE FILES
+
+records /home/syoung/base/pipeline/human2-velvet/assembly/contigs.fa
+
+NO CHROMOSOME 8 OR DOWNSTREAM IN out.delta FILE
+
+
+
+
+3. CREATE delta.filter FILE (A one-to-one local mapping of reference to query sequences)
+
+./nucmer-delta.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/out.delta
+
+    Delta filter: /store/home/syoung/base/apps/mummer/delta-filter
+    Inputfile: /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/out.delta
+    Output directory: /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human
+    /store/home/syoung/base/apps/mummer/delta-filter -q -r /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/out.delta > delta.filter
+    
+    Run time: 00:00:08
+    Completed ./nucmer-delta.pl
+    10:37AM, 11 August 2008
+    ****************************************
+
+    NO CHROMOSOME 8 OR DOWNSTREAM IN delta.filter FILE
+
+emacs -nw /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter
+    ...
+    >NODE_38691_length_633_cov_8.030016 chr7 653 158821424
+    1 653 79671 80323 1 1 0
+    0
+    >NODE_87681_length_62_cov_13.032258 chr7 82 158821424
+    1 82 89561 89642 0 0 0
+    0
+    >NODE_71312_length_305_cov_5.567213 chr7 325 158821424
+    151 224 111233 111306 0 0 0
+    0
+    220 325 112514 112619 2 2 0
+    0
+
+
+4. GENERATE COORDINATES FOR HITS WITHIN delta.filter FILE
+
+./nucmer-showcoords.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/out.delta
+
+head delta.filter.coords 
+    /home/syoung/base/pipeline/human2-velvet/assembly.080717.ok/contigs.fa /home/syoung/base/pipeline/human-genome/human.fasta
+    NUCMER
+    
+        [S1]     [E1]  |     [S2]     [E2]  |  [LEN 1]  [LEN 2]  |  [% IDY]  |  [COV R]  [COV Q]  | [TAGS]
+    ==========================================================================================================
+          15      384  |     3264     3633  |      370      370  |    99.73  |    96.35     0.00  | NODE_14103_length_364_cov_6.810440      chr1
+           1      383  |     3740     4123  |      383      384  |    99.48  |   100.00     0.00  | NODE_66824_length_363_cov_8.853994      chr1
+           1      194  |    13167    13360  |      194      194  |    98.97  |   100.00     0.00  | NODE_3221_length_174_cov_113.954025     chr1
+           1      569  |    13357    13927  |      569      571  |    98.77  |   100.00     0.00  | NODE_34082_length_549_cov_40.661201     chr1
+           1      109  |    13908    14016  |      109      109  |    99.08  |   100.00     0.00  | NODE_42627_length_89_cov_15.202248      chr1
+
+    BUT ONLY TO CHROMOSOME 7:
+    
+    ...
+       1      107  | 156200887 156200781  |      107      107  |   100.00  |    18.04     0.00  | NODE_18382_length_573_cov_16.886562   chr7
+       1      111  | 156199006 156198896  |      111      111  |   100.00  |   100.00     0.00  | NODE_69179_length_91_cov_5.142857     chr7
+       1       80  | 156198812 156198733  |       80       80  |   100.00  |   100.00     0.00  | NODE_62746_length_60_cov_6.750000     chr7
+       1      185  | 156164542 156164358  |      185      185  |   100.00  |   100.00     0.00  | NODE_18498_length_165_cov_8.842424    chr7
+       1      107  | 155795830 155795724  |      107      107  |   100.00  |   100.00     0.00  | NODE_18677_length_87_cov_28.321838    chr7
+       1       96  | 155795708 155795613  |       96       96  |    98.96  |   100.00     0.00  | NODE_7762_length_76_cov_33.289474     chr7
+       1      171  | 155731624 155731455  |      171      170  |    86.86  |   100.00     0.00  | NODE_24539_length_151_cov_8.966887    chr7
+       1      161  | 155267441 155267281  |      161      161  |   100.00  |   100.00     0.00  | NODE_23316_length_141_cov_6.787234    chr7
+       1       84  | 155266232 155266149  |       84       84  |    98.81  |    96.55     0.00  | NODE_91966_length_67_cov_5.238806     chr7
+
+
+
+
+
+
+lines /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords
+45129
+
+
+5. GENERATE GFF FILE FOR HITS IN delta.filter.coords FILE
+
+./coords2gff.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords -s velvet -a nucmer -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -s velvet -a nucmer
+
+    /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords.gff
+    
+    Run time: 00:00:03
+    Completed ./coords2gff.pl
+    3:24PM, 14 August 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords.gff
+45125
+
+
+6. SORT THE GFF LINES
+
+./sortgff.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/delta.filter.coords.gff -o /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/human-velvet-sorted.gff
+    
+    /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/human-velvet-sorted.gff
+    
+    Run time: 00:00:01
+    Completed ./sortgff.pl
+    3:24PM, 14 August 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/human-velvet-sorted.gff
+45125
+
+
+7. SPLIT THE GFF LINES INTO PER-CHROMOSOME FILES
+
+./chromosomegff.pl -i /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/human-velvet-sorted.gff -c /home/syoung/base/pipeline/human-genome/chromosome_positions.txt -d /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/chromosome-gff -o human-velvet-nucmer 
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 13:49:46 EDT 2008] LIMIT READS TO 29 bp>
+
+
+
+NGen:
+
+    NO PARAMETER TO SET
+
+ELAND:
+
+    max 25 bps USED IN ALIGNMENT ANYWAY
+    
+
+1. GENERATE .fasta AND .fasta.qual FILES FROM .solexa FILE
+
+./solexa2numericfasta.pl -i /home/syoung/pipeline/human2/data/human2_sequence_in.solexa
+
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual
+
+    Run time: 00:57:51
+    Completed ./solexa2numericfasta.pl
+    2:00PM, 7 August 2008
+    ****************************************
+
+2. TRIM .fasta AND .fasta.qual FILES TO 29 bp
+
+./trimfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta -l 29 -t sequence
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta
+        
+    Run time: 00:07:40
+    Completed ./trimfasta.pl
+    2:22PM, 7 August 2008
+    ****************************************
+
+./trimfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual -l 29 -t quality
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual    
+    
+    Run time: 00:29:09
+    Completed ./trimfasta.pl
+    3:00PM, 7 August 2008
+    ****************************************
+
+31 MILLION FASTA RECORDS IN EACH FILE:
+
+records /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta ">"
+    Records: 31939318
+records /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual ">"    
+    Records: 31939318
+
+3. CHOP .fasta AND .fasta.qual FILES INTO SMALLER FILES (TO AVOID eland LIMIT AND AVOID OVERLOADING NGen)
+
+./elandfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta -m 16500000
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.1
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.2
+    
+    Run time: 00:00:50
+    Completed ./elandfasta.pl
+    3:16PM, 7 August 2008
+    ****************************************
+    
+    
+./elandfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual -m 16500000
+
+    ...
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual.1
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.29bp.fasta.qual.2
+    
+    Run time: 00:01:09
+    Completed ./elandfasta.pl
+    3:29PM, 7 August 2008
+    ****************************************
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 01:54:44 EDT 2008] ELAND FAILS WITH LARGE NUMBERS OF READS>
+
+
+
+    EXAMINE USE OF THIS:
+    
+    setParam maxUsableCount:25
+
+    RUN ELAND:
+    
+
+./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.fasta -r /home/syoung/base/pipeline/human-eland/data -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.fasta
+
+
+        counting oligos
+        eland: ELAND_inner.h:1941: bool OligoHashTable<i>::buildTable(OligoSource&) [with int PASS = 0]: Assertion `numOligos_<maxNumOligos' failed.
+        
+        Run time: 00:00:59
+        Completed ./eland.pl
+        1:37AM, 7 August 2008
+        ****************************************
+
+
+PROBLEM:
+
+    INPUT FASTA FILE IS TOO BIG
+
+DIAGNOSIS:
+
+    records /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta ">"
+    Filename: /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta
+    Separator: >
+    Records: 31,939,318
+    
+    ELAND COMMAND LINE HELP:
+        
+        ...
+        Will use at most 25 bits in hash table
+        Can process at most 16,777,215 oligos per batch
+        Will find all matches having 2 errors or less
+        ...
+
+SOLUTION:
+
+    CONVERT SOLEXA-FORMAT READS FILE TO FASTA FILE AND CHOP FILE IN HALF:
+
+
+    ./solexa2numericfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa
+
+
+
+    ./elandfasta.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta -m 16500000
+
+        ...
+        /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.1
+        /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.2
+        
+        Run time: 00:00:50
+        Completed ./elandfasta.pl
+        10:34AM, 7 August 2008
+        ****************************************
+
+    
+RUN TWO JOBS:
+
+
+    DO FILE PART 1:
+
+    ./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.1 -r /home/syoung/base/pipeline/human-eland/data -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1
+
+        ELAND: Efficient Local Alignment of Nucleotide Data
+        Copyright (c) 2003-2006 Solexa Limited. All rights reserved.
+        Author: Anthony J. Cox
+        
+        Publications incorporating data generated by the use of
+        this software or modified versions thereof should cite:
+        Anthony J. Cox.
+        Ultra high throughput alignment of short sequence tags.
+        In preparation.
+        
+        WARNING: this software is compiled to process oligos of length 25.
+        To change this value, edit OLIGO_LENGTH and recompile.
+        
+        Will use at most 25 bits in hash table
+        Can process at most 16777215 oligos per batch
+        Will find all matches having 2 errors or less
+        getOligoSourceFile: detected fasta format oligo file
+        WARNING: first sequence of /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.1 contains 34 bases, but only the first 25 bases will be used in the alignment.
+        To change this value, edit OLIGO_LENGTH and recompile.
+        
+        Starting run! Time now: Thu Aug  7 10:52:38 2008
+        Will read oligos from file /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.1
+        Will output assembly format match details to file /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1
+        Trying to open directory /home/syoung/base/pipeline/human-eland/data ...
+        made hash table, pointer table sizes = 0, 0
+        About to build hash tables for pass 0: User: 0.000999s System: 0.002s Actual: 0.014163s Efficiency: 21.1749%
+        partition hash table will run in split prefix mode, split is 25/1
+        Setting partition hash table size to 25 bits
+        Setting partition hash table size to 24 bits
+        counting oligos
+        read 16500001 oligos from source
+        Will hash 16460012 oligos
+        converting count values to pointer arrays
+        will place 32886151 entries in table
+        will place 32886242 entries in table
+        32886151 entries reduced to 32886151 entries
+        32886242 entries reduced to 32886242 entries
+        successful table build
+        Built hash tables: User: 88.5255s System: 3.70344s Actual: 92.2462s Efficiency: 99.9813%
+        Scanning file /home/syoung/base/pipeline/human-eland/data/Homo_sapiens.NCBI36.49.cdna.known.fas: User: 0s System: 0.001s Actual: 0.000695s Efficiency: 143.885%
+        Starting block: 1
+        FileReader: opened file /home/syoung/base/pipeline/human-eland/data/Homo_sapiens.NCBI36.49.cdna.known.fas.2bpb of size 29833760 bytes.
+        squash: opened file /home/syoung/base/pipeline/human-eland/data/Homo_sapiens.NCBI36.49.cdna.known.fas.vld of size 347221 bytes.
+        Comment: >ENST00000391556 cdna:known supercontig::NT_113908:7373:8827:-1 gene:ENSG00000212867
+        finished making FileReader
+        ...
+        Parsed offset=119327430, name=/ENST00000315492
+        Parsed offset=119328819, name=/ENST00000366471
+        Parsed offset=119330529, name=/ENST00000391820
+        Parsed offset=119330987, name=/ENST00000329291
+        Parsed offset=119332960, name=/ENST00000355360
+        Outputting results: User: 0.314952s System: 0.562915s Actual: 10.5165s Efficiency: 8.34753%
+        ... done User: 26.049s System: 7.9238s Actual: 34.741s Efficiency: 97.7889%
+        Run complete! Time now: Thu Aug  7 11:06:47 2008
+        
+        Run time: 00:14:09
+        Completed ./eland.pl
+        11:06AM, 7 August 2008
+        ****************************************
+
+
+ll -h /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1
+    -rw-rw-rw- 1 syoung users 1.4G Aug  7 11:06 /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.1
+
+    
+    DO FILE PART 2:
+
+    ./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta.2 -r /home/syoung/base/pipeline/human-eland/data -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.solexa.fasta.2
+
+        ...
+        Parsed offset=119332960, name=/ENST00000355360
+        Outputting results: User: 0.340948s System: 0.557915s Actual: 7.03618s Efficiency: 12.7749%
+        ... done User: 23.9444s System: 7.71283s Actual: 31.6903s Efficiency: 99.8954%
+        Run complete! Time now: Thu Aug  7 13:04:54 2008
+        
+        Run time: 00:13:32
+        Completed ./eland.pl
+        1:04PM, 7 August 2008
+        ****************************************
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  7 10:50:45 EDT 2008] RUN eland AS A STANDALONE (FAILED DUE TO FASTA RECORD LIMIT - see above)>
+
+
+
+
+1. COPY HUMAN cDNA (EMBL) TO human-eland/data DIRECTORY AND MAKE assembly DIRECTORY
+    
+    mkdir -p /home/syoung/base/pipeline/human-eland/data
+    mkdir -p /home/syoung/base/pipeline/human-eland/assembly
+    cd /home/syoung/base/pipeline/human-eland/data
+    cp /home/syoung/base/pipeline/human-cdna/embl/Homo_sapiens.NCBI36.49.cdna.known.fas ./    
+
+
+2. SQUASH HUMAN cDNA (EMBL)
+
+    cd /home/syoung/base/pipeline/human-eland/data   
+    /usr/local/GAPipeline-0.3.0/Eland/squashGenome /home/syoung/base/pipeline/human-eland/data Homo_sapiens.NCBI36.49.cdna.known.fas
+    
+    ...
+    Adding entry
+    Adding entry
+    finished file Homo_sapiens.NCBI36.49.cdna.known.fas
+    119335038 bases
+    119378377 valid bases (100.036%)
+    43392 valid regions
+    43367 entries
+    User: 1.15682s System: 0.550916s Actual: 19.0691s Efficiency: 8.95555%
+
+3. COPY ALL 7 LANES OF HUMAN DATA TO INPUT FILE
+
+    cd /home/syoung/base/pipeline/human-eland/data   
+    cp /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta ./
+    cp /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual ./
+
+
+4. RUN ELAND AGAINST WHOLE HUMAN cDNA SET
+
+
+./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta -r /home/syoung/base/pipeline/human-eland/data -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.fasta
+
+
+    ...
+    WARNING: first sequence of /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta contains 34 bases, but only the first 25 bases will be used in the alignment.
+    To change this value, edit OLIGO_LENGTH and recompile.
+    
+    Starting run! Time now: Thu Aug  7 01:36:01 2008
+    Will read oligos from file /home/syoung/base/pipeline/human-eland/data/human2_sequence_in.solexa.fasta
+    Will output assembly format match details to file /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland-contigs.fasta
+    Trying to open directory /home/syoung/base/pipeline/human-eland/data ...
+    made hash table, pointer table sizes = 0, 0
+    About to build hash tables for pass 0: User: 0.001999s System: 0s Actual: 0.00199s Efficiency: 100.452%
+    partition hash table will run in split prefix mode, split is 25/1
+    Setting partition hash table size to 25 bits
+    Setting partition hash table size to 24 bits
+    counting oligos
+    ...
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jul 30 17:35:48 EDT 2008] RUN eland AS A STANDALONE>
+
+
+
+USE eland.pl:
+
+WHICH EXECUTES THE FOLLOWING:
+
+    /usr/local/Pipeline/Eland/eland <-i input_fastafile> <-r reference_directory> <-o outputfile> 
+    
+
+USAGE:
+
+    eland_executable queryFile.txt squashedGenomeDir outFile.txt [repeatFile.txt]
+
+    * queryFile.txt is a file of query sequences. This must be either a multi-entry Fasta format file or a one-sequence-per-line ASCII file. The length of each sequence must exceed the read length specified at compilation, else "undefined behaviour" will result. Unspecified bases in the reads must be denoted by an "N." IUPAC ambiguity codes are not handled (yet).
+    * squashedGenomeDir is the path to the directory squashed genome files you made above.
+    * outFile.txt is the name of the output file. One line of output per sequence, fields are:
+      1. Sequence name (derived from file name and line number if format is not Fasta)
+      2. Sequence
+      3. Type of match:
+      NM - no match found.
+      QC - no matching done: QC failure (too many Ns basically).
+      RM - no matching done: repeat masked (may be seen if repeatFile.txt was specified).
+      U0 - Best match found was a unique exact match.
+      U1 - Best match found was a unique 1-error match.
+      U2 - Best match found was a unique 2-error match.
+      R0 - Multiple exact matches found.
+      R1 - Multiple 1-error matches found, no exact matches.
+      R2 - Multiple 2-error matches found, no exact or 1-error matches.
+      4. Number of exact matches found.
+      5. Number of 1-error matches found.
+      6. Number of 2-error matches found.
+      Rest of fields are only seen if a unique best match was found (i.e. the match code in field 3 begins with "U").
+      7. Genome file in which match was found.
+      8. Position of match (bases in file are numbered starting at 1).
+      9. Direction of match (F=forward strand, R=reverse).
+      10. How N characters in read were interpreted: ("."=not applicable, "D"=deletion, "I"=insertion).
+      Rest of fields are only seen in the case of a unique inexact match (i.e. the match code was U1 or U2).
+      11. Position and type of first substitution error (e.g. 12A: base 12 was A, not whatever is was in read).
+      12. Position and type of first substitution error, as above.
+
+For historical reasons a slightly different file format is used if an output name ending in .vmf is specified.
+
+
+    * repeatFile.txt: Optionally you may want to specify a set of words that you know are highly repetitive in your target files at your read length of interest. You can then tell ELAND to ignore them, which greatly speeds up whole-human-genome alignments. There is no automatic way of generating a repeat file, but with a bit of Perl/shell scripting it is straightforward to extract a list of repeats from the output of a couple of ELAND runs to speed up future runs.
+    
+    
+    * Also in the Eland directory is a basic test harness ELAND_test.pl which can be run to verify correct operation.
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jul 30 13:39:42 EDT 2008] SQUASHING REFERENCE GENOMES FOR INPUT INTO ELAND>
+
+
+
+
+    1. HERPES
+    
+        LOCATE GENOME FILE:
+        
+        ll /home/syoung/base/pipeline/herpes
+
+        total 4.5M
+            -rw-r--r-- 1 syoung users 4.3M Jun 26 20:26 Herpesvirus_3.60kb.reads.fa
+            -rw-r--r-- 1 syoung users  44K Jul 18 01:25 Herpesvirus_3.60kb.reads.fa.contigs.fasta
+            -rw-r--r-- 1 syoung users  62K Jun 26 20:40 Herpesvirus_3.60kb.reference.fa
+    
+        SQUASH GENOME FILE:
+
+        cd /home/syoung/base/pipeline/herpes/data
+        /usr/local/GAPipeline-0.3.0/Eland/squashGenome /home/syoung/base/pipeline/herpes Herpesvirus_3.60kb.reference.fa
+
+
+        NB: TWO VERSIONS OF squashGenome
+        
+        locate squashGenome
+            /usr/local/GAPipeline-0.3.0/Eland/squashGenome
+            /usr/local/SolexaPipeline-0.2.2.6-001/Eland/squashGenome
+    
+        USAGE:
+
+            Pipeline/Eland/squashGenome path/myGenome fastAFile1 [fastAFile2 ... ]
+
+
+        NOTES:
+        
+            Each read in your query set of reads must be of the same length. These reads are aligned to a target set of large DNA sequences. These sequences must be in Fasta format with one entry per file. An example:
+            
+            >X dna:chromosome chromosome:NCBI36:X:1:154913754:1
+            CTAACCCTAACCCTAACCCTAACCCTAACCCTAACCCTCTGAAAGTGGACCTATCAGCAG
+            GATGTGGGTGGGAGCAGATTAGAGAATAAAAGCAGACTGCCTGAGCCAGCAGTGGCAACC
+            CAATGGGGTCCCTTTCCATACTGTGGAAGCTTCGTTCTTTCACTCTTTGCAATAAATCTT
+            
+            They must first be "squashed" into the 2-bits-per-base format that ELAND reads. This is done by
+            
+               1. making a folder for the squashed files
+            
+                  mkdir path/myGenome
+            
+               2. going to where the files are and doing
+            
+                  Pipeline/Eland/squashGenome path/myGenome fastAFile1 [fastAFile2 ... ]
+            
+            At the end of this procedure, your directory path/myGenome will look similar to this:
+            
+            > ls path/myGenome
+            fastAFile1.fa.2bpb
+            fastAFile1.fa.vld
+            
+            For speed you may want to make room for the squashed files on your machine's local hard drive rather than keeping them on an external analysis drive. As an example, the squashed files for the 3Gbase human genome will take up 750Mbytes of space (750 Mbytes x 4 bases per byte = 3 Gbases).
+        
+        
+    2. E. coli
+    
+        cd /home/syoung/base/pipeline/ecoli/data
+        /usr/local/GAPipeline-0.3.0/Eland/squashGenome /home/syoung/base/pipeline/ecoli/data ecoli-genome.fasta
+
+            User: 0s System: 0s Actual: 5e-06s Efficiency: 0%
+            Full file path: ecoli-genome.fasta
+            Extracted file name:ecoli-genome.fasta
+            /home/syoung/base/pipeline/ecoli/data/ecoli-genome.fasta.2bpb /home/syoung/base/pipeline/ecoli/data/ecoli-genome.fasta.vld
+            squash: opened file ecoli-genome.fasta of size 4706025 bytes.
+            finished file ecoli-genome.fasta
+            4639675 bases
+            4639675 valid bases (100%)
+            1 valid regions
+            User: 0.039994s System: 0.008999s Actual: 0.059997s Efficiency: 81.6591%
+    
+    
+    
+        
+</entry>
+
+
+
+<entry [Wed Jul 30 13:26:34 EDT 2008] Jeff Engelking ASSEMBLY OF SINGLE HUMAN LANE FROM Run 1>
+
+
+
+ftp://ftpdirect.dnastar.com/FTP/Tech_Support/Customer_Uploads/Hulme/
+
+    
+
+</entry>
+
+
+
+<entry [Tue Jul 29 19:04:01 EDT 2008] TIMED RUNS USING phiX DATA>
+
+
+
+
+PREPARE DATA
+============
+
+( Notes-apps-goat.txt, Tue Jul 29 13:42:25 EDT 2008)
+
+1. DO IMAGE INTENSITY FILES ONLY (NO GERALD CONFIG FILE) FOR alta-cyclic TEST
+
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+    /usr/local/Pipeline/Goat/goat_pipeline.py Images --tiles=s_4 --make
+
+2. RUN BUSTARD TO DO BASE CALLS
+
+    XXXX
+
+3. SQUASH phiX GENOME FOR INPUT TO ELAND
+
+
+
+TEST ASSEMBLERS
+===============
+
+
+
+1A. ELAND (cDNA BACKBONE)
+
+
+FAILED RUN (RERAN BELOW)
+
+./eland.pl -d /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung -p "--tiles=s_4" -c "/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt" 
+
+    bustard: /usr/local/Pipeline/Goat/bustard.py
+    Firecrest only: C1-36_Firecrest1.9.2_29-07-2008_syoung
+    Data directory: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+    PWD:
+    /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+    Inputting sequences...
+    /usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_29-07-2008_syoung --tiles=s_4 --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt --make &> makefile_log.txt
+    PWD:
+    /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung
+    Assembling sequences...
+    make recursive -j8 &> make_log.txt
+    
+    Run time: 00:28:26
+    Completed ./eland.pl
+    7:36PM, 29 July 2008
+    ****************************************
+
+    emacs makefile_log.txt
+    
+        ...
+        Found directory /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.2
+        Found 1 reads.
+        Read 1: length 36.
+        Error: Lane 1: Reference directory /store/home/jhoffman/human_cDNA not found.
+        Removing temporary file /tmp/tmp-GERALD-511-27230.txt
+        Error: ../Gerald/GERALD.pl (/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt) returned error code 2
+        Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+        Error: Failed to process Gerald configuration.
+        Warning: Failed to write to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/error.txt.
+
+
+    CHANGE LOCATION OF reference directory IN CONFIG FILE:
+    
+    emacs /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang3.txt
+    
+    FROM:
+    
+    >>>    
+        ELAND_GENOME /store/home/jhoffman/human_cDNA
+        
+        ANALYSIS eland_extended
+        
+        USE_BASES nY35
+        
+        GENOME_DIR /store/home/jhoffman
+    <<< 
+
+    TO:
+    
+    >>>    
+        ELAND_GENOME /store/home/syoung/base/pipeline/human.cDNA
+        
+        ANALYSIS eland_extended
+        
+        USE_BASES nY35
+        
+        GENOME_DIR /store/home/jhoffman
+    <<< 
+
+
+./eland.pl -d /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung -p "--tiles=s_4" -c "/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang3.txt" 
+
+    emacs makefile_log.txt
+
+        Successfully created /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/Makefile
+        Copying config file /tmp/tmp-GERALD-511-8099.txt to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/config.txt
+        Dumping config parameters into /tmp/tmp-GERALD-511-8099.txt to /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/config.xml
+        Running 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/Makefile
+        want to make /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/Makefile
+        make: Nothing to be done for `self_test'.
+        Run 'make self_test' on /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung.3/GERALD_29-07-2008_syoung/Makefile completed with no problems
+        Task complete, exiting
+        Removing temporary file /tmp/tmp-GERALD-511-8099.txt
+    
+
+    ...
+    /usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_29-07-2008_syoung --tiles=s_4 --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang3.txt --make &> makefile_log.txt
+    PWD:
+    /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung
+    Assembling sequences...
+    make recursive -j8 &> make_log.txt
+    
+    Run time: 01:19:17
+    Completed ./eland.pl
+    0:39AM, 30 July 2008
+    ****************************************
+
+
+
+1B. ELAND (WHOLE GENOME BACKBONE)
+
+CONVERT THE WHOLE GENOME FILE FOR ELAND INPUT:
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jul 29 18:02:21 EDT 2008] DOWNLOADED PCAP>
+
+
+
+PCAP is for large-scale assembly of genomic sequences with quality values and with or without forward-reverse read pairs.
+
+http://seq.cs.iastate.edu/pcapdownload.html
+
+
+
++++</entry>
+
+
+
+<entry [Wed Jul 23 18:12:28 EDT 2008] PROCESSED 29,000 GENE HUMAN BACKBONE TO GIVE UNIQUE FASTA HEADERS FOR INPUT INTO mira USING uniquefasta.pl>
+
+
+
+./uniquefasta.pl -i /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta -o /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.unique
+
+    26000
+    27000
+    28000
+    29000
+    Output file printed:
+    
+    /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.unique
+    
+    
+    Run time: 00:00:01
+    Completed ./uniquefasta.pl
+    6:09PM, 23 July 2008
+    ****************************************
+
+SAVE ORIGINAL AS human1_sequence_backbone_in.fasta.original AND UNIQUE FASTA FILE TO human1_sequence_backbone_in.fasta IN human1-mira/data:
+
+mv /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.original
+mv /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.unique /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta
+
+
+
++++</entry>
+
+
+
+<entry [Mon Jul 21 21:19:53 EDT 2008] RUN SSAHA2 ON velvet (SINGLE-LANE) HUMAN OUTPUT>
+
+
+
+1. BUILD HASH FILE
+
+mkdir -p /home/syoung/base/pipeline/human1-velvet/ssaha.whole-human    
+cd /home/syoung/base/pipeline/human1-velvet/ssaha.whole-human
+cp /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa ./
+
+/store/home/syoung/base/apps/ssaha2/ssaha2Build -save contigs contigs.fa
+
+ll
+    -rw-r--r-- 1 syoung users  34K Jul 21 22:35 contigs.base
+    -rw-r--r-- 1 syoung users  28K Jul 21 22:35 contigs.body
+    -rw-r--r-- 1 syoung users 128M Jul 21 22:35 contigs.head
+    -rw-r--r-- 1 syoung users  17K Jul 21 22:35 contigs.name
+    -rw-r--r-- 1 syoung users 4.2K Jul 21 22:35 contigs.size
+
+2. DO ALIGNMENT INTO GFF FORMAT
+
+/store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa /home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta 
+
+    RAN ON MONDAY, STILL WAITING ON THURSDAY FOR IT TO END...
+
+
+    Max. sequence length: 121
+    ##gff-version 2
+    ##source-version 2.0.0
+    ##date 08/07/21
+    gff: query      SSAHA2  similarity      1       121     91      +       .       Subject "subject" 1 121;      Align 1 1 57;    Align 58 59 2;  Align 60 62 34; Align 96 96 26;
+
+
+
+
+++++++</entry>
+
+
+
+<entry [Mon Jul 21 20:03:46 EDT 2008] nucmer RUNS OF WHOLE GENOME BACKBONE AGAINST human1 DATA (LANE 3 ONLY)>
+
+
+
+APPS: velvet            #### mira, eland, vcake, phagealign, genomics_workbench, nextgene
+DATA: human1 (LANE 3)
+BACKBONE: none
+HOST: solexa01
+
+
+1. VELVET
+
+    nucmer (NUCleotide MUMmer) a pipeline many vs. many alignments (e.g., comparing two finished sequences to one another):
+    
+    It is a three step process:
+    
+        1. maximal exact matching (It begins by using mummer to find all of the maximal unique matches of a given length between the two input sequences)
+    
+        2. match clustering (individual matches are clustered into closely grouped sets with mgaps clustering routine which allows for rearrangements, duplica
+    tions and inversions; *** as a consequence, nucmer is best suited for large-scale global alignments ***)
+    
+        3. alignment extension (the non-exact sequence between matches is aligned via a modified Smith-Waterman algorithm, and the clusters themselves are extended outwards in order to increase the overall coverage of the alignments)
+    
+    
+
+    nucmer uses mummer for its maximal exact matching. Mummer's memory usage is dependent on the size of the reference file.
+    So its best to make the smaller of the input files the reference to assure the program does not exhaust your computer's memory resources
+
+        USAGE: nucmer  [options]  <Reference>  <Query>
+
+    mkdir -p /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human    
+    cd /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+    /store/home/syoung/base/apps/mummer/nucmer /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta 
+
+        1: PREPARING DATA
+        2,3: RUNNING mummer AND CREATING CLUSTERS
+        # reading input file "out.ntref" of length 83350
+        # construct suffix tree for sequence of length 83350
+        # (maximum input length is 536870908)
+        # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/mummer out.ntref 0.02
+        # reading input file "/home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta" of length 3080419503
+        # matching query-file "/home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta"
+        # against subject-file "out.ntref"
+        # COMPLETETIME /store/home/syoung/base/apps/mummer/mummer out.ntref 1582.04
+        # SPACE /store/home/syoung/base/apps/mummer/mummer out.ntref 2996.56
+        4: FINISHING DATA
+
+
+    ll
+        -rw-r--r-- 1 syoung users 1554282 Jul 21 19:49 out.cluster
+        -rw-r--r-- 1 syoung users  562265 Jul 21 19:49 out.delta
+
+
+
+    PROBLEM:
+    
+    ali2gff ONLY TAKES MUMMER OUTPUT (AND EVEN THAT HAS TO BE MASSAGED - BETTER TO REWRITE - SEE mum2gff.pl )
+        
+        NAME
+            ./ali2gff 
+        
+        USAGE
+            ./ali2gff [-r] [-t <.|0|1|2>] [-x <name>] [-y <name>] [-H] [-f] [-h] <MUMmer_output_file>
+        
+        DESCRIPTION
+            Module to translate a MUMmer output files into gff formatted output.
+        
+        OPTIONS
+        
+        -r               interchange the order of sequences (sequence 1 on y-axis, sequence 2 on x-axis)
+        -t <.|0|1|2>     put label 'frame' in gff output
+        -x <name>        specify the species name for species 1 (default: Seq1)
+        -y <name>        specify the species name for species 2 (default: Seq2)
+        -i               ignore full sequence identities
+        -f               write output to file
+        -h               print this help text
+
+    cd /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human
+
+    /home/syoung/base/apps/gff2aplot/src/ali2gff/ali2gff -f out.cluster 
+    File out.cluster is not in proper format!
+
+    DIAGNOSIS:
+    
+        ONLY TAKES MUMMER .align FILES AS INPUT AND WAS MADE IN 2005 FOR EARLIER MUMMER OUTPUT FORMAT - FAILS TO PARSE CURRENT MUMMER OUTPUT. TRIED USING SSAHA2 BUT FAILS ON QUERY (CHROMOSOME) SEQUENCES ABOVE 100 LINES IN LENGTH - SEE ABOVE.
+        
+
+    SOLUTION:    
+
+    USE show-coords TO GET COORDINATES FROM DELTA FILE OUTPUT OF nucmer
+            
+            
+        USAGE: /store/home/syoung/base/apps/mummer/show-coords  [options]  <deltafile>
+        
+        -b          Merges overlapping alignments regardless of match dir
+                    or frame and does not display any idenitity information.
+        -B          Switch output to btab format
+        -c          Include percent coverage information in the output
+        -d          Display the alignment direction in the additional
+                    FRM columns (default for promer)
+        -g          Deprecated option. Please use 'delta-filter' instead
+        -h          Display help information
+        -H          Do not print the output header
+        -I float    Set minimum percent identity to display
+        -k          Knockout (do not display) alignments that overlap
+                    another alignment in a different frame by more than 50%
+                    of their length, AND have a smaller percent similarity
+                    or are less than 75% of the size of the other alignment
+                    (promer only)
+        -l          Include the sequence length information in the output
+        -L long     Set minimum alignment length to display
+        -o          Annotate maximal alignments between two sequences, i.e.
+                    overlaps between reference and query sequences
+        -q          Sort output lines by query IDs and coordinates
+        -r          Sort output lines by reference IDs and coordinates
+        -T          Switch output to tab-delimited format
+        
+          Input is the .delta output of either the "nucmer" or the
+        "promer" program passed on the command line.
+          Output is to stdout, and consists of a list of coordinates,
+        percent identity, and other useful information regarding the
+        alignment data contained in the .delta file used as input.
+          NOTE: No sorting is done by default, therefore the alignments
+        will be ordered as found in the <deltafile> input.
+
+
+    FIRST RUN DELTA FILTER TO GET A one-to-one local mapping of reference to query sequences:
+
+    /store/home/syoung/base/apps/mummer/delta-filter -q -r out.delta > delta.filter
+
+    
+    cd /home/syoung/base/pipeline/human1-velvet/nucmer.whole-human    
+    /store/home/syoung/base/apps/mummer/show-coords -c delta.filter > delta.filter.coords
+    
+    emacs delta.filter.coords
+    /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta
+    NUCMER
+    
+        [S1]     [E1]  |     [S2]     [E2]  |  [LEN 1]  [LEN 2]  |  [% IDY]  |  [COV R]  [COV Q]  | [TAGS]
+    ==========================================================================================================
+           1       93  |   557153   557245  |       93       93  |   100.00  |   100.00     0.00  | NODE_710_length_63_cov_5.333333 chr1
+           3      148  |   558194   558339  |      146      146  |    97.26  |    98.65     0.00  | NODE_216_length_118_cov_6.974576        chr1
+           1      158  | 12190593 12190750  |      158      158  |   100.00  |   100.00     0.00  | NODE_515_length_128_cov_8.023438        chr1
+           2       97  | 20837878 20837973  |       96       96  |    98.96  |    98.97     0.00  | NODE_385_length_67_cov_6.522388 chr1
+           3      135  | 143306674 143306806  |      133      133  |   100.00  |    98.52     0.00  | NODE_299_length_105_cov_6.533333      chr1
+           1      166  | 22285781 22285946  |      166      166  |   100.00  |    86.91     0.00  | NODE_368_length_161_cov_5.503106        chr1
+           1      144  | 25493519 25493662  |      144      144  |    99.31  |   100.00     0.00  | NODE_499_length_114_cov_6.868421        chr1
+           1      127  | 26908399 26908525  |      127      127  |   100.00  |   100.00     0.00  | NODE_275_length_97_cov_8.381443 chr1
+           2      156  | 26930254 26930408  |      155      155  |   100.00  |    99.36     0.00  | NODE_349_length_126_cov_7.174603        chr1
+           1      180  | 35078994 35079173  |      180      180  |   100.00  |   100.00     0.00  | NODE_184_length_150_cov_8.506667        chr1
+    ...
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 17 20:31:33 EDT 2008] TIMED RUNS USING ALL human1 DATA (EXCEPT LANE 4)>
+
+
+
+APPS: velvet, mira, eland, vcake, phagealign, genomics_workbench 
+DATA: human1, LANE 3
+BACKBONE: none
+HOST: solexa01
+
+ELAND (WITH BACKBONE)
+
+./eland.pl -d /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung -p "--tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8" -c "/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt"
+
+    bustard: /usr/local/Pipeline/Goat/bustard.py
+    Firecrest only: C1-36_Firecrest1.9.2_15-07-2008_syoung
+    Data directory: /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+    PWD:
+    /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data
+    Inputting sequences...
+    /usr/local/Pipeline/Goat/bustard.py C1-36_Firecrest1.9.2_15-07-2008_syoung --tiles=s_1,s_2,s_3,s_5,s_6,s_7,s_8 --GERALD=/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/jhuang1.txt --make &> makefile_log.txt
+    PWD:
+    /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung
+    Assembling sequences...
+    make recursive -j8 &> make_log.txt
+    
+    Run time: 26:28:23
+    Completed ./eland.pl
+    4:43AM, 19 July 2008
+    ****************************************
+    
+
+DATA PREPARATION FOR OTHER ASSEMBLERS
+=====================================
+
+1. CHECK SEQUENCE FILES:
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung
+
+ls -alh  | grep sequence.txt
+
+    -rw-rw-rw- 1 syoung users 648M Jul 18 18:52 s_1_sequence.txt
+    -rw-rw-rw- 1 syoung users 673M Jul 18 19:07 s_2_sequence.txt
+    -rw-rw-rw- 1 syoung users 685M Jul 18 19:21 s_3_sequence.txt
+    -rw-rw-rw- 1 syoung users 635M Jul 18 21:36 s_5_sequence.txt
+    -rw-rw-rw- 1 syoung users 642M Jul 19 01:15 s_6_sequence.txt
+    -rw-rw-rw- 1 syoung users 653M Jul 19 01:16 s_7_sequence.txt
+    -rw-rw-rw- 1 syoung users 665M Jul 19 02:03 s_8_sequence.txt
+
+
+2. CONCAT SEQUENCE FILES AND COPY TO pipeline
+
+cat *_sequence.txt > s_1,2,3,5,6,7,8_sequence.txt
+mkdir -p /home/syoung/base/pipeline/human2/data
+cp s_1,2,3,5,6,7,8_sequence.txt /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa
+
+
+3. CONCAT HUMAN GENOME FILES AND COPY TO pipeline
+    
+cd /store/home/jhoffman/human_cDNA
+ll
+    -rw-r--r--  1 jhoffman users 1.9M Jun 25 14:04 10_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.6M Jun 25 14:04 11_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.3M Jun 25 14:04 12_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 762K Jun 25 14:04 13_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.5M Jun 25 14:04 14_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.6M Jun 25 14:04 15_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.8M Jun 25 14:04 16_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.7M Jun 25 14:04 17_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 693K Jun 25 14:04 18_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.8M Jun 25 14:04 19_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 4.5M Jun 25 14:04 1_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.2M Jun 25 14:04 20_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 527K Jun 25 14:04 21_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 989K Jun 25 14:04 22_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 3.4M Jun 25 14:04 2_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.5M Jun 25 14:04 3_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.8M Jun 25 14:04 4_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.2M Jun 25 14:04 5_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.3M Jun 25 14:04 6_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 2.2M Jun 25 14:04 7_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.7M Jun 25 14:04 8_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 1.9M Jun 25 14:04 9_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users   33 Jul  7 15:52 cDNA_config.txt
+    -rw-r--r--  1 jhoffman users  45M Jun 25 14:09 chrAll.fa
+    -rw-r--r--  1 jhoffman users  11M Jun 25 14:12 chrAll.fa.2bpb
+    -rw-r--r--  1 jhoffman users 1.2M Jun 25 14:12 chrAll.fa.idx
+    -rw-r--r--  1 jhoffman users 229K Jun 25 14:12 chrAll.fa.vld
+    -rw-r--r--  1 jhoffman users 1.9M Jun 25 14:04 X_refSeq_cDNA.txt
+    -rw-r--r--  1 jhoffman users 144K Jun 25 14:04 Y_refSeq_cDNA.txt
+
+
+CONCAT ALL THE FILES WHILE EXCLUDING THE FIRST LINE ("NC_000001 Homo sapiens chromosome 1, reference assembly, complete sequence", ETC.):
+
+cat 1_refSeq_cDNA.txt  2_refSeq_cDNA.txt  3_refSeq_cDNA.txt  4_refSeq_cDNA.txt  5_refSeq_cDNA.txt  6_refSeq_cDNA.txt  7_refSeq_cDNA.txt  8_refSeq_cDNA.txt  9_refSeq_cDNA.txt  10_refSeq_cDNA.txt  11_refSeq_cDNA.txt  12_refSeq_cDNA.txt  13_refSeq_cDNA.txt  14_refSeq_cDNA.txt  15_refSeq_cDNA.txt  16_refSeq_cDNA.txt  17_refSeq_cDNA.txt  18_refSeq_cDNA.txt  19_refSeq_cDNA.txt  20_refSeq_cDNA.txt  21_refSeq_cDNA.txt  22_refSeq_cDNA.txt  X_refSeq_cDNA.txt  Y_refSeq_cDNA.txt |  grep -v -P "Homo sapiens" > 1-XY_refseq_cDNA.txt
+
+COPY THE BACKBONE TO THE human1 AND human2 DIRECTORIES:
+
+cp 1-XY_refseq_cDNA.txt /home/syoung/base/pipeline/human1/data/human1_sequence_backbone_in.solexa.fasta
+cp 1-XY_refseq_cDNA.txt /home/syoung/base/pipeline/human2/data/human2_sequence_backbone_in.solexa.fasta
+
+cd /home/syoung/base/pipeline/human2/data
+ll
+    total 11G
+    -rw-r--r-- 1 syoung users  45M Jul 21 19:44 human2_sequence_backbone_in.solexa.fasta
+    -rw-r--r-- 1 syoung users 4.5G Jul 19 16:07 human2_sequence_in.solexa
+    -rw-rw-rw- 1 syoung users 2.3G Jul 19 17:09 human2_sequence_in.solexa.fasta
+    -rw-rw-rw- 1 syoung users 4.2G Jul 19 17:09 human2_sequence_in.solexa.fasta.qual
+
+
+4. CONVERT ELAND SEQUENCE FILE TO .fasta AND .qual FILE
+
+/home/syoung/base/bin/nextgen/solexa2numericfasta.pl -i /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa
+
+    ...
+    31938000
+    31939000
+    
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta
+    /home/syoung/base/pipeline/human2/data/human2_sequence_in.solexa.fasta.qual
+
+    Run time: 00:52:44
+    Completed /home/syoung/base/bin/nextgen/solexa2numericfasta.pl
+    5:09PM, 19 July 2008
+    ****************************************
+
+
+5. CREATE PIPELINE DIRECTORIES FOR DIFFERENT ASSEMBLERS AND LINK INPUT FILES
+
+cd /home/syoung/base/pipeline
+mkdir -p human2-vcake/data
+mkdir -p human2-velvet/data
+mkdir -p human2-euler/data
+cp human2/data/human2_sequence_in.solexa.fasta human2-vcake/data/human2_sequence_in.solexa.fasta
+cp human2/data/human2_sequence_in.solexa.fasta human2-velvet/data/human2_sequence_in.solexa.fasta
+cp human2/data/human2_sequence_in.solexa.fasta human2-euler/data/human2_sequence_in.solexa.fasta
+
+cp human2/data/human2_sequence_in.solexa.fasta.qual human2-vcake/data/human2_sequence_in.solexa.fasta.qual
+ln -s human2/data/human2_sequence_in.solexa.fasta.qual human2-velvet/data/human2_sequence_in.solexa.fasta.qual
+cp human2/data/human2_sequence_in.solexa.fasta.qual human2-euler/data/human2_sequence_in.solexa.fasta.qual
+
+cp human2/data/human2_sequence_backbone_in.solexa.fasta human2-vcake/data/human2_sequence_backbone_in.solexa.fasta
+cp human2/data/human2_sequence_backbone_in.solexa.fasta human2-euler/data/human2_sequence_backbone_in.solexa.fasta
+ls -alh human2-vcake/data
+
+
+TEST ASSEMBLERS
+===============
+
+1. VCAKE
+
+./vcake.pl -r /home/syoung/base/pipeline/human2-vcake/data/human2_sequence_in.solexa.fasta -i /home/syoung/base/pipeline/human2-vcake/data/human2_sequence_in.solexa.fasta
+
+
+FAILED
+
+
+
+2. VELVET
+
+cd /home/syoung/base/pipeline/human2-velvet/data
+ll -h 
+    -rw-r--r-- 1 syoung users 2.3G Jul 24 18:51 human2_sequence_in.solexa.fasta
+
+cd /home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/human2-velvet/data/human2_sequence_in.solexa.fasta -l 21 
+
+
+    ...
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/human2_sequence_in.solexa.fasta &> /home/syoung/base/pipeline/human2-velvet/assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 &> /home/syoung/base/pipeline/human2-velvet/assembly/velvetg_log.txt
+    
+    Run time: 00:52:01
+    Completed ./velvet.pl
+    7:46PM, 24 July 2008
+    ****************************************
+    
+
+
+    cd /home/syoung/base/pipeline/human2-velvet/data
+    ll
+    lrwxrwxrwx 1 syoung users   43 Jul 24 18:42 human2_sequence_in.solexa.fasta -> human2/data/human2_sequence_in.solexa.fasta
+    lrwxrwxrwx 1 syoung users   48 Jul 24 18:42 human2_sequence_in.solexa.fasta.qual -> human2/data/human2_sequence_in.solexa.fasta.qual
+    
+    cd /home/syoung/base/pipeline/human2-velvet/assembly
+
+    ll 
+    -rw-rw-rw- 1 syoung users  13M Jul 24 19:45 contigs.fa
+    -rw-rw-rw- 1 syoung users  62M Jul 24 19:45 Graph
+    -rw-rw-rw- 1 syoung users  25M Jul 24 19:45 LastGraph
+    -rw-rw-rw- 1 syoung users  200 Jul 24 19:12 Log
+    -rw-rw-rw- 1 syoung users 119M Jul 24 19:31 PreGraph
+    -rw-rw-rw- 1 syoung users 1.9G Jul 24 19:12 Roadmaps
+    -rw-rw-rw- 1 syoung users 2.0G Jul 24 19:02 Sequences
+    -rw-rw-rw- 1 syoung users 5.8M Jul 24 19:45 stats.txt
+    -rw-rw-rw- 1 syoung users  90K Jul 24 19:46 velvetg_log.txt
+    -rw-rw-rw- 1 syoung users  13K Jul 24 19:12 velveth_log.txt
+
+
+    head contigs.fa
+    
+        >NODE_1_length_116_cov_17.793104
+        ATGGAGCTGAAAAATTCCTACCACCCAGTGACATTTGTAGACATCATAACCTCATAGCAC
+        AACACAATATCTTTTCTACGTTTGAGTATGTTTTGATACACAAATACATAACATTATGTT
+        ACAACTGCCTACAGTA
+        >NODE_2_length_219_cov_9.059361
+        TTTTTTGTTTTTTTGATGCGTAAGAATTTTATTTAACAATGTAACAAACTTTGCAAAGTT
+        CATTAAGCATTGTGAGACGTGTGGCTTTTATTTAAAGAAGGTTGACTAAATCATAGACAT
+        TTAAAAGATTTTGAAATATCTCTTTTATTATGAGAAATTTTAAACATATACAAAAGTAGT
+        GAGAATAGTATAAGAAACCCTCATGCACCCAGACTTAACCTTAACAATTCTCAACATTT
+        >NODE_3_length_431_cov_13.733179
+        ...
+
+    records contigs.fa  ">"
+    
+    Records: 49638
+    
+
+3. MIRA
+
+cd /home/syoung/base/pipeline/human2-mira/data/human2_sequence_in.solexa.fasta
+ls
+human2_sequence_in.fasta
+human.genome-sequence_backbone_in.fasta
+
+./mira.pl -i /home/syoung/base/pipeline/human2-mira/data/human2_sequence_in.fasta
+
+    FAILED??
+
+
+
+4. EULER
+
+./euler.pl -d /home/syoung/pipeline/human2-euler/data -i human2_sequence_in.solexa.fasta -o assembly 
+
+
+
+
+5. NEXTGENE
+
+Selected 'Other' assembly to perform reference assembly USED MULTI-FASTA HUMAN GENOME FILE, default parameters.
+
+FROZE AND DID NOT RESPOND.
+
+
+6. GENOMICS WORKBENCH (GUI VERSION)
+
+Selected 'Reference assembly', loaded human chr1.fa as it would not recognize the human1_sequence_backbone_in.fasta file.
+
+FROZE AND DID NOT RESPOND.
+
+
+
+
+7. SEQMAP
+8. SOAP
+9. NOVO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 17 20:31:33 EDT 2008] TIMED RUNS USING ONE LANE OF human1 DATA (LANE 3)>
+
+
+
+APPS: velvet, mira, eland, vcake, phagealign, genomics_workbench, nextgene
+DATA: human1 (LANE 3)
+BACKBONE: none
+HOST: solexa01
+
+PREPARE DATA
+============
+
+1. COPY LANE 3 HUMAN SEQUENCE FILE TO PIPELINE
+
+cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_15-07-2008_syoung/Bustard1.9.2_18-07-2008_syoung/GERALD_18-07-2008_syoung
+cp s_3_sequence.txt /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa
+
+
+2. MAKE .fasta AND .fasta.qual
+
+cd /home/syoung/base/bin/nextgen
+/home/syoung/base/bin/nextgen/solexa2numericfasta.pl -i /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa
+
+    ...
+    4755000
+    4756000
+
+    /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta
+    /home/syoung/base/pipeline/human1/data/human1_sequence_in.solexa.fasta.qual
+    
+    Run time: 00:08:18
+    Completed /home/syoung/base/bin/nextgen/solexa2numericfasta.pl
+    5:45PM, 19 July 2008
+    ****************************************
+
+2. MAKE DIRECTORIES AND LINK .FASTA FILES
+
+cd /home/syoung/base/pipeline
+mkdir -p human1-vcake/data
+mkdir -p human1-velvet/data
+mkdir -p human1-euler/data
+mkdir -p human1-mira/data
+
+vcake
+cp human1/data/human1_sequence_in.solexa.fasta human1-vcake/data/human1_sequence_in.solexa.fasta
+cp human1/data/human1_sequence_in.solexa.fasta.qual human1-vcake/data/human1_sequence_in.solexa.fasta.qual
+
+velvet
+cp human1/data/human1_sequence_in.solexa.fasta human1-velvet/data/human1_sequence_in.solexa.fasta
+cp human1/data/human1_sequence_in.solexa.fasta.qual human1-velvet/data/human1_sequence_in.solexa.fasta.qual
+
+euler
+cp human1/data/human1_sequence_in.solexa.fasta human1-euler/data/human1_sequence_in.solexa.fasta
+cp human1/data/human1_sequence_in.solexa.fasta.qual human1-euler/data/human1_sequence_in.solexa.fasta.qual
+
+mira
+cp human1/data/human1_sequence_in.solexa.fasta human1-mira/data/human1_sequence_in.solexa.fasta
+cp human1/data/human1_sequence_in.solexa.fasta.qual human1-mira/data/human1_sequence_in.solexa.fasta.qual
+
+
+3. ADD THE TRUNCATED BACKBONE
+
+cd /home/syoung/base/pipeline
+cp human1/data/human1_sequence_backbone_in.solexa.fasta human1-vcake/data/human1_sequence_backbone_in.solexa.fasta
+cp human1/data/human1_sequence_backbone_in.solexa.fasta human1-velvet/data/human1_sequence_backbone_in.solexa.fasta
+cp human1/data/human1_sequence_backbone_in.solexa.fasta human1-euler/data/human1_sequence_backbone_in.solexa.fasta
+
+
+4. DOWNLOAD LATEST VERSION OF HUMAN GENOME FROM UCSC
+
+ftp://ftp.hgc.jp/pub/mirror/ucsc/goldenPath/hg18/chromosomes/
+
+wget ftp://ftp.hgc.jp/pub/mirror/ucsc/goldenPath/hg18/chromosomes/chrY.fa.gz
+
+    NB: THE NCBI VERSION ONLY HAS CONTIGS, DOES NOT HAVE ONE CONTINUOUS CHROMOSOME
+    ftp://ftp.ncbi.nih.gov/genomes/MapView/Homo_sapiens/sequence/BUILD.36.3/initial_release/
+
+
+    UNZIP FILES:
+    gunzip *.gz
+    
+    MERGE INTO SINGLE FILE
+    cat chr1.fa chr2.fa   chr3.fa  chr4.fa  chr5.fa  chr6.fa  chr7.fa  chr8.fa  chr9.fa  chr10.fa  chr11.fa  chr12.fa  chr13.fa  chr14.fa  chr15.fa  chr16.fa  chr17.fa  chr18.fa  chr19.fa  chr20.fa  chr21.fa  chr22.fa  chrX.fa chrY.fa > human.fasta
+
+
+    NCBI Build 36.1 Assembly Details
+    ================================
+    http://genome.ucsc.edu/cgi-bin/hgGateway
+    
+    The NCBI Build 36.1 reference sequence is considered to be "finished", a technical term indicating that the sequence is highly accurate (with fewer than one error per 10,000 bases) and highly contiguous (with the only remaining gaps corresponding to regions whose sequence cannot be reliably resolved with current technology). Future work on the reference sequence will focus on improving accuracy and reducing gaps in the sequence. Statistics for the Build 36.1 assembly can be found on the NCBI Build 36.1 Statistics web page.
+    
+    This assembly contains four alternate haplotype regions:
+    
+        * chr22_h2_hap1 -- an alternate chromosome 22 assembly that contains the CYP2D6 gene (NT_113959.1). CYP2D6 is deleted in the reference assembly.
+        * chr5_h2_hap1 -- a chromosome 5 alternate assembly of the SMN1 gene region (NT_113801.1, NT_113802.1).
+        * chr6_cox_hap1 -- an A1-B8-DR3 alternate haplotype assembly of the chromosome 6 MHC region based on sequence data from the COX library (NT_113891.1).
+        * chr6_qbl_hap2 -- an A26-B18-DR3 alternate haplotype assembly of the chromosome 6 MHC region based on sequence data from the QBL library (NT_113892.1, NT_113893.1, NT_113894.1, NT_113895.1, NT_113896.1, NT_113897.1). 
+    
+    See the Wellcome Trust Sanger Institute MHC Haplotype Project web site for additional information on the chr6 alternate haplotype assemblies.
+    
+    The Y chromosome in this assembly contains two pseudoautosomal regions (PARs) at chrY:1-2709520 and chrY:57443438-57772954. These sequences were taken from the corresponding regions in the X chromosome and are exact duplications of the X chromosome sequences at chrX:1-2709520 and chrX:154584237-154913754, respectively.
+    
+    For further information on NCBI Build 36.1, see the NCBI Build 36.1 release notes.
+    
+    Bulk downloads of the data are available from the UCSC downloads server via ftp or http. We recommend that you use ftp or rsync for downloading large or multiple files.
+    
+    The hg18 annotation tracks were generated by UCSC and collaborators worldwide. See the Credits page for a detailed list of the organizations and individuals who contributed to this release. 
+
+
+5. ADD TO mira
+
+cp human2/data/human2_sequence_backbone_in.solexa.fasta.qual human1-mira/data/human1_sequence_backbone_in.solexa.fasta.qual
+
+
+
+
+
+
+TEST ASSEMBLERS
+===============
+(ON solexa01)
+
+1. VCAKE
+
+./vcake.pl -r /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta -i /home/syoung/base/pipeline/human1-vcake/data/human1_sequence_in.solexa.fasta
+
+RAN Sunday 20th July BUT SEEMS TO HAVE FROZEN AT 100% CPU USAGE... NO OUTPUT OR LOG FILE PRESENT SO PROBABLY STUCK.
+
+CHECKED AGAIN Thursday 24th July BUT NO MOVEMENT.
+
+CONCLUSION: Froze when run with one lane of human data
+
+    cd /home/syoung/base/pipeline/human1-vcake/data/
+    ll
+    total 977M
+    drwxr-xr-x 2 syoung users 4.0K Jul 20 22:17 .
+    drwxr-xr-x 4 syoung users 4.0K Jul 20 21:19 ..
+    -rw-r--r-- 1 syoung users 338M Jul 20 21:12 human1_sequence_in.solexa.fasta
+    -rw-rw-rw- 1 syoung users  16K Jul 24 10:13 human1_sequence_in.solexa.fasta.contigs.fasta
+    -rw-r--r-- 1 syoung users 639M Jul 20 21:14 human1_sequence_in.solexa.fasta.qual
+
+
+
+
+2. VELVET
+
+./velvet.pl -i /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta -l 35 
+
+    Run time: 00:03:11
+    Completed ./velvet.pl
+    10:22PM, 20 July 2008
+    ****************************************
+
+    cd /home/syoung/base/pipeline/human1-velvet/data
+    ll
+    total 977M
+    drwxr-xr-x 2 syoung users 4.0K Jul 20 22:23 .
+    drwxr-xr-x 7 syoung users 4.0K Jul 23 15:00 ..
+    -rw-r--r-- 1 syoung users 338M Jul 20 21:13 human1_sequence_in.solexa.fasta
+    -rw-r--r-- 1 syoung users 639M Jul 20 21:14 human1_sequence_in.solexa.fasta.qual    
+
+    cd /home/syoung/base/pipeline/human1-velvet/assembly
+    ll assembly
+    -rw-rw-rw- 1 syoung users 100K Jul 20 22:22 contigs.fa
+    -rw-rw-rw- 1 syoung users 200K Jul 20 22:22 Graph
+    -rw-rw-rw- 1 syoung users 157K Jul 20 22:22 LastGraph
+    -rw-rw-rw- 1 syoung users  200 Jul 20 22:21 Log
+    -rw-rw-rw- 1 syoung users 1.8M Jul 20 22:21 PreGraph
+screen    -rw-rw-rw- 1 syoung users 133M Jul 20 22:21 Roadmaps
+    -rw-rw-rw- 1 syoung users 294M Jul 20 22:20 Sequences
+    -rw-rw-rw- 1 syoung users  42K Jul 20 22:22 stats.txt
+    -rw-rw-rw- 1 syoung users 7.0K Jul 20 22:22 velvetg_log.txt
+    -rw-r--r-- 1 syoung users 2.1K Jul 20 22:21 velveth_log.txt
+
+    head contigs.fa
+        >NODE_2_length_138_cov_6.565217
+        GTTGAACAAAATCAATACTGAACAACATACCTTTCAGATAAATTAAGGCTTTGGCGAAGA
+        GGTTCTAATTTTTGACATGTCTCTAGGCTGTCAACAGATGTCGAAGGCAATGAGTCTGAT
+        TGCACCTTGTTGGCATCACATAAATTAGCATCGTTTCTAGGTAGGGTC
+        >NODE_7_length_625_cov_183.227203
+        ACGCGGGGACATTTGCTTCTGACACAACTGTGTTCACTAGCAACCTCAAACAGACACCAT
+        GGTGCACCTGACTCCTGAGGAGAAGTCTGCCGTTACTGCCCTGTGGGGCAAGGTGAACGT
+        GGATGAAGTTGGTGGTGAGGCCCTGGGCAGGCTGCTGGTGGTCTACCCTTGGACCCAGAG
+        GTTCTTTGAGTCCTTTGGGGATCTGTCCACTCCTGATGCTGTTATGGGCAACCCTAAGGT
+        GAAGGCTCATGGCAAGAAAGTGCTCGGTGCCTTTAGTGATGGCCTGGCTCACCTGGACAA
+
+
+
+    RAN nucmer TO COMPARE ASSEMBLY WITH BACKBONE (SEE ABOVE)
+    
+
+
+
+
+
+3. MIRA
+
+USED THE TRUNCATED BACKBONE AS RAN OUT OF MEMORY WITH WHOLE-CHROMOSOME 
+
+HAD TO REMOVE DUPLICATION IN NAMES BY NUMBERING:
+
+***********
+
+
+cd /home/syoung/base/pipeline/human1-mira/data
+ll
+human1_sequence_in.fasta
+human1_sequence_backbone_in.fasta
+
+NB: PROCESSED 29,000 GENE HUMAN BACKBONE TO GIVE UNIQUE FASTA HEADERS USING uniquefasta.pl
+
+
+./mira.pl -i /home/syoung/base/pipeline/human1-mira/data/human1_sequence_in.fasta
+
+    Mira: /home/syoung/base/apps/mira/bin/mira
+    Project: /home/syoung/base/pipeline/human1-mira/data/human1_sequence
+    Backbone file: /home/syoung/base/pipeline/human1-mira/data/human1_sequence
+    /home/syoung/base/apps/mira/bin/mira --project=/home/syoung/base/pipeline/human1-mira/data/human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+    sh: line 1: 10691 Aborted                 /home/syoung/base/apps/mira/bin/mira --project=/home/syoung/base/pipeline/human1-mira/data/human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no >&log_assembly.txt
+    
+    Run time: 01:19:03
+    Completed ./mira.pl
+    11:36PM, 23 July 2008
+    ****************************************
+
+
+    BUT NO RESULTS:
+
+    tail -n 100 log_assembly.txt 
+
+        ...    
+        Searching for possible overlaps (only against backbone):
+        Localtime: Wed Jul 23 22:23:56 2008
+        Now running partitioned skimmer with 4 partitions:
+         [0%] ....|.... [10%] ....|.... [20%] ....|.... [30%] ....|.... [40%] ....|.... [50%] ....|.... [60%] ....|.... [70%] ....|.... [80%] ....|.... [90%] ....|.... [100%] 
+        Total megahubs: 0
+        
+        Skim summary:
+                accepted: 269920365
+                possible: 2859489346
+                permbans: 0
+        
+        Hits chosen: 269918012
+        
+        Localtime: Wed Jul 23 23:34:29 2008
+        
+        Counting total skim hits ...
+        Fatal Error: "/home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_log//home/syoung/base/pipeline/human1-mira/data/human1_sequence_int_posmatchf_preassembly.0.lst"
+        : File not found?
+        ->Thrown: uint32 Assembly::countLinesInFile(const string & filename)  
+        ->Caught: main
+        Program aborted.
+        Program aborted.
+        CWD: /store/home/syoung/base/pipeline/human1-mira/data
+        CWD: /store/home/syoung/base/pipeline/human1-mira/data
+        <<<
+
+    
+    ALSO APPARENTLY mira COULDN'T FIND THE QUALITY FILE:
+
+    [syoung@solexa01 human1-mira]$ ll data/human1_sequence_d_*/
+    human1_sequence_d_info:
+    total 16K
+    drwxrwxrwx 2 syoung users 4.0K Jul 23 22:16 .
+    drwxr-xr-x 5 syoung users 4.0K Jul 23 22:16 ..
+    
+    human1_sequence_d_log:
+    total 175M
+    drwxrwxrwx 2 syoung users 4.0K Jul 23 22:23 .
+    drwxr-xr-x 5 syoung users 4.0K Jul 23 22:16 ..
+    -rw-rw-rw- 1 syoung users 175M Jul 23 22:23 miralog.noqualities
+    
+    human1_sequence_d_results:
+    total 16K
+    drwxrwxrwx 2 syoung users 4.0K Jul 23 22:16 .
+    drwxr-xr-x 5 syoung users 4.0K Jul 23 22:16 ..
+    
+    head human1_sequence_d_log/miralog.noqualities
+
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:129:540
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:237:251
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:113:576
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:218:281
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:128:192
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:124:378
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:245:358
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:234:298
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:211:367
+        HWI-EAS185_1_JIA_cDNA_JH:3:1:123:266
+        ...
+
+    cd /home/syoung/base/pipeline/human1-mira/data
+    head human1_sequence_in.solexa.fasta
+        >HWI-EAS185_1_JIA_cDNA_JH:3:1:129:540
+        TGGAGATGGCGACTAGTGGACAACAGAACAATAT
+        >HWI-EAS185_1_JIA_cDNA_JH:3:1:237:251
+        TAACTTGCCTAGATGGATTTGCAGAAAGATTTAT
+        >HWI-EAS185_1_JIA_cDNA_JH:3:1:113:576
+        GGGTACCTCTATAGTGCTAGAGTGCCCTAACGAT
+        >HWI-EAS185_1_JIA_cDNA_JH:3:1:218:281
+        TGCATATATTATTTTTTTAAGGACTTTTCAAAGA
+        >HWI-EAS185_1_JIA_cDNA_JH:3:1:128:192
+        GAGTACAAGTATCATTTCACTTAACACATTCATC
+
+    cd /home/syoung/base/pipeline/human1-mira/data
+    head human1_sequence_in.solexa.fasta.qual
+    >HWI-EAS185_1_JIA_cDNA_JH:3:1:129:540
+    19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 11 19 19 19 19 19 19 19 19 19 19 19 19 14 14 14 14 14
+    >HWI-EAS185_1_JIA_cDNA_JH:3:1:237:251
+    19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 14 14 14 14 14
+    >HWI-EAS185_1_JIA_cDNA_JH:3:1:113:576
+    19 19 19 19 19 19 19 19 19 19 19 19 12 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 14 14 14 14 14
+    >HWI-EAS185_1_JIA_cDNA_JH:3:1:218:281
+    19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 14 14 14 14 14
+    >HWI-EAS185_1_JIA_cDNA_JH:3:1:128:192
+    19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 19 14 14 14 14 14
+
+
+    SOLUTION:
+    
+        1. mv QUALITY FILE TO NON-'solexa' SUFFIX
+    
+            -rw-r--r-- 1 syoung users  45M Jul 21 22:58 #human1_sequence_backbone_in.fasta#
+            -rw-rw-rw- 1 syoung users  45M Jul 23 22:13 human1_sequence_backbone_in.fasta
+            -rw-r--r-- 1 syoung users  45M Jul 21 19:14 human1_sequence_backbone_in.fasta~
+            -rw-r--r-- 1 syoung users  26M Jul 20 23:42 human1_sequence_backbone_in.fasta.26MB
+            -rw-r--r-- 1 syoung users  45M Jul 20 22:30 human1_sequence_backbone_in.fasta.bkp
+            -rw-r--r-- 1 syoung users 241M Jul 21 00:18 human1_sequence_backbone_in.fasta.chr1
+            -rw-r--r-- 1 syoung users  45M Jul 21 19:16 human1_sequence_backbone_in.fasta.HEADINGS
+            lrwxrwxrwx 1 syoung users   69 Jul 21 16:55 human1_sequence_backbone_in.fasta-human.fasta -> /home/syoung/base/pipeline/human.genome/human.genome.ucsc/human.fasta
+            -rw-r--r-- 1 syoung users  45M Jul 21 19:36 human1_sequence_backbone_in.fasta.OK
+            -rw-r--r-- 1 syoung users  45M Jul 21 22:40 human1_sequence_backbone_in.fasta.original
+            drwxrwxrwx 2 syoung users 4.0K Jul 23 22:16 human1_sequence_d_info
+            drwxrwxrwx 2 syoung users 4.0K Jul 23 22:23 human1_sequence_d_log
+            drwxrwxrwx 2 syoung users 4.0K Jul 23 22:16 human1_sequence_d_results
+            -rw-r--r-- 1 syoung users 338M Jul 20 22:28 human1_sequence_in.solexa.fasta
+            -rw-r--r-- 1 syoung users 639M Jul 20 22:28 human1_sequence_in.solexa.fasta.qual
+            lrwxrwxrwx 1 syoung users   42 Jul 21 02:02 human.fasta -> human.genome/human.genome.ucsc/human.fasta
+            -rw-rw-rw- 1 syoung users 1.2M Jul 23 23:35 log_assembly.txt
+
+            [syoung@solexa01 data]$ mv human1_sequence_in.solexa.fasta.qual human1_sequence_in.fasta.qual
+            
+            ... AND TIDY UP:
+            
+                ll
+                drwxr-xr-x 2 syoung users 4.0K Jul 25 12:58 archive
+                -rw-rw-rw- 1 syoung users  45M Jul 23 22:13 human1_sequence_backbone_in.fasta
+                -rw-r--r-- 1 syoung users 338M Jul 20 22:28 human1_sequence_in.fasta
+                -rw-r--r-- 1 syoung users 639M Jul 20 22:28 human1_sequence_in.fasta.qual
+
+
+
+
+
+
+    
+        2. RETRY FROM data DIRECTORY
+        
+            NB: PROCESSED 29,000 GENE HUMAN BACKBONE TO GIVE UNIQUE FASTA HEADERS USING uniquefasta.pl
+        
+        cd /home/syoung/base/bin/nextgen
+        ./mira.pl -i human1_sequence_in.solexa.fasta -d /home/syoung/base/pipeline/human1-mira/data
+
+
+        cd /home/syoung/base/pipeline/human1-mira/data
+        tail log_assembly.txt
+    
+
+            Fatal Error: "human1_sequence_in.solexa.fasta"
+            : File not found.
+            ->Thrown: void ReadPool::loadDataFromFASTA(const string & filename, const string & qualfilename, const bool generatefilenames, const uint8 seqtype)  
+            ->Caught: Assembly::loadFASTA(const string & fastafile, const string & fastaqualfile)  
+            Program aborted.
+            Program aborted.
+
+
+        3. RETRY FROM data DIRECTORY WITH .solexa.fasta SUFFIX
+        
+        cd /home/syoung/base/pipeline/human1-mira/data
+        ll
+            -rw-rw-rw- 1 syoung users  45M Jul 23 22:13 human1_sequence_backbone_in.solexa.fasta
+            -rw-r--r-- 1 syoung users 338M Jul 20 22:28 human1_sequence_in.solexa.fasta
+            -rw-r--r-- 1 syoung users 639M Jul 20 22:28 human1_sequence_in.solexa.fasta.qual
+
+
+        cd /home/syoung/base/bin/nextgen
+        ./mira.pl -i human1_sequence_in.solexa.fasta -d /home/syoung/base/pipeline/human1-mira/data
+
+
+    
+
+
+    NB: CANNOT USE WHOLE-CHROMOSOME BACKBONE FILE
+
+        PROBLEM WITH BACKBONE FILE:
+    
+        chopfile human1_sequence_backbone_in.fasta.bkp human1_sequence_backbone_in.fasta 284669
+        
+        LOADS OKAY BUT AN EXTRA LINE
+        
+        chopfile human1_sequence_backbone_in.fasta.bkp human1_sequence_backbone_in.fasta 284670
+        
+        GIVES THIS ERROR:
+        
+        Loading backbone from FASTA file: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta (quality: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.qual)
+        Counting sequences in FASTA file:
+         [0%] ....|....-- 2 Illegal character (_: 5f) in fasta sequence at file byte position 1934721-- 2 Illegal character (0: 30) in fasta sequence at file byte position 1934722-- 2 Il
+        legal character (0: 30) in fasta sequence at file byte position 1934723-- 2 Illegal character (0: 30) in fasta sequence at file byte position 1934724-- 2 Illegal character (0: 30
+        ) in fasta sequence at file byte position 1934725-- 2 Illegal character (1: 31) in fasta sequence at file byte position 1934726-- 2 Illegal character (1: 31) in fasta sequence at
+         file byte position 1934727-- 2 Illegal character (o: 6f) in fasta sequence at file byte position 1934730-- 2 Illegal character (o: 6f) in fasta sequence at file byte position 19
+        34732-- 2 Illegal character (p: 70) in fasta sequence at file byte position 1934736-- 2 Illegal character (i: 69) in fasta sequence at file byte position 1934737-- 2 Illegal char
+        acter (e: 65) in fasta sequence at file byte 
+    
+        THE OFFENDING LINE:
+    
+        [syoung@solexa01 data]$ tail human1_sequence_backbone_in.fasta
+    
+        CCTCATCATCCTCATCACTTTTGGCCCGCTGGCTGTGATGTTCGCCTACGCCATCCAGGTGGGGTCCCTG
+        GCCATCTTCCCACTGGTCTATGCCATCCCCCTCGCCCTCAGCACCGAGGCCATTCTCCATTCCAACAACA
+        CCAGGGACATGGAGTCCGACCGGGAGGCTGGTATCGTCACGCTGGCCATCCTCATCGGCCCCACGTTCTC
+    
+        chopfile human1_sequence_backbone_in.fasta.bkp human1_sequence_backbone_in.fasta 284669
+        OUTPUTFILE human1_sequence_backbone_in.fasta CREATED (284669 LINES)
+    
+        [syoung@solexa01 data]$ tail human1_sequence_backbone_in.fasta
+        
+        CCTCATCATCCTCATCACTTTTGGCCCGCTGGCTGTGATGTTCGCCTACGCCATCCAGGTGGGGTCCCTG
+        GCCATCTTCCCACTGGTCTATGCCATCCCCCTCGCCCTCAGCACCGAGGCCATTCTCCATTCCAACAACA
+        
+        WHICH LOADS OKAY. BUT THEN SUDDENLY STARTED GIVING THE SAME ERROR...
+        
+        PROBABLY TOO MANY FILES OPEN BY ZOMBIES. KILLED UNNECCESSARY PROCESSES.
+
+
+
+        MANUALLY RERAN WITH WHOLE GENOME AND RAN OUT OF MEMORY:
+
+        [syoung@solexa01 nextgen]$ /home/syoung/base/apps/mira/bin/mira --project=/home/syoung/base/pipeline/human1-mira/data/human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no
+
+                    ACE             : /home/syoung/base/pipeline/human1-mira/data/human1_sequence_out.ace
+                HTML            : /home/syoung/base/pipeline/human1-mira/data/human1_sequence_out.html
+                Simple text     : /home/syoung/base/pipeline/human1-mira/data/human1_sequence_out.txt
+                        TCS overview    : /home/syoung/base/pipeline/human1-mira/data/human1_sequence_out.tcs
+            ------------------------------------------------------------------------------
+            Deleting old directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_log ... done.
+            Creating directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_log ... done.
+            Deleting old directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_results ... done.
+            Creating directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_results ... done.
+            Deleting old directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_info ... done.
+            Creating directory /home/syoung/base/pipeline/human1-mira/data/human1_sequence_d_info ... done.
+            Localtime: Mon Jul 21 16:55:44 2008
+            
+            Loading backbone from FASTA file: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta (quality: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta.qual)
+            Counting sequences in FASTA file:
+             [0%] ....|.... [10%] ....|.... [20%] ....|.... [30%] ....|.... [40%] ....|.... [50%] ....|.... [60%] ....|.... [70%] ....|.... [80%] ....|.... [90%] ....|.... [100%]
+            Loading sequence data from FASTA file /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta:
+            Out of memory detected, exception message is: St9bad_alloc
+            Aborted
+
+
+
+    RERAN mira (STARTED JULY 25TH AND STILL NOT FINISHED ON AUG 7TH)
+
+    Run time: 00:00:00
+    Completed ./mira.pl
+    1:31PM, 25 July 2008
+    ****************************************
+        
+    [syoung@solexa01 nextgen]$         ./mira.pl -i human1_sequence_in.solexa.fasta -d /home/syoung/base/pipeline/human1-mira/data
+    
+        Mira: /home/syoung/base/apps/mira/bin/mira
+        Project: human1_sequence
+        Backbone file: /home/syoung/base/pipeline/human1-mira/data/human1_sequence_backbone_in.fasta
+        /home/syoung/base/apps/mira/bin/mira --project=human1_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+        
+        
+        cd /home/syoung/base/pipeline/human1-mira/data
+        [syoung@solexa01 data]$ tail log_assembly.txt 
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 36 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 35 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 35 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 35 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 36 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 34 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 35 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   4830        1 / 35 / 1
+        [79] aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        RL1
+
+    ... SO STILL RUNNING...
+
+
+4. EULER
+
+./euler.pl -d /home/syoung/pipeline/human1-euler/data -i human1_sequence_in.solexa.fasta -o assembly 
+
+
+
+5. NEXTGENE
+
+Selected 'Other' assembly to perform reference assembly, USED MULTI-FASTA HUMAN GENOME FILE, default parameters.
+
+FROZE AND DID NOT RESPOND.
+
+
+6. GENOMICS WORKBENCH (GUI VERSION)
+
+Selected 'Reference assembly', loaded human chr1.fa as it would not recognize the human1_sequence_backbone_in.fasta file.
+
+FROZE AND DID NOT RESPOND.
+
+
+
+7. SEQMAP
+
+
+8. SOAP
+
+
+9. NOVOCRAFT
+
+
+
+
+
+
+
+Password:
+881G    080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+1.3T    080620_HWI-EAS185_0001_JIA_cDNA_JH
+98G     080624_HWI-EAS185_2082B_0005_PE_training_JH
+95G     080626_HWI-EAS185_0005_PE_training_read2_JH
+853G    201UNAAXX_G006_JIA_080530_HWI-EAS185_0002_JH
+652G    2023BAAXX_W002_080522_HWI-EAS185_0002_AN_JH
+18M     AMOS
+8.0K    error.txt
+106M    GSL
+24K     Instruments
+17M     SGE
+32G     TrainingPhix
+19M     Velvet
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 17 20:31:33 EDT 2008] TIMED RUNS USING E.coli DATA>
+
+
+
+APPS: velvet, mira, eland, vcake, phagealign, genomics_workbench 
+DATA: E. coli
+HOST: solexa01
+
+
+1. VELVET
+
+cd /store/home/syoung/base/bin/nextgen
+./velvet.pl -i /home/syoung/base/pipeline/ecoli-velvet/data/ecoli_in.solexa.fasta -l 21 
+
+    Inputting sequences...
+    /home/syoung/base/apps/velvet/velveth assembly 21 data/ecoli_in.solexa.fasta &> assembly/velveth_log.txt
+    Assembling sequences...
+    /home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5 &> assembly/velvetg_log.txt
+    
+    Run time: 00:06:21
+    Completed ./velvet.pl
+    8:24PM, 17 July 2008
+    ****************************************
+
+VCAKE
+
+
+
+
+EULER
+
+
+
+
+
+NEXTGENE
+
+
+
+
+
+ELAND
+
+
+
+
+GENOMICS WORKBENCH (GUI VERSION)
+HOST: HP LAPTOP 4 GB RAM, Intel Core2 Duo 2.2 GHz
+
+WITH BACKBONE: 20 mins
+
+    Reference Assembly log
+    Time
+    Mon Jul 07 16:55:32 EDT 2008
+    Mon Jul 07 16:55:34 EDT 2008
+    Mon Jul 07 16:56:43 EDT 2008
+    Mon Jul 07 17:00:04 EDT 2008
+    Mon Jul 07 17:03:39 EDT 2008
+    Mon Jul 07 17:04:16 EDT 2008
+    Mon Jul 07 17:04:19 EDT 2008
+    Mon Jul 07 17:07:22 EDT 2008
+    Mon Jul 07 17:11:18 EDT 2008
+    Mon Jul 07 17:14:40 EDT 2008
+    Mon Jul 07 17:14:49 EDT 2008
+
+WITHOUT BACKBONE - DE NOVO: 3 hours 21 mins = 201 mins)
+
+    De Novo Assembly log
+    Fri Jul 18 19:07:29 EDT 2008
+    Fri Jul 18 19:07:29 EDT 2008
+    Fri Jul 18 19:08:49 EDT 2008
+    ...
+    Fri Jul 18 22:19:58 EDT 2008
+    Fri Jul 18 22:19:58 EDT 2008
+    Fri Jul 18 22:28:42 EDT 2008
+
+
+
+

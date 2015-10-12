@@ -1,0 +1,2 @@
+# include remotedesktop
+class { 'remotedesktop': }

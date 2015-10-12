@@ -1,0 +1,144 @@
+﻿Packages/Plugins for the Dojo Toolkit 2.0
+Version 0.1
+September 30, 2010
+Thomas R. Trenka, Ph.D., SitePen, Inc.
+
+
+Assistance from:
+Kris Zyp, SitePen, Inc.
+Dustin Machi, SitePen, Inc.
+James Burke, Mozilla Corp.
+Eugene Lazutkin
+Torrey Rice, SitePen, Inc.
+Abstract
+This draft/proposal is aimed at decoupling small projects (current housed under the dojox. namespace) from any kind of Dojo/Dijit release, and providing a way for developers to easily grab additional functionality “as needed”.  To do this, several items need to be addressed:
+
+
+1. How to define a package/plugin/project
+2. How to discover a package/plugin/project
+3. How to install a package/plugin/project
+4. How to document a package/plugin/project
+5. How to delineate between “sanctioned” packages and “non-sanctioned” ones without violating/treading on the terms of the Dojo Foundation CLA/CCLA
+6. How to allow people to write and submit a package/plugin/project
+7. Requirements for a package/plugin/project
+
+
+Some discussion around this topic has already been made on the dojo-contributors mailing list at gmane.comp.web.dojo.devel/13025 ; this document is a proposal aimed at solving most (if not all) of the issues raised.
+
+
+What is a package?
+A package is a small-ish, self-standing project that has a defined purpose.  Any contributed package must contain the following information:
+
+
+1. A package manifest
+2. Source code (duh ;))
+3. Documentation
+4. Tests, where applicable
+
+
+With the advent and current interest in server-side JS stacks, and the movement towards a common JS library/format (i.e. CommonJS), writing packages with some element of interoperability is desired (although individual packages may be targeted at specific platforms).
+
+
+To ensure some level of interoperability, packages will be defined based on a combination of the CommonJS Package/1.1 specification ( http://wiki.commonjs.org/wiki/Packages/1.1 ) and the format adapted by MooTools for use within the MooTools Forge ( http://mootools.net/forge/ ).
+
+
+Package definitions
+To define a package, the following directory structure should be adopted as a requirement:
+
+
+[package name]/
+        package.json (Package manifest)
+        readme.md (Markdown README document describing the package, including a reference to a small thumbnail representing the package)
+        lib/ (Source code)
+        tests/ (Tests)
+        docs/ (Documentation)
+
+
+In addition, there should be an “entry point” for the source code; current DTK convention uses the name “_base.js”, alternatively we can use the name “main.js”.  This file would function as the entry point for the project itself.
+
+
+Other auxiliary files/directories can be added at the discretion of the package developer.  For example, a /resources directory can be added to house things such as HTML-based templates, CSS files, etc.
+
+
+Any and all packages should be hosted by the GitHub.
+
+
+For information on package.json, please refer to the CommonJS Package specification (link above).  One small modification to the package.json will include a property that will define what format inline documentation is in (i.e. the Dojo Documentation format, JSDoc, etc.).  Another modification proposed is to delineate the loading system the package is intended to be used with (i.e. CommonJS vs. RequireJS).  In the case of a package conforming to the CommonJS specifications, the proposed web tool (as discussed below) will perform the necessary transformations to make said package compatible with the loading system for future versions of the Dojo Toolkit.
+
+
+Tests and documentation
+Each package, aside from the actual consumable source, must include tests and docs.  Tests can take any form deemed applicable; it does not matter if the tests are based on the Dojo Objective Harness, straight up HTML files, or using another test system.  However, it is the responsibility of the package author to tell/show the package consumer how the tests work, and describe any dependencies/requirements the tests may need.  To this end, DTK must ensure that there is a single point-of-entry for DOH tests (i.e. where it is located and how it works) with any and all DTK distributions.  If a package author uses another system (such as JSUnit), clear instructions on how to obtain and install said package must be included.  The Dojo Foundation takes no responsibility for the configuration of testing harnesses other than the Dojo Object Harness.
+
+
+Included documentation takes two forms: inline documentation (i.e. comments within the source code), and external documentation (i.e. something similar to dojotoolkit.org/reference-guide).  The proposal here is to include documentation for the latter as a set of static Markdown-based files, which also includes an entry point (perhaps index.md?).  The choice of Markdown as a markup standard is based primarily on flexibility, the availability of parsers on a multitude of platforms, and the ability to extend it if needed (say, for something like CodeGlass).
+
+
+Discovering packages for use within DTK
+The idea of packages can be intimidating; there must be mutliple ways for a developer to use them.  Current loader systems (including the DTK loader, RequireJS, LAB.js, etc) in general make an assumption of physical path locations mapping to virtual ones in a fairly specific way, and any packages to be consumed by DTK must take this into account.  In general, we cannot rely on a universal use of a specific tool to incorporate a package into a project.
+
+
+To this end, a web-based tool (very similar to the MooTools Forge) is proposed.  This tool would allow for developers to discover available packages, browse package descriptions, download packages (possibly pre-prepared), and submit packages for others to use.  As with other web-based tools that have no access to a developer’s setup, clear instructions on installation, setup and dependencies must be provided by the package author(s).
+
+
+The web-based tool in question must be able to consume the package.json and readme.md files, including resolving any reasonable external references (such as a thumbnail representing the package).  In addition, it must be able to not only provide a developer with a simple zip archive of the package but also provide any kind of transformation needed to convert said package to a format that is consumable by the Dojo Toolkit (i.e. move source files to a place where they can be used by a loading system without having to jump through any kind of esoteric hoops, etc.).
+
+
+Installing a package
+Regardless of the presence of a web-based tool to discover a package, any and all packages must be defined in such a way as to allow a developer to follow a single, consistent process to manually configure a package’s contents for consumption.  For example, a developer might grab the contents of a GitHub repository directly from GitHub; in this use case, performing the steps to configure a package for use within DTK must be simple, somewhat direct and well-documented.
+
+
+This proposal suggests that any and all packages are to be created as siblings of the dojo and dijit directories.  It also suggests that packages created under a specific namespace (such as “dojox”) can be installed without problems under existing physical directories; i.e. if a developer already has a /dojox directory and tries to manually install another package defined under that namespace, that the installation process does not try to destroy anything existing under that namespace.  All operations should be additive, and there should be no restrictions on physical filesystem structures.
+
+
+In the end, consuming a package needs to be as simple/the same as using the current DTK loader with anything within the dojox. namespace.
+
+
+“Sanctioned” vs. “non-sanctioned” packages
+Due to the needs of a number of enterprise companies that distribute versions of the Dojo Toolkit along with their own software, there must be a distinction created between “sanctioned” and “non-sanctioned” packages.  This proposal defines a sanctioned package in the following way:
+
+
+1. Any sanctioned package must be contributed by a package author that has a Contributor License Agreement on file with the Dojo Foundation.
+2. Any sanctioned package must be released under the same license agreements that the Dojo Toolkit itself is released under.
+3. Any sanctioned package must not super-cede an existing package in its entirety without the express approval of the Dojo Foundation.
+
+
+The web-based tool for discovery of packages must not contain any prejudice between sanctioned and non-sanctioned packages; however, marking a package on the web-based tool as sanctioned vs. non-sanctioned is acceptable (i.e. give a potential developer an idea that a package is considered “sanctioned” directly on the description/listing of a package).
+
+
+To this end, a manual review process must be interjected between a package’s submission and the display of said package via the proposed web tool.  In addition, there must be a way of delineating a “sanctioned” package via the package.json manifest that is non-forge-able.  At this time, there are no suggestions other than a checksum included with sanctioned packages, along with a separate list of checksums that can be used to verify the contents of a package.
+
+
+Example distributions
+As a part of this decoupling effort, example packages should be included in future distributions of the Dojo Toolkit.  These examples are yet to be determined, but should be “pre-processed” so that the typical method of consuming them using a loading system is both familiar and consistent.
+
+
+Should the move to DTK 2.0 not include shifting identified projects from the current dojox. home to Core or Dijit (such as dojox.gfx, dojox.charting, dojox.Grid, etc.), then these projects should serve as example packages in future distributions--and they should be done in such a way as to perfectly mimic a transformation provided by the proposed web tool.  To that end, such example packages should also be hosted on GitHub, so that a developer can view the before and after transformations.  Above all, the process should be documented, simple and clear, without causing any additional requirements on a loading/build system.
+
+
+Summary
+This proposal encapsulates a number of ideas:
+
+
+1. A web-based discovery/distribution tool is proposed
+2. A standard definition for package contents is discussed
+3. All current DojoX projects are moved to GitHub as separate projects
+4. All current DojoX projects that are to be included as examples must be fully documented (i.e. no more experimental; either your project is documented with tests or not)
+5. The dojox. namespace continues to exist
+6. Example packages can be distributed with future DTK releases
+7. A manual review process must be performed with each submitted package, to determine whether something is “sanctioned” by the Dojo Foundation
+
+
+Personal note:
+I would propose that, once this document is edited and approved, we move forward with the actions here before the Dojo Toolkit 2.0 release--although I believe the final switch happens at the 2.0 release.  We must provide visibility and community feedback channels before switching something that a large part of the community has become dependent upon (regardless of our warnings about the experimental nature of many projects within DojoX) out from underneath that community-at-large.  For most of the active DojoX project owners, this initially means creating a package.json file and converting any documentation (other than inline documentation) to self-standing Markdown-based files.
+
+
+The problem of entry point for loading systems is still a point of contention, and I look to current loading system owners (I’m looking at you, James ;)) to provide insight into the best solution(s) towards that end.
+
+
+While in the past we (DTK) have been pretty adamant about using our own repositories for storage/distribution, I believe that GitHub has gained sufficient stability to warrant a shift to using it for anything other than the core DTK projects (i.e. Dojo and Dijit).  This should allow us to streamline both our own repositories as well as the bug tracking system.
+
+
+As to the creation of said web-based discovery tool, I do volunteer to help create such a system--as long as I have help =)
+
+
+-- TRT, 8.28.2010

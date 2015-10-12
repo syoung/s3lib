@@ -1,0 +1,466 @@
+Notes-database-funnybase13
+
+</entry>
+
+
+
+<entry [Wed Jul 18 16:09:37 EDT 2007] MSG JEFF RE funnybase13 RESEQUENCED READS PIPELINE>
+
+
+
+MSG: Jeff
+CC: Doug, Margie, Tim
+SJT: funnybase13 RESEQUENCED READS PIPELINE
+
+Hi Jeff,
+
+Here's the instructions on how to blast the resequenced reads (which you'll load 
+into the 'funnybase13' database) against the original reads (in the funnybase11
+database).
+
+Remember you can use the 'rename' utility (just type 'rename' on the command line)
+to rename any reads so that they have the format '162-001-A01.phd.1' (i.e., hyphens
+not underlines). (I haven't managed to duplicate the '162--' renamed file problem
+but if it happens again, just do 'rename ./ s/--/-/' )
+
+I've added the automated blast checking application to the end of the instructions
+(step 8), which I've copied below and attached.
+
+The mapping file must be in tab-separated-value (.tsv) format (i.e., when saving,
+use Format: Text(tab delimited) ):
+
+original_expt	original_plate	original_well	reseq_expt	reseq_plate	reseq_well
+151	1	F10	162	1	A01
+151	1	A09	162	1	B01
+151	1	B04	162	1	C01
+151	1	H03	162	1	D01
+151	1	E11	162	1	E01
+
+I've attached an example of the mapping file.
+
+REM: Excel saves '.tsv' files with the Macintosh 'carriage-return' line ending. 
+You have to convert this to the Unix 'line-feed' line endings so that the application
+can read the lines correctly. Convert the mapping file with the 'mac2unix' utility:
+
+mac2unix </full/path/to/file>
+
+e.g.,
+
+mac2unix /Users/young/FUNNYBASE/dev/funnybase13/funnybase13.tsv
+
+(Windows has both line-endings so it doesn't need to be fixed.)
+
+This is the output format of 'readsblastcheckresults':
+
+experiment      plate   well    identity        mapped_experiment       mapped_plate    mapped_well
+162     001     A01     96      151     001     F10
+162     001     A02     95      151     001     E02
+162     001     A03     97      151     001     B09
+162     001     A04             151     001     E12
+162     001     A06     99      151     002     D09
+162     001     A07     99      151     002     B08
+162     001     A08             151     002     E07
+162     001     A09             151     003     D04
+162     001     A10     88      151     003     C12
+162     001     A11     94      151     003     F04
+162     001     A12     89      151     004     D11
+162     001     B01     98      151     001     A09
+162     001     B02     97      151     001     H12
+162     001     B04     97      151     001     F06
+...
+
+I've attached the output file for plates 1-8.
+
+Cheers,
+
+Stuart.
+
+
+</entry>
+
+
+
+<entry [Wed Jul 18 16:06:35 EDT 2007] DO funnybase13 - SELECTED RESEQUENCES OF funnybase11>
+
+
+
+1. CREATE DIRECTORIES AND COPY .phd FILES TO THE phd_dir
+
+	MOVE TO bin DIRECTORY:
+	
+	cd /Users/young/FUNNYBASE/bin/pipeline4
+	
+	MAKE DIRECTORIES:
+	
+	sudo mkdir -p /Users/young/FUNNYBASE/pipeline/funnybase13/phd_dir
+	sudo mkdir -p /Users/young/FUNNYBASE/pipeline/funnybase13/blast
+	sudo mkdir -p /Users/young/FUNNYBASE/pipeline/funnybase13/collection
+	sudo mkdir -p /Users/young/FUNNYBASE/pipeline/funnybase13/edit_dir
+
+	COPY .PHD FILES FROM ALL PLATES OF EXPERIMENT 162 TO phd_dir DIRECTORY:
+	
+	sudo cp /Users/vanwye/Sequencing_Data/126,130,151-159/162Library/162-*-071107/*.phd.1 /Users/young/FUNNYBASE/pipeline/funnybase13/phd_dir/
+
+
+2. SCREEN READS
+
+	COPY OVER TO /common/pipeline:
+	
+	sudo cp -r /Users/young/FUNNYBASE/pipeline/funnybase13 /common/pipeline/funnybase13
+	
+	RUN SCREEN:
+
+	sudo ./readsarrayvectorscreen.pl -d funnybase13
+	
+		Task file 1:    /common/pipeline/funnybase13/collection/funnybase13.screenreads.taskfile.1
+		Shell script printed:
+		
+		/common/pipeline/funnybase13/collection/readsarrayscreen.funnybase13.sh
+		
+		qsub command: qsub -sync y -t 1-1 /common/pipeline/funnybase13/collection/readsarrayscreen.funnybase13.sh
+		Completed qsub.
+		Job ID: Your job-array 898575.1-1:1 ("readsarrayscreen.funnybase13.sh") has been submitted
+		Job 898575 exited with exit code 0.
+		
+		Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+		
+		Expt: 162
+		TSV file: /common/pipeline/funnybase13/collection/funnybase13.screenreads.out.1.tsv
+		
+		RUN TIME: 00:01:57
+		Completed ./readsarrayvectorscreen.pl
+		4:49PM, 18 July 2007
+		****************************************
+		
+	
+3. LOAD SCREENED READS INTO screenedreads TABLE
+
+	CREATE THE DATABASE:
+	
+./collectiondatabase.pl -d funnybase13
+	
+
+	LOAD SCREENED READS:
+
+sudo ./arrayreadsloadscreenedreads.pl -d funnybase13
+
+
+	USE funnybase13
+	select count(*) from screenedreads;
+	select count(*) from screenedreads where length(screenedsequence) > 75;
+	select count(*) from screenedreads where length(screenedsequence) > 50;
+	select count(*) from screenedreads where length(screenedsequence) > 25;
+	
+	select count(*) from screenedreads;
+	+----------+
+	| count(*) |
+	+----------+
+	|      744 |
+	+----------+
+	1 row in set (0.00 sec)
+	
+	mysql> select count(*) from screenedreads where length(screenedsequence) > 75;
+	+----------+
+	| count(*) |
+	+----------+
+	|      744 |
+	+----------+
+	1 row in set (0.00 sec)
+	
+	mysql> select count(*) from screenedreads where length(screenedsequence) > 50;
+	+----------+
+	| count(*) |
+	+----------+
+	|      744 |
+	+----------+
+	1 row in set (0.01 sec)
+	
+	mysql> select count(*) from screenedreads where length(screenedsequence) > 25;
+	+----------+
+	| count(*) |
+	+----------+
+	|      744 |
+	+----------+
+
+	
+4. FILTER SCREENED READS AND LOAD INTO reads TABLE:
+
+sudo ./reads.pl -d funnybase13
+
+	Database: funnybase13
+	Creating database 'funnybase13' if not exists... done.
+	Creating table 'reads'... done.
+	No. experiments: 1
+	531 
+	Experiment: 531
+	No. reads: 178
+	0
+	10
+	20
+	30
+	40
+	50
+	60
+	70
+	80
+	90
+	100
+	110
+	120
+	130
+	140
+	150
+	160
+	170
+	Output .tsv file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase13/collection/funnybase13.exp531.reads.tsv
+	
+	Deleting from table 'reads'... done.
+	Loading data from experiment '531' into table 'reads'... done.
+	
+	RUN TIME: 00:00:00
+	Completed ./reads.pl
+	10:17PM, 5 July 2007
+	****************************************
+
+	NB: MUST ***USE***
+
+	USE funnybase13;
+
+	select count(*) from reads;
+	select count(*) from reads where length(filteredsequence) > 75;
+	select count(*) from reads where length(filteredsequence) > 50;
+	select count(*) from reads where length(filteredsequence) > 25;
+
+	select count(*) from reads;
+	+----------+
+	| count(*) |
+	+----------+
+	|      744 |
+	+----------+
+
+	select count(*) from reads where length(filteredsequence) > 75;
+	+----------+
+	| count(*) |
+	+----------+
+	|      736 |
+	+----------+
+
+	
+	select count(*) from reads where length(filteredsequence) > 50;
+	+----------+
+	| count(*) |
+	+----------+
+	|      737 |
+	+----------+
+
+	select count(*) from reads where length(filteredsequence) > 25;
+	+----------+
+	| count(*) |
+	+----------+
+	|      739 |
+	+----------+	
+
+
+5. CREATE READS.FASTA FILE:
+
+sudo ./readsfasta.pl -d funnybase13
+
+	Experiment: 162
+	No. reads: 744
+	0
+	100
+	200
+	300
+	400
+	500
+	600
+	700
+	Fasta file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase13/edit_dir/funnybase13.fasta
+	
+	Qual file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase13/edit_dir/funnybase13.fasta.qual
+	
+	
+	RUN TIME: 00:00:00
+	Completed ./readsfasta.pl
+	5:20PM, 18 July 2007
+	****************************************
+	
+	
+6. BLAST funnybase13 READS AGAINST funnybase11 READS
+
+sudo ./readsarrayblast.pl -d funnybase13 -t funnybase11_reads
+
+	Doing BLAST against these databases: funnybase11_reads
+	
+	Wed Jul 18 17:29:07 EDT 2007
+	
+	Doing target database: funnybase11_reads
+	Collection sequences fastafile: /common/data/funnybase13_reads
+	Target type: nucleotide
+	Query type: nucleotide
+	Blast type: blastn
+	BLAST: /common/apps/wublast/blastn
+	++++ format_database()
+	/common/data/funnybase11_reads nucleotide /Users/young/FUNNYBASE/apps/blast/xdformat
+	Printing shellscript '/common/pipeline/funnybase13/blast/funnybase13-funnybase11_reads.sh'... done.
+	
+	
+	Doing ARRAYBLAST of database 'funnybase13' (total sequences 744) against funnybase11_reads (E-value cutoff: 1e-05)
+	qsub command: qsub -sync y -t 1-30 /common/pipeline/funnybase13/blast/funnybase13-funnybase11_reads.sh
+	Completed qsub. Job output:
+	
+	Your job-array 898581.1-30:1 ("funnybase13-funnybase11_reads.sh") has been submitted
+	Job 898581.2 exited with exit code 0.
+	Job 898581.9 exited with exit code 0.
+	Job 898581.23 exited with exit code 0.
+	Job 898581.5 exited with exit code 0.
+	Job 898581.20 exited with exit code 0.
+	Job 898581.19 exited with exit code 0.
+	Job 898581.6 exited with exit code 0.
+	Job 898581.7 exited with exit code 0.
+	Job 898581.3 exited with exit code 0.
+	Job 898581.1 exited with exit code 0.
+	Job 898581.8 exited with exit code 0.
+	Job 898581.10 exited with exit code 0.
+	Job 898581.11 exited with exit code 0.
+	Job 898581.21 exited with exit code 0.
+	Job 898581.4 exited with exit code 0.
+	Job 898581.22 exited with exit code 0.
+	Job 898581.14 exited with exit code 0.
+	Job 898581.16 exited with exit code 0.
+	Job 898581.12 exited with exit code 0.
+	Job 898581.15 exited with exit code 0.
+	Job 898581.30 exited with exit code 0.
+	Job 898581.17 exited with exit code 0.
+	Job 898581.28 exited with exit code 0.
+	Job 898581.25 exited with exit code 0.
+	Job 898581.27 exited with exit code 0.
+	Job 898581.13 exited with exit code 0.
+	Job 898581.26 exited with exit code 0.
+	Job 898581.29 exited with exit code 0.
+	Job 898581.24 exited with exit code 0.
+	Job 898581.18 exited with exit code 0.
+	
+	Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+	
+	Merging output files into single outputfile: /common/pipeline/funnybase13/blast/funnybase13-funnybase11_reads.blast.tsv... done.
+	Output file printed:
+	
+	/common/pipeline/funnybase13/blast/funnybase13-funnybase11_reads.blast.tsv
+	
+	
+	Run time: 00:01:25
+	Completed ./readsarrayblast.pl
+	5:30PM, 18 July 2007
+	****************************************
+
+7. LOAD DATA INTO readsblast TABLE:
+
+sudo ./readsarrayblastloaddata.pl -d funnybase13 -t funnybase11_reads
+
+	Using default conf file: conf/default.conf
+	Creating table 'readsblast' if not exists... done.
+	Directory: /common/pipeline/funnybase13/blast
+	
+	Doing target database: funnybase11_reads
+	TSV file: /common/pipeline/funnybase13/blast/funnybase13-funnybase11_reads.blast.tsv
+	Deleting from readsblast WHERE targetsource='funnybase11_reads'...done.
+	Loading 'funnybase11_reads' hits data into table 'readsblast'...done.
+	
+	Run time: 00:00:03
+	Completed ./readsarrayblastloaddata.pl
+	5:31PM, 18 July 2007
+	****************************************
+
+8. CHECK RESULTS
+
+	sudo ./readsblastcheckresults.pl -d funnybase13 -t funnybase11_reads -f /Users/young/FUNNYBASE/dev/funnybase13/funnybase13.tsv
+	
+	WHICH WILL OUTPUT RESULTS TO THIS FILE:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase13/collection/funnybase13.readsblastcheckresults.funnybase11_reads.tsv
+	
+		Doing matches for reads (total 661)
+		0
+		100
+		200
+		300
+		400
+		500
+		600
+		Output file printed:
+		
+		/Users/young/FUNNYBASE/pipeline/funnybase13/collection/funnybase13.readsblastcheckresults.funnybase11_reads.tsv
+		
+		Completed ./readsblastcheckresults.pl
+
+
+	CHECK BLAST MANUALLY:
+
+	NB: MUST ***USE***
+
+	USE funnybase13;
+
+	SELECT COUNT(*) FROM readsblast;
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=99;
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=95;
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=90;
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=80;
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=70;
+
+	SELECT COUNT(*) FROM readsblast;
+	+----------+
+	| COUNT(*) |
+	+----------+
+	|    40203 |
+	+----------+
+	
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=99;
+	+-----------------------------------------+
+	| count(distinct experiment, plate, well) |
+	+-----------------------------------------+
+	|                                     198 |
+	+-----------------------------------------+
+	1 row in set (0.11 sec)
+	
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=95;
+	+-----------------------------------------+
+	| count(distinct experiment, plate, well) |
+	+-----------------------------------------+
+	|                                     551 |
+	+-----------------------------------------+
+	1 row in set (0.12 sec)
+	
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=90;
+	+-----------------------------------------+
+	| count(distinct experiment, plate, well) |
+	+-----------------------------------------+
+	|                                     622 |
+	+-----------------------------------------+
+	1 row in set (0.12 sec)
+
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=80;
+	+-----------------------------------------+
+	| count(distinct experiment, plate, well) |
+	+-----------------------------------------+
+	|                                     653 |
+	+-----------------------------------------+
+	1 row in set (0.14 sec)
+	
+	select count(distinct experiment, plate, well) from readsblast where hspnumber = 1 and identity>=70;
+	+-----------------------------------------+
+	| count(distinct experiment, plate, well) |
+	+-----------------------------------------+
+	|                                     660 |
+	+-----------------------------------------+
+	
+
+
+
+

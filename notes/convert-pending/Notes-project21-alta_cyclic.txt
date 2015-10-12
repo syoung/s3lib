@@ -1,0 +1,1682 @@
+Notes-project21-alta_cyclic.txt
+
+</entry>
+
+
+
+<entry [Mon Nov 10 00:59:46 EST 2008] 'can't find the value of p1' ERROR in Deconv.pm line 1794 AFTER TWO 81-JOB RUNS>
+
+
+
+END OF out15:
+
+    Parsing file: Cluster/Messages/output-62 for cross validation   found 383 lines in the file
+    parameters found: 0.995 0.9975
+    Values: 5 values, out of possible 5
+    
+    can't find the value of p1
+     at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1794
+            Deconv::stdout_parse_file___for_matrix('Deconv=HASH(0x1dfd3f10)', 'Cluster/Messages/output-63') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line\
+     1455
+            Deconv::stdout_parse_all_files____for_matrix('Deconv=HASH(0x1dfd3f10)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Deconv.pm line 1380
+            Deconv::stdout_parse_matrix_quickly('Deconv=HASH(0x1dfd3f10)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 474
+            main::optimize_random_walk_parameters('HASH(0x1df7ab40)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 80
+    Deconv=HASH(0x1dfd3f10) dying at Sat Oct 18 15:32:49 2008
+ 
+
+PREVIOUS .pl ABOVE IT (LINE 48976 OF out15):
+
+ 
+    Content of Cluster/Errors/error-76:
+    ^[[1m^[[31m+only 3609 lines were collected. Expected:20000
+    ^[[0m^[[1m^[[31m at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 58
+    ^[[0m^[[1m^[[31m        main::main() called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Remote_Scripts/trainer.pl line 37
+    ^[[0m3 messages
+    Cleaning file...
+    
+    2008/10/18 at 15:28:49  Tasks alive: 1 out of 81. Finished: 99% Max lifetime: 240s
+    Tasks:  81
+ 
+
+FOLLOWED BY (LINE 49033):
+
+    2008/10/18 at 15:32:49  Tasks alive: 0 out of 81. Finished: 100%        Max lifetime: 0s
+    Tasks:
+    Test number of files returned from the cluster: ..ok
+    Test stdout files(the files that return from the nodes):        ..ok found 81 files
+    Parsing file: Cluster/Messages/output-0 for cross validation    found 383 lines in the file
+    parameters found: 0.985 0.99
+    Values: 5 values, out of possible 5
+    Parsing file: Cluster/Messages/output-1 for cross validation    found 383 lines in the file
+    parameters found: 0.98625 0.99
+    Values: 5 values, out of possible 5
+    
+    Parsing file: Cluster/Messages/output-2 for cross validation    found 383 lines in the file
+    parameters found: 0.9875 0.99
+    Values: 5 values, out of possible 5
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep 16 14:43:55 EDT 2008] INSTALLED ON kronos>
+
+
+
+
+1. ADD TO .bash_profile
+
+export PATH=/nethome/apps/alta-cyclic/0.1.0/perlexternal:$PATH
+export LD_LIBRARY_PATH=/home/apps/alta-cyclic/0.1.0/gsl/libs:$LD_LIBRARY_PATH
+
+export PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib/perl5/site_perl/5.8.8:$PERL5LIB
+export PERL5LIB=/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi:$PERL5LIB
+
+
+2. REINSTALL MODULES IF NECESSARY
+
+perl Makefile.PL PREFIX=/nethome/apps/alta-cyclic/0.1.0/perlmods
+
+3. CHANGE umask PERMISSIONS TO ALLOW bioinfo TO CREATE FILES IN THE Error DIRECTORY
+
+
+
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/2008.09.16_20.23.00__Training.Folder_PHIx2/Cluster/Errors/
+
+
+
+umask 002
+
+4. EDIT
+
+Submit_tools.pm
+
+emacs -nw /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm
+
+TO FIX PROCESSING OF qsub OUTPUT AND :
+
+3813.kronos               tmp_TR9e.sh      syoung                 0 Q small          
+Job id: 3813
+Task id: small
+Datetime: 09 16 2008 21:24:54
+
+Date: 09 16 2008
+Time: 21:24:54
+Month: 09, day: 16, year: 2008
+Hour: 21, min: 24, sec: 54
+
+
+emacs /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm
+
+ERROR MESSAGE:
+
+Error file (file_to_clean): Cluster/Errors/tmp_TbyG.sh.e3819.1
+PWD: /home/syoung/base/pipeline/phix2/alta-cyclic/2008.09.16_21.39.32__Training.Folder_PHIx2
+can't open error file: Cluster/Errors/tmp_TbyG.sh.e3819.1 of task 1: No such file or directory
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 225
+
+Content of Cluster/Errors/tmp_TbyG.sh.e3819.1:
+readline() on closed filehandle $ER at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 797.
+0 messages
+Cleaining file
+
+can't clean: Cluster/Errors/tmp_TbyG.sh.e3819.1 of task 1: No such file or directory
+ at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 801
+        Submit_tools::clean_error_file('Submit_tools=HASH(0xf931aa0)', 1) called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 581
+        Submit_tools::delete_task('Submit_tools=HASH(0xf931aa0)', 3819, 1) called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 555
+        Submit_tools::clean('Submit_tools=HASH(0xf931aa0)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Submit_tools.pm line 105
+        Submit_tools::automatic_pilot('Submit_tools=HASH(0xf931aa0)', '0.2m') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 225
+        Cluster::Blat::cluster_blat_and_analyze('HASH(0xf501710)') called at /home/apps/alta-cyclic/0.1.0/Alta-Cyclic/Cluster/Blat.pm line 109
+        Cluster::Blat::quick('HASH(0xf5017d0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 349
+        main::blat_it('HASH(0xf4acfe0)') called at /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl line 79
+
+
+CHECK ERROR FILE:
+
+ll /home/syoung/base/pipeline/phix2/alta-cyclic/2008.09.16_21.39.32__Training.Folder_PHIx2/Cluster/Errors
+    total 48K
+    drwxrwxr-x 2 syoung bioinfo 16K Sep 16 21:39 .
+    drwxrwxr-x 4 syoung bioinfo 16K Sep 16 21:39 ..
+    -rw------- 1 syoung bioinfo 468 Sep 16 21:39 3819.kronos.ER
+
+emacs /home/syoung/base/pipeline/phix2/alta-cyclic/2008.09.16_21.39.32__Training.Folder_PHIx2/Cluster/Errors/3819.kronos.ER
+
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_09_16_21_39_39.pl line 13.
+Use of uninitialized value in hash element at ./sge_script_2008_09_16_21_39_39.pl line 45.
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_09_16_21_39_39.pl line 45.
+cant convert
+ at ./sge_script_2008_09_16_21_39_39.pl line 45
+        main::convert_task('undef', 'HASH(0x194c9ef0)') called at ./sge_script_2008_09_16_21_39_39.pl line 56
+
+
+MAKE A tmp DIRECTORY TO STORE THE Cluster/Error FILES AND MAKE IT chmod 777:
+
+cd /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic
+mkdir -p tmp/Cluster/Error
+chmod -R 777 tmp
+
+
+AND SUBSTITUTE 'Cluster/Errors/3819.kronos.ER' IN THE PLACE OF 'Cluster/Errors/tmp_TbyG.sh.e3819.1' IN Submit_tools.pm:
+
+
+NB: SHELL SCRIPT IS AT LINE 189 IN Submit_tools.pm
+
+
+   chmod oct '0777',$sh_file;
+    print {$fh} "#\$ -S /bin/bash                    \n",
+                "#\$ -cwd                            \n",
+                "#\$ -v PATH                         \n",
+                                                    "\n",
+                "#\$ -t $start-$stop:$gap            \n",
+                                                    "\n",
+                "SDIR=\$PWD                          \n",
+                "cd \$TMPDIR                         \n",
+                "cp $perl_file .                     \n",
+                "./$perl_file_no_path \$SGE_TASK_ID  \n",
+
+
+
+DOES NOT COMPLETE RUN:
+
+
+[syoung@kronos ~]$ ./sge_script_2008_09_17_00_44_05.pl 3833
++I am alive: 3833
+convert_task (convert_me, r_hash_files)
+convert_me: 3833
+$VAR1 = {
+          'hashFile' => {
+                          'source' => '/home/syoung/base/pipeline/phix2/alta-cyclic/2008.09.17_00.43.58__Training.Folder_PHIx2/dataFile.tmp2008_09_17_00_44_05',
+                          'remote_expected' => 'undef',
+                          'remote' => 'dataFile.tmp2008_09_17_00_44_05'
+                        }
+        };
+r_hash_numbers:
+$VAR1 = {
+          '6' => '6',
+          '11' => '11',
+          '3' => '3',
+          '7' => '7',
+          '9' => '9',
+          '2' => '2',
+          '12' => '12',
+          '8' => '8',
+          '4' => '4',
+          '1' => '1',
+          'sep' => '_',
+          'verify' => 1,
+          '10' => '10',
+          '5' => '5'
+        };
+
+NUM_VEC: 
+$VAR1 = '';
+cant fount unified_seq_sample_for_blat.fa.3833
+[syoung@kronos ~]$ 
+
+
+
+test qsub
+=========
+
+qsub -q small -o Cluster/Messages -e Cluster/Errors testqsub.sh 2>&1
+
+OKAY
+
+
+
+remaining error
+===============
+
+/var/spool/torque/mom_priv/jobs/3849.kronos.SC: line 9: cd: ls: No such file or directory
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_09_17_13_57_15.pl line 13.
+Use of uninitialized value in hash element at ./sge_script_2008_09_17_13_57_15.pl line 45.
+Use of uninitialized value in concatenation (.) or string at ./sge_script_2008_09_17_13_57_15.pl line 45.
+cant convert
+ at ./sge_script_2008_09_17_13_57_15.pl line 45
+        main::convert_task('undef', 'HASH(0x1e692ef0)') called at ./sge_script_2008_09_17_13_57_15.pl line 56
+
+
+
+5. RUN
+
+cd /nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic
+
+TEST
+
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-20 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 
+
+
+    
+/nethome/apps/alta-cyclic/0.1.0/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /nethome/syoung/base/pipeline/phix2/human-run2-phix-int --path_to_training_sequences /nethome/syoung/base/pipeline/phix2/human-run2-phix-seq --lane_for_training 5 --tiles_for_training 1-300 --reference_genome /nethome/syoung/base/pipeline/phix2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIx2 --trim 25 
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep  2 01:53:02 EDT 2008] RETRY brave_heart.pl RUN>
+
+
+
+cd /common/pipeline/phiX2
+
+sudo /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /common/pipeline/phiX2/human-run2-phiX-int --path_to_training_sequences /common/pipeline/phiX2/human-run2-phiX-seq --lane_for_training 5 --tiles_for_training 1-300 --reference_genome /common/pipeline/phiX2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIX2 --trim 25 
+
+    ...    
+    2008/09/02 at 01:13:10  Tasks alive: 1 out of 12. Finished: 92% Max lifetime: 35964s
+    
+    Content of Cluster/Errors/tmp_9Yvi.sh.e2047355.2:
+    cp: /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/sge_script_2008_09_02_01_12_33.pl: No such file or directory
+    /common/sge/default/spool//node006/job_scripts/2047355: line 10: ./sge_script_2008_09_02_01_12_33.pl: No such file or directory
+    2 messages
+    Cleaining file
+    
+    2008/09/02 at 01:13:22  Tasks alive: 0 out of 12. Finished: 100%        Max lifetime: 0s
+    Cleaning stdout files
+    files were tarred in /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/tmp/2047355 under 2047355.tar/Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.1 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.2 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.3 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.4 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.5 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.6 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.7 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.8 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.9 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.10 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.11 cleaned
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.09.02_01.10.42__Training.Folder_PHIX2/Cluster/Messages/tmp_9Yvi.sh.o2047355.12 cleaned
+    can't open unified_seq_sample_for_blat.fa.1.hash: No such file or directory at /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/Cluster/Blat.pm line 242
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TROUBLESHOOTING ALTA-CYCLIC USING run1-lane4-phix
+
+1. GET .int FILES
+
+cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman
+sudo tar cvf human-run2-phiX-int.tar s_5*int.txt.gz
+ll human-run2-phiX-int.tar
+-rw-r--r-- 1 root root 1.6G Aug 23 23:29 human-run2-phiX.tar
+
+
+2. GET .seg FILES
+
+cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman/Bustard1.9.2_11-08-2008_ddittman
+sudo tar cvfz human-run2-phiX-seq.tar.gz s_5_*seq.txt
+ll *tar.gz
+-rw-r--r-- 1 root root 48M Aug 23 23:31 human-run2-phiX-seq.tar.gz
+
+
+3. LOCATION OF FILES ON genomics:
+
+/common/pipeline/phiX2/human-run2-phiX-seq
+/common/pipeline/phiX2/human-run2-phiX-int
+
+4. RUN TRAINING WITH brave_heart.pl
+
+cd /common/pipeline/phiX2
+
+sudo /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /common/pipeline/phiX2/human-run2-phiX-int --path_to_training_sequences /common/pipeline/phiX2/human-run2-phiX-seq --lane_for_training 5 --tiles_for_training 1-300 --reference_genome /common/pipeline/phiX2/phiFasta.fa --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell PHIX2 --trim 25 
+
+
+    ...
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0298_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0299_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0300_int.txtGenerated sample of sequences and intensities for training: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample.txt /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_int_sample.txt
+    Found 90652 lines without ambiguous bases ('N's or '.')
+    After processing found 55867 unique entries for blatSending /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to blat on the cluster
+    Your blat parameters are:
+    -minMatch=1
+    -tileSize=6
+    -minScore=25
+    -minIdentity=60
+    -out=pslx
+    -dots=100
+    Your refernce genome file is /Volumes/gemshd3/common/pipeline/phiX2/phiX.2bitSplit /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to 12 subfiles. Each contains 10000 lines
+    
+    --------------------------------------
+    Names of split files:/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.1/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.2/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.3/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.4/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.5/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.6/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.7/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.8/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.9/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.10/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.11/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.12
+    --------------------------------------
+
+    
+    Total number of permutations is 12
+    Generating script to send to the cluster: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/sge_script_2008_08_24_03_41_53.pl
+    
+    -------------------------------------------
+    1#! /usr/bin/env perl
+                        use strict;
+                        use warnings;
+                        use File::Copy;
+                        use Readonly;
+                        use Storable;
+                        use Carp;
+    
+                        my $TASK_ID = shift;
+    
+                        Readonly my $REMOTE_DIR => '/tmp';                    Readonly my $SOURCE_DIR => '/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2';
+                        print STDOUT "+I am alive: $TASK_ID\n";
+                    
+                        sub required_files {
+                            my ($r_hash_files) = @_;
+                            foreach my $file (keys %{$r_hash_files}) {
+                                my $file_source          = $r_hash_files->{$file}->{source};
+                                my $file_dest            = $r_hash_files->{$file}->{remote};                            my $file_dest_expected   = $r_hash_files->{$file}->{remote_expected} || $file_dest;
+    
+                                if (-e $file_source) {
+                                    copy($file_source,$file_dest)
+                                        or die "can not copy $file_source to $file_dest\n";
+                                    chmod oct '0777', $file_dest
+                                        or die "can not chmod $file_dest: $!\n";
+                                }
+    
+                                if (not -e $file_dest) {
+                                    die "cant fount $file_dest\n";
+                                }
+                            }
+                        }
+                     sub convert_task {
+                        Readonly my $DATA_FILE => './dataFile';
+                        my ($convert_me,$r_hash_files) = @_;
+                        my $r_hash_numbers = retrieve ($r_hash_files->{hashFile}->{remote}) 
+                            or confess "cant open dataFile\n";
+    
+                        confess "cant verify hash\n"
+                            if (not exists $r_hash_numbers->{verify});
+    
+                        my $seperator = $r_hash_numbers->{sep} || "_";
+    
+                        my $numbers = $r_hash_numbers->{$convert_me}
+                            or confess "cant convert $convert_me\n";
+                        $numbers =~ s/$seperator/ /g;
+                        return $numbers;
+                    }
+                    
+    #hash of NUM_VEC:my $r_hash_NUM_VEC=({   hashFile=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/dataFile.tmp2008_08_24_03_41_53",remote=>"dataFile.tmp2008_08_24_03_41_53",remote_expected=>"undef"},
+    });
+    #First - Solve $NUM_VEC
+    required_files ($r_hash_NUM_VEC);
+    my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+    
+
+    #commands:
+    required_files ($r_hash_files);system ("blat phiX.2bit unified_seq_sample_for_blat.fa.$TASK_ID unified_seq_sample_for_blat.fa.$TASK_ID.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100 ");system ("./analyze_blat_neat.pl unified_seq_sample_for_blat.fa.$TASK_ID.blt 25 34 phiX.2bit unified_seq_sample_for_blat.fa.$TASK_ID.hash");
+    system ("mv unified_seq_sample_for_blat.fa.$TASK_ID.hash $SOURCE_DIR");
+    #epilouge:
+    #
+    
+    
+    Content of Cluster/Errors/tmp_ElE8.sh.e2047353.12:cp:
+    
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_03.40.01__Training.Folder_PHIX2/sge_script_2008_08_24_03_41_53.pl: No such file or directory
+    /common/sge/default/spool//node007/job_scripts/2047353: line 10: ./sge_script_2008_08_24_03_41_53.pl: No such file or directory
+    
+    2 messages
+    Cleaining file
+    
+    
+2ND TRY:
+
+    SUMMARY:
+    
+    Content of Cluster/Errors/tmp_nB3p.sh.e2047354.1:cp:
+    
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    /common/sge/default/spool//node011/job_scripts/2047354: line 10: ./sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    
+    
+    ll /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl
+    NOT FOUND!!
+
+
+    FULL OUTPUT:
+
+    ...    
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0299_int.txt
+    Processing /Volumes/gemshd3/common/pipeline/phiX2/human-run2-phiX-int/s_5_0300_int.txt
+    Generated sample of sequences and intensities for training: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample.txt /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_int_sample.txt
+    Found 90663 lines without ambiguous bases ('N's or '.')
+    After processing found 55895 unique entries for blatSending /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to blat on the cluster
+    Your blat parameters are:
+    -minMatch=1
+    -tileSize=6
+    -minScore=25
+    -minIdentity=60
+    -out=pslx
+    -dots=100
+    Your refernce genome file is /Volumes/gemshd3/common/pipeline/phiX2/phiFasta.fa
+    Split /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa to 12 subfiles. Each contains 10000 lines
+    
+    --------------------------------------
+    Names of split files:/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.1/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.2/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.3/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.4/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.5/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.6/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.7/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.8/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.9/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.10/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.11/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files//unified_seq_sample_for_blat.fa.12
+    --------------------------------------
+    
+    Total number of permutations is 12
+    Generating script to send to the cluster:
+    /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl
+    
+    -------------------------------------------
+    1#! /usr/bin/env perl
+                        use strict;
+                        use warnings;
+                        use File::Copy;
+                        use Readonly;
+                        use Storable;
+                        use Carp;
+    
+                        my $TASK_ID = shift;
+    
+                        Readonly my $REMOTE_DIR => '/tmp';
+                        Readonly my $SOURCE_DIR => '/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2';
+                        print STDOUT "+I am alive: $TASK_ID\n";
+                    
+                        sub required_files {
+                            my ($r_hash_files) = @_;
+                            foreach my $file (keys %{$r_hash_files}) {
+                                my $file_source          = $r_hash_files->{$file}->{source};
+                                my $file_dest            = $r_hash_files->{$file}->{remote};
+                                my $file_dest_expected   = $r_hash_files->{$file}->{remote_expected} || $file_dest;
+    
+                                if (-e $file_source) {
+                                    copy($file_source,$file_dest)
+                                        or die "can not copy $file_source to $file_dest\n";
+                                    chmod oct '0777', $file_dest
+                                        or die "can not chmod $file_dest: $!\n";
+                                }
+    
+                                if (not -e $file_dest) {
+                                    die "cant fount $file_dest\n";
+                                }
+                            }
+                        }
+                     sub convert_task {
+                        Readonly my $DATA_FILE => './dataFile';
+                        my ($convert_me,$r_hash_files) = @_;
+                        my $r_hash_numbers = retrieve ($r_hash_files->{hashFile}->{remote}) 
+                            or confess "cant open dataFile\n";
+    
+                        confess "cant verify hash\n"
+                            if (not exists $r_hash_numbers->{verify});
+    
+                        my $seperator = $r_hash_numbers->{sep} || "_";
+    
+                        my $numbers = $r_hash_numbers->{$convert_me}
+                            or confess "cant convert $convert_me\n";
+                        $numbers =~ s/$seperator/ /g;
+                        return $numbers;
+                    }
+                    
+    #hash of NUM_VEC:
+    my $r_hash_NUM_VEC=({   hashFile=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/dataFile.tmp2008_08_24_04_04_25",remote=>"dataFile.tmp2008_08_24_04_04_25",remote_expected=>"undef"},
+    });
+    
+    #First - Solve $NUM_VEC
+    required_files ($r_hash_NUM_VEC);
+    my $NUM_VEC = convert_task($TASK_ID, $r_hash_NUM_VEC);
+    
+    
+    
+    #hash files:my $r_hash_files=({     analyze_blat=>{source=>"/Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/Cluster/Remote_Scripts/analyze_blat_neat.pl",remote=>"analyze_blat_neat.pl",remote_expected=>"undef"},        file_to_blat=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/Training_set_files/unified_seq_sample_for_blat.fa.$TASK_ID",remote=>"unified_seq_sample_for_blat.fa.$TASK_ID",remote_expected=>"undef"},        genome=>{source=>"/Volumes/gemshd3/common/pipeline/phiX2/phiFasta.fa",remote=>"phiFasta.fa",remote_expected=>"undef"},
+    });
+    
+    
+    
+    
+    #commands:
+    required_files ($r_hash_files);system ("blat phiFasta.fa unified_seq_sample_for_blat.fa.$TASK_ID unified_seq_sample_for_blat.fa.$TASK_ID.blt -minMatch=1 -tileSize=6 -minScore=25 -minIdentity=60 -out=pslx -dots=100 ");system ("./analyze_blat_neat.pl unified_seq_sample_for_blat.fa.$TASK_ID.blt 25 34 phiFasta.fa unified_seq_sample_for_blat.fa.$TASK_ID.hash");
+    system ("mv unified_seq_sample_for_blat.fa.$TASK_ID.hash $SOURCE_DIR");
+    #epilouge:
+    #
+    
+    
+    -------------------------------------------
+    
+    2008/08/24 at 04:04:26  Starting 2047354
+    2008/08/24 at 04:04:27  Tasks alive: 12 out of 12. Finished: 0% Max lifetime: 35999s
+    
+    Content of Cluster/Errors/tmp_nB3p.sh.e2047354.1:cp: /Volumes/gemshd3/common/pipeline/phiX2/2008.08.24_04.02.23__Training.Folder_PHIX2/sge_script_2008_08_24_04_04_24.pl: No such file or directory/common/sge/default/spool//node011/job_scripts/2047354: line 10: ./sge_script_2008_08_24_04_04_24.pl: No such file or directory
+    2 messages
+    Cleaining file
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 22 00:44:42 EDT 2008] RUN alta-cyclic ON phiX (LANE 4) IN HUMAN cDNA RUN (Run 1)>
+
+
+
+ABORTED BECAUSE OF ERRORS IN int.txt.gz FILES... RAN HUMAN cDNA RUN (HUMAN RUN 2) INSTEAD - SEE ABOVE
+
+1. CHECK INPUT FILES
+
+cd /common/pipeline/phiX2
+
+TRANSFER FILES TO genomics
+
+cd ~
+ls | grep 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX
+080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz
+080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+
+CREATE DIRECTORIES:
+
+mkdir /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+mkdir /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+
+DO INT FILES:
+
+cd ~ 
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+cd 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+gunzip 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar.gz
+tar xvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+cd ..
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files /common/pipeline/phiX2
+ls /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files 
+
+    ...
+    s_4_0296_int.txt.gz
+    s_4_0297_int.txt.gz
+    s_4_0298_int.txt.gz
+    s_4_0299_int.txt.gz
+    s_4_0300_int.txt.gz
+
+
+DO SEQ FILES:
+
+cd ~ 
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+cd 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+gunzip 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+tar xvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar
+cd ..
+mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files /common/pipeline/phiX2
+ls /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files 
+
+    ...
+    s_4_0296_seq.txt
+    s_4_0297_seq.txt
+    s_4_0298_seq.txt
+    s_4_0299_seq.txt
+    s_4_0300_seq.txt
+
+
+2. COPY REFERENCE SEQUENCE TO /common/pipeline/phiX2
+
+cp /Users/young/FUNNYBASE/apps/alta-cyclic/phiX.2bit /common/pipeline/phiX2/phiX.2bit
+cd /common/pipeline/phiX2
+ll
+    drwxr-xr-x   303 508  508      10K Aug 22 00:57 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files
+    drwxr-xr-x   303 508  508      10K Aug 20 12:59 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files
+    -rw-r--r--     1 508  508       5K Jul 29 19:04 phiFasta.fa
+    -rw-r--r--     1 508  wheel     1K Aug 22 11:17 phiX.2bit
+    
+    
+3. RUN TRAINING WITH brave_heart.pl
+
+cd /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic
+/Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic/brave_heart.pl --number_of_cycles 34 --path_to_intensity_files /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files --path_to_training_sequences /common/pipeline/phiX2/080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files --lane_for_training 4 --tiles_for_training 1-300 --reference_genome /common/pipeline/phiX2/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+
+
+
+
+Designing the experiment:
+=========================
+
+Make sure that you have on your flow-cell at least one rich DNA library with a known reference genome. We usually use phi-X174. You can download its reference genome in 2bit format here. 
+
+After the run:
+
+1. Analyze the image files with Firecrest and call the reference library with Bustard. 
+
+2. Launch Atla-Cyclic Training:
+
+    brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+3. Launch Atla-Cyclic Calling:
+
+    karma.pl --auto [OPTIONAL PARAMETERS] 
+
+
+    brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_4 --trim 25 
+
+
+
+BRAVE HEART - command line HELP
+
+node002:/alta-cyclic/Alta-Cyclic vanwye$ ./brave_heart.pl -help
+
+Usage:
+    brave_heart [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+Options:
+      Mandatory Parameters:
+      --number_of_cycles                Number of cycles in the run
+      --path_to_intensity_files         Path to the folder that contains the intensity files for training
+      --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intensity files
+      --lane_for_training               Lane number that is used for the training 
+      --tiles_for_training              The range of tiles that will be used for training
+      --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+      --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution nodes
+                                        N - assumes that the genome is installed on the cluster nodes
+
+      Optional Parameters:
+      --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+      --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+      --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+      --flowcell                        The flowcell name. 
+      --verbose                         Set verbosity.
+      --zipped                          If the intensity files are zipped
+      --debug                           Give extra messages and indicators. Stores .o files that return from the cluster
+      --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions.
+
+      Help Options:
+       --help                           Show a list of parameters.
+       --man                            Print a long manual.
+
+
+
+BRAVE HEART - command line man
+
+./brave_heart.pl --man
+
+
+BRAVE_HEART(1)        User Contributed Perl Documentation       BRAVE_HEART(1)
+
+
+
+NAME
+       brave_heart - A trainer program for Alta-Cyclic base caller.
+
+SYNOPSIS
+       brave_heart [MANDATORY PARAMETERS]   [OPTIONAL PARAMETERS]
+
+OPTIONS
+         Mandatory Parameters:
+         --number_of_cycles                Number of cycles in the run
+         --path_to_intensity_files         Path to the folder that contains the intensity files for training
+         --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intens
+ity files
+         --lane_for_training               Lane number that is used for the training
+         --tiles_for_training              The range of tiles that will be used for training
+         --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+         --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution node
+s
+                                           N - assumes that the genome is installed on the cluster nodes
+
+         Optional Parameters:
+         --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+         --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+         --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+         --flowcell                        The flowcell name.
+         --verbose                         Set verbosity.
+         --zipped                          If the intensity files are zipped
+         --debug                           Give extra messages and indicators. Stores .o files that return from the clus
+ter
+         --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may pr
+event us of collecting statistics and improve later versions.
+
+         Help Options:
+          --help                           Show a list of parameters.
+          --man                            Print a long manual.
+
+EXAMPLES
+       brave_heart.pl --number_of_cycles 50 --path_to_intensity_files
+       /home2/hannon/erlich/SGE-API/int_from_the_classic_run --path_to_train-
+       ing_sequences /home2/hannon/erlich/SGE-API/sequences_for_training_Clas-
+       sic/  --lane_for_training 8 --tiles_for_training 1-5 --reference_genome
+       ../step2/tmp/phiX.2bit --is_reference_genome_local Y --trim 25
+       --threshold_for_analysis 20 --maximum_lines_for_training 100000 --ver-
+       bose --debug --flowcell FLOWCELL_1234 --trim 25 --threshold_for_analy-
+       sis 20
+
+DESCRIPTION
+       brave_heart.pl is part of Alta-Cyclic base caller. The program extracts
+       a sample of intensity reads and their corresponding sequences that were
+       called with standard illumina base caller.  The sequences are trimmed
+       and matched back to the genome of the organism to extract a full length
+       sequences. The genomic sequences and the intensity values form the
+       training set. The training set is first used for optimization of the
+       random walk parameters (phasing) using iterative grid search. After
+       optimization of the the random walk parameters, the program optimizes
+       the SVM parameters (cross-talk).  Finally, an SVM machines are
+       prodouced for every cycle. This can be later used for calling using
+       karma.pl
+
+BUGS AND LIMITATIONS
+       If you feel you have found a bug in brave_heart.pl, please submit a bug
+       report at erlich@cshl.edu
+
+AUTHOR
+       Written By Yaniv Erlich <erlich@cshl.edu>
+
+LISCENSE AND COPYRIGHT
+       Copyright A(C) 2008 Cold Spring Harbor Laboratory.  This is free soft-
+       ware.  You may redistribute copies of it under the terms in LICENSE
+       file.  There is NO WARRANTY, to the extent permitted by law.
+
+
+
+BRAVE HEART - online man
+
+
+brave_heart - A trainer program for Alta-Cyclic base caller. 
+
+brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS] 
+
+
+OPTIONS
+
+Mandatory Parameters: 
+
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for training 
+--path_to_training_sequences Path to the folder that contains sequences that corresponds to intensity files 
+--lane_for_training Lane number that is used for the training 
+--tiles_for_training The range of tiles that will be used for training 
+--reference_genome Full path to the reference genome 
+--is_reference_genome_local Y - indicates that the refernce genome should be copied to the cluster nodes
+N - assumes that the genome is installed on the cluster nodes 
+
+Optional Parameters: 
+--trim Trim the trainings sequences for a certain number. Makes the training faster 
+--threshold_for_analysis Set the threshold for allowing mismatches in the training seqeunces 
+--maximum_lines_for_training Set the intial amount of eneries that will be sampled for training 
+--flowcell The flowcell name 
+--verbose Set verbosity 
+--zipped If the intensity files are zipped 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+--not_nice Do not report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions. 
+
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLE
+
+
+brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+karma - The base caller part of Alta-Cyclic 
+
+
+SYNOPSIS
+karma.pl --auto [--tiles --lanes]
+karma.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+
+
+
+OPTIONS
+--auto Gets the parameters from brave_heart. Only under Karma folder. NOTICE: the default tile range is 1-100. On a GAI machine you should use the --tiles option. See example below 
+ 
+Mandatory Parameters: 
+--random_walk Expect to get [best p1] and [best p2] that were found by brave_heart 
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for reading 
+--number_of_cycles Path to the folder that contains the intensity files for training 
+--lanes Lanes to read 
+--tiles Tiles to read 
+--SVM_tar_location Location of the SVM package that was generated by brave_heart 
+ 
+Optional Parameters: 
+--zipped If the intensity files are zipped 
+--flowcell The flowcell name. 
+--verbose Set verbosity. 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLES
+./karma.pl --auto
+./karma.pl --auto --tiles 1-300 --lanes 1
+
+ 
+
+
+
+
+Results 
+Your results are under the Karma directory in the same format that Illumina reports. 
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jul 29 18:57:37 EDT 2008] EXTRACTED int AND seq FILES FOR PHIX (LANE 4) IN cDNA RUN (Run 1)>
+
+
+
+    NB: Image files for lane 4 = 27GB unzipped
+
+    INTENSITY FILES (4 GB tarred and zipped):
+    
+    -rw-r--r-- 1 syoung users 4.2G Jul 29 18:41 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+    
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung
+    tar cvf 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar *int.txt.gz
+    ll 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar 
+        -rw-r--r-- 1 syoung users 4.2G Jul 29 18:41 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar
+
+    scp -r 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar young@genomics.rsmas.miami.edu:
+    
+    SEQUENCE FILES (136 MB tarred and zipped):
+    
+    cd /store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Data/C1-36_Firecrest1.9.2_29-07-2008_syoung/Bustard1.9.2_29-07-2008_syoung
+    tar cvfz 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz *seq.txt
+    ll 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+        -rw-r--r-- 1 syoung users 136M Jul 29 18:50 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz
+
+    scp -r 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz young@genomics.rsmas.miami.edu:
+
+
+    COPY REFERENCE SEQUENCE TO GENOMICS:
+    cd /home/jhoffman/myGenome
+    ls
+        error.txt  phiFasta.fa  phiFasta.fa.2bpb  phiFasta.fa.vld  phiX_config.txt
+                                                                                                                                                    
+                                                                                                                                                head phiFasta.fa
+        >gi|9626372|ref|NC_001422.1| Coliphage phiX174, complete genome
+        GAGTTTTATCGCTTCCATGACGCAGAAGTTAACACTTTCGGATATTTCTGATGAGTCGAAAAATTATCTT
+        GATAAAGCAGGAATTACTACTGCTTGTTTACGAATTAAATCGAAGTGGACTGCTGGCGGAAAATGAGAAA
+        ATTCGACCTATCCTTGCGCAGCTCGAGAAGCTCTTACTTTGCGACCTTTCGCCATCAACTAACGATTCTG
+        TCAAAAACTGACGCGTTGGATGAGGAGAAGTGGCTTAATATGCTTGGCACGTTCGTCAAGGACTGGTTTA
+        GATATGAGTCACATTTTGTTCATGGTAGAGATTCTCTTGTTGACATTTTAAAAGAGCGTGGATTACTATC
+        ...
+
+    scp -r phiFasta.fa young@genomics.rsmas.miami.edu:
+
+
+    ON genomics, COPY TO gems THEN MOVE TO /common/pipeline (MOVE STRAIGHT TO /common/pipeline GAVE I/O ERROR...)
+    
+    cd ~
+    sudo scp 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar local@gems.rsmas.miami.edu: # TAKES 10 MINS
+    sudo scp phiFasta.fa local@gems.rsmas.miami.edu:
+    sudo scp 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz local@gems.rsmas.miami.edu:
+    cd /common/pipeline/phiX2
+
+    ON gems:
+    
+    mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.int.files.tar /common/pipeline/phiX2
+    mv phiFasta.fa /common/pipeline/phiX2
+    mv 080620_HWI-EAS185_0001_JIA_cDNA_JH.phiX.seq.files.tar.gz /common/pipeline/phiX2
+    /common/pipeline/phiX2
+
+
+</entry>
+
+
+
+<entry [Mon Jul 28 18:57:37 EDT 2008] TEST qsub ON olympus>
+
+
+
+
+1. WRITE EXECUTABLE
+
+cd /nethome/syoung/base/pipeline/qsub
+
+emacs testqsub.sh
+>>>
+#!/bin/sh
+#\$ -S /bin/bash
+
+## Join output with errors and place in current working directory
+#\$ -j y
+#\$ -cwd
+
+# When a single command in the array job is sent to a compute node,
+# its task number is stored in the variable SGE TASK ID,
+# so we can use the value of that variable to get the results we want:
+
+echo "Done"
+<<<
+
+chmod 755 testqsub.sh
+
+
+2. RUN
+
+[syoung@olympus qsub]$ qsub testqsub.sh 
+2764.olympus.ccs.miami.edu
+
+
+3. CHECK STATUS
+
+[syoung@olympus qsub]$ checkjob 2764
+job 2764
+
+AName: testqsub.sh
+State: Completed 
+Completion Code: 0
+Creds:  user:syoung  group:bioinfo  class:batch
+WallTime:   00:00:00 of 4:00:00
+SubmitTime: Sat Jul 26 19:28:14
+  (Time Queued  Total: 00:00:07  Eligible: 00:00:00)
+
+Total Requested Tasks: 1
+
+Req[0]  TaskCount: 1  Partition: base  
+Memory >= 0  Disk >= 0  Swap >= 0
+Opsys:   ---  Arch: ---  Features: ---
+
+Allocated Nodes:
+[zeus.ccs.miami.edu:1]
+
+
+Execution Partition:  base
+StartPriority:  0
+
+
+4. GET RESULTS
+
+[syoung@olympus qsub]$ ll
+total 3
+-rwxr-xr-x+ 1 syoung bioinfo 322 Jul 26 19:17 testqsub.sh
+-rw-------+ 1 syoung bioinfo   0 Jul 26  2008 testqsub.sh.e2764
+-rw-------+ 1 syoung bioinfo   5 Jul 26  2008 testqsub.sh.o2764
+
+emacs testsub.sh.o2764
+>>>
+Done.
+<<<
+
+
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 24 22:50:32 EDT 2008] ALL HUMAN LANES IMAGE FILES TOO LARGE FOR CLUSTER - DO A LANE AT A TIME>
+
+
+
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ du -hs Images/
+652G    Images/
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ pwd
+/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH
+[syoung@solexa01 080620_HWI-EAS185_0001_JIA_cDNA_JH]$ 
+
+
+EXTRACT TILES 100-199 FROM LANE 4 (PHIX):
+
+cd 
+
+mkdir C1.1
+mkdir C2.1
+mkdir C3.1
+mkdir C4.1
+mkdir C5.1
+mkdir C6.1
+mkdir C7.1
+mkdir C8.1
+mkdir C9.1
+mkdir C10.1
+mkdir C11.1
+mkdir C12.1
+mkdir C13.1
+mkdir C14.1
+mkdir C15.1
+mkdir C16.1
+mkdir C17.1
+mkdir C18.1
+mkdir C19.1
+mkdir C20.1
+mkdir C21.1
+mkdir C22.1
+mkdir C23.1
+mkdir C24.1
+mkdir C25.1
+mkdir C26.1
+mkdir C27.1
+mkdir C28.1
+mkdir C29.1
+mkdir C30.1
+mkdir C31.1
+mkdir C32.1
+
+
+emacs copy.sh
+
+#!/bin/sh
+
+cp L004/C1.1/s_4_1* L004.100-199/C1.1/
+cp L004/C2.1/s_4_1* L004.100-199/C2.1/
+cp L004/C3.1/s_4_1* L004.100-199/C3.1/
+cp L004/C4.1/s_4_1* L004.100-199/C4.1/
+cp L004/C5.1/s_4_1* L004.100-199/C5.1/
+cp L004/C6.1/s_4_1* L004.100-199/C6.1/
+cp L004/C7.1/s_4_1* L004.100-199/C7.1/
+cp L004/C8.1/s_4_1* L004.100-199/C8.1/
+cp L004/C9.1/s_4_1* L004.100-199/C9.1/
+cp L004/C10.1/s_4_1* L004.100-199/C10.1/
+
+cp L004/C11.1/s_4_1* L004.100-199/C11.1/
+cp L004/C12.1/s_4_1* L004.100-199/C12.1/
+cp L004/C13.1/s_4_1* L004.100-199/C13.1/
+cp L004/C14.1/s_4_1* L004.100-199/C14.1/
+cp L004/C15.1/s_4_1* L004.100-199/C15.1/
+cp L004/C16.1/s_4_1* L004.100-199/C16.1/
+cp L004/C17.1/s_4_1* L004.100-199/C17.1/
+cp L004/C18.1/s_4_1* L004.100-199/C18.1/
+cp L004/C19.1/s_4_1* L004.100-199/C19.1/
+cp L004/C20.1/s_4_1* L004.100-199/C20.1/
+cp L004/C21.1/s_4_1* L004.100-199/C21.1/
+cp L004/C22.1/s_4_1* L004.100-199/C22.1/
+cp L004/C23.1/s_4_1* L004.100-199/C23.1/
+cp L004/C24.1/s_4_1* L004.100-199/C24.1/
+cp L004/C25.1/s_4_1* L004.100-199/C25.1/
+cp L004/C26.1/s_4_1* L004.100-199/C26.1/
+cp L004/C27.1/s_4_1* L004.100-199/C27.1/
+cp L004/C28.1/s_4_1* L004.100-199/C28.1/
+cp L004/C29.1/s_4_1* L004.100-199/C29.1/
+cp L004/C30.1/s_4_1* L004.100-199/C30.1/
+cp L004/C31.1/s_4_1* L004.100-199/C31.1/
+cp L004/C32.1/s_4_1* L004.100-199/C32.1/
+
+COPY FROM solexa01 TO LOCAL DIRECTORY ON genomics AND olympus:
+
+scp -r syoung@solexa01.med.miami.edu:/store/data/pipeline_in/080620_HWI-EAS185_0001_JIA_cDNA_JH/Images/L004.100-199.tar.gz ./
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Jul 17 22:59:24 EDT 2008
+
+Designing the experiment:
+Make sure that you have on your flow-cell at least one rich DNA library with a known reference genome. We usually use phi-X174. You can download its reference genome in 2bit format here. 
+
+After the run:
+
+1. Analyze the image files with Firecrest and call the reference library with Bustard. 
+
+2. Launch Atla-Cyclic Training:
+
+    brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+3. Launch Atla-Cyclic Calling:
+
+    karma.pl --auto [OPTIONAL PARAMETERS] 
+
+
+    brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+
+BRAVE HEART - command line HELP
+
+node002:/alta-cyclic/Alta-Cyclic vanwye$ ./brave_heart.pl -help
+
+Usage:
+    brave_heart [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+Options:
+      Mandatory Parameters:
+      --number_of_cycles                Number of cycles in the run
+      --path_to_intensity_files         Path to the folder that contains the intensity files for training
+      --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intensity files
+      --lane_for_training               Lane number that is used for the training 
+      --tiles_for_training              The range of tiles that will be used for training
+      --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+      --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution nodes
+                                        N - assumes that the genome is installed on the cluster nodes
+
+      Optional Parameters:
+      --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+      --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+      --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+      --flowcell                        The flowcell name. 
+      --verbose                         Set verbosity.
+      --zipped                          If the intensity files are zipped
+      --debug                           Give extra messages and indicators. Stores .o files that return from the cluster
+      --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions.
+
+      Help Options:
+       --help                           Show a list of parameters.
+       --man                            Print a long manual.
+
+
+
+BRAVE HEART - command line man
+
+./brave_heart.pl --man
+
+
+BRAVE_HEART(1)        User Contributed Perl Documentation       BRAVE_HEART(1)
+
+
+
+NAME
+       brave_heart - A trainer program for Alta-Cyclic base caller.
+
+SYNOPSIS
+       brave_heart [MANDATORY PARAMETERS]   [OPTIONAL PARAMETERS]
+
+OPTIONS
+         Mandatory Parameters:
+         --number_of_cycles                Number of cycles in the run
+         --path_to_intensity_files         Path to the folder that contains the intensity files for training
+         --path_to_training_sequences      Path to the folder that contains sequences that correspond to training intens
+ity files
+         --lane_for_training               Lane number that is used for the training
+         --tiles_for_training              The range of tiles that will be used for training
+         --reference_genome                Full path to the reference genome. The reference should be in 2bit format.
+         --is_reference_genome_local       Y - indicates that the refernce genome should be copied to the execution node
+s
+                                           N - assumes that the genome is installed on the cluster nodes
+
+         Optional Parameters:
+         --trim                            Trim the trainings sequences to a certain size. Makes the training faster
+         --threshold_for_analysis          Set the threshold for allowing mismatches in the training seqeunces
+         --maximum_lines_for_training      Set the intial amount of eneries for sampling.
+         --flowcell                        The flowcell name.
+         --verbose                         Set verbosity.
+         --zipped                          If the intensity files are zipped
+         --debug                           Give extra messages and indicators. Stores .o files that return from the clus
+ter
+         --not_nice                        Don't report your optimization results to Alta-Cyclic developers. This may pr
+event us of collecting statistics and improve later versions.
+
+         Help Options:
+          --help                           Show a list of parameters.
+          --man                            Print a long manual.
+
+EXAMPLES
+       brave_heart.pl --number_of_cycles 50 --path_to_intensity_files
+       /home2/hannon/erlich/SGE-API/int_from_the_classic_run --path_to_train-
+       ing_sequences /home2/hannon/erlich/SGE-API/sequences_for_training_Clas-
+       sic/  --lane_for_training 8 --tiles_for_training 1-5 --reference_genome
+       ../step2/tmp/phiX.2bit --is_reference_genome_local Y --trim 25
+       --threshold_for_analysis 20 --maximum_lines_for_training 100000 --ver-
+       bose --debug --flowcell FLOWCELL_1234 --trim 25 --threshold_for_analy-
+       sis 20
+
+DESCRIPTION
+       brave_heart.pl is part of Alta-Cyclic base caller. The program extracts
+       a sample of intensity reads and their corresponding sequences that were
+       called with standard illumina base caller.  The sequences are trimmed
+       and matched back to the genome of the organism to extract a full length
+       sequences. The genomic sequences and the intensity values form the
+       training set. The training set is first used for optimization of the
+       random walk parameters (phasing) using iterative grid search. After
+       optimization of the the random walk parameters, the program optimizes
+       the SVM parameters (cross-talk).  Finally, an SVM machines are
+       prodouced for every cycle. This can be later used for calling using
+       karma.pl
+
+BUGS AND LIMITATIONS
+       If you feel you have found a bug in brave_heart.pl, please submit a bug
+       report at erlich@cshl.edu
+
+AUTHOR
+       Written By Yaniv Erlich <erlich@cshl.edu>
+
+LISCENSE AND COPYRIGHT
+       Copyright A(C) 2008 Cold Spring Harbor Laboratory.  This is free soft-
+       ware.  You may redistribute copies of it under the terms in LICENSE
+       file.  There is NO WARRANTY, to the extent permitted by law.
+
+
+
+BRAVE HEART - online man
+
+
+brave_heart - A trainer program for Alta-Cyclic base caller. 
+
+brave_heart.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS] 
+
+
+OPTIONS
+
+Mandatory Parameters: 
+
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for training 
+--path_to_training_sequences Path to the folder that contains sequences that corresponds to intensity files 
+--lane_for_training Lane number that is used for the training 
+--tiles_for_training The range of tiles that will be used for training 
+--reference_genome Full path to the reference genome 
+--is_reference_genome_local Y - indicates that the refernce genome should be copied to the cluster nodes
+N - assumes that the genome is installed on the cluster nodes 
+
+Optional Parameters: 
+--trim Trim the trainings sequences for a certain number. Makes the training faster 
+--threshold_for_analysis Set the threshold for allowing mismatches in the training seqeunces 
+--maximum_lines_for_training Set the intial amount of eneries that will be sampled for training 
+--flowcell The flowcell name 
+--verbose Set verbosity 
+--zipped If the intensity files are zipped 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+--not_nice Do not report your optimization results to Alta-Cyclic developers. This may prevent us of collecting statistics and improve later versions. 
+
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLE
+
+
+brave_heart.pl --number_of_cycles 78 --path_to_intensity_files ~/int_from_the_classic_run --path_to_training_sequences ~/sequences_for_training_Classic/ --lane_for_training 8 --tiles_for_training 1-100 --reference_genome ~/DBase/phiX.2bit --is_reference_genome_local Y --trim 25 --threshold_for_analysis 20 --maximum_lines_for_training 100000 --verbose --debug --flowcell FLOWCELL_1234 --trim 25 
+
+
+karma - The base caller part of Alta-Cyclic 
+
+
+SYNOPSIS
+karma.pl --auto [--tiles --lanes]
+karma.pl [MANDATORY PARAMETERS] [OPTIONAL PARAMETERS]
+
+
+
+
+
+OPTIONS
+--auto Gets the parameters from brave_heart. Only under Karma folder. NOTICE: the default tile range is 1-100. On a GAI machine you should use the --tiles option. See example below 
+ 
+Mandatory Parameters: 
+--random_walk Expect to get [best p1] and [best p2] that were found by brave_heart 
+--number_of_cycles Number of cycles in the run 
+--path_to_intensity_files Path to the folder that contains the intensity files for reading 
+--number_of_cycles Path to the folder that contains the intensity files for training 
+--lanes Lanes to read 
+--tiles Tiles to read 
+--SVM_tar_location Location of the SVM package that was generated by brave_heart 
+ 
+Optional Parameters: 
+--zipped If the intensity files are zipped 
+--flowcell The flowcell name. 
+--verbose Set verbosity. 
+--debug Give extra messages and indicators. Stores .o files that return from the cluster 
+Help Options: 
+--help Show a list of parameters. 
+--man Print a long manual. 
+
+
+
+
+EXAMPLES
+./karma.pl --auto
+./karma.pl --auto --tiles 1-300 --lanes 1
+
+ 
+
+
+
+
+Results 
+Your results are under the Karma directory in the same format that Illumina reports. 
+
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 17 22:59:24 EDT 2008] INSTALL ALTA-CYCLIC ON ALL CLUSTER NODES>
+
+
+
+
+http://hannonlab.cshl.edu/Alta-Cyclic/install.html
+
+1. CREATE LOCAL DIRECTORY ON EACH NODE FOR ALTA-CYCLIC AND COPY ALTA CYCLIC AND DEPENDENCIES
+
+PLACE ON /common:
+
+sudo mkdir /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/Alta-Cyclic_0.1.0.tar.gz /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/external.programs /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods /common/pipeline/alta-cyclic
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/phiX.2bit /common/pipeline/alta-cyclic
+
+TRANSFER TO LOCAL DIRECTORY:
+
+sudo dsh -a mkdir /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/Alta-Cyclic_0.1.0.tar.gz /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/external.programs /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods /alta-cyclic
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/phiX.2bit /alta-cyclic
+
+
+COPY Readonly MODULE:
+
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/Readonly* /common/pipeline/alta-cyclic/perl.mods
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods/Readonly* /alta-cyclic/perl.mods
+sudo dsh -a "cd /alta-cyclic/perl.mods/; tar xvfz Readonly-1.03.tar.gz"
+
+
+COPY Term-Readkey MODULE (TermReadKey-2.30.tar.gz):
+
+ON gems
+
+cd /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/
+get TermReadKey-2.30.tar.gz
+sudo cp -r /Users/local/FUNNYBASE/apps/alta-cyclic/perl.mods/TermReadKey-2.30.tar.gz /common/pipeline/alta-cyclic/perl.mods
+sudo dsh -a cp -r /common/pipeline/alta-cyclic/perl.mods/TermReadKey-2.30.tar.gz /alta-cyclic/perl.mods
+sudo dsh -a "cd /alta-cyclic/perl.mods/; tar xvfz TermReadKey-2.30.tar.gz"
+
+
+
+2. INSTALL gsl C LIBRARY
+
+	Name	Tested version	Link	Debian/Ubuntu package
+    gsl	    32	            http://www.gnu.org/software/gsl/ 	libgsl0-dev
+
+# gsl-1.11.tar.gz WORKS OK!
+
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; ./configure  --host=powerpc-apple-darwin8.0;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make clean;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make;"
+sudo dsh -a "cd /alta-cyclic/external.programs/gsl-1.11; make install;"
+
+    node016.cluster.private:        ----------------------------------------------------------------------
+    node016.cluster.private:        Libraries have been installed in:
+    node016.cluster.private:           /usr/local/lib
+    node016.cluster.private:
+    node016.cluster.private:        If you ever happen to want to link against installed libraries
+    node016.cluster.private:        in a given directory, LIBDIR, you must either use libtool, and
+    node016.cluster.private:        specify the full pathname of the library, or use the `-LLIBDIR'
+    node016.cluster.private:        flag during linking and do at least one of the following:
+    node016.cluster.private:           - add LIBDIR to the `DYLD_LIBRARY_PATH' environment variable
+    node016.cluster.private:             during execution
+    node016.cluster.private:
+    node016.cluster.private:        See any operating system documentation about shared libraries for
+    node016.cluster.private:        more information, such as the ld(1) and ld.so(8) manual pages.
+    node016.cluster.private:        ----------------------------------------------------------------------
+
+
+NB: IF YOU DON'T RUN make clean, YOU GET THIS ERROR.
+
+    ERROR: libgslsiman.a is out of date; rerun ranlib
+    
+    DIAGNOSIS: BECAUSE YOU'VE COPIED THE LIBRARY YOU HAVE TO RUN ranlib TO AVOID THIS ERROR:
+    
+        /usr/bin/ld: table of contents for archive: ./.libs/libgslsiman.a is out of date; rerun ranlib(1) (can't load from it)
+            
+    (This can occur if you copy a library. This is from the relevant manpage:
+    "With the way libraries used to be created, errors were possible if the library was modified with ar(1) and the table of contents was not updated by rerunning ranlib(1). Thus the link editor, ld, warns when the modification date of a library is more recent than the creation date of its table of contents. Unfortunately, this means that you get the warning even if you only copy the library.")
+    
+    SOLUTION:
+    
+    locate libgslsiman.a
+    
+    ranlib /Users/local/FUNNYBASE/apps/alta-cyclic/external.programs/gsl-1.11/siman/.libs/libgslsiman.a
+    OR
+    ranlib /usr/local/lib/gsl/libgslsiman.a
+
+
+3. INSTALL PERL MODULES 
+
+Astro-FITS-Header-3.0.tar.gz
+List-MoreUtils-0.22.tar.gz
+PDL-2.4.3.tar.gz
+
+(NB: HAD TO RESET DATE/TIME ON NODE010 WITH: sudo date 072322452008)
+
+Astro-FITS-Header-3.0.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/Makefile /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Astro-FITS-Header-3.0/; make install;"
+
+List-MoreUtils-0.22.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/List-MoreUtils-0.22/Makefile /alta-cyclic/perl.mods/List-MoreUtils-0.22/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/List-MoreUtils-0.22; make install;"
+
+PDL-2.4.3.tar.gz
+
+sudo dsh -a mv /alta-cyclic/perl.mods/PDL-2.4.3/Makefile /alta-cyclic/perl.mods/PDL-2.4.3/Makefile.old
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/PDL-2.4.3; make install;"
+
+    NB: COULD BE DODGY:
+    
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/FITS.pm: cannot resolve L<glue|glue> in paragraph 158.
+        node016.cluster.private:        FlexRaw.pm...                 
+        node016.cluster.private:        Misc.pm...                    
+        node016.cluster.private:        NDF.pm...                     
+        node016.cluster.private:        Pic.pm...                     
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"compress"|compress> in paragraph 133.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"gzip"|gzip> in paragraph 133.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"gzip"|gzip> in paragraph 159.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<"compress"|compress> in paragraph 159.
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/IO/Pic.pm: cannot resolve L<pbmplus> in paragraph 174.
+        node016.cluster.private:        Pnm.pm...                     
+        node016.cluster.private:        Storable.pm...                
+        node016.cluster.private:        Simplex.pm...                 
+        node016.cluster.private:        Parser.pm...                  
+        node016.cluster.private:        Select.pm...                  
+        node016.cluster.private:        Usage.pm...                   
+        node016.cluster.private:        Cartography.pm...             
+        node016.cluster.private:        PDL.pm...                     
+        node016.cluster.private:        Doc/mkhtmldoc.pl: /Library/Perl/5.8.6/darwin-thread-multi-2level/PDL/../PDL.pm: cannot resolve L<the pdl(1) (lowercase) man page|pdl> in paragraph 6.
+    
+    
+
+Readonlyl-1.03.tar.gz
+
+#sudo dsh -a mv /alta-cyclic/perl.mods/Readonly-1.03/Makefile /alta-cyclic/perl.mods/Readonly-1.03/Makefile.old
+#sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/Readonly-1.03; make install;"
+
+
+TermReadKey-2.30.tar.gz
+
+#sudo dsh -a mv /alta-cyclic/perl.mods/TermReadKey-2.30/Makefile /alta-cyclic/perl.mods/TermReadKey-2.30/Makefile.old
+#sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make clean;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; perl Makefile.PL"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make;"
+sudo dsh -a "cd /alta-cyclic/perl.mods/TermReadKey-2.30; make install;"
+
+
+4. INSTALL blat	version 32	  http://www.soe.ucsc.edu/~kent/src/
+
+    1. UNZIP blatSrc32.zip
+    
+    2. GET MACHTYPE ENVIRONMENT VARIABLEL 
+        
+        gems:~/FUNNYBASE/apps/alta-cyclic/perl.mods/PDL-2.4.3 local$ echo $MACHTYPE
+        powerpc-apple-darwin8.0
+    
+
+        SET MACHTYPE TO 'i386' FOR Linux:
+        
+        export MACHTYPE=i386
+        echo $MACHTYPE
+
+        AND CREATE DIRECTORIES:
+
+       # where the (non-web) executables will go.
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; mkdir -p bin/i386;"
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; mkdir -p lib/i386;"
+
+
+    3. CREATE DIRECTORY /private/var/root/bin/i386 WHERE THE /private/var/root/bin/i386/blat FILE WILL GO
+        
+        sudo dsh -a "mkdir -p /private/var/root/bin/i386/"
+
+    4. GO TO blastSrc DIRECTORY AND make
+    
+        sudo dsh -a "cd /alta-cyclic/external.programs/blatSrc; export MACHTYPE=i386; make;"
+
+        ...    
+        cd webBlat && make
+        gcc -O  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -DMACHTYPE_i386 -Wformat -Wimplicit -Wuninitialized -Wreturn-type -I../inc -I../../inc -I../../../inc -I../../../../inc  -c webBlat.c
+        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        strip webBlat
+
+        ...
+        node016.cluster.private:        cd utils/twoBitInfo && make
+        node016.cluster.private:        gcc -O -o /private/var/root/bin/i386/twoBitInfo twoBitInfo.o ../../lib/i386/jkweb.a -lm
+        node016.cluster.private:        strip /private/var/root/bin/i386/twoBitInfo
+        node016.cluster.private:        cd webBlat && make
+        node016.cluster.private:        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        node016.cluster.private:        strip webBlat
+
+
+5. NEEDS libSVM-tools		http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/ 	libsvm-tools
+
+    sudo dsh -a "cd /alta-cyclic/external.programs/libsvm-2.86; make clean;"
+    sudo dsh -a "cd /alta-cyclic/external.programs/libsvm-2.86; make;"
+
+
+
+7. GO TO PATH_TO_ALTA/Cluster/Remote_Scripts/ AND COMPILE SVD.c:
+
+    sudo dsh -a "/usr/local/bin/gsl-config --libs"
+    
+        -L/usr/local/lib -lgsl -lgslcblas -lm
+    
+    sudo dsh -a "/usr/local/bin/gsl-config --cflags"
+    
+        -I/usr/local/include
+
+
+    sudo dsh -a "cd /alta-cyclic/; tar xvfz Alta-Cyclic_0.1.0.tar.gz"
+    sudo dsh -a "cd /alta-cyclic/Alta-Cyclic/Cluster/Remote_Scripts; gcc $(/usr/local/bin/gsl-config --cflags) SVD.c $(/usr/local/bin/gsl-config --libs) -o svd;"
+
+
+    OK
+
+
+
++++++++++++</entry>
+
+
+
+<entry [Thu Jul 17 22:59:24 EDT 2008] INSTALL ALTA-CYCLIC>
+
+
+
+http://hannonlab.cshl.edu/Alta-Cyclic/install.html
+
+1. INSTALL PERL MODULES 
+
+Astro-FITS-Header-3.0.tar.gz
+List-MoreUtils-0.22.tar.gz
+PDL-2.4.3.tar.gz
+
+
+2. DOWNLOAD ALTA-CYCLIC
+
+http://hannonlab.cshl.edu/Alta-Cyclic/download.html
+http://hannonlab.cshl.edu
+ 
+# Untar Alta-Cyclic package and copy it to any folder in your submission node.
+
+3. INSTALL sge
+
+sun grid engine (SGE)	version 6	  http://gridengine.sunsource.net/downloads/61/download.html
+
+
+4. INSTALL blat	version 32	  http://www.soe.ucsc.edu/~kent/src/
+
+    1. UNZIP blatSrc32.zip
+    
+    2. GET MACHTYPE ENVIRONMENT VARIABLEL 
+        
+        gems:~/FUNNYBASE/apps/alta-cyclic/perl.mods/PDL-2.4.3 local$ echo $MACHTYPE
+        powerpc-apple-darwin8.0
+    
+
+        SET MACHTYPE TO 'i386' FOR Linux:
+        
+        export MACHTYPE=i386
+        echo $MACHTYPE
+
+        AND CREATE DIRECTORIES:
+
+        mkdir -p bin/i386       # where the (non-web) executables will go.
+        mkdir lib/i386
+
+
+    3. CREATE DIRECTORY /Users/local/bin/i386 WHERE THE /Users/local/bin/i386/blat FILE WILL GO
+        
+        mkdir -p /Users/local/bin/i386
+
+    4. GO TO blastSrc DIRECTORY AND make
+    
+        ...    
+        cd webBlat && make
+        gcc -O  -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_GNU_SOURCE -DMACHTYPE_i386 -Wformat -Wimplicit -Wuninitialized -Wreturn-type -I../inc -I../../inc -I../../../inc -I../../../../inc  -c webBlat.c
+        gcc -O -o webBlat webBlat.o ../lib/i386/jkOwnLib.a ../lib/i386/jkweb.a -lm 
+        strip webBlat
+
+
+
+5. NEEDS libSVM-tools		http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/ 	libsvm-tools
+
+    1. UNZIP libsvm-2.86.zip
+
+    2. make
+    
+    
+6. INSTALL gsl C LIBRARY
+
+	Name	Tested version	Link	Debian/Ubuntu package
+    gsl	    32	            http://www.gnu.org/software/gsl/ 	libgsl0-dev
+
+    gsl-1.11.tar.gz
+    cd gsl-1.11
+
+    ./configure  --host=powerpc-apple-darwin8.0
+    make
+    sudo make install
+    sudo make clean
+
+
+7. GO TO PATH_TO_ALTA/Cluster/Remote_Scripts/ AND COMPILE SVD.c:
+
+    gsl-config --libs
+    
+        -L/usr/local/lib -lgsl -lgslcblas -lm
+    
+    gsl-config --cflags
+    
+        -I/usr/local/include
+
+
+    gcc $(gsl-config --cflags) SVD.c $(gsl-config --libs) -o svd
+
+    OK
+

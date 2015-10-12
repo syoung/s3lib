@@ -1,0 +1,518 @@
+Notes-hardware-macbookpro.txt
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 11:29:00 PST 2010] START VNC ON MAC>
+
+
+
+
+# Step 1: -- set privs
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
+
+# Step 2: -- Allow VNC clients
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes
+
+# Step 3: -- Set VNC password (change it at the end of the line (i.e. don't use supersecret))
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw supersecret
+
+# Step 4: -- Restart service
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
+
+
+
+
+RESULTS ON MACBOOK:
+
+
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
+
+
+Last login: Tue Mar  2 09:58:39 2010
+syoungs-macbook-pro:~ syoung$ sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -allowAccessFor -allUsers -privs -all
+Password:
+Sorry, try again.
+Password:
+Sorry, try again.
+Password:
+Starting...
+Setting allow all users to YES.
+Setting all users privileges to 1073742079.
+Done.
+syoungs-macbook-pro:~ syoung$ System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes
+-bash: System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart: No such file or directorysyoungs-macbook-pro:~ syoung$ /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes
+/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart must be run as root or sudo (501).syoungs-macbook-pro:~ syoung$ sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes
+Starting...
+Set the client options.
+Done.
+syoungs-macbook-pro:~ syoung$ sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvncpw -vncpw a*e
+Starting...
+Set the client options.
+Done.
+syoungs-macbook-pro:~ syoung$ sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
+Starting...
+Started ARD Admin.
+Done.
+syoungs-macbook-pro:~ syoung$ 
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 26 21:35:03 PST 2010] SHOW HIDDEN LINUX FILESYSTEM ON OSX>
+
+
+
+Run this from the terminal. 
+# Display Hidden Files
+defaults write com.apple.Finder AppleShowAllFiles TRUE
+KillAll Finder
+
+The inverse of the first command will restore your default settings:
+
+defaults write com.apple.Finder AppleShowAllFiles FALSE
+
+
+</entry>
+
+
+
+<entry [Tue Jan 26 15:50:17 PST 2010] INSTALLED wget>
+
+
+
+INSTRUCTIONS HERE:
+http://www.withoutink.com/terminal/how-to-install-wget-in-osx/
+
+
+DOWNLOADED wget FROM HERE:
+http://ftp.gnu.org/gnu/wget/wget-latest.tar.gz
+
+
+./configure
+make
+make test
+sudo make insall
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 26 14:28:17 PST 2010] SET MYSQL ROOT PASSWORD>
+
+
+
+mysql -u root
+UPDATE mysql.user SET Password=PASSWORD('<ROOT_PASSWORD>') WHERE User='root';
+FLUSH PRIVILEGES;
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 26 14:27:17 PST 2010] INSTALLED MYSQL ON macbook>
+
+
+
+INSTALLED 64-BIT MYSQL 5.1.42 AND ITS STARTUP ITEM (AUTOMATICALLY STARTS MYSQL AT BOOT):
+
+mysql-5.1.42-osx10.6-x86_64.dmg
+
+
+SET ALIASES:
+
+alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+
+
+
+STARTUP:
+
+WITH the Startup Item:
+
+sudo /Library/StartupItems/MySQLCOM/MySQLCOM start
+
+   Password:
+   Starting MySQL database server
+   syoungs-macbook-pro:mysql syoung$ ps aux | grep mysql
+   _mysql     482   0.0  0.5  2506916  18980 s001  S     2:20PM   0:00.10 /usr/local/mysql/bin/mysqld --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql --log-error=/usr/local/mysql/data/syoungs-macbook-pro.local.err --pid-file=/usr/local/mysql/data/syoungs-macbook-pro.local.pid
+   root       432   0.0  0.0  2435464    756 s001  S     2:20PM   0:00.02 /bin/sh ./bin/mysqld_safe --datadir=/usr/local/mysql/data --pid-file=/usr/local/mysql/data/syoungs-macbook-pro.local.pid
+   syoung     400   0.0  0.2  2449128   6720 s001  T     2:14PM   0:00.23 emacs -nw README-mysql.txt
+   syoung     485   0.0  0.0  2435468    308 s001  S+    2:21PM   0:00.00 grep mysql
+
+
+WITH mysqld_safe:
+
+If you don't use the Startup Item:
+
+cd /usr/local/mysql
+sudo ./bin/mysqld_safe &
+
+OR:
+
+sudo ./bin/mysqld_safe
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-Z)
+bg
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+
+MSYQL IS INSTALLED HERE:
+
+/usr/local/mysql-5.1.42-osx10.6-x86_64/
+
+SYMBOLICALLY LINKED TO HERE:
+
+/usr/local/mysql
+
+The installer creates the grant tables in the `mysql' database by executing `mysql_install_db'.
+
+The installation layout is similar to that of a `tar' file binary
+distribution; all MySQL binaries are located in the directory
+
+THE MYSQL BINARIES ARE HERE:
+
+/usr/local/mysql/bin
+
+THE MySQL SOCKET FILE IS HERE:
+
+/tmp/mysql.sock
+
+MySQL installation requires a Mac OS X user account named `mysql'. A
+user account with this name should exist by default on Mac OS X 10.2
+and up.
+
+
+
+
+
+NB: MYSQL IS ALREADY INSTALLED ON OSX SERVER
+
+
+If you are running Mac OS X Server, a version of MySQL should already
+be installed. The following table shows the versions of MySQL that ship
+with Mac OS X Server versions.
+
+*Mac OS X Server       *MySQL Version*
+Version*               
+10.2-10.2.2            3.23.51
+10.2.3-10.2.6          3.23.53
+10.3                   4.0.14
+10.3.2                 4.0.16
+10.4.0                 4.1.10a
+
+
+
+
+
+
+mysql README:
+
+2.4.10 Installing MySQL on Mac OS X
+-----------------------------------
+
+You can install MySQL on Mac OS X 10.3.x (`Panther') or newer using a
+Mac OS X binary package in PKG format instead of the binary tarball
+distribution. Please note that older versions of Mac OS X (for example,
+10.1.x or 10.2.x) are *not* supported by this package.
+
+The package is located inside a disk image (`.dmg') file that you first
+need to mount by double-clicking its icon in the Finder. It should then
+mount the image and display its contents.
+
+To obtain MySQL, see *Note getting-mysql::.
+
+*Note*: Before proceeding with the installation, be sure to shut down
+all running MySQL server instances by either using the MySQL Manager
+Application (on Mac OS X Server) or via `mysqladmin shutdown' on the
+command line.
+
+To actually install the MySQL PKG file, double-click on the package
+icon. This launches the Mac OS X Package Installer, which guides you
+through the installation of MySQL.
+
+Due to a bug in the Mac OS X package installer, you may see this error
+message in the destination disk selection dialog:
+
+     You cannot install this software on this disk. (null)
+
+If this error occurs, simply click the `Go Back' button once to return
+to the previous screen. Then click `Continue' to advance to the
+destination disk selection again, and you should be able to choose the
+destination disk correctly. We have reported this bug to Apple and it is
+investigating this problem.
+
+The Mac OS X PKG of MySQL installs itself into
+`/usr/local/mysql-VERSION' and also installs a symbolic link,
+`/usr/local/mysql', that points to the new location. If a directory
+named `/usr/local/mysql' exists, it is renamed to
+`/usr/local/mysql.bak' first. Additionally, the installer creates the
+grant tables in the `mysql' database by executing `mysql_install_db'.
+
+The installation layout is similar to that of a `tar' file binary
+distribution; all MySQL binaries are located in the directory
+`/usr/local/mysql/bin'. The MySQL socket file is created as
+`/tmp/mysql.sock' by default. See *Note installation-layouts::.
+
+MySQL installation requires a Mac OS X user account named `mysql'. A
+user account with this name should exist by default on Mac OS X 10.2
+and up.
+
+If you are running Mac OS X Server, a version of MySQL should already
+be installed. The following table shows the versions of MySQL that ship
+with Mac OS X Server versions.
+
+*Mac OS X Server       *MySQL Version*
+Version*               
+10.2-10.2.2            3.23.51
+10.2.3-10.2.6          3.23.53
+10.3                   4.0.14
+10.3.2                 4.0.16
+10.4.0                 4.1.10a
+
+This manual section covers the installation of the official MySQL Mac
+OS X PKG only. Make sure to read Apple's help information about
+installing MySQL: Run the `Help View' application, select `Mac OS X
+Server' help, do a search for `MySQL,' and read the item entitled
+`Installing MySQL.'
+
+For preinstalled versions of MySQL on Mac OS X Server, note especially
+that you should start `mysqld' with `safe_mysqld' instead of
+`mysqld_safe' if MySQL is older than version 4.0.
+
+If you previously used Marc Liyanage's MySQL packages for Mac OS X from
+`http://www.entropy.ch', you can simply follow the update instructions
+for packages using the binary installation layout as given on his pages.
+
+If you are upgrading from Marc's 3.23.x versions or from the Mac OS X
+Server version of MySQL to the official MySQL PKG, you also need to
+convert the existing MySQL privilege tables to the current format,
+because some new security privileges have been added. See *Note
+mysql-upgrade::.
+
+If you want MySQL to start automatically during system startup, you
+also need to install the MySQL Startup Item. It is part of the Mac OS X
+installation disk images as a separate installation package. Simply
+double-click the `MySQLStartupItem.pkg' icon and follow the
+instructions to install it. The Startup Item need be installed only
+once. There is no need to install it each time you upgrade the MySQL
+package later.
+
+The Startup Item for MySQL is installed into
+`/Library/StartupItems/MySQLCOM'. (Before MySQL 4.1.2, the location was
+`/Library/StartupItems/MySQL', but that collided with the MySQL Startup
+Item installed by Mac OS X Server.) Startup Item installation adds a
+variable `MYSQLCOM=-YES-' to the system configuration file
+`/etc/hostconfig'. If you want to disable the automatic startup of
+MySQL, simply change this variable to `MYSQLCOM=-NO-'.
+
+On Mac OS X Server, the default MySQL installation bundled with the
+operating system uses the variable `MYSQL' in the `/etc/hostconfig'
+file. The Sun Microsystems, Inc. "Startup Item" installer disables
+this variable by setting it to `MYSQL=-NO-'. This avoids boot time
+conflicts with the `MYSQLCOM' variable used by the Sun Microsystems,
+Inc. "Startup Item". However, it does not shut down a running MySQL
+server. You should do that yourself.
+
+After the installation, you can start up MySQL by running the following
+commands in a terminal window. You must have administrator privileges
+to perform this task.
+
+If you have installed the Startup Item, use this command:
+
+     shell> sudo /Library/StartupItems/MySQLCOM/MySQLCOM start
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+If you don't use the Startup Item, enter the following command sequence:
+
+     shell> cd /usr/local/mysql
+     shell> sudo ./bin/mysqld_safe
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-Z)
+     shell> bg
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+You should be able to connect to the MySQL server, for example, by
+running `/usr/local/mysql/bin/mysql'.
+
+*Note*: The accounts that are listed in the MySQL grant tables
+initially have no passwords.  After starting the server, you should set
+up passwords for them using the instructions in *Note
+post-installation::.
+
+You might want to add aliases to your shell's resource file to make it
+easier to access commonly used programs such as `mysql' and
+`mysqladmin' from the command line. The syntax for `bash' is:
+
+     alias mysql=/usr/local/mysql/bin/mysql
+     alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+
+For `tcsh', use:
+
+     alias mysql /usr/local/mysql/bin/mysql
+     alias mysqladmin /usr/local/mysql/bin/mysqladmin
+
+Even better, add `/usr/local/mysql/bin' to your `PATH' environment
+variable. You can do this by modifying the appropriate startup file for
+your shell. For more information, see *Note invoking-programs::.
+
+If you are upgrading an existing installation, note that installing a
+new MySQL PKG does not remove the directory of an older installation.
+Unfortunately, the Mac OS X Installer does not yet offer the
+functionality required to properly upgrade previously installed
+packages.
+
+
+NB: AFTER COPYING OVER DATABASE FILES FROM ONE MYSQL INSTALLATION TO
+ANOTHER, DON'T FORGET TO REMOVE OLD VERSIONS OF Package Receipt DIRECTORIES
+LOCATED AT:
+
+
+/Library/Receipts/mysql-VERSION.pkg
+
+
+To use your existing databases with the new installation, you'll need
+to copy the contents of the old data directory to the new data
+directory. Make sure that neither the old server nor the new one is
+running when you do this. After you have copied over the MySQL database
+files from the previous installation and have successfully started the
+new server, you should consider removing the old installation files to
+save disk space. Additionally, you should also remove older versions of
+the Package Receipt directories located in
+`/Library/Receipts/mysql-VERSION.pkg'.
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Nov 24 13:51:23 EDT 2009] SETTINGS AND SETUP AQWA>
+
+
+
+INSTALLED SNOW LEOPARD OSX 10.6 AND UPDATES
+
+UM ip address
+10.136.60.172
+
+
+COPIED FROM macmini TO macpro
+
+/Users/syoung/.bash_profile
+/Users/syoung/0.3
+/private/etc/apache2/httpd.conf
+
+
+
+FIXED www USER SO CAN RUN AS apache:
+CREATE PASSWORD
+sudo passwd www
+a*
+
+THEN ADDED THIS ALIAS TO .bash_profile
+alias apache='sudo -u www bash'
+
+whoami
+   _www
+
+
+
+</entry>
+
+
+
+<entry [Wed Nov 24 13:50:23 EDT 2009] OSX SETUID>
+
+
+
+http://developer.apple.com/mac/library/documentation/Darwin/Reference/ManPages/man2/setuid.2.html
+
+
+SETUID(2)                                  BSD System Calls Manual                                 SETUID(2)
+
+NAME
+     setegid, seteuid, setgid, setuid -- set user and group ID
+
+SYNOPSIS
+     #include <unistd.h>
+
+     int
+     setegid(gid_t egid);
+
+     int
+     seteuid(uid_t euid);
+
+     int
+     setgid(gid_t gid);
+
+     int
+     setuid(uid_t uid);
+
+DESCRIPTION
+     The setuid() function sets the real and effective user IDs and the saved set-user-ID of the current
+     process to the specified value.  The setuid() function is permitted if the effective user ID is that of
+     the super user, or if the specified user ID is the same as the effective user ID.  If not, but the
+     specified user ID is the same as the real user ID, setuid() will set the effective user ID to the real
+     user ID.
+
+     The setgid() function sets the real and effective group IDs and the saved set-group-ID of the current
+     process to the specified value.  The setgid() function is permitted if the effective user ID is that of
+     the super user, or if the specified group ID is the same as the effective group ID.  If not, but the
+     specified group ID is the same as the real group ID, setgid() will set the effective group ID to the
+     real group ID.
+
+     The seteuid() function (setegid()) sets the effective user ID (group ID) of the current process.  The
+     effective user ID may be set to the value of the real user ID or the saved set-user-ID (see intro(2)
+     and execve(2)); in this way, the effective user ID of a set-user-ID executable may be toggled by
+     switching to the real user ID, then re-enabled by reverting to the set-user-ID value.  Similarly, the
+     effective group ID may be set to the value of the real group ID or the saved set-user-ID.
+
+RETURN VALUES
+     Upon success, these functions return 0; otherwise -1 is returned.
+
+     If the user is not the super user, or the uid specified is not the real, effective ID, or saved ID,
+     these functions return -1.
+
+ERRORS
+     The setegid(), seteuid(), setgid(), and setuid() system calls will fail if:
+
+     [EINVAL]           The value of the {group,user} ID argument is invalid and is not supported by the
+                        implementation.
+
+     [EPERM]            The process does not have appropriate privileges and the ID argument does not match
+                        the real ID or the saved set-{group,user}-ID.
+
+LEGACY SYNOPSIS
+     #include <sys/types.h>
+     #include <unistd.h>
+
+     The include file <sys/types.h> is necessary for all functions.
+
+SEE ALSO
+     getgid(2), getuid(2), compat(5)
+
+STANDARDS
+     The setuid() and setgid() functions are compliant with the ISO/IEC 9945-1:1990 (``POSIX.1'') specifica-tion specification
+     tion with _POSIX_SAVED_IDS defined, with the extensions allowed in section B.4.2.2.  The seteuid() and
+     setegid() functions are extensions based on the POSIX concept of _POSIX_SAVED_IDS, and have been pro-posed proposed
+     posed for a future revision of the standard.
+
+4.2 Berkeley Distribution                       June 4, 1993                       4.2 Berkeley Distribution
+
+

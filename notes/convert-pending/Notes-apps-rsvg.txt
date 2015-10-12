@@ -1,0 +1,147 @@
+Notes-apps-rsvg
+
+
+cd /Users/young/FUNNYBASE/NOTES/gui/SVG/svg2png/RSVG/librsvg-2.16.0
+./configure
+OR
+./configure PKG_CONFIG_PATH=/usr/lib/pkgconfig
+
+>>> ...
+checking GLIB_LIBS... -L/usr/local/lib -lglib-2.0 -lintl -liconv  
+checking for    gdk-pixbuf-2.0 >= 1.3.7         glib-2.0 >= 2.11.0      libxml-2.0 >= 2.4.7     pangoft2 >= 1.2.0       pangocairo >= 1.2.0        cairo >= 1.2.0  cairo-png >= 1.2.0      fontconfig >= 1.0.1
+        freetype2...
+        Package gdk-pixbuf-2.0 was not found in the pkg-config search path. Perhaps you should add the directory containing `gdk-pixbuf-2.0.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'gdk-pixbuf-2.0' found
+        Package libxml-2.0 was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `libxml-2.0.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'libxml-2.0' found Package pangoft2 was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `pangoft2.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'pangoft2' found
+        Package pangocairo was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `pangocairo.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'pangocairo' found Package cairo was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `cairo.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'cairo' found Package cairo-png was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `cairo-png.pc' to the PKG_CONFIG_PATH environment variable
+        No package 'cairo-png' found Package fontconfig was not found in the pkg-config search path.
+        Perhaps you should add the directory containing `fontconfig.pc' to the PKG_CONFIG_PATH environment variable No package 'fontconfig' found
+
+        configure: error: Library requirements (
+        gdk-pixbuf-2.0 >= 1.3.7
+        glib-2.0 >= 2.11.0
+        libxml-2.0 >= 2.4.7
+        pangoft2 >= 1.2.0
+        pangocairo >= 1.2.0
+        cairo >= 1.2.0
+        cairo-png >= 1.2.0
+        fontconfig >= 1.0.1
+        freetype2
+        )
+        not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.
+<<<
+
+ls /opt/local/lib | grep cairo
+>>>
+libcairo.2.9.3.dylib
+libcairo.2.dylib
+libcairo.a
+libcairo.dylib
+libcairo.la
+libcairomm-1.0.1.0.0.dylib
+libcairomm-1.0.1.dylib
+libcairomm-1.0.a
+libcairomm-1.0.dylib
+libcairomm-1.0.la
+libpangocairo-1.0.0.1400.3.dylib
+libpangocairo-1.0.0.dylib
+libpangocairo-1.0.dylib
+libpangocairo-1.0.la
+<<<
+
+./configure PKG_CONFIG_PATH=/opt/local/lib
+
+
+export PKG_CONFIG_PATH=/sw/lib:/sw/lib/pkgconfig
+./configure --prefix=/usr
+
+
+FOUND gdk_pixbuf!
+
+BUT DIDN'T FIND pangocairo:
+
+>>>...
+checking GLIB_LIBS...  -L/sw/lib -lglib-2.0 -lintl -liconv  
+checking for    gdk-pixbuf-2.0 >= 1.3.7         glib-2.0 >= 2.11.0      libxml-2.0 >= 2.4.7     pangoft2 >= 1.2.0       pangocairo >= 1.2.0  cairo >= 1.2.0   cairo-png >= 1.2.0      fontconfig >= 1.0.1
+        freetype2... Package pangocairo was not found in the pkg-config search path.
+Perhaps you should add the directory containing `pangocairo.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'pangocairo' found
+
+configure: error: Library requirements (        gdk-pixbuf-2.0 >= 1.3.7         glib-2.0 >= 2.11.0      libxml-2.0 >= 2.4.7     pangoft2 >= 1.2.0     pangocairo >= 1.2.0     cairo >= 1.2.0  cairo-png >= 1.2.0      fontconfig >= 1.0.1
+        freetype2) not met; consider adjusting the PKG_CONFIG_PATH environment variable if your libraries are in a nonstandard prefix so pkg-config can find them.
+<<<
+
+pangocairo IS IN /opt/local/lib:
+
+export PKG_CONFIG_PATH=/sw/lib:/sw/lib/pkgconfig:/opt/local/lib
+echo $PKG_CONFIG_PATH
+
+export PKG_CONFIG_PATH=/opt/local/lib:/sw/lib:/sw/lib/pkgconfig
+
+STILL DIDN'T FIND pangocairo, WHICH Is part of pango AND SHOULD BE listed in both pkg_info and ldconfi.
+ 
+ls /sw/lib/pango/1.4.0/modules/
+pango-arabic-fc.a       pango-basic-x.a         pango-hebrew-fc.a       pango-khmer-fc.a        pango-thai-fc.a
+pango-arabic-fc.la      pango-basic-x.la        pango-hebrew-fc.la      pango-khmer-fc.la       pango-thai-fc.la
+pango-arabic-fc.so      pango-basic-x.so        pango-hebrew-fc.so      pango-khmer-fc.so       pango-thai-fc.so
+pango-basic-fc.a        pango-hangul-fc.a       pango-indic-fc.a        pango-syriac-fc.a       pango-tibetan-fc.a
+pango-basic-fc.la       pango-hangul-fc.la      pango-indic-fc.la       pango-syriac-fc.la      pango-tibetan-fc.la
+pango-basic-fc.so       pango-hangul-fc.so      pango-indic-fc.so       pango-syriac-fc.so      pango-tibetan-fc.so
+dlc-genomics:~/FUNNYBASE/NOTES/gui/SVG/svg2png/RSVG young$ 
+
+
+SO TRIED ADDING /sw/lib/pango/1.4.0 TO PKG_CONFIG_PATH:
+
+export PKG_CONFIG_PATH=/sw/lib:/sw/lib/pkgconfig:/opt/local/lib:/sw/lib/pango/1.4.0
+echo $PKG_CONFIG_PATH
+
+
+LOOKING FOR 'pangocairo.pc' USING pkg-config AS BELOW:
+
+>>>
+Pango is definitely installed. pango.pc exists in /usr/lib/pkgconfig/
+
+--
+[root@server1 ~]# pkg-config --cflags pango
+-I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/ 
+include
+--
+
+Looking at the configure file, I see that it's trying to look for a  
+package called "pangocairo". The line in the configure file shows:
+PANGO_PACKAGES="pango pangocairo"
+
+When I run pkg-config to search for 'pangocairo', it's not found.
+
+I've gone back to the installation of Pango and found that  
+pangocairo.pc is in the build directory. It's all there but for some  
+reason, make install of Pango doesn't copy pangocairo.pc or any of  
+the pangocairo files into the respective installation directories.
+
+I've tried to set the PKG_CONFIG_PATH to the build directory of  
+pango, which forces gtk+ to configure but when it comes to build  
+time, it fails.
+<<<
+
+
+
+TRIED pango 1.2.0, DOWNLOADED FROM:
+
+www.pango.org
+
+BUT WOULD NOT MAKE.
+
+
+
+
+

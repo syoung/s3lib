@@ -1,0 +1,154 @@
+Notes-genomics-biopipe.txt
+Wed Oct 25 15:20:51 EDT 2006
+
+INSTALL INFO AT:
++++++++++++++++
+
+http://cvs.biopython.org/cgi-bin/viewcvs/viewcvs.cgi/bioperl-pipeline/Bio/Pipeline/#dirlist
+
+
+1. DOWNLOAD PACKAGES FROM CVS
++++++++++++++++++++++++++++++
+
+# Bioperl Packages
+bioperl-live bioperl-run-release-1-2-0 or later
+bioperl-run bioperl-run-release-1-2-0
+bioperl-pipeline bioperl-run-release-1-2-0
+
+recommended:
+
+    * bioperl-db
+    * biosql-schema 
+
+The packages are available from CVS using the following commands:
+
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-live
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-run
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-pipeline      
+
+password is 'cvs'
+
+
+
+1.O. OBJECTIVE: DOWNLOAD bioperl AND biopipe FROM CVS
+
+1.1. SET THE CVSROOT ENVIRONMENT VARIABLE
+
+export CVSROOT=:pserver:cvs@cvs.open-bio.org:/home/repository/bioperl 
+
+1.2. LOGIN TO REGISTER YOUR HOST WITH CVS (SHOULDN'T NEED TO DO THIS AGAIN FOR THIS CVS SITE)
+
+cvs login 
+Logging in to :pserver:cvs@cvs.open-bio.org:2401/home/repository/bioperl
+CVS password: <password is 'cvs'>
+
+1.3. CHECKOUT THE PACKAGES
+cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-live
+cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-run
+cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-pipeline
+
+1.4 CHECK THEY'RE THERE
+
+> ls
+bioperl-live
+bioperl-pipeline
+bioperl-run
+
+
+
+2. INSTALL BioPipe
+++++++++++++++++++
+
+# Install the bioperl-pipeline package in the standard way:
+
+cd bioperl-pipeline
+perl Makefile.PL
+make
+
+Before doing make test, ensure that you modify the following files to reflect
+your system specifics:
+
+1) bioperl-pipeline/t/BiopipeTestDB.conf
+2) bioperl-pipeline/Bio/Pipeline/PipeConf.pm
+
+In particular, ensure that your mysql configurations are correct.
+Having done, so, you may continue :
+
+     >make test
+     >make install
+
+
+
+2.0 INSTALL XML MODULES
+
+cpan> install XML::SimpleObject
+...
+Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/XML/SimpleObject/.packlist
+  /usr/bin/make install -j3 -- OK
+
+cpan> install XML::SimpleObject  
+XML::SimpleObject is up to date (0.53).
+
+cpan> install XML::SAX::PurePerl 
+XML::SAX::PurePerl is up to date (0.90).
+
+cpan> install XML::Parser
+XML::Parser is up to date (2.34).
+
+
+2.1 INSTALL bioperl-live
+
+cd bioperl-live
+
+
+
+
+
+
+
+
+
+
+To create a Mysql pipeline database:
+
+     >mysqladmin -u root create biopipe
+
+To create the pipeline database tables:
+
+       >cd bioperl-pipeline
+       >mysql -u  biopipe < sql/schema.sql
+
+Biopipe databases are automatically created when pipelines are run(mysql configuration
+read from PipeConf.pm) , so this is a useful test but not necessary for installation.
+
+Although recommended, you do not need to install the packages. You may simply put them into
+a directory and point to them in your PERL5LIB environment variable like so:
+
+    setenv $CVSPATH "/Users/shawn/cvs_src"
+    setenv PERL5LIB "$CVSPATH/bioperl-pipeline:$CVSPATH/bioperl-run:$CVSPATH/bioperl-1-2-1:$CVSPATH/bioperl-db-1-1-0:
+
+For detailed instructions on installing Bioperl please refer to the INSTALL document
+in bioperl-live or in the latest Bioperl release. This document discusses issues like
+installation into non-standard locations or how to install a Perl package if you don't
+have root access (Unix).
+
+Installation of Bioperl on Windows is discussed in the INSTALL.WIN document in bioperl-live
+or in the latest Bioperl release.
+# Perl Packages
+available at http://www.cpan.org
+
+XML::SimpleObject - required
+
+XML::Parser or XML::SAX::PurePerl - either one is required.
+
+Note XML:Parser requires Expat installed and some parties have had problems
+getting this installed. As an alternative solution, XML::SAX::PurePerl doesn't
+require Expat and this is a viable alternative. The latter is of course slower
+but XML parsing only takes up a minute portion of biopipe and thus
+speed here is not a consideration. Biopipe will default to XML::Parser. If not
+installed, it will check for XML::SAX::PurePerl.
+
+Data::ShowTable - optional
+
+This package is used by the job_viewer script in bioperl-pipeline/scripts that
+provides a nice interface for querying the various job status in the pipeline.

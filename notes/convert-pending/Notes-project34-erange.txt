@@ -1,0 +1,1103 @@
+Notes-project32-erange.txt
+
+
+PARSE ANOMALY INFO FROM *anomaly.txt ELAND OUTPUT FILE
+
+FILES ARE HERE ON KRONOS:
+
+cd /mihg/data/core/external/PearlSoe/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH/Data/IPAR_1.01/Bustard1.9.5_21-01-2009_jhoffman/GERALD_23-01-2009_jhoffman/
+[syoung@kronos GERALD_23-01-2009_jhoff
+
+ll *anomaly.txt
+
+    -rwxrwx---+ 1 1801 mihg-data-drive-full 218M Jan 23 20:15 s_1_anomaly.txt
+    -rwxrwx---+ 1 1801 mihg-data-drive-full 243M Jan 23 22:09 s_2_anomaly.txt
+    -rwxrwx---+ 1 1801 mihg-data-drive-full 238M Jan 23 23:52 s_3_anomaly.txt
+    -rwxrwx---+ 1 1801 mihg-data-drive-full 306M Jan 24 00:54 s_4_anomaly.txt
+    -rwxrwx---+ 1 1801 mihg-data-drive-full  59M Jan 24 00:55 s_8_anomaly.txt
+
+
+mkdir /mihg/data/NGS/syoung/base/pipeline/erange
+
+cp /mihg/data/core/external/PearlSoe/090113_HWI-EAS185_0012_20DTMAAXX_Pearl_Seo_Uz_Dale_ENJH/Data/IPAR_1.01/Bustard1.9.5_21-01-2009_jhoffman/GERALD_23-01-2009_jhoffman/s_*_anomaly.txt /mihg/data/NGS/syoung/base/pipeline/erange
+
+	
+/nethome/syoung/base/bin/nextgen/elandAnomaly.pl \
+--inputfile /mihg/data/NGS/syoung/base/pipeline/erange/s_1_anomaly.txt \
+--outputfile /mihg/data/NGS/syoung/base/pipeline/erange/s_1_anomaly.out \
+--dot 10000
+
+
+
+    
+
+</entry>
+
+
+
+<entry [Wed May 20 15:55:21 EST 2009] ERAND AND FindFeatures ONLY TRANSCRIPTOME SOFTWARE AVAILABLE>
+
+
+
+http://seqanswers.com/forums/showthread.php?t=1110
+
+02-01-2009, 04:44 PM   	   #8
+zee
+
+For RNAseq there are systems such as ERANGE and FindFeatures (Vancouver SR package).
+ERANGE seems quite limited to specific genomes and I'm working with certain genomes that have no reference sequence.
+I have not tried FindFeatures.
+
+It would be good to have a generic system to do tag counting in samples given a set of known exon positions and mapping results from alignment to whole genome, mRNA and exon junctions.
+
+
+apfejes
+
+FindFeatures is a fairly simple program. I don't think anyone outside of the BC Genome Science Centre is using it - although if anyone has the urge to try it, I'm more than happy to provide support.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar  6 11:04:21 EST 2009] RUN Brain2, erange ON kronos>
+
+
+    
+    1. GUNZIP FILES
+    
+    gunzip mm9Brain2.comb.eland2.gz
+    gunzip mm9Brain2.comb.fa.gz
+    tar xvfz mm9Brain2.beds.tgz
+    tar xvfz mm9Brain2.rpkms.tgz
+    
+    
+    2. CREATE .sh FILE
+    
+    emacs
+    #!/bin/sh                                                                                                                                                                         
+    export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange/mm9Brain2
+    export PYTHONPATH=/nethome/syoung/base/apps/erange
+    echo $CISTEMATIC_ROOT
+    echo $PYTHONPATH
+    
+    echo "/nethome/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh mouse /nethome/syoung/base/pipeline/erange/mm9Brain2/mm9Brain2 /nethome/syoung/base/apps/erange/RNAFAR/all.newregions.good 20001 &> /nethome/syoung/base/pipeline/erange/mm9Brain2/mouse.out"
+    
+    #### run erange                                                                                                                                                                   
+    /nethome/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh mouse /nethome/syoung/base/pipeline/erange/mm9Brain2/mm9Brain2 /nethome/syoung/base/apps/erange/RNAFAR/all.newregions.good 20001 &> /nethome/syoung/base/pipeline/erange/mm9Brain2/mouse.out
+    
+    
+    3. SUBMIT .sh FILE TO CLUSTER
+    
+    qsub -q psmall run-erange.sh
+    
+    
+        10400.kronos.ccs.miami.edu
+
+
+
+</entry>
+
+
+
+<entry [Mon March 2 11:22:00 EST 2009] RUN erange ON kronos>
+
+
+
+1. DOWNLOAD DATA
+
+DOWNLOAD CISTEMATIC MOUSE GENOME (INCLUDING mouse.genedb SQLITE DATABASE FILE):
+
+mkdir /home/syoung/base/pipeline/erange/mm9Brain1/
+cd /home/syoung/base/pipeline/erange/mm9Brain1/
+wget http://cistematic.caltech.edu/mm9.tgz
+tar xvfz mm9.tgz
+
+DOWNLOAD INPUT FILES:
+
+Brain 1 (no spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.comb.eland2.gz
+
+gunzip mm9Brain1.comb.eland2.gz
+gunzip mm9Brain1.comb.fa.gz
+tar xvfz mm9Brain1.beds.tgz
+tar xvfz mm9Brain1.rpkms.tgz
+
+    mm9Brain1.comb.eland2
+    mm9Brain1.comb.fa
+    mm9Brain1.uniqs.bed
+    mm9Brain1.splices.bed
+    mm9Brain1.multi.bed
+    mm9Brain1.firstpass.rpkm
+    mm9Brain1.accepted.rpkm
+    mm9Brain1.expanded.rpkm
+    mm9Brain1.final.rpkm
+
+
+2. RUN STANDARD ANALYSIS
+
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange/mm9Brain1
+export PYTHONPATH=/nethome/syoung/base/apps/erange
+echo $CISTEMATIC_ROOT
+echo $PYTHONPATH
+cd /home/syoung/base/apps/erange/commoncode
+
+/home/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh mouse /nethome/syoung/base/pipeline/erange/mm9Brain1/mm9Brain1 /home/syoung/base/apps/erange/RNAFAR/all.newregions.good 20001 &> /nethome/syoung/base/pipeline/erange/mm9Brain1/mouse.out
+
+
+CODE FOR runStandardAnalysis.sh:
+
+    # count the unique reads falling on the gene models ; the nomatch files are                                                                               # mappable reads that fell outside of the Cistematic gene models and not the                                                                              # unmappable of Eland (i.e, the "NM" reads)                                                                                                               
+    /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/geneMrnaCounts.py $1 $2.uniqs.bed $2.uniqs.count $2.nomatch.bed
+    
+    # calculate a first-pass RPKM to re-weigh the unique reads,                                                                                               # using 'none' for the splice count                                                                                                                       /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.count none $2.firstpass.rpkm
+    
+    # recount the unique reads with weights calculated during the first pass                                                                                  /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/geneMrnaCountsWeighted.py $1 $2.uniqs.bed $2.firstpass.rpkm $2.uniqs.recount
+    
+    # count splice reads                                                                                                                                      /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/geneMrnaCounts.py $1 $2.splices.bed $2.splices.count $2.nomatchsplices.bed
+    
+    # Alternative 2: use a precomputed list of "new" regions (outside of gene models)                                                                         /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/regionCounts.py $3 $2.nomatch.bed $2.newregions.good $2.stillnomatch.bed
+    
+    # map all candidate regions that are within a given radius of a gene in bp                                                                                /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/getallgenes.py $1 $2.newregions.good $2.candidates.txt $4 -trackfar -cache
+    
+    # calculate expanded exonic read density                                                                                                                  /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.recount $2.splices.count $2.expande\
+    d.rpkm $2.candidates.txt $2.accepted.rpkm
+    
+    # weigh multi-reads                                                                                                                                       /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/geneMrnaCountsWeighted.py $1 $2.multi.bed $2.expanded.rpkm $2.accepted.rpkm $2.multi.count
+    
+    # calculate final exonic read density                                                                                                                     /nethome/apps/bioinfo/python/2.6.1/bin/python /nethome/syoung/base/apps/erange/commoncode/normalizeFinalExonic.py $1 $2.uniqs.bed $2.splices.bed $2.multi.bed $2.expanded.rpkm $2\
+    .multi.count $2.final.rpkm
+
+
+
+3. RUN ON CLUSTER
+
+emacs /nethome/syoung/base/pipeline/erange/mm9Brain1/run-erange.sh
+#!/bin/sh
+
+export CISTEMATIC_ROOT=/nethome/syoung/base/pipeline/erange/mm9Brain1
+export PYTHONPATH=/nethome/syoung/base/apps/erange
+echo $CISTEMATIC_ROOT
+echo $PYTHONPATH
+
+echo "/nethome/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh mouse /nethome/syoung/base/pipeline/erange/mm9Brain1/mm9Brain1 /nethome/syoung/base/apps/erange/RNAFAR/all.newregions.good 20001 &> /nethome/syoung/base/pipeline/erange/mm9Brain1/mouse.out"
+
+#### run erange        
+/nethome/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh mouse /nethome/syoung/base/pipeline/erange/mm9Brain1/mm9Brain1 /nethome/syoung/base/apps/erange/RNAFAR/all.newregions.good 20001 &> /nethome/syoung/base/pipeline/erange/mm9Brain1/mouse.out
+
+chmod 755 /nethome/syoung/base/pipeline/erange/mm9Brain1/run-erange.sh
+
+qsub -q psmall /nethome/syoung/base/pipeline/erange/mm9Brain1/run-erange.sh
+
+
+10282.kronos.ccs.miami.edu
+
+
+    returning 14488583 reads
+    Traceback (most recent call last):
+      File "/nethome/syoung/base/apps/erange/commoncode/geneMrnaCounts.py", line 36, in <module>
+        idb = geneinfoDB(cache=True)
+      File "/home/syoung/base/apps/erange/cistematic/core/geneinfo.py", line 63, in __init__
+        self.cacheDB()
+      File "/home/syoung/base/apps/erange/cistematic/core/geneinfo.py", line 75, in cacheDB
+        shutil.copyfile(dbPath, self.cachedDB)
+      File "/nethome/apps/bioinfo/python/2.6.1/lib/python2.6/shutil.py", line 52, in copyfile
+        fsrc = open(src, 'rb')
+    IOError: [Errno 2] No such file or directory: '/nethome/syoung/base/pipeline/erange/mm9Brain1/db/gene_info.db'
+    could not delete /tmp/tmpaFYnoQ.db
+    /nethome/syoung/base/apps/erange/commoncode/normalizeExpandedExonic.py: version 4.8
+    Traceback (most recent call last):
+      File "/nethome/syoung/base/apps/erange/commoncode/normalizeExpandedExonic.py", line 21, in <module>
+        uniquecountfile = open(sys.argv[3])
+    IOError: [Errno 2] No such file or directory: '/nethome/syoung/base/pipeline/erange/mm9Brain1/mm9Brain1.uniqs.count'
+
+
+
+
+
+
+
+CODE FOR runStandardAnalysis.sh:
+================================
+
+emacs /home/syoung/base/apps/erange/commoncode/runStandardAnalysis.sh
+
+    # count the unique reads falling on the gene models ; the nomatch files are                                                                                                       
+    # mappable reads that fell outside of the Cistematic gene models and not the                                                                                                      
+    # unmappable of Eland (i.e, the "NM" reads)                                                                                                                                       
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/geneMrnaCounts.py $1 $2.uniqs.bed $2.uniqs.count $2.nomatch.bed
+    
+    # calculate a first-pass RPKM to re-weigh the unique reads,                                                                                                                       
+    # using 'none' for the splice count                                                                                                                                               
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.count none $2.firstpass.rpkm
+    
+    # recount the unique reads with weights calculated during the first pass                                                                                                          
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/geneMrnaCountsWeighted.py $1 $2.uniqs.bed $2.firstpass.rpkm $2.uniqs.recount
+    
+    # count splice reads                                                                                                                                                              
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/geneMrnaCounts.py $1 $2.splices.bed $2.splices.count $2.nomatchsplices.bed
+    
+    # Alternative 2: use a precomputed list of "new" regions (outside of gene models)                                                                                                 
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/regionCounts.py $3 $2.nomatch.bed $2.newregions.good $2.stillnomatch.bed
+    
+    # map all candidate regions that are within a given radius of a gene in bp                                                                                                        
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/getallgenes.py $1 $2.newregions.good $2.candidates.txt $4 -trackfar -cache
+    
+    # calculate expanded exonic read density                                                                                                                                          
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.recount $2.splices.count $2.expanded.rpkm $2.candidates.txt $2.ac\
+    cepted.rpkm
+    
+    # weigh multi-reads                                                                                                                                                               
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/geneMrnaCountsWeighted.py $1 $2.multi.bed $2.expanded.rpkm $2.accepted.rpkm $2.multi.count
+    
+    # calculate final exonic read density                                                                                                                                             
+    /nethome/apps/bioinfo/python/2.6.1/bin/python ../commoncode/normalizeFinalExonic.py $1 $2.uniqs.bed $2.splices.bed $2.multi.bed $2.expanded.rpkm $2.multi.count $2.final.rpkm
+
+
+
+</entry>
+
+
+
+<entry [Mon March 2 11:22:00 EST 2009] DEBUG RUN erange ON solexa>
+
+
+
+python2.5 ../commoncode/geneMrnaCounts.py mouse ../mm9Brain1.uniqs.bed ../mm9Brain1.uniqs.count  ../mm9Brain1.nomatch.bed
+psyco not running
+../commoncode/geneMrnaCounts.py: version 3.3
+readSize for ../mm9Brain1.uniqs.bed: 25 mer
+read 1000000
+read 2000000
+read 3000000
+read 4000000
+read 5000000
+read 6000000
+read 7000000
+read 8000000
+read 9000000
+read 10000000
+read 11000000
+read 12000000
+read 13000000
+read 14000000
+returning 14488583 reads
+Traceback (most recent call last):
+  File "../commoncode/geneMrnaCounts.py", line 42, in <module>
+    featuresByChromDict = getFeaturesByChromDict(hg)
+  File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 318, in getFeaturesByChromDict
+    featuresDict = genomeObject.getallGeneFeatures()
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 405, in getallGeneFeatures
+    res = self.queryDB(stmt, fetchall=True)
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 786, in queryDB
+    db = sqlite.connect(self.dbFile, timeout = 60)
+pysqlite2.dbapi2.OperationalError: unable to open database file
+../commoncode/normalizeExpandedExonic.py: version 4.8
+Traceback (most recent call last):
+  File "../commoncode/normalizeExpandedExonic.py", line 21, in <module>
+    uniquecountfile = open(sys.argv[3])
+IOError: [Errno 2] No such file or directory: '../mm9Brain1.uniqs.count'
+psyco not running
+../commoncode/geneMrnaCountsWeighted.py: version 3.6
+readSize for ../mm9Brain1.uniqs.bed: 25 mer
+returning 14488583 reads
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "../commoncode/geneMrnaCountsWeighted.py", line 50, in <module>
+    featuresByChromDict = getFeaturesByChromDict(hg, acceptDict)
+  File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 318, in getFeaturesByChromDict
+    featuresDict = genomeObject.getallGeneFeatures()
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 405, in getallGeneFeatures
+    res = self.queryDB(stmt, fetchall=True)
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 786, in queryDB
+    db = sqlite.connect(self.dbFile, timeout = 60)
+pysqlite2.dbapi2.OperationalError: unable to open database file
+psyco not running
+../commoncode/geneMrnaCounts.py: version 3.3
+readSize for ../mm9Brain1.splices.bed: 25 mer
+returning 856280 reads
+Traceback (most recent call last):
+  File "../commoncode/geneMrnaCounts.py", line 42, in <module>
+    featuresByChromDict = getFeaturesByChromDict(hg)
+  File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 318, in getFeaturesByChromDict
+    featuresDict = genomeObject.getallGeneFeatures()
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 405, in getallGeneFeatures
+    res = self.queryDB(stmt, fetchall=True)
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 786, in queryDB
+    db = sqlite.connect(self.dbFile, timeout = 60)
+pysqlite2.dbapi2.OperationalError: unable to open database file
+psyco not running
+../commoncode/regionCounts.py: version 2.0
+Traceback (most recent call last):
+  File "../commoncode/regionCounts.py", line 22, in <module>
+    readlen = readSize(sys.argv[2], verbose=True)
+  File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 101, in readSize
+    readlen = abs(int(fields[1]) - int(fields[2])) + 1
+IndexError: list index out of range
+psyco not running
+../commoncode/getallgenes.py: version 4.1
+trackfar = True
+could not cache genome mouse
+cached mouse
+Traceback (most recent call last):
+  File "../commoncode/getallgenes.py", line 51, in <module>
+    infile = open(infilename)
+IOError: [Errno 2] No such file or directory: '../mm9Brain1.newregions.good'
+../commoncode/normalizeExpandedExonic.py: version 4.8
+Traceback (most recent call last):
+  File "../commoncode/normalizeExpandedExonic.py", line 21, in <module>
+    uniquecountfile = open(sys.argv[3])
+IOError: [Errno 2] No such file or directory: '../mm9Brain1.uniqs.recount'
+psyco not running
+../commoncode/geneMrnaCountsWeighted.py: version 3.6
+readSize for ../mm9Brain1.multi.bed: 25 mer
+returning 8788757 reads
+merged 0 times
+returning 12933 regions
+Traceback (most recent call last):
+  File "../commoncode/geneMrnaCountsWeighted.py", line 50, in <module>
+    featuresByChromDict = getFeaturesByChromDict(hg, acceptDict)
+  File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 318, in getFeaturesByChromDict
+    featuresDict = genomeObject.getallGeneFeatures()
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 405, in getallGeneFeatures
+    res = self.queryDB(stmt, fetchall=True)
+  File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 786, in queryDB
+    db = sqlite.connect(self.dbFile, timeout = 60)
+pysqlite2.dbapi2.OperationalError: unable to open database file
+../commoncode/normalizeFinalExonic.py: version 2.9
+Traceback (most recent call last):
+  File "../commoncode/normalizeFinalExonic.py", line 21, in <module>
+    multicountfile = open(sys.argv[6])
+IOError: [Errno 2] No such file or directory: '../mm9Brain1.multi.count'
+
+
+
+
+
+
+ADAPT geneMrnaCounts.py FOR TESTING SQLITE DB CONNECT AS testDbFile.py
+
+cp ../commoncode/geneMrnaCounts.py ../commoncode/testDbFile.py
+
+
+RUN 
+
+cd /home/syoung/base/apps/erange/commoncode
+./runTestDbFile.sh mouse ../mm9Brain1 ../RNAFAR/all.newregions.good 20001
+
+CAN'T OPEN MOUSE SQLITE DATABASE FILE /home/syoung/base/pipeline/erange/mm9Brain1/M_musculus/mouse.genedb:
+
+    python2.5 ../commoncode/testDbFile.py mouse ../mm9Brain1.uniqs.bed ../mm9Brain1.uniqs.count  ../mm9Brain1.nomatch.bed
+    ../commoncode/testDbFile.py: version 3.3
+    Before readSize
+    
+    readSize for ../mm9Brain1.uniqs.bed: 25 mer
+    After readSize
+    
+
+    Traceback (most recent call last):
+      File "../commoncode/testDbFile.py", line 41, in <module>
+        featuresByChromDict = getFeaturesByChromDict(hg)
+      File "/store/home/syoung/base/apps/erange/commoncode/commoncode.py", line 318, in getFeaturesByChromDict
+        featuresDict = genomeObject.getallGeneFeatures()
+      File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 405, in getallGeneFeatures
+        res = self.queryDB(stmt, fetchall=True)
+      File "/home/syoung/base/apps/erange/cistematic/genomes/__init__.py", line 786, in queryDB
+        db = sqlite.connect(self.dbFile, timeout = 60)
+
+
+
+
+VIEW CONTENTS OF ARABIDOPSIS GENOME
+
+cd /home/syoung/base/pipeline/erange/mm9Brain1/db
+sqlite3 gene_info.db
+
+
+SELECT name FROM sqlite_master WHERE type = 'table'
+
+gene_info
+gene_description
+gene_synonyms
+
+
+Enter ".help" for instructions
+sqlite>     SELECT name FROM sqlite_master WHERE type = 'table';
+
+gene_info
+gene_description
+gene_synonyms
+
+sqlite> select * from gene_info limit 1;
+1|arabidopsis|814566|rrn26|ArthMr001|-|MT|-
+
+sqlite> .schema gene_info
+CREATE TABLE gene_info(ID INTEGER PRIMARY KEY, genome varchar, gID varchar, symbol varchar, locustag varchar, dbxrefs varchar, chromosome varchar, map_location varchar);
+CREATE INDEX gIDIdx1 on gene_info(gID);
+CREATE INDEX genIdx1 on gene_info(genome);
+
+
+</entry>
+
+
+
+<entry [Fri Feb 27 15:59:50 EST 2009] RUN erange ON solexa>
+
+
+
+1. DOWNLOAD CISTEMATIC MOUSE GENOME (INCLUDING mouse.genedb SQLITE DATABASE FILE)
+
+# TO AVOID THIS:
+#    db: /home/syoung/base/pipeline/erange/mm9Brain1/M_musculus/mouse.genedb stmt: select name, type, chromosome, start, stop, orientation from sequence_features order by name, start
+#    ...
+#    pysqlite2.dbapi2.OperationalError: unable to open database file
+#
+#    NB: What is Cistematic (http://cistematic.caltech.edu)
+#    
+#    The core of Cistematic is a Python package with a rich set of API's that simplify the collection and analysis of candidate cis-regulatory elements from a number of different motif-finding programs such as Meme, and cisGreedy (built-in). Cistematic assesses the significance of each motif by comparing it to its prevalence genome-wide.
+#    
+#    One of the more useful APIs in Cistematic involved wrapping genes, annotations, and genomic sequences that are stored in a sqlite database. It is on top of this foundation that we have built additional platforms, such as ChIPSeqMini, and ERANGE:
+#    
+#        * Comparative genomics modeling of the NRSF/REST repressor network: from single conserved sites to genome-wide repertoire (Mortazavi, 2006)
+#        * Genome-wide mapping of in vivo protein-DNA interactions (Johnson, 2007)
+#        * Mapping and Quantifying Mammalian Transcriptomes by RNA-Seq (Mortazavi, 2008)
+
+
+cd /home/syoung/base/pipeline/erange/mm9Brain1/
+wget http://cistematic.caltech.edu/mm9.tgz
+tar xvfz mm9.tgz
+    ...
+    M_musculus/mouse.genedb
+    M_musculus/chromo7rand.bin
+    M_musculus/chromo10.bin
+    M_musculus/chromo11.bin
+    M_musculus/chromo12.bin
+    M_musculus/chromo13.bin
+    M_musculus/chromo14.bin
+    M_musculus/chromo15.bin
+    M_musculus/chromo16.bin
+    M_musculus/chromo17.bin
+    M_musculus/chromo18.bin
+    M_musculus/chromo19.bin
+
+
+2. SET ENVIRONMENT VARIABLES
+
+# TO AVOID THIS: IOError: [Errno 2] No such file or directory: '/proj/genome/db/gene_info.db'
+
+export CISTEMATIC_ROOT=/home/syoung/base/pipeline/erange/mm9Brain1
+echo $CISTEMATIC_ROOT
+
+export PYTHONPATH=/home/syoung/base/apps/erange
+echo $PYTHONPATH
+
+
+3. RUN STANDARD ANALYSIS
+
+cd /home/syoung/base/apps/erange/commoncode
+
+./runStandardAnalysis.sh mouse ../mm9Brain1 ../RNAFAR/all.newregions.good 20001 &> mouse.out
+
+    python2.5 ../commoncode/geneMrnaCounts.py mouse ../mm9Brain1.uniqs.bed ../mm9Brain1.uniqs.count  ../mm9Brain1.nomatch.bed
+    'import site' failed; use -v for traceback
+    psyco not running
+    ../commoncode/geneMrnaCounts.py: version 3.3
+    readSize for ../mm9Brain1.uniqs.bed: 25 mer
+    read 1000000
+    read 2000000
+    read 3000000
+    read 4000000
+    read 5000000
+    read 6000000
+    read 7000000
+    read 8000000
+    read 9000000
+    read 10000000
+    read 11000000
+    read 12000000
+    read 13000000
+    read 14000000
+    ...
+    FAR592 FAR592 1.533358
+    FAR593 FAR593 0.000000
+    FAR594 FAR594 1.577778
+    FAR595 FAR595 2.259342
+    FAR596 FAR596 0.000000
+    ../commoncode/normalizeFinalExonic.py: version 2.9
+    ../mm9Brain1.uniqs.bed: 14488583 reads
+    ../mm9Brain1.splices.bed: 856280 reads
+    ../mm9Brain1.multi.bed: 2815696 reads
+    returned 33598 genes
+
+
+INPUT FILES
+===========
+
+mm9Brain1.comb.eland2
+mm9Brain1.comb.fa
+mm9Brain1.uniqs.bed
+mm9Brain1.splices.bed
+mm9Brain1.multi.bed
+mm9Brain1.firstpass.rpkm
+mm9Brain1.accepted.rpkm
+mm9Brain1.expanded.rpkm
+mm9Brain1.final.rpkm
+
+
+OUTPUT FILES
+============
+
+cd /home/syoung/apps/erange
+
+-rw-r--r--  1 syoung users 612K Mar  2 14:20 mm9Brain1.uniqs.count
+-rw-r--r--  1 syoung users  65M Mar  2 14:20 mm9Brain1.nomatch.bed
+-rw-r--r--  1 syoung users 611K Mar  2 16:15 mm9Brain1.uniqs.recount
+-rw-r--r--  1 syoung users 593K Mar  2 16:21 mm9Brain1.splices.count
+-rw-r--r--  1 syoung users 521K Mar  2 16:21 mm9Brain1.nomatchsplices.bed
+-rw-r--r--  1 syoung users  34M Mar  2 16:25 mm9Brain1.stillnomatch.bed
+-rw-r--r--  1 syoung users 631K Mar  2 16:25 mm9Brain1.newregions.good
+-rw-r--r--  1 syoung users 854K Mar  2 16:52 mm9Brain1.candidates.txt
+-rw-r--r--  1 syoung users 601K Mar  2 17:45 mm9Brain1.multi.count
+
+
+
+
+CODE FOR STANDARD ANALYSIS
+==========================
+
+cat commoncode/runStandardAnalysis.sh
+
+# count the unique reads falling on the gene models ; the nomatch files are 
+# mappable reads that fell outside of the Cistematic gene models and not the 
+# unmappable of Eland (i.e, the "NM" reads)
+python2.5 ../commoncode/geneMrnaCounts.py $1 $2.uniqs.bed $2.uniqs.count $2.nomatch.bed
+
+# calculate a first-pass RPKM to re-weigh the unique reads,
+# using 'none' for the splice count
+python2.5 ../commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.count none $2.firstpass.rpkm
+
+# recount the unique reads with weights calculated during the first pass
+python2.5 ../commoncode/geneMrnaCountsWeighted.py $1 $2.uniqs.bed $2.firstpass.rpkm $2.uniqs.recount
+
+# count splice reads
+python2.5 ../commoncode/geneMrnaCounts.py $1 $2.splices.bed $2.splices.count $2.nomatchsplices.bed
+
+# Alternative 2: use a precomputed list of "new" regions (outside of gene models)
+python2.5 ../commoncode/regionCounts.py $3 $2.nomatch.bed $2.newregions.good $2.stillnomatch.bed
+
+# map all candidate regions that are within a given radius of a gene in bp
+python2.5 ../commoncode/getallgenes.py $1 $2.newregions.good $2.candidates.txt  -trackfar -cache
+
+# calculate expanded exonic read density
+python2.5 ../commoncode/normalizeExpandedExonic.py $1 $2.uniqs.bed $2.uniqs.recount $2.splices.count $2.expanded.rpkm $2.candidates.txt $2.accepted.rpkm
+
+# weigh multi-reads
+python2.5 ../commoncode/geneMrnaCountsWeighted.py $1 $2.multi.bed $2.expanded.rpkm $2.accepted.rpkm $2.multi.count
+
+# calculate final exonic read density
+python2.5 ../commoncode/normalizeFinalExonic.py $1 $2.uniqs.bed $2.splices.bed $2.multi.bed $2.expanded.rpkm $2.multi.count $2.final.rpkm
+
+
+
+
+
+CODE FOR ALL ANALYSIS STEPS
+===========================
+
+http://woldlab.caltech.edu/rnaseq/analysisSteps.txt
+
+
+# analysis steps for an ERANGE analysis of RNA-seq data
+# This is an example of the command-line settings used to run each of the scripts in runStandardAnalysis.sh
+
+# preliminary: create splice file using getsplicefa.py
+
+# preliminary: build expanded genome using Eland's squashGenome
+
+# preliminary: build repeatmask database using buildrmaskdb.py
+
+#run eland2 on expanded genome, i.e. eland_25
+/proj/genome/experiments/eland64/ElandPL03/Eland/eland_25 FC11048.s1.25mer.txt /woldlab/myod/data1/alim/genomes/mm9sp25 FC11048.s1.25mer.mm9.eland2 --multi
+
+#create bed file of unique reads
+python2.5 ../commoncode/maketrackfromeland2.py c2c12rna24R.comb.eland2 c2c12rna24R c2c12rna.24R.uniqs.bed
+
+#create bed file of multi reads
+python2.5 ../commoncode/maketrackmulti.py c2c12rna24R.comb.eland2 c2c12rna24Rmulti c2c12rna.24R.multi.bed
+
+#create bed file of spliced reads
+python2.5 ../commoncode/remapSplicesEland2.py ../mm9splices/knownGene.txt c2c12rna24R.comb.eland2 c2c12rna24Rsplices c2c12rna.24R.splices.bed
+
+
+
+# count the unique reads falling on the gene models ; the nomatch files are 
+# mappable reads that fell outside of the Cistematic gene models and not the 
+# unmappable of Eland (i.e, the "NM" reads)
+python2.5 ../commoncode/geneMrnaCounts.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.count c2c12rna.24R.nomatch.bed
+
+# count splice reads
+python2.5 ../commoncode/geneMrnaCounts.py mouse c2c12rna.24R.splices.bed c2c12rna.24R.splices.count c2c12rna.24R.nomatchsplices.bed
+
+# calculate a first-pass RPKM to re-weigh the unique reads,
+# using 'none' for the splice count
+python2.5 ../commoncode/normalizeExpandedExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.count none c2c12rna.24R.firstpass.rpkm -cache
+
+# recount the unique reads with weights calculated during the first pass
+python2.5 ../commoncode/geneMrnaCountsWeighted.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.firstpass.rpkm c2c12rna.24R.uniqs.recount -cache
+
+# There is a choice of either identifying new regions from the data alone 
+# (Alternative 1), or using a pre-computed list of new regions (presumably 
+# pooled from multiple nomatch.bed files, or literature) against the nomatch.bed
+# file (Alternative 2)
+
+# Alternative 1: find new regions outside of gene models with reads piled up 
+python2.5 ../commoncode/findallnocontrol.py RNA24R c2c12rna.24R.nomatch.bed c2c12rna.24R.newregions.txt 25 40
+
+# Alternative 1: filter out new regions that overlap repeats more than a certain fraction
+python2.5 ../commoncode/checkrmask.py ../mm9repeats/rmask.db c2c12rna.24R.newregions.txt c2c12rna.24R.newregions.repstatus c2c12rna.24R.newregions.good 1
+
+# Alternative 2: use a precomputed list of "new" regions (outside of gene models)
+python2.5 ../commoncode/regionCounts.py ../RNAFAR/all.newregions.good c2c12rna.24R.nomatch.bed c2c12rna.24R.newregions.good c2c12rna.24R.stillnomatch.bed
+
+# map all candidate regions that are within a 20kb radius of a gene in bp
+# take out -cache if running locally
+python2.5 ../commoncode/getallgenes.py mouse c2c12rna.24R.newregions.good c2c12rna.24R.candidates.txt 20001 -trackfar -cache
+
+# calculate expanded exonic read density
+python2.5 ../commoncode/normalizeExpandedExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.uniqs.recount c2c12rna.24R.splices.count c2c12rna.24R.expanded.rpkm c2c12rna.24R.candidates.txt c2c12rna.24R.accepted.rpkm -cache
+
+# create bed file of accepted candidate regions
+python2.5 ../commoncode/regiontobed.py RNAFAR c2c12rna.24R.accepted.rpkm RNAFAR.bed 255,0,0
+
+# weigh multi-reads
+python2.5 ../commoncode/geneMrnaCountsWeighted.py mouse c2c12rna.24R.multi.bed c2c12rna.24R.expanded.rpkm c2c12rna.24R.accepted.rpkm c2c12rna.24R.multi.count -cache
+
+# calculate final exonic read density
+python2.5 ../commoncode/normalizeFinalExonic.py mouse c2c12rna.24R.uniqs.bed c2c12rna.24R.splices.bed c2c12rna.24R.multi.bed c2c12rna.24R.expanded.rpkm c2c12rna.24R.multi.count c2c12rna.24R.final.rpkm 
+
+
+
+</entry>
+
+
+
+<entry [Fri Feb 27 13:59:50 EST 2009] DOWNLOADED LATEST VERSION OF ERANGE>
+
+
+
+
+cd /home/syoung/base/apps/erange
+
+http://woldlab.caltech.edu/rnaseq/ERANGE3.0.1.tgz
+
+
+</entry>
+
+
+
+<entry [Fri Feb 27 13:58:50 EST 2009] NEED TO UPGRADE PYTHON ON kronos FOR sqlite3 BUILTIN MODULE>
+
+
+
+1. NEED sqlite3 PYTHON MODULE ON kronos
+
+2. MODULE IS BUILT INTO python2.5
+
+3. MUST RECOMPILE python2.5 IF sqlite3 APPLICATION WAS NOT ALREADY INSTALLED
+AT TIME OF COMPILATION (PYTHON WOULD NOT HAVE FOUND THE sqlite3 HEADERS AND
+WOULD HAVE SKIPPED INSTALLATION OF THE sqlite3 PYTHON MODULE)
+
+4. USER syoung RECOMPILE sqlite3 MODULE IN python FAILED WITH THIS ERROR (LACK OF PRIVILEGES?):
+
+python
+import py_compile
+py_compile.compile("sqlite3.py")
+
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in ?
+      File "/usr/lib64/python2.4/py_compile.py", line 115, in compile
+        f = open(file, 'U')
+    IOError: [Errno 2] No such file or directory: 'sqlite3.py'
+
+
+
+
+NB: THIS MAY BE SOLVED BY ADDING THE PYTHON_PATH ENV VARIABLE (ON kronos):
+
+ImportError: No module named cistematic.genomes
+psyco not running
+../commoncode/geneMrnaCountsWeighted.py: version 3.6
+Traceback (most recent call last):
+  File "../commoncode/geneMrnaCountsWeighted.py", line 16, in ?
+    from cistematic.genomes import Genome
+ImportError: No module named cistematic.genomes
+
+
+INSTALL ON solexa
+
+mkdir /home/syoung/base/apps/erange/pysqlite
+cd /home/syoung/base/apps/erange/pysqlite
+wget http://initd.org/pub/software/pysqlite/releases/2.4/2.4.1/pysqlite-2.4.1.tar.gz
+tar xvfz *
+cd pysqlite-2.4.1
+python setup.py install
+
+OK BUT OLD VERSION. NEED sqlite3 WHICH IS IN python2.5
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Feb 27 13:57:50 EST 2009] DOWNLOADED MOUSE Erange DEMO DATA >
+
+
+
+
+1. DOWNLOAD FILES
+
+Brain 1 (no spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain1.comb.eland2.gz
+
+Brain 2 (spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain2.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain2.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain2.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain2.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Brain2.comb.eland2.gz
+
+Liver 1 (no spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver1.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver1.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver1.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver1.comb.eland2.gz
+
+Liver 2 (spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver2.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver2.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver2.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver2.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Liver2.comb.eland2.gz
+
+Muscle 1 (no spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle1.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle1.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle1.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle1.comb.eland2.gz
+
+Muscle 2 (spike)
+
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle2.wig
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle2.beds.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle2.rpkms.tgz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle2.comb.fa.gz
+wget http://woldlab.caltech.edu/rnaseq/mm9Muscle2.comb.eland2.gz
+
+
+
+2. UNZIP DATA FOR mm9Brain1 (no spike)
+
+[syoung@solexa01 erange]$ gunzip mm9Brain1.comb.eland2.gz
+[syoung@solexa01 erange]$ gunzip mm9Brain1.comb.fa.gz
+
+[syoung@solexa01 erange]$ tar xvfz mm9Brain1.beds.tgz
+mm9Brain1.uniqs.bed
+mm9Brain1.splices.bed
+mm9Brain1.multi.bed
+
+[syoung@solexa01 erange]$ tar xvfz mm9Brain1.rpkms.tgz
+mm9Brain1.firstpass.rpkm
+mm9Brain1.accepted.rpkm
+mm9Brain1.expanded.rpkm
+mm9Brain1.final.rpkm
+
+[syoung@solexa01 erange]$ ll | grep mm9Brain1
+-rw-r--r--  1 syoung users 594K Apr 24  2008 mm9Brain1.accepted.rpkm
+-rw-r--r--  1 syoung users 243M Jul 24  2008 mm9Brain1.beds.tgz
+-rw-r--r--  1 syoung users 2.1G Jul 24  2008 mm9Brain1.comb.eland2
+-rw-r--r--  1 syoung users 1.4G Sep  4 15:24 mm9Brain1.comb.fa
+-rw-r--r--  1 syoung users 927K Apr 24  2008 mm9Brain1.expanded.rpkm
+-rw-r--r--  1 syoung users 663K Apr 24  2008 mm9Brain1.final.rpkm
+-rw-r--r--  1 syoung users 915K Jan 29  2008 mm9Brain1.firstpass.rpkm
+-rw-r--r--  1 syoung users 422M Jan 19  2008 mm9Brain1.multi.bed
+-rw-r--r--  1 syoung users 1.2M Jul 24  2008 mm9Brain1.rpkms.tgz
+-rw-r--r--  1 syoung users  55M Jan 19  2008 mm9Brain1.splices.bed
+-rw-r--r--  1 syoung users 619M Jan 19  2008 mm9Brain1.uniqs.bed
+
+
+
+
+README:
+
+http://woldlab.caltech.edu/rnaseq/rnaseqREADME.txt
+
+The latest version of this software is available at 
+
+http://woldlab.caltech.edu
+
+please check the website for updates.
+
+This is the core of the RNA-seq analysis code described in Mortazavi 
+et al (2008). Please make sure that you have read Figure 3 and the 
+methods / supplemental methods of that paper before attempting to 
+use this package for RNA-Seq data analysis. 
+
+ERANGE should run on any Unix-like system supporting python 2.5 or 
+better. The code is developed on Linux and MacOS X on python 2.5. 
+
+Historically, the code for ERANGE grew out of the ChIPSeqMini 
+package from Johnson et al (2007), and some of the key scripts 
+(findallnocontrol.py and getallgenes.py) are shared between the two. 
+This is why ERANGE is "dual-use" and is also why the code for both 
+analyses were kept in common as much as possible. This should be 
+helpful when someone tries to combine ChIP-seq and RNA-seq 
+analyses !
+
+This code is made available as open-source, as described in the 
+copyright file ERANGE.COPYRIGHT.
+
+
+SETTING EXPECTATIONS
+
+ERANGE is not a point-and-click, turn-key package. 
+
+It is a set of python scripts that, when run in order as a pipeline 
+on the "right" input, will take read data in bed format and 
+calculate gene expression levels in RPKM (Reads Per kb per Million 
+reads). This pipeline is embodied in a shell script called 
+runStandardAnalysis.sh, which only takes a few inputs, described in 
+the ANALYSIS and PIPELINE section below.
+
+You should be able to download the data from our website and run the 
+analysis through the pipeline.Whether you decide to start from the 
+bed files or the eland files is up to you, but the later will 
+require running the eland to bed conversion scripts manually, 
+described in the MAPPING ELAND OUTPUT INTO BED FILES section below.
+
+Because you will likely want to run this package on other genomes 
+(or builds) than the one described in our original paper, you will 
+need to do several additional steps, such as:
+
+- build expanded genomes with splices and spikes
+- check overlap of RNAFAR predictions with repeats
+
+This will require some comfort with running and, if necessary, 
+editing scripts. While the code is sparsely documented, we are 
+making it available so that you can *read it*. We'll be happy to 
+help modifying and updating the code within a reasonable extent 
+and will try to provide more in depth documentation and tutorials 
+on our web site.
+
+While the scripts produce several forms of RPKM, we suggest that 
+the "final" RPKM are the values that most people will be interested 
+in.
+
+
+REQUIREMENTS
+
+1) reads in bed format. We assume and for now only  provide scripts 
+for parsing ELAND (0.3 or higher) output run with the --multi option 
+into bed files. If you decide to use any other read mapper or 
+another platform, you will need to generate 3 bed files for unique, 
+spliced, and multireads. Note that multireads are flagged with an 
+identifier of the form:
+
+ReadIDxMultiplicity 
+
+where every entry in the bed file for that particular read at each 
+possible location has the same identifier.
+
+1) Python 2.5 is required because some of the scripts and 
+Cistematic (see below) need pysqlite, which is now bundled in 
+Python.
+
+2) You will also need to use Cistematic 2.0 for some of the scripts 
+marked below that use genes and genomic sequence; in particular, you 
+will also need the Cistematic version of the genomes. Cistematic is 
+available at http://cistematic.caltech.edu 
+
+3) You will need genomic sequences to build the expanded genome, as 
+well as gene models from UCSC. 
+
+(Optional) Python is very slow on large datasets. Use of the psyco 
+module (psyco.sf.net) on 32-bit Linux or all Mac Intel machines to 
+significantly speed up runtime is highly recommended.
+
+(Optional) Several of the ploting scripts also rely on Matplotlib, 
+which is available at matplotlib.sf.net.
+
+
+COMMAND LINE OPTIONS
+
+You can find out more about the settings for each python script by 
+typing:
+
+python commoncode/<scriptname> 
+
+to see the command line options. 
+
+For example, if you wanted to know the command line options of the 
+script used to generate supplementary datasets 2-4, combineRPKMs.py , 
+you would type:
+
+python commoncode/combineRPKMs.py
+
+and get back a version number and all possible command line options:
+
+version 1.0
+usage: python commoncode/combineRPKMs.py firstRPKM expandedRPKM finalRPKM combinedOutfile [-withmultifraction]
+
+where fields in brackets are optional.
+
+
+BUILDING EXPANDED GENOMES AND RUNNING ELAND
+
+You will need to build an expanded genome consisting of genomic 
+sequences, spike sequences, and splice-spanning sequences in order 
+to run ERANGE on your own datasets. This expanded genome is specific 
+to the read size used, i.e. there will be a different expanded 
+genome for mouse when using 25bp reads or 32bp reads.
+
+Download the chromosomes from UCSC, as well as the knownGene.txt (or 
+equivalent table) and a directory of repeatmask annotations for each 
+chromosome (also from UCSC) for your genome of interest.
+
+You will need to build a splice fasta file using the script 
+getsplicefa.py, which needs Cistematic, the knownGene table, and a 
+paremeter for splice radius, which is 4 bp shorter than the length 
+of the reads.
+
+Once you have the splice fasta file, drop it into the same directory 
+as well as a fasta file for your spikes. Then use squashGenome 
+(part of Eland), to build the expanded genome.
+
+You will also build a repeat database using buildrmaskdb.py for use 
+in the candidate exon analysis.
+
+Please refer to the Illumina documentation for the details on 
+running squashGenome and ELAND.
+
+
+MAPPING ELAND OUTPUT INTO BED FILES
+
+Once you have run ELAND with the --multi option (which we 
+colloquially call "eland2") for each RNA-seq lane against the 
+expanded genome, combine all of the outputs for one sample into a 
+single file e.g. test.comb.eland2
+
+The following scripts are then used to map the reads onto bed files:
+
+maketrackfromeland2.py   
+maketrackmulti.py
+
+and 
+
+remapSplicesEland2.py
+
+for example, assuming that the UCSC gene model description are in 
+../mm9splices/knownGene.txt, we would run:
+
+python2.5 ../commoncode/maketrackfromeland2.py test.comb.eland2 test test.uniqs.bed
+python2.5 ../commoncode/maketrackmulti.py test.comb.eland2 testmulti test.multi.bed
+python2.5 ../commoncode/remapSplicesEland2.py ../mm9splices/knownGene.txt test.comb.eland2 testsplices test.splices.bed
+
+It is important to stick to the naming convention of the bed files, 
+as the pipeline assumes that all of the bed files have the same 
+prefix (in this case "test"), and will use the appropriate file 
+extensions (e.g. ".uniqs.bed") with the right scripts.
+
+You can also create a bed-formatted WIG file, for display on the 
+UCSC browser:
+
+makewiggle.py
+
+
+ANALYSIS
+
+The main steps of a typical analysis using ERANGE is shown in 
+analysisSteps.txt, where each script would be run in order, with the 
+caveat that there are two ways to do the candidate exon analysis 
+(RNAFAR), creatively called "alternative 1" and "alternative 2". 
+
+In alternative 1, we use the .nomatch.bed file computed in the 
+previous step to identify candidate regions:
+
+# Alternative 1: find new regions outside of gene models with reads piled up 
+python2.5 ../commoncode/findallnocontrol.py test test.nomatch.bed test.newregions.txt 25 40
+# Alternative 1: filter out new regions that overlap repeats more than a certain fraction
+python2.5 ../commoncode/checkrmask.py ../mm9repeats/rmask.db test.newregions.txt test.newregions.repstatus test.newregions.good 1
+
+In alternative 2, we pool multiple .nomatch.bed into a single 
+nomatch.bed, run it through the two scripts of alternative 1 above, 
+and then use these precomputed candidates to count reads falling in 
+these regions:
+
+# Alternative 2: use a precomputed list of "new" regions (outside of gene models)
+python2.5 ../commoncode/regionCounts.py ../RNAFAR/all.newregions.good test.nomatch.bed test.newregions.good test.stillnomatch.bed
+
+Alternative 2 is the one used by the pipeline 
+script described below.
+
+The scripts will generate a set of intermediate files, the most 
+interesting of which are the gene RPKM values. These will be in the 
+following files for the test example:
+
+test.firstpass.rpkm (the unique reads only)
+test.expanded.rpkm (the unique reads + spliced reads  + RNAFAR)
+test.final.rpkm (uniques + spliced + RNAFAR + multireads)
+
+
+PIPELINE
+
+Most of the analysis steps described in the section above are 
+automated in a pipeline shell script called runStandardAnalysis.sh .
+Note that the pipeline assumes that candidate exons have already 
+been identified (e.g. from pooled data), which is called 
+"alternative 2" in the ANALYSIS section.
+
+The pipeline assumes that the bed files for the uniq, multi, and 
+spliced reads exist andare named as described in the MAPPING ELAND 
+OUTPUT INTO BED FILES section.
+
+We assume that Cistematic 2.0 is installed, including a version of 
+the appropriate Cistematic genome.
+
+We will also need a radius (e.g. 20000 bp) within which a candidate 
+exon will be consolidated with an existing gene.
+
+For example, for the test dataset from the ANALYSIS section, we 
+could run the pipeline as:
+
+. ./runStandardAnalysis.sh mouse test ../RNAFAR/all.newregions.good 20001
+
+This could run from an hour to a whole day depending on how many 
+reads are involved (1M vs 80M) and how big a consolidation radius 
+is used. 
+
+
+RELEASE HISTORY
+
+version 2.0 May 2008 - First public release of ERANGE
+

@@ -1,0 +1,320 @@
+
+CONTINUATION OF BUG FIX FOR blast2tsv:
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-Q98514-PRE.blast
+
+
+/common/myEST/bin/pipeline4/blast2tsv.pl < /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast > /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+
+
+grep -n Q98514 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+2757:swissprot  Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q98514  A464_PBCV1      Putative protein A464R  6.4  -161     1               275     275     1       275             1       275     1.00
+2758:swissprot  Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8KAN7  RNC_CHLTE       Ribonuclease III (EC 3.1.26.3) (RNase III)    4.0     -33     1       A464_PBCV1      275     272     68      264             48      253     0.35
+2759:swissprot  Q98514  A464_PBCV1      Putative protein A464R  swissprot       Q8Y691  RNC_LISMO       Ribonuclease III (EC 3.1.26.3) (RNase III)    2.1     -25     1       RNC_CHLTE       275     229     52      267             5       226     0.28
+
+
+AND THE OTHER MISSING LONG GENE HAD NO BLAST HITS ANYWAY:
+
+grep -n P83168 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast
+
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  P83168 A2AP_STRCA|swissprot|Alpha-2-antiplasmin (Alpha-2-plasmin
+    inhibitor) (Alpha-2-PI) (Alpha-2-AP) (Fragment)
+        (11 letters; record 889)
+
+WARNING:  the maximum achievable score of 51 for gapped alignments in frame +0
+          is less than the gapped cutoff score gapS2 (=68).
+
+Database:  /common/data/swissprot
+           188,477 sequences; 68,230,664 total letters.
+Searching....10....20....30....40....50....60....70....80....90....100% done
+
+                                                                     Smallest
+                                                              High  Probability
+Sequences producing High-scoring Segment Pairs:              Score  P(N)      N
+
+
+
+      *** NONE ***
+
+
+
+LOAD INTO  swissprotshortselfblast TABLE:
+
+
+use indexer;
+drop table swissprotshortselfblast;
+
+./arrayloaddata.pl -d indexer -t swissprotshortselfblast -i /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+
+select count(distinct queryaccession) from swissprotshortselfblast;
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                           1275 |
++--------------------------------+
+
+
+select * from swissprotshortselfblast where queryaccession = 'Q98514'\G
+
+>>>
+...
+        identity: 0.28
+*************************** 3. row ***************************
+     querysource: swissprot
+  queryaccession: Q98514
+         queryid: A464_PBCV1
+ queryannotation: Putative protein A464R
+    targetsource: swissprot
+ targetaccession: Q98514
+        targetid: A464_PBCV1
+targetannotation: Putative protein A464R
+    hitevaluedec: 6.40
+    hitevalueexp: -161
+       hspnumber: 1
+        hspscore: 1428
+     querylength: 275
+    targetlength: 275
+      querystart: 1
+       querystop: 275
+     targetstart: 1
+      targetstop: 275
+      queryframe: 0
+        identity: 1.00
+3 rows in set (0.00 sec)
+<<<
+
+
+
+CHECK AGAIN FOR MISSING IDS
+===========================
+
+
+SAVE A BACKUP OF ORIGINAL BLAST TSV OUTPUT FILE:
+
+cp /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv.BLAST2TSV.IMPROVED2
+
+
+select distinct queryaccession from swissprotshortselfblast into outfile '/private/var/tmp/swissprot-short-ids-sql';
+
+
+BACKUP OLD ids-sql FILE
+
+cp /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql.IMPROVED
+
+COPY NEW ids-sql FILE TO unigene/blast FOLDER
+
+sudo mv /private/var/tmp/swissprot-short-ids-sql /Users/young/FUNNYBASE/pipeline/unigene/blast/swissprot-short-ids-sql
+
+
+
+CHECK WHICH IDS ARE MISSING FROM THE SQL TABLE USING swissprotshortcheckmissingids.pl:
+
+cd /Users/young/FUNNYBASE/pipeline/unigene/blast
+./swissprotshortcheckmissingids.pl swissprot-short-ids-fasta swissprot-short-ids-sql
+
+BEFORE:
+
+NOT FOUND IN SQL
+P83011
+P83010
+P80166
+P28067
+P11887
+P80173
+P83168
+Q98514
+
+
+AFTER:
+
+NOT FOUND IN SQL
+P83011 - small
+P83010 - small
+P80166 - small
+P15648
+P11887 - small
+P80173 - small
+P83168 - small
+P80069 - NO HIT
+
+REM: SMALL SEQUENCES:
+
+>P83011 13KDA_SCYCA|swissprot|13.2 kDa protein (Fragment)
+MIFTAXDRSAIEXV
+>P83010 13KDA_TRISC|swissprot|13 kDa protein (Fragment)
+AGEPANNEDRFNY
+>P80166 23KD_BACST|swissprot|23 kDa basic protein (Fragment)
+XKESSFDIVSKVDLSEVANAIN
+>P11887 2ENR_CLOTY|swissprot|2-enoate reductase (EC 1.3.1.31) (Fragment)
+MKNKSLFEVIKIGKVEVXXKIXMAVMGAFG
+>P80173 48KD_BACCE|swissprot|48 kDa protein (Fragment)
+XTQQEGMDISSSLXK
+>P83168 A2AP_STRCA|swissprot|Alpha-2-antiplasmin (Alpha-2-plasmin inhibitor) (Alpha-2-PI) (Alpha-2-AP) (Fragment)
+LQVDYLVLEVA
+
+
+NO BLAST HITS:
+
+em  /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast
+>>>...
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  P80069 A45K_MYCBO|swissprot|45/47 kDa antigen (Fragment)
+        (17 letters; record 910)
+
+WARNING:  A positive score is not possible with the blosum62 matrix; the
+          Karlin-Altschul K, Lambda and H parameters could not be computed for
+          ungapped alignments.
+
+NOTE:  There are no valid contexts in the requested search and "novalidctxok"
+       was specified.
+
+EXIT CODE 0 There are no valid contexts in the requested search and
+          "novalidctxok" was specified.
+^L
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  Q98514 A464_PBCV1|swissprot|Putative protein A464R
+        (275 letters; record 911)
+...<<<
+
+
+grep -n P15648 /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast 
+552876:Query=  P15648 2C_DICDI|swissprot|2C protein
+
+getlines -f /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast -n 552870 -l 50
+
+>>>...
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  P15648 2C_DICDI|swissprot|2C protein
+        (98 letters; record 375)
+
+WARNING:  the maximum achievable score of 37 in context 0 (frame +0) is less
+          than the ungapped cutoff score S2 (=41).
+
+NOTE:  There are no valid contexts in the requested search and "novalidctxok"
+       was specified.
+
+EXIT CODE 0 There are no valid contexts in the requested search and
+          "novalidctxok" was specified.
+
+
+BLASTP 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Query=  P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibility antigen, DM
+    alpha chain precursor (MHC class II antigen DMA)
+        (261 letters; record 376)
+
+Database:  /common/data/swissprot
+           188,477 sequences; 68,230,664 total letters.
+Searching....10....20....30....40....50....60....70....80....90....100% done
+
+                                                                     Smallest
+                                                              High  Probability
+Sequences producing High-scoring Segment Pairs:              Score  P(N)      N
+
+P28067 2DMA_HUMAN|swissprot|HLA class II histocompatibili...  1271  1.1e-142  1
+P28078 2DMA_MOUSE|swissprot|Class II histocompatibility a...   963  5.6e-107  1
+P01910 HA2K_MOUSE|swissprot|H-2 class II histocompatibili...   232  3.3e-22   1
+P20037 HA2B_RAT|swissprot|RT1 class II histocompatibility...   227  1.3e-21   1
+...<<<
+
+
+THIS SEQUENCE HAS A HIGH DEGREE OF REPETITION WHICH IS MASKED OUT BY BLAST SO IT WOULD HAVE NO HITS:
+
+>P15648 2C_DICDI|swissprot|2C protein
+MTLFSSISSMSSSMTSSRSSFSSFGSGTSMGSNSIACSVGSGGGGCGSGSGGCGDLTGGA
+KSSGGSCGGKGGPHNHGHGNGHGPHGHGGKGSGGSCSC
+
+
+NOTE THIS RESTORES THE BLAST HIT ENTRIES FOR THE FOLLOWING SEQUENCE (P28067), WHICH WAS MISSING IN FIRST TEST.
+
+
+
+REDO COMPLETE SWISSPROT SELF-BLAST
+==================================
+
+sudo ./arrayblast.pl -d swissprot-short -q swissprot-short -t swissprot -j 28
+
+
+FIRST TEST WITH swissprot-short:
+
+    /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+    
+    Run time: 00:04:06
+    Completed ./arrayblast.pl
+    8:54PM, 2 January 2008
+    ****************************************
+
+FILE SIZE:
+
+ll /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv
+-rw-rw-rw-   1 root  admin       1M Jan  2 21:31 swissprot-short-swissprot.blast.tsv    
+
+
+LOAD INTO TABLE:
+
+use indexer;
+drop table swissprotshortselfblast;
+
+./arrayloaddata.pl -d indexer -t swissprotshortselfblast -i /common/pipeline/swissprot-short/blast/swissprot-short-swissprot.blast.tsv -s /Users/young/FUNNYBASE/bin/mappings/sql/create_blast.sql
+
+
+select count(distinct queryaccession) from swissprotshortselfblast;
+
++--------------------------------+
+| count(distinct queryaccession) |
++--------------------------------+
+|                           1275 |
++--------------------------------+
+
+select count(*) from swissprotshortselfblast;
++----------+
+| count(*) |
++----------+
+|   148921 |
++----------+
+
+select count(distinct targetaccession) from swissprotshortselfblast;
++---------------------------------+
+| count(distinct targetaccession) |
++---------------------------------+
+|                            9104 |
++---------------------------------+
+
+
+OKAY! RERUN SWISSPROT SELF-BLAST:
+
+
+sudo ./arrayblast.pl -d swissprot -q swissprot -t swissprot -j 28
+
+

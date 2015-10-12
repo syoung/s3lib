@@ -1,0 +1,99 @@
+[workflow sav]
+2011-01-29 21:33:37
+
+Workflow:	sav
+Started: 2011-01-28 14:30:44
+Stopped: 2011-01-29 02:38:01
+Duration: 12 hrs 7 mins 17 secs
+
+
+	Application	1	snptosav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-28 14:30:44
+	stopped: 2011-01-29 02:38:01
+	duration: 12 hrs 7 mins 17 secs
+
+
+
+	Application	2	filtersav
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+	Application	3	vendbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+	Application	4	vennnondbsnp
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	status: unknown
+	locked: 0
+	started: 2011-01-25 12:24:30
+	stopped: 2011-01-25 12:24:30
+	duration: 0 hrs 0 mins 0 secs
+
+
+
+
+[app 2 filtersav]
+2011-01-29 21:33:37
+
+  Application:
+  name           filtersav
+  owner          anonymous
+  ordinal        2
+  status         unknown
+  started        2011-01-25 12:24:30
+  stopped        2011-01-25 12:24:30
+  duration       0 hrs 0 mins 0 secs
+  locked         0
+  type           snp
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Filter out dbSNP and non-dbSNP SNPs
+
+    Parameters:
+    executable     /nethome/syoung/0.5/bin/apps/snp/filterSav.pl
+    inputfile      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%.sav
+    loop           parallel
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/loop-splitsav.out
+    replicates     1-33
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/splitsav-%REPLICATE%.out
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/filterSav.pl \
+ --inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%.sav \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/splitsav-%REPLICATE%.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/loop-splitsav.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/loop-splitsav.out
+
+
+
+
+Application status: unknown
+
+
+Completed workflow sav
+2011-01-29 21:34:12

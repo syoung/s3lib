@@ -1,0 +1,109 @@
+USERS
+
+| justin   | localhost                    | 39a3da3c1a21e504 |
+| tfiedler | localhost                    | 39a3da3c1a21e504 |
+| webuser  | localhost                    | 39a3da3c1a21e504 |
+| crawford | localhost                    | 39a3da3c1a21e504 |
+| mclean   | localhost                    | 39a3da3c1a21e504 |
+| young    | localhost                    | 06441663636ef9c6 |
+
+DATABASES
+| 384_analysis                 |
+| 384_analysis2_GO             |
+| BREVISBASE_WORKING           |
+| FUNNYBASE_384_ANALYSIS       |
+| FUNNYBASE_ANNOTATION         |
+| FUNNYBASE_PRODUCTION         |
+| FUNNYBASE_WORKING            |
+| funnybase                    |
+| funnybase_annotation_old     |
+| g5_aplysia                   |
+| mygo                         |
+| mysql                        |
+| ncbi_funny                   |
+| super_craw4                  |
+| super_craw5                  |
+| super_craw5_analysis         |
+| super_craw5_backup_2_18_2005 |
+| super_craw5_extra_11_4_04    |
+| test                         |
+
+
+FLUSH PRIVILEGES:
+command>
+sudo mysqladmin -h localhost flush-privileges -u root -p
+
+mysql>
+FLUSH PRIVILEGES;
+
+
+RESET ROOT USER:
+sudo mysqladmin -u root -h localhost password *****
+
+
+GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP
+on BREVISBASE_WORKING.*
+to mclean@localhost
+identified by 'breviscool';
+
+REVOKE ALL PRIVILEGES ON *.* FROM user [, user] ...
+
+
+GRANT ALL
+on *.*
+to vanwye@localhost
+identified by 'vanwye';
+
+REVOKE ALL ON funnybase.* FROM vanwye@localhost;
+
+GRANT ALL PRIVILEGES
+on *.*
+to php_user@localhost
+identified by '456123';
+
+GRANT ALL
+on g5_aplysia.*
+to tfiedler@localhost
+identified by 'aplysia777';
+
+GRANT ALL
+on *.*
+to crawford@localhost
+identified by 'crawford';
+
+GRANT ALL
+on *.*
+to webuser@localhost
+identified by '1234';
+
+
+
+
+update user set password = password('vanwye')
+where user = 'vanwye' and host='localhost';
+
+update user set password = password('456123')
+where user = 'php_user' and host='localhost';
+
+update user set password = password('7913')
+where user = 'justin' and host='localhost';
+
+update user set password = password('aplysia777')
+where user = 'tfiedler' and host='localhost';
+
+update user set password = password('breviscool')
+where user = 'mclean' and host='localhost';
+
+update user set password = password('crawford')
+where user = 'crawford' and host='localhost';
+
+update user set password = password('1234')
+where user = 'webuser' and host='localhost';
+
+update user set password = password('***')
+where user = 'young' and host='localhost';
+
+
+sudo mysqladmin -h localhost flush-privileges -u root -p
+
+

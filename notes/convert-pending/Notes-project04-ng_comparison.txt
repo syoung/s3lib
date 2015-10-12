@@ -1,0 +1,1884 @@
+Notes-project04-ng_comparison.txt
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr 19 22:10:56 EDT 2009] SELECT HUMAN SAMPLES FROM SHORT READ ARCHIVE>
+
+
+
+
+criteria:
+
+1. Pedigree (Hapmap, 1000 genomes)
+
+2. All platforms - 454, Solexa, Solid (and Sanger?)
+
+3. Papers
+
+
+TEST DATA
+
+1) Harismendy et al 2009
+========================
+Evaluation of next generation sequencing platforms for population targeted sequencing studies
+
+Sample
+------
+
+NextGen
+*******
+Twenty-eight LR-PCR reactions were performed to amplify six genomic intervals spanning a total of 266 kb in each of four DNA samples (NA17275, NA17460, NA17156, and NA17773) obtained from the Coriell Institute [32] (Additional data file 2).
+
+Following LR-PCR, the 28 amplicons generated using a single DNA sample template, ranging in size from 3,088 bp to 14,477 bp, were quantified, combined in equimolar amounts, and used to create libraries for Roche 454, Illumina GA and ABI SOLiD sequencing.
+
+NB: ADJUST FOR BIAS TOWARDS LESS REPEATS AND MORE CODING SEQUENCE IN SAMPLE - SEE FIGURE 1: "The 260 kb examined in this study is representative of human sequences containing 38% repeats and 4% coding sequence compared with 47% and 1%, respectively, genome-wide."
+
+
+Sanger
+******
+We used an existing data set deposited by JCVI and performed under the auspices of the National Heart, Lung and Blood Re-sequencing and Genotyping program [34]. The data set included 88 kb of non-contiguous sequence encompassing the exons and the intronic sequence conserved with mouse and rat in the K+/Na+ channel proteins produced by employing 273 short-range PCR reactions generating amplicons averaging 418 bp in length.
+
+
+Alignment
+---------
+
+454 - Newbler
+The Roche 454 laboratory methods and protocols used were as described by Rothberg and coworkers [23]. The reads produced by the Roche 454 FLX platform were mapped to the reference sequence using the algorithm Newbler version 1.1.03.19 (provided by Roche), unless stated otherwise
+
+Solexa - MAQ
+The Illumina GA libraries were prepared according to the manufacturer's instructions from the 28 equimolar pooled PCR products except for the fragmentation step (Additional data file 2). The Illumina GA reads were aligned with MAQ 0.6.2 [33], unless stated otherwise.
+
+SOLiD - Corona-Lite
+Long mate pair (LMP) libraries DNA libraries were generated from the four 28 equimolar pooled amplicon samples and end sequenced using standard ABI SOLiD protocols at Applied Biosystems in Beverly, MA. For each sample, ABI aligned the sequence reads to the reference sequence and mate-pairing information was not employed in this project. The aligned reads and the number of calls per base for each position were used for data analysis (Additional data file 2).
+
+
+SNPs
+----
+
+Calling genotypes in the NGS sequence data
+
+We define the alternate allele as the most commonly called base (which is not the reference base) for a given position in the reference sequence. Then, the AARF is the fraction of reads corresponding to the alternate allele.
+
+Positions called as reference homozygote by ABI Sanger have AARFs close to 0% by the NGS technologies (Supplemental Figure 2 in Additional data file 3). Also, positions called as alternate homozygous by ABI Sanger have AARFs near or at 100% by the NGS technologies. The AARFs for heterozygous calls by ABI Sanger is centered at 50% for Roche 454 and Illumina GA; for ABI SOLiD it is centered at 42% (Additional data file 2). Upon independent inspection of the three technologies, most ABI Sanger-called heterozygotes fell in the range 20-80%. Thus, for the NGS technologies, utilizing only high quality bases we call positions with AARFs between 20% and 80% as heterozygous, positions with AARFs >80% as homozygous alternate, and positions with AARFs <20% as homozygous reference (Additional data file 2).
+
+
+Performance
+-----------
+
+Definitions of performance metrics
+
+In order to assess the performance of the sequencing technologies, we define several metrics.
+
+Comparing a genotyping microarray to a sequencing technology
+Genotype accuracy
+
+We genotyped the four samples on the Illumina Hap550 microarray according to specifications of the manufacturer. We compared the genotype calls of the SNPs on the Hap550 microarray with the genotypes observed from sequencing (Supplemental Table 8 in Additional data file 1). Genotype accuracy is defined as: (Number of genotypes matching exactly between Illumina Hap550 and a sequencing technology)/(Number of compared positions).
+
+
+Metrics for comparing a NGS sequencing technology with ABI Sanger
+
+We initially assumed the ABI Sanger sequence data are correct because it is an established method with the longest history [2]. Upon further analysis, we found that this assumption was not always true; there were some positions incorrectly called by ABI Sanger, but correctly called by the NGS technologies (see Results). We refer to Table 1 annotations to clarify these definitions.
+
+    Table 1. Annotations of the genotypes differences to illustrate the definition of the metrics used to compare ABI Sanger and NGS Technologies
+    Sequencing accuracy
+
+This is defined as the number of concordant calls between ABI Sanger and a NGS technology. Following the diagram above, this is calculated as (A1 + B2 + C3)/Total, where Total is defined as the number of positions with genotype calls by both technologies, or (A1 + A2 + A3 + B1 + B2 + B3 + C1 + C2 + C3). Because the sequencing accuracy metric is dominated by the concordance of a large number of homozygous reference calls (A1), this metric tends to be very near 1.
+Variant accuracy
+
+Because 'sequencing accuracy' tends to be dominated by the large number of homozygous reference calls, we define another metric called 'variant accuracy'. Variant accuracy is restricted to the variant positions called by ABI Sanger and is defined as: (B2 + C3)/(A2 +A3 + B2 + B3 + C2 + C3).
+False positive rate of variants (false positive rate)
+
+We define a false positive when the NGS technology calls a variant where ABI Sanger calls a homozygous reference. The false positive rate is calculated as (B1 + C1)/(B1 + B2 + B3 + C1 + C2+ C3).
+False negative rate of variants (false negative rate)
+
+We define a false negative when ABI Sanger detects a variant, but the NGS method calls this locus as a homozygous reference. The false negative rate is calculated as (A2 + A3)/(A2 + A3 + B2 + B3 + C2 + C3).
+Variant discrepancy rate
+
+We define the variant discrepancy rate as (B3 + C2)/(B2 + B3 + C2 + C3). This metric reflects ABI Sanger variant positions that are also detected by the NGS technology, but where the genotype calls disagree.
+Coverage rate
+
+The fraction of positions with genotype calls is defined as 1-(D1 + D2 + D3)/(A1 + A2 + A3 + B1 + B2 + B3 + C1 + C2 + C3 + D1 + D2 + D3).
+ABI Sanger false positive rate
+
+We define a ABI Sanger false positive when ABI Sanger calls a variant but all three NGS technologies call the locus as homozygous reference. We assume the NGS technologies to be correct, and this was confirmed by re-inspection of the ABI Sanger traces. The ABI Sanger false positive rate is calculated as follows. The numerator is the number of loci that are called as homozygous reference by all three NGS technologies, but as a variant in ABI Sanger. In the denominator, we consider all positions that were called as variant by Sanger and also had a genotype call by all three NGS technologies.
+ABI Sanger false negative rate
+
+We define a ABI Sanger false negative as a locus where the initial call by ABI Sanger is homozygous reference but all three NGS technologies detect a variant at this locus. In the numerator of the ABI Sanger false negative rate, we count the number of variant loci that are identified by all three NGS technologies but called as homozygous reference by ABI Sanger. We note that zygosity may not agree among the three NGS technologies, but if all three technologies identify a variant at the position, the locus is included (Supplemental Table 12 in Additional data file 1). The denominator represents the number of loci called as variant by all three NGS technologies (although the zygosity may differ).
+
+
+Simulations
+-----------
+
+Simulations were performed in order to assess performance of each NGS platform at lower coverage depths. For each simulation, we randomly sampled a subset of the reads and recalled genotypes. The size of the subset was determined by the desired coverage depth.
+Inferring coverage at various error rate degradations
+
+To obtain the coverage depths in Figure 5, we first examined the error rate at the maximal simulated coverage. For 50% error rate degradation, we multiplied the error rate at the maximal coverage by 1.5 to get the desired error rate. For 10% error rate degradation, we multiplied the error rate at the maximal coverage by 1.1 to get the desired error rate. We then examined the error rates from the simulations at different coverage depths, and interpolated what coverage depth corresponds to the desired error rate. For example, the false positive error rate for Illumina GA at 140× from the simulations is 0.073. At 50% error rate degradation, the false positive rate is 0.110. The false positive rates at coverage depths of 60× and 80× are 0.118 and 0.099, respectively, so we know that a coverage depth within the range of 60× to 80× will give a false positive rate of 0.110. Using linear interpolation, we deduce that a coverage depth of 68× gives a false positive rate of 0.110, and this is reported in Figure 5.
+
+The error rates for Illumina GA and ABI SOLiD at maximum simulated coverage are slightly higher than what was experimentally observed. The additional errors observed in the simulations are largely associated with low coverage regions and are different between iterations, whereas the systematic errors present in the experimental data set at full coverage are shared between iterations. This shows that the simulation produces random sampling errors, directly associated with low coverage regions.
+
+
+
+2) YRI family Y009
+==================
+
+1. Pedigree - yes
+
+18506 child
+18507 father
+18508 mother
+
+
+African Human Genome Data Summary
+NA18507
+NA18506
+NA18508
+38x coverage of NA18507 (achieved in 8 weeks)
+All paired and mate pair reads; 35-50 bases, 0.2 & 2kb gap sizes
+Data submitted to NCBI (SRA000271)
+17x coverage of other members of trio for public release
+
+DOWNLOAD FASTQ FROM HERE
+ftp://ftp.ncbi.nih.gov/pub/TraceDB/ShortRead/SRA000271/fastq/ 
+
+    Index of /pub/TraceDB/ShortRead/SRA000271/fastq/
+    
+    Name	Size	Date Modified
+    [parent directory]		
+    200x36x36-071113_EAS56_0053-s_1_1.fastq.gz	167.5 MB	5/20/08 8:00:00 PM
+    200x36x36-071113_EAS56_0053-s_1_2.fastq.gz	180.5 MB	5/20/08 8:00:00 PM
+    200x36x36-071113_EAS56_0053-s_2_1.fastq.gz	183 MB	5/20/08 8:00:00 PM
+    200x36x36-071113_EAS56_0053-s_2_2.fastq.gz	193.8 MB	5/20/08 8:00:00 PM
+    200x36x36-071113_EAS56_0053-s_3_1.fastq.gz	190.2 MB	5/20/08 8:00:00 PM
+    200x36x36-071113_EAS56_0053-s_3_2.fastq.gz	199.2 MB	5/20/08 8:00:00 PM
+    ...
+
+mkdir -p /mihg/data/NGS/syoung/SRA/SRA000271
+cd /mihg/data/NGS/syoung/SRA/SRA000271
+deepvac.pl --url ftp://ftp.ncbi.nih.gov/pub/TraceDB/ShortRead/SRA000271/fastq/ --outputdir /nethome/syoung/base/pipeline/SRA/SRA000271
+
+
+
+
+Bentley et al 2008. Accurate whole human genome sequencing using reversible terminator chemistry
+
+DNA samples (NA07340 and NA18507) and cell line (GM07340) were obtained from Coriell Repositories. DNA samples were genotyped on the HM550 array and the results compared to publicly available data to confirm their identity before use. Methods for DNA manipulation, including sample preparation, formation of single-molecule arrays, cluster growth and sequencing were all developed during this study and formed the basis for the standard protocols now available from Illumina, Inc. All sequencing was performed on Illumina GA1s equipped with a one-megapixel camera. All purity filtered read data are available for download from the Short Read Archive at NCBI or from the European Short Read Archive (ERA) at the EBI.
+
+
+
+
+
+
+2. Short read archive
+
+http://0-www.ncbi.nlm.nih.gov.millennium.unicatt.it/Traces/sra/sra.cgi?cmd=table&f=sample&m=data&s=sample
+
+
+
+
+
+3. Paper - Bentley, 2008. Accurate whole human genome sequencing using reversible terminator chemistry
+
+
+
+
+
+
+
+
+
+synthetic reads:
+
+error function
+--------------
+
+
+Evaluation of next generation sequencing platforms for population targeted sequencing studies
+Harismendy et al 2009
+http://genomebiology.com/2009/10/3/R32
+
+
+Abstract
+
+Background
+
+Next generation sequencing (NGS) platforms are currently being utilized for targeted sequencing of candidate genes or genomic intervals to perform sequence-based association studies. To evaluate these platforms for this application, we analyzed human sequence generated by the Roche 454, Illumina GA, and the ABI SOLiD technologies for the same 260 kb in four individuals.
+Results
+
+Local sequence characteristics contribute to systematic variability in sequence coverage (>100-fold difference in per-base coverage), resulting in patterns for each NGS technology that are highly correlated between samples. A comparison of the base calls to 88 kb of overlapping ABI 3730xL Sanger sequence generated for the same samples showed that the NGS platforms all have high sensitivity, identifying >95% of variant sites. At high coverage, depth base calling errors are systematic, resulting from local sequence contexts; as the coverage is lowered additional 'random sampling' errors in base calling occur.
+Conclusions
+
+Our study provides important insights into systematic biases and data variability that need to be considered when utilizing NGS platforms for population targeted sequencing studies.
+
+
+Background
+
+The Sanger method [1] of sequencing by capillary electrophoresis using the ABI 3730xL platform has been employed in many historically significant large-scale sequencing projects and is considered the 'gold standard' in terms of both read length and sequencing accuracy [2]. Several next generation sequencing (NGS) technologies have recently emerged, including Roche 454, Illumina GA, and ABI SOLiD, which are able to generate three to four orders of magnitude more sequence and are considerably less expensive than the Sanger method on the ABI 3730xL platform (hereafter referred to as ABI Sanger) [2-4]. To date these new technologies have been successfully applied toward ChIP-sequencing to identify binding sites of DNA-associated proteins [5,6], RNA-sequencing to profile the mammalian transcriptome [7,8], as well as whole human genome sequencing [9-11]. Currently there is much interest in applying NGS platforms for targeted sequencing of specific candidate genes, intervals identified through single nucleotide polymorphism (SNP)-based association studies, or the entire human exome [12-15] in large numbers of individuals.
+
+As population targeted sequencing studies are initiated, it is important to determine the issues that will be encountered in generating and analyzing data produced by NGS platforms for this application. Here, we generate 260 kb of targeted sequence in four samples using the manufacturer recommended and/or supplied sample library preparation methods, sequence generation, alignment tools, and base calling algorithms for the Roche 454, Illumina GA, and ABI SOLiD platforms (Figure 1). For each NGS technology we generated a saturating level of redundant sequence coverage, meaning that increased coverage is likely to have minimal, if any, effect on data quality and variant calling accuracies. We analyzed the sequences produced by each platform for per-base sequence coverage and for systematic biases giving rise to low coverage. We show that each NGS platform generates its own unique pattern of biased sequence coverage that is consistent between samples.
+
+* For the short-read platforms, low coverage intervals tend to be in AT-rich repetitive sequences.
+
+* We also performed a comparative analysis with sequence generated by the well-established ABI Sanger platform (Figure 1) to determine base calling accuracies and how average fold sequence coverage impacts base calling errors. Although the three NGS technologies correctly identify >95% of variant alleles, the average sequence coverage required to achieve this performance is greater than the targeted levels of most current studies.
+
+
+
+maq
+---
+
+
+
+
+
+random selection
+----------------
+
+High-throughput sequence alignment using Graphics Processing
+Units
+Michael C Schatz*†1,2, Cole Trapnell†1,2, Arthur L Delcher1,2 and
+Amitabh Varshney2
+Published: 10 December 2007
+
+The first test scenario was to align synthetically constructed
+reads to a bacterial genome. We used synthetic
+reads in order to explore MUMmerGPU's performance in
+the absence of errors and over a wider variety of query
+lengths then are available with genuine reads. The synthetic
+test reads consisted of 50-, 100-, 200-, 400-, and
+800-character substrings (uniformly randomly) sampled
+from the Bacillus anthracis genome (GenBank ID:
+NC_003997.3). Thus, each read exactly aligns to the
+genome end-to-end at least once, and possibly more
+depending on the repeat content of the genome. When
+aligning each of the five sets of reads, we used l equal to
+the read size for the set. Each set contained exactly
+250,000,000 base pairs of query sequence divided evenly
+among all the reads in the set.
+
+metasim
+-------
+produces simulated metagenome reads from input genomes
+
+MetaSim—A Sequencing Simulator for Genomics and Metagenomics
+Daniel C. Richter1*, Felix Ott1, Alexander F. Auch1, Ramona Schmid2, Daniel H. Huson1
+1 ZBIT- Center for Bioinformatics Tübingen, University of Tübingen, Tübingen, Germany, 2 Boehringer Ingelheim Pharma GmbH & Co. KG, Biberach, Germany
+
+
+Finally, for the construction of a realistic read data set, MetaSim includes a versatile read sequencing simulator. The user is able to choose from different (adaptable) error models of current sequencing technologies (e.g. Sanger [28], [29], Roche's 454 [7] and Illumina (former Solexa) [30]).
+
+
+Abstract 
+Background
+The new research field of metagenomics is providing exciting insights into various, previously unclassified ecological systems. Next-generation sequencing technologies are producing a rapid increase of environmental data in public databases. There is great need for specialized software solutions and statistical methods for dealing with complex metagenome data sets.
+
+Methodology/Principal Findings
+To facilitate the development and improvement of metagenomic tools and the planning of metagenomic projects, we introduce a sequencing simulator called MetaSim. Our software can be used to generate collections of synthetic reads that reflect the diverse taxonomical composition of typical metagenome data sets. Based on a database of given genomes, the program allows the user to design a metagenome by specifying the number of genomes present at different levels of the NCBI taxonomy, and then to collect reads from the metagenome using a simulation of a number of different sequencing technologies. A population sampler optionally produces evolved sequences based on source genomes and a given evolutionary tree.
+
+Conclusions/Significance
+MetaSim allows the user to simulate individual read datasets that can be used as standardized test scenarios for planning sequencing projects or for benchmarking metagenomic software.
+
+
+
+method ???
+International Journal of Bioinformatics Research and Applications
+ 	 Issue: 	 Volume 5, Number 2 / 2009
+ 	 Pages: 	 224 - 237
+ 	URL: 	Linking Options
+Correcting short reads with high error rates for improved sequencing result
+
+Thomas K.F. Wong A1, T.W. Lam A2, P.Y. Chan A3, S.M. Yiu A4
+
+A1 Faculty of Engineering, Department of Computer Science, The University of Hong Kong, Pokfulam Road, Hong Kong.
+A2 Faculty of Engineering, Department of Computer Science, The University of Hong Kong, Pokfulam Road, Hong Kong.
+A3 Faculty of Engineering, Department of Computer Science, The University of Hong Kong, Pokfulam Road, Hong Kong.
+A4 Faculty of Engineering, Department of Computer Science, The University of Hong Kong, Pokfulam Road, Hong Kong
+Abstract:
+
+In the sequencing process, reads of the sequence are generated, then assembled to form contigs. New technologies can produce reads faster with lower cost and higher coverage. However, these reads are shorter. With errors, short reads make the assembly step more difficult. Chaisson et al. (2004) proposed an algorithm to correct the reads prior to the assembly step. The result is not satisfactory when the error rate is high (e.g., ?3%). We improve their approach to handle reads of higher error rates. Experimental results show that our approach is much more effective in correcting errors, producing contigs of higher quality.
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr 19 22:10:56 EDT 2009] HOW DIFFERENT ALIGNERS TREAT PAIRED ENDS>
+
+
+
+
+http://seqanswers.com/forums/showthread.php?t=1600
+
+
+Actually there are a lot to say about paired-end mapping. This is where the accuracy of different aligners differs. The algorithms can be classified into four groups.
+
+a) Eland-like strategy. Eland finds up to 10 equally best hits first and then check which pair (10x10 in total) is consistent. SSAHA2 uses a similar strategy, but seeing more top hits.
+
+b) SOAP-like strategy. SOAP finds almost all the hits and then pair them. I do not know whether it may map a read to a suboptimal position if its mate is hanging around. I am sure SOAP-2.0.1 and BWA do this if necessary. You can say a) and b) are essentially the same, but only b) is useful to anchor reads in repeats.
+
+c) MAQ-like strategy. MAQ does not find all the single-end hits first. It pairs the reads while doing the alignment. For programs indexing reads, this strategy is more effective and efficient than collecting all the single-end hits first.
+
+d) We can map one end first and then do local alignment around the region pointed by the mapped reads. This strategy is usually combined with the previous. I believe NovoAlign/MAQ/BWA use this strategy as a complement to other strategies.
+
+For short reads, proper pairing increases the coverage of the genome and substantially reduce false alignments.
+
+
+</entry>
+
+
+
+<entry [Sun Apr 19 22:10:56 EDT 2009] Unbiased Comparisons of Short-Read Aligners>
+
+
+
+
+In summary, there are a number of competing tools for short read alignment, each with its own set of strengths, weaknesses, and caveats. It’s hard to trust any benchmarking comparison on tools like these because usually, it’s the developers of one of the tools that publish them. Here’s an idea: what if NHGRI, Illumina, or another group put together a short-read-aligning contest? They generate a few short-read data sets: real, simulated, with/without errors, with/without SNPs and indels, etc. Then, the developers of each aligner are invited to throw their best efforts at it. Every group submits the results to a DCC, which analyzes the results in a simple, unbiased way: # of reads placed correctly/incorrectly. # of SNPs/indels detected, missed, or false-positives. The results are published on a web site or in the literature for all to see. Yeah, I know, there are hurdles, like the fact that most proprietary tool developers would probably chicken out of an unbiased head-to-head comparison, given the stakes. But wouldn’t it be nice to know the results? Unless that happens, however, I think Heng’s analysis is about as unbiased as can be.
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr 19 12:51:56 EDT 2009] MAQ Simulation Related and CHECK SYSTEMATIC ERROR OF SEQUENCER>
+
+
+
+USAGE:
+
+fakemut maq fakemut [-r mutrate] [-R indelfrac] in.ref.fasta > out.fakeref.fasta 2> out.fake.snp
+
+Randomly introduce substitutions and indels to the reference. Substitutions and sinlge basepair
+indels can be added.
+OPTIONS:
+-r FLOAT Mutation rate [0.001]
+-R FLOAT Fraction of mutations to be indels [0.1]
+
+
+
+simutrain maq simutrain out.simupars.dat in.read.fastq
+
+Estimate/train parameters for read simulation.
+
+
+
+simulate maq simulate [-d insize] [-s stdev] [-N nReads] [-1 readLen1] [-2 readLen2] [-r mutRate]
+
+[-R indelFrac] [-h] out.read1.fastq out.read2.fastq in.ref.fasta in.simupars.dat
+
+Simulate paired end reads. File in.simupars.dat determines the read lengths and quality distribution.
+It is generated from simutrain, or can be downloaded from Maq website. In the output
+read ?les, a read name consists of the reference sequence name and the outer coordinates
+of the pair of simulated reads. By default, simulate assumes reads come from a diploid
+sequence which is generated by adding two different sets of mutations, including one basepair
+indels, to in.ref.fasta.
+    OPTIONS:
+    -d INT mean of the outer distance of insert sizes [170]
+    -s INT standard deviation of insert sizes [20]
+    -N INT number of pairs of reads to be generated [1000000]
+    -1 INT length of the first read [set by in.simupars.dat]
+    -2 INT length of the second read [set by in.simupars.dat]
+    -r FLOAT mutation rate [0.001]
+    -R FLOAT
+
+fraction of 1bp indels [0.1]
+-h add all mutations to in.ref.fasta and generate reads from the single mutated
+sequence (haploid mode)
+
+NOTE:
+* Reads generated from this command are independent, which deviates from the truth.
+
+Whereas alignment evaluation is less affected by this, evaluation on SNP calling should be
+performed with caution. Error dependency may be one of the major causes of wrong SNP
+calls.
+
+
+simustat maq simustat in.simu-aln.map > out.simustat
+
+Evaluate mapping qualities from simulated reads.
+
+
+
+
+
+ALGORITHM:
+
+SEE IN version 0.71
+
+C:\DATA\00.archive\02-ng.assembly\maq\download\maq-0.7.1\maq-0.7.1\simulate.c
+
+
+
+
+Li 2008
+Mapping short DNA sequencing reads and calling variants using mapping quality scores
+
+Methods
+
+Simulating diploid genomes and short reads
+MAQ also generates in silico mutated diploid sequences by adding random mutations to the known reference sequence. The human reference genome does not contain heterozygotes, but when we resequence a human sample and map reads to the reference genome, we will see both homozygous and heterozygous variants in comparison to the reference. If the sample and the reference come from the same population and at a potential polymorphic site the allele frequency is f, the probability of observing a heterozygote is
+
+2f(1 - f)
+
+and of observing a homozygous variant is
+
+f(1 - f) (= f2(1 - f) + f(1 - f)2).
+
+Consequently, on the condition that a site is different from the reference, the probability of a heterozygote is always 2/3, regardless of the allele frequency f, assuming the sample comes from the same population as the reference.
+
+Based on this observation, we can simulate a diploid genome as follows.
+
+We first used the reference genome as the two preprocessed haplotypes.
+
+We then generated a set of polymorphic sites, randomly selected two thirds of them as heterozygotes, and took the rest as homozygotes.
+
+At a heterozygous site, we randomly selected one haplotype and mutated the base into another one; on a homozygous site, we mutated both haplotypes.
+
+Both substitutions and indels can be simulated in this way.
+
+This simulation ignores linkage disequilibrium between variants.
+
+Although coalescent-based simulation (Hudson 2002) gives a more accurate long-range picture, the procedure described here is sufficient for the evaluation of the variant calling method for a single individual.
+
+!PAIRED END!
+
+From a known sequence, paired-end reads can be simulated with insert sizes drawn from a normal distribution and with base qualities drawn from the empirical distribution estimated from real sequence data.
+
+Sequencing errors are introduced based on the base quality.
+
+With sufficiently large data, we are able to estimate the position-specific distributions of base qualities and the correlation between adjacent qualities as well.
+
+An order-one Markov chain is constructed, based on these statistics, to capture the fact that low-quality bases tend to appear at the 3--end of a read and to appear successively along a read.
+
+
+
+
+
+mapcheck 	maq mapcheck [-s] [-m maxmis] [-q minQ] in.ref.bfa in.aln.map > out.mapcheck
+
+Read quality check. The mapcheck first reports the composition and the depth of the reference. After that there is a form. The first column indicates the position on a read. Following four columns which show the nucleotide composition, substitution rates between the reference and reads will be given. These rates and the numbers in the following columns are scaled to 999 and rounded to nearest integer. The next group of columns show the distribution of base qualities along the reads at a quality interval of 10. A decay in quality can usually be observed, which means bases at the end of read are less accurate. The last group of columns present the fraction of substitutions for read bases at a quality interval. This measures the accuracy of base quality estimation. Idealy, we expect to see 1 in the 3? column, 10 in the 2? column and 100 in the 1? column.
+
+OPTIONS:
+-s 	Take single end mapping quality as the final mapping quality
+-m INT 	Maximum number of mismatahces allowed for a read to be counted [4]
+-q INT 	Minimum mapping quality allowed for a read to be counted [30]
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tues Mar 31 23:12:24 EDT 2008] REVIEWS OF ELAND>
+
+
+
+
+SEE ALSO (DETAILED)
+http://analysis.yellowcouch.org/dsf/ga0.3/Whole%20genome%20alignments%20using%20ELAND.html
+
+
+Thursday, January 17, 2008
+Aligning DNA - Eland
+http://www.fejes.ca/2008/01/aligning-dna-eland.html
+
+
+Continuing in my series of blog articles on short-read sequencing, it's time for a little bit of a discussion on the first short-sequence aligner that I'd ever met: Eland. The problem with writing anything about Eland, is that 90% of the information I have on it can't be confirmed independently. In fact, the majority of what I know comes from the header of the ELAND.cpp file. I'll admit, while I've gone through the source code a couple of times, I haven't spent much time getting to know it's well - I've processed billions of lines of Eland files, but have yet to run it, myself...
+
+Anyhow, here's what I can tell you: Eland stands for "Efficient Local Alignment of Nucleotide Data" and was written by Anthony J. Cox for Solexa Ltd. Of course, Solexa has since been bought out by Illumina, so I assume the copyright has been transferred along with the technology during that transaction.
+
+What makes Eland so fascinating to me is that it's a direct departure from the dynamic programming based algorithms (like the venerable Smith-Waterman alignment), making it somewhat interesting as a computational program.
+
+The basic algorithm works along these lines: Given a sequence of length N, it can be divided into four subsequences (A, B, C, and D), which are of equal (or nearly equal length). Assuming there are no more than 2 errors, at least two of these subsequences will be "error free", so that the two error free sequences can then be searched for in a database containing all possible subsequences in the genome of interest. Thus, you can search your database for the subsequence AB and CD. Of course, you don't know which subsequences are the error free ones, so you need to try all possible combination.
+
+What Eland does to speed things up is to combine these subsequences into sets of two. Thus, rather than searching for 4 independent entries in their database, they simply have to search for 2 sets of two, and as long as one set matches, you can use looser matching criteria on the other two, ie, allowing for mismatches. That is to say, if you make two sequences out of the 4 subsequences {AB and CD}, you can search for an exact match for AB, and test all the possible results for mismatches in the {CD} portion of the sequence. This has the effect of significantly reducing the search space. (Only sequences containing the exact match to {AB}.)
+
+Searching for the {AB and CD} subsequences would only work if the first half of your sequence has no errors. What if B and C had the errors? The simple answer is to shuffle your subsequences to make other combinations: ({AB and CD}, {AC and BD}, {AD and CD}, {BA and CD}, etc.) This still provides you with a relatively small search space for each sequence, as there are only 4! possible combinations (which is 4x3x2x1 = 24 possible sequences) to search for.
+
+Fortunately, you can bound this even further. You always know that you want sequences in which the first pair and second pair are in the correct order, (ie {AB and CD} and {AC and BD} are ok, but {CA and DB} and {BA and DC} would give you an incorrect result) limiting you to only six possible combinations, which still allows you to find any correct match where at least two of the four subsequences are error free.
+
+That, in general is how it works.. with a few nifty shortcuts. ie, they only need to pass over the genome search space 3 times to find all possible matches with up to two errors, because they can search for subsequence combinations simultaneously and efficiently. In other words, you get a very quick alignment.
+
+On the other hand, the way in which ELAND was implemented is very important. The Eland aligner has some severe restrictions, some of which are algorithm specific, some of which are implementation specific:
+
+   1. The Eland aligner can only align sequences up to 32 base pairs long. (Implementation specific: they use four integers to represent the subsequences {A,B,C and D}, which reduces the memory requirements.)
+
+   2. The Eland aligner can only align sequences with up to two mismatches. (Algorithm specific: at least two of the keys must match, although the algorithm could be expanded to use more subsequences, at the expense of expanding the sequence space.)
+
+   3. The Eland aligner only returns sequences that match to one unique location in the genome (Implementation specific: Eland already tells you when a sequence matches to more than one location, it just doesn't tell you what those locations are.)
+
+   4. The Eland aligner can do mismatches in the sequence, but can not handle insertions or deletions (i.e, gapped alignments). (Algorithm specific: The algorithm for matching the keys could be expanded to include this, but it would be very costly in time/memory.)
+
+   5. The code is not freely available. (Implementation specific: I don't know of anywhere you can go to get the code... or documentation!)
+
+   6. Changing the length of the alignment sequence (I called it N, above), requires a recompile. (Implementation, obviously. Why this isn't a command line parameter, I don't know.)
+
+
+
+I'm sure I could go on and list other disadvantages, but I'd like to point out the main advantage: It's FAST. Blazing fast, compared to the other aligners. From my own personal experience, Eland may only be able to map 60-70% of your sequences to the genome (compared to 70-80% for other aligners with which I have less experience), but it does so in a few hours, compared to several days or weeks for most other aligners (or years, compared to Blast). (Comparisons are for a single processor, matching 1 million+ reads to a mamalian size genome.) The only other aligner that can come close to this speed is, to the best of my knowledge, SXOligoSearch, produced by Synamatix, though that beast will cost upwards of $225,000CAD to license.
+
+Anyhow, to close this discussion, it's worth mentioning that rumours of a new version of Eland have been circulating since March 2007. Beta versions, capable of performing searches on sequences larger than 32 base pairs in length and able to perform multi-matches, were supposed to be released in September 2007. Unfortunately, the new betas appear to be vapourware, which has prompted us to look into several other aligners, which I'll discuss in future posts.
+
+(2008-01-28 Update: I stand corrected: I've heard that the new betas have finally arrived! I haven't seen what they can do yet, but at least we know my prediction that they're vapourware is wrong.)
+
+Labels: Aligners, DNA, Sequencing, Solexa/Illumina
+
+posted by Anthony Fejes at 8:51 PM
+5 Comments:
+
+OpenID stajich said...
+
+    You may want to take a look at SHRiMP which was developed for both colorspace matching from SOLiD and for short-read technology.
+
+    http://compbio.cs.toronto.edu/shrimp/
+    2:05 PM   
+Anonymous SolexaSufferer said...
+
+    Apparently the SOAP program deals with the shortcomings of ELAND fantastically. It handles repeat hits (and can report them all, none or one random). And it can align with in-dels up to 3bp. Tried it just now. All works.
+
+    http://soap.genomics.org.cn/ and
+    http://www.ncbi.nlm.nih.gov/pubmed/18227114
+    7:07 PM   
+Blogger Malarky said...
+
+    Hello
+    I found your blog whilst searching for details about the way that Eland actually works.
+    I understand your description of the algorithm but what interests me is the data structure that is used to hold the reads (in RAM) and which the algorithm searches over (or in SOAPs case the reference). Do you know how this is done?
+    5:21 AM   
+Blogger Anthony said...
+
+    Hi Malarky,
+
+    I don't know how happy Illumina/Solexa or Anthony Cox would be if I gave out all of the details of their implementation, so I'm going to refrain from giving too much detail. Though the algorithm is relatively involved, using look up tables and such, they appear to be using a suffix tree to hold the oligos.
+
+    I hope that helps.
+
+    Anthony
+    9:40 AM   
+Blogger Malarky said...
+
+    Hi
+    Thats good enough. Thanks
+
+
+
+
+The Eland Short Read Aligner
+http://attractivechaos.wordpress.com/2008/08/24/eland-short-read-aligner
+
+Eland is a computer program that aligns short oligonucleotides against a reference genome. It is written by Anthony Cox from the Illumina company. The source codes are freely available to machine buyers. Eland is the first program for short read alignment and it profoundly influences most of its successors.
+
+Algorithm
+
+Eland guarantees full sensitivity for hits with up to two mismatches. To achieve this, Eland divides a read into four parts with approximately equal lengths. Six noncontiguous seed templates can be constructed with each template covering two parts. Eland applies each seed templates on reads and indexes the sequences that pass the template. After indexing it scans the reference genome sequence base by base and then looks up each K-mer in the index to find hits. As any two mismatches can only occur to at most two of the four parts, the seeding strategy used by Eland guarantees to find all 2-mismatch hits.
+
+Eland might be the first widely used program that achieves full sensitivity given a threshold. Most of Eland successors learn from this point, and some software, such as Maq and SeqMap, even use the same seeding strategy. SOLiD read mapping software and ZOOM further extend the idea of using noncontiguous seed templates to achieve full sensitivity with fewer templates.
+
+Efficiency
+
+Eland is so fast that it effectively sets a goal for all its successors. Although several software are claimed to achieve so, they cannot retain the same useful information as Eland. For example, frequently a program only gives the unique best hit without couting the occurrences of a read. Counting greatly helps to reduce false alignment in some cases, but implementing this is non-trivial. Comparing Eland to a program without counting is unfair.
+
+Limitations
+
+Eland is not perfect, though. Natively, it does not support reads longer than 32bp, paired end mapping nor gapped alignment. Eland provides several scripts to overcome these limitations, but the power is reduced. In particular, even with the help of the additional scripts, Eland will miss a read alignment if the first 32bp of the read is nonunique or if the read has more than 10 identical hits in the reference genome. These limitations give the room for other short read aligners.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Mar 25 13:12:24 EDT 2008] MESSAGE Jennifer RE: ALIGNMENT TOOL FOR NEXT GEN RNA VS DNA DATA>
+
+
+
+Hi Jennifer,
+
+I'll try to answer your questions though it's just my 2 cents worth :)
+
+1) what's the difference between an alignment tool and an assembly tool?
+
+Generally speaking, they're understood to mean (though they're often used interchangeably):
+
+Alignment = align against a reference
+Assembly = align de novo with no reference
+
+
+2) Is there any way to tell whether an alignment/assembly tool is solely for short seq DNA as opposed to short seq DNA and/or RNA? I'm having trouble distinguishing tools that may be useful for transcriptome data vs. genome data.
+
+I think a major requirement for a NextGen transcriptome alignment/assembly tool is that it can cope with intron/exon boundaries but you could discriminate between different tools in terms of errors or capabilities:
+
+RNA alignment against DNA reference (transcriptome data)
+
+ - how does the algorithm deal with RNA artefact/bias (5' prime vs 3' prime degradation, surfeit of ribosomal RNAs, etc)?
+ - how does it cope with alternate splice sites?
+ - how does it deal with systemic errors in the read sequence predictions?
+
+DNA alignment against DNA reference (genome data)
+
+ - how does the algorithm deal with systemic errors in the read sequence predictions?
+ - can it use the whole genome as a reference?
+ - how does it deal with multiply-mapped reads?
+
+Some more generic criteria:
+
+ - how does the algorithm deal with multiply-mapped reads?
+ - how many differences can it allow between read and reference (substitutions, indels)
+ - number of reads incorporated into assembly
+
+
+Cheers,
+
+Stuart.
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar 06 21:09:24 EDT 2008] Nick CHAT RE: CHALLENGE GRANT>
+
+
+
+1. CHECK WHERE UNMAPPED READS (AGAINST EXOME) MAP TO ON GENOME
+
+    IF DON'T MAP TO GENOME WITH LESS THAN 3, 4 (?) ERRORS THEN IT CAN BE COUNTED AS A TRUE SEQUENCING ERROR
+
+    OTHERWISE, IT'S A LIMITATION OF ELAND (ONLY 2 ERRORS)
+
+2. CHECK TO SEE IF THERE ARE ANY PATTERNS (G/C, 2D STRUCTURE) OF UNMAPPED READS DIFFERENT TO MAPPED READS
+
+
+3. DO SYNTHETIC READS AGAINST ALL TOOLS
+
+    - DIFFICULT REGIONS OF DNA
+    
+    - RANDOM SELECTION OF DNA OR RNA
+    
+    - RNA WITH MANY REPEATS
+
+
+
+4. CHECK FOR CONTAMINATIONS
+
+    viral gene insertion
+    
+    fusion genes
+
+
+</entry>
+
+
+
+<entry [Sun Jan 04 21:09:24 EDT 2008] Short reads not aligned by assemblers - USE NOVOALIGN>
+
+
+
+SEE Notes-apps-novoalign.txt
+Sun Jan 04 23:16:01 EST 2009
+RUN NOVOALIGN
+
+
+http://seqanswers.com/forums/archive/index.php?t-256.html
+
+08-06-2008, 09:09 AM
+Reads that aren't matched by Eland are interesting because we would suppose that they're not repeats because Eland reports the matches with multiple locations. 
+I would say that gaps in a read would probably be missed by Eland, so use a short read aligner that can find gaps on these reads. I've been using novoalign (www.novocraft.com) and it can find up to 7/8 gaps in a 36bp read matching to a reference sequence, and fast on large ones. I've even tested it on simulated data with mutation rates in excess of 15% and it still finds them. Use a very high threshold e.g. -t 200 to find potentially all permutations for your read.
+I'd be interested to know how much more you may be able to match out of your Eland NM reads.
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jan 04 21:09:24 EDT 2008] SUMMARY OF COMPARISON STATS>
+
+
+
+
+1.1.1 ELAND ALIGNMENT AGAINST cDNA REFERENCE:
+=============================================
+
+*** ROUGHLY 10% OF READS ALIGNED TO cDNA REFERENCE ***
+
+1.1.1.2 ELAND ALIGNMENT STATS
+-----------------------------
+                Number reads       %
+ALIGNED           479,065        10.07
+NOT ALIGNED     4,277,155        89.93
+TOTAL           4,756,220       100.00
+
+
+1.1.2 ELAND '--multi' ALIGNMENT AGAINST cDNA REFERENCE:
+=======================================================
+
+*** ROUGHLY 23% OF human 1 READS HAD AN ELAND HIT (UNIQUE OR NOT, PERFECT OR NOT) AGAINST THE cDNA REFERENCE ***
+
+            READS       %
+ALIGNED     1116229     23.469
+NON-ALIGNED 3639991     76.531
+TOTAL       4756220     100.000
+
+1.2.1.2 VELVET ALIGNMENT STATS
+------------------------------
+GET NUMBER OF READS INCORPORATED INTO DENOVO CONTIGS FROM .ace FILE
+
+                Number reads       %
+ALIGNED           961,245        20.210
+TOTAL           4,756,220       100.00
+
+
+
+*** 3,821 VELVET CONTIG HITS AGAINST cDNA, OF THEM AGAINST UNIQUE cDNAs ***
+
+
+1.2.1.4 FILTER NUCMER OUTPUT TO GET ONLY UNIQUE HITS, THEN DO THE COORDS FILE 
+------------------------------------------------------------------------------
+
+*** 1,469 UNIQUE RECIPROCAL HITS BETWEEN VELVET CONTIGS AND cDNA (REDUCED TO 1,443 AFTER EXLUDING Chr6 VARIANT REGION cDNAs)***
+
+
+
+
+
+
+1.2.1.8 GET UNIQUE TARGETS FROM *.coords FILE
+---------------------------------------------
+
+*** FOR BEST VELVET-cDNA UNIQUE HITS, 1,105 UNIQUE cDNAs WERE HIT BY VELVET CONTIGS (1,486 HITS IN TOTAL) ***
+
+*** FOR ALL VELVET HITS, 2,493 UNIQUE cDNAs WERE HIT BY VELVET CONTIGS (4,244 HITS IN TOTAL) ***
+
+
+
+
+1.3.1 COMPARE READS IN .ace FILES OF ELAND AND VELVET ASSEMBLIES
+----------------------------------------------------------------
+
+lines eland-only.txt
+    324025
+lines eland-velvet.both.txt
+    155040
+lines velvet-only.txt
+    806205
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Dec 26 10:09:24 EDT 2008] Lander-Waterman READ COVERAGE STATISTIC>
+
+
+
+Lander-Waterman Statistics
+
+Given: N reads of length L from a genome of size G
+P(? covered by read) = 1 – (1 – L/G)N 
+		?1 – e-c, where c = N L / G is coverage
+P(? covered by read) ?1 – e-c
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Dec 26 10:09:24 EDT 2008] SLIDER ASSEMBLER USES SOLEXA QUALITY VALUES>
+
+
+
+Friday, December 26, 2008 10:09 AM
+To: 	
+Young, Stuart
+Cc: 	
+Hedges, Dale; Zuchner, Stephan; Huang, Jia; Dittman, David; Nunez, Eduardo
+Attachments: 	
+Slider_alignment_tool.pdf? (152 KB?)[Open as Web Page]
+
+Hi Stuart,
+
+I just came across this new aligner on pubmed.
+
+Thanks,
+
+Josh
+
+http://bioinformatics.oxfordjournals.org/cgi/content/full/25/1/6
+
+</entry>
+
+
+
+<entry [Tues Dec 09 23:37:58 EDT 2008] THE POSTER DEALS WITH TWO ISSUES: 1) DIFFERENT ASSEMBLY OVERLAPS ON A REFERENCE SEQUENCE, 2) ASSEMBLY CONSENSUS DIFFERENCES IN OVERLAPPING REGIONS>
+
+
+
+
+(1) HUMAN 1 (LANE 3) ASSEMBLY OVERLAPS AGAINST cDNA (EMBL) - Eland versus Velvet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1.1 ELAND
+=========
+
+LOCATION:
+
+cd /home/syoung/base/pipeline/human1-eland/assembly
+
+
+1.1.1 ELAND ALIGNMENT AGAINST cDNA REFERENCE:
+=============================================
+
+1.1.1.1 DO ELAND ALIGNMENT
+--------------------------
+./eland.pl -i /home/syoung/base/pipeline/human-eland/data/human1.fasta \
+            -r /home/syoung/base/pipeline/human-eland/data \
+            -o /home/syoung/base/pipeline/human-eland/assembly/human1-cdna_embl-eland.txt \
+            > /home/syoung/base/pipeline/human-eland/assembly/human1-cdna_embl-eland.log
+
+
+
+*** ROUGHLY 10% OF READS ALIGNED TO cDNA REFERENCE ***
+
+1.1.1.2 ELAND ALIGNMENT STATS
+-----------------------------
+                Number reads       %
+ALIGNED           479,065        10.07
+NOT ALIGNED     4,277,155        89.93
+TOTAL           4,756,220       100.00
+
+
+STATS OBTAINED AS FOLLOWS:
+
+CONCENTRATE HITS INTO ONE FILE:
+
+cd /home/syoung/base/pipeline/human1-eland/assembly
+cat human1-cdna_embl-eland.txt | grep NCBI36 > human1-cdna_embl-eland.hits
+
+lines human1-cdna_embl-eland.hits
+479065
+
+lines human1-cdna_embl-eland.txt
+4756220
+
+
+1.1.1.3 CONVERT 'hits' FILE INTO GFF SORTED BY START POSITION:
+--------------------------------------------------------------
+
+./eland2gff.pl \
+    --inputfile /home/syoung/base/pipeline/human1-eland/assembly/human1-cdna_embl-eland.txt \
+    --chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt \
+    --cdnadir /home/syoung/base/pipeline/human-cdna-embl/gff \
+    --outputdir /home/syoung/base/pipeline/human1-eland/assembly/gff \
+    --readlength 34
+
+    Run time: 00:00:34
+    Completed ./eland2gff.pl
+    0:10AM, 17 December 2008
+    # EXECUTED FULL COMMAND:
+    # ./eland2gff.pl --inputfile /home/syoung/base/pipeline/human1-eland/assembly/human1-cdna_embl-eland.txt --chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt --cdnadir /home/syoung/base/pipeline/human-cdna-embl/gff --outputdir /home/syoung/base/pipeline/human1-eland/assembly/gff --readlength 34
+    ****************************************
+
+
+
+
+1.1.2 ELAND '--multi' ALIGNMENT AGAINST cDNA REFERENCE:
+=======================================================
+
+1.1.2.1 DO ELAND MULTI ALIGNMENT
+--------------------------------
+
+cd /home/syoung/base/pipeline/human1-eland/assembly-multi
+
+    Run time: 00:04:41
+    Completed ./eland.pl
+    11:55PM, 15 December 2008
+    # EXECUTED FULL COMMAND:
+    # ./eland.pl -i /home/syoung/base/pipeline/human1-eland/data/human1.fasta -r /home/syoung/base/pipeline/human1-eland/data -o /home/syoung/base/pipeline/human1-eland/assembly/human1-cdna_embl-eland.txt
+    ****************************************
+
+1.1.2.2 CONDENSE cDNA HITS INTO 'hits' FILE AND DO ALIGNMENT STATS:
+-------------------------------------------------------------------
+
+cd /home/syoung/base/pipeline/human1-eland/assembly-multi
+cat human1-cdna_embl-eland_multi.txt | grep NCBI36 > human1-cdna_embl-eland_multi.hits
+lines *hits
+    1116229
+
+lines *txt
+    4756220
+
+*** ROUGHLY 23% OF human 1 READS HAD AN ELAND HIT (UNIQUE OR NOT, PERFECT OR NOT) AGAINST THE cDNA REFERENCE ***
+
+            READS       %
+ALIGNED     1116229     23.469
+NON-ALIGNED 3639991     76.531
+TOTAL       4756220     100.000
+
+
+1.1.2.3 CONVERT 'hits' FILE INTO GFF SORTED BY START POSITION:
+--------------------------------------------------------------
+
+./eland2gff.pl \
+    --inputfile /home/syoung/base/pipeline/human1-eland/assembly-multi/human1-cdna_embl-eland_multi.hits \
+    --chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt \
+    --cdnadir /home/syoung/base/pipeline/human-cdna-embl/gff \
+    --outputdir /home/syoung/base/pipeline/human1-eland/assembly-multi/gff \
+    --multi \
+    --readlength 34
+
+    Run time: 00:01:47
+    Completed ./eland2gff.pl
+    0:02AM, 17 December 2008
+    # EXECUTED FULL COMMAND:
+    # ./eland2gff.pl --inputfile /home/syoung/base/pipeline/human1-eland/assembly-multi/human1-cdna_embl-eland_multi.hits --chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt --cdnadir /home/syoung/base/pipeline/human-cdna-embl/gff --outputdir /home/syoung/base/pipeline/human1-eland/assembly-multi/gff --multi --readlength 34
+    ****************************************
+
+CHECK CHROMOSOME 3 LINES:
+
+cd /home/syoung/base/pipeline/human1-eland/assembly-multi/gff/
+lines  human-cdna-embl-chr3.eland.sorted.gff
+132244
+
+
+1.1.2.4 GENERATE .ace FILE 
+--------------------------
+
+eland2ace.pl --inputfile /home/syoung/base/pipeline/run2lane6-test/eland/s_6_1_sorted.txt \
+--referencefile /home/syoung/base/pipeline/run2-human-mitochondria/data/human-mtDNA-AC_000021.fasta
+
+
+
+
+
+
+1.2 VELVET
+==========
+
+1.2.1 VELVET DENOVO ALIGNMENT 
+=============================
+
+cd /home/syoung/base/pipeline/human1-velvet/assembly
+
+1.2.1.1 DO VELVET ALIGNMENT 
+---------------------------
+Notes-project02-ng_assembly.txt, P.178
+    
+./velvet.pl -i /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.solexa.fasta -l 21 
+    
+    Run time: 00:08:09
+    Completed ./velvet.pl
+    4:08PM, 14 August 2008
+    ****************************************
+
+VELVET GENERATED 4532 CONTIGS:
+
+    records /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+    Records: 4532
+
+1.2.1.2 VELVET ALIGNMENT STATS
+------------------------------
+GET NUMBER OF READS INCORPORATED INTO DENOVO CONTIGS FROM .ace FILE
+
+                Number reads       %
+ALIGNED           961,245        20.210
+TOTAL           4,756,220       100.00
+
+
+CREATE .ace FILE: http://zion.ccs.miami.edu:8080/display/NextGen/Convert+.afg+to+.ace
+
+    cd /home/syoung/base/pipeline/human1-velvet/data
+    cp human1_sequence_in.solexa.fasta human1_sequence_in.seq
+    cp human1_sequence_in.solexa.fasta.qual human1_sequence_in.seq.qual
+    tarchive2amos -o human1_sequence_in human1_sequence_in.seq human1_sequence_in.seq.qual
+    amos2ace human1_sequence_in.afg ../assembly/velvet_assy.afg
+
+    TOOK 28 MINS
+
+    ... RUNNING IN screen Fri Dec 12 13:30:36 EST 2008
+
+    ll
+    -rw-r--r-- 1 syoung users  297884535 Dec 12 13:58 human1_sequence_in.ace
+    -rw-r--r-- 1 syoung users 2107663479 Dec 10 15:18 human1_sequence_in.afg
+    -rw-r--r-- 1 syoung users  354253372 Dec 10 13:57 human1_sequence_in.seq
+    -rw-r--r-- 1 syoung users  669133428 Dec 10 13:57 human1_sequence_in.seq.qual
+    -rw-r--r-- 1 syoung users  354253372 Jul 20 21:13 human1_sequence_in.solexa.fasta
+    -rw-r--r-- 1 syoung users  669133428 Jul 20 21:14 human1_sequence_in.solexa.fasta.qual
+    -rw-r--r-- 1 syoung users          0 Dec 10 14:51 tarchive2amos.log
+    -rw-r--r-- 1 syoung users 1569316864 Dec 10 14:18 tmp.18274.red
+
+head human1_sequence_in.ace
+
+    AS 4531 961245
+    
+    CO 1 146 100 60 U
+    CATGAGAGTGGTGTTAATTATCCTCCCTCCAAGTTTGCAAATAAAGAGGT
+    TGATACATATAAAGATTATAACTTGCCTAGATGGATTTGCAGAAAGATTT
+    ATTACTAGCAATTTGTTATATTATTTTGCATCTCTTTTATTGTTTA
+    
+    BQ
+     19 17 36 23 17 23 17 23 36 23 23 36 23 36 36 17 17 36 36 17 36 19 19 36 19 19 19 36 19 19 17 17 23 36 36 36 23 19 17 17 17 36 17 17 17 23 17 23 23 36
+     36 23 17 36 17 19 17 36 17 36 17 17 17 23 17 36 36 17 36 17 17 19 36 36 23 19 19 36 17 23 17 36 23 23 17 36 36 36 23 19 17 23 17 17 17 23 17 36 36 36
+
+
+RECOUNT THE NUMBER OF LINES WITH 'AF '
+
+cd /home/syoung/base/pipeline/human1-velvet/data
+grep -n "AF " human1_sequence_in.ace
+
+961245
+
+SAME AS IN .ace HEADER LINE SO OKAY.
+
+    
+***********************************************************************
+*** NB: TRIED TO GET NUMBER FROM .afg FILE BUT NOT STRAIGHTFORWARD: ***
+cd /home/syoung/base/pipeline/human1-velvet
+grep -c iid: assembly/velvet_assy.afg
+    4760751
+cd /home/syoung/base/pipeline/human1-velvet
+records data/human1_sequence_in.solexa.fasta
+    4756221
+
+ALIGNED     4760751
+UNALIGNED      4530
+TOTAL       4756221
+
+LOOKS FISHY - iid DOES NOT REPRESENT JUST ALIGNED READS, RATHER ALL READS
+***********************************************************************
+
+
+1.2.1.3 DO NUCMER ALIGNMENT AGAINST cDNA
+----------------------------------------
+
+INPUTFILE IS VELVET CONTIGS: /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa
+
+./nucmer.pl --inputfile /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa \
+	--referencefile /home/syoung/base/pipeline/human-cdna-embl/Homo_sapiens.NCBI36.49.cdna.known.fas \
+	--outputdir /home/syoung/base/pipeline/human1-velvet/nucmer-cdna
+
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna
+ll
+
+    -rw-rw-rw-  1 syoung users 495K Dec 17 11:08 out.cluster
+    -rw-rw-rw-  1 syoung users 328K Dec 17 11:08 out.delta
+
+
+*** 3,821 VELVET CONTIG HITS AGAINST cDNA, OF THEM AGAINST UNIQUE cDNAs ***
+
+records out.cluster 
+    3821
+
+head out.cluster
+    /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-cdna-embl/Homo_sapiens.NCBI36.49.cdna.known.fas
+    NUCMER
+    >NODE_3812_length_271_cov_32.929890 ENST00000361390 291 957
+     1  1
+          67        1    225     -      -
+    >NODE_1559_length_209_cov_15.354067 ENST00000361390 229 957
+     1 -1
+          16      957     75     -      -
+          92      881    138     1      1
+
+out.cluster FILE FORMAT:
+
+    -   First line: the two original input files separated by a space.
+    -   Second line: the type of alignment data - either "NUCMER" or "PROMER". 
+
+Each match cluster contains a five column match list:
+
+    1. the start of the match in the reference
+    2. the start of the match in the query
+    3. the length of the match
+    4. the gap between this match and the previous match in the reference
+    5. the gap between this match and the previous match in the query respectively.
+
+    NB:
+    
+    All coordinates reference the forward strand of each sequence, regardless of match direction, and are always measured in DNA bases regardless of alignment type (DNA or amino acid). Therefore, when running PROmer, all the numbers in the length and gaps columns must be multiples of three.
+    
+    In addition, because the matches reference the forward DNA strand forward match clusters will be sorted in ascending fashion while reverse match clusters will be sorted in descending fashion.
+    
+    Each individual cluster has a header formed from two digits in the set [-1, -2, -3, 1, 2, 3]. These two digits represent the direction of the cluster (negative for reverse and positive for forward) and the frame of the cluster in the reference and query sequences respectively (note that matches within the same cluster must have a consistent reading frame).
+    
+    For NUCmer output, the header will always show a "1" for the reference and a "-1" or "1" for the query, since only the query can be reverse complemented. However, for PROmer output all 36 combinations of these two digits are valid headers. For instance, " -2 3" would represent a cluster on the 2nd reading frame of the reversed reference sequence and on the 3rd reading frame of the forward query sequence.
+
+
+1.2.1.4 FILTER NUCMER OUTPUT TO GET ONLY UNIQUE HITS, THEN DO THE COORDS FILE 
+------------------------------------------------------------------------------
+
+
+1. CREATE delta.filter FILE (A one-to-one local mapping of reference to query sequences)
+
+./nucmer-deltafilter.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/out.delta
+
+*** 1,469 UNIQUE RECIPROCAL HITS BETWEEN VELVET CONTIGS AND cDNA (REDUCED TO 1,443 AFTER EXLUDING Chr6 VARIANT REGION cDNAs)***
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna
+records delta.filter 
+1469
+
+
+
+2. GENERATE COORDINATES FOR HITS WITHIN delta.filter FILE
+
+./nucmer-showcoords.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna
+lines delta.filter.coords
+    1491
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna
+head delta.filter.coords
+
+    /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-cdna-embl/Homo_sapiens.NCBI36.49.cdna.known.fas
+    NUCMER
+    
+        [S1]     [E1]  |     [S2]     [E2]  |  [LEN 1]  [LEN 2]  |  [% IDY]  |  [COV R]  [COV Q]  | [TAGS]
+    ==========================================================================================================
+           1      235  |     1792     1558  |      235      235  |   100.00  |    98.74     4.21  | NODE_3019_length_218_cov_5.032110       ENST00000006951
+           1      497  |       25      521  |      497      497  |   100.00  |    98.81    95.39  | NODE_3183_length_483_cov_9.049689       ENST00000009589
+           1      146  |      570      715  |      146      146  |   100.00  |   100.00    10.56  | NODE_5331_length_126_cov_5.142857       ENST00000022615
+           1      134  |     1236     1369  |      134      134  |   100.00  |   100.00     9.70  | NODE_6976_length_114_cov_5.561403       ENST00000022615
+           1      246  |     4280     4525  |      246      246  |   100.00  |   100.00     3.39  | NODE_3896_length_226_cov_8.252213       ENST00000031135
+
+
+1.2.1.5 GENERATE GENOME-RELATIVE GFF FILE FOR UNIQUE HITS IN delta.filter.coords FILE
+-------------------------------------------------------------------------------------
+
+CREATE cdna_chromosomes.txt FILE FOR EMBL cDNAs:
+
+1. GENERATE 'pre' FILE FROM FASTA HEADERS IN 'raw' FILE
+
+./parsecolumns.pl --inputfile /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.raw.txt \
+    --outputfile /home/syoung/base/pipeline/human-cdna-embl/cdna_chromosomes.pre.txt \
+    --regex "^.+?>(\S+)\s+[^:]+:[^:]+:[^:]*?:([^:]+):(\d+):(\d+):(\S+)\s+gene:(\S+)$" \
+    --headings "id:start:stop:orientation:chromosome:gene" \
+    --order "1:3:4:5:2:6"
+
+
+head /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.pre.txt
+
+    id      start   stop    orientation     chromosome      gene
+    ENST00000391556 7373    8827    -1      NT_113908       ENSG00000212867
+    ENST00000361390 3308    4264    1       MT      ENSG00000198888
+    ENST00000391565 3308    5514    1       MT      ENSG00000212876
+    ENST00000361453 4471    5512    1       MT      ENSG00000198763
+    ENST00000391564 5585    7515    1       MT      ENSG00000212875
+    ENST00000361624 5905    7446    1       MT      ENSG00000198804
+    ENST00000361739 7587    8270    1       MT      ENSG00000198712
+
+2. GENERATE GENOME-RELATIVE cDNA POSITIONS FILE WITH 'pre' FILE AND chromosome_positions.txt FILE
+
+./cdna-positions.pl --inputfile /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.pre.txt \
+--chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt \
+--outputfile /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt
+
+
+ll /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt
+    -rw-rw-rw- 1 syoung users 1.8M Dec 19 21:13 /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt
+
+head /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt
+    ENST00000298232 2836447089      2836531783      84695
+    ENST00000342420 2836447089      2836531783      84695
+    ENST00000359693 2836447089      2836512601      65513
+    ENST00000361285 2836447089      2836531783      84695
+    ENST00000400230 2836447620      2836531761      84142
+    ENST00000356832 2836561721      2836639576      77856
+    ENST00000335369 2836588426      2836639616      51191
+    ENST00000400589 2839855984      2839865210      9227
+    ENST00000305570 2839909529      2839926349      16821
+    ENST00000332473 2840162467      2840163848      1382
+
+
+3. GENERATE GENOME-RELATIVE VELVET CONTIG HITS AGAINST cDNA USING *coords FILE AND cdna_positions.final.txt FILE
+(NB: EXCLUDED ALL cDNAS BELONGING TO CHROMOSOME 6 VARIANTS AND THEREFORE NOT IN chromosome_positions.txt FILE, E.G., Chromosome c6_COX)
+./coords2gff.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords --chromofile /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt --source velvet --algorithm nucmer
+
+    /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords.gff
+    
+    Run time: 00:00:00
+    Completed ./coords2gff.pl
+    10:15PM, 19 December 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords.gff
+
+    1443
+    
+head /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords.gff
+
+    #seqname        source  feature start   end     score   strand  frame   attributes      comments
+    NODE_3019       velvet  contig  2542202175      2542202422      .       +       .       Target: ENST00000006951; Coverage: 5.032110; Length: 248; Query hit start/stop: 1..235; Alignment algorithm: nucmer
+    NODE_3183       velvet  contig  1476534352      1476534864      .       +       .       Target: ENST00000009589; Coverage: 9.049689; Length: 513; Query hit start/stop: 1..497; Alignment algorithm: nucmer
+    NODE_5331       velvet  contig  1461755275      1461755430      .       +       .       Target: ENST00000022615; Coverage: 5.142857; Length: 156; Query hit start/stop: 1..146; Alignment algorithm: nucmer
+    NODE_6976       velvet  contig  1461755941      1461756084      .       +       .       Target: ENST00000022615; Coverage: 5.561403; Length: 144; Query hit start/stop: 1..134; Alignment algorithm: nucmer
+    NODE_3896       velvet  contig  1219694283      1219694538      .       +       .       Target: ENST00000031135; Coverage: 8.252213; Length: 256; Query hit start/stop: 1..246; Alignment algorithm: nucmer
+    NODE_4753       velvet  contig  1219694281      1219694462      .       +       .       Target: ENST00000031135; Coverage: 5.203948; Length: 182; Query hit start/stop: 1..169; Alignment algorithm: nucmer
+    NODE_6483       velvet  contig  716681770       716681924       .       +       .       Target: ENST00000040738; Coverage: 7.352000; Length: 155; Query hit start/stop: 1..145; Alignment algorithm: nucmer
+    NODE_6915       velvet  contig  2423427209      2423427298      .       +       .       Target: ENST00000044462; Coverage: 5.116667; Length: 90; Query hit start/stop: 1..79; Alignment algorithm: nucmer
+    NODE_193        velvet  contig  688137475       688137825       .       +       .       Target: ENST00000169298; Coverage: 11.632399; Length: 351; Query hit start/stop: 1..341; Alignment algorithm: nucmer
+
+
+
+1.2.1.6 FILTER NUCMER OUTPUT TO GET ONLY UNIQUE HITS, THEN DO THE COORDS FILE 
+------------------------------------------------------------------------------
+
+1. COPY nucmer-cdna TO nucmer-cdna-all
+
+cd /home/syoung/base/pipeline/human1-velvet
+cp -r nucmer-cdna nucmer-cdna-all
+
+2. CREATE delta.filter FILE (A one-to-one local mapping of reference to query sequences)
+
+./nucmer-deltafilter.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/out.delta --parameters " "
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all
+records delta.filter 
+    3821
+records ../nucmer-cdna/delta.filter
+    1469
+
+*** delta-filter RETAINED ALL 3,821 VELVET CONTIG HITS AGAINST cDNA ***
+
+
+2. GENERATE COORDINATES FOR HITS WITHIN delta.filter FILE
+
+./nucmer-showcoords.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all
+lines delta.filter.coords
+    4249
+
+cd /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all
+head delta.filter.coords
+
+    /home/syoung/base/pipeline/human1-velvet/assembly/contigs.fa /home/syoung/base/pipeline/human-cdna-embl/Homo_sapiens.NCBI36.49.cdna.known.fas
+    NUCMER
+    
+        [S1]     [E1]  |     [S2]     [E2]  |  [LEN 1]  [LEN 2]  |  [% IDY]  |  [COV R]  [COV Q]  | [TAGS]
+    ==========================================================================================================
+           1      235  |     1792     1558  |      235      235  |   100.00  |    98.74     4.21  | NODE_3019_length_218_cov_5.032110       ENST00000006951
+           1      118  |      584      467  |      118      118  |   100.00  |   100.00    13.10  | NODE_866_length_98_cov_7.540816 ENST00000008180
+           1      497  |       25      521  |      497      497  |   100.00  |    98.81    95.39  | NODE_3183_length_483_cov_9.049689       ENST00000009589
+          31      235  |      641      845  |      205      205  |   100.00  |    87.23    11.60  | NODE_4311_length_215_cov_5.865116       ENST00000010338
+           1      420  |      833     1252  |      420      420  |    99.76  |   100.00    23.77  | NODE_875_length_400_cov_7.725000        ENST00000010338
+
+
+
+1.2.1.7 GENERATE GENOME-RELATIVE GFF FILE FOR UNIQUE HITS IN delta.filter.coords FILE
+-------------------------------------------------------------------------------------
+
+CREATE cdna_chromosomes.txt FILE FOR EMBL cDNAs:
+
+1. GENERATE 'pre' FILE FROM FASTA HEADERS IN 'raw' FILE
+
+SEE ABOVE.
+
+2. GENERATE GENOME-RELATIVE cDNA POSITIONS FILE WITH 'pre' FILE AND chromosome_positions.txt FILE
+
+SEE ABOVE.
+
+
+3. GENERATE GENOME-RELATIVE VELVET CONTIG HITS AGAINST cDNA USING *coords FILE AND cdna_positions.final.txt FILE
+(NB: EXCLUDED ALL cDNAS BELONGING TO CHROMOSOME 6 VARIANTS AND THEREFORE NOT IN chromosome_positions.txt FILE, E.G., Chromosome c6_COX)
+
+./coords2gff.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords --chromofile /home/syoung/base/pipeline/human-cdna-embl/cdna_positions.final.txt --source velvet --algorithm nucmer
+
+    /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords.gff
+    
+    Run time: 00:00:00
+    Completed ./coords2gff.pl
+    10:36PM, 19 December 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords.gff
+
+    3970
+
+COMPARED TO UNIQUE HITS:
+
+lines /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords.gff
+
+    1443
+    
+head /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords.gff
+
+    #seqname        source  feature start   end     score   strand  frame   attributes      comments
+    NODE_3019       velvet  contig  2542202175      2542202422      .       +       .       Target: ENST00000006951; Coverage: 5.032110; Length: 248; Query hit start/stop: 1..235; Alignment algorithm: nucmer
+    NODE_866        velvet  contig  2452209115      2452209242      .       +       .       Target: ENST00000008180; Coverage: 7.540816; Length: 128; Query hit start/stop: 1..118; Alignment algorithm: nucmer
+    NODE_3183       velvet  contig  1476534352      1476534864      .       +       .       Target: ENST00000009589; Coverage: 9.049689; Length: 513; Query hit start/stop: 1..497; Alignment algorithm: nucmer
+    NODE_4311       velvet  contig  208000619       208000863       .       +       .       Target: ENST00000010338; Coverage: 5.865116; Length: 245; Query hit start/stop: 31..235; Alignment algorithm: nucmer
+    NODE_875        velvet  contig  208000841       208001270       .       +       .       Target: ENST00000010338; Coverage: 7.725000; Length: 430; Query hit start/stop: 1..420; Alignment algorithm: nucmer
+    NODE_5331       velvet  contig  1461755275      1461755430      .       +       .       Target: ENST00000022615; Coverage: 5.142857; Length: 156; Query hit start/stop: 1..146; Alignment algorithm: nucmer
+    NODE_6976       velvet  contig  1461755941      1461756084      .       +       .       Target: ENST00000022615; Coverage: 5.561403; Length: 144; Query hit start/stop: 1..134; Alignment algorithm: nucmer
+    NODE_3896       velvet  contig  1219694283      1219694538      .       +       .       Target: ENST00000031135; Coverage: 8.252213; Length: 256; Query hit start/stop: 1..246; Alignment algorithm: nucmer
+    NODE_4753       velvet  contig  1219694281      1219694462      .       +       .       Target: ENST00000031135; Coverage: 5.203948; Length: 182; Query hit start/stop: 1..169; Alignment algorithm: nucmer
+
+
+
+
+
+1.2.1.8 GET UNIQUE TARGETS FROM *.coords FILE
+---------------------------------------------
+
+*** FOR BEST VELVET-cDNA UNIQUE HITS, 1,105 UNIQUE cDNAs WERE HIT BY VELVET CONTIGS (1,486 HITS IN TOTAL) ***
+
+./nucmer-uniquetargets.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/delta.filter.coords --outputfile out.targets 
+
+    No. unique targets: 1105
+    No. lines: 1486
+    Output file printed:
+    
+    /home/syoung/base/pipeline/human1-velvet/nucmer-cdna/out.targets
+    Run time: 00:00:00
+    Completed ./nucmer-uniquetargets.pl
+    11:09PM, 19 December 2008
+    ****************************************
+
+
+*** FOR ALL VELVET HITS, 2,493 UNIQUE cDNAs WERE HIT BY VELVET CONTIGS (4,244 HITS IN TOTAL) ***
+
+./nucmer-uniquetargets.pl --inputfile /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords --outputfile out.targets 
+
+    Inputfile: /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/delta.filter.coords
+    Output directory: /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all
+    No. unique targets: 2493
+    No. lines: 4244
+    Output file printed:
+    
+    /home/syoung/base/pipeline/human1-velvet/nucmer-cdna-all/out.targets
+    Run time: 00:00:00
+    Completed ./nucmer-uniquetargets.pl
+    11:11PM, 19 December 2008
+    ****************************************
+
+
+
+1.3.1 COMPARE READS IN .ace FILES OF ELAND AND VELVET ASSEMBLIES
+----------------------------------------------------------------
+
+1. EXTRACT READS FROM VELVET .ace FILE:
+/home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.ace
+
+cd /home/syoung/base/pipeline/human1-velvet/data
+cat human1_sequence_in.ace | grep "AF " > human1-velvet-assembled-reads.pre.txt
+
+head human1-velvet-assembled-reads.txt 
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:1:237:251 U 69
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:14:154:894 U 73
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:27:247:920 U 105
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:29:166:899 U 70
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:31:834:294 U 48
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:33:293:287 U 73
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:47:755:370 U 86
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:59:267:42 U 105
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:63:94:532 U 95
+    AF HWI-EAS185_1_JIA_cDNA_JH:3:69:119:133 U 89
+
+cut -d " " -f 2 human1-velvet-assembled-reads.pre.txt > human1-velvet-assembled-reads.txt
+head /home/syoung/base/pipeline/human1-velvet/data/human1-velvet-assembled-reads.txt
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:237:251
+    HWI-EAS185_1_JIA_cDNA_JH:3:14:154:894
+    HWI-EAS185_1_JIA_cDNA_JH:3:27:247:920
+    HWI-EAS185_1_JIA_cDNA_JH:3:29:166:899
+    HWI-EAS185_1_JIA_cDNA_JH:3:31:834:294
+    HWI-EAS185_1_JIA_cDNA_JH:3:33:293:287
+    HWI-EAS185_1_JIA_cDNA_JH:3:47:755:370
+    HWI-EAS185_1_JIA_cDNA_JH:3:59:267:42
+    HWI-EAS185_1_JIA_cDNA_JH:3:63:94:532
+    HWI-EAS185_1_JIA_cDNA_JH:3:69:119:133
+
+
+2. EXTRACT READS FROM ELAND .txt FILE:
+
+ELAND .txt FILE:
+
+cd /home/syoung/base/pipeline/human1-eland/assembly
+head human1-cdna_embl-eland.txt
+
+cut -f 1 human1-cdna_embl-eland.txt > human1-eland-assembled-reads.pre.txt
+cut -d ">" -f 2 human1-eland-assembled-reads.pre.txt > human1-eland-assembled-reads.txt
+
+head /home/syoung/base/pipeline/human1-eland/assembly/human1-eland-assembled-reads.txt 
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:129:540
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:113:576
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:212:252
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:118:571
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:207:277
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:103:565
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:211:297
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:114:511
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:217:361
+    HWI-EAS185_1_JIA_cDNA_JH:3:1:728:353
+
+
+3. FIND THE INTERSECTION OF THE VELVET AND ELAND MATCHES
+
+./compare-reads.pl --firstfile /home/syoung/base/pipeline/human1-eland/assembly/human1-eland-assembled-reads.txt --secondfile /home/syoung/base/pipeline/human1-velvet/data/human1-velvet-assembled-reads.txt --assemblynames eland,velvet --outputdir /home/syoung/base/pipeline/human-eland-velvet
+
+    First: eland, second: velvet
+    Loading first file into hash: /home/syoung/base/pipeline/human1-eland/assembly/human1-eland-assembled-reads.txt ...
+    Checking through second file for matching reads in first file...
+    First only file printed: /home/syoung/base/pipeline/human-eland-velvet/eland-only.txt
+    Second only file printed: /home/syoung/base/pipeline/human-eland-velvet/velvet-only.txt
+    Both file printed: /home/syoung/base/pipeline/human-eland-velvet/eland-velvet.both.txt
+    
+    Run time: 00:00:04
+    Completed ./compare-reads.pl
+    2:40AM, 21 December 2008
+    ****************************************
+
+
+ll /home/syoung/base/pipeline/human-eland-velvet
+
+    -rw-rw-rw-  1 syoung users  12M Dec 21 02:40 eland-only.txt
+    -rw-rw-rw-  1 syoung users 5.7M Dec 21 02:40 eland-velvet.both.txt
+    -rw-rw-rw-  1 syoung users  30M Dec 21 02:40 velvet-only.txt
+
+
+cd /home/syoung/base/pipeline/human-eland-velvet
+lines eland-only.txt
+    324025
+lines eland-velvet.both.txt
+    155040
+lines velvet-only.txt
+    806205
+
+
+GOOD IF VELVET IS GOOD ASSEMBLY...    
+
+
+CREATE ONE OR MORE SEQUENCE FILES (FILENAME = SEQUENCE ID, CONTENT = SEQUENCE ONLY) FROM SINGLE FASTA FILE
+
+./sequence-files.pl --fastafile /home/syoung/base/pipeline/human-cdna-embl/Homo_sapiens.NCBI36.49.cdna.known.fas \
+--outputdir /home/syoung/base/pipeline/human-eland-velvet/sequences
+
+OKAY:
+40,000+ 'ENST00000401097' ETC. SEQUENCE FILES PRINTED TO DIRECTORY /home/syoung/base/pipeline/human-eland-velvet/sequences
+
+E.G.:
+head  /home/syoung/base/pipeline/human-eland-velvet/sequences/ENST00000401096
+
+GET READ ALIGNMENT ACCURACIES BY COMPARING THE CONSENSUS SEQUENCE IN AN .ace FILE TO THE ACTUAL SEQUENCE:
+
+./ace-read-accuracy.pl --inputfile /home/syoung/base/pipeline/human1-velvet/data/human1_sequence_in.ace \
+--sequencedir /home/syoung/base/pipeline/human-eland-velvet/sequences
+
+
+GET READ ALIGNMENT ACCURACIES FOR:
+
+    1) ELAND ONLY READS
+
+    2) VELVET ONLY READS
+
+    3) READS INCORPORATED IN BOTH ELAND AND VELVET
+
+
+
+
+
+
+
+
+
+(2) HUMAN 2 (LANES 1-3,5-8) ASSEMBLY OVERLAPS AGAINST cDNA (EMBL) - Eland versus Velvet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ELAND
+=====
+
+LOCATION:
+
+cd /home/syoung/base/pipeline/human2-eland/assembly
+
+
+RUN ELAND MULTI:
+
+DO 1 OF 2: 
+
+./eland.pl -i /home/syoung/base/pipeline/human2-eland/data/human2-1of2.fasta  -r /home/syoung/base/pipeline/human2-eland/data -o /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-1of2.txt > /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-1of2.log
+    
+    Eland: /usr/local/Pipeline/Eland/eland
+    Output directory: /home/syoung/base/pipeline/human2-eland/assembly
+    /usr/local/Pipeline/Eland/eland /home/syoung/base/pipeline/human2-eland/data/human2-1of2.fasta /home/syoung/base/pipeline/human2-eland/data /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-1of2.txt --multi
+    
+    Run time: 00:12:51
+    Completed ./eland.pl
+    0:07AM, 16 December 2008
+    # EXECUTED FULL COMMAND:
+    # ./eland.pl -i /home/syoung/base/pipeline/human2-eland/data/human2-1of2.fasta -r /home/syoung/base/pipeline/human2-eland/data -o /home/syoung/base/pipeline/human2-eland/assembl\
+    y/human2-cdna_embl-eland-1of2.txt
+    ****************************************
+
+    ELAND OUTPUT:
+
+    ...
+    Parsed offset=119327430, name=/ENST00000315492
+    Parsed offset=119328819, name=/ENST00000366471
+    Parsed offset=119330529, name=/ENST00000391820
+    Parsed offset=119330987, name=/ENST00000329291
+    Parsed offset=119332960, name=/ENST00000355360
+    Outputting results: User: 0.367944s System: 1.84372s Actual: 3.48364s Efficiency: 63.4871%
+    Info: 17915531 matches were stored
+    Info: 71662124 bytes of temp storage used for oligo numbers
+    Info: 71662124 bytes of temp storage used for match positions
+    ... done User: 47.4918s System: 11.0143s Actual: 59.0701s Efficiency: 99.0452%
+    Run complete! Time now: Tue Dec 16 00:07:42 2008
+
+
+DO 2 OF 2:
+
+./eland.pl \
+    -i /home/syoung/base/pipeline/human2-eland/data/human2-2of2.fasta \
+    -r /home/syoung/base/pipeline/human2-eland/data \
+    -o /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-2of2.txt \
+    &> /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-2of2.log
+
+
+tail /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-2of2.log
+
+    Run time: 00:12:44
+    Completed ./eland.pl
+    0:09AM, 16 December 2008
+    # EXECUTED FULL COMMAND:
+    # ./eland.pl -i /home/syoung/base/pipeline/human2-eland/data/human2-2of2.fasta -r /home/syoung/base/pipeline/human2-eland/data -o /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland-2of2.txt
+    ****************************************
+
+
+
+./eland.pl -i /home/syoung/base/pipeline/human2-eland/data/human2_sequence_in.fasta \
+            -r /home/syoung/base/pipeline/human2-eland/data \
+            -o /home/syoung/base/pipeline/human-eland/assembly/human2-cdna_embl-eland.txt
+
+*** ROUGHLY 10% OF READS HAVE UNIQUE HITS AGAINST THE cDNA REFERENCE ***
+
+                Number reads       %
+ALIGNED          3,209,719      10.049
+NOT ALIGNED     28,729,599      89.951
+TOTAL           31,939,318     100.000
+
+
+
+LScd /home/syoung/base/pipeline/human2-eland/assembly
+cat human2-cdna_embl-eland-contigs.solexa.fasta.1 human2-cdna_embl-eland-contigs.solexa.fasta.2 > human2-cdna_embl-eland.txt
+cat human2-cdna_embl-eland.txt | grep NCBI36 > human2-cdna_embl-eland.hits
+lines human2-cdna_embl-eland.hits
+    3,209,719
+lines human2-cdna_embl-eland.txt
+    31,939,318
+
+
+
+
+VELVET
+======
+
+LOCATION:
+
+/home/syoung/base/pipeline/human1-velvet/assembly
+
+RUN:
+
+Notes-project02-ng_assembly.txt, P.178
+
+
+
+1. GENERATE ELAND ALIGNMENT CONTIGS .gff FILE:
+
+CONCENTRATE ALL HITS IN ONE FILE:
+
+/home/syoung/base/pipeline/human2-eland/assembly
+
+cat human2-cdna_embl-eland-contigs.solexa.fasta.1 human2-cdna_embl-eland-contigs.solexa.fasta.2 | grep NCBI36 > human2-cdna_embl-eland.txt
+
+
+
+
+
+./eland2gff.pl \
+    --inputfile /home/syoung/base/pipeline/human2-eland/assembly/human2-cdna_embl-eland.hits \
+    --outputdir /home/syoung/base/pipeline/human2-eland/assembly/gff \
+    --cdnadir /home/syoung/base/pipeline/human-cdna-embl/gff \
+    --chromofile /home/syoung/base/pipeline/human-genome/chromosome_positions.txt \
+    --readlength 34
+
+
+SORT THE ELAND GFF FILE JUST IN CASE THE cDNAs WERE NOT IN THE RIGHT ORDER:
+
+./sortgff.pl -i /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.gff \
+            -o /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.sorted.gff
+
+    Run time: 00:00:03
+    Completed ./sortgff.pl
+    10:39PM, 15 December 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.gff
+lines /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.sorted.gff
+
+diff /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.gff /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.sorted.gff
+
+
+head /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.sorted.gff
+
+./elandgff2contig.pl  --inputdir /home/syoung/base/pipeline/human2-eland/assembly/gff \
+                      --outputdir /home/syoung/base/pipeline/human2-eland/assembly/contig
+
+
+
+2. COMPARE OVERLAPPING CONTIGS ALIGNED TO EACH CHROMOSOME
+
+
+./comparegff.pl \
+    --firstfile /home/syoung/base/pipeline/human-cdna-embl/gff/human-cdna-embl-chr2.gff  \
+    --secondfile /home/syoung/base/pipeline/human2-eland/assembly/gff/human-cdna-embl-chr2.eland.sorted.gff  \
+    --assemblynames cdna,eland \
+    --outputdir /home/syoung/base/pipeline/human2-eland/assembly/compare 
+
+
+
+
+3. CHECK COVERAGE DIFFERENCES BETWEEN OVERLAPPING AND NON-OVERLAPPING REGIONS
+
+
+
+
+
+
+
+(2) ASSEMBLY CONSENSUS DIFFERENCES IN OVERLAPPING REGIONS (RESIDUES AND READS)
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Sep 11 23:37:58 EDT 2008] USE dnadiff TO COMPARE ASSEMBLIES>
+
+
+
+Genome assembly forensics: finding the elusive mis-assembly
+Reviewed by Adam M Phillippy,1 Michael C Schatz,1 and Mihai Popcorresponding author1
+Published online 2008 March 14
+
+The Phrap assemblies were aligned against the reference sequences using the MUMmer utility dnadiff to collect regions of mis-assembly. dnadiff performs a whole-genome alignment and compactly summarizes the location and characteristics of differences between two contig sets (http://mummer.sourceforge.net).
+
+TAKEN FROM:
+
+To supplement the anecdotal results presented above, we have performed a systematic evaluation of assemblies using amosvalidate. Sequencing data for 16 bacterial genomes were collected and assembled with Phrap v0.990329 using the phrap.manyreads program with default parameters. Phrap was chosen because of its popularity, simplicity, and tendency to mis-assemble repetitive genomes. Similar experiments were attempted with Celera Assembler, but not enough mis-assemblies were produced to allow adequate validation. In larger genomes, Celera Assembler, and virtually all other assemblers, produce many errors; however, there are not enough fully finished eukaryotic genomes to allow comprehensive testing of our methods. For extensive and objective testing, bacteria were chosen as the assembly targets because many complete, finished genomes are available, thus providing a proper reference that can be used to identify true mis-assemblies.
+
+The Phrap assemblies were aligned against the reference sequences using the MUMmer utility dnadiff to collect regions of mis-assembly. dnadiff performs a whole-genome alignment and compactly summarizes the location and characteristics of differences between two contig sets [45]. 
+
+For aligning contigs to a reference genome, this process is identical to the read mapping discussed in the 'Read breakpoint analysis' section. Using the same algorithm, the contig set is mapped to the reference genome using nucmer, and the optimal mapping for each contig is identified. The alignment information is then parsed, and all alignment breakpoints are identified. By default, nucmer creates a contiguous alignment as long as the average nucleotide identity is greater than 70% for a 200 bp window; therefore, any stretch of greater than approximately 60 mis-matches will force the alignment to break. After alignment, the breakpoints are classified as insertions, deletions, rearrangements, or inversions based on their surrounding context. For example, a breakpoint between a forward-strand and negative-strand alignment on the same contig is classified as an inversion. For the Phrap contigs, only alignment differences that produced a breakpoint were considered as mis-assemblies. Small differences such as consensus SNPs, short indels (less than approximately 60 bp), and breakpoints occurring within the first 10 bp of a contig were ignored. All contigs less than 5,000 bp were also ignored because of their generally low quality.
+
+amosvalidate was then run on all 16 Phrap assemblies to determine if the mis-assembled regions were correctly identified by our methods. Additional data file 1 lists the NCBI Taxonomy and RefSeq identifiers for the 16 reference genomes. Table 1 gives a summary of the Phrap induced mis-assemblies, along with statistics detailing the performance of amosvalidate. Table 2 gives specific details on the types of mis-assemblies introduced by Phrap, and the size characteristics of the amosvalidate features. Mis-joins (rearrangements) were the most prevalent type of mis-assembly reported by dnadiff.
+
+
+</entry>
+
+
+
+<entry [Fri Aug 15 02:45 EDT 2008] CREATED compare-gff-reference.pl TO COUNT EXONS IN COMMON BETWEEN TWO ASSEMBLIES ON A REFERENCE BACKBONE>
+
+
+
+COMPARED: eland, velvet (run 1 - HUMAN 7 LANES)
+
+REFERENCE: HUMAN cDNA GFF FILES
+
+./compare-reference.pl -f /home/syoung/base/pipeline/human-eland/assembly/gff/human-cdna-embl-chr1.eland.gff -s /home/syoung/base/pipeline/human2-velvet/nucmer.whole-human/chromosome-gff/human-velvet-nucmer.chr1.gff -p eland,velvet -r /home/syoung/base/pipeline/human-cdna-embl/gff/human-cdna-embl-chr1.gff -o /home/syoung/base/pipeline/human-eland-velvet/comparison-eland-velvet
+
+
+
+OUTPUT
+
+    1. SET 1 - NO. OF HITS IN BOTH ASSEMBLY 1 AND ASSEMBLY 2
+    2. SET 2 - NO. OF HITS IN ASSEMBLY 1 AND NOT IN ASSEMBLY 2
+    3. SET 3 - NO. OF HITS IN ASSEMBLY 2 AND NOT IN ASSEMBLY 1
+    4. SET 4 - NO. OF HITS IN EITHER ASSEMBLY 1 OR ASSEMBLY 2
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [http://massgenomics.wordpress.com/2008/05/14/short-read-aligners-maq-eland-and-others/] HENG LI COMPARISON OF MAQ WITH ELAND, RMAP, SOAP AND SHRiMP>
+
+
+
+COMMENTS
+========
+
+Sparks (Colin, Novocraft):
+
+MAQ randomly chooses one alignment from a set of equal scoring alignments, which introduces some FP and some extra (random) TP.
+
+ac:
+We generally get around this by providing only uniquely aligned reads from Eland as input to MAQ. The obvious drawback to this is that you may be losing some reads. However, I haven’t seen any drop in depth beyond 1X unless it is a highly repetitive region. Fortunately we did see some FPs go away with this approach but does anyone see any drawbacks?
+
+#  Justin Says:
+May 18, 2008 at 9:26 pm
+
+I am under the impression that the random assignment protocol in MAQ for repeats results in a lower mapping quality score for such assigned reads.
+
+Can anyone here point me in a direction to understand how SNP calling is conditioned on mapping quality score for MAQ?
+
+I couldn’t find it on the MAQ page.
+
+ARTICLE
+=======
+
+Short Read Aligners: Maq, Eland, and Others
+
+This month I’ve come across some interesting statistics on the performance of Maq, Eland, and other short-read alignment tools as applied to Illumina/Solexa data. I took note because these programs are finally being evaluated against appropriate data sets, as opposed to simulated reads or tiny genomes. First the disclaimers: all of these numbers came from people other than myself (see Credits, below), so please forgive any inaccuracies. Also, this entry reflects my personal second-hand impressions of the different alignment tools, and should not be considered an endorsement or criticism of the different alignment tools by the WashU GC.
+
+Short-Read Data Sets at the WashU Genome Center
+
+One of our data sets includes 100+ Solexa runs (non-paired) from the genomic DNA of a single individual. We’ve applied a number of alignment tools to these data: Eland (part of the Illumina suite), Maq (free/open source), SX Oligo Search (proprietary), SlimSearch (proprietary), and even BLAT. Our group (Medical Genomics) is currently leaning toward Maq for read mapping and SNP discovery purposes. There’s recently been a new release of Maq (0.6.5) which seems to run substantially faster:
+Metric 	Maq 0.6.3 	Maq 0.6.5
+Average alignment time for normal runs 	17.7 hours 	9.1 hours
+Max alignment time for a normal run 	240 hours 	28.8 hours
+Total number of jobs 	2168 	1467
+Jobs that took longer than 1 day 	443 	3
+
+The developer of Maq, Heng Li, presented a poster describing the Maq algorithm at CSHL last week and also gave a small workshop talk on issues in short read mapping. He sent these links out to the Maq user list along with a benchmarking comparison of various read mapping tools.
+
+Heng Li’s Comparison of Short-Read Aligners
+
+For the comparison, Heng generated 1 million simulated read-pairs from chromosome X. The numbers themselves are a bit mind-boggling, but fortunately he summarized the results with these notes:
+
+    * Eland: eland is definitely the fastest, much faster than all the competitors. What is more important, eland gives the number of alternative places, which makes it possible for you to get further information about the repetitive structures of the genome and to select reads that can be really confidently mapped. In addition, with the help of additional scripts, Eland IS able to map reads longer than 32bp. Eland is one of the best software I ever used. It would be even superior if Tony could make it easier to use for a user, like me, who wants to run eland independently of the GAPipeline.
+
+    * RMAP: the strength of rmap is to use base qualities to improve the alignment accuracy. I believe it can produce better alignment than maq -se because maq trades accuracy for speed at this point (technically it is a bit hard to explain here). Nonetheless, I think rmap would be more popular if its authors could add support for fastq-like quality string which is now the standard in both Illumina and the Sanger Institute (although maybe not elsewhere). rmap supports longer reads, which is also a gain. Furthermore, I did learn a lot from its way to count the number of mismatches.
+
+    * SOAP: soap is a versatile program. It supports iterative-trimmed alignment, long reads, gapped alignment, TAG alignment and PE mode. Its PE mode is easier to use than eland. In principle, soap and eland should give almost the same number of wrong alignments. However, soap gives 442 more wrong alignments. Further investigation shows that most of these 442 wrong ones are flagged as R? (repeat) by eland.
+
+    * SHRiMP: Actually I was not expecting that a program using seeding +Smith-Waterman could be that fast. So far as I know, all the other software in the list do not do Smith-Waterman (maq does for PE data only), which is why they are fast. SHRiMP’s normodds score has similar meaning to mapping quality. Such score helps to determine whether an alignment is reliable. The most obvious advantage is SHRiMP can map long reads (454/capillary) with the standard gapped alignment. If you only work with small genomes, SHRiMP is a worthy choice. I think SHRiMP would be better if it could make use of paired end information; it would be even better if it could calculate mapping quality. The current normodds score helps but is not exactly the mapping quality. In addition, I also modified probcalc codes because in 1.04 underflow may occur to long reads and leads to “nan” normodds. However, although my revision fixes the underflow, it may lead to some inaccurate normodds.
+
+    * Maq: at the moment maq is easier to use than eland. Supporting SNP calling is maq’s huge gain. Its paired end mode is also highly helpful to recover some repetitive regions. Maq’s random mapping, which is frequently misused by users who have not noticed mapping qualities, may be useful to some people, too, and at least it helps to call SNPs at the verge of repeats.
+
+What a nice guy! Here he is, comparing his own tool against several competitors and he manages to praise the strengths of each one. That takes humility.
+
+More Comments from Heng Li
+
+Ken Chen, a colleague of mine, happened to discuss the benchmarking with Heng at Cold Spring Harbor. According to his evaluation, the current version of recently-published SOAP may be somewhat buggy (it had more mapping errors and crashed on paired-end alignment), but is nevertheless promising because it supports gapped alignment and longer reads. Paired-end alignment is perhaps Maq’s greatest strength; the alignment error rate from Maq for paired-end data is significantly reduced. Heng also mentioned that the upcoming new release of Eland will support longer read lengths (>32 bp) and will also calculate mapping quality scores.
+
+Unbiased Comparisons of Short-Read Aligners
+
+In summary, there are a number of competing tools for short read alignment, each with its own set of strengths, weaknesses, and caveats. It’s hard to trust any benchmarking comparison on tools like these because usually, it’s the developers of one of the tools that publish them. Here’s an idea: what if NHGRI, Illumina, or another group put together a short-read-aligning contest? They generate a few short-read data sets: real, simulated, with/without errors, with/without SNPs and indels, etc. Then, the developers of each aligner are invited to throw their best efforts at it. Every group submits the results to a DCC, which analyzes the results in a simple, unbiased way: # of reads placed correctly/incorrectly. # of SNPs/indels detected, missed, or false-positives. The results are published on a web site or in the literature for all to see. Yeah, I know, there are hurdles, like the fact that most proprietary tool developers would probably chicken out of an unbiased head-to-head comparison, given the stakes. But wouldn’t it be nice to know the results? Unless that happens, however, I think Heng’s analysis is about as unbiased as can be.
+
+Credits
+
+WashU GC Maq version comparisons were sent out by Jim Eldred on 5/01/2008. Heng Li’s benchmarking comparison was sent to the Maq user list on 5/12/2008. Additional comments from Heng Li were reported by Ken Chen on 5/12/2008.
+
+
+
+</entry>
+
+
+
+<entry [Mon Aug 25 21:34:38 EDT 2008] ASSEMBLY TIMINGS>
+
+
+
+mira
+====
+
+START
+Localtime: Thu Jul  3 02:36:29 2008
+END
+Localtime: Thu Jul  3 08:39:08 2008
+
+6:02 hours
+
+
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QUOTE FOR CLC BIO
+
+
+From: Young, Stuart 
+Sent: Monday, July 21, 2008 2:35 AM
+To: Khuri, Sawsan
+Subject: Next generation assemblers
+
+Hi Sawsan,
+
+It appears that neither the  ‘Genomics Workbench’ or ‘NextGene’ are quite what we’re looking for right now because they don’t perform well or at all when loaded with our most recent batch of human data using the Solexa sequencer. DNAStar releases the demo version of SMGA in a week or so’s time. It might be a good idea to wait until we can test SMGA before we purchase. 
+
+I tried assembling one lane of Solexa data using CLC Bio’s ‘Genomics Workbench’ and SoftGenetics ‘NextGene’ but my laptop froze up in both cases. Genomics Workbench will do smaller data sets quite quickly and it has a nice GUI (graphical user interface). Genomics Workbench took 20 mins to do a reference sequence-based assembly and 200 mins to do a de novo respectively to finish the assembly. 
+
+So neither of the two Windows-platform assemblers I’ve tried so far can assemble large numbers of sequences. But I’m wondering if the people who will use the assembly viewer may also want to use the other functions it has but it seems a lot to pay just for a nice UI.
+ 
+I’ll run some more tests tomorrow and send you the details and comparisons between different assemblies. (I’ll also send you my bullets – I haven’t forgotten).
+
+Cheers,
+
+
+Stuart.
+
+
+
+Genomics workbench
+==================
+
+-----Original Message-----
+From: Rob Mervis [mailto:rmervis@clcbio.com] 
+Sent: Thursday, July 10, 2008 10:19 AM
+To: Young, Stuart
+Subject: GWB Quote request from Suart Yong, University of Miami
+
+Hi Stuart,
+
+Thanks for your continued interest in the CLC Genomics Workbench.
+
+As per your request below, I have attached 3 quotes;  for 1, 3, and 5 licenses of the Genomics Workbench Software.
+
+Please note the discounts extended for each quantity.  The price breaks we offer that are applicable here are 25% off for quantities 2 - 4, and 35% off for quantities 5-9.  These discounts are applied to the already discounted Academic/Government/Non-profit list pricing of $4999 for a single license.
+
+
+Please let me know if you have any questions.
+
+Thanks again and best regards,
+
+-Rob Mervis

@@ -1,0 +1,720 @@
+Notes-database-swissprot.txt
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+DO signature WORKFLOW FOR swissprot
+
+Wed Jan 30 21:54:18 EST 2008
+DO WHOLE PATHWAY FOR kog1
+
+1. POPULATE swissprot.collection TABLE 
+======================================
+
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 20
+
+~ 3 HOURS
+
+    select count(distinct collectionid) from collection;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        88410 |
+    +------------------------------+
+
+
+2. Load InterPro hits into 'collectioniprscan' table
+====================================================
+
+arrayswissprotcollectioniprscandaemon.pl -d swissprot -t 20
+
+OK
+
+    select count(distinct collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        78030 |
+    +------------------------------+
+
+
+3. Load 'collection' and 'collectioniprscan' tables onto cluster
+================================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collection,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+4. GET IPRSCAN SET 
+==================
+
+(NB: ADDED SEED LIMIT ON collection ACCESSIONS BECAUSE TOO MANY, WHICH MEANT THERE
+WERE NO NEGATIVE AND POSITIVE EXAMPLES COMING FROM THE EXTERNAL, Swissprot
+SEQUENCES)
+
+sudo ./arrayiprscansetdaemon.pl -d swissprot -t 24 
+    
+OK
+
+    select count(distinct collectionid) from iprscanset;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        64920 |
+    +------------------------------+
+    
+
+5. GET IPRSCAN SET SEQUENCES
+============================
+
+./iprscansetsequence.pl -d swissprot    
+        
+    select count(distinct collectionid) from iprscansetsequence;    
+    
+    
+5. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d swissprot -n 20
+
+ 
+
+
+
+
+
+6. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+./arrayiprscansetalignmentloaddata.pl -d swissprot
+    
+    Run time: 00:00:04
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    6:46PM, 6 February 2008
+    ****************************************
+    
+    select count(distinct collectionid) from iprscansetalignment;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+  
+  
+  
+    
+7. LOAD iprscansetalignment TABLE TO CLUSTER
+============================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscanset,iprscansetalignment
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+8. DO SUPERDOMAINS
+==================
+
+sudo ./arrayiprscansuperdomaindaemon.pl -d swissprot -t 20
+                    
+    Run time: 00:00:27
+    Completed ./arrayiprscansuperdomaindaemon.pl
+    7:14PM, 6 February 2008
+    ****************************************
+
+9. LOAD SUPERDOMAINS
+====================
+
+./arrayiprscansuperdomainloaddata.pl -d swissprot -t 20
+            
+    Run time: 00:00:01
+    Completed ./arrayiprscansuperdomainloaddata.pl
+    10:34PM, 6 February 2008
+    ****************************************    
+
+    select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+
+10. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d swissprot
+        
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:00:13
+    10:35PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscanattributebayes; 
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+
+11. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d swissprot
+
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:03
+    10:36PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from nfoldbayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+    
+12. Load TABLES onto cluster
+========================================================================================
+
+TABLES:
+iprscansetsequence
+iprscanattributebayes
+iprscansuperdomain 
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscansetsequence,iprscansuperdomain,iprscanattributebayes
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+12. Populate 'iprscanattribute' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+
+USING:
+
+sudo ./signaturecommandengine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g iprscan -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+    select distinct groupby, domainsize from iprscanattribute;
+    +---------+------------+
+    | groupby | domainsize |
+    +---------+------------+
+    | iprscan |          0 |
+    | size    |        100 |
+    | size    |        150 |
+    | size    |        300 |
+    +---------+------------+
+
+
+13. DO DECISION TREES
+=====================
+
+USING:
+
+sudo ./signaturecommandengine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 300
+
+
+Tue Feb 12 15:08:33 EST 2008
+
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.6495 |
+| size    |        100 |       0.6575 |
+| size    |        150 |       0.7194 |
+| size    |        300 |       0.7523 |
++---------+------------+--------------+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 15 15:24:12 EDT 2008] RUN sudo arrayswissprotcollection ON CLUSTER>
+
+
+
+
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 1
+
+~ 3 HOURS
+
+
+ select count(distinct collectionid) from collection;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        88410 |
++------------------------------+
+
+select count(distinct collectionid) from collectioniprscan;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        78030 |
++------------------------------+
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        64920 |
++------------------------------+
+1 row in set (3 min 40.20 sec)
+
+
+
+TRANSFERRED swissprot AND swissprotnt TO nodes AND COPIED addfulltext.pl TO /common/myEST/bin/utils ON gems WITH THE FOLLOWING CHANGES:
+
+#### USE LIBRARIES
+use lib "/common/myEST/lib";
+.
+.
+.
+#### GET CONF
+my $conf = Util::conf("/common/myEST/conf");
+
+THEN ADDED 'name' FULLTEXT TO swissprot
+
+cd ../bin/utils/
+sudo dsh -a "/common/myEST/bin/utils//addfulltext.pl -d indexer -t swissprot -f name -n name"
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Feb 23 02:29:08 EST 2008] FIXED arrayiprscanset OVERSHOOT OF collectionids IN collectioniprscan>
+
+
+
+select count(distinct collectionid) from collectioniprscan;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        78030 |
++------------------------------+
+
+SO THIS QUERY ALWAYS OVERSHOT:
+
+SELECT DISTINCT collectionid FROM collectioniprscan ORDER BY collectionid LIMIT 78592,100;
+Empty set (0.00 sec)
+
+ sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+    
+    Printing script to script file: /common/pipeline/swissprot/collection/arrayiprscanset.sh ...done.
+    qsub command: qsub -sync y -t 1-18 /common/pipeline/swissprot/collection/arrayiprscanset.sh
+    Completed qsub. Job output:
+    qsub command: qsub -sync y -t 1-18 /common/pipeline/swissprot/collection/arrayiprscanset.sh
+    Completed qsub. Job output:
+    
+    Your job-array 1532211.1-18:1 ("arrayiprscanset.sh") has been submitted
+    Job 1532211.15 exited with exit code 0.
+    Job 1532211.11 exited with exit code 0.
+    Job 1532211.13 exited with exit code 0.
+    Job 1532211.9 exited with exit code 0.
+    Job 1532211.3 exited with exit code 0.
+    Job 1532211.10 exited with exit code 0.
+    Job 1532211.18 exited with exit code 0.
+    Job 1532211.17 exited with exit code 0.
+    Job 1532211.16 exited with exit code 0.
+    Job 1532211.6 exited with exit code 0.
+    Job 1532211.14 exited with exit code 0.
+    Job 1532211.4 exited with exit code 0.
+    Job 1532211.2 exited with exit code 0.
+    Job 1532211.12 exited with exit code 0.
+    Job 1532211.5 exited with exit code 0.
+    Job 1532211.7 exited with exit code 0.
+    Job 1532211.1 exited with exit code 0.
+    Job 1532211.8 exited with exit code 0.
+    
+    Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+    
+    Dropping table 'iprscanset... done.
+    Creating table 'iprscanset' if not exists... done.
+    Loading data into table 'iprscanset'... Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    done.
+    
+    Run time: 06:14:02
+    Completed ./arrayiprscansetdaemon.pl
+    8:58AM, 23 February 2008
+    ****************************************
+
+
+RESET TABLE MAX SIZE:
+
+
+CREATE TABLE IF NOT EXISTS iprscanset (
+    
+    collectionid    INT(6),
+    
+    label           INT(1),
+    annotation      VARCHAR(255),
+    
+    accession           VARCHAR(20) NOT NULL,
+    id              VARCHAR(20) NOT NULL,
+    targetsource    VARCHAR(20) NOT NULL default '',
+    targetid        VARCHAR(20) NOT NULL,
+    targetname      VARCHAR(200) NOT NULL,
+    interproid      VARCHAR(10) NOT NULL default '',
+    interproname    VARCHAR(200) NOT NULL default '',
+    interprotype    VARCHAR(20) NOT NULL default '',
+    hitscoredec     DECIMAL(4,2) NOT NULL,
+    hitscoreexp     SMALLINT(4) NOT NULL,
+    hitstatus       VARCHAR(1) NOT NULL,
+    querystart      INT(8) NOT NULL default '0',
+    querystop       INT(8) NOT NULL default '0',
+    childlist       VARCHAR(255) NOT NULL default '',
+    foundinlist     VARCHAR(255) NOT NULL default '',
+    golist          TEXT,
+    
+    PRIMARY KEY (collectionid, accession, targetsource, targetid, targetname, interproid, hitscoredec, hitscoreexp, querystart, querystop)
+)
+max_rows = 200000000000
+avg_row_length = 50;
+
+
+
+RELOAD .TSV FILES:
+
+sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+    Run time: 03:02:31
+    Completed ./arrayiprscansetdaemon.pl
+    0:50AM, 14 March 2008
+    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 01:55:43 EST 2008] (From Notes-database-unigeneblast.txt) PARSE SWISSPROT NUCLEOTIDE SEQUENCES FROM cds.dat.gz FILE INTO swissprotnt TABLE AND DO id,accession FULLTEXT>
+
+
+
+
+1. RUN swissprotnt
+
+
+	NAME	swissprotnt
+	
+	PURPOSE
+	
+		CREATE THE swissprotnt TABLE FROM THE EMBL cds.data.gz FILE
+		
+	INPUT
+
+		1. DOWNLOADED nt FILE:
+		
+			cd /swissprot.nucleotide
+            wget ftp://ftp.ebi.ac.uk/pub/databases/embl/cds/cds.dat.gz
+
+		2. gzcat BINARY
+
+	OUTPUT
+	
+		1. swissprotnt TABLE
+	
+	NOTES
+
+        CREATE TABLE IF NOT EXISTS swissprotnt
+        (
+            accession		VARCHAR(20),
+            emblid          VARCHAR(20),
+            sequence		LONGTEXT,
+            sequence		LONGTEXT,
+
+            PRIMARY KEY (accession, emblid)
+        )
+
+	USAGE
+
+		./swissprotnt.pl [-h]
+		
+	EXAMPLES
+	
+./swissprotnt.pl -i /swissprot.nucleotide/cds.dat.gz
+
+    496679 out of 12070000
+    ...
+    /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotnt.25.tsv
+    ...
+    RUN TIME: 00:16:13
+    Completed ./swissprotnt.pl
+    1:48AM, 18 February 2008
+    ****************************************
+
+    SELECT COUNT(*) from swissprotnt;
+    +----------+
+    | COUNT(*) |
+    +----------+
+    |   499916 |
+    +----------+
+
+
+2. DO emblid,accession FULLTEXT
+
+cd ~/FUNNYBASE/bin/orthologues
+
+./addfullte ./addfulltext.pl -d indexer -t swissprotnt -f emblid,accession -n ids
+
+    Run time: 00:00:23
+    Completed ./addfulltext.pl
+    2:20AM, 18 February 2008
+    ****************************************
+    
+    
+3. CHECK ALL unigeneblast SWISSPROT SEQUENCES ARE IN THE swissprotnt TABLE
+
+Only 15 collection ids of the 478 unigeneblast swissprot sequences do not have an entry in the swissprotnt table.
+
+
+</entry>
+
+
+
+<entry [Wed Feb 13 03:11:22 EST 2008] RUN TREE WORKFLOW FOR swissprot>
+
+
+
+use swissprot;
+show tables;
++---------------------+
+| Tables_in_swissprot |
++---------------------+
+| collection          |
+| collectioniprscan   |
+| iprscanset          |
++---------------------+
+
+select count(distinct targetid) from swissprotinterpro;
++--------------------------+
+| count(distinct targetid) |
++--------------------------+
+|                    10001 |
++--------------------------+
+
+select count(distinct accession) from swissprotmatch;
++---------------------------+
+| count(distinct accession) |
++---------------------------+
+|                    276372 |
++---------------------------+
+
+
+
+3. LOAD THE collectioniprscan TABLE TO THE CLUSTER
+==================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+
+    Run time: 00:00:57
+    Completed ./clusterloadtable.pl
+    3:15AM, 13 February 2008
+    ****************************************
+
+DO ON REMOTE:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a /common/bin/dsh -a mkdir -p /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYD /private/var/mysql/swissprot/collectioniprscan.MYD
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYI /private/var/mysql/swissprot/collectioniprscan.MYI
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.frm /private/var/mysql/swissprot/collectioniprscan.frm
+sudo dsh -a /common/bin/dsh -a chmod -R 660 /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a chmod 700 /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+Input/Output error:
+
+
+
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+Password:
+Table files: collectioniprscan.MYD collectioniprscan.MYI collectioniprscan.frm
+Copying files for table 'collectioniprscan' to remote mysql data directory...
+cp /usr/local/mysql/data/swissprot/collectioniprscan.MYD /common/mysql/data/swissprot/collectioniprscan.MYD
+cp: /common/mysql/data/swissprot/collectioniprscan.MYD: Input/output error
+cp /usr/local/mysql/data/swissprot/collectioniprscan.MYI /common/mysql/data/swissprot/collectioniprscan.MYI
+cp: /common/mysql/data/swissprot/collectioniprscan.MYI: Input/output error
+cp /usr/local/mysql/data/swissprot/collectioniprscan.frm /common/mysql/data/swissprot/collectioniprscan.frm
+Finished copying
+Commands (ON REMOTE):
+/common/bin/dsh -a mkdir -p /private/var/mysql/swissprot
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYD /private/var/mysql/swissprot/collectioniprscan.MYD
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYI /private/var/mysql/swissprot/collectioniprscan.MYI
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.frm /private/var/mysql/swissprot/collectioniprscan.frm
+/common/bin/dsh -a chmod -R 660 /private/var/mysql/swissprot
+/common/bin/dsh -a chmod 700 /private/var/mysql/swissprot
+/common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/swissprot
+echo `pwd`
+/common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+Printing script to script file: /common/pipeline/swissprot/collection/clusterloadtable.sh ...done.
+Script file printed:
+
+/common/pipeline/swissprot/collection/clusterloadtable.sh
+
+DO ON REMOTE:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+Run time: 00:00:22
+Completed ./clusterloadtable.pl
+3:53PM, 21 February 2008
+****************************************
+
+
+
+4. For each orthologue cluster, get Swissprot sequences with the same iprscans
+==============================================================================
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        64920 |
++------------------------------+
+1 row in set (3 min 40.20 sec)
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 22 19:26:19 EST 2008] DO SWISSPROT ORTHOLOGUES>
+
+
+
+1. GET ORTHOLOGUE GROUPS ASSOCIATED WITH SWISSPROT UNIQUE ANNOTATIONS AND CREATE collection TABLE WITH ORTHOLOGUE GROUPS
+
+./swissprotorthologues.pl
+
+    Getting distinct name from 'swissprot' table...
+    No. names: 88410
+
+    /Users/young/FUNNYBASE/pipeline/swissprot/collection/swissprot.collection.tsv
+    
+    Dropping 'collection' if exists... done.
+    Creating table 'collection'... done.
+    Loading data into table 'collection'... done.
+    Completed ./swissprotorthologues.pl
+    Run time: 13:13:57
+    12:22AM, 15 January 2008
+    ****************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+

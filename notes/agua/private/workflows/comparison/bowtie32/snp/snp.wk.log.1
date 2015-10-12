@@ -1,0 +1,94 @@
+[workflow snp]
+2011-02-01 03:01:13
+
+Workflow:	snp
+
+	Application	1	samtobam
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+	Application	2	binbam
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+	Application	3	cumulativebam
+	perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+	locked: 0
+
+
+
+	Application	4	bamtosnp
+	/nethome/syoung/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+	Application	5	snpvenn
+	/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+	locked: 0
+
+
+
+
+[app 1 samtobam]
+2011-02-01 03:01:13
+
+  Application:
+  name           samtobam
+  owner          anonymous
+  ordinal        1
+  locked         0
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Convert chromosome .sam file into .bam file
+
+    Parameters:
+    cluster        LSF
+    executable     /nethome/syoung/0.5/bin/apps/converters/samToBam.pl
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/hit.sam
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-samtobam.out
+    maxjobs        2000
+    outputfiles    /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/hit.bam
+    parallel       
+    queue          small
+    reference      chr22
+    replicates     1-33
+    species        human
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/samtobam-%REPLICATE%.out
+    walltime       24
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-33 \
+ --parallel \
+ --executable /nethome/syoung/0.5/bin/apps/converters/samToBam.pl \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/hit.sam \
+ --outputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/hit.bam \
+ --reference chr22 \
+ --species human \
+ --maxjobs 2000 \
+ --walltime 24 \
+ --queue small \
+ --cluster LSF \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE%/chr22/samtobam-%REPLICATE%.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-samtobam.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/loop-samtobam.out
+
+
+
+
+Application status: unknown
+
+
+Completed workflow snp
+2011-02-01 03:01:13

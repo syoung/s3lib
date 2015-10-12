@@ -1,0 +1,81 @@
+Notes-project05-exons.txt
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Aug 11 14:23:13 EDT 2008] ASTD DOWNLOAD OF EXONS AND TRANSCRIPTS>
+
+
+
+DOWNLOADED AND UNZIPPED 9606_exons.fa AND 9606_transcripts.fa
+
+http://www.ebi.ac.uk/astd/download.html
+
+cd /store/home/syoung/05-ng.exons/download
+[syoung@solexa01 download]$ ll
+    -rw-r--r-- 1 syoung users  91M Aug  1 22:40 9606_exons.fa
+    -rw-r--r-- 1 syoung users 108M Aug 11 13:24 9606_transcripts.fa
+
+[syoung@solexa01 download]$ records 9606_transcripts.fa ">"
+Records: 93463
+
+[syoung@solexa01 download]$ records 9606_exons.fa ">"
+Records: 325693
+
+
+
+</entry>
+
+
+
+<entry [Mon Aug 11 13:44:57 EDT 2008] DOWNLOADED LIST OF REFSEQ GENES FROM UCSC AND CALCULATED THE TOTAL NUMBER OF UNIQUE EXONS>
+
+
+
+
+1. DOWNLOAD REFSEQ FROM UCSC
+
+clade:  Vertebrate
+genome:  Human
+assembly:  Mar. 2006 May 2004 July 2003 Apr. 2003  
+group:  Genes and Gene Prediction Tracks
+track:  RefSeq Genes
+table:  refGene
+region:  genome
+
+http://genome.ucsc.edu/cgi-bin/hgTables?hgsid=111084073&clade=vertebrate&org=Human&db=hg18&hgta_group=genes&hgta_track=refGene&hgta_table=0&hgta_regionType=genome&position=chrX%3A151073054-151383976&hgta_outputType=primaryTable&hgta_outFileName=
+
+SAVE AS FILE:
+
+refseq-exons.ncbi36.tsv
+
+2. THERE ARE 27017 GENES IN THE REFSEQ COLLECTION
+
+ll /home/syoung/base/pipeline/exons-refseq
+    -rw-r--r--  1 syoung users 8160262 Aug 11 13:24 refseq-exons.ncbi36.tsv
+lines refseq-exons.ncbi36.tsv 
+    27022
+
+3. THERE ARE 209,369 UNIQUE EXONS IN THE REFSEQ COLLECTION
+
+./exons-refseq.pl -i /home/syoung/base/pipeline/exons-refseq/refseq-exons.ncbi36.tsv
+
+    /home/syoung/base/pipeline/exons-refseq/refseq-exons.ncbi36.tsv.chimaeras
+    
+    Run time: 00:00:08
+    Completed ./exons-refseq.pl
+    2:35AM, 12 August 2008
+    ****************************************
+
+lines /home/syoung/base/pipeline/exons-refseq/refseq-exons.ncbi36.tsv.chimaeras
+209369
+
+
+
+
+
+

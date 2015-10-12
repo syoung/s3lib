@@ -1,0 +1,180 @@
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Tue Dec  5 07:53:45 EST 2006
+
+SUBMIT HOST INSTALLATION
+
+From : 	dag via RT <inquiry-support@bioteam.net>
+Reply-To : 	inquiry-support@bioteam.net
+Sent : 	Monday, December 4, 2006 6:11 PM
+To : 	youngstuart@hotmail.com
+Subject : 	Re: [bioteam.net #13817] install submit host + interproscan
+	
+	
+Go to previous message	|	Go to next message	|	Delete	|	Inbox
+
+Hi Stuart,
+
+I've been communicating with the interproscan support staff in the  
+hopes of getting an HOWTO up at the http://gridengine.info wiki site  
+- no word on that yet but the word from their support person is that  
+they are aware of SGE, have people using SGE and (perhaps) they have  
+SGE integration documents or files already in their current release.
+
+The most recent info I can find that does not come from the  
+interproscan developers is covered here:
+http://gridengine.info/articles/tag/interproscan
+
+INTERPROSCAN
+============
+
+*** Michael Gang michael.gang at evogene.com
+Mon Sep 4 06:09:01 EDT 2006
+
+Dear all,
+
+
+Well, it looks like we've got Interpro running on the cluster with the 
+Sun Grid Engine queuing system.
+
+
+Steps needed to make this work (technical details):
+
+1 - Allow job submission from all nodes (!)
+2 - Update qstat_ipr.pl in the iprscan/bin directory (the patch from 
+interpro should work, basically-you need to use the -f flag for qstat).
+3 - Create a symbolic link to iprscan/conf/sge6.env under 
+iprscan/conf/sge.env
+3 - Change the following line in iprscan/sge6/conf
+
+asyncsub=qsub -N [%jobid] [%optqueue] -shell n -b y -o /dev/null -e 
+/dev/null [%env IPRSCAN_HOME]/conf/sge6-test.sh [%toolcmd]
+
+To this:
+asyncsub=qsub -N [%jobid] [%optqueue] -shell n -b y -o /dev/null -e 
+/dev/null [%toolcmd]
+
+Best regards,
+Michael Gang
+Evogene Bioinformatics
+
+P.S. I would like to specially thank Mr. Powers for his great help
+
+
+
+*** [Bioclusters] running interpro at all
+Michael James Michael.James at csiro.au
+Tue Sep 5 00:06:20 EDT 2006
+
+    * Previous message: [Bioclusters] running interpro on cluster
+    * Next message: [Bioclusters] Re: running interpro at all
+    * Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+Before tackling interpro over sge6 I tried a single host install.
+
+When interpro sets itself up it creates a file in  conf/localenv.sh
+When a job is submitted this becomes <jobname>.dsub
+
+It tries unsuccessfully to use a local command instead of rsh
+ when we would be rsh-ing back the the same host.
+To fix this bug and some limitations, change the file to:
+
+
+#!/bin/sh
+rhost=[%host.exec]
+ihost=`hostname`
+echo "[%toolexitcode]"
+
+case $rhost in
+    ''|localhost|$ihost*)
+            [%cmd] ;;
+    *)
+            rsh $rhost "[%cmd]";;
+esac
+exit 0
+
+
+Explanation:
+Without a dollars sign on  "ihost"  it will always use rsh.
+If you make the test string      case $rhost in   ''|localhost|$ihost*)
+ it allows   host.exec   to be empty or localhost.
+This allows a non-host-specific install,
+ so you can just duplicate it across your cluster
+ without having to run the install separately for each node.
+
+michaelj
+
+-- 
+Michael James                         michael.james at csiro.au
+System Administrator                    voice:  02 6246 5040
+CSIRO Bioinformatics Facility             fax:  02 6246 5166
+
+No matter how much you pay for software,
+ you always get less than you hoped.
+Unless you pay nothing, then you get more.
+
+*** integrating interpro and interproscan with grid engine
+
+Posted by chris on 09/04/2006
+Questions about InterPro integration on SGE systems seem to come up fairly frequently. I thought there was a HOWTO or wiki document somewhere but I can't seem to find it now.
+Recently though, Michael Gang made the following post to the bioclusters mailing list that covers the steps he needed to perform:
+
+    "... Steps needed to make this work (technical details):
+
+    1 - Allow job submission from all nodes (!)
+    2 - Update qstat_ipr.pl in the iprscan/bin directory (the patch from interpro should work, basically-you need to use the -f flag for qstat).
+    3 - Create a symbolic link to iprscan/conf/sge6.env under iprscan/conf/sge.env
+    3 - Change the following line in iprscan/sge6/conf
+
+    asyncsub=qsub -N [%jobid] [%optqueue] -shell n -b y -o /dev/null -e /dev/null [%env IPRSCAN_HOME]/conf/sge6-test.sh [%toolcmd]
+
+    To this:
+    asyncsub=qsub -N [%jobid] [%optqueue] -shell n -b y -o /dev/null -e /dev/null [%toolcmd]
+    "
+
+
+*** [Bioclusters] Questions about setting up InterProScan on clusters
+Sarah Hunter hunter at ebi.ac.uk
+Tue Sep 5 06:58:44 EDT 2006
+
+    * Previous message: [Bioclusters] Re: running interpro at all
+    * Next message: [Bioclusters] Questions about setting up InterProScan on clusters
+    * Messages sorted by: [ date ] [ thread ] [ subject ] [ author ]
+
+Hi everyone,
+
+I just wanted to post a quick message to the mailing list to firstly apologise if there have been 
+any problems with setting up InterProScan on your clusters - unfortunately, we only have LSF 
+in-house and we therefore can't test on other systems like SGE or PBS.  However, I always try to 
+hazard a guess when we get questions about those systems. Specifically, the SGE configuration files 
+themselves were re-written for SGE6 by me having remote access to a user's installation (thank you 
+Jenny!) although I soon discovered that that installation had its own quirks which were not standard 
+for other systems.
+
+The fact that you guys are here supporting each other when installing the software on these atypical 
+(to EBI, anyway) set-ups is a great help - particularly because we only have a limited number of 
+people who can answer support emails (i.e. mainly me).
+
+I just want to reiterate that if you have any questions about setting InterProScan on your local 
+clusters, please email support (at) ebi.ac.uk or interhelp (at) ebi.ac.uk.  If you don't get a reply 
+within a couple of days, hassle us again :-)
+
+At the same time, it would be nice to encourage the development of a community of InterProScan users 
+who have the program installed on different clusters, so that if anyone has a question about a 
+queue-specific issue, the community could be consulted and alterations tested, rather than relying 
+on our limited resources at EBI.  What do people think about this?
+
+Sorry if you emailed and didn't get a satisfactory response.  And thanks for all the hard work you 
+have evidentially put in in order to get InterProScan working.
+
+Best regards,
+
+Sarah Hunter
+
+-----------------------------------------
+  InterPro Programming Coordinator
+  E.B.I.
+  Wellcome Trust Genome Campus
+  Hinxton
+  CB10 1SD
+-----------------------------------------

@@ -1,0 +1,1907 @@
+Notes-apps-linux.txt
+
+
+</entry>
+
+
+
+<entry [Thu Aug 19 10:57:03 EDT 2010] USING xargs TO PASS ARRAY OF ARGUMENTS TO COMMAND>
+
+
+
+
+1. LIST DETAILS OF ALL FILES WITH '_' IN NAME:
+
+cd /scratch/syoung/base/pipeline/solid/NA18507/SRP000239/SRX000600 | grep -v _
+ls | grep -v _ | grep fastq | xargs ls -al
+
+	-rw-rw-rw- 1 syoung root     316 Aug 12 01:50 SRR003845.fastq.gz
+	-rw-rw-rw- 1 syoung root     863 Aug 12 01:53 SRR003848.fastq.gz
+	-rw-rw-rw- 1 syoung root  892065 Aug 12 02:16 SRR004117.fastq.gz
+	-rw-rw-rw- 1 syoung root   71737 Aug 12 02:20 SRR004121.fastq.gz
+	-rw-rw-rw- 1 syoung root  451514 Aug 12 02:28 SRR004187.fastq.gz
+	-rw-rw-rw- 1 syoung root  117880 Aug 12 02:39 SRR004207.fastq.gz
+	-rw-rw-rw- 1 syoung root   42453 Aug 12 02:41 SRR004210.fastq.gz
+	-rw-rw-rw- 1 syoung root   50252 Aug 12 02:43 SRR004812.fastq.gz
+	-rw-rw-rw- 1 syoung root   28536 Aug 12 02:44 SRR004813.fastq.gz
+	-rw-rw-rw- 1 syoung root 1281529 Aug 12 02:54 SRR004818.fastq.gz
+	-rw-rw-rw- 1 syoung root 5470413 Aug 12 04:07 SRR004862.fastq.gz
+
+WHERE FILES ARE HERE:
+
+ls /scratch/syoung/base/pipeline/solid/NA18507/SRP000239/SRX000600 | grep -v _
+
+	fasta
+	singles
+	SRR003845.fastq.gz
+	SRR003848.fastq.gz
+	SRR004117.fastq.gz
+	SRR004121.fastq.gz
+	SRR004187.fastq.gz
+	SRR004207.fastq.gz
+	SRR004210.fastq.gz
+	SRR004812.fastq.gz
+	SRR004813.fastq.gz
+	SRR004818.fastq.gz
+	SRR004862.fastq.gz
+
+
+
+2. MOVE SINGLE READ FASTQ FILES TO singles DIRECTORY
+
+
+ls | grep -v _ | grep fastq | xargs -L1 -p -IMYFILES mv MYFILES singles
+
+	-rw-rw-rw- 1 syoung root     316 Aug 12 01:50 SRR003845.fastq.gz
+	-rw-rw-rw- 1 syoung root     863 Aug 12 01:53 SRR003848.fastq.gz
+	-rw-rw-rw- 1 syoung root  892065 Aug 12 02:16 SRR004117.fastq.gz
+	-rw-rw-rw- 1 syoung root   71737 Aug 12 02:20 SRR004121.fastq.gz
+	-rw-rw-rw- 1 syoung root  451514 Aug 12 02:28 SRR004187.fastq.gz
+	-rw-rw-rw- 1 syoung root  117880 Aug 12 02:39 SRR004207.fastq.gz
+	-rw-rw-rw- 1 syoung root   42453 Aug 12 02:41 SRR004210.fastq.gz
+	-rw-rw-rw- 1 syoung root   50252 Aug 12 02:43 SRR004812.fastq.gz
+	-rw-rw-rw- 1 syoung root   28536 Aug 12 02:44 SRR004813.fastq.gz
+	-rw-rw-rw- 1 syoung root 1281529 Aug 12 02:54 SRR004818.fastq.gz
+	-rw-rw-rw- 1 syoung root 5470413 Aug 12 04:07 SRR004862.fastq.gz
+
+
+3. MOVE SINGLE READ INFO, FASTA AND QUAL FILES TO singles DIRECTORY
+
+
+
+cd /scratch/syoung/base/pipeline/solid/NA18507/SRP000239/SRX000600/fasta
+mkdir singles
+ls | grep -v _ | grep fasta | xargs -L1 -IMYFILES mv MYFILES singles
+
+
+
+NOTES
+-----
+
+http://en.wikipedia.org/wiki/Xargs
+
+xargs is a command on Unix and most Unix-like operating systems. It is useful when one wants to pass a large number of arg
+uments to a command. Until Linux kernel 2.6.23, arbitrarily long lists of parameters could not be passed to a command [1], so xargs will break the list of arguments into sublists small enough to be acceptable.
+
+For example, commands like:
+
+rm /path/*
+
+or
+
+rm `find /path -type f`
+
+will fail with an error message of "Argument list too long" if there are too many files in /path.
+
+However this version (functionally equivalent to rm `find /path -type f`) will not fail:
+
+ find /path -type f -print0 | xargs -0 rm
+
+
+
+#### find . -type f -name _ -exec ls -al '{}' \;
+
+
+In this example, find feeds the input of xargs with a long list of file names. xargs then splits this list into sublists and calls rm once for every sublist. This is more efficient than this functionally equivalent version:
+
+find /path -type f -exec rm '{}' \;
+
+which calls rm once for every single file. Note however that with modern versions of find, the following variant does the same thing as the xargs version:
+ find /path -type f -exec rm '{}' +
+xargs often covers the same functionality as the backquote feature of many shells, but is more flexible and often also safer, especially if there are blanks or special characters in the input. It is a good companion for commands that output long lists of files like find, locate and grep, but only if you use -0 as xargs without -0 deals badly with file names containing ', " and space. GNU Parallel is the perfect companion to find, locate and grep if file names may contain ', " and space (newline still requires -0).
+
+
+
+</entry>
+
+
+
+<entry [Tue Jun 29 21:06:38 EDT 2010] REMOVE NUMBERED DIRECTORIES>
+
+
+
+
+DIRS="*"
+for DIR in $DIRS;
+do
+    SPLITDIR=$(echo $DIR | egrep "^[0-9]+" ); 
+    if [ "$SPLITDIR" != "" ]; then
+        echo SPLITDIR: `pwd`/$SPLITDIR;
+		rm -fr `pwd`/$SPLITDIR
+    fi;
+done;
+
+
+
+
+</entry>
+
+
+
+<entry [Thu May 13 02:36:22 EDT 2010] CREATE STATICALLY LINKED APPLICATIONS CONTAINING ALL DEPENDENCIES>
+
+
+
+
+COMMERCIAL TOOL
+http://magicErmine.com
+
+DISCUSSION OF STATICALLY LINKED APPS
+http://www.cplusplus.com/forum/general/7401/
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu May 13 02:36:22 EDT 2010] SYNCHRONISE DIRECTORIES ON TWO MACHINES>
+
+
+
+http://xahlee.org/UnixResource_dir/unix_tips.html
+
+
+How to 2-way sync local dir and remote machine
+
+Use Unison. Both machines must have unison installed. The “rsync” tool does just one way sync (overwritting any changes on the remote machine), while “unison” asks you for each changed file (or non-existant file/dir) which direction you want the update be.
+
+Here's a sample command i use.
+
+Synching to a remote server: unison -servercmd /sw/bin/unison /Users/xah/uci-server/vmm ssh://xahlee@virtualmathmuseum.org//Library/WebServer/Documents/vmm
+
+In this server, it contains works done by other people, so i can't just update it one-way with rsync.
+
+The “-servercmd /sw/bin/unison” specifies the path of the unison command on the server. (needed when it is not in the default search path on remote machine's user account) The “/Users/xah/uci-server/vmm” is the local dir. The “ssh://xahlee@virtualmathmuseum.org//Library/WebServer/Documents/vmm” specifies the remote dir, remote machine's domain name, login account, and the protocol to use.
+
+Synching my PC and Mac: unison -servercmd /usr/bin/unison c:/Users/xah/web ssh://xah@169.254.145.104//Users/xah/web
+
+If you are syncing from Mac and Windows, you many want to add “-rsrc false”, which will ignore resource fork and file type info. If you want to ignore file permissions, you can use “-perms 0”
+
+Note that unison is picky about the unison version on your machine and the version on the remote machine. For example, if on your machine you have 2.27, on remote server you have 2.17, then when you try to sync the 2 machines, then unison will complain and stop. (it'll say something to the effect of “expected header is 2.27 but got 2.17”) Typically, you install more than one version of unison on your machine (or on the remote machine if you can).
+
+Unison has builtin doc. Type “unison -help” or “unison -doc topics”.
+
+Note that Unison as of version 2.27, it does not support file names containing Unicode chars. So, if you have files with Chinese chars, math symbols, etc, Unison will still work but the result file name will be gibberish.
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 30 17:42:05 EDT 2010] LIST FILES IN DIRECTORY ON COMMAND LINE AND RUN ACTION IN LOOP>
+
+
+
+1. GET DIRS IN CURRENT DIRECTORY
+
+
+DIRS="1*"
+echo $DIRS
+		1 10 100 11 12 13 14 15 16 17 18 19
+
+
+GET ALL NUMERIC-ONLY SUBDIRS:
+
+
+DIRS=`ls | grep "^[0-9]"`
+echo $DIRS
+
+		1 10 100 11 12 13 14 15 16 17 18 19 2 20 21 22 23 24 25 26 27 28 29 3 30 31 32 33 34 35 36 37 38 39 4 40 41 42 43 44 45 46 47 48 49 5 50 51 52 53 54 55 56 57 58 59 6 60 61 62 63 64 65 66 67 68 69 7 70 71 72 73 74 75 76 77 78 79 8 80 81 82 83 84 85 86 87 88 89 9 90 91 92 93 94 95 96 97 98 99
+
+
+2. LOOP THROUGH DIRS DOING ACTION
+
+for DIR in "$DIRS"; do cp -r $DIR /nethome/syoung/base/pipeline/SRA/NA18507/eland/eland1; done
+
+
+
+
+NOTES
+=====
+
+for f in "$FILES"; do echo "Processing $f file.."; done
+
+Sample shell script to loop through all files
+
+#!/bin/bash
+FILES="*"
+for f in "$FILES"
+do
+  echo "Processing $f file..."
+  # take action on each file. $f store current file name
+  cat $f
+done
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 30 17:42:05 EDT 2010] USING lftp TO AUTOMATE FTP DOWNLOADS>
+
+
+
+EXAMPLE
+
+lftp -c "set ftp:list-options -a;
+open ftp://user:password@your.ftp.com; 
+lcd ./web;
+cd /web/public_html;
+mirror --reverse --delete --use-cache --verbose --allow-chown  
+--allow-suid --no-umask --parallel=2 --exclude-glob .svn"
+
+
+	
+As written by esel
+
+lftp is very good tool.
+
+I suggest you to parametrize the script, and make use of the
+
+exclude-glob
+options, that excludes filenames using the glob feature (*,? ..) of your shell:
+
+#!/bin/bash    
+HOST="your.ftp.host.dom"
+USER="username"
+PASS="password"
+LCD="/path/of/your/local/dir"
+RCD="/path/of/your/remote/dir"
+lftp -c "set ftp:list-options -a;
+open ftp://$USER:$PASS@$HOST; 
+lcd $LCD;
+cd $RCD;
+mirror --reverse \
+       --delete \
+       --verbose \
+       --exclude-glob a-dir-to-exclude/ \
+       --exclude-glob a-file-to-exclude \
+       --exclude-glob a-file-group-to-exclude* \
+       --exclude-glob other-files-to-esclude"
+
+
+
+
+NOTE: MAKE SURE YOU'RE NOT IN YOUR HOME FOLDER WHEN TESTING!!!! OR YOU MAY DELETE IMPORTANT FILES
+
+
+E.G., I RAN THIS:
+
+lftp -c "set ftp:list-options -a;
+open http://hgdownload.cse.ucsc.edu/goldenPath/; 
+lcd ./hg19/database;
+cd /nethome/syoung/base/pipeline/snpfilter;
+mirror --delete --use-cache --verbose --allow-chown  
+--allow-suid --no-umask --parallel=2 --exclude-glob .svn"
+
+
+... AND IT DELETED FILES IN MY ~ DIRECTORY:
+
+
+> --allow-suid --no-umask --parallel=2 --exclude-glob .svn"
+./hg19/database: No such file or directory                       
+cd: Access failed: 404 Not Found (/nethome/syoung/base/pipeline/snpfilter)
+Removing old file `#.bash_profile#'
+Removing old file `.bash_history'
+Removing old file `.bash_logout'
+Removing old file `.bash_profile'
+Removing old file `.bash_profile.bkp'
+Removing old file `.bash_profile.old'
+Removing old file `.bash_profile~'
+Removing old file `.bashrc'
+Removing old file `.bashrc.old'
+Removing old file `.chr1.fa.gz.Jeu33S'
+Removing old directory `.cpan'
+Removing old file `.cshrc'
+Removing old file `.emacs'
+Removing old directory `.emacs.d'
+Removing old file `.forward'
+Removing old file `.kshenv'
+Removing old directory `.lftp'
+Removing old file `.login'
+Removing old directory `.lsbatch'
+Removing old file `.module'
+Removing old directory `.mozilla'
+Removing old file `.profile'
+Removing old directory `.ssh'
+Removing old file `.viminfo'
+Removing old file `README.txt'
+Removing old directory `base'
+rm `ampPrimerPairTrimmer.exe' []
+[5]+  Stopped                 lftp -c "
+
+
+
+SO COPIED SOME FILES OVER FROM ANOTHER INSTALLATION AND LOGGED BACK IN.
+LUCKILY, WHEN I LOGGED BACK IN, AUTOMATIC SCRIPTS ADDED BACK .module, .bash_profile AND OTHER
+IMPORTANT FILES/DIRECTORIES:
+    
+    Last login: Tue Mar 30 15:33:58 2010 from 10.136.60.167
+    
+    /share/apps/modules/bin/add.modules
+            adds a few lines to the beginning of your
+            /nethome/syoung/.cshrc, /nethome/syoung/.login,
+            /nethome/syoung/.profile, /nethome/syoung/.bashrc, and
+            possibly your /nethome/syoung/.kshenv (or whatever is
+            specified by the ENV environment variable).
+            Also your /nethome/syoung/.bash_profile will be processed.
+            The lines are prepended for sourcing the /share/apps/modules/global/csh.modules or
+            /share/apps/modules/global/profile.modules files or to define the module alias or function.
+            Why is it necessary?
+            To insure that you will have access to modules for all subshells,
+            these lines need to be added to some of your 'dot' files.
+    
+            Your old .cshrc, .login, .profile, .bashrc and .kshenv will be
+            renamed to .login.old, .cshrc.old, .profile.old, .bashrc.old and
+            .kshenv.old respectively.  So if you have any problems you will
+            can easily restore them.
+    
+            This is version $Id: add.modules.in,v 1.2.20.1 2008/02/12 00:06:12 rkowen Exp $ .
+    
+    Continue on (type n for no - default=yes)?\c
+    
+    Processing your .bash_profile (your old one is .bash_profile.old)
+    Cleaning .bash_profile
+    Adding sourcing lines at beginning of .bash_profile
+    
+    Processing your .profile (your old one is .profile.old)
+    Cleaning .profile
+    Adding sourcing lines at beginning of .profile
+    You had no .bashrc as I see it.  Copying /etc/skel/.kshenv for you.
+    You had no .kshenv as I see it.  Copying /etc/skel/.kshenv for you.
+    
+    Processing your .login (your old one is .login.old)
+    Cleaning .login
+    Adding sourcing lines at beginning of .login
+    
+    Processing your .cshrc (your old one is .cshrc.old)
+    Cleaning .cshrc
+    Adding alias or function lines at beginning of .cshrc
+    [syoung@u02 ~]$ 
+
+
+
+
+    
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 20 04:23:21 EDT 2010] USING SED>
+
+
+
+http://www.grymoire.com/Unix/Sed.html#uh-3
+
+
+CONVERT WITH sed
+
+cat chr2.fa.fai
+    
+    chr2    242951149       6       50      51
+
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' chr2.fa.fai 
+    
+    chr2.fa 242951149       6       50      51
+
+
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' < chr1.fa.fai > TMP; mv -f TMP  chr1.fa.fai
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' < chr2.fa.fai > TMP; mv -f TMP  chr2.fa.fai
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' < chr3.fa.fai > TMP; mv -f TMP  chr3.fa.fai
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' < chr4.fa.fai > TMP; mv -f TMP  chr4.fa.fai
+sed -e 's/\(chr[A-Z0-9]*\)/\1.fa/' < chr5.fa.fai > TMP; mv -f TMP  chr5.fa.fai
+etc...
+
+
+
+
+AVOID THE 'PICKET FENCE'
+
+The character after the s is the delimiter. It is conventionally a slash, because this is what ed, more, and vi use. It can be anything you want, however. If you want to change a pathname that contains a slash - say /usr/local/bin to /common/bin - you could use the backslash to quote the slash:
+
+sed 's/\/usr\/local\/bin/\/common\/bin/' <old >new
+Gulp. Some call this a 'Picket Fence' and it's ugly. It is easier to read if you use an underline instead of a slash as a delimiter:
+
+sed 's_/usr/local/bin_/common/bin_' <old >new
+Some people use colons:
+
+sed 's:/usr/local/bin:/common/bin:' <old >new
+Others use the "|" character.
+
+sed 's|/usr/local/bin|/common/bin|' <old >new
+
+
+
+
+Using & as the matched string
+
+Sometimes you want to search for a pattern and add some characters, like parenthesis, around or near the pattern you found. It is easy to do this if you are looking for a particular string:
+
+sed 's/abc/(abc)/' <old >new
+This won't work if you don't know exactly what you will find. How can you put the string you found in the replacement string if you don't know what it is?
+
+The solution requires the special character "&." It corresponds to the pattern found.
+
+sed 's/[a-z]*/(&)/' <old >new
+You can have any number of "&" in the replacement string. You could also double a pattern, e.g. the first number of a line:
+
+% echo "123 abc" | sed 's/[0-9]*/& &/'
+123 123 abc
+Let me slightly amend this example. Sed will match the first string, and make it as greedy as possible. The first match for '[0-9]*' is the first character on the line, as this matches zero of more numbers. So if the input was "abc 123" the output would be unchanged (well, except for a space before the letters). A better way to duplicate the number is to make sure it matches a number:
+
+% echo "123 abc" | sed 's/[0-9][0-9]*/& &/'
+123 123 abc
+The string "abc" is unchanged, because it was not matched by the regular expression. If you wanted to eliminate "abc" from the output, you must expand the the regular expression to match the rest of the line and explicitly exclude part of the expression using "(", ")" and "\1", which is the next topic.
+
+
+
+Using \1 to keep part of the pattern
+
+I have already described the use of "(" ")" and "1" in my tutorial on regular expressions. To review, the escaped parentheses (that is, parentheses with backslashes before them) remember portions of the regular expression. You can use this to exclude part of the regular expression. The "\1" is the first remembered pattern, and the "\2" is the second remembered pattern. Sed has up to nine remembered patterns.
+
+If you wanted to keep the first word of a line, and delete the rest of the line, mark the important part with the parenthesis:
+
+sed 's/\([a-z]*\).*/\1/'
+I should elaborate on this. Regular exprssions are greedy, and try to match as much as possible. "[a-z]*" matches zero or more lower case letters, and tries to be as big as possible. The ".*" matches zero or more characters after the first match. Since the first one grabs all of the lower case letters, the second matches anything else. Therefore if you type
+
+echo abcd123 | sed 's/\([a-z]*\).*/\1/'
+This will output "abcd" and delete the numbers.
+
+If you want to switch two words around, you can remember two patterns and change the order around:
+
+sed 's/\([a-z]*\) \([a-z]*\)/\2 \1/'
+Note the space between the two remembered patterns. This is used to make sure two words are found.
+
+The "\1" doesn't have to be in the replacement string (in the right hand side). It can be in the pattern you are searching for (in the left hand side). If you want to eliminate duplicated words, you can try:
+
+sed 's/\([a-z]*\) \1/\1/'
+You can have up to nine values: "\1" thru "\9."
+
+
+
+/1, /2, etc. Specifying which occurrence
+
+With no flags, the first pattern is changed. With the "g" option, all patterns are changed. If you want to modify a particular pattern that is not the first one on the line, you could use "\(" and "\)" to mark each pattern, and use "\1" to put the first pattern back unchanged. This next example keeps the first word on the line but deletes the second:
+
+sed 's/\([a-zA-Z]*\) \([a-zA-Z]*\) /\1 /' <old >new
+Yuck. There is an easier way to do this. You can add a number after the substitution command to indicate you only want to match that particular pattern. Example:
+
+sed 's/[a-zA-Z]* //2' <old >new
+You can combine a number with the g (global) flag. For instance, if you want to leave the first world alone alone, but change the second, third, etc. to DELETED, use /2g:
+
+sed 's/[a-zA-Z]* /DELETED /2g' <old >new
+Don't get /2 and \2 confused. The /2 is used at the end. \2 is used in inside the replacement field.
+
+Note the space after the "*" character. Without the space, sed will run a long, long time. (Note: this bug is probably fixed by now.) This is because the number flag and the "g" flag have the same bug. You should also be able to use the pattern
+
+sed 's/[^ ]*//2' <old >new
+but this also eats CPU. If this works on your computer, and it does on some Unix systems, you could remove the encrypted password from the password file:
+
+sed 's/[^:]*//2' </etc/passwd >/etc/password.new
+But this didn't work for me the time I wrote thise. Using "[^:][^:]*" as a work-around doesn't help because it won't match an non-existent password, and instead delete the third field, which is the user ID! Instead you have to use the ugly parenthesis:
+
+sed 's/^\([^:]*\):[^:]:/\1::/' </etc/passwd >/etc/password.new
+You could also add a character to the first pattern so that it no longer matches the null pattern:
+
+sed 's/[^:]*:/:/2' </etc/passwd >/etc/password.new
+The number flag is not restricted to a single digit. It can be any number from 1 to 512. If you wanted to add a colon after the 80th character in each line, you could type:
+
+sed 's/./&:/80' <file >new
+You can also do it the hard way by using 80 dots:
+
+sed 's/^................................................................................/&:/' <file >new
+
+
+</entry>
+
+
+
+<entry [Wed Mar 17 17:30:17 EDT 2010] HOW TO CREATE A PATCH FILE>
+
+
+
+
+1) copy the file you want to patch, e.g., a Makefile to Makefile.old in the same directory
+
+2) edit the original Makefile
+
+3) from that directory, run:
+
+diff -u Makefile.old Makefile > Makefile.patch
+
+
+
+EXAMPLE
+=======
+
+CREATED PATCH FILE AND SENT TO Cole Trapnell cole@:
+
+diff -u cufflinks.cpp.orig  cufflinks.cpp > cufflinks-0.7.0.patch
+
+cat cufflinks-0.7.0.patch 
+
+	--- cufflinks.cpp.orig  2010-03-17 17:13:23.253099000 -0400
+	+++ cufflinks.cpp       2010-03-17 16:55:10.576099000 -0400
+	@@ -43,7 +43,7 @@
+	 {"collapse-rounds",         required_argument,          0,                      'c'},
+	 {"GTF",                                            required_argument,           0,                      'G'},
+	 #if ENABLE_THREADS
+	-{"num-threads",                                required_argument,       0,          't'},
+	+{"num-threads",                                required_argument,       0,          'p'},
+	 #endif
+	 {0, 0, 0, 0} // terminator
+	 };
+	@@ -54,6 +54,7 @@
+		 fprintf(stderr, "Usage:   cufflinks <hits.sam>\n");
+			fprintf(stderr, "Options:\n\n");
+			fprintf(stderr, "-m/--inner-dist-mean         the average inner distance between mates              [ default:     45 ]\n");
+	+       fprintf(stderr, "-m/--transcript-score-thresh the minimum transcript score accepted                 [ default:      0 ]\n");
+			fprintf(stderr, "-s/--inner-dist-std-dev      the inner distance standard deviation                 [ default:     20 ]\n");
+			fprintf(stderr, "-c/--collapse-rounds         rounds of pre-assembly alignment collapse             [ default:      1 ]\n");
+			fprintf(stderr, "-F/--min-isoform-fraction    suppress transcripts below this abundance level       [ default:   0.05 ]\n");
+
+
+HOW TO USE THE PATCH:
+
+1. TRANSFER THE PATCH FILE TO THE SAME DIRECTORY AS THE UNPATCHED cufflinks.cpp FILE
+
+ll
+	-rw-r--r-- 1 syoung bioinfo 1.2K Mar 17 17:37 cufflinks-0.7.0.patch
+	-rw-r--r-- 1 syoung bioinfo 6.1K Mar 17 17:37 cufflinks.cpp.orig
+
+
+2. BACKUP cufflinks.cpp
+
+cp cufflinks.cpp cufflinks.cpp.orig
+
+
+3. RUN patch
+
+[syoung@kronos tmp]$ patch -p0 < cufflinks-0.7.0.patch 
+patching file cufflinks.cpp.orig
+
+
+4. CHECK DIFFERENCES BETWEEN PATCHED AND UNPATCHED WITH diff
+
+diff cufflinks.cpp cufflinks.cpp.orig
+
+	46c46
+	< {"num-threads",                               required_argument,       0,          'p'},
+	---
+	> {"num-threads",                               required_argument,       0,          't'},
+	57d56
+	<       fprintf(stderr, "-m/--transcript-score-thresh the minimum transcript score accepted                 [ default:      0 ]\n");
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Mar 15 15:39:54 UTC 2010] FIND OUT IF 64-BIT OR 32-BIT>
+
+
+
+Type: 
+uname -a
+
+If it says something like this:
+
+Linux lake.interim.stanford.edu 2.6.9-78.0.1.ELsmp #1 SMP Tue Jul 22 18:11:48 EDT 2008 i686 i686 i386 GNU/Linux
+
+where there is an "i686" or "i386", then you have 32 bit linux.
+
+If it says something like this:
+
+Linux lake.interim.stanford.edu 2.6.9-67.ELsmp #1 SMP Wed Nov 7 13:56:44 EST 2007 x86_64 x86_64 x86_64 GNU/Linux
+
+where there is an "x86_64" present, then you have 64 bit linux.
+
+If it says something like
+
+Linux lake.interim.stanford.edu 2.4.21-sgi240rp04041413_10065 #1 SMP Wed Apr 14 13:09:51 PDT 2004 ia64 unknown
+
+where there is an "ia64" present, then you have itanium linux.
+
+
+
+</entry>
+
+
+
+<entry [Sun Mar  7 13:09:43 EST 2010] INSTALL PATCH FILE (FOR MAQ TO CONVERT ILLUMINA 1.3+ TO SANGER)>
+
+
+
+SEE ALSO HOW TO DO IT IN TORTOISESVN:
+http://tortoisesvn.net/docs/release/TortoiseSVN_en/tsvn-dug-patch.html
+
+
+( COPIED FROM:
+Notes-project22-agua.txt
+Sun Mar  7 13:09:43 EST 2010
+MAQ - CONVERT ILLUMINA 1.3+ TO SANGER )
+
+
+http://stephenjungels.com/jungels.net/articles/diff-patch-ten-minutes.html
+
+http://www.linuxforums.org/articles/using-diff-and-patch_80.html
+
+1. DOWNLOADED PATCH FILE:
+
+http://sourceforge.net/tracker/index.php?func=detail&aid=2824334&group_id=191815&atid=938893
+
+    Illumina to sanger conversion - ID: 2824334
+    Last Update: Attachment added ( daweonline )
+    Details:
+    
+    As new Illumina software (GA 1.3+) has changed quality score encoding, I've
+    written a small patch which adds 'ill2sanger' function, to convert new
+    illumina fastq files into sanger fastq.
+    It applies to maq-0.7.1. Essentially it takes the illumina score and adds
+    2. The function to read fastq files (defined in seq.c) removes 33 to this
+    score, so that the overall operation is removal of 31 from illumina score 
+
+PATCH FILE LOCCATION
+maq-ill2sanger.patch
+http://sourceforge.net/tracker/download.php?group_id=191815&atid=938893&file_id=335812&aid=2824334
+
+2. APPLIED PATCH
+
+ll maq-ill2sanger.patch
+		-rw-r--r-- 1 syoung bioinfo 3.6K Feb  7 23:37 maq-ill2sanger.patchll maq-ill2sanger.patch
+
+cat maq-ill2sanger.patch
+
+		diff -Naur maq-0.7.1/fastq2bfq.c maq-0.7.1.new/fastq2bfq.c
+		--- maq-0.7.1/fastq2bfq.c	2008-03-15 13:06:00.000000000 +0100
+		+++ maq-0.7.1.new/fastq2bfq.c	2009-07-20 16:52:27.000000000 +0200
+		@@ -79,13 +79,36 @@
+			seq_set_block_size(256);
+			while ((l = seq_read_fastq(fpin, &seq, &qual, name)) >= 0) {
+				int i;
+		-		fprintf(fpout, "@%s\n%s\n+\n", name, seq.s);
+		+		fprintf(fpout, "@%s\n%s\n+%s\n", name, seq.s, name);
+				for (i = 0; i != l; ++i)
+					qual.s[i] = table[(int)qual.s[i]];
+				fprintf(fpout, "%s\n", qual.s);
+			}
+			free(seq.s); free(qual.s);
+		 }
+		+void ill2sanger(FILE *fpin, FILE *fpout)
+		+{
+		+	seq_t seq, qual;
+		+	char name[256];
+		+	int table[128];
+		+	int l;
+		+	/* calculate table */
+		+	for (l = 0; l != 128; ++l) {
+		+		table[l] = (int)(l +2);
+		+		if (table[l] <= 33) table[l] = 33;
+		+		if (table[l] >= 126) table[l] = 126;
+		+	}
+		+	INIT_SEQ(seq); INIT_SEQ(qual);
+		+	seq_set_block_size(256);
+		+	while ((l = seq_read_fastq(fpin, &seq, &qual, name)) >= 0) {
+		+		int i;
+		+		fprintf(fpout, "@%s\n%s\n+%s\n", name, seq.s, name);
+		+		for (i = 0; i != l; ++i) 
+		+			qual.s[i] = table[(int)qual.s[i]];
+		+		fprintf(fpout, "%s\n", qual.s);
+		+	}
+		+	free(seq.s); free(qual.s);
+		+}
+		 int ma_sol2sanger(int argc, char *argv[])
+		 {
+			FILE *fpin, *fpout;
+		@@ -100,6 +123,21 @@
+			fclose(fpin); fclose(fpout);
+			return 0;
+		 }
+		+
+		+int ma_ill2sanger(int argc, char *argv[])
+		+{
+		+	FILE *fpin, *fpout;
+		+	fpin = fpout = 0;
+		+	if (argc < 3) {
+		+		fprintf(stderr, "Usage: maq ill2sanger <in.fastq> <out.fastq>\n");
+		+		return 1;
+		+	}
+		+	fpin = (strcmp(argv[1], "-") == 0)? stdin : fopen(argv[1], "r");
+		+	fpout = (strcmp(argv[2], "-") == 0)? stdout : fopen(argv[2], "w");
+		+	ill2sanger(fpin, fpout);
+		+	fclose(fpin); fclose(fpout);
+		+	return 0;
+		+}
+		 int ma_fastq2bfq(int argc, char *argv[])
+		 {
+			FILE *fp_fq;
+		diff -Naur maq-0.7.1/main.c maq-0.7.1.new/main.c
+		--- maq-0.7.1/main.c	2008-09-22 10:54:10.000000000 +0200
+		+++ maq-0.7.1.new/main.c	2009-07-20 14:28:26.000000000 +0200
+		@@ -28,6 +28,7 @@
+			fprintf(stderr, "         glfgen      generate .glz consensus\n\n");
+			fprintf(stderr, "Format converting:\n");
+			fprintf(stderr, "         sol2sanger  convert Solexa FASTQ to standard/Sanger FASTQ\n");
+		+	fprintf(stderr, "         ill2sanger  convert Illumina (GA 1.3+) FASTQ to standard/Sanger FASTQ\n");
+			fprintf(stderr, "         mapass2maq  convert mapass2's map format to maq's map format\n");
+			fprintf(stderr, "         bfq2fastq   convert BFQ to FASTQ format\n\n");
+			fprintf(stderr, "Information extracting:\n");
+		@@ -80,6 +81,7 @@
+			else if (strcmp(argv[1], "assemble") == 0) return ma_assemble(argc-1, argv+1);
+			else if (strcmp(argv[1], "glfgen") == 0) return maq_glfgen(argc-1, argv+1);
+			else if (strcmp(argv[1], "sol2sanger") == 0) return ma_sol2sanger(argc-1, argv+1);
+		+	else if (strcmp(argv[1], "ill2sanger") == 0) return ma_ill2sanger(argc-1, argv+1);
+			else if (strcmp(argv[1], "mapass2maq") == 0) return ma_mapass2maq(argc-1, argv+1);
+			else if (strcmp(argv[1], "bfq2fastq") == 0) return ma_bfq2fastq(argc-1, argv+1);
+			else if (strcmp(argv[1], "mapview") == 0) return ma_mapview(argc-1, argv+1);
+		diff -Naur maq-0.7.1/main.h maq-0.7.1.new/main.h
+		--- maq-0.7.1/main.h	2008-09-22 10:54:10.000000000 +0200
+		+++ maq-0.7.1.new/main.h	2009-07-20 14:28:39.000000000 +0200
+		@@ -25,6 +25,7 @@
+			int ma_rbcc(int argc, char *argv[]);
+			int ma_subpos(int argc, char *argv[]);
+			int ma_sol2sanger(int argc, char *argv[]);
+		+	int ma_ill2sanger(int argc, char *argv[]);
+			int ma_bfq2fastq(int argc, char *argv[]);
+			int ma_fakemut(int argc, char *argv[]);     /* in fasta2bfa.c */
+			int ma_abpair(int argc, char *argv[]);      /* in pair_stat.cc */
+
+
+
+cd /nethome/bioinfo/apps/maq
+
+patch -p0 < maq-ill2sanger.patch 
+
+		patching file maq-0.7.1/fastq2bfq.c
+		patching file maq-0.7.1/main.c
+		patching file maq-0.7.1/main.h
+
+
+[bioinfo@m1 0.7.1]$ make 
+cd . && /bin/sh /nethome/bioinfo/apps/maq/0.7.1/missing --run autoheader
+/nethome/bioinfo/apps/maq/0.7.1/missing: line 54: autoheader: command not found
+WARNING: `autoheader' is missing on your system.  You should only need it if
+         you modified `acconfig.h' or `configure.ac'.  You might want
+         to install the `Autoconf' and `GNU m4' packages.  Grab them
+         from any GNU archive site.
+rm -f stamp-h1
+touch config.h.in
+cd . && /bin/sh ./config.status config.h
+config.status: creating config.h
+config.status: config.h is unchanged
+make  all-am
+make[1]: Entering directory `/nethome/bioinfo/apps/maq/0.7.1'
+gcc -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c main.c
+gcc -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c fasta2bfa.c
+gcc -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c fastq2bfq.c
+g++ -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c -o match_aux.o match_aux.cc
+g++ -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c -o match.o match.cc
+g++ -DHAVE_CONFIG_H -I.     -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2 -c -o assemble.o assemble.cc
+g++  -Wall -m64 -D_FASTMAP -DMAQ_LONGREADS -g -O2   -o maq main.o const.o seq.o bfa.o read.o fasta2bfa.o fastq2bfq.o merge.o match_aux.o match.o sort_mapping.o assemble.o pileup.o mapcheck.o get_pos.o assopt.o aux_utils.o rbcc.o subsnp.o pair_stat.o indel_soa.o maqmap.o maqmap_conv.o altchr.o submap.o rmdup.o simulate.o genran.o indel_pe.o stdaln.o indel_call.o eland2maq.o csmap2ntmap.o break_pair.o glfgen.o -lm -lz 
+make[1]: Leaving directory `/nethome/bioinfo/apps/maq/0.7.1'
+
+
+3. RECOMPILE
+
+NEWLY COMPILED maq HAS ill2sanger OPTION:
+
+[bioinfo@m1 0.7.1]$ ./maq ill2sanger
+Usage: maq ill2sanger <in.fastq> <out.fastq>
+[bioinfo@m1 0.7.1]$ 
+
+
+OLD maq VERSION DOES NOT:
+
+[bioinfo@m1 0.7.1-bkp]$ ./maq ill2sanger
+ERROR: unrecognized command 'ill2sanger'
+
+
+
+NOTES
+=====
+
+
+
+http://www.linuxquestions.org/questions/linux-general-1/how-do-you-apply-a-diff-patch-529154/
+The basic concept it to apply the 'diff' using the patch command.
+Basic command syntax
+Code:
+$ patch -p[num] < [patchfile]
+Example
+Code:
+$ patch -p1 < diff
+Whether or not this will work for your diff file will depend on what your patching and how the diff file is written. Recommend doing 'man patch' and 'man diff' and read the manual. Would also help you to look at any README files or HOW-To's about the specific use of the diff you trying to apply.
+
+
+</entry>
+
+
+
+<entry [Tue Sep 15 21:35:05 EDT 2009] GET THE IP ADDRESS OF YOUR COMPUTER>
+
+
+
+emacs /etc/sysconfig/network-scripts/ifcfg-eth0
+
+    # Intel Corporation 82545EM Gigabit Ethernet Controller (Copper)
+    DEVICE=eth0
+    BOOTPROTO=none
+    ONBOOT=yes
+    IPADDR=204.68.94.222
+    NETMASK=255.255.255.0
+    GATEWAY=204.68.94.1
+    TYPE=Ethernet
+
+
+
+CHANGE IP ADDRESS
+
+EDIT THE ABOVE FILE AND THEN RESTART:
+
+run service network restart
+
+ps
+ don't forget to change default gw also,
+ it's located in /etc/sysconfig/network
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep 15 21:35:05 EDT 2009] CHANGE LINUX LOGIN MESSAGE>
+
+
+
+EDIT THIS FILE
+/etc/motd
+
+</entry>
+
+
+
+<entry [Thurs Aug 6 14:29:39 EDT 2009] MORE find command EXAMPLES>
+
+
+
+
+   Find files named core in or below the directory /tmp and
+       delete them.  Note that this will  work  incorrectly  if
+       there  are  any filenames containing newlines, single or
+       double quotes, or spaces.
+
+       find /tmp -name core -type f -print0 | xargs -0  /bin/rm
+       -f
+
+       Find files named core in or below the directory /tmp and
+       delete them, processing filenames in  such  a  way  that
+       file  or  directory  names  containing  single or double
+       quotes, spaces or newlines are correctly  handled.   The
+       -name test comes before the -type test in order to avoid
+       having to call stat(2) on every file.
+
+       find . -type f -exec file â{}â \;
+
+       Runs âfileâ on every file in or below the current direc-
+       tory.   Notice  that  the  braces are enclosed in single
+       quote marks to protect them from interpretation as shell
+       script  punctuation.    The  semicolon is similarly pro-
+       tected by the use of a backslash, though â;â could  have
+       been used in that case also.
+
+       find /    \( -perm -4000 -fprintf /root/suid.txt â%#m %u %p\nâ \) , \
+                 \( -size +100M -fprintf /root/big.txt â%-10s %p\nâ \)
+
+       Traverse  the filesystem just once, listing setuid files
+       and directories into /root/suid.txt and large files into
+       /root/big.txt.
+
+       find $HOME -mtime 0
+
+       Search  for files in your home directory which have been
+       modified in the last twenty-four  hours.   This  command
+       works this way because the time since each file was last
+       modified is divided by 24 hours  and  any  remainder  is
+:
+
+
+</entry>
+
+
+
+<entry [Mon Oct 27 14:29:39 EDT 2008] find command EXAMPLES>
+
+
+
+find . -type f -name "122"  -exec mv {} alta-cyclic \;
+
+
+sudo find / -type f -name *.jpg  -exec cp {} . \;
+find . -type f -size +10000 -exec ls -al {} \;
+find . -atime +1 -type f -exec mv {} TMP \; # mv files older then 1 day to dir TMP
+find . -name "-F" -exec rm {} \;   # a script error created a file called -F 
+find . -exec grep -i "vds admin" {} \;
+find . \! -name "*.Z" -exec compress -f {} \;
+find . -type f \! -name "*.Z" \! -name ".comment" -print | tee -a /tmp/list
+find . -name *.ini
+find . -exec chmod 775 {} \;
+find . -user xuser1 -exec chown -R user2 {} \;
+find . -name ebtcom*
+find . -name mkbook
+find . -exec grep PW0 {} \;
+find . -exec grep -i "pw0" {} \;
+find . -atime +6
+find . -atime +6 -exec ll | more
+find . -atime +6 -exec ll | more \;
+find . -atime +6 -exec ll \;
+find . -atime +6 -exec ls \;
+find . -atime +30 -exec ls \;
+find . -atime +30 -exec ls \; | wc -l
+find . -name auth*
+find . -exec grep -i plotme10 {};
+find . -exec grep -i plotme10 {} \;
+find . -ls -exec grep 'PLOT_FORMAT 22' {} \;
+find . -print -exec grep 'PLOT_FORMAT 22' {} \;
+find . -print -exec grep 'PLOT_FORMAT' {} \;
+find . -print -exec grep 'PLOT_FORMAT' {} \;
+find ./machbook -exec chown 184 {} \;
+find . \! -name '*.Z' -exec compress {} \;
+find . \! -name "*.Z" -exec compress -f {} \;
+find /raid/03c/ecn -xdev -type f -print
+find /raid/03c/ecn -xdev -path -type f -print
+find / -name .ssh* -print | tee -a ssh-stuff
+find . -name "*font*"
+find . -name hpmcad*
+find . -name *fnt*
+find . -name hp_mcad* -print
+find . -grep Pld {} \;
+find . -exec grep Pld {} \;
+find . -exec grep Pld {} \;
+find . -exec grep PENWIDTH {} \; | more
+find . -name config.pro
+find . -name config.pro
+find /raid -type d ".local_sd_customize" -print
+find /raid -type d -name ".local_sd_customize" -print
+find /raid -type d -name ".local_sd_customize" -ok cp /raid/04d/MCAD-apps/I_Custom/SD_custom/site_sd_customize/user_filer_project_dirs {} \;
+find /raid -type d -name ".local_sd_customize" -exec cp /raid/04d/MCAD-apps/I_Custom/SD_custom/site_sd_customize/user_filer_project_dirs {} \;
+find . -name xeroxrelease
+find . -exec grep xeroxrelease {} \;
+find . -name xeroxrelease
+find . -name xeroxrelease* -print 2>/dev/null
+find . -name "*release*" 2>/dev/null
+find / -name "*xerox*" 2>/dev/null
+find . -exec grep -i xeroxrelease {} \;
+find . -print -exec grep -i xeroxrelease {} \;
+find . -print -exec grep -i xeroxrelease {} \; > xeroxrel.lis
+find . -exec grep -i xeroxrel {} \;
+find . -print -exec grep -i xeroxrel {} \;
+find . -print -exec grep -i xeroxrel {} \; | more
+find /raid/03c/inwork -xdev -type f -print >> /raid/04d/user_scripts/prt_list.tmp
+find . -exec grep '31.53' {} \;
+find . -ls -exec grep "31/.53" {} \; > this.lis
+find . -print -exec grep "31/.53" {} \; > this.lis
+find . -print -exec grep 31.53 {} \; > this.lis
+find . -exec grep -i pen {} /;
+find . -exec grep -i pen {} \;
+find . -print -exec grep -i pen {} \; | more
+find . -exec grep -i pen {} \;
+find . -atime +6 -exec ll | more \;
+find . -atime +6 -exec ll \;
+find . -atime +6 -exec ls \;
+find . -atime +30 -exec ls \;
+find . -atime +30 -exec ls \; | wc -l
+find . \! -name '*.Z' -exec compress -f {} \;
+find . -name 'cache*' -depth -exec rm {} \;
+find . -name 'cache*' -depth -print | tee -a /tmp/cachefiles
+find . -name 'cache[0-9][0-9]*' -depth -print | tee -a /tmp/cachefiles
+find . -name 'hp_catfile' 'hp_catlock' -depth -print | tee -a /tmp/hp.cats
+find . -name 'hp_catfile' -name 'hp_catlock' -depth -print | tee -a /tmp/hp.cats
+find . -name 'hp_cat*' -depth -print | tee -a /tmp/hp.cats
+find . -name 'hp_cat[fl]*' -depth -print | tee -a /tmp/hp.cats
+find /raid -name 'hp_cat[fl]*' -depth -print
+find . \! -name '*.Z' -exec compress -f {} \;
+find . -name '*' -exec compress -f {} \;
+find . -xdev -name "wshp1*" -print
+find . -xdev -name "wagoneer*" -print
+find . -name "xcmd" -depth -print
+find /usr/contrib/src -name "xcmd" -depth -print
+find /raid -type d -name ".local_sd_customize" -exec ls {} \; 
+find /raid -type d -name ".local_sd_customize" \
+   -exec cp /raid/04d/MCAD-apps/I_Custom/SD_custom/site_sd_customize/user_filer_project_dirs {} \;
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Oct 27 14:29:39 EDT 2008] USE diff TO APPLY A PATCH>
+
+
+
+
+
+Creating and Applying Patches
+http://www.whatwoulddrupaldo.org/creating-and-applying-patches
+
+I regularly find myself digging up the proper nodes to explain to someone on the forums how to apply a patch either from a shell command line or locally on a windows machine.
+
+I also find myself always needing to dig up the information on the proper command line syntax for generating a patch for submission.
+
+So here's the scoop, so I don't have to do all that oh-so-complicated searching everytime ;)
+
+Creating a patch:
+
+diff -uF^function old.module new.module > file.patch
+
+More info available at http://drupal.org/diffanpatch
+
+Applying a patch from shell:
+
+patch old.module < file.patch
+
+
+
+(I find that the -p option is rarely needed)
+
+Applying a patch on a local windows box to upload via FTP:
+Discussion of various means here
+
+</entry>
+
+
+
+<entry [Wed Oct 22 23:57:10 EDT 2008] CENTOS RPM SITE>
+
+
+
+http://isoredirect.centos.org/centos/5/extras/i386/RPMS/
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 22 23:47:10 EDT 2008] RPM HOW TO UNINSTALL>
+
+
+
+http://www.faqs.org/docs/securing/chap4sec23.html
+
+Use RPM command to uninstall.
+
+The command to uninstall software is:
+
+$ rpm -e <softwarename(s)>
+         
+
+Where <softwarename> is the name of the software you want to uninstall e.g. (foo).
+
+Since Programs like apmd, kudzu, and sendmail are daemons that run as process. It is better to stop those processes before uninstalling them from the system.To stop those processes, use the following commands:
+
+         [root@deep] /# /etc/rc.d/init.d/apmd stop
+         [root@deep] /# /etc/rc.d/init.d/sendmail stop
+         [root@deep] /# /etc/rc.d/init.d/kudzu stop
+         
+
+   1.
+
+      Version 6.1 only Now you can uninstall them safely, and all other packages, as shown below: Remove the specified packages for Red Hat Linux version 6.1 (Cartman).
+
+                   [root@deep] /# rpm -e --nodeps pump mt-st eject mailcap apmd kernel-pcmcia-cs linuxconf getty_ps 
+                   setconsole isapnptools setserial kudzu raidtools gnupg redhat-logos redhat-release gd pciutils rmt
+
+      Version 6.2. only Remove the specified packages for Red Hat Linux version 6.2 (Zoot).
+
+                   [root@deep] /# rpm -e --nodeps pump mt-st eject mailcap apmd kernel-pcmcia-cs linuxconf getty_ps 
+                   isapnptools setserial kudzu raidtools gnupg redhat-logos redhat-release gd pciutils rmt
+
+   2.
+
+      Version All Remove the linux.conf-installed file manually.
+
+               [root@deep] /# rm -f /etc/conf.linuxconf-installed
+               
+
+    Note: This is a configuration file related to linuxconf software that must be removed manually. 
+
+The program hdparm is needed by IDE hard disk but not SCSI hard disks. If you have an IDE disk on your system you must keep this program (hdparm), but if you don't have an IDE hard disk you can remove it safely from your system. To remove hdparm from your system, use the following command:
+
+         [root@deep] /# rpm -e hdparm
+         
+
+Use the programs kbdconfig, mouseconfig, timeconfig, authconfig, ntsysv, and setuptool in order to set your keyboard language and type, your mouse type, your default time zone, your NIS and shadow passwords, your numerous symbolic links in /etc/rc.d directory, and text mode menu utility which allow you to access all of these features. After those configurations have been set during the installation stage of your Linux server it's rare that you would need to change them again. So, you can uninstall them, and if in future you need to change your keyboard, mouse, default time, etc again via test mode menu, all you have to do is to install the program with the RPM from your original CD-ROM. To remove all the above programs from your system, use the following command:
+
+         [root@deep] /# rpm -e kbdconfig mouseconfig timeconfig authconfig ntsysv setuptool
+         
+
+Even if you are not intending to install a mail server on your Linux system, the program Sendmail is always needed on your servers for potential messages sent to the root user by different software services installed on your machine.
+
+Sendmail is a Mail Transport Agent -MTA program that sends mail from one machine to another. It can be configured in different manners; it can serve as an internal delivery mail system to a Mail Hub Server, or can be configured to be a Central Mail Hub Server for all Sendmail machines on your network. So depending on what you want to do with Sendmail, you must configure it to respond to your specific needs. For this reason you must uninstall Sendmail and see the relevant sections in this book that is related to Sendmail configuration and installation.
+
+To remove Sendmail from your system, use the following command:
+
+         [root@deep] /# rpm -e sendmail
+         
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 22 23:11:58 EDT 2008] FIND OUT WHICH VERSION OF centos:>
+
+
+
+$ cat /etc/redhat-release
+CentOS release 5.2 (Final)
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 22 23:03:08 EDT 2008] HOW TO USE Apt AND yum>
+
+
+
+BASED ON THIS PAGE:
+
+http://dag.wieers.com/rpm/FAQ.php#B4
+
+B3. How do I use Apt ?
+Apt originally was developed by the Debian project to work together with DEB packages. Since there are not many functional differences between RPM and DEB packages, Conectiva ported Apt to use RPM.
+
+To install Apt, download the latest package for your distribution from: http://dag.wieers.com/packages/apt/. The configuration of Apt is inside the rpmforge-release package.
+
+If you've done that, the rest is simple. Update the local repository meta-data by doing:
+
+apt-get update
+You can upgrade your system with the latest packages with:
+
+apt-get upgrade
+And finally you can add new software by typing:
+
+apt-get install <name of package>
+Or search for software in the local repository meta-data:
+
+apt-cache search <keyword> apt-cache show <name of package>
+From time to time you may want to save some diskspace:
+
+apt-get clean
+Remember to update your local repository often before upgrading or installing software, so that you can enjoy the latest and greatest.
+
+Some people rather use a graphical program to select and install packages. Apt has a nifty graphical front-end, called Synaptic. You can install it by doing:
+
+apt-get install synaptic
+Or download it from: http://dag.wieers.com/packages/synaptic/
+
+B4. How do I use Yum ?
+Yum is an update-tool written in python. The advantage of Yum is that it is written in Python. The disadvantage is that there are many versions of Yum, and only recent versions work with recent distributions. If you like to use a single tool across all distributions, it's better to use Apt.
+
+Yum is usually already installed if you're running Fedora Core. In case you are using Red Hat Enterprise Linux or an older Red Hat Linux distribution. You can find Yum at: http://dag.wieers.com/packages/yum/
+
+The configuration of Yum is inside the rpmforge-release package. You need to install it yourself.
+
+If you've done that, the rest is simple. Upgrade your system by doing:
+
+yum update
+You can add new software by typing:
+
+yum install <name of package>
+Or update installed software:
+
+yum update <name of package>
+Or search for software in the local repository meta-data:
+
+yum search <keyword>
+Or simply list all available software:
+
+yum list available
+From time to time you may want to save some diskspace:
+
+yum clean
+
+
+</entry>
+
+
+
+<entry [Tue Oct 21 11:42:55 EDT 2008] CREATE zion USER AND GIVE IT A UID AND GID>
+
+
+
+1. CHECK syoung USER AND GROUP IDS IN CCS LDAP
+
+USER syoung ON CCS LDAP
+[syoung@olympus ~]$ id 
+uid=1008(syoung) gid=1072(bioinfo) groups=1072(bioinfo)
+
+USER syoung ON zion
+[syoung@zion ~]$ id
+uid=500(syoung) gid=502 groups=502
+
+
+2. EDIT bioinfo GROUP ENTRY IN /etc/group
+
+FROM
+
+bioinfo:x:502:
+
+TO
+
+bioinfo:x:1072:
+
+
+3. USE groupdel AND groupadd TO REMOVE OLD bioinfo GROUP FROM passwd FILE
+
+sudo /usr/sbin/groupdel bioinfo
+
+sudo /usr/sbin/groupadd -g 1072 bioinfo
+
+
+
+2. CREATE USER AND ADD TO GROUPS:
+
+sudo /usr/sbin/useradd -u 1008 -G bioinfo zion
+
+
+
+( NB:
+
+CAN USE -a OPTION MODIFY USER AND ADD ADDITIONAL GROUPS (-G OPTION) WITHOUT OVERWRITING EXISTING GROUPS:
+
+/usr/sbin/usermod -a -G mihgg zion)
+
+CAN USE userdel TO REMOVE A USER:
+
+sudo /usr/sbin/userdel zion )
+
+
+
+
+4. SET NEW PASSWORD
+
+passwd zion
+
+
+
+5. GET USER INFO FOR zion
+
+[syoung@zion ~]$ id zion
+uid=1008(zion) gid=1008(zion) groups=1008(zion),1072(bioinfo)
+
+
+
+ABOVE INSTRUCTIONS ARE BASED ON:
+
+Howto: Linux Add User To Group
+http://www.cyberciti.biz/faq/howto-linux-add-user-to-group/#comment-37267
+
+
+useradd example - Add a new user to secondary group
+===================================================
+
+Use useradd command to add new users to existing group (or create a new group and then add user). If group does not exist, create it. Syntax:
+
+    useradd -G {group-name} username
+
+Create a new user called vivek and add it to group called developers. First login as a root user (make sure group developers exists), enter:
+
+    grep developers /etc/group
+
+developers:x:1124:
+
+
+If you do not see any output then you need to add group developers using groupadd command:
+
+    groupadd developers
+
+Next, add a user called vivek to group developers:
+
+    useradd -G developers vivek
+
+Setup password for user vivek:
+
+    passwd vivek
+
+Ensure that user added properly to group developers:
+
+    id vivekOutput:
+
+uid=1122(vivek) gid=1125(vivek) groups=1125(vivek),1124(developers)
+
+Please note that capital G (-G) option add user to a list of supplementary groups. Each group is separated from the next by a comma, with no intervening whitespace. For example, add user jerry to groups admins, ftp, www, and developers, enter:
+
+    useradd -G admins,ftp,www,developers jerry
+
+
+
+useradd example - Add a new user to primary group
+=================================================
+
+To add a user tony to group developers use following command:
+
+    useradd -g developers tony
+    id tony
+
+    uid=1123(tony) gid=1124(developers) groups=1124(developers)
+
+
+Please note that small -g option add user to initial login group (primary group). The group name must exist. A group number must refer to an already existing group.
+
+
+
+usermod example - Add a existing user to existing group
+=======================================================
+
+Add existing user tony to ftp supplementary/secondary group with usermod command using -a option ~ i.e. add the user to the supplemental group(s). Use only with -G option :
+
+
+    usermod -a -G ftp tony
+    
+Change existing user tony primary group to www:
+
+    usermod -g www tony
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Oct 17 16:17:37 EDT 2008] WORKAROUND argument list too long FOR rm>
+
+
+
+# rm spam-*
+/bin/rm: Argument list too long.
+
+1. GET NUMBER OF FILES 
+
+# ls -1 | grep virus | wc -l
+    1667
+
+2 USE find AND PIPE MATHCHING FILES TO rm, ONE AT A TIME
+
+# find . -name 'spam-*' | xargs rm
+
+
+
+</entry>
+
+
+
+<entry [Wed Oct 15 17:17:37 EDT 2008] BASIC RSYNC COMMAND>
+
+
+
+
+rsync -av -e ssh username@oldserverhost:/home/old_home/ /home/new_home/
+
+</entry>
+
+
+
+<entry [Fri Oct 10 15:04:36 EDT 2008] REPLACE A STRING IN A FILE>
+
+
+
+
+perl -p -i -e "s/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/workflow1/g" RunLog*
+
+
+find and sed with pipe
+======================
+
+find . -name '*.tif' | sed -e 's%\(.//*\)\(.\)\(.\)\(.\)\(.*\)%ditto \1\2\3\4\5 /some/path/\2/\3/\4/%' | sh
+
+
+find . -name 'Runlog*' | sed -e 's/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/workflow1/g' | sh
+
+DIDN'T WORK
+
+
+grep and sed with xargs
+=======================
+
+http://yassinechaouche.thecoderblogs.com/2008/08/28/replace-a-string-in-multiple-files/
+
+greppy -l  “SESSION.get(idEntreprise)” | xargs sed -i -e “s/SESSION.get(idEntreprise)/SESSION.get(\”idEntreprise\”)/”
+
+One handy alias :
+alias greppy=‘find . -name "*.py" | grep -v svn | xargs grep –color’
+
+
+
+perl with grep and xargs
+========================
+
+
+
+grep -rl OLDSTRING *.FILEEXTENSION | xargs perl -pi~ -e 's/OLDSTRING/NEWSTRING/g'
+
+
+
+sed (stream editor)
+===================
+
+We have a file called sedtest.txt, which contains the string "1.0". To
+change the string to "2.0":
+
+sed -e 's/1.0/2.0/g' sedtest.txt > sedtest2.txt mv –f sedtest2.txt sedtest.txt
+
+Remove empty lines:
+
+sed -e '/^ *$/d' sedtest1.txt 
+
+
+perl
+====
+
+perl -p -i -e “s/text/replacement text/g" filename
+
+
+shell script
+============
+
+cd pathname
+for y in `ls *`;
+do 
+   sed 's_c:/mydocuments/pictures_d:/mypics/personal_' $y > temp; mv temp $y;
+done
+
+http://wiki.ajo.es/index.php/How_to_replace_a_string_in_multiple_files_UNIX
+
+  #!/bin/sh myname="/tmp/`whoami``date +%d%m%H%M%S`" 
+  if test -f $myname then 
+     echo "$0: Cannot make directory $myname (already exists)" 1&>2 
+     exit 0 
+  fi 
+  mkdir "$myname" 
+  for FILE in $@; do 
+     sed 's/old_string/new_string/g' $FILE > "$myname"/"$FILE"new_tmp 
+     mv "$myname"/"$FILE"new_tmp $FILE 
+  done 
+  rmdir $myname
+  
+  
+  
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep  2 10:41:28 EDT 2008] FIND THE php.ini FILE TO RESET THE MAX FILE UPLOAD SIZE>
+
+
+
+1. CREATE THE phpinfo.php FILE IN THE HTML DIRECTORY:
+
+<?php
+#Wallpaperama.com
+phpinfo();
+?>
+
+
+2. BROWSE TO IT AND LOOK FOR THE Configuration File (php.ini) Path 
+
+/etc/php.ini
+
+
+3. CHECK THE CURRENT VALUE OF post_max_size
+
+post_max_size	8M	8M
+
+
+4. EDIT post_max_size IN THE php.ini FILE
+
+; Maximum size of POST data that PHP will accept.
+post_max_size = 100M
+
+
+5. RESTART APACHE
+
+/usr/sbin/apachectl -k stop   
+/usr/sbin/apachectl -k start
+
+NB: START AND STOP IS BETTER THAN RESTART
+
+/usr/sbin/apachectl -k restart
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep  2 10:40:28 EDT 2008] CHECK IF YOUR SYSTEM IS 64-BIT OF 32-BIT WITH uname -a>
+
+
+
+ON solexa01:
+
+uname -a
+Linux solexa01 2.6.18-53.el5 #1 SMP Wed Oct 10 16:34:19 EDT 2007 x86_64 x86_64 x86_64 GNU/Linux
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 29 21:27:21 EDT 2008] RESTORE USER AND GROUP INFO>
+
+
+
+Ubuntu Linux Restore admin / root level permissions
+
+http://www.cyberciti.biz/tips/ubuntu-admin-group-permissions.html
+
+Posted by Vivek Gite [Last updated: November 1, 2007]
+
+I was writing and testing few python scripts (yes I'm moving lot of stuff from shell / perl to python these days) and accidentally I renamed my own user account from vivek to test. However, I did not noticed change until I rebooted my box. Now I cannot run sudo (or become a root user) and cannot access special devices such as sound or video.
+
+By default your first account has all power via sudo under Ubuntu Linux. There is a special group called adm and admin which grants unlimited power via sudo.
+
+The only solution was to boot computer in emergency mode (reboot computer and at grub menu select recovery mode kernel), open /etc/group file and add user vivek to admin and adm group:
+# vi /etc/group
+Add user vivek to admin and adm group:
+admin:x:117:vivek
+adm:x:4:vivek
+
+Save and close the file.
+
+Now I'm able to run sudo and do other stuff. Luckily, my scripts always backup critical files before modification. So I was able to restore permission instantly. Here is my group membership with all power and glory ;)
+$ id
+$ groups
+Output:
+
+vivek adm dialout cdrom floppy audio dip video plugdev scanner netdev lpad
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 29 20:35:16 EDT 2008] CREATE NEW USER AND ADD TO GROUPS IN CENTOS>
+
+
+
+1. CHECK EXISTING USER GROUP ENTRIES IN /etc/groups
+
+users:x:100:jhoffman,warner,jhahn,Mihglabtech,dhedges,syoung
+mihgg:x:1046:jhoffman,warner,jhahn,Mihglabtech,dhedges,syoung
+
+2. CREATE USER AND ADD TO GROUPS:
+
+/usr/sbin/useradd -G users szuchner
+
+3. MODIFY USER AND ADD ADDITIONAL GROUPS (-G OPTION) WITHOUT OVERWRITING EXISTING GROUPS (-a OPTION):
+
+/usr/sbin/usermod -a -G mihgg szuchner
+
+4. SET NEW PASSWORD:
+
+passwd szuchner
+
+5. GET USER INFO FOR szuchner:
+
+id szuchner
+uid=1121(szuchner) gid=1121(szuchner) groups=1121(szuchner),100(users),1046(mihgg) context=user_u:system_r:unconfined_t
+
+
+DID SAME FOR USER uozomaro:
+===========================
+
+CHECK FOR USERS IN /etc/passwd
+
+    [root@solexa01 sbin]# cat /etc/passwd
+    root:x:0:0:root:/root:/bin/bash
+    bin:x:1:1:bin:/bin:/sbin/nologin
+    daemon:x:2:2:daemon:/sbin:/sbin/nologin
+    adm:x:3:4:adm:/var/adm:/sbin/nologin
+    lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+    sync:x:5:0:sync:/sbin:/bin/sync
+    shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+    halt:x:7:0:halt:/sbin:/sbin/halt
+    mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+    news:x:9:13:news:/etc/news:
+    uucp:x:10:14:uucp:/var/spool/uucp:/sbin/nologin
+    operator:x:11:0:operator:/root:/sbin/nologin
+    games:x:12:100:games:/usr/games:/sbin/nologin
+    gopher:x:13:30:gopher:/var/gopher:/sbin/nologin
+    ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+    nobody:x:99:99:Nobody:/:/sbin/nologin
+    rpm:x:37:37::/var/lib/rpm:/sbin/nologin
+    dbus:x:81:81:System message bus:/:/sbin/nologin
+    nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+    vcsa:x:69:69:virtual console memory owner:/dev:/sbin/nologin
+    pcap:x:77:77::/var/arpwatch:/sbin/nologin
+    rpc:x:32:32:Portmapper RPC user:/:/sbin/nologin
+    mailnull:x:47:47::/var/spool/mqueue:/sbin/nologin
+    smmsp:x:51:51::/var/spool/mqueue:/sbin/nologin
+    avahi:x:70:70:Avahi daemon:/:/sbin/nologin
+    sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+    rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+    nfsnobody:x:4294967294:4294967294:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+    haldaemon:x:68:68:HAL daemon:/:/sbin/nologin
+    distcache:x:94:94:Distcache:/:/sbin/nologin
+    apache:x:48:48:Apache:/var/www:/sbin/nologin
+    ntp:x:38:38::/etc/ntp:/sbin/nologin
+    webalizer:x:67:67:Webalizer:/var/www/usage:/sbin/nologin
+    squid:x:23:23::/var/spool/squid:/sbin/nologin
+    xfs:x:43:43:X Font Server:/etc/X11/fs:/sbin/nologin
+    gdm:x:42:42::/var/gdm:/sbin/nologin
+    sabayon:x:86:86:Sabayon user:/store/home/sabayon:/sbin/nologin
+    hpsmh:x:100:500::/opt/hp/hpsmh:/sbin/nologin
+    warner:x:500:100::/store/home/warner:/bin/bash
+    whulme:x:501:100:William Hulme:/store/home/whulme:/bin/bash
+    ikonidari:x:502:100:Ioanna Konidari:/store/home/ikonidari:/bin/bash
+    pwhitehead:x:503:100:Patrice Whitehead:/store/home/pwhitehead:/bin/bash
+    spatel6:x:504:100:Shilpa Patel:/store/home/spatel6:/bin/bash
+    ckroner:x:505:100:Charles Kroner:/store/home/ckroner:/bin/bash
+    rotto1:x:506:100:Rachaele Otto:/store/home/rotto1:/bin/bash
+    jhahn:x:507:100::/home/jhahn:/bin/bash
+    Mihglabtech:x:508:100::/home/Mihglabtech:/bin/bash
+    jhoffman:x:509:100::/home/jhoffman:/bin/bash
+    anunez1:x:510:100::/home/anunez1:/bin/bash
+    syoung:x:511:100::/home/syoung:/bin/bash
+    dhedges:x:512:100::/home/dhedges:/bin/bash
+    mysql:x:513:510::/home/mysql:/bin/bash
+    ddittman:x:514:100::/home/ddittman:/bin/bash
+    jhuang:x:515:100::/home/jhuang:/bin/bash
+    zjiang:x:516:100::/home/zjiang:/bin/bash
+    mihg:x:1120:1120::/home/mihg:/bin/bash
+    uozomaro:x:517:100::/home/uozomaro:/bin/bash
+    szuchner:x:1121:1121::/home/szuchner:/bin/bash
+
+1. CHECK EXISTING USER INFO
+
+id uozomaro
+uid=517(uozomaro) gid=100(users) groups=100(users) context=user_u:system_r:unconfined_t
+
+2. ADD USER TO GROUP mihgg BY MODIFYING USER GROUPS (-G OPTION) WITHOUT OVERWRITING EXISTING GROUPS (-a OPTION):
+
+/usr/sbin/usermod -a -G mihgg uozomaro
+
+CHECK INFO:
+
+id uozomaro
+uid=517(uozomaro) gid=100(users) groups=100(users),1046(mihgg) context=user_u:system_r:unconfined_t
+
+
+
+ABOVE INSTRUCTIONS ARE BASED ON:
+
+Howto: Linux Add User To Group
+http://www.cyberciti.biz/faq/howto-linux-add-user-to-group/#comment-37267
+
+
+useradd example - Add a new user to secondary group
+===================================================
+
+Use useradd command to add new users to existing group (or create a new group and then add user). If group does not exist, create it. Syntax:
+
+    useradd -G {group-name} username
+
+Create a new user called vivek and add it to group called developers. First login as a root user (make sure group developers exists), enter:
+
+    grep developers /etc/group
+
+developers:x:1124:
+
+
+If you do not see any output then you need to add group developers using groupadd command:
+
+    groupadd developers
+
+Next, add a user called vivek to group developers:
+
+    useradd -G developers vivek
+
+Setup password for user vivek:
+
+    passwd vivek
+
+Ensure that user added properly to group developers:
+
+    id vivekOutput:
+
+uid=1122(vivek) gid=1125(vivek) groups=1125(vivek),1124(developers)
+
+Please note that capital G (-G) option add user to a list of supplementary groups. Each group is separated from the next by a comma, with no intervening whitespace. For example, add user jerry to groups admins, ftp, www, and developers, enter:
+
+    useradd -G admins,ftp,www,developers jerry
+
+
+
+useradd example - Add a new user to primary group
+=================================================
+
+To add a user tony to group developers use following command:
+
+    useradd -g developers tony
+    id tony
+
+    uid=1123(tony) gid=1124(developers) groups=1124(developers)
+
+
+Please note that small -g option add user to initial login group (primary group). The group name must exist. A group number must refer to an already existing group.
+
+
+
+usermod example - Add a existing user to existing group
+=======================================================
+
+Add existing user tony to ftp supplementary/secondary group with usermod command using -a option ~ i.e. add the user to the supplemental group(s). Use only with -G option :
+
+
+    usermod -a -G ftp tony
+    
+Change existing user tony primary group to www:
+
+    usermod -g www tony
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 29 16:35:55 EDT 2008] RESTART SSHD SERVER + Disabling root login via SSH (CentOS)>
+
+
+
+
+1. RESTART SSHD SERVER
+
+    sudo /etc/init.d/sshd restart
+
+2. Disabling root login via SSH (CentOS)
+
+This specifically applies to Centos 5.x
+
+    # vi /etc/ssh/sshd_config
+
+Preferably do this on a second login if you have to do this on a remote system… and keep the one of them open! All you have to do is locate the line “PermitRootLogin yes” and change it to:
+
+    PermitRootLogin no
+
+Then restart SSH:
+
+    # /etc/init.d/sshd restart
+
+
+
+</entry>
+
+
+
+<entry [Wed Jul 23 22:44:40 EDT 2008] SET THE DATE AND TIME ON THE COMMAND LINE >
+
+
+
+sudo date 072322452008
+
+EXAMPLES
+
+The command:
+
+    date "+DATE: %m/%d/%y%nTIME: %H:%M:%S"
+
+will display:
+
+    DATE: 11/21/87
+    TIME: 13:36:16
+
+The command:
+
+    date 061316271985
+
+sets the date to ``June 13, 1985, 4:27 PM''.
+
+The command:
+
+    date 1432
+
+sets the time to 2:32 PM, without modifying the date.
+
+
+
+</entry>
+
+
+
+<entry [Fri Jul 11 18:16:31 EDT 2008] How to run a CRON task every 5 minutes>
+
+
+
+emacs /etc/crontab
+
+>>>
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+HOME=/
+
+# run-parts
+01 * * * * root run-parts /etc/cron.hourly
+02 4 * * * root run-parts /etc/cron.daily
+22 4 * * 0 root run-parts /etc/cron.weekly
+42 4 1 * * root run-parts /etc/cron.monthly
+<<<
+
+TO RUN EVERY 5 MINS:
+
+MAILTO=cron@username.plus.com
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /command/to/execute
+
+*** OR THE SHORTCUT:
+
+MAILTO=cron@username.plus.com
+*/5 * * * * /command/to/execute
+
+
+
+</entry>
+
+
+
+<entry [Fri Jul 11 14:26:07 EDT 2008] FIND OUT THE linux VERSION ON THE COMMAND LINE>
+
+
+
+[syoung@solexa01 syoung]$ cat /etc/*-release
+Red Hat Enterprise Linux Server release 5.1 (Tikanga)
+
+

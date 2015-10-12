@@ -1,0 +1,616 @@
+Notes-hardward-imac.txt
+
+
+</entry>
+
+
+
+<entry [Wed Dec 22 13:51:16 EST 2010] DOWNLOAD AGUA FROM AQUARIUS-6 TO IMAC>
+
+
+
+
+
+scp -i /root/base/apps/ec2/keypairs/agua.pem \
+-r root@ec2-50-16-93-114.compute-1.amazonaws.com:/agua/* /agua
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 26 14:28:17 PST 2010] SET MYSQL ROOT PASSWORD>
+
+
+
+mysql -u root
+UPDATE mysql.user SET Password=PASSWORD('<ROOT_PASSWORD>') WHERE User='root';
+FLUSH PRIVILEGES;
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+INSTALLED 64-BIT MYSQL 5.1.42 AND STARTUP ITEM (AUTOMATIC START AT BOOT)
+
+mysql-5.1.42-osx10.6-x86_64.dmg
+
+
+SET ALIASES:
+
+alias mysql=/usr/local/mysql/bin/mysql
+alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+
+
+
+STARTUP:
+
+WITH the Startup Item:
+
+sudo /Library/StartupItems/MySQLCOM/MySQLCOM start
+
+   Password:
+   Starting MySQL database server
+   syoungs-macbook-pro:mysql syoung$ ps aux | grep mysql
+   _mysql     482   0.0  0.5  2506916  18980 s001  S     2:20PM   0:00.10 /usr/local/mysql/bin/mysqld --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data --user=mysql --log-error=/usr/local/mysql/data/syoungs-macbook-pro.local.err --pid-file=/usr/local/mysql/data/syoungs-macbook-pro.local.pid
+   root       432   0.0  0.0  2435464    756 s001  S     2:20PM   0:00.02 /bin/sh ./bin/mysqld_safe --datadir=/usr/local/mysql/data --pid-file=/usr/local/mysql/data/syoungs-macbook-pro.local.pid
+   syoung     400   0.0  0.2  2449128   6720 s001  T     2:14PM   0:00.23 emacs -nw README-mysql.txt
+   syoung     485   0.0  0.0  2435468    308 s001  S+    2:21PM   0:00.00 grep mysql
+
+
+WITH mysqld_safe:
+
+If you don't use the Startup Item:
+
+cd /usr/local/mysql
+sudo ./bin/mysqld_safe &
+
+OR:
+
+sudo ./bin/mysqld_safe
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-Z)
+bg
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+
+MSYQL IS INSTALLED HERE:
+
+/usr/local/mysql-5.1.42-osx10.6-x86_64/
+
+SYMBOLICALLY LINKED TO HERE:
+
+/usr/local/mysql
+
+The installer creates the grant tables in the `mysql' database by executing `mysql_install_db'.
+
+The installation layout is similar to that of a `tar' file binary
+distribution; all MySQL binaries are located in the directory
+
+THE MYSQL BINARIES ARE HERE:
+
+/usr/local/mysql/bin
+
+THE MySQL SOCKET FILE IS HERE:
+
+/tmp/mysql.sock
+
+MySQL installation requires a Mac OS X user account named `mysql'. A
+user account with this name should exist by default on Mac OS X 10.2
+and up.
+
+
+
+
+
+NB: MYSQL IS ALREADY INSTALLED ON OSX SERVER
+
+
+If you are running Mac OS X Server, a version of MySQL should already
+be installed. The following table shows the versions of MySQL that ship
+with Mac OS X Server versions.
+
+*Mac OS X Server       *MySQL Version*
+Version*               
+10.2-10.2.2            3.23.51
+10.2.3-10.2.6          3.23.53
+10.3                   4.0.14
+10.3.2                 4.0.16
+10.4.0                 4.1.10a
+
+
+
+
+
+
+mysql README:
+
+2.4.10 Installing MySQL on Mac OS X
+-----------------------------------
+
+You can install MySQL on Mac OS X 10.3.x (`Panther') or newer using a
+Mac OS X binary package in PKG format instead of the binary tarball
+distribution. Please note that older versions of Mac OS X (for example,
+10.1.x or 10.2.x) are *not* supported by this package.
+
+The package is located inside a disk image (`.dmg') file that you first
+need to mount by double-clicking its icon in the Finder. It should then
+mount the image and display its contents.
+
+To obtain MySQL, see *Note getting-mysql::.
+
+*Note*: Before proceeding with the installation, be sure to shut down
+all running MySQL server instances by either using the MySQL Manager
+Application (on Mac OS X Server) or via `mysqladmin shutdown' on the
+command line.
+
+To actually install the MySQL PKG file, double-click on the package
+icon. This launches the Mac OS X Package Installer, which guides you
+through the installation of MySQL.
+
+Due to a bug in the Mac OS X package installer, you may see this error
+message in the destination disk selection dialog:
+
+     You cannot install this software on this disk. (null)
+
+If this error occurs, simply click the `Go Back' button once to return
+to the previous screen. Then click `Continue' to advance to the
+destination disk selection again, and you should be able to choose the
+destination disk correctly. We have reported this bug to Apple and it is
+investigating this problem.
+
+The Mac OS X PKG of MySQL installs itself into
+`/usr/local/mysql-VERSION' and also installs a symbolic link,
+`/usr/local/mysql', that points to the new location. If a directory
+named `/usr/local/mysql' exists, it is renamed to
+`/usr/local/mysql.bak' first. Additionally, the installer creates the
+grant tables in the `mysql' database by executing `mysql_install_db'.
+
+The installation layout is similar to that of a `tar' file binary
+distribution; all MySQL binaries are located in the directory
+`/usr/local/mysql/bin'. The MySQL socket file is created as
+`/tmp/mysql.sock' by default. See *Note installation-layouts::.
+
+MySQL installation requires a Mac OS X user account named `mysql'. A
+user account with this name should exist by default on Mac OS X 10.2
+and up.
+
+If you are running Mac OS X Server, a version of MySQL should already
+be installed. The following table shows the versions of MySQL that ship
+with Mac OS X Server versions.
+
+*Mac OS X Server       *MySQL Version*
+Version*               
+10.2-10.2.2            3.23.51
+10.2.3-10.2.6          3.23.53
+10.3                   4.0.14
+10.3.2                 4.0.16
+10.4.0                 4.1.10a
+
+This manual section covers the installation of the official MySQL Mac
+OS X PKG only. Make sure to read Apple's help information about
+installing MySQL: Run the `Help View' application, select `Mac OS X
+Server' help, do a search for `MySQL,' and read the item entitled
+`Installing MySQL.'
+
+For preinstalled versions of MySQL on Mac OS X Server, note especially
+that you should start `mysqld' with `safe_mysqld' instead of
+`mysqld_safe' if MySQL is older than version 4.0.
+
+If you previously used Marc Liyanage's MySQL packages for Mac OS X from
+`http://www.entropy.ch', you can simply follow the update instructions
+for packages using the binary installation layout as given on his pages.
+
+If you are upgrading from Marc's 3.23.x versions or from the Mac OS X
+Server version of MySQL to the official MySQL PKG, you also need to
+convert the existing MySQL privilege tables to the current format,
+because some new security privileges have been added. See *Note
+mysql-upgrade::.
+
+If you want MySQL to start automatically during system startup, you
+also need to install the MySQL Startup Item. It is part of the Mac OS X
+installation disk images as a separate installation package. Simply
+double-click the `MySQLStartupItem.pkg' icon and follow the
+instructions to install it. The Startup Item need be installed only
+once. There is no need to install it each time you upgrade the MySQL
+package later.
+
+The Startup Item for MySQL is installed into
+`/Library/StartupItems/MySQLCOM'. (Before MySQL 4.1.2, the location was
+`/Library/StartupItems/MySQL', but that collided with the MySQL Startup
+Item installed by Mac OS X Server.) Startup Item installation adds a
+variable `MYSQLCOM=-YES-' to the system configuration file
+`/etc/hostconfig'. If you want to disable the automatic startup of
+MySQL, simply change this variable to `MYSQLCOM=-NO-'.
+
+On Mac OS X Server, the default MySQL installation bundled with the
+operating system uses the variable `MYSQL' in the `/etc/hostconfig'
+file. The Sun Microsystems, Inc. "Startup Item" installer disables
+this variable by setting it to `MYSQL=-NO-'. This avoids boot time
+conflicts with the `MYSQLCOM' variable used by the Sun Microsystems,
+Inc. "Startup Item". However, it does not shut down a running MySQL
+server. You should do that yourself.
+
+After the installation, you can start up MySQL by running the following
+commands in a terminal window. You must have administrator privileges
+to perform this task.
+
+If you have installed the Startup Item, use this command:
+
+     shell> sudo /Library/StartupItems/MySQLCOM/MySQLCOM start
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+If you don't use the Startup Item, enter the following command sequence:
+
+     shell> cd /usr/local/mysql
+     shell> sudo ./bin/mysqld_safe
+     (ENTER YOUR PASSWORD, IF NECESSARY)
+     (PRESS CONTROL-Z)
+     shell> bg
+     (PRESS CONTROL-D OR ENTER "EXIT" TO EXIT THE SHELL)
+
+You should be able to connect to the MySQL server, for example, by
+running `/usr/local/mysql/bin/mysql'.
+
+*Note*: The accounts that are listed in the MySQL grant tables
+initially have no passwords.  After starting the server, you should set
+up passwords for them using the instructions in *Note
+post-installation::.
+
+You might want to add aliases to your shell's resource file to make it
+easier to access commonly used programs such as `mysql' and
+`mysqladmin' from the command line. The syntax for `bash' is:
+
+     alias mysql=/usr/local/mysql/bin/mysql
+     alias mysqladmin=/usr/local/mysql/bin/mysqladmin
+
+For `tcsh', use:
+
+     alias mysql /usr/local/mysql/bin/mysql
+     alias mysqladmin /usr/local/mysql/bin/mysqladmin
+
+Even better, add `/usr/local/mysql/bin' to your `PATH' environment
+variable. You can do this by modifying the appropriate startup file for
+your shell. For more information, see *Note invoking-programs::.
+
+If you are upgrading an existing installation, note that installing a
+new MySQL PKG does not remove the directory of an older installation.
+Unfortunately, the Mac OS X Installer does not yet offer the
+functionality required to properly upgrade previously installed
+packages.
+
+
+NB: AFTER COPYING OVER DATABASE FILES FROM ONE MYSQL INSTALLATION TO
+ANOTHER, DON'T FORGET TO REMOVE OLD VERSIONS OF Package Receipt DIRECTORIES
+LOCATED AT:
+
+
+/Library/Receipts/mysql-VERSION.pkg
+
+
+To use your existing databases with the new installation, you'll need
+to copy the contents of the old data directory to the new data
+directory. Make sure that neither the old server nor the new one is
+running when you do this. After you have copied over the MySQL database
+files from the previous installation and have successfully started the
+new server, you should consider removing the old installation files to
+save disk space. Additionally, you should also remove older versions of
+the Package Receipt directories located in
+`/Library/Receipts/mysql-VERSION.pkg'.
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+FIXED www USER SO CAN RUN AS apache
+
+
+CREATE PASSWORD
+sudo passwd www
+a*
+
+THEN ADDED THIS ALIAS TO .bash_profile
+alias apache='sudo -u www bash'
+
+whoami
+   _www
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 22 13:51:16 EST 2010] SHOW HIDDEN LINUX FILESYSTEM ON OSX>
+
+
+
+Run this from the terminal. 
+# Display Hidden Files
+defaults write com.apple.Finder AppleShowAllFiles TRUE
+KillAll Finder
+
+The inverse of the first command will restore your default settings:
+
+defaults write com.apple.Finder AppleShowAllFiles FALSE
+KillAll Finder
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 22 13:51:16 EST 2010] INSTALL wget, perl AND mysql>
+
+
+
+
+0. ADD BASH PROFILE
+-------------------
+
+emacs ~/.bash_profile
+# .bash_profile
+# User specific aliases and functions
+
+#### ec2
+export PATH=/home/ec2/bin:$PATH
+export EC2_HOME=/home/ec2
+export JAVA_HOME=/usr
+export EC2_PRIVATE_KEY=/agua/home/admin/.keypairs/private.pem
+export EC2_CERT=/agua/home/admin/.keypairs/public.pem
+
+# DATE
+alias DATE='date'
+
+# FIX DOS LINE ENDINGS
+alias fle="perl -pi -e 's/\r//g' "
+alias fle2="perl -pi -e 's/\r/\n/g' "
+
+# turn on color file listing
+export CLICOLOR=1
+
+# ALIASES
+alias q='qstat'
+alias sqlite='sqlite3'
+alias mod='chmod 755 *'
+alias now='date "+DATE: %m/%d/%y%nTIME: %H:%M:%S"'
+alias psg='ps aux | grep'
+alias llhg='ls -alh | grep'
+alias llg='ls -al | grep'
+alias lg='ls | grep'
+alias xpl='chmod 755 *.pl *.cgi *.t'
+alias mq='mysql -u root -p'
+
+alias em='emacs -nw'
+alias me='emacs -nw'
+alias gobash='emacs -nw ~/.bash_profile'
+alias sobash='source ~/.bash_profile'
+alias er='tail -f -n 100 /var/log/httpd/error_log'
+alias myer='tail -100 /var/log/mysqld.log'
+alias html='cd /var/www/html'
+alias cgi='cd /var/www/cgi-bin'
+alias cl='clear; ls; pwd'
+alias apps='cd ~/base/apps'
+alias updb='updatedb'
+
+alias l='ls'
+alias df='df -ah'
+alias rm='rm -i'
+alias mv='mv -i'
+alias LL='ls -alh'
+alias ll='ls -alh'
+# -l = list view
+# -a = all views, even hidden
+# -h = human-readable sizes, e.g. 900B, 15K, 1.2MB
+
+# keeps pico from line wrapping
+alias pico="/usr/bin/pico -w"
+
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
+
+
+
+1. INSTALLED wget
+-----------------
+
+INSTRUCTIONS HERE:
+http://www.withoutink.com/terminal/how-to-install-wget-in-osx/
+
+DOWNLOADED FROM:
+http://ftp.gnu.org/gnu/wget/wget-latest.tar.gz
+
+DOWNLOADED TO:
+mkdir -p /root/base/apps/wget
+cd /root/base/apps/wget
+
+
+./configure
+make
+make test
+sudo make install
+
+    OK
+
+
+
+2. INSTALLED ACTIVESTATE PERL 5.12.2
+
+
+mkdir -p /root/base/apps/perl
+cd /root/base/apps/perl
+
+wget http://downloads.activestate.com/ActivePerl/releases/5.12.2.1203/ActivePerl-5.12.2.1203-darwin-9.8.0-294165.dmg
+
+    -rw-r--r--  1 root    admin  50279854 Dec 13 19:30 ActivePerl-5.12.2.1203-darwin-9.8.0-294165.dmg
+
+MOUNT dmg:
+
+cd /root/base/apps/perl
+hdiutil attach ./ActivePerl-5.12.2.1203-darwin-9.8.0-294165.dmg
+    
+    Checksumming Driver Descriptor Map (DDM : 0)…
+         Driver Descriptor Map (DDM : 0): verified   CRC32 $4D69D0B2
+    Checksumming Apple (Apple_partition_map : 1)…
+         Apple (Apple_partition_map : 1): verified   CRC32 $18BDFC4F
+    Checksumming disk image (Apple_HFS : 2)…
+    ................................................................................................
+              disk image (Apple_HFS : 2): verified   CRC32 $AE1DDF84
+    verified   CRC32 $C4336D66
+    /dev/disk1              Apple_partition_scheme         
+    /dev/disk1s1            Apple_partition_map            
+    /dev/disk1s2            Apple_HFS                       /Volumes/ActivePerl 5.12
+
+
+cd /Volumes/ActivePerl\ 5.12
+
+    -rw-------@  1 506            staff       12K Feb 24  2010 .DS_Store
+    d-wx-wx-wt@  3 506            staff      102B Jun 10  2010 .Trashes
+    -r--r--r--   1 victorandreev  staff      146K Jun 10  2010 .VolumeIcon.icns
+    drwxr-xr-x   3 506            staff      102B Feb 24  2010 .background
+    -rw-r--r--   1 506            staff        0B Feb 24  2010 .com.apple.timemachine.supported
+    drwx------   6 506            staff      204B Dec  9 08:24 .fseventsd
+    drwxr-xr-x   3 syoung         staff      102B Dec  9 08:24 ActivePerl-5.12.pkg
+    -r--r--r--   1 syoung         staff       18K Nov 25 17:40 License.rtf
+    -rw-r--r--   1 syoung         staff      7.5K Dec  9 08:22 RELEASE.txt
+
+
+
+RUN INSTALL
+
+cd /Volumes/ActivePerl\ 5.12
+installer -pkg ./ActivePerl-5.12.pkg -target /
+
+    installer: Package name is ActiveState ActivePerl 5.12.2 Build 1203
+    installer: Upgrading at base path /
+    installer: The upgrade was successful.
+
+
+UPDATE locate DATABASE:
+
+/usr/libexec/locate.updatedb
+
+    >>> WARNING
+    >>> Executing updatedb as root.  This WILL reveal all filenames
+    >>> on your machine to all login users, which is a security risk.
+
+locate 5.12.2
+    
+    /root/base/apps/perl/ActivePerl-5.12.2.1203-darwin-9.8.0-294165.dmg
+    /usr/local/ActivePerl-5.12/bin/perl5.12.2
+
+INSTALLED TO HERE:
+
+/usr/local/ActivePerl-5.12/bin/perl -v
+
+    This is perl 5, version 12, subversion 2 (v5.12.2) built for darwin-thread-multi-2level
+    (with 8 registered patches, see perl -V for more detail)
+
+
+
+UNMOUNT dmg:
+
+hdiutil detach /Volumes/ActivePerl\ 5.12
+
+    "disk1" unmounted.
+    "disk1" ejected.
+
+
+
+
+
+
+ADD TO PATH (perl 5.12.2 IS CALLED WITH 'perl')
+
+emacs ~/.bash_profile
+
+export PATH=/usr/local/ActivePerl-5.12/bin:$PATH
+export PATH=/usr/local/ActivePerl-5.12/site/bin:$PATH
+
+perl -v
+
+    This is perl 5, version 12, subversion 2 (v5.12.2) built for darwin-thread-multi-2level
+    (with 8 registered patches, see perl -V for more detail)
+
+NOTE THAT PERL 5.8.8 IS STILL PRESENT AT /usr/bin/perl
+
+/usr/bin/perl -v
+
+    This is perl, v5.8.8 built for darwin-thread-multi-2level
+    (with 4 registered patches, see perl -V for more detail)
+
+REMOVE PERL 5.8.8 AT /usr/bin/perl
+NB: PERL 5.8.8 STILL EXISTS AT /usr/bin/perl5.8.8
+
+rm -fr /usr/bin/perl
+cp /usr/local/ActivePerl-5.12/bin/perl /usr/bin/perl
+
+
+NOW /usr/bin/perl RUNS PERL 5.12.2:
+
+/usr/bin/perl -v
+
+    This is perl 5, version 12, subversion 2 (v5.12.2) built for darwin-thread-multi-2level
+    (with 8 registered patches, see perl -V for more detail)
+
+
+MODULE Moose IS INSTALLED IN PERL 5.12.2 BY DEFAULT:
+
+perl -e 'use Moose'
+    
+    OK
+
+
+
+
+NOTES
+-----
+
+
+ACTIVE PERL OSX Configuration
+http://docs.activestate.com/activeperl/5.12/install.html
+
+
+The Apple Installer package installs ActivePerl in /usr/local/ActivePerl-5.12. To run the perl interpreter and PPM package manager (without having to enter the full path), add /usr/local/ActivePerl-5.12/bin to your PATH environment variable. For example:
+
+    $ export PATH=/usr/local/ActivePerl-5.12/bin:$PATH
+    $ export PATH=/usr/local/ActivePerl-5.12/site/bin:$PATH
+  
+To permanently add the directory to your PATH, add it to the .profile or .bash_profile file in the user's home directory. For example:
+
+    PATH=/usr/local/ActivePerl-5.12/bin:$PATH
+    PATH=/usr/local/ActivePerl-5.12/site/bin:$PATH
+    export PATH
+    
+Alternatively, symbolic links to the binaries can be created in any bin directory currently in the PATH. For example:
+
+    PATH=/Users/<username>/bin:$PATH
+
+    $ ln -s /usr/local/ActivePerl-5.12/bin/perl /Users/<username>/bin/perl
+    $ ln -s /usr/local/ActivePerl-5.12/bin/ppm /Users/<username>/bin/ppm
+
+    
+Uninstalling ActivePerl on OS X
+
+To uninstall ActivePerl, run the uninstall script:
+
+    $ sudo /usr/local/ActivePerl-5.12/bin/ap-uninstall
+Removing ActivePerl will also remove perl modules manually installed using PPM.
+
+If neccessary, remove any symbolic links created during configuration. For example:
+
+    $ rm /Users/<username>/bin/perl
+
+
+
+
+

@@ -1,0 +1,2642 @@
+Notes-project49-lemmonlab.txt
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TOPHATstats.pl SCRIPT TO DO STATS:
+
+
+
+TOPHATstats.pl 
+--outputdir     Directory containing TOPHAT.pl chromosome subdirs
+--chromosomes   File containing one chromosome name and size (bp) per line
+
+
+
+PROBLEM WITH UNIQUE FILE?
+
+bash-3.2$ head /scratch/syoung/base/pipeline/bixby/run1/tophat/analysis16/unique.txt                bash-3.2$ grep -c ACAGGG /scratch/syoung/base/pipeline/bixby/run1/tophat/analysis16/duplicate.txt   21                                                                                                  bash-3.2$ grep -c ACAGGG /scratch/syoung/base/pipeline/bixby/run1/tophat/analysis16/duplicate.txt
+
+analysis16-232-stdout.txt  analysis16-366-stdout.txt
+[syoung@u04 analysis16]$ ll unique.txt 
+-rw-rw-rw- 1 syoung root 5.0G Apr 24 01:25 unique.txt
+
+[syoung@u04 analysis16]$ grep -c ACAGGG unique.txt 
+21
+
+
+grep -n ACAGGG unique.txt 
+
+SEQUENCE FILE LINE COUNTS:
+
+cd /nethome/bioinfo/data/sequence/labs/lemmon/run3
+cat line-counts.txt 
+    s_1_sequence.txt: 70714560
+    s_2_sequence.txt: 74147840
+    s_3_sequence.txt: 79167560
+    s_4_sequence.txt: 80710592
+    s_5_sequence.txt: 82656372
+    s_7_sequence.txt: 78859708
+    s_8_sequence.txt: 77141916
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+REDO MOUSE e41-2div
+
+
+RUN ON PEGASUS
+
+
+
+TRANSFER TO KRONOS /nethome/lembix/data/tophat/mm9/e41-2div
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 21 10:48:45 EDT 2010] CURRENT STORAGE IN /nethome/lembix: 366GB IN reads, ~400GB IN tophat>
+
+
+
+du -hs /nethome/lembix/data/reads/*
+
+    366G    reads
+
+du -hs /nethome/lembix/data/tophat/*
+
+    43G     drg0
+    39G     drg1
+    37G     drg3
+    18G     e27-16div
+    16G     e27-2div
+    16G     e31-16div
+    28G     e31-2div
+    172G    e41-2div
+
+
+STRANGELY HIGH DISC USAGE FOR e41-2div:
+
+du -hs /nethome/lembix/data/tophat/e41-2div/*
+
+    1.9G    chr1
+    7.8G    chr10
+    4.0G    chr11
+    3.5G    chr12
+    1.2G    chr13
+    32M     chr13_random
+    281M    chr14
+    376M    chr15
+    250M    chr16
+    8.2M    chr16_random
+    356M    chr17
+    29M     chr17_random
+    280M    chr18
+    240M    chr19
+    4.8G    chr1_random
+    7.1G    chr2
+    808M    chr3
+    13G     chr3_random
+    15G     chr4
+    13G     chr4_random
+    17G     chr5
+    13G     chr5_random
+    18G     chr6
+    13G     chr7
+    8.4G    chr7_random
+    13G     chr8
+    8.7G    chr8_random
+    7.9G    chr9
+    3.9G    chr9_random
+    12M     chrM
+    39M     chrUn_random
+    367M    chrX
+    32M     chrX_random
+    32M     chrY
+    34M     chrY_random
+
+
+WHICH IS VERY HIGH COMPARED TO e31-2div:
+
+du -hs /nethome/lembix/data/tophat/e31-2div/
+    
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr1
+    739M    /nethome/lembix/data/tophat/e31-2div/chr10
+    1.3G    /nethome/lembix/data/tophat/e31-2div/chr11
+    983M    /nethome/lembix/data/tophat/e31-2div/chr12
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr13
+    75M     /nethome/lembix/data/tophat/e31-2div/chr13_random
+    753M    /nethome/lembix/data/tophat/e31-2div/chr14
+    1023M   /nethome/lembix/data/tophat/e31-2div/chr15
+    669M    /nethome/lembix/data/tophat/e31-2div/chr16
+    9.5M    /nethome/lembix/data/tophat/e31-2div/chr16_random
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr17
+    65M     /nethome/lembix/data/tophat/e31-2div/chr17_random
+    752M    /nethome/lembix/data/tophat/e31-2div/chr18
+    650M    /nethome/lembix/data/tophat/e31-2div/chr19
+    67M     /nethome/lembix/data/tophat/e31-2div/chr1_random
+    1.3G    /nethome/lembix/data/tophat/e31-2div/chr2
+    928M    /nethome/lembix/data/tophat/e31-2div/chr3
+    984M    /nethome/lembix/data/tophat/e31-2div/chr3_random
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr4
+    48M     /nethome/lembix/data/tophat/e31-2div/chr4_random
+    1.3G    /nethome/lembix/data/tophat/e31-2div/chr5
+    55M     /nethome/lembix/data/tophat/e31-2div/chr5_random
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr6
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr7
+    38M     /nethome/lembix/data/tophat/e31-2div/chr7_random
+    942M    /nethome/lembix/data/tophat/e31-2div/chr8
+    59M     /nethome/lembix/data/tophat/e31-2div/chr8_random
+    1.1G    /nethome/lembix/data/tophat/e31-2div/chr9
+    36M     /nethome/lembix/data/tophat/e31-2div/chr9_random
+    21M     /nethome/lembix/data/tophat/e31-2div/chrM
+    79M     /nethome/lembix/data/tophat/e31-2div/chrUn_random
+    984M    /nethome/lembix/data/tophat/e31-2div/chrX
+    67M     /nethome/lembix/data/tophat/e31-2div/chrX_random
+    65M     /nethome/lembix/data/tophat/e31-2div/chrY
+    73M     /nethome/lembix/data/tophat/e31-2div/chrY_random
+    16K     /nethome/lembix/data/tophat/e31-2div/splitfiles
+    1.5M    /nethome/lembix/data/tophat/e31-2div/TOPHAT.out
+
+
+
+
+SOLUTION:
+
+REDO MOUSE e41-2div
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 21 10:48:45 EDT 2010] GET REFSEQ IDS AND GENE NAMES FOR knownGenes>
+
+
+
+
+dario:
+
+Let me explain better cause this might be useful for all of us (or maybe I was the only one ignorant about that), even when performing more Cufflinks analysis with different .gtf for different classes.
+
+In order to have a .gtf as Stuart showed us we access the Table page of Genome Browser
+
+http://genome.ucsc.edu/cgi-bin/hgTables?org=Mouse&db=mm9&hgsid=156394747&hgta_doMainPage=1
+
+In here we choose the clade, genome, assembly and so on. 
+Settings Stuart for this analysis (I suppose...) are:
+
+group: Genes and Gene Prediction Tracks
+track: USCS Genes
+table: knownGene
+Output format: all fields from selected table
+
+(I just name the fields that are of any interest to us)
+
+If on the last field you choose
+
+Output format: selected fields from primary and related tables
+
+And then you click on “get output”
+It will open a new page where you can choose what cloumns/fields you will get in the output from your table of interest (in this case the knownGene table). Moreover you will find the list of all the other possible tables existing. If you check one of it and click on “Allow selection from Checked Tables” it will open the fields list also from the new table you checked.
+
+Remember that in order to work the new tables must have at list one field in common with the principal one.
+
+Actually I found a comment on a bioinfo website suggesting to do this, and they were suggesting to cross the knownGene table with the refLink table to get useful IDs.
+
+Actually that’s what I did. Instead of running Cufflinks again, we might want to just cross the files we have now (.expr and .gtf) with the Ref tab delimited text I created. Still first we need the results for the alignement against the rat genome, I think.
+
+Whoever wants the Ref file just tell me.
+
+Dario
+
+
+On 4/13/10 8:00 AM, "Jessica Lerch-Haner" <JLHaner@med.miami.edu> wrote:
+Hi Stuart,
+ 
+I have a quick question.  
+ 
+The input files for Cufflinks are the transcripts.gtf file and .sam files. 
+ 
+Have you run Cufflinks on any of these files for Dr. Bixby’s samples yet to see what the Cufflink outputs look like?  
+ 
+Because right now the transcript.gtf and the transcripts.expr files from Tophat have RPKM values in them but nothing that allows us to identify what gene it corresponds too. (unless we upload it to the ucsc genome browser.)
+ 
+Thanks,
+Jessica
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr 19 03:13:11 EDT 2010] REDO ALL HIPPOCAMPAL SAMPLES WITH RAT REFERENCE>
+
+
+
+1. DOWNLOADED RAT4
+
+cd /nethome/bioinfo/data/sequence/chromosomes/rat/rn4
+
+ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/rn4.ebwt.zip
+unzip *
+
+
+2. RUN make_rn4.sh TO DOWNLOAD CHROMOSOMES 
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.2:$PATH
+chmod 755 make_rn4.sh
+./make_rn4.sh
+
+(DOWNLOADS FROM HERE: ftp://hgdownload.cse.ucsc.edu/goldenPath/rn4/chromosomes )
+
+
+3. BUILD INDEXES FOR EACH CHROMOSOME
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/bowtieIndex.pl \
+--inputdir /nethome/bioinfo/data/sequence/chromosomes/rat/rn4
+
+    0inputs+0outputs (0major+327228minor)pagefaults 0swaps
+    bowtieIndex.pl    Run time: 02:34:50
+    bowtieIndex.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/bowtieIndex.pl
+    bowtieIndex.pl    3:07AM, 19 April 2010
+    bowtieIndex.pl    ****************************************
+
+
+NB: NO Y CHROMOSOME IN THE DISTRIBUTION HERE:
+ftp://hgdownload.cse.ucsc.edu/goldenPath/rn4/chromosomes
+
+
+
+4. CREATE <in.ref_list> *fa.fai FILE FOR CONVERTING SAM TO BAM
+
+screen -S faidx
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/bowtieRefList.pl \
+--inputdir /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/samtools \
+--queue large
+
+
+
+
+5. RUN TOPHAT AND CUFFLINKS
+
+
+e31-2div
+    
+    Tophat::run    10-04-25 17:28:57        Completed cufflinks
+    TOPHAT.pl    Run time: 03:39:49
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    5:28PM, 25 April 2010
+    TOPHAT.pl    ****************************************
+
+e41-2div
+
+    FINISHED RUNNING CUFFLINKS
+    Use of uninitialized value in concatenation (.) or string at /nethome/bioinfo/apps/agua/0.4/bin/apps/../../lib/TOPHAT.pm line 1639.
+    Tophat::run    10-04-25 20:59:57        Completed cufflinks
+    TOPHAT.pl    Run time: 03:30:59
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    8:59PM, 25 April 2010
+    TOPHAT.pl    ****************************************
+
+
+
+
+#### EMACS 
+#### RUN 1: e31-2div AND e41-2div (RAT)
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/run1.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/run1.sh
+
+
+#!/bin/sh
+
+#### RUN 1: e31-2div AND e41-2div (RAT)
+
+#### CLEAN FOR FIRST SAMPLE, NOT FOR SUBSEQUENT SAMPLES
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e31-2div
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e31-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run1/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e31-2div \
+--label e31-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+--clean \
+&> /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e31-2div/TOPHAT.out
+
+echo "Completed e31-2div";
+echo `date`;
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e41-2div
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e41-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_8_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e41-2div \
+--label e41-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e41-2div/TOPHAT.out
+
+echo "Completed e41-2div";
+echo `date`;
+
+##### END OF SCRIPT
+
+
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/run1.sh
+
+screen -S run1-tophat
+
+/scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/run1.sh
+
+
+
+RUNNING Sun Apr 18 22:42:11 EDT 2010
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div/TOPHAT.out
+
+    Tophat::run    10-04-18 23:06:29        Completed cufflinks
+    TOPHAT.pl    Run time: 00:24:43
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:06PM, 18 April 2010
+    TOPHAT.pl    ****************************************
+    
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div/TOPHAT.out
+    
+    Tophat::run    10-04-19 00:07:32        Completed cufflinks
+    TOPHAT.pl    Run time: 00:21:09
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    0:07AM, 19 April 2010
+    TOPHAT.pl    ****************************************    
+
+COMPLETED
+
+    Completed e31-2div
+    Sun Apr 18 23:06:29 EDT 2010
+
+    Completed e41-2div
+    Mon Apr 19 00:07:32 EDT 2010
+
+
+COPY TO KRONOS
+
+screen -S run1-e31
+mkdir -p /nethome/lembix/data/tophat/rn4/e31-2div
+cd /nethome/lembix/data/tophat/rn4/e31-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e31-2div .
+
+
+screen -S run1-e41
+mkdir -p /nethome/lembix/data/tophat/rn4/e41-2div
+cd /nethome/lembix/data/tophat/rn4/e41-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e41-2div .
+
+
+
+
+
+RUN 3 : drg1, drg0 AND e27-2div (RERUN CHROMOSOME 3)
+===================================================
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3.sh
+
+
+#!/bin/sh
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg1
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg1
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_2_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg1 \
+--label drg1 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg1/TOPHAT.out
+
+echo "Completed drg1";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg0
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg0
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg0 \
+--label drg0 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg0/TOPHAT.out
+
+echo "Completed drg0";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_7_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div \
+--label e27-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div/TOPHAT.out
+
+echo "Completed e27-2div";
+echo `date`;
+#### END 
+
+
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3.sh
+
+/scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3.sh
+
+
+
+
+
+
+
+
+Completed drg1
+Mon Apr 26 07:43:17 EDT 2010
+Completed drg0
+Mon Apr 26 11:24:11 EDT 2010
+
+
+e27-2div RUN DIED DUE TO CLUSTER PROBLEM???
+
+    TOPHAT.out FILE CONTAINS BINARY DATA AT BEGINNING
+    
+    NO CHROMOSOME RUNS CARRIED OUT.
+
+
+
+RERAN e27-2div
+
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3-e27-2div.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3-e27-2div.sh
+
+
+#!/bin/sh
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_7_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div \
+--label e27-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/e27-2div/TOPHAT.out
+
+echo "Completed e27-2div";
+echo `date`;
+#### END 
+
+
+screen -S e27-2div
+
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3-e27-2div.sh
+
+/scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/run3-e27-2div.sh
+
+
+
+    Completed e27-2div
+    Thu Apr 29 15:03:07 EDT 2010
+
+
+ON KRONOS:
+
+screen -S scp-drg1
+mkdir -p /nethome/lembix/data/tophat/rn4/drg1
+cd /nethome/lembix/data/tophat/rn4/drg1
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg1 .
+
+
+screen -S scp-drg0
+mkdir -p /nethome/lembix/data/tophat/rn4/drg0
+cd /nethome/lembix/data/tophat/rn4/drg0
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/rn4/drg0 .
+
+
+
+
+
+#### RUN 4: drg3, e27-16div AND e31-16div 
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+#!/bin/sh
+
+##### drg3
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_2_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/drg3 \
+--label drg3 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3/TOPHAT.out
+
+echo "Completed drg3";
+echo `date`;
+
+##### e27-16div
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4/e27-16div \
+--label e27-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div/TOPHAT.out
+
+echo "Completed e27-16div";
+echo `date`;
+
+##### e31-16div
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/cufflinks/rn4-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/rat/rn4/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/rn4//e31-16div \
+--label e31-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species rat \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div/TOPHAT.out
+
+echo "Completed e31-16div";
+echo `date`;
+
+######## END OF SCRIPT
+
+
+screen -S lemmon-run4
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+/scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run4/tophat/*/TOPHAT.out
+
+
+
+
+RUNNING Fri Apr 30 05:54:16 EDT 2010
+
+
+
+Completed drg3
+Fri Apr 30 09:15:07 EDT 2010
+
+Completed e27-16div
+Fri Apr 30 14:38:10 EDT 2010
+
+Completed e31-16div
+Fri Apr 30 15:26:54 EDT 2010
+
+
+
+
+COPY FROM PEGASUS TO KRONOS
+===========================
+
+RUN 3 : drg1, drg0 AND e27-2div
+
+mkdir -p /nethome/lembix/data/tophat/drg1
+cd /nethome/lembix/data/tophat/drg1
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1/chr3 .
+
+mkdir -p /nethome/lembix/data/tophat/drg0
+cd /nethome/lembix/data/tophat/drg0
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0/chr3 .
+
+mkdir -p /nethome/lembix/data/tophat/e27-2div
+cd /nethome/lembix/data/tophat/e27-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div/chr3 .
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr 18 21:46:43 EDT 2010] REDO CHROMOSOME 3 FOR MOUSE SAMPLES>
+
+
+
+
+RUN 1: e31-2div AND e41-2div (RERUN CHROMOSOME 3)
+=================================================
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat/
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run1/tophat/run1.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run1/tophat/run1.sh
+#!/bin/sh
+
+####### CLEAN FOR FIRST SAMPLE, NOT FOR SUBSEQUENT SAMPLES
+###perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+###--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run1/s_7_sequence.txt \
+###--params "--solexa1.3-quals" \
+###--distance 200 \
+###--queue "-q large" \
+###--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+###--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+###--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div \
+###--label e31-2div \
+###--keep \
+###--cluster LSF \
+###--cpus 4 \
+###--maxjobs 5000 \
+###--species mouse \
+###--clean \
+###&> /scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div/TOPHAT.out
+###
+###echo "Completed e31-2div";
+###echo `date`;
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_8_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div \
+--label e41-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div/TOPHAT.out
+
+echo "Completed e41-2div";
+echo `date`;
+
+##### END OF SCRIPT
+
+
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run1/tophat/run1.sh
+
+screen -S run1-tophat
+/scratch/syoung/base/pipeline/lemmon/run1/tophat/run1.sh
+
+
+
+
+
+RUNNING Sun Apr 18 22:42:11 EDT 2010
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div/TOPHAT.out
+
+    Tophat::run    10-04-18 23:06:29        Completed cufflinks
+    TOPHAT.pl    Run time: 00:24:43
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:06PM, 18 April 2010
+    TOPHAT.pl    ****************************************
+    
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div/TOPHAT.out
+    
+    Tophat::run    10-04-19 00:07:32        Completed cufflinks
+    TOPHAT.pl    Run time: 00:21:09
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    0:07AM, 19 April 2010
+    TOPHAT.pl    ****************************************    
+
+COMPLETED
+
+    Completed e31-2div
+    Sun Apr 18 23:06:29 EDT 2010
+
+    Completed e41-2div
+    Mon Apr 19 00:07:32 EDT 2010
+
+
+
+ll /scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div/chr3
+    
+    -rw-r--r--  1 syoung root  64M Apr 18 22:56 accepted_hits.bam
+    -rw-rw-rw-  1 syoung root 323M Apr 18 22:56 accepted_hits.sam
+    -rw-r--r--  1 syoung root  64M Apr 18 22:55 accepted_hits.unsorted.bam
+    -rwxrwxrwx  1 syoung root  991 Apr 18 22:56 bam2sam-chr3.sh
+    -rw-rw-rw-  1 syoung root  11K Apr 18 22:56 bam2sam-chr3-stdout.txt
+    -rwxrwxrwx  1 syoung root 2.0K Apr 18 22:37 chr3.sh
+    -rwxrwxrwx  1 syoung root 1.2K Apr 18 22:56 cufflinks-chr3.sh
+    -rw-rw-rw-  1 syoung root 3.7M Apr 18 22:57 cufflinks-chr3-stdout.txt
+    -rw-rw-rw-  1 syoung root  71K Apr 18 22:57 genes.expr
+    -rwxrwxrwx  1 syoung root  29K Apr 18 22:47 mergebam-chr3.sh
+    -rw-rw-rw-  1 syoung root  33K Apr 18 22:56 mergebam-chr3-stdout.txt
+    -rwxrwxrwx  1 syoung root  12K Apr 18 22:47 sam2bam-chr3.sh
+    -rw-rw-rw-  1 syoung root  13K Apr 18 22:47 sam2bam-chr3-stdout.txt
+    -rw-rw-rw-  1 syoung root  94K Apr 18 22:57 transcripts.expr
+    -rw-rw-rw-  1 syoung root 2.5M Apr 18 22:57 transcripts.gtf
+
+ll /scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div/chr3
+    
+    -rw-r--r--  1 syoung root  58M Apr 18 23:57 accepted_hits.bam
+    -rw-rw-rw-  1 syoung root 277M Apr 18 23:57 accepted_hits.sam
+    -rw-r--r--  1 syoung root  58M Apr 18 23:56 accepted_hits.unsorted.bam
+    -rwxrwxrwx  1 syoung root  991 Apr 18 23:57 bam2sam-chr3.sh
+    -rw-rw-rw-  1 syoung root  11K Apr 18 23:57 bam2sam-chr3-stdout.txt
+    -rwxrwxrwx  1 syoung root 2.0K Apr 18 23:37 chr3.sh
+    -rwxrwxrwx  1 syoung root 1.2K Apr 18 23:57 cufflinks-chr3.sh
+    -rw-rw-rw-  1 syoung root 2.1M Apr 18 23:58 cufflinks-chr3-stdout.txt
+    -rw-rw-rw-  1 syoung root  71K Apr 18 23:58 genes.expr
+    -rwxrwxrwx  1 syoung root  29K Apr 18 23:49 mergebam-chr3.sh
+    -rw-rw-rw-  1 syoung root  57K Apr 18 23:57 mergebam-chr3-stdout.txt
+    -rwxrwxrwx  1 syoung root  12K Apr 18 23:47 sam2bam-chr3.sh
+    -rw-rw-rw-  1 syoung root  14K Apr 18 23:48 sam2bam-chr3-stdout.txt
+    -rw-rw-rw-  1 syoung root  94K Apr 18 23:58 transcripts.expr
+    -rw-rw-rw-  1 syoung root 2.5M Apr 18 23:58 transcripts.gtf
+
+
+
+COPY TO KRONOS
+
+screen -r run1-e31
+cd /nethome/lembix/data/tophat/e31-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run1/tophat/e31-2div/chr3 .
+
+screen -r run1-e41
+cd /nethome/lembix/data/tophat/e41-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run1/tophat/e41-2div/chr3 .
+
+
+
+
+
+RUN 3 : drg1, drg0 AND e27-2div(RERUN CHROMOSOME 3)
+===================================================
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run3/tophat/run3.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run3/tophat/run3.sh
+#!/bin/sh
+
+#mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1/
+#cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1
+#
+#perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+#--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_2_sequence.txt \
+#--params "--solexa1.3-quals" \
+#--distance 200 \
+#--queue "-q large" \
+#--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+#--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+#--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1/ \
+#--label drg1 \
+#--keep \
+#--cluster LSF \
+#--cpus 4 \
+#--maxjobs 5000 \
+#--species mouse \
+#&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1/TOPHAT.out
+#
+#echo "Completed drg1";
+#echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0 \
+--label drg0 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0/TOPHAT.out
+
+echo "Completed drg0";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_7_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div \
+--label e27-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div/TOPHAT.out
+
+echo "Completed e27-2div";
+echo `date`;
+
+######### END OF SCRIPT
+
+
+screen -S lemmon-run3
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run3/tophat/run3.sh
+/scratch/syoung/base/pipeline/lemmon/run3/tophat/run3.sh
+
+
+
+Completed drg0
+Mon Apr 19 02:12:06 EDT 2010
+Completed e27-2div
+Mon Apr 19 02:34:51 EDT 2010
+
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run3/tophat/*/TOPHAT.out
+
+
+ls -al /scratch/syoung/base/pipeline/lemmon/run3/tophat/*/chr3/*
+
+OK
+
+
+
+COPY TO KRONOS
+==============
+
+
+
+RUN 3 : drg1, drg0 AND e27-2div(RERUN CHROMOSOME 3)
+
+screen -S run3-drg1
+mkdir -p /nethome/lembix/data/tophat/drg1
+cd /nethome/lembix/data/tophat/drg1
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/drg1/chr3 .
+
+
+screen -S run3-drg0
+mkdir -p /nethome/lembix/data/tophat/drg0
+cd /nethome/lembix/data/tophat/drg0
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/drg0/chr3 .
+
+
+screen -S run3-e27-2div
+mkdir -p /nethome/lembix/data/tophat/e27-2div
+cd /nethome/lembix/data/tophat/e27-2div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run3/tophat/e27-2div/chr3 .
+
+
+
+
+RUN 4: drg3, e27-16div AND e31-16div (RERUN CHROMOSOME 3)
+=========================================================
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+#!/bin/sh
+
+##### drg3
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_2_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3 \
+--label drg3 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3/TOPHAT.out
+
+echo "Completed drg3";
+echo `date`;
+
+##### e27-16div
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div \
+--label e27-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div/TOPHAT.out
+
+echo "Completed e27-16div";
+echo `date`;
+
+##### e31-16div
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div
+cd /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div \
+--label e31-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+&> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div/TOPHAT.out
+
+echo "Completed e27-16div";
+echo `date`;
+
+######## END OF SCRIPT
+
+
+screen -S lemmon-run4
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+/scratch/syoung/base/pipeline/lemmon/run4/tophat/run4.sh
+
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run4/tophat/*/TOPHAT.out
+
+
+    ==> /scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3/TOPHAT.out <==
+    Tophat::run    10-04-18 23:14:10        Completed cufflinks
+    TOPHAT.pl    Run time: 00:00:37
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:14PM, 18 April 2010
+    TOPHAT.pl    ****************************************
+        
+    ==> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div/TOPHAT.out <==
+    Tophat::run    10-04-18 23:14:58        Completed cufflinks
+    TOPHAT.pl    Run time: 00:00:47
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:14PM, 18 April 2010
+    TOPHAT.pl    ****************************************
+
+    ==> /scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div/TOPHAT.out <==
+    Tophat::run    10-04-18 23:15:31        Completed cufflinks
+    TOPHAT.pl    Run time: 00:00:32
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:15PM, 18 April 2010
+    TOPHAT.pl    ****************************************
+
+
+
+Completed drg3
+Mon Apr 19 01:28:36 EDT 2010
+
+Completed e27-16div
+Mon Apr 19 01:50:34 EDT 2010
+
+Completed e27-16div
+Mon Apr 19 02:08:54 EDT 2010
+
+
+
+COPY TO KRONOS
+==============
+
+screen -S run4-drg3
+mkdir -p /nethome/lembix/data/tophat/drg3
+cd /nethome/lembix/data/tophat/drg3
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run4/tophat/drg3/chr* .
+
+
+
+**** mistake copying:
+MOVE LOOSE FILES IN 
+/nethome/lembix/data/tophat/
+TO
+/nethome/lembix/data/tophat/drg3
+***
+
+
+
+
+screen -S run4-e27-16div
+mkdir -p /nethome/lembix/data/tophat/e27-16div
+cd /nethome/lembix/data/tophat/e27-16div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run4/tophat/e27-16div/chr* .
+
+screen -S run4-e31-16div
+mkdir -p /nethome/lembix/data/tophat/e31-16div
+cd /nethome/lembix/data/tophat/e31-16div
+scp -r syoung@pegasus.ccs.miami.edu:/scratch/syoung/base/pipeline/lemmon/run4/tophat/e31-16div/chr* .
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Apr 15 12:23:55 EDT 2010] LEMMONLAB DATA - md5sum SEQUENCES AND ANALYSES>
+
+
+
+
+SEQUENCES
+=========
+
+cd /nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+md5sum *sequence.txt > md5sum.txt
+
+/nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+[root@u01 GERALD_12-02-2010_jcabrera1]# cat md5sum.txt 
+725381ef1dd0a6ba5fc01bb23772cc1f  s_5_sequence.txt
+fd2cfba24e36ee0098d1c79e9c05cb0b  s_6_sequence.txt
+
+
+cd /nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+md5sum *sequence.txt > md5sum.txt
+    
+    /nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+    [root@u01 GERALD_12-02-2010_jcabrera1.2]# cat md5sum.txt 
+    725381ef1dd0a6ba5fc01bb23772cc1f  s_5_sequence.txt
+    3518d84f3df4c93b81c6efd470894071  s_7_sequence.txt
+
+cd /nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.3
+md5sum *sequence.txt > md5sum.txt
+    
+    /nethome/lembix/data/reads/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.3
+    [root@u01 GERALD_12-02-2010_jcabrera1.3]# cat md5sum.txt 
+    725381ef1dd0a6ba5fc01bb23772cc1f  s_5_sequence.txt
+    e5c27abda66181e9fcfeb3a6acfd3eba  s_8_sequence.txt
+
+
+cd /nethome/lembix/data/reads/100121_HWUSI-EAS1687R_0003_616GJAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+md5sum *sequence.txt > md5sum.txt
+
+    /nethome/lembix/data/reads/100121_HWUSI-EAS1687R_0003_616GJAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+    [root@u01 GERALD_12-02-2010_jcabrera1.2]# cat  md5sum.txt
+    ee85585c3e257e98940826545b506ef2  s_1_sequence.txt
+    7f7439e7582c9c4b450273fd69ac62b2  s_2_sequence.txt
+    8240c2e9bbc793906457bfda7e4dad90  s_3_sequence.txt
+    b96961cc3c2b14d95510e5341196c524  s_4_sequence.txt
+    1c86b0448fbc716dce50fd78025e0368  s_5_sequence.txt
+    d804bbb58a698b11d50e6fbc6f4793cb  s_7_sequence.txt
+    f65b24368eb71b6829c5e3aef1647d8e  s_8_sequence.txt
+
+
+
+cd /nethome/lembix/data/reads/100126_HWI-EAS185_0007_61F1BAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+md5sum *sequence.txt > md5sum.txt
+
+    /nethome/lembix/data/reads/100126_HWI-EAS185_0007_61F1BAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+    [root@u01 GERALD_12-02-2010_jcabrera1]# cat md5sum.txt 
+    d937cf6e64cd43007b75d178b018b2e2  s_4_sequence.txt
+    92021f1eb6699dceb60913bba9eba493  s_5_sequence.tx
+
+
+
+
+[lembix@u01 data]$ ls 1001*/Data/Intensities/BaseCalls/*
+100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1:
+config.txt         lines.txt         s_3_finished.txt        s_5_finished.txt     s_6_1_eland_query.txt   s_6_extended_contam.txt  s_6_score_files.txt  Summary.xsl
+config.xml         Makefile          s_4_finished.txt        s_5_frag.txt         s_6_calsaf.txt          s_6_extended_splice.txt  s_6_sequence.txt     Temp
+Error.htm          md5sum.txt        s_5_1_eland_query.txt   s_5_genomesize.xml   s_6_eland_contam.txt    s_6_finished.txt         s_6_sorted.txt       tiles.txt
+finished.txt       Perfect.htm       s_5_calsaf.txt          s_5_qcalreport.txt   s_6_eland_extended.txt  s_6_frag_contam.txt      s_7_finished.txt
+FullError.htm      Plots             s_5_eland_extended.txt  s_5_score_files.txt  s_6_eland_multi.txt     s_6_frag_splice.txt      s_8_finished.txt
+FullPerfect.htm    s_1_finished.txt  s_5_eland_multi.txt     s_5_sequence.txt     s_6_eland_splice.txt    s_6_frag.txt             Summary.htm
+GeraldSummary.xml  s_2_finished.txt  s_5_export.txt          s_5_sorted.txt       s_6_export.txt          s_6_qcalreport.txt       Summary.xml
+
+100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2:
+config.txt       GeraldSummary.xml  s_3_finished.txt        s_5_export.txt       s_5_sequence.txt       s_7_eland_extended.txt   s_7_finished.txt     s_7_sequence.txt  Temp
+config.xml       Makefile           s_4_finished.txt        s_5_finished.txt     s_5_sorted.txt         s_7_eland_multi.txt      s_7_frag_contam.txt  s_7_sorted.txt    tiles.txt
+Error.htm        Perfect.htm        s_5_1_eland_query.txt   s_5_frag.txt         s_6_finished.txt       s_7_eland_splice.txt     s_7_frag_splice.txt  s_8_finished.txt
+finished.txt     Plots              s_5_calsaf.txt          s_5_genomesize.xml   s_7_1_eland_query.txt  s_7_export.txt           s_7_frag.txt         Summary.htm
+FullError.htm    s_1_finished.txt   s_5_eland_extended.txt  s_5_qcalreport.txt   s_7_calsaf.txt         s_7_extended_contam.txt  s_7_qcalreport.txt   Summary.xml
+FullPerfect.htm  s_2_finished.txt   s_5_eland_multi.txt     s_5_score_files.txt  s_7_eland_contam.txt   s_7_extended_splice.txt  s_7_score_files.txt  Summary.xsl
+
+100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.3:
+config.txt         Makefile          s_5_1_eland_query.txt   s_5_genomesize.xml   s_8_1_eland_query.txt   s_8_extended_contam.txt  s_8_score_files.txt  tiles.txt
+config.xml         Perfect.htm       s_5_calsaf.txt          s_5_qcalreport.txt   s_8_calsaf.txt          s_8_extended_splice.txt  s_8_sequence.txt
+Error.htm          Plots             s_5_eland_extended.txt  s_5_score_files.txt  s_8_eland_contam.txt    s_8_finished.txt         s_8_sorted.txt
+finished.txt       s_1_finished.txt  s_5_eland_multi.txt     s_5_sequence.txt     s_8_eland_extended.txt  s_8_frag_contam.txt      Summary.htm
+FullError.htm      s_2_finished.txt  s_5_export.txt          s_5_sorted.txt       s_8_eland_multi.txt     s_8_frag_splice.txt      Summary.xml
+FullPerfect.htm    s_3_finished.txt  s_5_finished.txt        s_6_finished.txt     s_8_eland_splice.txt    s_8_frag.txt             Summary.xsl
+GeraldSummary.xml  s_4_finished.txt  s_5_frag.txt            s_7_finished.txt     s_8_export.txt          s_8_qcalreport.txt       Temp
+
+100121_HWUSI-EAS1687R_0003_616GJAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2:
+config.txt               s_1_extended_splice.txt  s_2_frag_contam.txt      s_3_frag.txt             s_4_score_files.txt     s_7_eland_extended.txt   s_8_eland_splice.txt
+config.xml               s_1_finished.txt         s_2_frag_splice.txt      s_3_qcalreport.txt       s_4_sequence.txt        s_7_eland_multi.txt      s_8_export.txt
+Error.htm                s_1_frag_contam.txt      s_2_frag.txt             s_3_score_files.txt      s_4_sorted.txt          s_7_eland_splice.txt     s_8_extended_contam.txt
+finished.txt             s_1_frag_splice.txt      s_2_qcalreport.txt       s_3_sequence.txt         s_5_1_eland_query.txt   s_7_export.txt           s_8_extended_splice.txt
+FullError.htm            s_1_frag.txt             s_2_score_files.txt      s_3_sorted.txt           s_5_calsaf.txt          s_7_extended_contam.txt  s_8_finished.txt
+FullPerfect.htm          s_1_qcalreport.txt       s_2_sequence.txt         s_4_1_eland_query.txt    s_5_eland_extended.txt  s_7_extended_splice.txt  s_8_frag_contam.txt
+GeraldSummary.xml        s_1_score_files.txt      s_2_sorted.txt           s_4_calsaf.txt           s_5_eland_multi.txt     s_7_finished.txt         s_8_frag_splice.txt
+Makefile                 s_1_sequence.txt         s_3_1_eland_query.txt    s_4_eland_contam.txt     s_5_export.txt          s_7_frag_contam.txt      s_8_frag.txt
+md5sum.txt               s_1_sorted.txt           s_3_calsaf.txt           s_4_eland_extended.txt   s_5_finished.txt        s_7_frag_splice.txt      s_8_qcalreport.txt
+Perfect.htm              s_2_1_eland_query.txt    s_3_eland_contam.txt     s_4_eland_multi.txt      s_5_frag.txt            s_7_frag.txt             s_8_score_files.txt
+Plots                    s_2_calsaf.txt           s_3_eland_extended.txt   s_4_eland_splice.txt     s_5_genomesize.xml      s_7_qcalreport.txt       s_8_sequence.txt
+s_1_1_eland_query.txt    s_2_eland_contam.txt     s_3_eland_multi.txt      s_4_export.txt           s_5_qcalreport.txt      s_7_score_files.txt      s_8_sorted.txt
+s_1_calsaf.txt           s_2_eland_extended.txt   s_3_eland_splice.txt     s_4_extended_contam.txt  s_5_score_files.txt     s_7_sequence.txt         Summary.htm
+s_1_eland_contam.txt     s_2_eland_multi.txt      s_3_export.txt           s_4_extended_splice.txt  s_5_sequence.txt        s_7_sorted.txt           Summary.xml
+s_1_eland_extended.txt   s_2_eland_splice.txt     s_3_extended_contam.txt  s_4_finished.txt         s_5_sorted.txt          s_8_1_eland_query.txt    Summary.xsl
+s_1_eland_multi.txt      s_2_export.txt           s_3_extended_splice.txt  s_4_frag_contam.txt      s_6_finished.txt        s_8_calsaf.txt
+s_1_eland_splice.txt     s_2_extended_contam.txt  s_3_finished.txt         s_4_frag_splice.txt      s_7_1_eland_query.txt   s_8_eland_contam.txt
+s_1_export.txt           s_2_extended_splice.txt  s_3_frag_contam.txt      s_4_frag.txt             s_7_calsaf.txt          s_8_eland_extended.txt
+s_1_extended_contam.txt  s_2_finished.txt         s_3_frag_splice.txt      s_4_qcalreport.txt       s_7_eland_contam.txt    s_8_eland_multi.txt
+
+100126_HWI-EAS185_0007_61F1BAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1:
+FullPerfect.htm  s_2_eland_extended.txt   s_3_1_eland_query.txt  s_4_sequence.txt        s_5_sequence.txt         s_6_finished.txt     s_8_extended_contam.txt
+md5sum.txt       s_2_extended_splice.txt  s_3_eland_splice.txt   s_5_eland_extended.txt  s_5_sorted.txt           s_6_frag_contam.txt  s_8_frag_splice.txt
+s_1_frag.txt     s_2_frag_contam.txt      s_3_score_files.txt    s_5_export.txt          s_6_export.txt           s_6_sorted.txt
+s_2_calsaf.txt   s_2_frag.txt             s_4_eland_contam.txt   s_5_genomesize.xml      s_6_extended_contam.txt  s_7_calsaf.txt
+[lembix@u01 data]$
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr 14 15:01:13 EDT 201] LEMMON LAB TRANSFER DISC QUOTA EXCEEDED>
+
+
+
+bash-3.2$ scp -r run3 syoung@kronos-x.ccs.miami.edu:/nethome/bioinfo/data/sequence/labs/lemmon
+
+        ...    
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/4: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/22: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/10: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/29: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/1: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/33: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr5_random/31: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/36: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/9: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr7_random: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr13: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chrX_random: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/4: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/22: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chrM: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/10: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/29: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/1: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chrUn_random: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chrY: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr4: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/33: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr11: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/chr17_random: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1/31: Disk quota exceeded
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/e27-2div: Disk quota exceeded
+        drg1+drg0+e27-2div.sh                                                    100% 2580     2.5KB/s   00:00
+        scp: /nethome/bioinfo/data/sequence/labs/lemmon/run3/tophat/drg1+drg0+e27-2div.sh: Disk quota exceeded
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  7 02:19:51 EDT 2010] RUN 1 TOPHAT ANALYSIS >
+
+
+
+
+
+SINGLE LANE FROM RUN 4:
+
+Run 4 (7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100126_61F1BAAXX
+
+COMPLETED drg3, e27-16div, e31-16div
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #3 (VL) 	8 pM 	
+2 	DRG #3 (VL) 	8:00 PM	
+3 	E27-16DIV (VL) 	8:00 PM	
+4 	E27-16DIV(VL)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	E31-16DIV (VL)  	8:00 PM	
+7 	E31-16DIV(VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	.       <======================= THIS LANE
+
+
+AND THE GOOD LANES FROM RUN 1:
+
+Run 1 (3 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100106_611F3AAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	E27-2DIV (VL) partially failed-oil	8 pM 	
+2 	E27-2DIV(VL) failed-oil	8:00 PM	
+3 	E27-16DIV(VL)- failed-oil	8:00 PM	
+4 	E27-16DIV(VL) failed-oil	8:00 PM	
+5 	PhiX 	8 pM 	
+6 	E31-2DIV (VL)	8:00 PM	
+7 	E31-2DIV (VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	        <======================= AND THIS LANE
+
+
+E31-2DIV
+
+E41-2DIV
+
+
+SHELL SCRIPT RUNS ALL
+=====================
+
+#!/bin/sh
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/
+
+rm -fr /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div+e41-2div.sh
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run1/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div \
+--label e31-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div/
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run1/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div \
+--label e31-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div/TOPHAT.out
+
+echo "Completed e31-2div";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e41-2div
+cd /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e41-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run1/s_8_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e41-2div \
+--label e41-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e41-2div/TOPHAT.out
+
+echo "Completed e41-2div";
+echo `date`;
+
+
+
+
+RAN SHELL SCRIPT
+================
+
+screen -S lemmon-run1
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div+e41-2div.sh
+/scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div+e41-2div.sh
+
+
+STARTED RUNNING Wed Apr  7 02:19:51 EDT 2010
+
+
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e31-2div/TOPHAT.out
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run1/tophat-multi/e41-2div/TOPHAT.out
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr  5 19:30:06 EDT 2010] RUNS COMPLETED SO FAR>
+
+
+
+
+
+Run 4 (7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100126_61F1BAAXX
+
+COMPLETED drg3, e27-16div, e31-16div
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #3 (VL) 	8 pM 	
+2 	DRG #3 (VL) 	8:00 PM	
+3 	E27-16DIV (VL) 	8:00 PM	
+4 	E27-16DIV(VL)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	E31-16DIV (VL)  	8:00 PM	
+7 	E31-16DIV(VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	.
+
+
+Run 3 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100121_616GJAAXX 
+
+COMPLETED drg1
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #1 (Lemmon) 	6 pM 	
+2 	DRG #1 (Lemmon) 	8:00 PM	
+3 	DRG 9-09 (Lemmon) 	6:00 PM	
+4 	DRG 9-09(Lemmon)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	CSPG 9.3.09 (Bixby) 	8:00 PM	
+7 	E27-2DIV(Lemmon)	8:00 PM	
+8 	E27-2DIV (Lemmon)	8:00 PM	
+
+
+Run 1 (3 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100106_611F3AAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	E27-2DIV (VL) partially failed-oil	8 pM 	
+2 	E27-2DIV(VL) failed-oil	8:00 PM	
+3 	E27-16DIV(VL)- failed-oil	8:00 PM	
+4 	E27-16DIV(VL) failed-oil	8:00 PM	
+5 	PhiX 	8 pM 	
+6 	E31-2DIV (VL)	8:00 PM	
+7 	E31-2DIV (VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr  5 14:48:37 EDT 2010] RUN 4 ACCEPTED HITS>
+
+
+
+
+(7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100126_61F1BAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #3 (VL) 	8 pM 	
+2 	DRG #3 (VL) 	8:00 PM	
+3 	E27-16DIV (VL) 	8:00 PM	
+4 	E27-16DIV(VL)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	E31-16DIV (VL)  	8:00 PM	
+7 	E31-16DIV(VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	.
+
+drg3
+====
+
+/scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/drg3
+cat count-accepted-hits.txt 
+    chr10/accepted_hits.sam: 3190469
+    chr11/accepted_hits.sam: 4573810
+    chr12/accepted_hits.sam: 3619414
+    chr13/accepted_hits.sam: 3239081
+    chr13_random/accepted_hits.sam: 383633
+    chr14/accepted_hits.sam: 2959584
+    chr15/accepted_hits.sam: 3452640
+    chr16/accepted_hits.sam: 2330174
+    chr16_random/accepted_hits.sam: 17706
+    chr17/accepted_hits.sam: 3048638
+    chr17_random/accepted_hits.sam: 200794
+    chr18/accepted_hits.sam: 2808579
+    chr19/accepted_hits.sam: 2897757
+    chr1/accepted_hits.sam: 3877951
+    chr1_random/accepted_hits.sam: 369018
+    chr2/accepted_hits.sam: 4990493
+    chr3_random/accepted_hits.sam: 18294
+    chr4/accepted_hits.sam: 3609959
+    chr4_random/accepted_hits.sam: 123031
+    chr5/accepted_hits.sam: 4191922
+    chr5_random/accepted_hits.sam: 211977
+    chr6/accepted_hits.sam: 3436133
+    chr7/accepted_hits.sam: 3592448
+    chr7_random/accepted_hits.sam: 148215
+    chr8/accepted_hits.sam: 3406803
+    chr8_random/accepted_hits.sam: 297017
+    chr9/accepted_hits.sam: 3649548
+    chr9_random/accepted_hits.sam: 161791
+    chrM/accepted_hits.sam: 810963
+    chrUn_random/accepted_hits.sam: 660827
+    chrX/accepted_hits.sam: 2875744
+    chrX_random/accepted_hits.sam: 399554
+    chrY/accepted_hits.sam: 590616
+    chrY_random/accepted_hits.sam: 868755
+
+
+e27-16div
+=========
+
+/scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div
+cat count-accepted-hits.txt 
+    chr10/accepted_hits.sam: 1275971
+    chr11/accepted_hits.sam: 2272424
+    chr12/accepted_hits.sam: 1426887
+    chr13/accepted_hits.sam: 1497025
+    chr13_random/accepted_hits.sam: 142783
+    chr14/accepted_hits.sam: 1264138
+    chr15/accepted_hits.sam: 1484157
+    chr16/accepted_hits.sam: 1070986
+    chr16_random/accepted_hits.sam: 2607
+    chr17/accepted_hits.sam: 1530939
+    chr17_random/accepted_hits.sam: 100962
+    chr18/accepted_hits.sam: 1048730
+    chr19/accepted_hits.sam: 1067905
+    chr1/accepted_hits.sam: 1658393
+    chr1_random/accepted_hits.sam: 109484
+    chr2/accepted_hits.sam: 2325006
+    chr3_random/accepted_hits.sam: 24499
+    chr4/accepted_hits.sam: 1668043
+    chr4_random/accepted_hits.sam: 87457
+    chr5/accepted_hits.sam: 2158104
+    chr5_random/accepted_hits.sam: 116769
+    chr6/accepted_hits.sam: 1665141
+    chr7/accepted_hits.sam: 1987325
+    chr7_random/accepted_hits.sam: 61401
+    chr8/accepted_hits.sam: 1526740
+    chr8_random/accepted_hits.sam: 93323
+    chr9/accepted_hits.sam: 1682304
+    chr9_random/accepted_hits.sam: 52339
+    chrM/accepted_hits.sam: 64891
+    chrUn_random/accepted_hits.sam: 115515
+    chrX/accepted_hits.sam: 1598827
+    chrX_random/accepted_hits.sam: 113093
+    chrY/accepted_hits.sam: 102158
+    chrY_random/accepted_hits.sam: 136957
+
+
+e31-16div
+=========
+
+/scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div
+cat count-accepted-hits.txt 
+
+    chr10/accepted_hits.sam: 1247410
+    chr11/accepted_hits.sam: 2193211
+    chr12/accepted_hits.sam: 1466103
+    chr13/accepted_hits.sam: 1528241
+    chr13_random/accepted_hits.sam: 141585
+    chr14/accepted_hits.sam: 1253739
+    chr15/accepted_hits.sam: 1542375
+    chr16/accepted_hits.sam: 1053098
+    chr16_random/accepted_hits.sam: 2598
+    chr17/accepted_hits.sam: 1549081
+    chr17_random/accepted_hits.sam: 100422
+    chr18/accepted_hits.sam: 1062723
+    chr19/accepted_hits.sam: 1065068
+    chr1/accepted_hits.sam: 1633004
+    chr1_random/accepted_hits.sam: 102138
+    chr2/accepted_hits.sam: 2297117
+    chr3_random/accepted_hits.sam: 20639
+    chr4/accepted_hits.sam: 1633164
+    chr4_random/accepted_hits.sam: 69952
+    chr5/accepted_hits.sam: 2083729
+    chr5_random/accepted_hits.sam: 90846
+    chr6/accepted_hits.sam: 1643966
+    chr7/accepted_hits.sam: 1948399
+    chr7_random/accepted_hits.sam: 54273
+    chr8/accepted_hits.sam: 1503313
+    chr8_random/accepted_hits.sam: 87208
+    chr9/accepted_hits.sam: 1682387
+    chr9_random/accepted_hits.sam: 47071
+    chrM/accepted_hits.sam: 82664
+    chrUn_random/accepted_hits.sam: 113528
+    chrX/accepted_hits.sam: 1570887
+    chrX_random/accepted_hits.sam: 101558
+    chrY/accepted_hits.sam: 96909
+    chrY_random/accepted_hits.sam: 128739
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Apr  5 14:44:56 EDT 2010] SEQUENCE FILE LINE COUNTS>
+
+
+
+
+RUN 1
+=====
+
+cd /nethome/bioinfo/data/sequence/labs/lemmon/run1
+cat line-counts.txt 
+    s_5_sequence.txt: 73552388
+    s_6_sequence.txt: 75985368
+    s_7_sequence.txt: 74123308
+    s_8_sequence.txt: 72935580
+
+cd /nethome/bioinfo/data/sequence/labs/lemmon/run1/cat md5sum.txt 
+
+    725381ef1dd0a6ba5fc01bb23772cc1f  s_5_sequence.txt
+    fd2cfba24e36ee0098d1c79e9c05cb0b  s_6_sequence.txt
+    3518d84f3df4c93b81c6efd470894071  s_7_sequence.txt
+    e5c27abda66181e9fcfeb3a6acfd3eba  s_8_sequence.txt
+
+
+RUN 2
+=====
+
+NO SEQUENCE
+
+
+RUN 3
+=====
+
+/nethome/bioinfo/data/sequence/labs/lemmon/run3
+cat line-counts.txt 
+
+s_1_sequence.txt: 70714560
+s_2_sequence.txt: 74147840
+s_3_sequence.txt: 79167560
+s_4_sequence.txt: 80710592
+s_5_sequence.txt: 82656372
+s_7_sequence.txt: 78859708
+s_8_sequence.txt: 77141916
+
+/nethome/bioinfo/data/sequence/labs/lemmon/run3
+cat md5sum.txt 
+
+ee85585c3e257e98940826545b506ef2  s_1_sequence.txt
+7f7439e7582c9c4b450273fd69ac62b2  s_2_sequence.txt
+8240c2e9bbc793906457bfda7e4dad90  s_3_sequence.txt
+b96961cc3c2b14d95510e5341196c524  s_4_sequence.txt
+1c86b0448fbc716dce50fd78025e0368  s_5_sequence.txt
+d804bbb58a698b11d50e6fbc6f4793cb  s_7_sequence.txt
+f65b24368eb71b6829c5e3aef1647d8e  s_8_sequence.tx
+
+
+RUN 4
+=====
+
+cd /nethome/bioinfo/data/sequence/labs/lemmon/run4
+cat count-lines.txt 
+    s_1_sequence.txt: 74594364
+    s_2_sequence.txt: 77329544
+    s_3_sequence.txt: 73526472
+    s_4_sequence.txt: 72941776
+    s_5_sequence.txt: 79041708
+    s_6_sequence.txt: 72087528
+    s_7_sequence.txt: 71339356
+    s_8_sequence.txt: 71485616
+
+/nethome/bioinfo/data/sequence/labs/lemmon/run4
+cat md5sum.txt 
+
+    ff90954f17561d6ee2c3e1cf4fe45d87  s_1_sequence.txt
+    0745f2a4e846574a794abbe67a08a38a  s_2_sequence.txt
+    57238d100e7a56a327b4d924e7a50bc9  s_3_sequence.txt
+    d937cf6e64cd43007b75d178b018b2e2  s_4_sequence.txt
+    92021f1eb6699dceb60913bba9eba493  s_5_sequence.txt
+    078fd5787cf3a535b9d9fbbaffe3b6a6  s_6_sequence.txt
+    821120d517dbe803d8fe082bea1a69da  s_7_sequence.txt
+    393305a5bf0ebb29056866082267c788  s_8_sequence.txt
+
+
+</entry>
+
+
+
+<entry [Mon Apr  5 13:23:22 EDT 2010] RUN 3 TOPHAT ANALYSIS >
+
+
+
+
+Run 3 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100121_616GJAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #1 (Lemmon) 	6 pM 	
+2 	DRG #1 (Lemmon) 	8:00 PM	
+3 	DRG 9-09 (Lemmon) 	6:00 PM	
+4 	DRG 9-09(Lemmon)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	CSPG 9.3.09 (Bixby) 	8:00 PM	
+7 	E27-2DIV(Lemmon)	8:00 PM	
+8 	E27-2DIV (Lemmon)	8:00 PM	
+
+
+SEQUENCE FILE LINE COUNTS:
+
+cd /nethome/bioinfo/data/sequence/labs/lemmon/run3
+cat line-counts.txt 
+    s_1_sequence.txt: 70714560
+    s_2_sequence.txt: 74147840
+    s_3_sequence.txt: 79167560
+    s_4_sequence.txt: 80710592
+    s_5_sequence.txt: 82656372
+    s_7_sequence.txt: 78859708
+    s_8_sequence.txt: 77141916
+
+
+SHELL SCRIPT RUNS ALL
+=====================
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/
+rm -fr /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1+drg0+e27-2div.sh
+emacs /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1+drg0+e27-2div.sh
+
+#!/bin/sh
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1/
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_2_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1/ \
+--label drg1 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1/TOPHAT.out
+
+echo "Completed drg1";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg0
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg0
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg0 \
+--label drg0 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg0/TOPHAT.out
+
+echo "Completed drg0";
+echo `date`;
+
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/e27-2div
+cd /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/e27-2div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run3/s_7_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run3/s_8_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/e27-2div \
+--label e27-2div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/e27-2div/TOPHAT.out
+
+echo "Completed e27-2div";
+echo `date`;
+
+
+
+RAN SHELL SCRIPT
+================
+
+screen -S lemmon-run3
+chmod 755 /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1+drg0+e27-2div.sh
+/scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1+drg0+e27-2div.sh
+
+
+drg1
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg1/TOPHAT.out
+        
+    Tophat::run    10-04-06 08:35:10        Completed cufflinks
+    TOPHAT.pl    Run time: 05:19:36
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    8:35AM, 6 April 2010
+    TOPHAT.pl    ****************************************
+drg0
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/drg0/TOPHAT.out
+        
+    Tophat::run    10-04-06 14:15:03        Completed cufflinks
+    TOPHAT.pl    Run time: 05:39:52
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    2:15PM, 6 April 2010
+    TOPHAT.pl    ****************************************
+
+e27-2div
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run3/tophat-multi/e27-2div/TOPHAT.out
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr  4 12:13:40 EDT 2010] RUN 4 TOPHAT ANALYSIS>
+
+
+
+
+/q/solexa_xfer/100126_HWI-EAS185_0007_61F1BAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+
+ll *sequence.txt
+
+    -rwxrwx---+ 1 jcabrera1 mihg 3280782016 Feb 13 10:51 GERALD_12-02-2010_jcabrera1/s_1_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3401057234 Feb 13 10:52 GERALD_12-02-2010_jcabrera1/s_2_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3233671354 Feb 13 10:50 GERALD_12-02-2010_jcabrera1/s_3_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3208079906 Feb 13 10:50 GERALD_12-02-2010_jcabrera1/s_4_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3476419496 Feb 13 10:51 GERALD_12-02-2010_jcabrera1/s_5_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3170747788 Feb 13 10:50 GERALD_12-02-2010_jcabrera1/s_6_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3137915732 Feb 13 10:50 GERALD_12-02-2010_jcabrera1/s_7_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3144584960 Feb 13 11:06 GERALD_12-02-2010_jcabrera1/s_8_sequence.txt
+
+
+
+RUN 4
+=====
+
+(7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100126_61F1BAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #3 (VL) 	8 pM 	
+2 	DRG #3 (VL) 	8:00 PM	
+3 	E27-16DIV (VL) 	8:00 PM	
+4 	E27-16DIV(VL)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	E31-16DIV (VL)  	8:00 PM	
+7 	E31-16DIV(VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	.
+
+
+
+drg3
+====
+
+screen -S drg3 
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/drg3/
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/drg3
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_1_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_2_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/drg3/ \
+--label drg3 \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse
+
+    RUNNING     Sun Apr  4 18:38:50 EDT 2010    
+
+    QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+    small           100  Open:Active       -    -    -    -   200     0   200     0
+    medium           90  Open:Active       -    -    -    -     0     0     0     0
+    large            80  Open:Active       -    -    -    -  5304  3272  2032     0
+    ngs              80  Open:Active       -    -    -    -     0     0     0     0
+    mpi              80  Open:Active       -    -    -    -     0     0     0     0
+    test             80  Open:Active       -    -    -    -   262     0   262     0
+    sagempi          80  Open:Active       -    -    -    -     0     0     0     0
+    kirtman          80  Open:Active       -    -    -    -     0     0     0     0
+    dev              80  Open:Active       -    -    -    -     0     0     0     0
+    
+    
+    
+    Cluster::runJobs    cleanup not defined. Leaving scriptfiles.
+    Cluster::runJobs    END OF Cluster::runJobs
+    FINISHED RUNNING CUFFLINKS
+    Cluster::lastBatchDuration    Cluster::lastBatchDuration()
+    Use of uninitialized value in concatenation (.) or string at /nethome/bioinfo/apps/agua/0.4/bin/apps/../../lib/TOPHAT.pm line 483.
+    Tophat::run    10-04-04 23:58:20        Completed cufflinks
+    TOPHAT.pl    Run time: 05:19:57
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    11:58PM, 4 April 2010
+    TOPHAT.pl    ****************************************
+
+
+e27-16div
+=========
+
+screen -S e27-16div 
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div \
+--label e27-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div/TOPHAT.out
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div/TOPHAT.out
+
+    ...
+    FINISHED RUNNING CUFFLINKS
+    Cluster::lastBatchDuration    Cluster::lastBatchDuration()
+    Use of uninitialized value in concatenation (.) or string at /nethome/bioinfo/apps/agua/0.4/bin/apps/../../lib/TOPHAT.pm line 483.
+    Tophat::run    10-04-05 08:15:40        Completed cufflinks
+    TOPHAT.pl    Run time: 04:45:06
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    8:15AM, 5 April 2010
+    TOPHAT.pl    ****************************************
+
+
+e31-16div
+=========
+
+screen -S e31-16div 
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div \
+--label e31-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div/TOPHAT.out
+
+tail -f /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div/TOPHAT.out
+
+    ...
+    FINISHED RUNNING CUFFLINKS
+    Cluster::lastBatchDuration    Cluster::lastBatchDuration()
+    Use of uninitialized value in concatenation (.) or string at /nethome/bioinfo/apps/agua/0.4/bin/apps/../../lib/TOPHAT.pm line 483.
+    Tophat::run    10-04-05 12:57:09        Completed cufflinks
+    TOPHAT.pl    Run time: 04:41:28
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    12:57AM, 5 April 2010
+    TOPHAT.pl    ****************************************
+
+
+    
+
+SCRIPT TO RUN BOTH e27-16div AND e31-16div
+==========================================
+
+screen -S e27-16div 
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div
+
+emacs /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-e31.sh
+
+#!/bin/sh
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_3_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_4_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div \
+--label e27-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e27-16div/TOPHAT.out
+
+echo "Completed e27-16div";
+echo `date`;
+
+cd /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl \
+--inputfiles /nethome/bioinfo/data/sequence/labs/lemmon/run4/s_6_sequence.txt,/nethome/bioinfo/data/sequence/labs/lemmon/run4/s_7_sequence.txt \
+--params "--solexa1.3-quals" \
+--distance 200 \
+--queue "-q large" \
+--gtf /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/cufflinks/mm9-knownGene.gtf \
+--reference /nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie \
+--outputdir /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div \
+--label e31-16div \
+--keep \
+--cluster LSF \
+--cpus 4 \
+--maxjobs 5000 \
+--species mouse \
+--clean &> /scratch/syoung/base/pipeline/lemmon/run4/cspg/tophat-multi/e31-16div/TOPHAT.out
+
+echo "Completed e27-16div";
+echo `date`;
+
+
+</entry>
+
+
+
+<entry [Sun Apr  4 12:12:40 EDT 2010] MESSAGE BILL RE: LEMMON LAB LANES>
+
+
+
+
+From: Young, Stuart 
+Sent: Sunday, April 04, 2010 12:40 PM
+To: Hulme, William
+Subject: Lemmon lab lanes
+
+Hey Bill,
+
+I just wanted to check with you about which Lemmon sample lanes to use for analysis. There were 16 lanes of sample data on the external hard drive and I thought they were supposed to have 18 lanes? Are they supposed to have some lanes from run  616ANAAXX as well or is that a totally different experiment? I thought I’d check with you first before I ask Jessica to avoid any confusion or unnecessary emails.
+
+Here’s a list of the Lemmon-lab runs I collected from the NextGen wiki ordered by run data. The external hard drive had Runs 1,3, and 4 but I couldn’t find Run2 100113_616ANAAXX on the external drive.
+
+Here’s the run lane counts for their samples:
+
+RUN                                       LANES   LANE NO.
+100106 _611F3AAXX       3              6,7,8
+100113_616ANAAXX       6              1,2,3,4,7,8           <= NOT ON EXTERNAL HARD DRIVE
+100121_616GJAAXX        6              1,2,3,4,7,8
+100126_ 61F1BAAXX       7              1,2,3,4,6,7,8
+
+Are some of the 100113_616ANAAXX lanes duplicates (or are there duplicate lanes in any of the other runs)? If so, can you let me know which lanes are the final versions? If we need to copy any data from Run2 100113_616ANAAXX  onto their external drive I can get the drive off Jessica and copy the lanes over onto it to save you the hassle. I’ll get cracking with today with analyzing the lanes that I’m pretty sure about but if you get this message even late tonight can you shoot me a quick message so I can set the lanes running overnight?
+
+Thanks man. Hope you’re having a great weekend!
+
+Stuart
+
+
+Biological samples and background
+Eighteen runs, duplicates of 3 samples at 3 different times
+Run 1 (3 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)
+100106_611F3AAXX detailed run info
+Lane 
+	Sample  (Investigator)      
+	Conc.
+1 
+	E27-2DIV (VL) partially failed-oil	8 pM 
+
+2 
+	E27-2DIV(VL) failed-oil	8 pM
+3 
+	E27-16DIV(VL)- failed-oil	8 pM
+4 
+	E27-16DIV(VL) failed-oil	8 pM
+5 
+	PhiX 
+	8 pM 
+
+6 
+	E31-2DIV (VL)	8 pM
+7 
+	E31-2DIV (VL)	8 pM
+8 
+	E41-2DIV (VL)	8 pM
+Run 2 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)
+100113_616ANAAXX detailed run info
+Analysis location: Q:\solexa\100113_HWI-EAS185_0006_616ANAAXX_gwang
+FlowCell ID: 616ANAAXX
+Lane 
+	Sample  (Investigator)      
+	Conc.
+1 
+	DRG #1 (VL) 
+	10 pM 
+
+2 
+	DRG #1 (VL) 
+	10 pM
+3 
+	DRG 9-09 (VL) 
+	10 pM
+4 
+	DRG 9-09(VL)	10 pM
+5 
+	PhiX 
+	10 pM  
+6 
+	RPE (GWang) -invoiced 
+	10 pM
+7 
+	E41-16DIV(VL)	10 pM
+8 
+	E41-16DIV (VL)	10 pM
+Run 3 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)
+100121_616GJAAXX detailed run info
+Lane 
+	Sample  (Investigator)      
+	Conc.
+1 
+	DRG #1 (Lemmon) 
+	6 pM 
+
+2 
+	DRG #1 (Lemmon) 
+	8 pM
+3 
+	DRG 9-09 (Lemmon) 
+	6 pM
+4 
+	DRG 9-09(Lemmon)	8 pM
+5 
+	PhiX 
+	8 pM  
+6 
+	CSPG 9.3.09 (Bixby) 
+	8 pM
+7 
+	E27-2DIV(Lemmon)	8 pM
+8 
+	E27-2DIV (Lemmon)	8 pM
+Run 4 (7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)
+100126_61F1BAAXX detailed run info
+Lane 
+	Sample  (Investigator)      
+	Conc.
+1 
+	DRG #3 (VL) 
+	8 pM 
+
+2 
+	DRG #3 (VL) 
+	8 pM
+3 
+	E27-16DIV (VL) 
+	8 pM
+4 
+	E27-16DIV(VL)	8 pM
+5 
+	PhiX 
+	8 pM  
+6 
+	E31-16DIV (VL)  	8 pM
+7 
+	E31-16DIV(VL)	8 pM
+8 
+	E41-2DIV (VL)	8 pM	.
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr  4 12:11:40 EDT 2010] LEMMON LAB LANES>
+
+
+
+Run 1 (3 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100106_611F3AAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	E27-2DIV (VL) partially failed-oil	8 pM 	
+2 	E27-2DIV(VL) failed-oil	8:00 PM	
+3 	E27-16DIV(VL)- failed-oil	8:00 PM	
+4 	E27-16DIV(VL) failed-oil	8:00 PM	
+5 	PhiX 	8 pM 	
+6 	E31-2DIV (VL)	8:00 PM	
+7 	E31-2DIV (VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	
+
+
+Run 2 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100113_616ANAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #1 (VL) 	10 pM 	
+2 	DRG #1 (VL) 	10:00 PM	
+3 	DRG 9-09 (VL) 	10:00 PM	
+4 	DRG 9-09(VL)	10:00 PM	
+5 	PhiX 	10 pM  	
+6 	RPE (GWang) -invoiced 	10:00 PM	
+7 	E41-16DIV(VL)	10:00 PM	
+8 	E41-16DIV (VL)	10:00 PM	
+
+
+Run 3 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100121_616GJAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #1 (Lemmon) 	6 pM 	
+2 	DRG #1 (Lemmon) 	8:00 PM	
+3 	DRG 9-09 (Lemmon) 	6:00 PM	
+4 	DRG 9-09(Lemmon)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	CSPG 9.3.09 (Bixby) 	8:00 PM	
+7 	E27-2DIV(Lemmon)	8:00 PM	
+8 	E27-2DIV (Lemmon)	8:00 PM	
+
+
+Run 4 (7 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+100126_61F1BAAXX 
+
+Lane 	Sample  (Investigator)      	Conc.	
+1 	DRG #3 (VL) 	8 pM 	
+2 	DRG #3 (VL) 	8:00 PM	
+3 	E27-16DIV (VL) 	8:00 PM	
+4 	E27-16DIV(VL)	8:00 PM	
+5 	PhiX 	8 pM  	
+6 	E31-16DIV (VL)  	8:00 PM	
+7 	E31-16DIV(VL)	8:00 PM	
+8 	E41-2DIV (VL)	8:00 PM	.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Apr  4 12:11:40 EDT 2010] md5sum FILES FROM EXTERNAL DRIVE>
+
+
+
+
+
+
+    c377ad8c57d0bb00380f5087f284b884 Error.htm
+    140489b90f4ced48213d8a568b05745c FullError.htm
+    729b16e266be83a0ff9872e6ffffef90 FullPerfect.htm
+    a379ef99d0330df98cad038d1ecf8e26 GeraldSummary.xml
+    e6ac3a1606d3d8160142dd068e564630 Makefile
+    3854a2036f71ec4ff20c31462dffe538 Perfect.htm
+    577160241ac39de2b924b431df4c3bcc Summary.htm
+    94637d6d9653132ffef0accc327c23dd Summary.xml
+    420274cb4da19f16974575e2c532ba40 Summary.xsl
+    11436ac8a8b4b2b7c1c055be211c2afa config.txt
+    06cfaa68e7985bf54dff9e91ecf24268 config.xml
+    d41d8cd98f00b204e9800998ecf8427e finished.txt
+    d41d8cd98f00b204e9800998ecf8427e s_1_finished.txt
+    d41d8cd98f00b204e9800998ecf8427e s_2_finished.txt
+    d41d8cd98f00b204e9800998ecf8427e s_3_finished.txt
+    d41d8cd98f00b204e9800998ecf8427e s_4_finished.txt
+    d9ba923608b4830dd72f62704563e693 s_5_1_eland_query.txt
+    28f1dfacd247cc91f465307cdb5e49fc s_5_calsaf.txt
+    d91919726769fdd3ef6fa0c59873f950 s_5_eland_extended.txt
+    63a0d65e1b48e1d9f021531c5816ece7 s_5_eland_multi.txt
+    81a306fa7cec3fdc13341b203a67ccac s_5_export.txt
+    d41d8cd98f00b204e9800998ecf8427e s_5_finished.txt
+    c80d53c2b37a589d66df8cb1063852b2 s_5_frag.txt
+    3efd6f4ea4317ddd6ae9e4cc52ec9d91 s_5_genomesize.xml
+    4cb88000a51858027c2ccc1fadb2fe4d s_5_qcalreport.txt
+    b59ff4a6857646bb72a65f2fac6100de s_5_score_files.txt
+    725381ef1dd0a6ba5fc01bb23772cc1f s_5_sequence.txt
+    69223e1322918a63fccff30e74b59651 s_5_sorted.txt
+    3f3931bff089e93d48aeae40a0bc1190 s_6_1_eland_query.txt
+    c41a90d1cb0f576b8d8c3a2d24353f04 s_6_calsaf.txt
+    c2c86f2adc9e75513f30ac0833c768d8 s_6_eland_contam.txt
+    9fa56c7499a3d4524ff37a54c34a7e89 s_6_eland_extended.txt
+    b9d44fb4ed8d9e60a9f0766af9a4ce7f s_6_eland_multi.txt
+    dd631ee92aa67261ca901a339ab5aa9b s_6_eland_splice.txt
+    f10768e71e7d21f39a8b4f676403ec6a s_6_export.txt
+    5f80ea6b4fe323f590e57df5a0464228 s_6_extended_contam.txt
+    b0a075d617d6092dfceeeb9463f62389 s_6_extended_splice.txt
+    d41d8cd98f00b204e9800998ecf8427e s_6_finished.txt
+    8d4c93bec3fa8b2831cdc5218a3b6957 s_6_frag.txt
+    f98360ab28b13e6cb9c6e74b96a616d0 s_6_frag_contam.txt
+    bf5e47932b2c6a08ece821d305f22e41 s_6_frag_splice.txt
+    519c02a85c9f33452294e61e2e31be09 s_6_qcalreport.txt
+    d294cc8d444a3f499b1aa5d7afd22c0d s_6_score_files.txt
+    fd2cfba24e36ee0098d1c79e9c05cb0b s_6_sequence.txt
+    d5cb5d028cfa46fb0e44ad4629724e8f s_6_sorted.txt
+    d41d8cd98f00b204e9800998ecf8427e s_7_finished.txt
+    d41d8cd98f00b204e9800998ecf8427e s_8_finished.txt
+    b454a2d53b7d0fcce7feb39ecc56b3f7 tiles.txt
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 16 03:53:17 EDT 2010] LEMMON LAB FILE LOCATIONS>
+
+
+
+
+19 LANES IN TOTAL
+
+RUN1
+====
+
+3 lanes
+LANES 6-8 
+Q:\solexa\100106_HWI-EAS185_0005_611F3AAXX
+
+In all three Gerald folders…
+Q:\solexa\100106_HWI-EAS185_0005_611F3AAXX\Data\Intensities\BaseCalls
+
+
+LOCATION
+
+LANE 6
+/q/solexa/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+
+cp s_5*sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_5*sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_5*extended.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_5*multi.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+
+cp s_6*sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_6*sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_6*extended.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_6*multi.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+
+
+
+LANE 7
+/q/solexa/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+
+cp s_7*sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_7*sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_7*extended.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_7*multi.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+
+
+LANE 8
+/q/solexa/100106_HWI-EAS185_0005_611F3AAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.3
+
+cp s_8*sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_8*sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_8*extended.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp s_8*multi.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+
+
+COPIED TO
+
+mkdir -p /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cd /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp *sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp *sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp *extended.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+cp *multi.txt /nethome/syoung/base/pipeline/lemmon/data/run1/100106_HWI-EAS185_0005_611F3AAXX
+
+
+
+RUN2
+====
+
+Run 2 (6 lanes, Paired End, 54 bp, Pipeline v1.5 SCS v2.5)			
+
+                    LANES               LANE NOs.
+100113_616ANAAXX       6              1,2,3,4,7,8           <= NOT ON EXTERNAL HARD DRIVE
+
+
+??? LOCATION OF SEQUENCE DATA ???
+
+
+RUN FOLDER /q/solexa_xfer/100113_HWI-EAS185_0006_616ANAAXX_gwang HAS NO GERALD DIRECTORY:
+
+cd /q/solexa_xfer/100113_HWI-EAS185_0006_616ANAAXX/Data/Intensities/BaseCalls
+
+[syoung@u01 BaseCalls]$ ll | grep -v qseq.txt
+total 7.8G
+drwxrwx---+ 6 mihglabtech users  16K Feb  2 17:05 .
+drwxrwx---+ 6 mihglabtech users  16K Feb  4 10:16 ..
+-rwxrwx---+ 1 mihglabtech users 101K Jan 16 04:59 All.htm
+-rwxrwx---+ 1 mihglabtech users 317K Jan 16 04:59 BustardSummary.xml
+-rwxrwx---+ 1 mihglabtech users 8.2K Aug 20  2009 BustardSummary.xsl
+-rwxrwx---+ 1 mihglabtech users 3.0K Jan 16 04:57 config.xml
+-rwxrwx---+ 1 mihglabtech users 101K Jan 16 04:59 FullAll.htm
+-rwxrwx---+ 1 mihglabtech users 4.6K Jan 16 04:59 IVC.htm
+drwxrwx---+ 2 mihglabtech users  96K Jan 16 05:00 Matrix
+drwxrwx---+ 2 mihglabtech users  96K Jan 16 05:01 Phasing
+drwxrwx---+ 2 mihglabtech users  64K Jan 16 05:01 Plots
+drwxrwx---+ 2 mihglabtech users  64K Jan 16 05:01 SignalMeans
+
+
+
+RUN FOLDER /q/solexa/100113_HWI-EAS185_0006_616ANAAXX_gwang CONTAINS ONLY GAOFENG WANG'S DATA (LANE 6):
+
+ll /q/solexa/100113_HWI-EAS185_0006_616ANAAXX_gwang/Data/Intensities/BaseCalls/GERALD_28-01-2010_jcabrera1/*seq*
+
+    -rwxrwx---+ 1 jcabrera1 mihg 3.4G Jan 28 15:37 s_5_sequence.txt
+    -rwxrwx---+ 1 jcabrera1 mihg 3.3G Jan 28 15:37 s_6_sequence.txt
+
+drwxrwx---+  6 jhahn       mihg-data-q-nextgen-full 16K Jan 16 05:02 100113_HWI-EAS185_0006_616ANAAXX_gwang
+drwxrwx---+  7 mihglabtech users                 16K Jan 16 05:02 100113_HWI-EAS185_0006_616ANAAXX
+
+
+
+
+RUN3
+====
+
+6 lanes
+LANES 1-4,7-8
+Q:\solexa_xfer\100121_HWUSI-EAS1687R_0003_616GJAAXX
+
+Please include ONLY this GERALD folder…
+Q:\solexa_xfer\100121_HWUSI-EAS1687R_0003_616GJAAXX\Data\Intensities\BaseCalls\GERALD_12-02-2010_jcabrera1.2
+
+LOCATION
+
+/q/solexa_xfer/100121_HWUSI-EAS1687R_0003_616GJAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1.2
+
+COPIED TO
+
+mkdir -p /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+M
+cp *sequence.txt /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+cp *sorted.txt /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+cp *extended.txt /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+cp *multi.txt /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+
+cd /nethome/syoung/base/pipeline/lemmon/data/run2/100121_HWUSI-EAS1687R_0003_616GJAAXX
+ll
+
+
+
+
+RUN4
+====
+
+7 lanes
+LANES (1-4,6-8)
+Q:\solexa_xfer\100126_HWI-EAS185_0007_61F1BAAXX
+
+LOCATION
+
+/q/solexa_xfer/100126_HWI-EAS185_0007_61F1BAAXX/Data/Intensities/BaseCalls/GERALD_12-02-2010_jcabrera1
+
+COPIED TO
+
+/nethome/syoung/base/pipeline/lemmon/data/run3/100126_HWI-EAS185_0007_61F1BAAXX
+
+
+
+
+
+
+
+From: Hulme, William 
+Sent: Tuesday, March 02, 2010 4:31 PM
+To: Zysman, Joel
+Cc: Lerch-Haner, Jessica
+Subject: Lemmon data transfer-no images
+
+Hello Joel,
+Per our last meeting, here is the info for the Lemmon data.  I have cc’d my contact with Dr. Lemmon’s group, Jessica Lerch-Haner.  Thank you.  Bill
+
+ 
+we have generated 19 lanes of GA data Dr. Vance Lemmon to be moved…
+
+
+4 lanes located here… Q:\solexa\100106_HWI-EAS185_0005_611F3AAXX
+
+LANES 5 thru 8 ONLY
+
+Please include all three Gerald folders…
+
+Q:\solexa\100106_HWI-EAS185_0005_611F3AAXX\Data\Intensities\BaseCalls
+
+
+
+
+7 lanes located here… Q:\solexa_xfer\100121_HWUSI-EAS1687R_0003_616GJAAXX
+
+ALL lanes BUT lane 6
+
+Please include ONLY this GERALD folder…
+
+Q:\solexa_xfer\100121_HWUSI-EAS1687R_0003_616GJAAXX\Data\Intensities\BaseCalls\GERALD_12-02-2010_jcabrera1.2
+
+
+
+
+8 lanes located here… Q:\solexa_xfer\100126_HWI-EAS185_0007_61F1BAAXX
+
+ALL LANES.
+
+
+Please note, that although the investigator will most likely want to keep all of the data, the only files they really NEED to do further analysis are the “sequence.txt” files in the GERALD folders.  The rest could be archived.

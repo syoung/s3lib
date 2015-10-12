@@ -1,0 +1,865 @@
+
+<!-- saved from url=(0119)http://www.boehringeringelheim.candidatecare.com/srccsh/job.guid?_reqID=2000008396810&_cache=8370562988590913682&x=2275 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="shortcut icon" href="http://www.boehringeringelheim.candidatecare.com/srccsh/gif/rightthing.ico">
+<title>Job</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/functions.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/date.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/prototype-1.6.0.3.js.rez"></script>
+<link rel="stylesheet" href="./boehringer ingelheim senior scientist bioinformatics_files/calendar-blue.css.rez" type="text/css">
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/calendar.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/calendar-en.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/calendar-setup.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/form.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/dom-drag.js.rez"></script>
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/combobox.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/contenteditable.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/multicheckbox.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/ajax.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/color.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/selectable_row.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/form.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/hierarchy.js.rez"></script><script src="./boehringer ingelheim senior scientist bioinformatics_files/autocomplete.js.rez"></script>
+<script>
+var Site_currentMaxZIndex = 100;
+function Site_layerOnZIndex(el, ofst, toTop) {
+ if (el) {
+  if (toTop) {
+    el.style.zIndex = 10000 + (ofst ? ofst : 0);
+  } else {
+    try {
+      el.style.zIndex = Site_currentMaxZIndex + (ofst ? ofst : 0);
+      Site_currentMaxZIndex++;
+    } catch (e) {}
+  }
+ }
+}
+var Site_maskRedirect = '';
+function Site_submit() {
+Form_onsubmit(document.forms[0].name,"shadow_");
+document.forms[0].submit();
+}
+function Site_bwd(url) {
+  try {
+    document.forms[0].reset();
+    document.forms[0]._backwarderGUID.value = "true";
+    document.forms[0].action = url;
+    document.forms[0].submit();
+  } catch (e) {
+  location.href=url;
+  }
+}
+function Site_href(url) {
+  location.href=url;
+}
+function Site_popup(guid, dontScroll) {
+  var i = guid.indexOf('.');
+  var name = (i == -1)? guid : guid.substring(0, i);
+  Functions_popup2(guid, name, dontScroll);
+}
+var Site_fadeValue=0;
+var Site_fadeTimerActive=0;
+function Site_fadeInContent() {
+  $('Site_pageMaskContent2').style.opacity=Site_fadeValue;
+  Site_fadeValue=Site_fadeValue+.2;
+  if (Site_fadeValue <= 1.01)
+    setTimeout("Site_fadeInContent()",1);
+  if (Site_fadeValue > 1.01) {
+    Site_fadeValue=0;
+    Site_fadeTimerActive=0;
+  }
+}
+function Site_fadeInContentTimer() {
+  if (!Site_fadeTimerActive)
+  {
+    Site_fadeTimerActive=1;
+    Site_fadeValue=0;
+    Site_fadeInContent();
+  }
+}
+function Site_verifyStandby() {
+  var stdby = $('Site_pageMaskStandby');
+  if (stdby.innerHTML == '')
+    new Ajax.Request(Ajax_url('standby'), {method:'post', onComplete: function(req) { $('Site_pageMaskStandby').innerHTML = req.responseText; }, asynchronous: false});
+}
+function Site_maskPage(ajax, pars, noUnload, forceNoPrinting, forceNoTx) {
+  try {$('Site_pageMaskContent2').innerHTML = '';} catch (e) {}
+  try { Site_verifyStandby(); } catch (ignore) {}
+  try {$('Site_pageMaskHandleActual').style.visibility = 'hidden';} catch (e) {}
+  try {$('postcard_print_icon').style.visibility = 'hidden';} catch (e) {}
+  Functions_tooltipHide();
+  var doTx = (ajax != '') && !forceNoTx;
+  if (!noUnload && doTx)
+    Site_pageMaskUnload();
+  else document.body.style.cursor = 'wait';
+  var mask = $('Site_pageMask');
+  mask.style.display = '';
+  Site_layerOnZIndex(mask);
+  mask.style.left = 0;
+  mask.style.top = 0;
+  mask.style.width = Math.max(document.body.clientWidth, document.body.scrollWidth);
+  mask.style.height = Math.max(document.body.clientHeight, document.body.scrollHeight);
+  if (ajax != null)
+    Ajax_inject('Site_pageMaskContent2', ajax, null, 'Site_maskPageCallback(' + doTx + ',' + forceNoPrinting + ')', pars);
+}
+function Site_maskPageCallback(doTx, forceNoPrinting) {
+  $('Site_pageMaskHandle').style.removeProperty('width');
+  $('Site_pageMaskHandle').getElementsByTagName('table')[0].style.removeProperty('width');
+  document.body.style.cursor = 'default';
+  var img = $('Site_pageMaskContent');
+  Site_layerOnZIndex(img);
+  if (doTx && ($('Site_pageMaskContent2').innerHTML != '')) { $('Site_pageMaskHandle').style.visibility = 'visible'; }
+  if (doTx) { $('Site_pageMaskContent2').style.opacity = 0; }
+  img.style.display = '';
+  if (doTx) {
+    $('Site_pageMaskHandle').style.width = 
+        $('Site_pageMaskContent2').getElementsByTagName('table')[0].offsetWidth;
+    $('Site_pageMaskHandle').children[0].style.width = "100%";
+  }
+  var imgLeft = document.body.scrollLeft + (document.body.clientWidth - img.offsetWidth) / 2;
+  var imgTop = document.body.scrollTop + (document.body.clientHeight - img.offsetHeight) / 2;
+  if (imgLeft < 0) imgLeft = 0;
+  if (imgTop < 0) imgTop = 0;
+  img.style.left = imgLeft;
+  img.style.top = imgTop;
+  if (doTx) {
+    Site_fadeInContentTimer();
+  }
+  if (Site_maskRedirect != '') {
+    eval(Site_maskRedirect);
+    Site_maskRedirect= '';
+  }
+  Functions_tooltipHide();
+  setTimeout('Functions_scrollAllOptionsIntoView()', 500);
+}
+function Site_maskPopup(popupMsg) {
+  Site_maskPage('popup', '_popupMsg=' + popupMsg);
+}
+function Site_unmaskPage() {
+  var mask = $('Site_pageMask');
+  mask.style.display = 'none';
+  var img = $('Site_pageMaskContent');
+  img.style.display = 'none';
+  Functions_tooltipHide();
+}
+function Site_pageMaskUnload() { }
+function Site_liveHelp() {
+window.open('http://www.livehelpnow.net/lhn/livechatvisitor.aspx?lhnid=4211&amp;zzwindow=0&amp;custom1=&amp;custom2=&amp;custom3=', 'liveHelp', channelmode=1);
+}
+</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./boehringer ingelheim senior scientist bioinformatics_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-210058-9");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+<style>
+a {font-family:calibri, verdana;text-decoration:none;color:#00305e}
+a:hover {font-family:calibri, verdana;text-decoration:underline;color:#000000}
+a:visited {font-family:calibri, verdana;color:#00305e}
+obscure {display:none;}
+.portal-a {font-family:calibri, verdana;text-decoration:none;color:#00305e}
+.portal-a:hover {font-family:calibri, verdana;text-decoration:underline;color:#000000}
+.portal-a:visited {font-family:calibri, verdana;color:#a7322f}
+.portal-annotation {font-family:calibri, verdana;font-size:9pt;font-style:italic;color:#00305e}
+.portal-button {font-family:calibri, verdana;font-size:10pt;color:#000000;}
+.portal-button:disabled {color:#808080;font-weight:lighter;}
+.portal-cel {font-family:calibri, verdana;font-size:10pt;color:#000000}
+.portal-checkbox {font-family:calibri, verdana;font-size:10pt;color:#000000}
+.portal-error {font-family:calibri, verdana;font-size:10pt;color:#e23d28;font-weight:bold}
+.portal-input {font-family:calibri, verdana;font-size:10pt;color:#1a3373}
+.portal-input-dormant {font-family:calibri, verdana;font-size:10pt;text-decoration:line-through;color:#808080}
+.portal-input-right {font-family:calibri, verdana;font-size:10pt;color:#1a3373;text-align:right;}
+.portal-input-x {font-family:calibri, verdana;font-size:10pt;color:#1a3373}
+.portal-multicheckbox {font-family:calibri, verdana;font-size:10pt;color:#000000;cursor:hand;height:11px;width:11px;margin:2px;border:2px inset #F8F8F8;background-color:#ffffff;vertical-align:middle}
+.portal-radio {font-family:calibri, verdana;font-size:10pt;color:#000000}
+.portal-select {font-family:calibri, verdana;font-size:10pt;color:#1a3373}
+.portal-selected {font-family:calibri, verdana;font-size:10pt;color:#ffffff;background-color:#1a3373;}
+.portal-static {font-family:calibri, verdana;font-size:10pt;color:#000000}
+.portal-static-right {font-family:calibri, verdana;font-size:10pt;color:#000000;text-align:right;}
+.portal-text {font-family:calibri, verdana;font-size:10pt;color:#000000}
+.portal-textarea {font-family:Courier New;font-size:8pt;color:#1a3373}
+.portal-textarea-x {font-family:Courier New;font-size:8pt;color:#1a3373}
+.portal-title {font-family:calibri, verdana;font-size:22px;color:#000000}
+.portal-nav0 {font-family:calibri, verdana;font-size:10pt;color:#00305e;background-color:#ffffff}
+.portal-nav0:visited {font-family:calibri, verdana;font-size:10pt;color:#00305e;background-color:#ffffff}
+.portal-nav0:hover {font-family:calibri, verdana;font-size:10pt;color:#000000;background-color:#ffffff;text-decoration:none;cursor:pointer}
+.portal-nav1 {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav1:visited {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav1:hover {font-family:calibri, verdana;font-size:9pt;color:#000000;background-color:#f0f0f0;text-decoration:none;cursor:pointer}
+.portal-nav2 {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav2:visited {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav2:hover {font-family:calibri, verdana;font-size:9pt;color:#000000;background-color:#f0f0f0;text-decoration:none;cursor:pointer}
+.portal-nav3 {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav3:visited {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav3:hover {font-family:calibri, verdana;font-size:9pt;color:#000000;background-color:#f0f0f0;text-decoration:none;cursor:pointer}
+.portal-nav4 {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav4:visited {font-family:calibri, verdana;font-size:9pt;color:#00305e;background-color:#f0f0f0}
+.portal-nav4:hover {font-family:calibri, verdana;font-size:9pt;color:#000000;background-color:#f0f0f0;text-decoration:none;cursor:pointer}
+</style>
+<style>
+.big {font-family:calibri, verdana;font-size:11pt;color:#000000;}
+.bold {font-family:calibri, verdana;font-size:10pt;color:#000000;font-weight:bold}
+.controlpanel {background-color: transparent; border: 1px solid #808080;}
+.date {font-family:calibri, verdana;font-size:10pt;color:#9bafc4;font-style:italic;letter-spacing:2;}
+.error {font-family:calibri, verdana;font-size:10pt;color:#e23d28;font-weight:bold;}
+.h1 {font-family:calibri, verdana;font-size:13pt;color:#9bafc4;font-weight:bold}
+.h1x {font-family:calibri, verdana;font-size:13pt;color:#9c6104;font-weight:bold}
+.h2 {font-family:calibri, verdana;font-size:12pt;color:#9bafc4;font-weight:bold;}
+.h2x {font-family:calibri, verdana;font-size:12pt;color:#9c6104;font-weight:bold}
+.h3 {font-family:calibri, verdana;font-size:11pt;color:#9bafc4;font-weight:bold}
+.h3x {font-family:calibri, verdana;font-size:11pt;color:#9c6104;font-weight:bold}
+.h4 {font-family:calibri, verdana;font-size:10pt;color:#000000;font-weight:bold}
+.hilite {font-family:calibri, verdana;font-size:10pt;color:#9c6104;}
+hr {color:#000000}
+.invisible {visibility: hidden}
+.italic {font-family:calibri, verdana;font-size:10pt;color:#000000;font-style:italic;}
+.new_normal {font-family: calibri, verdana; font-size: 11pt; color: #000000;}
+.normal {font-family:calibri, verdana;font-size:10pt;color:#000000;}
+.pageheader {font-family: calibri, verdana; font-size:26px; color:#00305e;}
+.rti-button {font-family:calibri, verdana;font-size:10pt;color:#000000;font-weight:bold;}
+.rti-error {font-family:calibri, verdana;font-size:10pt;color:#e23d28;font-weight:bold;}
+.rti-header {font-family:calibri, verdana;font-size:13pt;color:#000000;font-weight:bold}
+.rti-link {font-family:calibri, verdana;font-size:10pt;color:#00305e;font-weight:bold;}
+.rti-small {font-family:calibri, verdana;font-size:9pt;color:#000000;}
+.rti-text {font-family:calibri, verdana;font-size:10pt;color:#000000;}
+.rti-tiny {font-family:calibri, verdana;font-size:8pt;color:#000000;}
+.rti-title {font-family:calibri, verdana;font-size:10pt;color:#000000;font-weight:bold;}
+.shade {font-family:calibri, verdana;font-size:10pt;color:#000000;background-color:#cbdbe8}
+.shadex {font-family:calibri, verdana;font-size:10pt;color:#000000;background-color:#fdd493}
+.small {font-family:calibri, verdana;font-size:9pt;color:#000000;}
+.subheader {font-family:calibri, verdana;font-size:15pt;color:#00305e; font-weight: bold;}
+.subheader2 {font-family:calibri, verdana;font-size:12pt;color:#00305e; font-weight: bold;}
+.t1 {font-family:calibri, verdana;font-size:13pt;color:#9bafc4;font-weight:bold}
+.t1x {font-family:calibri, verdana;font-size:13pt;color:#9c6104;font-weight:bold}
+.tiny {font-family:calibri, verdana;font-size:8pt;color:#000000;}
+.tooltip {position:absolute;left:0;top:0;width:400px;background-color:infobackground;border:1px solid infotext;padding:3px;-moz-box-shadow: black 4px 4px 4px;-o-box-shadow: black 4px 4px 4px;-webkit-box-shadow: black 4px 4px 4px;box-shadow: black 4px 4px 4px;}
+</style>
+<script>
+function Site_setupContentScroll(ref, magic, threshold) {
+  return Site_setupContentScrollHeight(ref, magic, threshold);
+}
+function Site_setupContentScrollHeight(ref, magic, threshold) {
+  if (threshold < 1024) return '100%';
+  var obj = $(ref);
+  if (obj) {
+    var offsetTop = 0;
+    var div = obj;
+    while (div) {
+      offsetTop += div.offsetTop;
+      div = div.offsetParent;
+    }
+    return document.body.clientHeight - (offsetTop + magic);
+  }
+  return 300;
+}
+function Site_setupContentScrollWidth(ref, magic, threshold) {
+  if (threshold < 768) return '100%';
+  var obj = $(ref);
+  if (obj) {
+    var offsetLeft = 0;
+    var div = obj;
+    while (div) {
+      offsetLeft += div.offsetLeft;
+      div = div.offsetParent;
+    }
+    return document.body.clientWidth - (offsetLeft + magic);
+  }
+  return 300;
+}
+</script>
+
+<script src="./boehringer ingelheim senior scientist bioinformatics_files/userspace"></script></head>
+<body bgcolor="#ffffff" leftmargin="20" rightmargin="20" marginwidth="20" topmargin="20" bottommargin="20" marginheight="20">
+<form name="form1" method="post" enctype="application/x-www-form-urlencoded" autocomplete="off" onsubmit="Form_onsubmit(&quot;form1&quot;,&quot;shadow_&quot;)">
+<input name="_backwarderGUID" type="hidden">
+<input name="__formGUID" type="hidden" value="7e83e6c5-8ff0-4e28-97b6-a53934215304">
+<table border="0" cellpadding="0" cellspacing="0" width="640" bgcolor="#ffffff">
+<tbody><tr>
+<td>
+<table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%">
+
+  <tbody><tr>
+
+    <td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+  <tbody><tr>
+
+    <td><span class="portal-cel"><img align="absmiddle" border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/bi_logo.dbrez"></span></td>
+
+    <td width="10"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" width="10"></span></td>
+
+    <td align="right"><table border="0" cellpadding="0" cellspacing="0" align="right">
+
+      
+
+      
+
+    </table></td>
+
+  </tr>
+
+</tbody></table>
+</td>
+</tr>
+<tr>
+
+    <td>
+<img src="./boehringer ingelheim senior scientist bioinformatics_files/shim.dbrez" height="10"></td>
+</tr>
+<tr>
+
+    <td background="./boehringer ingelheim senior scientist bioinformatics_files/hdot.dbrez">
+</td>
+</tr>
+<tr>
+
+    <td>
+<img src="./boehringer ingelheim senior scientist bioinformatics_files/shim.dbrez" height="10"></td>
+</tr>
+<tr>
+
+    <td width="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+  function rti_job_apply() {
+    
+    
+      // if we are in a frame, bust out
+      top.location.href = 'https://www.candidatecare.com/srccsa/RTI.home?d=boehringeringelheim.candidatecare.com&r=2000008396810&c=939&_cache=9008027977467155124';
+    
+  }
+
+  function rti_job_email() {
+    
+      location.href = 'email.guid?_reqID=2000008396810&_noHeader=false&_cache=-1081474876724061804&x=2275';
+    
+  }
+
+  function rti_job_refer() {
+    
+      location.href = 'refer.guid?_reqID=2000008396810&_noHeader=false&_cache=-4300586480482591530&x=2275';
+    
+  }
+
+</script>
+
+<input type="hidden" name="_reqID" value="2000008396810">
+<input type="hidden" name="x" value="2275">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr>
+    <td height="20"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" height="20"></span></td>
+  </tr>
+  <tr valign="bottom">
+    <td><span class="rti-header"><span class="rti-header">Job Description</span></span></td>
+    
+      <td align="right"><span class="rti-link"><span class="rti-link"><a tabindex="-1" href="http://www.boehringeringelheim.candidatecare.com/srccsh/home.guid;jsessionid=8A8753DF5A44CAD5357B7E0692137BB7?_noHeader=false&_cache=8921083307935149657&x=2275" class="rti-link">»&nbsp;Start New Search</a></span></span></td>
+    
+  </tr>
+  <tr>
+    <td bgcolor="#000000" colspan="2" width="100%" height="1"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" width="100%" height="1"></span></td>
+  </tr>
+  
+  <tr>
+    <td height="16"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" height="16"></span></td>
+  </tr>
+</tbody></table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellpadding="4" cellspacing="4">
+
+  <tbody><tr valign="top">
+    <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr>Title</nobr></span></span></td>
+    <td width="100%"><table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tbody><tr valign="top">
+        <td><span class="portal-cel"><span class="portal-static"></span></span>
+          <span class="rti-text">
+            <b>Senior Scientist, Bioinformatics</b>
+          </span>
+        </td>
+        <td><span class="portal-cel"><span class="portal-static"></span></span>
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+  &nbsp;
+
+
+        </td>        
+      </tr>
+      <tr>
+        <td bgcolor="#000000" colspan="2" width="100%" height="1"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" width="100%" height="1"></span></td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+  
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Our Culture</b></nobr></span></span></td>
+      <td><span class="portal-cel"><span class="portal-static"></span></span>
+        <span class="rti-text">
+          Boehringer Ingelheim is a different kind of pharmaceutical company, a privately held
+          company with the ability to have an innovative and long term view. Our focus is on
+          scientific discoveries that improve patients' lives and we equate success as a
+          pharmaceutical company with the steady introduction of truly innovative medicines.
+          Boehringer Ingelheim is the largest privately held pharmaceutical corporation in
+          the world and ranks among the world's 20 leading pharmaceutical corporations.
+          <br>
+          At Boehringer Ingelheim, we are committed to delivering value through innovation.
+          Employees are challenged to take initiative and achieve outstanding results. Ultimately,
+          our culture and drive allows us to maintain one of the highest levels of excellence
+          in our industry.
+          <br>
+          Boehringer Ingelheim, including Boehringer Ingelheim Pharmaceuticals, Inc.,
+          Boehringer Ingelheim USA, Boehringer Ingelheim Roxane Inc., Roxane Laboratories Inc.,
+          Boehringer Ingelheim Chemicals, Boehringer Ingelheim Vetmedica Inc. and
+          Ben Venue Laboratories Inc., is an equal opportunity employer. M/F/D/V
+        </span>
+      </td>
+    </tr>
+  
+  <tr valign="top">
+    <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Description</b></nobr></span></span></td>
+    <td><span class="portal-cel"><span class="portal-static"></span></span>
+      <span class="rti-text">
+        <p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><b style="mso-bidi-font-weight: normal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Boehringer Ingelheim</span></b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"> is currently seeking a talented and innovative <b>Senior Scientist, Bioinformatics </b>to join our <b style="mso-bidi-font-weight: normal">Biotherapeutics <span style="mso-bidi-font-weight: bold">Research</span></b> department located at our <b style="mso-bidi-font-weight: normal">Ridgefield, CT</b> facility. As a <span style="mso-bidi-font-weight: bold">Senior Scientist, Bioinformatics you will design and execute independent research that supports R&amp;D projects.<span style="mso-spacerun: yes">&nbsp; </span>The Informatics Scientist is primarily responsible for performing and managing scientific and technical activities, which may also include responsibility for the management of scientific staff. Has the early ability to plan and execute collaborations. Focus on innovation and driving novel approaches that positively impact project performance is key to Senior Scientist level.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><!--?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" /--><o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p>&nbsp;</o:p></span></p>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">As an employee of Boehringer Ingelheim, you will actively contribute to the discovery, development and delivery of our products to our patients and customers. Our global presence provides opportunity for all employees to collaborate internationally, offering visibility and opportunity to directly contribute to the companies' success. We realize that our strength and competitive advantage lie with our people. We support our employees in a number of ways to foster a healthy working environment, meaningful work, diversity and inclusion, mobility, networking and work-life balance. Our competitive compensation and benefit programs reflect Boehringer Ingelheim's high regard for our employees.<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p>&nbsp;</o:p></span></p>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Duties &amp; Responsibilities:</span></b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpFirst"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Independently performs scientific experiments with a predefined goal including developing new methodologies, protocols and/or test procedures that that contribute to research goals and reflect expert knowledge. <o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Demonstrates early understanding of research or development team goals and works effectively toward achieving them; Has ability to participate as representative on multiple project teams and contribute to defining expertise-related aspects of overall program goals<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Prepares clear technical reports, publications and oral presentations. Independently communicate results in the form of reports and or presentations; Presents responsibly and defends own work at scientific meetings; May deliver updates to senior level management in context of overall project goals<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Demonstrates expertise in a specific scientific area or technology; Evaluate and propose new technologies and concepts, including recommending specific capital purchases of instrumentation, hardware and software; Demonstrates independent thinking, e.g., by proposing and implementing new experimental designs and concepts that contribute to research goals and reflect expert knowledge; Identifies potential patentable inventions<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Keeps abreast of relevant literature and serves as resource in area of specialized expertise; Develops and maintains outside visibility<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Assumes responsibility for direct reports as needed including recruiting, managing, mentoring and developing scientific staff; May direct and oversee experimental design and results of technicians and junior level scientists<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Complies with all applicable regulations; Ensures that work performed in area of responsibility is conducted in a safe and compliant manner; Maintains proper records in accordance with SOPs and policies<o:p></o:p></span></p>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo1" class="MsoListParagraphCxSpLast"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol; mso-bidi-font-weight: bold"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Contributes to departmental administration; Demonstrates fiscal responsibility with respect to cost of experiments, technology, external collaborations, and travel<o:p></o:p></span></p>
+      </span>
+    </td>
+  </tr>
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Requirements</b></nobr></span></span></td>
+      <td><span class="portal-cel"><span class="portal-static"></span></span>
+        <span class="rti-text">
+          <b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Required Education &amp; Experience: <!--?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" /--><o:p></o:p></span></b></p>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"></p></span></b><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">&nbsp;<o:p></o:p></span><p></p>
+<div style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo2" class="MsoListParagraphCxSpFirst"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Ph.D. Degree with postdoctoral experience (preferred) or 7 years experience as an Informatic Scientist<span style="mso-spacerun: yes">&nbsp; </span>with a track record of results that impact programs, team directions, group activities/procedures, etc&nbsp;</span></div>
+<div style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l0 level1 lfo2" class="MsoListParagraphCxSpFirst"><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p>&nbsp;<br></o:p></span></div>
+<p style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><strong>Eligibility Requirements:<o:p></o:p></strong></span></p>
+<ul>
+<li>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Must be legally authorized to work in the United States.<o:p></o:p></span></div></li>
+<li>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Must be willing to submit to a background investigation, including verification of your past employment, criminal history, and educational background<o:p></o:p></span></div></li>
+<li>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Must be willing to take a drug test and post-offer physical (if required)<o:p></o:p></span></div></li>
+<li>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold">Must be 18 years of age or older</span></div></li></ul>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri; mso-bidi-font-weight: bold"><o:p></o:p></span>&nbsp;</div>
+<div style="LINE-HEIGHT: normal; MARGIN: 0in 0in 0pt" class="MsoNormal"><strong>Desired Experience, Skills and Abilities:</strong> <br><o:p></o:p></div>
+<p style="LINE-HEIGHT: normal; TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l1 level1 lfo1" class="MsoListParagraphCxSpFirst"><span style="FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Demonstrates a broad knowledge and expertise of bioinformatics field, including:<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Expertise with computational bioinformatics tools such as BLAST, SMITH-WATERMAN, pfam, clustalW, etc.<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Expertise with genetic databases such as NCBI, EMBL, ENSEMBL, IMGT, etc<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Familiarity with UNIX/LINUX based computational systems and tools such as perl, python, etc<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Familiarity with database structures and tools such as Oracle and SQL<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l1 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Demonstrates a broad knowledge molecular biology and immunology, including:<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Expertise in designing and utilization of cloning and expression vectors<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Expertise in immunoglobulin genome structure and engineering <o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 1in; mso-add-space: auto; mso-list: l1 level2 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Courier New&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Courier New&#39;"><span style="mso-list: Ignore">o<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Familiarity with NextGen Sequencing methods and tools, especially 454 sequencing<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l1 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Commitment to working closely, effectively, and accountably in a results oriented<span style="mso-spacerun: yes">&nbsp; </span>interdisciplinary team environment<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l1 level1 lfo1" class="MsoListParagraphCxSpMiddle"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Ability to communicate effectively both orally and in writing in an inter-disciplinary environment.<o:p></o:p></span></p>
+<p style="TEXT-INDENT: -0.25in; MARGIN: 0in 0in 0pt 0.5in; mso-add-space: auto; mso-list: l1 level1 lfo1" class="MsoListParagraphCxSpLast"><span style="LINE-HEIGHT: 115%; FONT-FAMILY: Symbol; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: Symbol; mso-bidi-font-family: Symbol"><span style="mso-list: Ignore">·<span style="FONT: 7pt &#39;Times New Roman&#39;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri">Appropriate level of understanding of applicable regulations<o:p></o:p></span></p>
+<div style="MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p>&nbsp;</o:p></span></div>
+<div style="MARGIN: 0in 0in 0pt" class="MsoNormal"><span style="LINE-HEIGHT: 115%; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-ascii-font-family: Calibri; mso-hansi-font-family: Calibri; mso-bidi-font-family: Calibri"><o:p></o:p></span><span style="LINE-HEIGHT: 115%; FONT-FAMILY: &#39;Calibri&#39;,&#39;sans-serif&#39;; COLOR: black; FONT-SIZE: 10pt; mso-fareast-font-family: &#39;Times New Roman&#39;; mso-fareast-language: EN-US; mso-ansi-language: EN-US; mso-bidi-language: AR-SA">Boehringer Ingelheim is firmly committed to ensuring a safe, healthy, productive and efficient work environment for our employees, partners and customers. As part of that commitment, Boehringer Ingelheim conducts pre-employment background investigations and drug screenings. Boehringer Ingelheim is an equal opportunity employer. M/F/D/V</span></div>
+        </span>
+      </td>
+    </tr>
+  
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Division</b></nobr></span></span></td>
+      <td name="division" id="division"><span class="rti-text">BIPI</span></td>
+    </tr>
+  
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Category</b></nobr></span></span></td>
+      <td name="category" id="category"><span class="rti-text"><span class="rti-text">Science/Research &amp; Development</span></span></td>
+    </tr>
+  
+  <tr valign="top">
+    <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Req ID</b></nobr></span></span></td>
+    <td name="num" id="num"><span class="rti-text"><span class="rti-text">RD09211</span></span></td>
+  </tr>
+  <tr valign="top">
+    <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Num Openings</b></nobr></span></span></td>
+    <td><span class="rti-text"><span class="rti-text">1</span></span></td>
+  </tr>
+  
+  <tr valign="top">
+    <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Date Posted</b></nobr></span></span></td>
+    <td><span class="rti-text"><span class="rti-text">7/23/2011</span></span></td>
+  </tr>
+  
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Type</b></nobr></span></span></td>
+      <td name="typeOfFulltime" id="typeOfFulltime"><span class="rti-text">Full-time</span></td>
+    </tr>
+  
+  
+    <tr valign="top">
+      <td nowrap=""><span class="rti-title"><span class="rti-title"><nobr><b>Location</b></nobr></span></span></td>
+      <td><span class="rti-text"><span class="rti-text">CT, Ridgefield</span></span></td>
+    </tr>
+  
+  
+  <tr>
+    <td height="10"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" height="10"></span></td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2"><table border="0" cellpadding="0" cellspacing="0" align="center">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="./boehringer ingelheim senior scientist bioinformatics_files/in.js">
+  api_key: zop6rvp0npbh
+</script>
+
+
+  <input type="hidden" name="_linkedInApplicationID" value="122478966">
+
+  <script>
+
+    job_applywithlinkedin_receipt = function() {
+      job_applywithlinkedin_show_rows("rti_apply_row", false);
+      job_applywithlinkedin_show_rows("rti_apply_with_linkedin_row_preapply", false);
+      job_applywithlinkedin_show_rows("rti_apply_with_linkedin_row_pollapply", false);
+      try {
+        rti_job_apply();
+      }
+      catch (ignored) { }
+    }
+
+    job_applywithlinkedin_show_rows = function(sectionName, sectionState) {
+      var rows = document.getElementsByName(sectionName);
+      if (rows) {
+        if (rows.style)
+          rows = new Array(rows);
+        for (var i = 0; i < rows.length; i++)
+          rows[i].style.display = sectionState? 'table-row' : "none";
+      }
+    }
+
+    job_applywithlinkedin_success = function(r) {
+      job_applywithlinkedin_show_rows("rti_apply_row", false);
+      job_applywithlinkedin_show_rows("rti_apply_with_linkedin_row_preapply", false);
+      job_applywithlinkedin_show_rows("rti_apply_with_linkedin_row_pollapply", true);
+      Ajax_inject("job_applywithlinkedin_poll",
+                  "job_applywithlinkedin_poll.ajax",
+                  null,
+                  null,
+                  "_linkedInApplicationID=" + '122478966');
+    }
+
+  </script>
+
+  <tbody><tr name="rti_apply_with_linkedin_row" id="rti_apply_with_linkedin_row">
+    <td align="center"><table border="0" cellpadding="0" cellspacing="0" align="center">
+      <tbody><tr>
+        <td bgcolor="#eeeeee"><table border="0" cellpadding="8" cellspacing="0" bgcolor="#eeeeee" class="controlpanel">
+          <tbody><tr valign="top">
+
+            <td><table border="0" cellpadding="0" cellspacing="0">
+
+              <tbody><tr name="rti_apply_with_linkedin_row_preapply" id="rti_apply_with_linkedin_row_preapply">
+                <td><span class="portal-cel"><span class="portal-static"></span></span>
+                  <div class="rti-text">
+                    <img align="absmiddle" src="./boehringer ingelheim senior scientist bioinformatics_files/info.dbrez"> <!--sitetranslationpushoff-->If you are a member, you can apply for this job via LinkedIn. We'll learn more about you from your LinkedIn profile and you'll see who in your network is connected to us before you start the application process.<!--sitetranslationpop-->
+                  </div>
+                </td>
+              </tr>
+
+              <tr name="rti_apply_with_linkedin_row_pollapply" id="rti_apply_with_linkedin_row_pollapply" style="display:none">
+                <td><span class="portal-cel"><span class="portal-static"></span></span>
+                  <div class="rti-text">
+                    <img align="absmiddle" src="./boehringer ingelheim senior scientist bioinformatics_files/wait.dbrez"> <!--sitetranslationpushoff-->Please standby while we receive your LinkedIn Profile. You will shortly be automatically transferred to proceed with your application. So that we can find your information correctly, please be sure when asked for an email address to give the <strong>same email address as you use in your LinkedIn account</strong>.<!--sitetranslationpop-->
+                  </div>
+                  
+                  <script>  Ajax_applicationURL = 'http://www.boehringeringelheim.candidatecare.com/srccsh';</script>
+<div id="job_applywithlinkedin_poll" style="display:inline"></div>
+
+                </td>
+              </tr>
+
+            </tbody></table></td>
+
+            <td><span class="portal-cel"><span class="portal-static"></span></span>
+              <script type="IN/Apply" data-companyname="Boehringer Ingelheim" data-logo="https://www.candidatecare.com/srccsh/bi_logo.dbrez?oemID=RTI_Gateway" data-jobid="2000008396810" data-joblocation="CT - Ridgefield" data-jobtitle="Senior Scientist, Bioinformatics" data-meta="122478966" data-onsuccess="job_applywithlinkedin_success" data-showtext="false" data-themecolor="#1a3373" data-url="https://www.candidatecare.com/srccsh/job_applywithlinkedin_posting.guid?x=2275&amp;r=2000008396810&amp;c=939&amp;o=true" data-urlformat="xml">
+              </script>
+            </td>
+
+          </tr>
+        </tbody></table></td>
+      </tr>
+      <tr>
+        <td height="8"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" height="8"></span></td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+
+
+
+      <tr name="rti_apply_row" id="rti_apply_row">
+        <td align="center"><table border="0" cellpadding="0" cellspacing="0" align="center">
+          <tbody><tr>
+            
+              
+                <td name="__sendbutton" id="__sendbutton" align="right" height="26"><span class="rti-button"><input type="hidden" name="__sendbutton"><button class="rti-button" onclick="rti_job_refer(&quot;__sendbutton&quot;,true,this,event)" style="height:26" id="__sendbutton_button" name="__sendbutton_button" type="button"><nobr><img src="./boehringer ingelheim senior scientist bioinformatics_files/email.dbrez" align="absmiddle"> <!--sitetranslationpushoff-->Share Job with Network<!--sitetranslationpop--></nobr></button></span></td>
+                <td width="10"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" width="10"></span></td>
+              
+            
+            <td name="__applybutton" id="__applybutton" align="right" height="26"><span class="rti-button"><input type="hidden" name="__applybutton"><button class="rti-button" onclick="rti_job_apply(&quot;__applybutton&quot;,true,this,event)" style="height:26" id="__applybutton_button" name="__applybutton_button" type="button"><nobr>Submit Electronic Resume <img src="./boehringer ingelheim senior scientist bioinformatics_files/navigate_next.dbrez" align="absmiddle"></nobr></button></span></td>
+          </tr>
+        </tbody></table></td>
+      </tr>
+    </tbody></table></td>
+  </tr>
+</tbody></table>
+
+
+</td>
+</tr>
+<tr>
+
+    <td>
+<img src="./boehringer ingelheim senior scientist bioinformatics_files/shim.dbrez" height="10"></td>
+</tr>
+<tr>
+
+    <td background="./boehringer ingelheim senior scientist bioinformatics_files/hdot.dbrez">
+</td>
+</tr>
+<tr>
+
+    <td>
+<img src="./boehringer ingelheim senior scientist bioinformatics_files/shim.dbrez" height="5"></td>
+</tr>
+<tr>
+
+    <td width="100%">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody><tr valign="top">
+    <td align="left" nowrap=""><span class="portal-cel"><span class="portal-static"><nobr></nobr></span></span>
+      <div class="normal">
+        Boehringer Ingelheim
+        
+          <img align="absmiddle" border="0" hspace="2" src="./boehringer ingelheim senior scientist bioinformatics_files/phone3.dbrez">866-909-9247
+        
+      </div>
+    </td>
+    <td align="center" width="100" height="1"><span class="portal-cel"><img border="0" src="./boehringer ingelheim senior scientist bioinformatics_files/shim.gif.rez" width="100" height="1"></span></td>
+    <td align="right" nowrap=""><span class="portal-cel"><span class="portal-static"><nobr></nobr></span></span>
+      <a class="normal" href="http://www.rightthinginc.com/" target="_blank">
+        © 2011 The RightThing, an ADP Company. All Rights Reserved.
+    </a></td>
+  </tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<input type="hidden" name="_cache" value="8370562988590913682">
+</form>
+
+</body></html>

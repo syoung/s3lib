@@ -1,0 +1,3038 @@
+Notes-apps-bioscope.txt
+
+
+</entry>
+
+
+
+<entry [Thurs Jul  15 11:30:53 EDT 2010] INSTALLED VERSION 1.2.1-5>
+
+
+
+
+1. DOWNLOADED AND INSTALLED TEST DATA SET ON KRONOS
+
+
+cd /nethome/syoung/base/apps/bioscope/
+tar xvfz BioScope-1.2.1.rBS121_Final-47775_20100625065850.examples.tar.gz
+cd BioScope_1.2.1-installer
+./autoinstall.sh
+
+[syoung@u01 BioScope_1.2.1-installer]$ ./autoinstall.sh 
+
+If its an update from existing installation, 
+make sure there are no jobs running in BioScope and to stop ActiveMQ process 
+Choose the installer type 
+Refer to documentation for more help 
+Enter 1 for BioScope with command line 
+Enter 2 for BioScope with command line and web interface 
+Enter 3 to upgrade BioScope with command line to web interface 
+Enter 4 for  BioScope with auto-export support -- Requires root access
+Enter 5 to upgrade BioScope to 1.2.1 release 
+CTRL + C to quit 
+1
+Enter directory for installing Bioscope [/opt/bioscope-1.2]: 
+/nethome/syoung/base/apps/bioscope/1.2.1-5
+
+
+Enter the group which the user running Bioscope belongs to [users]: 
+bioinfo
+
+
+BioScope currently supports SGE and PBS Torque resource managers, or it could be run in single server mode 
+Pick one of the above choices, enter NONE to run in single server mode [SGE/PBS/NONE]
+PBS
+Resource manager is set to TORQUE 
+
+
+Enter the name of the queue that will be used for Bioscope [bs_secondary]: 
+psmall
+
+
+Enter the hostname of the head node or master node (node submitting the jobs): 
+kronos-x.ccs.miami.edu
+
+
+Enter the location for Bioscope 'results' directory: 
+(Ex: /opt/bioscope/results )
+/nethome/syoung/base/apps/bioscope/1.2.1-5/results
+
+
+Enter the location of local temp/scratch directory on all nodes (master and slave): 
+(Ex: /local/scratch )
+/tmp
+
+
+Enter the number of nodes that will be used for BioScope: 
+32
+
+
+Enter the number of cores on each compute node: 
+8
+
+
+Enter the size of memory on each compute node in gigabytes: 
+16
+
+
+...
+apache-activemq-5.3.0/data/activemq.log
+apache-activemq-5.3.0/docs/
+apache-activemq-5.3.0/docs/index.html
+ Installation is complete .. 
+ Copy bioscope_profile.sh file to /etc/profile.d/ directory to make BIOSCOPEROOT path global to all users by default 
+ root privileges are needed to copy this file to /etc/profile.d directory 
+ NOTE: Remove corona.sh and corona.csh files from /etc/profile.d/ directory if exists 
+ 
+ or Add the following lines in the user local bash profile to set BIOSCOPEROOT path
+  ------------------- ----------------- --------------- 
+# Check if BIOSCOPEROOT is set and set it if null
+#: ${BIOSCOPEROOT:=/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope}
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope
+
+if [ -d ${BIOSCOPEROOT}/etc/profile.d ]
+then
+   for i in ${BIOSCOPEROOT}/etc/profile.d/*.sh; do
+	  if [ -r "$i" ]; then
+		  . $i
+	  fi
+   done
+   unset i
+fi
+------------------- ----------------- --------------- 
+
+Java path found :  /nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin/java
+
+
+
+
+
+2. OPEN PORT 61616 
+
+ADD PORT 61616 TO /etc/services 
+
+sudo su
+emacs /etc/services
+
+	# Local services
+activemq        61616/tcp                       # ActiveMQ
+activemq        61617/tcp                       # ActiveMQ
+
+
+CHECK ITS OPEN
+
+#cat /etc/services | grep 61616
+netstat -nan | grep 61616
+nmap -sS -O kronos-x.ccs.miami.edu
+
+#telnet kronos-x.ccs.miami.edu 61616
+
+sudo su
+telnet kronos-x.ccs.miami.edu 61616
+	Trying 204.68.94.33...
+	Connected to kronos-x.ccs.miami.edu (204.68.94.33).
+	Escape character is '^]'.
+	...
+	
+	
+OPEN!!!!
+
+
+
+3. START ACTIVEMQ
+
+FILE start-ActiveMQ.sh:
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5
+cat start-ActiveMQ.sh
+
+	#!/bin/bash                                                                                                           	
+	process_name=activemq
+	# start JMS in the background                                                                                             
+	ps_count=`ps -ef | grep -v 'grep' | grep -v 'kill' |grep -v 'start-ActiveMQ.sh'| grep -c $process_name`
+	if [ $ps_count = 0 ]; then
+			echo " Starting activemq .... "
+			cd apache-activem*/
+			nohup bin/activemq > logs/smlog 2>&1 &
+	else
+			echo " JMS already running "
+	fi
+
+
+
+THE ACTIVEMQ PORT CONFIGURATION INFORMATION IS HERE:
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0
+grep -n 61616 conf/*
+
+	conf/activemq-demo.xml:123:            <networkConnector name="host1 and host2" uri="static://(tcp://host1:61616,tcp://host2:61616)"/>
+	conf/activemq-demo.xml:199:            <transportConnector name="openwire" uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
+	conf/activemq-dynamic-network-broker1.xml:65:            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616" discoveryUri="multicast://default" />
+	conf/activemq-jdbc.xml:39:       <transportConnector name="default" uri="tcp://0.0.0.0:61616"/>
+	conf/activemq-scalability.xml:72:            <transportConnector name="nio" uri="nio://0.0.0.0:61616"/>
+	conf/activemq-security.xml:79:       <transportConnector name="default" uri="tcp://0.0.0.0:61616"/>
+	conf/activemq-static-network-broker1.xml:58:            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+	conf/activemq-static-network-broker2.xml:53:            <networkConnector uri="static:(tcp://localhost:61616)" duplex="true"/>
+	conf/activemq-throughput.xml:74:            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+	conf/activemq.xml:121:            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616?transport.keepAliveResponseRequired=true"/>
+
+
+
+
+
+RUN COMMAND AS syoung
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5
+./start-ActiveMQ.sh
+
+	Starting activemq .... 
+
+
+
+CHECK ITS RUNNING:
+
+ps aux | grep active
+
+	syoung   10905 31.3  0.2 867692 74756 pts/4    Sl   21:50   0:02 /nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin/java -Xmx512M -Dorg.apache.activemq.UseDedicatedTaskRunner=true -Djava.util.logging.config.file=logging.properties -Dcom.sun.management.jmxremote -Dactivemq.classpath=/nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/conf; -Dactivemq.home=/nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0 -Dactivemq.base=/nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0 -jar /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/bin/run.jar start
+
+
+
+
+
+
+
+4. RUN TEST SCRIPT
+
+
+#### CHANGE TO ROOT
+sudo su
+
+#### ADD PATHS FOR BIOSCOPE
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope
+PATH=/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope/bin:$PATH
+PATH=/nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin:$PATH
+
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5/examples/demos/mapping
+./run.sh
+
+
+
+	
+	16 Jul 2010 22:06:56,563  WARN [main] root:103 - Problem starting log file. Insufficient file system permissions.
+	java.io.FileNotFoundException: demo.log (Permission denied)
+			at java.io.FileOutputStream.open(Native Method)
+			at java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+			at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+			at org.apache.log4j.FileAppender.setFile(FileAppender.java:290)
+			at org.apache.log4j.RollingFileAppender.setFile(RollingFileAppender.java:194)
+			at org.apache.log4j.FileAppender.<init>(FileAppender.java:109)
+			at org.apache.log4j.RollingFileAppender.<init>(RollingFileAppender.java:72)
+			at com.apldbio.aga.analysis.logutil.Log4JManipulator.addNewRollingFileAppender(Log4JManipulator.java:94)
+			at com.apldbio.aga.analysis.logutil.Log4JManipulator.addAnAppender(Log4JManipulator.java:254)
+			at com.apldbio.aga.analysis.logutil.LogManipulator.addAppender(LogManipulator.java:281)
+			at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:105)
+	16 Jul 2010 22:06:56,563  WARN [main] root:103 - Problem starting log file. Insufficient file system permissions.
+	java.io.FileNotFoundException: demo.log (Permission denied)
+			at java.io.FileOutputStream.open(Native Method)
+			at java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+			at java.io.FileOutputStream.<init>(FileOutputStream.java:102)
+			at org.apache.log4j.FileAppender.setFile(FileAppender.java:290)
+			at org.apache.log4j.RollingFileAppender.setFile(RollingFileAppender.java:194)
+			at org.apache.log4j.FileAppender.<init>(FileAppender.java:109)
+			at org.apache.log4j.RollingFileAppender.<init>(RollingFileAppender.java:72)
+			at com.apldbio.aga.analysis.logutil.Log4JManipulator.addNewRollingFileAppender(Log4JManipulator.java:94)
+			at com.apldbio.aga.analysis.logutil.Log4JManipulator.addAnAppender(Log4JManipulator.java:254)
+			at com.apldbio.aga.analysis.logutil.LogManipulator.addAppender(LogManipulator.java:281)
+			at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:105)
+	16 Jul 2010 22:06:56,579  INFO [main] PluginJobManager:107 - >>>> START of PluginJobManager >>>> date=2010-07-16 22:06:56.551  EDT
+	16 Jul 2010 22:06:56,579  INFO [main] PluginJobManager:107 - >>>> START of PluginJobManager >>>> date=2010-07-16 22:06:56.551  EDT
+	16 Jul 2010 22:06:56,613  INFO [main] PluginJobManager:110 - Bioscope version: bioscope-v1.2.1-rBS121_Final_47775_20100625065850 
+	16 Jul 2010 22:06:56,613  INFO [main] PluginJobManager:110 - Bioscope version: bioscope-v1.2.1-rBS121_Final_47775_20100625065850 
+	16 Jul 2010 22:06:57,756 FATAL [main] PluginJobManager:119 - Bioscope unable to connect to JMS. Please contact your system administrator
+	javax.jms.JMSException: Could not connect to broker URL: tcp://kronos-x.ccs.miami.edu:61616?wireFormat.MaxInactivityDuration=-1. Reason: java.net.ConnectException: Connection refused
+
+
+
+
+
+
+
+
+NOTES
+=====
+
+
+
+
+
+OPEN PORT 61616
+---------------
+
+
+1. RESTART IPTABLES AND IP6TABLES
+
+IPTABLES
+
+service iptables stop
+
+	Setting chains to policy ACCEPT: filter [  OK  ]
+	Unloading iptables modules: [  OK  ]
+
+service iptables start
+
+	<no output>
+
+
+service iptables status
+
+	Table: filter
+	Chain INPUT (policy ACCEPT)
+	num  target     prot opt source               destination         
+	1    ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpts:61616:61617 
+	
+	Chain FORWARD (policy ACCEPT)
+	num  target     prot opt source               destination         
+	
+	Chain OUTPUT (policy ACCEPT)
+	num  target     prot opt source               destination
+
+	
+IP6TABLES
+
+service ip6tables start
+	Flushing firewall rules: [  OK  ]
+	Setting chains to policy ACCEPT: filter [  OK  ]
+	Unloading ip6tables modules: [  OK  ]
+
+service ip6tables start
+
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+	Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination   
+
+
+
+1. ADD TO /etc/services
+
+emacs /etc/services
+
+	com-bardac-dw   48556/udp                       # com-bardac-dw
+	iqobject        48619/tcp                       # iqobject
+	iqobject        48619/udp                       # iqobject
+	
+	
+	# Local services
+	activemq        61616/tcp                       # activemq
+	activemq        61617/tcp                       # activemq
+
+
+ADD TO IPTABLES
+
+/sbin/iptables -L
+/sbin/iptables -A INPUT -p tcp --dport 61616:61617 -j ACCEPT
+/sbin/iptables -L
+
+
+CHECK ITS ACTUALLY LISTENING ON PORT 61616:
+
+netstat -nan | grep 61616
+
+	<NO OUTPUT>
+	
+telnet kronos-x.ccs.miami.edu 61616
+
+SHOULD GET THIS OUTPUT:
+
+	tcp        0      0 :::61616                    :::*                        LISTEN      
+
+
+
+ADD TO IP6TABLES
+
+/sbin/ip6tables -L
+/sbin/ip6tables -A INPUT -p tcp --dport 61616:61617 -j ACCEPT
+/sbin/ip6tables -L
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+
+
+SAVE SETTINGS
+
+/sbin/service iptables save
+
+
+
+
+###2. START/RESTART IP6TABLES
+###
+####service ip6tables start
+###/sbin/ip6tables -F
+###/sbin/ip6tables -L
+###
+######OPEN PORTS 61616 AND 61617
+####### Accept tcp packets on destination ports 61616-61617
+###
+###sudo su
+###/sbin/ip6tables -A INPUT -p tcp --dport 61616:61617 -j ACCEPT
+###	
+###	Chain INPUT (policy ACCEPT)
+###	target     prot opt source               destination         
+###	ACCEPT     tcp      anywhere             anywhere           tcp dpts:61616:61617 
+###	
+###	Chain FORWARD (policy ACCEPT)
+###	target     prot opt source               destination         
+###	
+###	Chain OUTPUT (policy ACCEPT)
+###	target     prot opt source               destination
+###	
+###netstat -nan | grep 61616
+###	<nothing>
+###	
+###telnet kronos-x.ccs.miami.edu 61616
+###	Trying 204.68.94.33...
+###	telnet: connect to address 204.68.94.33: Connection refused
+###	telnet: Unable to connect to remote host: Connection refused
+
+###CHECK ITS ADDED:
+
+/sbin/ip6tables -L
+
+	Chain INPUT (policy ACCEPT)
+	target     prot opt source               destination         
+	ACCEPT     tcp      anywhere             anywhere           tcp dpts:activemq:activemq 
+	
+	Chain FORWARD (policy ACCEPT)
+	target     prot opt source               destination         
+	
+	Chain OUTPUT (policy ACCEPT)
+	target     prot opt source               destination
+
+
+### THIS IS THE CORRECT OUTPUT WHICH WILL ALLOW CONNECTION BY telnet
+###
+###	Chain INPUT (policy ACCEPT)
+###	target     prot opt source               destination         
+###	ACCEPT     tcp      anywhere             anywhere           tcp dpts:61616:61617 
+###	
+###	Chain FORWARD (policy ACCEPT)
+###	target     prot opt source               destination         
+###	
+###	Chain OUTPUT (policy ACCEPT)
+###	target     prot opt source               destination
+###
+
+
+
+CHECK IT WORKED:
+
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+	Chain INPUT (policy ACCEPT 140 packets, 17386 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination         
+	1        0     0 ACCEPT     tcp      *      *       ::/0                 ::/0               tcp dpts:61616:61617 
+
+
+cat /etc/services | grep 61616
+
+
+
+CHECK ITS ACTUALLY LISTENING ON PORT 61616:
+
+netstat -nan | grep 61616
+
+
+
+SHOULD GET THIS OUTPUT
+#	tcp        0      0 :::61616                    :::*                        LISTEN      
+
+
+TYPICAL netstat OUTPUT:
+
+	Active Internet connections (servers and established)
+	Proto Recv-Q Send-Q Local Address               Foreign Address             State      
+	tcp        0      0 127.0.0.1:199               0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:1191                0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:8649                0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:874                 0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:111                 0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:46611               0.0.0.0:*                   LISTEN      
+	tcp        0      0 127.0.0.1:631               0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:15002               0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:15003               0.0.0.0:*                   LISTEN      
+	tcp        0      0 0.0.0.0:44126               0.0.0.0:*                   LISTEN
+
+
+TELNET
+
+
+telnet kronos-x.ccs.miami.edu 61616
+
+
+
+RESTART ACTIVEMQ
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5
+
+
+CHECK CAN CONNECT USING TELNET
+
+
+
+
+
+
+
+
+
+DELETE ENTRIES FROM IPTABLE
+
+/sbin/ip6tables -L
+
+	Chain INPUT (policy ACCEPT)
+	target     prot opt source               destination         
+	ACCEPT     tcp      anywhere             anywhere           tcp dpts:3activemq:61617 
+	ACCEPT     tcp      anywhere             anywhere           tcp dpts:3activemq:61617 
+	
+	Chain FORWARD (policy ACCEPT)
+	target     prot opt source               destination         
+	
+	Chain OUTPUT (policy ACCEPT)
+	target     prot opt source               destination
+
+
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+	Chain INPUT (policy ACCEPT 134 packets, 16954 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination         
+	1        0     0 ACCEPT     tcp      *      *       ::/0                 ::/0               tcp dpts:61616:61617 
+	2        0     0 ACCEPT     tcp      *      *       ::/0                 ::/0               tcp dpts:61616:61617 
+
+
+/sbin/ip6tables --table filter --delete INPUT 1 
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+	Chain INPUT (policy ACCEPT 137 packets, 17170 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination         
+	1        0     0 ACCEPT     tcp      *      *       ::/0                 ::/0               tcp dpts:61616:61617 
+
+/sbin/ip6tables --table filter --delete INPUT 1 
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+	Chain INPUT (policy ACCEPT 139 packets, 17314 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination    
+
+
+
+ADD BACK CORRECT IP6TABLES ENTRY
+
+sudo su
+/sbin/iptables -A INPUT -p tcp --dport 61616:61617 -j ACCEPT
+/sbin/ip6tables -n -v --line-numbers -L INPUT
+
+
+	Chain INPUT (policy ACCEPT 15 packets, 1096 bytes)
+	num   pkts bytes target     prot opt in     out     source               destination         
+	1        0     0 ACCEPT     tcp      *      *       ::/0                 ::/0               tcp dpts:61616:61617
+
+
+
+
+
+
+CHECKED activemq LOGS AND FOUND PERMISSIONS PROBLEM:
+
+
+
+emacs /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/logs/smlog
+
+
+	INFO | Database /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/data/kahadb/lock is locked... waiting 10 s	econds for the database to be unlocked. Reason: java.io.FileNotFoundException: /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/data/kahadb/lock (Permission denied)
+
+
+ll /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/data/kahadb/lock
+
+	-rw-r--r-- 1 root root 0 Jul 16 21:16 /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/data/kahadb/lock
+
+
+
+SO FIXED AS ROOT:
+
+
+chown syoung /nethome/syoung/base/apps/bioscope/1.2.1-5/apache-activemq-5.3.0/data/kahadb/lock
+
+
+AND RESTARTED ACTIVEMQ
+
+
+
+
+MAPPING LOG FILE
+----------------
+
+
+-rw-r--r-- 1 syoung bioinfo 2.8K Jul 16 21:48 Mapping.1.main.20100717014842720.log
+[syoung@u01 log]$ cat *log
+16 Jul 2010 21:48:42,775  INFO [main] PluginRunner:169 - >>>> START of PluginRunner >>>> date=2010-07-16 21:48:41.612  EDT
+16 Jul 2010 21:48:42,778  INFO [main] PluginRunner:170 - >>>>SYSTEM INFO >>>> Max Memory (MB)=61
+16 Jul 2010 21:48:42,778  INFO [main] PluginRunner:171 - >>>>SYSTEM INFO >>>> Allocated Memory (MB)=61
+16 Jul 2010 21:48:42,779  INFO [main] PluginRunner:172 - >>>>SYSTEM INFO >>>> Free Memory (MB)=53
+16 Jul 2010 21:48:42,785  INFO [main] PluginRunner:174 - Bioscope version: bioscope-v1.2.1-rBS121_Final_47775_20100625065850 
+16 Jul 2010 21:48:42,996  INFO [main] MappingPipeline:425 - setUpDistributeParams() minNumReads=10000000
+16 Jul 2010 21:48:42,997  INFO [main] MappingPipeline:426 - setUpDistributeParams() npPerNode=8
+16 Jul 2010 21:48:42,998  INFO [main] MappingPipeline:427 - setUpDistributeParams() numNodes=32
+16 Jul 2010 21:48:42,998  INFO [main] MappingPipeline:448 - refFile = /data/results/bioscope1.0/examples/demos/references//DH10B_WithDup_FinalEdit_validated.fasta
+16 Jul 2010 21:48:43,000 FATAL [main] PluginRunner:209 - java.io.IOException: ReferenceFile does not exist: /data/results/bioscope1.0/examples/demos/references/DH10B_WithDup_FinalEdit_validated.fasta
+ at com.apldbio.aga.analysis.secondary.mapping.MappingPipeline.setUpRefParams(MappingPipeline.java:459)
+com.apldbio.aga.analysis.secondary.mapping.MappingPipeline.validateParams(MappingPipeline.java:329)
+com.apldbio.aga.analysis.exec.PluginRunner.preparePipeline(PluginRunner.java:136)
+com.apldbio.aga.analysis.exec.PluginRunner.doMain(PluginRunner.java:177)
+com.apldbio.aga.analysis.exec.PluginRunner.main(PluginRunner.java:431)
+
+
+16 Jul 2010 21:48:43,022  INFO [main] JMSEventSender:78 - Event '[FATAL] PluginRunner java.io.IOException: ReferenceFile does not exist: /data/results/bioscope1.0/examples/demos/references/DH10B_WithDup_FinalEdit_validated.fasta
+ at com.apldbio.aga.analysis.secondary.mapping.MappingPipeline.setUpRefParams(MappingPipeline.java:459)
+com.apldbio.aga.analysis.secondary.mapping.MappingPipeline.validateParams(MappingPipeline.java:329)
+com.apldbio.aga.analysis.exec.PluginRunner.preparePipeline(PluginRunner.java:136)
+com.apldbio.aga.analysis.exec.PluginRunner.doMain(PluginRunner.java:177)
+com.apldbio.aga.analysis.exec.PluginRunner.main(PluginRunner.java:431)
+
+' sent on selector '3143e712-1296-4a87-a443-0a7dd10a1b72'
+16 Jul 2010 21:48:43,024  INFO [main] PluginRunner:441 - >>>> END of PluginRunner >>>> date=2010-07-16 21:48:43.024  EDT
+16 Jul 2010 21:48:43,024  INFO [main] PluginRunner:442 - >>>> END of PluginRunner >>>> date DURATION=1 secs 
+16 Jul 2010 21:48:43,025  INFO [main] EventTransportFactory:129 - Closing JMS connection and session
+ on call from:
+com.apldbio.aga.analysis.exec.PluginRunner.main(PluginRunner.java:444)
+
+[syoung@u01 log]$ date
+Fri Jul 16 21:55:23 EDT 2010
+[syoung@u01 log]$ pwd
+/nethome/syoung/base/apps/bioscope/1.2.1-5/examples/demos/mapping/log
+
+
+
+
+
+FILE PERMISSIONS ERROR
+----------------------
+
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1-5/examples/demos/mapping
+./run.sh
+
+	+/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope/bin+
+	+/nethome/syoung/base/apps/bioscope/1.2.1-5/bioscope+
+	16 Jul 2010 21:28:16,625  INFO [main] PluginJobManager:107 - >>>> START of PluginJobManager >>>> date=2010-07-16 21:28:16.601  EDT
+	16 Jul 2010 21:28:16,744  INFO [main] PluginJobManager:110 - Bioscope version: bioscope-v1.2.1-rBS121_Final_47775_20100625065850 
+	16 Jul 2010 21:28:17,777 FATAL [main] PluginJobManager:119 - Bioscope unable to connect to JMS. Please contact your system administrator
+	javax.jms.JMSException: Could not connect to broker URL: tcp://kronos.ccs.miami.edu:61616?wireFormat.MaxInactivityDuration=-1. Reason: java.net.ConnectException: Connection refused
+			at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:35)
+			at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:283)
+			at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:227)
+			at org.apache.activemq.ActiveMQConnectionFactory.createTopicConnection(ActiveMQConnectionFactory.java:205)
+			at com.apldbio.aga.analysis.event.EventTransportFactory$JMSEventTransportFactory.init(EventTransportFactory.java:102)
+			at com.apldbio.aga.analysis.event.EventTransportFactory$JMSEventTransportFactory.getEventReceiver(EventTransportFactory.java:147)
+			at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:113)
+	Caused by: java.net.ConnectException: Connection refused
+			at java.net.PlainSocketImpl.socketConnect(Native Method)
+			at java.net.PlainSocketImpl.doConnect(PlainSocketImpl.java:333)
+			at java.net.PlainSocketImpl.connectToAddress(PlainSocketImpl.java:195)
+			at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:182)
+			at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:366)
+			at java.net.Socket.connect(Socket.java:529)
+			at org.apache.activemq.transport.tcp.TcpTransport.connect(TcpTransport.java:435)
+			at org.apache.activemq.transport.tcp.TcpTransport.doStart(TcpTransport.java:401)
+			at org.apache.activemq.util.ServiceSupport.start(ServiceSupport.java:53)
+			at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+			at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+			at org.apache.activemq.transport.WireFormatNegotiator.start(WireFormatNegotiator.java:72)
+			at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+			at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+			at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:263)
+			... 5 more
+	16 Jul 2010 21:28:17,781  INFO [main] PluginJobManager:128 - >>>> END of PluginJobManager >>>> date=2010-07-16 21:28:17.781  EDT
+	16 Jul 2010 21:28:17,782  INFO [main] PluginJobManager:130 - >>>> END of PluginJobManager >>>> date DURATION=1 secs 
+	16 Jul 2010 21:28:17,783  INFO [main] EventTransportFactory:129 - Closing JMS connection and session
+	 on call from:
+	com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:132)
+	
+	java.lang.NullPointerException
+			at com.apldbio.aga.analysis.event.EventTransportFactory$JMSEventTransportFactory.closeConnection(EventTransportFactory.java:131)
+			at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:132)
+
+
+
+
+
+IP6TABLES COMMANDS
+------------------
+http://tldp.org/HOWTO/Linux+IPv6-HOWTO/x2228.html
+
+START IPTABLES ON BOOT (**** DOESN'T WORK ****)
+
+chkconfig iptables on
+
+	bash: chkconfig: command not found
+
+
+START
+
+service ip6tables start
+
+
+List all IPv6 netfilter entries
+
+	Short
+	# ip6tables -L 
+
+	Extended
+	# ip6tables -n -v --line-numbers -L 
+
+
+List specified filter
+	
+	# ip6tables -n -v --line-numbers -L INPUT 
+
+	
+Insert a log rule at the input filter with options
+	
+	# ip6tables --table filter --append INPUT  -j LOG --log-prefix "INPUT:"
+	¬ --log-level 7 
+
+	
+Insert a drop rule at the input filter
+	
+	# ip6tables --table filter --append INPUT  -j DROP 
+
+
+Delete a rule by number
+	
+/sbin/ip6tables --table filter --delete INPUT 1 
+
+
+Enable connection tracking
+	
+	Since kernel version 2.6.20 IPv6 connection tracking is well supported and should be used instead of using stateless filter rules.
+	
+	# ip6tables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+
+
+
+
+CHECK PORT 61316 IS OPEN
+------------------------
+
+http://www.planetmy.com/blog/how-to-check-which-port-is-listern-or-open-on-linux/
+
+How to check and open ports in Linux
+
+
+
+cat /etc/services | grep 61616
+
+
+netstat -nan | grep 61616
+
+	tcp        0      0 :::61616                    :::*                        LISTEN      
+
+
+ nmap -sS -O kronos-x.ccs.miami.edu
+
+Starting Nmap 4.11 ( http://www.insecure.org/nmap/ ) at 2010-07-16 22:35 EDT
+Interesting ports on kronos-x.ccs.miami.edu (204.68.94.33):
+Not shown: 1677 closed ports
+PORT    STATE SERVICE
+22/tcp  open  ssh
+111/tcp open  rpcbind
+874/tcp open  unknown
+No exact OS matches for host (If you know what OS is running on it, see http://www.insecure.org/cgi-bin/nmap-submit.cgi).
+TCP/IP fingerprint:
+SInfo(V=4.11%P=x86_64-redhat-linux-gnu%D=7/16%Tm=4C4116E4%O=22%C=1)
+TSeq(Class=RI%gcd=1%SI=4D88F5%IPID=Z%TS=1000HZ)
+TSeq(Class=RI%gcd=1%SI=4D87B5%IPID=Z%TS=1000HZ)
+TSeq(Class=RI%gcd=1%SI=4D87B3%IPID=Z%TS=1000HZ)
+T1(Resp=Y%DF=Y%W=8000%ACK=S++%Flags=AS%Ops=MNNTNW)
+T2(Resp=N)
+T3(Resp=Y%DF=Y%W=8000%ACK=S++%Flags=AS%Ops=MNNTNW)
+T4(Resp=Y%DF=Y%W=0%ACK=O%Flags=R%Ops=)
+T5(Resp=Y%DF=Y%W=0%ACK=S++%Flags=AR%Ops=)
+T6(Resp=Y%DF=Y%W=0%ACK=O%Flags=R%Ops=)
+T7(Resp=Y%DF=Y%W=0%ACK=S++%Flags=AR%Ops=)
+PU(Resp=Y%DF=N%TOS=C0%IPLEN=164%RIPTL=148%RID=E%RIPCK=E%UCK=E%ULEN=134%DAT=E)
+
+
+Uptime 21.849 days (since Fri Jun 25 02:13:13 2010)
+
+Nmap finished: 1 IP address (1 host up) scanned in 9.721 seconds
+	
+nmap -sS -O kronos.ccs.miami.edu
+	
+	Starting Nmap 4.11 ( http://www.insecure.org/nmap/ ) at 2010-07-16 21:23 EDT
+	Stats: 0:00:00 elapsed; 0 hosts completed (0 up), 0 undergoing ARP Ping Scan
+	ARP Ping Scan Timing: About 100.00% done; ETC: 21:23 (0:00:00 remaining)
+	Interesting ports on m1 (192.168.2.93):
+	Not shown: 1668 closed ports
+	PORT      STATE SERVICE
+	21/tcp    open  ftp
+	22/tcp    open  ssh
+	53/tcp    open  domain
+	111/tcp   open  rpcbind
+	714/tcp   open  unknown
+	782/tcp   open  hp-managed-node
+	789/tcp   open  unknown
+	881/tcp   open  unknown
+	1501/tcp  open  sas-3
+	2049/tcp  open  nfs
+	3001/tcp  open  nessusd
+	27000/tcp open  flexlm0
+	MAC Address: 00:1A:64:C2:58:0C (Unknown)
+	Device type: general purpose
+	Running: Linux 2.4.X|2.5.X|2.6.X
+	OS details: Linux 2.4.7 - 2.6.11
+	Uptime 23.927 days (since Tue Jun 22 23:08:41 2010)
+	
+	Nmap finished: 1 IP address (1 host up) scanned in 2.242 seconds
+
+
+telnet kronos.ccs.miami.edu 61616
+
+	Trying 192.168.2.93...
+	telnet: connect to address 192.168.2.93: Connection refused
+	telnet: Unable to connect to remote host: Connection refused
+
+
+
+
+http://www.osguides.net/internet-a-networking/88-how-to-check-which-port-is-listening-or-open-on-linux.html
+
+Option 1
+--------
+
+Check /etc/services file
+
+cat /etc/services | grep 61313
+	<no output>
+
+
+
+
+Option 2
+--------
+
+Use netstat command – Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships.
+
+netstat -nan | grep 61313
+	<no output>
+
+tcp 0 0 0.0.0.0:22 0.0.0.0:* LISTEN 7110/sshd
+If the command output return ‘LISTEN’, mean the particular port is open or listen on network.
+
+
+
+Option 3
+--------
+
+use lsof command – list open files
+(DOESN'T WORK - NO lsof EXECUTABLE)
+
+lsof -i -n -P | grep 61313
+
+	-bash: lsof: command not found
+
+
+
+Option 4
+--------
+
+use nmap command – Network exploration tool and security scanner
+
+nmap -sS -O 192.168.1.2
+
+	Starting Nmap 4.11 ( http://www.insecure.org/nmap/ ) at 2010-07-16 16:10 EDT
+	Interesting ports on c02.kronos.ccs.miami.edu (192.168.1.2):
+	Not shown: 1677 closed ports
+	PORT    STATE SERVICE
+	22/tcp  open  ssh
+	111/tcp open  rpcbind
+	846/tcp open  unknown
+	MAC Address: 00:1A:64:94:F7:9C (Unknown)
+	Device type: general purpose
+	Running: Linux 2.4.X|2.5.X|2.6.X
+	OS details: Linux 2.4.7 - 2.6.11
+	Uptime 21.137 days (since Fri Jun 25 12:52:47 2010)
+	
+	Nmap finished: 1 IP address (1 host up) scanned in 3.267 seconds
+
+
+
+EXAMPLE OUTPUT:
+
+nmap -sS -O 192.168.1.2
+
+	Starting nmap 3.50 ( http://www.insecure.org/nmap/ ) at 2008-09-12 10:13 GMT
+	Interesting ports on 192.168.1.2:
+	
+	(The 1655 ports scanned but not shown below are in state: closed)
+	
+	PORT STATE SERVICE
+	22/tcp open ssh
+	111/tcp open rpcbind
+	427/tcp open svrloc
+	631/tcp open ipp
+	Device type: general purpose
+	Running: Linux 2.4.X|2.5.X
+	OS details: Linux Kernel 2.4.0 – 2.5.20, Linux Kernel 2.4.18 – 2.5.70 (X86)
+	Nmap run completed — 1 IP address (1 host up) scanned in 4.146 seconds
+
+The output show the system is running SSH on port 22.
+
+
+
+Option 5
+--------
+
+use telnet command – user interface to the TELNET protocol
+
+telnet 192.168.1.2 61313
+
+	Trying 192.168.1.2...
+	telnet: connect to address 192.168.1.2: Connection refused
+	telnet: Unable to connect to remote host: Connection refused
+
+EXAMPLE
+
+telnet 192.168.1.2 22
+
+	Trying 192.168.1.2…
+	Connected to 192.168.1.2.
+	Escape character is ‘^]’.
+	SSH-1.99-OpenSSH_4.2
+
+The output show as above mean SSH port 22 is listening on the network
+
+
+telnet 192.168.1.2 122
+
+	Trying 192.168.1.2…
+	telnet: connect to address 192.168.1.2: Connection refused
+
+The output show as above mean port 122 is closed.
+
+
+Option 6
+--------
+
+Lastly, to make it more perfect, you can get a script as example below:
+
+#!/bin/bash
+PORT=:22 #The port number
+INITS=sshd #The name of the service in /etc/init.d/
+COUNT=$(netstat -lpn | grep $ | wc -l)
+if [ $COUNT -lt 1 ]
+then
+/etc/init.d/$INITS restart
+fi
+
+
+
+
+	
+
+
+
+
+
+
+
+MD5 CHECKSUMS
+
+c72e5602339b9bc1bed642e173411da0  BioScope-1.2.1-5.tar.gz
+3d9f314e5d85e7155646f310f8009d6a  Bioscope_1.2.1_Installation_Guide_v8.doc
+012265edf74af134198a8b0295fb48d4  BioScope-1.2.1.rBS121_Final-47775_20100625065850.examples.tar.gz
+c47083b9c6243e012e44b5ee4025aaa0  BioScopeScientistsGuide_v121_4448431.pdf
+d8fdeef77371e06492a9c863b39b6047  BioScope_v1.2.1_Release_Notes.pdf
+
+
+
+
+
+
+From: Andrew Morse [mailto:amorse@penguincomputing.com] 
+Sent: Wednesday, July 14, 2010 6:46 PM
+To: Young, Stuart
+Cc: Robberson, Kit; Gilbert, John
+Subject: BioScope Download Information
+
+Hello Stuart,
+
+To download BioScope, the sample data/demo, and the stress tests, follow the below information.  As discussed, please download all of them prior to install, and have them available on the file system where your results will normally be placed (usually /data/results).  Note that the stress tests files are between 7 and 14 GB each in compressed format.
+
+BioScope and Demos
+
+Browse to: http://solidsoftwaretools.com/gf/project/bioscope/
+1.	Register a new account if you don't already have one, otherwise use your existing credentials
+2.	Reply to all on this message and include your login ID and request from Rupert Yip (Rupert.Yip@lifetech.com) to have download access.  You may already have this taken care of.
+3.	Within http://solidsoftwaretools.com/gf/project/bioscope, go towards the bottom of the page and download the current version of BioScope to your head node.  It will be named "BioScope-1.2.1-5.tar.gz"
+4.	Also within the above listed webpage, click the link to download sample data.  It will be named "BioScope-1.2.1.rBS121_Final-47775_20100625065850.examples.tar.gz"
+Stress Tests
+
+Browse to ftp://abisupport@ftp.penguincomputing.com
+1.	Enter in the password "ABI!Support!Penguin!"
+2.	Navigate to the folder "v1.2/stress/"
+3.	Download the 3 files named "LMP.run.tar.gz", "PE.run.tar.gz", "WT.run.tar.gz".
+Let me know if you have any issues with downloading these files.  Thank you!
+
+Regards,
+Andrew Morse
+Life Technologies
+(p) 312-560-8741
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jul  11 19:30:53 EDT 2010] INSTALLED VERSION 1.2.1>
+
+
+
+1. MAKE DIRS:
+
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.1
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.1/results
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.1/reference
+
+
+2. UNZIP AND INSTALL
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1
+tar xvfz *gz
+cd /nethome/syoung/base/apps/bioscope/1.2.1/BioScope_1.2.1-installer
+./autoinstaller.sh
+
+
+INPUTS:
+
+PBS
+kronos.ccs.miami.edu
+30 nodes
+8 cpus
+16 GB memory
+/nethome/syoung/base/apps/bioscope/1.2.1/results
+/tmp
+
+
+OUTPUT:
+
+		...
+		BioScope-1.2.1.rBS121_Final-47775_20100625065850/licenses/jpf-LICENSE.txt
+		BioScope-1.2.1.rBS121_Final-47775_20100625065850/licenses/jargs-LICENSE.txt
+		Completed /nethome/syoung/base/bin/utils/dos2unix
+		Completed /nethome/syoung/base/bin/utils/dos2unix
+		apache-activemq-5.3.0/
+		apache-activemq-5.3.0/example/
+		...
+		apache-activemq-5.3.0/lib/activemq-console-5.3.0.jar
+		apache-activemq-5.3.0/lib/jaxb-impl-2.1.6.jar
+		apache-activemq-5.3.0/activemq-all-5.3.0.jar
+		apache-activemq-5.3.0/logs/
+		apache-activemq-5.3.0/data/
+		apache-activemq-5.3.0/data/activemq.log
+		apache-activemq-5.3.0/docs/
+		apache-activemq-5.3.0/docs/index.html
+		 Installation is complete .. 
+		 Copy bioscope_profile.sh file to /etc/profile.d/ directory to make BIOSCOPEROOT path global to all users by default 
+		 root privileges are needed to copy this file to /etc/profile.d directory 
+		 NOTE: Remove corona.sh and corona.csh files from /etc/profile.d/ directory if exists 
+		 
+		 or Add the following lines in the user local bash profile to set BIOSCOPEROOT path
+		  ------------------- ----------------- --------------- 
+		# Check if BIOSCOPEROOT is set and set it if null
+		#: ${BIOSCOPEROOT:=/nethome/syoung/base/apps/bioscope/1.2.1/bioscope}
+		export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.1/bioscope
+		
+		if [ -d ${BIOSCOPEROOT}/etc/profile.d ]
+		then
+		   for i in ${BIOSCOPEROOT}/etc/profile.d/*.sh; do
+			  if [ -r "$i" ]; then
+				  . $i
+			  fi
+		   done
+		   unset i
+		fi
+		  ------------------- ----------------- --------------- 
+		
+		 Java path found :  /nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin/java
+
+
+
+
+
+3. DOWNLOAD EXAMPLES
+
+
+ wget http://download.solidsoftwaretools.com/Bioscope/BioScope-1.2.1.rBS121_Final-47775_20100625065850.examples.tar.gz
+ tar xvfz *gz
+ 
+ 
+ 
+ 4. ADJUST PATHS IN .bash_profile
+ 
+ #### ADD PATHS FOR BIOSCOPE                                                                                                                                  
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.1/bioscope
+PATH=/nethome/syoung/base/apps/bioscope/1.2.1/bioscope/bin:$PATH
+PATH=/nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin:$PATH
+
+
+5.  RUN TEST
+
+
+START ACTIVEMQ
+
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1
+./start-ActiveMQ.sh
+
+cd /nethome/syoung/base/apps/bioscope/1.2.1/examples/demos/mapping
+./run.sh
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jul  4 19:30:53 EDT 2010] VERIFY INSTALLATION OF BIOSCOPE 1.2>
+
+
+
+
+1. DOWNLOAD BIOSCOPE 1.2.0
+
+mkdir -p /nethome/syoung/base/apps/bioscope
+
+
+
+
+2. CREATE DIRECTORY FOR INSTALLATION
+
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.0
+
+
+AND RESULTS AND REFERENCE DIRECTORIES:
+
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.0/results
+mkdir -p /nethome/syoung/base/apps/bioscope/1.2.0/reference
+
+
+3. RUN autoinstall.sh
+
+
+
+cd /nethome/syoung/base/apps/bioscope/BioScope_1.2-installer
+./autoinstall.sh
+
+	...
+	apache-activemq-5.3.0/lib/activemq-protobuf-1.0.jar
+	apache-activemq-5.3.0/lib/geronimo-jms_1.1_spec-1.1.1.jar
+	apache-activemq-5.3.0/lib/activemq-console-5.3.0.jar
+	apache-activemq-5.3.0/lib/jaxb-impl-2.1.6.jar
+	apache-activemq-5.3.0/activemq-all-5.3.0.jar
+	apache-activemq-5.3.0/logs/
+	apache-activemq-5.3.0/data/
+	apache-activemq-5.3.0/data/activemq.log
+	apache-activemq-5.3.0/docs/
+	apache-activemq-5.3.0/docs/index.html
+	 Installation is complete .. 
+
+
+	Copy bioscope_profile.sh file to /etc/profile.d/ directory to make BIOSCOPEROOT path global to all users by default 
+	
+	 root privileges are needed to copy this file to /etc/profile.d directory 
+	
+	 NOTE: Remove corona.sh and corona.csh files from /etc/profile.d/ directory if exists 
+	 
+	 or Add the following lines in the user local bash profile to set BIOSCOPEROOT path
+	  ------------------- ----------------- --------------- 
+	# Check if BIOSCOPEROOT is set and set it if null
+	#: ${BIOSCOPEROOT:=/nethome/syoung/base/apps/bioscope/1.2.0/bioscope}
+	export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.0/bioscope
+	
+	if [ -d ${BIOSCOPEROOT}/etc/profile.d ]
+	then
+	   for i in ${BIOSCOPEROOT}/etc/profile.d/*.sh; do
+		  if [ -r "$i" ]; then
+			  . $i
+		  fi
+	   done
+	   unset i
+	fi
+	  ------------------- ----------------- ---------------
+  
+
+
+ll /nethome/syoung/base/apps/bioscope/1.2.0
+	
+	drwxr-xr-x 10 syoung bioinfo  16K Dec 10  2009 apache-activemq-5.3.0
+	lrwxrwxrwx  1 syoung bioinfo   45 Jul  4 20:11 bioscope -> BioScope-1.2.rBS120CTS2-45893M_20100326163136
+	drwxr-xr-x  8 syoung bioinfo  16K Mar 26 21:39 BioScope-1.2.rBS120CTS2-45893M_20100326163136
+	-rwxr-xr-x  1 syoung bioinfo 1.7K Jul  4 20:11 bioscope.conf
+	drwxr-xr-x  6 syoung bioinfo  16K Jul  5 20:51 examples
+	drwxr-xr-x  2 syoung bioinfo  16K Jul  5 21:06 reference
+	drwxr-xr-x  2 syoung bioinfo  16K Jul  5 21:05 results
+	-rwxr-xr-x  1 syoung bioinfo  329 Jul  4 20:11 start-ActiveMQ.sh
+	-rwxr-xr-x  1 syoung bioinfo  424 Jul  4 20:11 stop-ActiveMQ.sh
+	-rwxr-xr-x  1 syoung bioinfo 4.3K Jul  4 20:11 update-bioscope.sh
+
+
+ADDED bioscope/bin TO PATH IN bash_profile:
+
+PATH=/nethome/syoung/base/apps/bioscope/1.2.0/bioscope/bin:$PATH
+
+
+
+ 
+
+4. DOWNLOAD JDK AND ADD TO PATH
+
+TO AVOID THIS ERROR:
+
+
+which: no java in (/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/apps/alta-cyclic/0.1.0/perlexternal:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/opt/xcat/bin:/opt/xcat/sbin:/opt/xcat/x86_64/bin:/opt/xcat/x86_64/sbin)
+
+ Java path not found in your local path
+
+VERSION REQUIRED:
+
+	BioScope FAQ
+	------------
+	
+	23. Do I have to install JDK 1.6 u12?
+	Yes, Bioscope requires Java 1.6u12 or greater.
+
+
+DOWNLOADED VERSION 	1.6 u20:
+
+http://java.sun.com/javase/downloads/index.jsp
+
+
+INSTALLED TO:
+
+/nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin
+
+
+ADDED TO PATH IN bash_profile:
+
+PATH=/nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin:$PATH
+
+
+ADDED $BIOSCOPEROOT TO bash_profile:
+
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.0/bioscope
+
+
+
+5. CHECK bioscope.conf
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0
+cat bioscope.conf
+
+	# This file contains the BioScope configuration.
+	# Refer to documentation for more details
+	# GENERATED BY BIOSCOPE INSTALLER
+	
+	# Define the bioscope install directory
+	bioscope.dir=/nethome/syoung/base/apps/bioscope/1.2.0
+	
+	# Define the bioscope root
+	# $BIOSCOPEROOT
+	bioscope.bioscoperoot=/nethome/syoung/base/apps/bioscope/1.2.0/bioscope
+	
+	# Define bioscope users group
+	bioscope.usersgroup=bioinfo
+	
+	# Define the resource manager for the cluster
+	# For pbs torque variants, use TORQUE
+	# For sge, use SGE
+	# For single server configuration use NONE for this option
+	bioscope.resourcemanager=TORQUE
+	bioscope.pe=smp
+	
+	# Define the queue necessary for Bioscope
+	# example bioscope.queue=secondary
+	bioscope.analysis.queue=psmall
+	
+	# Define the primary queue necessary for autoexport
+	# Only needed if cycle by cycle export is used
+	bioscope.primary.queue=primary
+	
+	# Define the hostname of the master or submit node
+	bioscope.masternode=kronos.ccs.miami.edu
+	
+	# Define results directory for bioscope
+	bioscope.results=/nethome/syoung/base/apps/bioscope/1.2.0/results
+	
+	# Define reference directory for bioscope
+	bioscope.reference=/nethome/syoung/base/apps/bioscope/1.2.0/reference
+	
+	# Define local scratch directory on compute/slave nodes and master node
+	bioscope.scratch=/tmp
+	
+	# Define cluster resources
+	# Enter the number of nodes available on existing cluster
+	# Enter the least
+	bioscope.number.of.nodes=30
+	bioscope.number.of.cores.per.node=8
+	bioscope.memory.size=16
+	
+	# DO NOT EDIT BELOW THIS LINE
+	bioscope.version=1.2.rBS120CTS2
+	bioscope.installer.directory=BioScope-1.2.rBS120CTS2-45893M_20100326163136
+	bioscope.tar=BioScope-1.2.rBS120CTS2-45893M_20100326163136.tar.gz
+	bioscope.installer.user=syoung
+	bioscope.installer.option=1
+
+
+	OK!
+
+
+6. START ACTIVEMQ SERVICE
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0
+./start-ActiveMQ.sh
+
+[syoung@u01 1.2.0]$ ps aux | grep mq
+
+	syoung   11845 51.1  0.2 872704 88656 pts/0    Sl   20:44   0:03 /nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin/java -Xmx512M -Dorg.apache.activemq.UseDedicatedTaskRunner=true -Djava.util.logging.config.file=logging.properties -Dcom.sun.management.jmxremote -Dactivemq.classpath=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0/conf; -Dactivemq.home=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0 -Dactivemq.base=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0 -jar /nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0/bin/run.jar start
+	syoung   11879  0.0  0.0  61148   716 pts/0    S+   20:45   0:00 grep mq
+
+	RUNNING OK!!!
+
+
+
+7. MOVE BIOSCOPE EXAMPLES TO results DIRECTORY AND RUN TEST
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0/results
+
+tar –zxvf BioScope-1.0.0.40-10.examples.tar.gz
+cd /nethome/syoung/base/apps/bioscope/1.2.0/examples/demos
+ll
+	
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:17 bioscopeReports
+	-rw-r--r--  1 syoung bioinfo 4.6M Mar 26 21:24 BIOSCOPE-UI-README.doc
+	-rwxr-xr-x  1 syoung bioinfo   28 Mar 26 21:24 clean.sh
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:20 cnv
+	-rw-r--r--  1 syoung bioinfo  161 Mar 26 21:24 demoslist
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:15 diBayes
+	drwxr-xr-x  2 syoung bioinfo  16K Mar 26 21:17 globals
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:24 inversion
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:23 largeIndel
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:22 mapping
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:14 matobam
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:21 pairing
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:23 positionErrors
+	-rw-r--r--  1 syoung bioinfo 6.0K Mar 26 21:24 README
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:16 references
+	-rwxr-xr-x  1 syoung bioinfo   91 Mar 26 21:24 runall.sh
+	-rwxr-xr-x  1 syoung bioinfo 1003 Mar 26 21:24 run.sh
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:22 saet
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:17 smallIndelFrag
+	drwxr-xr-x  3 syoung bioinfo  16K Mar 26 21:16 smallIndelMP
+	drwxr-xr-x  2 syoung bioinfo  16K Mar 26 21:22 tools
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:21 wholeTranscriptome
+	drwxr-xr-x  4 syoung bioinfo  16K Mar 26 21:24 wholeTranscriptomePE
+
+
+EDIT reference AND scratch PATHS IN globals/global.ini FILE:
+
+emacs globals/global.ini
+
+############################
+############################
+##
+##  global parameters
+##
+
+# Working directory
+base.dir=./
+# Output directory
+output.dir = ${base.dir}/outputs
+# Directory for writing temporary files
+temp.dir = ${base.dir}/temp
+# Directory for writing intermeditate results
+intermediate.dir = ${base.dir}/intermediate
+# Log directory
+log.dir = ${base.dir}/log
+# If application need fasta/qual file, this variable should point to the folder where those are.
+reads.result.dir.1 = ${base.dir}/../F3/reads1	
+# Second fasta/qual location
+reads.result.dir.2 = ${base.dir}/../R3/reads2
+# Absolute folder location of reference
+# reference.dir = /data/results/bioscope1.0/examples/demos/references/
+reference.dir = /nethome/syoung/base/apps/bioscope/1.2.0/results/bioscope1.0/examples/demos/references/
+# scratch directory
+# scratch.dir=/scratch/solid
+scratch.dir=/tmp
+
+# override it locally in the pipeline ini file when needed
+primer.set = F3
+
+
+1. STARTED ACTIVEMQ AND IT APPEARS TO BE RUNNING OKAY:
+
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0
+./start-ActiveMQ.sh
+
+ps aux | grep mq
+
+		syoung   11845  0.1  0.6 895340 212992 pts/0   Sl   20:44   0:11 /nethome/syoung/base/apps/bioscope/jdk/jdk1.6.0_20/bin/java -Xmx512M -Dorg.apache.activemq.UseDedicatedTaskRunner=true -Djava.util.logging.config.file=logging.properties -Dcom.sun.management.jmxremote -Dactivemq.classpath=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0/conf; -Dactivemq.home=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0 -Dactivemq.base=/nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0 -jar /nethome/syoung/base/apps/bioscope/1.2.0/apache-activemq-5.3.0/bin/run.jar start
+		syoung   14205  0.0  0.0  61148   716 pts/5    S+   22:52   0:00 grep mq
+
+
+2. RUN TEST SCRIPT
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0/examples/demos/mapping
+./run.sh
+
++/nethome/syoung/base/apps/bioscope/1.2.0/bioscope/bin+
++/nethome/syoung/base/apps/bioscope/1.2.0/bioscope+
+05 Jul 2010 22:52:17,759  INFO [main] PluginJobManager:84 - >>>> START of PluginJobManager >>>> date=2010-07-05 22:52:17.737  EDT
+05 Jul 2010 22:52:18,798 FATAL [main] PluginJobManager:96 - Bioscope unable to connect to JMS. Please contact your system administrator
+javax.jms.JMSException: Could not connect to broker URL: tcp://kronos.ccs.miami.edu:61616?wireFormat.MaxInactivityDuration=-1. Reason: java.net.ConnectException: Connection refused
+        at org.apache.activemq.util.JMSExceptionSupport.create(JMSExceptionSupport.java:35)
+        at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:283)
+        at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:227)
+        at org.apache.activemq.ActiveMQConnectionFactory.createTopicConnection(ActiveMQConnectionFactory.java:205)
+        at com.apldbio.aga.analysis.event.EventTransportFactory$JMSEventTransportFactory.init(EventTransportFactory.java:102)
+        at com.apldbio.aga.analysis.event.EventTransportFactory$JMSEventTransportFactory.getEventReceiver(EventTransportFactory.java:147)
+        at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:90)
+Caused by: java.net.ConnectException: Connection refused
+        at java.net.PlainSocketImpl.socketConnect(Native Method)
+        at java.net.PlainSocketImpl.doConnect(PlainSocketImpl.java:333)
+        at java.net.PlainSocketImpl.connectToAddress(PlainSocketImpl.java:195)
+        at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:182)
+        at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:366)
+        at java.net.Socket.connect(Socket.java:529)
+        at org.apache.activemq.transport.tcp.TcpTransport.connect(TcpTransport.java:435)
+        at org.apache.activemq.transport.tcp.TcpTransport.doStart(TcpTransport.java:401)
+        at org.apache.activemq.util.ServiceSupport.start(ServiceSupport.java:53)
+        at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+        at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+        at org.apache.activemq.transport.WireFormatNegotiator.start(WireFormatNegotiator.java:72)
+        at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+        at org.apache.activemq.transport.TransportFilter.start(TransportFilter.java:57)
+        at org.apache.activemq.ActiveMQConnectionFactory.createActiveMQConnection(ActiveMQConnectionFactory.java:263)
+        ... 5 more
+05 Jul 2010 22:52:18,801  INFO [main] PluginJobManager:105 - >>>> END of PluginJobManager >>>> date=2010-07-05 22:52:18.800  EDT
+05 Jul 2010 22:52:18,801  INFO [main] PluginJobManager:107 - >>>> END of PluginJobManager >>>> date DURATION=1 secs Exception in thread "main" java.lang.NullPointerException
+        at com.apldbio.aga.analysis.workflow.AnalysisJobManager.stopJobWatcher(AnalysisJobManager.java:190)
+        at com.apldbio.aga.analysis.workflow.PluginJobManager.stopJobWatcher(PluginJobManager.java:120)
+        at com.apldbio.aga.analysis.workflow.PluginJobManager.main(PluginJobManager.java:108)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TROUBLESHOOTING
+---------------
+
+
+ERROR:
+
+	Caused by: java.lang.ClassNotFoundException:
+
+	com.apldbio.aga.analysis.workflow.PluginJobManager
+
+
++/nethome/syoung/base/apps/bioscope/1.2.0/bioscope/bin+
++/nethome/syoung/base/apps/bioscope/1.2.0/bioscope+
+Exception in thread "main" java.lang.NoClassDefFoundError: com/apldbio/aga/analysis/workflow/PluginJobManager
+Caused by: java.lang.ClassNotFoundException: com.apldbio.aga.analysis.workflow.PluginJobManager
+        at java.net.URLClassLoader$1.run(URLClassLoader.java:202)
+        at java.security.AccessController.doPrivileged(Native Method)
+        at java.net.URLClassLoader.findClass(URLClassLoader.java:190)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:307)
+        at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:301)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:248)
+Could not find the main class: com.apldbio.aga.analysis.workflow.PluginJobManager.  Program will exit.
+
+
+
+SOLUTION:
+
+
+SET $BIOSCOPEROOT ENVIRONMENT VARIABLE IN .bash_profile
+
+
+
+
+
+
+LOCATED JAVA MODULES BUT NO com.apldbio.aga.analysis.workflow.PluginJobManager:
+
+
+ll /nethome/syoung/base/apps/bioscope/1.2.0/bioscope/lib/java
+	
+	-rw-r--r-- 1 syoung bioinfo 7.1K Mar 26 21:38 com.apldbio.aga.cnv.jar
+	-rw-r--r-- 1 syoung bioinfo  86K Mar 26 21:38 com.apldbio.aga.dibayes.jar
+	-rw-r--r-- 1 syoung bioinfo 7.9K Mar 26 21:38 com.apldbio.aga.inversion.jar
+	-rw-r--r-- 1 syoung bioinfo  50K Mar 26 21:38 com.apldbio.aga.mapping.jar
+	-rw-r--r-- 1 syoung bioinfo 2.2K Mar 26 21:38 com.apldbio.aga.mapping_stats.jar
+	-rw-r--r-- 1 syoung bioinfo 172K Mar 26 21:38 com.apldbio.aga.pairing.jar
+	-rw-r--r-- 1 syoung bioinfo  20K Mar 26 21:38 com.apldbio.aga.position.errors.jar
+	-rw-r--r-- 1 syoung bioinfo  27K Mar 26 21:38 com.apldbio.aga.reports.jar
+	-rw-r--r-- 1 syoung bioinfo 8.9K Mar 26 21:38 com.apldbio.aga.saetplugin.jar
+	-rw-r--r-- 1 syoung bioinfo  49K Mar 26 21:38 com.apldbio.aga.wt-plugins.jar
+	-rw-r--r-- 1 syoung bioinfo  52K Mar 26 21:38 com.apldbio.aga.wt_single_reads_plugin.jar
+	-rw-r--r-- 1 syoung bioinfo 5.2K Mar 26 21:38 com.lifetechnologies.indelcommon.jar
+	-rw-r--r-- 1 syoung bioinfo 5.5K Mar 26 21:38 com.lifetechnologies.large-indel-plugins.jar
+	-rw-r--r-- 1 syoung bioinfo  75K Mar 26 21:38 com.lifetechnologies.ma-to-bam-plugins.jar
+	-rw-r--r-- 1 syoung bioinfo 5.2K Mar 26 21:38 com.lifetechnologies.small-indel-frag-plugins.jar
+	-rw-r--r-- 1 syoung bioinfo 5.5K Mar 26 21:38 com.lifetechnologies.small-indel-plugins.jar
+	-rw-r--r-- 1 syoung bioinfo 729K Mar 26 21:39 WholeTranscriptome.jar
+
+
+
+CHECK ON GORDO:
+
+
+locate bin/bioscope.sh
+
+	/share/apps/Bioscope-1.2/BioScope-1.2.rBS120CTS2-45893M_20100326163136/bin/bioscope.sh
+
+
+
+LOCATED JAVA MODULES BUT NO 
+
+
+ls -alr /share/apps/Bioscope-1.2/BioScope-1.2.rBS120CTS2-45893M_20100326163136/lib/java/plugins
+
+
+	-rw-rw-r-- 1 corona users 5.5K Mar 26 18:38 com.lifetechnologies.small-indel-plugins.jar
+	-rw-rw-r-- 1 corona users 5.2K Mar 26 18:38 com.lifetechnologies.small-indel-frag-plugins.jar
+	-rw-rw-r-- 1 corona users  75K Mar 26 18:38 com.lifetechnologies.ma-to-bam-plugins.jar
+	-rw-rw-r-- 1 corona users 5.5K Mar 26 18:38 com.lifetechnologies.large-indel-plugins.jar
+	-rw-rw-r-- 1 corona users 5.2K Mar 26 18:38 com.lifetechnologies.indelcommon.jar
+	-rw-rw-r-- 1 corona users  52K Mar 26 18:38 com.apldbio.aga.wt_single_reads_plugin.jar
+	-rw-rw-r-- 1 corona users  49K Mar 26 18:38 com.apldbio.aga.wt-plugins.jar
+	-rw-rw-r-- 1 corona users 8.9K Mar 26 18:38 com.apldbio.aga.saetplugin.jar
+	-rw-rw-r-- 1 corona users  27K Mar 26 18:38 com.apldbio.aga.reports.jar
+	-rw-rw-r-- 1 corona users  20K Mar 26 18:38 com.apldbio.aga.position.errors.jar
+	-rw-rw-r-- 1 corona users 172K Mar 26 18:38 com.apldbio.aga.pairing.jar
+	-rw-rw-r-- 1 corona users 2.2K Mar 26 18:38 com.apldbio.aga.mapping_stats.jar
+	-rw-rw-r-- 1 corona users  50K Mar 26 18:38 com.apldbio.aga.mapping.jar
+	-rw-rw-r-- 1 corona users 7.9K Mar 26 18:38 com.apldbio.aga.inversion.jar
+	-rw-rw-r-- 1 corona users  86K Mar 26 18:38 com.apldbio.aga.dibayes.jar
+	-rw-rw-r-- 1 corona users 7.1K Mar 26 18:38 com.apldbio.aga.cnv.jar
+	-rw-rw-r-- 1 corona users 729K Mar 26 18:39 WholeTranscriptome.jar
+	drwxrwxr-x 2 corona users 4.0K Mar 26 18:39 .
+
+
+
+
+
+
+
+NB: THIS IS WHAT THE ./run.sh OUTPUT SHOULD LOOK LIKE:
+
+
+[jwang1@redcloud mapping]$./run.sh
+
+	+/home/jwang1/corona/bin+
+	+/home/jwang1/corona+
+	20 Oct 2009 22:05:35,152 INFO [main] PluginJobManager:83 - >>>> START of PluginJobManager >>>> date=2009-10-20 22:05:35.137 PDT
+	20 Oct 2009 22:05:35,692 INFO [main] AnalysisJobManager:47 - AnalysisJobManager.manageJobs() job.name=mapping.run; pluginId=mapping.run
+	20 Oct 2009 22:05:35,712 INFO [main] ClusterPluginJobLauncher:134 - Spawned process for 'mapping.run'.
+	java_app.sh com.apldbio.aga.analysis.exec.PluginRunner -q fd98c589-bbde-45e4-b785-a8b2c8fcd1d8 -s -L /data/results/examples/demos/mapping/log
+	-l mapping.run.20091021050535696.log -j 1 mapping.run /data/results/bioscope1.0/examples/demos/mapping/demo.ini
+	20 Oct 2009 22:05:35,713 INFO [main] AnalysisJobManager:33 - Waiting for events on selector 'fd98c589-bbde-45e4-b785-a8b2c8fcd1d8'
+	20 Oct 2009 22:05:35,713 INFO [main] JMSEventReceiver:66 - JMSEventReceiver waitForEvent before taking.
+	20 Oct 2009 22:08:06,105 INFO [ActiveMQ Session Task] JMSEventReceiver:88 - JMSEventReceiver onMessage Message selector fd98c589-bbde-45e4-b785-a8b2c8fcd1d8
+	20 Oct 2009 22:08:06,106 INFO [ActiveMQ Session Task] JMSEventReceiver:89 - JMSEventReceiver onMessage Expected selector fd98c589-bbde-45e4-
+	b785-a8b2c8fcd1d8
+	20 Oct 2009 22:08:06,114 INFO [ActiveMQ Session Task] JMSEventReceiver:92 - JMSEventReceiver onMessage Message Time2009-10-20 22:08:06.086
+	20 Oct 2009 22:08:06,114 INFO [ActiveMQ Session Task] JMSEventReceiver:93 - JMSEventReceiver onMessage before putting Mapping completed
+	successfully
+	20 Oct 2009 22:08:06,115 INFO [ActiveMQ Session Task] JMSEventReceiver:95 - JMSEventReceiver onMessage after putting.
+	20 Oct 2009 22:08:06,115 INFO [main] JMSEventReceiver:68 - JMSEventReceiver waitForEvent after taking Mapping completed successfully
+	20 Oct 2009 22:08:06,117 INFO [main] JMSEventReceiver:70 - Event Mapping completed successfully received on selector 'fd98c589-bbde-45e4-b785-
+	a8b2c8fcd1d8'
+	20 Oct 2009 22:08:06,117 INFO [main] AnalysisJobManager:79 - mapping.run completed.
+	20 Oct 2009 22:08:06,117 INFO [main] PluginJobManager:118 - Finished successfully
+	20 Oct 2009 22:08:06,118 INFO [main] PluginJobManager:102 - >>>> END of PluginJobManager >>>> date=2009-10-20 22:08:06.118 PDT
+	20 Oct 2009 22:08:06,118 INFO [main] PluginJobManager:104 - >>>> END of PluginJobManager >>>> date DURATION=2 minutes 30 secs
+
+
+	
+
+
+
+
+
+cat /nethome/syoung/base/apps/bioscope/1.2.0/examples/demos/README 
+
+	March 16th, 2010
+	
+	ABOUT:
+	------
+	The demos in this folder are to demonstrate some of the applications in BioScope1.0.  Input data used is ecoli DH10B data and generally, run time for each demo is not too long (please refer to the estimated run time section below for details).
+	
+	
+	HOW TO RUN THE DEMOS:
+	---------------------
+	
+	
+	- login as corona
+	
+	- download the bioscope demo folder into /data/results/ folder of the headnode.
+
+	It should reside only as /data/results/bioscope-<ver>/examples/demos.
+	The ini files and the cmap files in the sample runs, are prepared with this location coded into it.
+
+		$cd /data/results/bioscope-<ver>/examples/demos
+	
+	- fix deploy location in couple of files
+
+		1. ./examples/demos/globals/global.ini                                          - for all demo
+		2. ./examples/applications/globals/global.ini                                   - for all applications
+		3. ./examples/references/human_var/cnv/referenceMapping.cmap                    - for cnv applications
+		4. ./examples/references/human_var/cnv/referenceMapping_chr11_12.cmap           - for cnv applications
+		5. ./examples/demos/cnv/referenceMapping_pe.cmap                                - for cnv demo
+
+	Each has hard coded location like /data/results/bioscope1.0/examples/demos/references/, this has to be fixed like
+	
+		/data/results/bioscope<ver>/examples/demos/references.
+	
+		Note: The fix may be done already as part of the installation procedure
+		
+	- check if the build is compatible with the system.
+
+		$/data/results/bioscope<ver>/examples/demos/tools/checkBuildForSGE.sh
+	  if it says:  .cluster.manager.key=SGE. then it is configured for Sun grid engine
+	  if it says:  .cluster.manager.key=TORQUE. then it is configured for Torque
+		   then run following to convert TORQUE configuration to TORQUE, if you really need it.
+
+		$ ./tools/fixBuild_Torque_to_SGE.sh  /home/corona/bioscope
+
+	Note: The fix may be done already as part of the installation procedure
+	
+	- ./run.sh <foldername of a desired folder>
+	  for example:
+
+		$ ./run.sh mapping
+	
+	  This will automatically copy over the contents of mapping folder into a new folder mapping.run and execute the following command
+	
+		bioscope.sh .l demo.log demo.plan 
+	
+	  inside the new folder.  
+	
+	- The results can be seen inside the mapping.run folder. Typically, the mapping pipeline has outputs mapping.run/outputs/s_matching directory, as per the .ini file.
+	
+	- Similarly, the other samples can be run, by running on  the  selected desired folder
+		
+		$ ./run.sh something
+	
+	- ./clean.sh
+	  for example:
+
+		$ ./clean.sh
+	
+	This will automatically clean all the xxx.run folders.
+	
+	- demoslist
+	
+	This is the directory list that runall.sh will use to run test against.
+
+	  Make sure to update this list, if you need to use runall.sh
+	
+	- ./runall.sh
+	  for example:
+
+		$ ./runall.sh
+	
+	This will automatically clean all the xxx.run folders and run the tests listed in demoslist.
+
+	
+	
+	CURRENTLY AVAILABLE DEMOS:
+	--------------------------
+
+	We currently have demo setups for mapping, pairing, inversion, smallIndel, largeindel, inversion, diBayes, cnv, matobam, nrbam, positionErrors, saet, wholeTranscriptome tools.
+
+	After  the  run, the  corresponding  results  can be found in  its something.run folders. Here is a small tabulation of its input and outputs
+	
+	
+	mapping
+	========
+	   Input: 
+		  reads1/*.csfasta
+		  reads1/*_QV.qual
+	   Outputs: 
+		  outputs/s_matching/*.ma.*
+	
+	pairing
+	=======
+	   Input: 
+		  F3/ outputs/s_matching/*.ma.*
+		  R3/ outputs/s_matching/*.ma.*
+	   Outputs: 
+		  MP/outputs/pairing/F3-R3-Paired.bam
+		  MP/outputs/pairing/F3-R3-Paired.bam.bai
+		  MP/outputs/pairing/pairingStats.stats
+		  MP/outputs/pairing/unmappedBamFile.bam
+		  MP/outputs/pairing/pairDistFreq
+	
+	inversion
+	==========
+	   Input: 
+		  MP/outputs/pairing/F3-R3-Paired.bam
+	   Outputs: 
+		  MP/outputs/inversion/*
+	
+	SmallIndelMP
+	==========
+	   Input: 
+		  MP/outputs/pairing/F3-R3-Paired.bam
+		  MP/outputs/pairing/F3-R3-Paired.bam.bai
+	
+	   Outputs: 
+		  MP/outputs/smallIndel/*
+	
+	SmallIndelFrag(plus smallIndel)
+	==========
+	   Input:
+		  outputs/s_mapping/*.ma.*
+	   Outputs:
+		  outputs/smallindel/*
+	
+	cnv
+	==========
+	   Input:
+		  outputs/pairing/F3-F5-P2-Paired.bam
+		  outputs/pairing/F3-F5-P2-Paired.bam.bai  
+	   Outputs:
+		  outputs/cnv/*
+	 
+	diBayes:
+	==========
+	   Input:
+		  outputs/pairing/F3-R3-Paired.bam
+		  outputs/position-errors/F3-R3-Paired_F3_positionErrors.txt
+		  outputs/position-errors/F3-R3-Paired_R3_positionErrors.txt
+	   Output:
+		  outputs/diBayes/*
+	
+	wholeTranscriptome:
+	==========
+	   Input:
+		  reads/HBR.chr17_6.100k.mixed.F3.csfasta  
+		  reads/HBR.chr17_6.100k.mixed.qual
+		  references/human_chr17_6.exons.gtf  
+		  references/human_filter_reference.fasta
+		  references/human_chr17_6.fa
+	   Output:
+		  outputs/single_read/counttag  
+		  outputs/single_read/mapping
+		  outputs/single_read/sam2wig
+	
+	wholeTranscriptomePE:
+	==========
+	   Input:
+		  reads/f3/F3.csfasta
+		  reads/f3/F3.qual
+		  reads/f5/F5.csfasta
+		  reads/f5/F5.qual
+		  references/human_chr17_6.exons.gtf
+		  references/human_chr17_6.fa
+		  references/human_chr17_6.properties
+		  references/human_filter_reference.fasta
+	   Output:
+		  outputs/paired_end/counttag
+		  outputs/paired_end/junction_finder
+		  outputs/paired_end/mapping
+	
+		  outputs/paired_end/sam2wig
+	
+	ESTIMATED RUN TIME:
+	-------------------
+	The following run time was based on our Linux box with 8 processors for each of the 5 nodes.
+	
+	(01) saet - 4 seconds
+	(02) mapping - 1 minute 9 seconds
+	(03) pairing - 4 minutes 33 seconds
+	(04) matobam - 16 seconds
+	(05) positionErrors - 20 seconds
+	(06) diBayes - 4 minutes 34 seconds
+	(07) cnv - 3 minutes 34 seconds
+	(08) smallIndelFrag - 31 seconds
+	(09) smallIndelMP - 14 minutes 32 seconds
+	(10) largeIndel - 13 seconds
+	(11) inversion - 5 seconds
+	(12) wholeTranscriptome - 1 minutes 19 seconds
+	(13) wholeTranscriptomePE - 2 minutes
+	  
+
+
+
+
+
+
+
+
+
+
+NB: DEFAULT SETTINGS IN BIOSCOPE WHEN verify-config.sh IS RUN
+
+	Setting in bioscope.conf                      Setting in bioscope.conf
+	
+	bioscope.bioscoperoot=/nethome/syoung/base/apps/bioscope/1.2.0
+	
+	bioscope.resourcemanager=SGE                  
+	
+	bioscope.analysis.queue=bs_secondary          
+	Error: The values of default.secondary.queue.name, mapping.queue.name, and pairing.queue.name in /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/plugins.properties should be the same.
+																  
+	bioscope.primary.queue=primary                
+	
+	bioscope.masternode=foshtdfeed02              
+	Error: The values of brokerURL in /nethome/syoung/base/apps/bioscope/1.2.0/etc/activemq/conf/jms.properties and java.naming.provider.url in /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/jndi.properties should be the same.
+											 
+	bioscope.results=/opt/bioscope/results        
+	Error: /opt/bioscope/results does not exist or is not a directory.
+	
+	bioscope.reference=/opt/bioscope/results      
+	Error: /opt/bioscope/results does not exist or is not a directory.
+	
+	bioscope.scratch=/scratch                     
+	Error: /scratch does not exist or is not a directory.
+	Error: The values of temporary.directory in /nethome/syoung/base/apps/bioscope/1.2.0/etc/template/cluster.properties, scratch.dir in /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/plugins.properties, and scratchDir in /nethome/syoung/base/apps/bioscope/1.2.0/lib/java/hades/Hades.properties should be the same.
+																  
+	bioscope.number.of.nodes=10                   
+	
+	bioscope.number.of.cores.per.node=8 
+
+
+BioScope Installer Instructions
+-------------------------------
+
+BioScope Installer Instructions
+The Bioscope installer provides multiple options for installing the Bioscope software. This document shows the various options available during installation.
+
+
+Install procedure for Option-1 (Command-line only)
+
+Note: Do not press the Enter key twice during the installation.
+
+1) Copy the installer package to the preferred location (say user home dir), unzip/untar the
+package and change to the installer directory as shown below
+
+[sbob@kochi ~]$ pwd
+/home/sbob
+[sbob@kochi ~]$ ls
+BioScope-1.0-30.tar.gz
+[sbob@kochi ~]$ tar -xvzf BioScope-1.0-30.tar.gz
+./BioScope_1.0-installer/
+./BioScope_1.0-installer/verify-config.sh
+./BioScope_1.0-installer/full-install.sh
+----------- output truncated ---------------
+./BioScope_1.0-installer/64/redhat
+./BioScope_1.0-installer/verify-group.sh
+./BioScope_1.0-installer/update-bioscope.sh
+[sbob@kochi ~]$
+[sbob@kochi ~]$ cd BioScope_1.0-installer/
+
+
+
+2) Run the install.sh script as shown and select the preferred options
+at the prompt
+
+[sbob@kochi BioScope_1.0-installer]$ ./install.sh
+
+	Found centos linux release 5 on 64 bit platform
+	Do you want to install BioScope [Y/n]
+	Y
+	BioScope 1.0 Installer Instructions
+	Rev.10/21/09
+	Starting BioScope installation ....
+	Choose the installer type
+	Refer to documentation for more help
+	Enter 1 for BioScope with command line
+	Enter 2 for BioScope with command line and web interface
+	Enter 3 to upgrade BioScope with command line to web interface
+	Enter 4 for BioScope with auto-export support -- Requires root access
+	CTRL + C to quit
+
+
+This should start the cmd-line installation for Bioscope as shown
+
+	Installing BioScope with command line option only ...
+	Enter directory for installing Bioscope [/opt/bioscope]:
+	/home/sbob/bioscope (Hit Enter to use the default value specified)
+	Enter the group which the user running Bioscope belongs to [users]:
+	(Hit Enter to use the default value specified)
+	BioScope currently supports SGE and PBS Torque resource managers, or it could be run in single server mode
+	Pick one of the above choices, enter NONE to run in single server mode [SGE/PBS/NONE]
+	PBS
+	Resource manager is set to TORQUE
+	Enter the name of the queue that will be used for Bioscope [bs_secondary]:
+	bs_sec (Hit Enter to use the default value specified)
+	Enter the hostname of the head node or master node (node submitting the jobs):
+	kochi.sequencer
+	Enter the location for Bioscope 'results' directory:
+	(Ex: /opt/bioscope/results )
+	/data/results
+	Enter the location for Bioscope 'reference' directory:
+	(Ex: /opt/bioscope/reference )
+	BioScope 1.0 Installer Instructions
+	Rev.10/21/09
+	/home/sbob/bioscope/reference
+	Enter the location of local temp/scratch directory on all nodes (master and slave):
+	(Ex: /local/scratch )
+	/scratch
+	Enter the number of nodes available on the cluster:
+	3
+	Enter the number of cores per node:
+	4
+	Enter the size of memory on each node in gigabytes:
+	24
+	Unpacking in /opt/bioscope directory ...
+	corona-1.0r0.40-9/
+	corona-1.0r0.40-9/conf/
+	corona-1.0r0.40-9/conf/qsub_template.tt
+	------------------- output truncated ----------------
+	apache-activemq-5.2.0/derbydb/seg0/c130.dat
+	apache-activemq-5.2.0/derbydb/seg0/c370.dat
+	apache-activemq-5.2.0/derbydb/seg0/c321.dat
+	apache-activemq-5.2.0/derbydb/service.properties
+	apache-activemq-5.2.0/NOTICE
+	Installation is complete ..
+	Copy bioscope_profile.sh file to /etc/profile.d/ directory to make CORONAROOT path global to all users by default
+	root priviledges are needed to copy this file to /etc/profile.d directory
+	or Add the following lines in the user local bash profile to set CORONAROOT path
+	------------------- ----------------- ---------------
+	BioScope 1.0 Installer Instructions
+	Rev.10/21/09
+	# Check if CORONA_ROOT is set and set it if null
+	: ${CORONAROOT:=/home/sbob/bioscope/corona}
+	export CORONAROOT
+	if [ -d ${CORONAROOT}/etc/profile.d ]
+	then
+	for i in ${CORONAROOT}/etc/profile.d/*.sh; do
+	if [ -r "$i" ]; then
+	. $i
+	fi
+	done
+	unset i
+	fi
+	------------------- ----------------- ---------------
+	Java path found : /usr/bin/java
+
+[sbob@kochi BioScope_1.0-installer]$
+
+
+Note: Please make sure that the environment setup is complete before starting the Activemq service. This can
+be done by including the above mentioned lines in the .bashrc or .bash_profile for the user that will be running bioscope and then
+i) relogin (or)
+ii) source the file ‘bioscope_profile.sh’ provided in the installer root directory before starting the Activemq service.
+
+
+
+The scripts to start and stop Activemq will be located in the the Bioscope install directory mentioned earlier.
+
+For Ex:
+
+/home/sbob/bioscope/start-ActiveMQ.sh
+
+
+
+BioScope Installer Readme
+-------------------------
+
+
+5. Installer setup options
+
+I. For CLI and GUI:
+
+i. Can be installed in the users home directory which is shared across all nodes, i.e. both on head node and compute nodes. An example setup would be,
+
+/home/user1/bioscope -- bioscope home directory
+/home/user1/bioscope/results --- results directory
+/home/user1/bioscope/reference --- reference directory
+
+This above setup is preferable to work bioscope in a closed environment and no other users will
+have access to bioscope.
+
+Another example setup would be,
+
+/opt/bioscope --- bioscope home directory
+/data/results --- results directory
+/data/reference --- reference directory
+
+All the above mentioned directories should be shared across all nodes. This setup is ideal on a shared cluster where bioscope is used by many users.
+
+Above suggestions are examples only, any directory can be changed during the install time.
+
+
+
+
+BioScope installer checklist
+----------------------------
+
+Make sure all the items are satisfied before installing bioscope. Consult with the system administrator of the off-line cluster.
+
+Note: Headnode is refered to master or controller node. Compute nodes are the cluster or slave nodes.
+
+1) Is the offline cluster running on Redhat or CentOS linux 4.x or 5.x versions?
+2) Is the Linux OS 64 bit distribution?
+3) Is the resource scheduler on the cluster SGE or PBS derivatives?
+4) Do all the compute nodes which will be used for bioscope have minimum
+memory of 2GB per core?
+
+If the answer to any of the above questions is no, the offline cluster is not suitable for running bioscope software. If all the above questions are satisfied verify the requirements for the install type and run the bioscope installer. Refer to install document.
+
+		OK TO ALL ABOVE
+
+
+Post-install Checklist:
+
+
+1) For Command Line Interface (CLI):
+
+a. Is BioScope user able to submit jobs to the cluster?
+
+b. Do you have the resource queue configured that will be used for
+BioScope?
+
+c. Does BioScope users group have read/write permissions to all the
+directories that are needed for bioscope that are listed below?
+i. Results
+ii. Reference
+iii. BioScope
+iv. Local scratch
+
+d. Do all the following software packages are pre-installed on both
+headnode and all compute nodes?
+i. Java
+ii. Perl
+iii. Python
+e. Is activemq service running?
+
+
+To verify the installation:
+
+1. Download and unpack the examples tar package provided
+along with bioscope installer in results directory: /data/results
+
+
+2. Start activemq service
+
+	# cd $CORONAROOT
+	#./start-ActiveMQ.sh
+	#cd /data/results
+	# tar –zxvf BioScope-1.0.0.40-10.examples.tar.gz
+	# cd examples/demos
+	
+	
+Change the path of the reference and scratch directory in globals.ini file (marked in red)
+
+	# vi globals/global.ini
+	############################
+	############################
+	##
+	## global parameters
+	##
+	base.dir=./
+	output.dir = ${base.dir}/outputs
+	temp.dir = ${base.dir}/temp
+	intermediate.dir = ${base.dir}/intermediate
+	log.dir = ${base.dir}/log
+	reads.result.dir.1 = ${base.dir}
+	reads.result.dir.2 = ${base.dir}
+	reference.dir = /data/results/examples/demos/references/
+	scratch.dir=/scratch/solid
+	#cd mapping
+	#./run.sh
+
+
+The output should look like following,
+
+[jwang1@redcloud mapping]$./run.sh
+
+	+/home/jwang1/corona/bin+
+	+/home/jwang1/corona+
+	20 Oct 2009 22:05:35,152 INFO [main] PluginJobManager:83 - >>>> START of PluginJobManager >>>> date=2009-10-20 22:05:35.137 PDT
+	20 Oct 2009 22:05:35,692 INFO [main] AnalysisJobManager:47 - AnalysisJobManager.manageJobs() job.name=mapping.run; pluginId=mapping.run
+	20 Oct 2009 22:05:35,712 INFO [main] ClusterPluginJobLauncher:134 - Spawned process for 'mapping.run'.
+	java_app.sh com.apldbio.aga.analysis.exec.PluginRunner -q fd98c589-bbde-45e4-b785-a8b2c8fcd1d8 -s -L /data/results/examples/demos/mapping/log
+	-l mapping.run.20091021050535696.log -j 1 mapping.run /data/results/bioscope1.0/examples/demos/mapping/demo.ini
+	20 Oct 2009 22:05:35,713 INFO [main] AnalysisJobManager:33 - Waiting for events on selector 'fd98c589-bbde-45e4-b785-a8b2c8fcd1d8'
+	20 Oct 2009 22:05:35,713 INFO [main] JMSEventReceiver:66 - JMSEventReceiver waitForEvent before taking.
+	20 Oct 2009 22:08:06,105 INFO [ActiveMQ Session Task] JMSEventReceiver:88 - JMSEventReceiver onMessage Message selector fd98c589-bbde-45e4-b785-a8b2c8fcd1d8
+	20 Oct 2009 22:08:06,106 INFO [ActiveMQ Session Task] JMSEventReceiver:89 - JMSEventReceiver onMessage Expected selector fd98c589-bbde-45e4-
+	b785-a8b2c8fcd1d8
+	20 Oct 2009 22:08:06,114 INFO [ActiveMQ Session Task] JMSEventReceiver:92 - JMSEventReceiver onMessage Message Time2009-10-20 22:08:06.086
+	20 Oct 2009 22:08:06,114 INFO [ActiveMQ Session Task] JMSEventReceiver:93 - JMSEventReceiver onMessage before putting Mapping completed
+	successfully
+	20 Oct 2009 22:08:06,115 INFO [ActiveMQ Session Task] JMSEventReceiver:95 - JMSEventReceiver onMessage after putting.
+	20 Oct 2009 22:08:06,115 INFO [main] JMSEventReceiver:68 - JMSEventReceiver waitForEvent after taking Mapping completed successfully
+	20 Oct 2009 22:08:06,117 INFO [main] JMSEventReceiver:70 - Event Mapping completed successfully received on selector 'fd98c589-bbde-45e4-b785-
+	a8b2c8fcd1d8'
+	20 Oct 2009 22:08:06,117 INFO [main] AnalysisJobManager:79 - mapping.run completed.
+	20 Oct 2009 22:08:06,117 INFO [main] PluginJobManager:118 - Finished successfully
+	20 Oct 2009 22:08:06,118 INFO [main] PluginJobManager:102 - >>>> END of PluginJobManager >>>> date=2009-10-20 22:08:06.118 PDT
+	20 Oct 2009 22:08:06,118 INFO [main] PluginJobManager:104 - >>>> END of PluginJobManager >>>> date DURATION=2 minutes 30 secs
+
+
+
+
+BioScope FAQ
+------------
+
+1. What are the different versions of Bioscope?
+Command Line = CLI
+Command Line + User Interface = GUI (UI)
+Command Line + User Interface + Auto Export = Full Installer
+2. Where can bioscope be installed?
+If you are installing the Command Line (CLI) or the GUI version you can install bioscope
+anywhere on the file-system where the user who installs has permission to read/write.
+If you are installing the Full version, BioScope will be installed in the directory
+/share/apps. The installed directories should be shared across all nodes, i.e. both on
+head node and compute nodes.
+3. Which user should install Bioscope?
+If you are using the CLI or GUI versions any user can install BioScope. This user should
+have read/write permissions to the directories where the application is installed and
+corresponding application specific directories. For The Full Installer “root” should install
+the application.
+
+12. How do I know if my run is successfully complete?
+- check the log files.
+(1) Check the main log first. The one specified when running bioscope.sh as in
+$bioscope.sh -l logfilename.log. One will see statements like following:
+pipelineName.run.completed.
+If such statements exist, it means the pipeline analysis is successfully for the pipeline
+named pipelineName.
+(2) Check the sub logs. These logs are located in folder <log>. In this folder, each pipeline
+will have its own main log and multiple children logs. Make sure main logs look clean. If
+the main logs are not clean, check children logs for finding reasons.
+13. What is the expected time for my run to complete?
+This depends on many factors, like the number of beads, the reference, the hardware of
+the cluster in use, the traffic condition if it's a shared cluster, the speed of storage
+system, etc.
+In a typical dedicated 3 to 5 nodes cluster, with 8 cores per node and 24GB memory per
+node, for one(1) full slide in a matepair run, it takes about two(2) days to do the
+mapping, pairing and generate SAM files for 1 billion reads. Most of analyses can be
+done within one(1) or two(2) days.
+
+
+
+14. How do I test if Bioscope installation is successful?
+Follow the instructions in the checklist document.
+
+
+18. How do I determine my hostname of the Head Node or Master Node?
+Running the command “hostname” from a terminal displays your hostname.
+
+19. How to set the path for CORONAROOT ?
+Run the script generate-profile in bioscope installer directory. It will display the lines
+that have to be added in user’s local environment path.
+Add the following lines in the user local bash profile to set CORONAROOT path (change
+path in blue to your path)
+------------------- ----------------- ---------------
+# Check if CORONA_ROOT is set and set it if null
+: ${CORONAROOT:=/home/bioscope/bioscope/corona}
+export CORONAROOT
+if [ -d ${CORONAROOT}/etc/profile.d ]
+then
+for i in ${CORONAROOT}/etc/profile.d/*.sh; do
+if [ -r "$i" ]; then
+. $i
+fi
+done
+unset i
+fi
+------------------- ----------------- ---------------
+
+20. Will generate-profile script generate a C shell user environment path ?
+There is a generate-profile.csh script which can be run address this.
+
+23. Do I have to install JDK 1.6 u12?
+Yes, Bioscope requires Java 1.6u12 or greater.
+
+24. I have an older version of JDK installed; do I need to set yours as default?
+Yes. You can set the path in the BioScope user’s local environment.
+
+
+25. Do I have example data to test my install?
+Yes, follow the instructions in the installer checklist document provided along with
+bioscope.
+
+
+26. What ports do you need open, why?
+• If you are using Auto-Export you will need to open the port 5432 for connections
+to Postgres.
+• If you are using the Web Based UI you will need to open the port 8080 for access
+to the UI
+
+
+27. Can /scratch be on a shared NFS storage?
+Scratch space can be a Local disk or shared storage mounted via NFS but there will be high
+I/O activity on the scratch disk. So make sure the storage has high throughput and will not
+degrade the overall performance of the system.
+
+
+29. Can multiple users try to install Bioscope (with or without GUI) into different locations?
+Yes, as long as the installed directories are different and defined in the local
+environment path of the individual users.
+
+
+30. Can multiple users start JMS (Active MQ) which is installed in different directories
+simultaneously?
+No. The current version of bioscope does not support multiple users starting JMS.
+Bioscope needs only one session of JMS running , so if one user starts JMS it will be
+available for the other users.
+
+
+31. Can a user Stop/Kill a running JMS instance started by another user who belongs to the
+same group?
+No, It will not be permitted. Only “root” user can do this.
+
+
+32. What happens if a user currently running JMS instance stops it when a second user is
+running Bioscope?
+This will cause the Jobs submitted by the second user to fail. We recommend that the
+JMS service is not stopped
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+EXAMPLE OF *.ini FILE RUN ON RAINDANCE DATA
+
+su: user coronoa does not exist
+[root@scyld ~]# su - corona
+[corona@scyld ~]$ cat /home/corona/saturday*/raindance_19952149*ini
+#GENERAL_DATA_SETTINGS
+read.length=50
+reference=/data/reference/hg18.fa
+base.dir=/data/results/secondary/raindance_19952149
+mapping.tagfiles=/data/HIHG_data/solid0398/Raindance_PD_20100105_SEQ/16_Raindance_PD/results.F1B1/primary.20100111142508790/reads/Raindance_PD_20100105_SEQ_16_Raindance_PD_F3.csfasta
+qual.file=/data/HIHG_data/solid0398/Raindance_PD_20100105_SEQ/16_Raindance_PD/results.F1B1/primary.20100111142508790/reads/Raindance_PD_20100105_SEQ_16_Raindance_PD_F3_QV.qual
+scratch.dir=/scratch/solid
+primer.set=F3
+#GENERAL_ANALYSIS_SETTINGS
+csfasta.file=Raindance_PD_20100105_SEQ_16_Raindance_PD_F3.csfasta
+pipeline.cleanup.middle.files=1
+pipeline.cleanup.temp.files=1
+output.dir=${base.dir}/output
+tmp.dir=${base.dir}/tmp
+intermediate.dir=${base.dir}/intermediate
+log.dir=${base.dir}/log
+#GENERAL_MAPPING_SETTINGS
+mapping.run=1
+mapping.output.dir=${output.dir}/s_mapping
+mapping.stats.output.file=mapping-stats.txt
+mapping.run.classic=false
+mismatch.level=6
+matching.max.hits=100
+mapping.mismatch.penalty=-2.0
+mapping.qual.filter.cutoff=0
+clear.zone=5
+#MAtoBAM_CONVERSION_SETTINGS
+ma.to.bam.run=1
+mapping.output.dir=${output.dir}/s_mapping
+ma.to.bam.qual.file=${qual.file}
+ma.to.bam.reference=${reference}
+ma.to.bam.output.dir=${output.dir}/maToBam
+ma.to.bam.match.file=${output.dir}/s_mapping/${csfasta.file}.ma
+ma.to.bam.output.file.name=
+ma.to.bam.intermediate.dir=${intermediate.dir}/maToBam
+ma.to.bam.temp.dir=${tmp.dir}/maToBam
+ma.to.bam.pas.file=
+ma.to.bam.output.filter=primary
+ma.to.bam.correct.to=reference
+ma.to.bam.clear.zone=5
+ma.to.bam.mismatch.penalty=-1.99
+ma.to.bam.iubs.to=missing
+ma.to.bam.library.type=fragment
+ma.to.bam.library.name=lib1
+ma.to.bam.slide.name=
+ma.to.bam.description=
+ma.to.bam.sequencing.center=freetext
+ma.to.bam.tints=agy
+ma.to.bam.base.qv.max=40
+ma.to.bam.temporary.dir=
+#POSERRORS_RUN_SPECIFIC_SETTINGS
+position.errors.run=1
+mapping.bam.dir=${output.dir}/maToBAM
+position.errors.output.dir=${output.dir}/positionErrors
+position.errors.file=positionErrors.txt
+show.first.position.as.base=false
+#DIBAYES_RUN_SPECIFIC_SETTINGS
+dibayes.run=1
+temp.dir=${base.dir}/tmp
+reference.dir=/data/reference/
+dibayes.output.prefix=raindance_19952149
+input.file.info=${output.dir}/maToBam/Raindance_PD_20100105_SEQ_16_Raindance_PD_F3.csfasta.ma.bam:0:${output.dir}/positionErrors/Raindance_PD_20100105_SEQ_16_Raindance_PD_F3.csfasta.ma_F3_positionErrors.txt
+mapping.output.dir=${output.dir}/s_mapping
+position.errors.output.dir=${output.dir}/positionErrors/
+dibayes.output.dir=${output.dir}/diBayes/DB_OUT
+dibayes.working.dir=${temp.dir}/dibayes
+dibayes.log.dir = ${log.dir}/dibayes
+maximal.read.length = 50
+call.stringency = medium
+input.file.type=BAM
+poly.rate=0.003
+detect.2.adjacent.snps=0
+write.fasta = 0
+flag.write.consensus = 1
+flag.compress.consensus = 0
+step.size = 150000
+cleanup.tmp.files=1
+het.skip.high.coverage=0
+reads.min.mapping.qv=8
+het.min.nonref.color.qv=7
+hom.min.nonref.color.qv=7
+snp.both.strands = 1
+het.min.coverage = 5
+het.min.start.pos = 5
+hom.min.coverage=5
+hom.min.start.pos=5
+hom.min.allele.count=5
+reads.no.indel=1
+reads.only.unique=1
+[corona@scyld ~]$
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  7 19:57:14 EDT 2010] CONTACTS AT LIFETECH>
+
+
+
+
+
+From: Mooney, Mark [mailto:c-mark.mooney@lifetech.com] 
+Sent: Tuesday, April 13, 2010 4:18 PM
+To: Dyer, Matt; Lou, Yuandan; Young, Stuart; Zhang, Zheng; Sun, Yongming; Krishnaswami, Brijesh; Robertson, Alexander
+Cc: Zhai, Jing
+Subject: Review Mapping with HIHG
+
+Hi Stuart, I am just sending you this to make sure you have contact information
+
+Yongming manages customer support and he would be your contact for the configuration file (Yongming.Sun@lifetech.com (650) 638-6879)
+
+Zheng is the person who you were discussing the possible variations of mapping process with (Zheng.Zhang@lifetech.com )
+
+Matt Dyer is your Bioinformatics service representative ( matt.dyer@lifetech.com 281-323-4578)
+
+Alex Robertson is the point of contact for the HIHG relationship in general and he may be able to point you at other internal resources if you need them (alexander.robertson@lifetech.com ).
+
+I would recommend working with Dale Hedges to see how his data sets run on Bioscope 1.2 on the Penguin cluster.  You can then use this as a comparator for your runs  on the CCS system.  Please keep us in the loop as you go forward I think that having the CCS system as an alternative option for the HIHG will be important as you move into the larger volume data pipeline.
+
+
+Also in an ideal world the manual would cover the process of installing and performing a mapping run.  As a naïve user could you look at those sections in the manual and let me know if you think they are adequate.
+Best
+Mark.
+
+Associate Director; Product Management (Bioinformatics) – SOLiD Software Genetic Analysis Systems
+phone 650 554 2515 • mobile 650 766 2946 • mobile 415 336 4511 
+Mark.Mooney@lifetech.com
+850 Lincoln Center Drive • Foster City • CA • 94404
+http://info.appliedbiosystems.com/solidsoftwarecommunity
+http://solidsoftwaretools.com
+www.lifetechnologies.com
+ 
+
+
+This message may contain confidential and/or privileged information. If you are not the addressee or authorized to receive this for the addressee, you must not use, copy, disclose or take any action based on this message or any information herein. If you have received this message in error, please advise the sender immediately by reply e-mail and delete this message. Thank you for your cooperation.
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  7 19:57:14 EDT 2010] TESTED PIPELINE ON SOLID DATA>
+
+
+
+
+5. Ensure that you have at least 43 GB available in the directory and run the script:
+% chmod +x ./get_bioscope.sh
+% ./get_bioscope.sh
+-- this downloads the needed datasets BioScope tests to verify your installation
+
+	
+cd /data/results/stresstest/bioscopeMapping.run
+nohup ./run.sh > nohup.out &
+
+cd /data/results/stresstest/WT.run
+nohup ./run.sh > nohup.out &
+
+Make sure to run them as the user who installed BioScope. It usually takes about 20 hours to complete. You can tail the log file (nohup.out) to check the progress.
+
+
+
+
+rw-r--r-- 1 syoung root 3.9G Apr  7 19:27 SRR015374.fastq
+
+/scratch/syoung/base/pipeline/solid/SRR015374.fastq
+
+
+
+6.3 Setting up a run
+To execute the SNP finder pipeline in BioScope™software, create a SNP_Finder.ini file, and add it to the an
+exsisting plan file. Then execute BioScopeTM software with the plan file as input. Below is an example of
+SNP_Finder.ini file.
+
+
+6.3.1 Example SNP_Finder.ini file
+The lines in the .ini file below are color coded as follows:
+Red – Must change for every run.
+Blue – Please verify to make sure it is appropriate for the run.
+Gray – You can probably leave this alone.
+Please see Table 6 in Appendix B of SOLiD™ BioScope™ Software 1.0 User Guide for more explanation
+of each variable in the .ini file below.
+
+
+### *********************************
+### This is an example .ini File for diBayes.
+### *********************************
+## See the What is BioScope™ software section for details on global.ini file
+## This .ini file inherits paths for base.dir, reference.dir, output.dir,
+## tmp.dir, intermediate.dir, log.dir, and scratch.dir from global.ini file.
+import /data/globals/global.ini
+# run pipeline: 1 to run, 0 to not run.
+run.dibayesinput=1
+dibayes.run=1
+evidence for
+Heterozygosity?
+Is coverage high?
+Frequentist algorithm
+Heterozygous calls,
+P-value
+Translate to Base Space
+Quality.bin files
+Bayesian algorithm
+Can position be called as
+Homozygous?
+As Homozygous SNP?
+Is position
+Heterozygous?
+Handle False
+Positive
+contiguous SNPs
+Handle False
+Positive
+contiguous SNPs
+Yes
+Yes
+Yes
+No
+No
+No No
+Yes
+Homozygous calls,
+P-value
+Base = N
+
+	
+	### *********************************
+	### Set input paths and input file names.
+	### *********************************
+	# Reference sequence fasta file with full path. The reference directory was
+	defined in the global.ini file in the What is BioScopeTM software chapter.
+	reference.file=${reference.dir}/DH10B_WithDup_FinalEdit_validated.fasta
+	# Full path to melting temperature file found in corona package.
+	tm.file=/share/apps/corona/etc/analysis/6mers.Tm
+	##**************************************
+	# Following set of parameters should be repeated according to the number of
+	# .GFF files to be processed. For example:
+	# gff.1.name=/path/to/somefile.gff
+	# gff.1.mate.pair=1
+	# gff.1.f3.position.error=/path/to/f3_position_err_file.txt
+	# gff.1.r3.position.error=/path/to/r3_position_err_file.txt. *Not required if
+	gff.1.mate.pair=0.
+	##**************************************
+	## Number of input GFF files to be processed.
+	## There is one GFF file per sample.
+	gff.file.count=1
+	gff.1.name=${base.dir}/inputData/s_matching/max.test.ma.gff3.annotated.gff3
+	gff.1.mate.pair=0
+	gff.1.f3.position.error=${base.dir}/inputData/F3max.test.ma.gff3.annotated.po
+	sitionErrors.txt
+	### *********************************
+	### Set output paths and output file names.
+	### *********************************
+	# Final Sub-directory for results files. Do not include path to the
+	directory.
+	# To avoid overwriting results from the diBayes step, change this directory
+	name before execution.
+	# This variable is used as a file name prefix for results from the diBayes
+	step.
+	experiment.name = test_SNP
+	## Name of output (maq) file.
+	## Important Note: DO NOT include full path. It will be generated internally
+	file.maq = MAQ
+	## Full path to location of directory where to write output files.
+	folder.for.dibayesinput.output=${output.dir}/diBayes/DB_INPUT_OUT
+	## Full path to location of directory where to write diBayes output files.
+	folder.for.dibayes.output=${output.dir}/diBayes/DB_OUT
+	## Full path to location of directory in which to place temporary working
+	files
+	dibayes.working.dir = ${scratch.dir}
+	## Path to the log directory
+	dibayes.log.dir = ${log.dir}/diBayes_Logs
+	## Name to use as prefix for output files in diBayesInput step.
+	## To avoid overwriting final results from the diBayes step, please
+	## also change the experiment.name.
+	prefix.output.file=multichr
+	
+	### *********************************
+	### Set parameters that don’t affect results.
+	### *********************************
+	## Verbose Flag: 1=dump warnings for each invalid line in file. 0=don't.
+	verbose.flag = 0
+	## without breaking reads of the same probe.
+	step.size = 500000
+	# Optional Parameter
+	# Write consensus fasta file?
+	# Options:
+	# 0 (Don't write fasta file),
+	# 1 (Write fasta file)
+	flag.write.fasta = 1
+	# Optional Parameter
+	# Write output file consensus_calls.txt?
+	# Options:
+	# 0 (Don't write consensus_calls.txt file),
+	# 1 (Write consensus_calls.txt file)
+	flag.write.consensus = 1
+	# Optional Parameter
+	# ZIP consensus_calls.txt Options:
+	# 0 (Don't ZIP consensus_calls.txt file),
+	# 1 (ZIP consensus_calls.txt file)
+	flag.compress.consensus = 0
+	
+	### *********************************
+	### Set parameters that affect results.
+	### *********************************
+	## Maximal read length (e.g. 50).
+	## This program allows combining reads from sources with different read
+	lengths.
+	maximal.read.length = 50
+	## Maximum number of genome positions per “bin” file.
+	## Used to break down the output into multiple files.
+	## Each file will contain up to 'Step size' quality values,
+	## Method used to combine left and right color quality values into a single
+	value. Values: 1,2,3, or 4.
+	37 Data Analyis using BioScope™ Software for Bioinformatics Scientists - DRAFT
+	combine.left.right.qvs = 1
+	# Optional Parameter
+	# Call stringency Options:
+	# default, high_coverage, med_coverage, low_coverage
+	call.stringency = default
+	# Optional Parameter
+	# Polymorphism rate: Excpected frequency of heterozygotes in the population:
+	for example, 0.001 in humans
+	poly.rate = 0.003
+	coverage.iqr.het.high=2.5
+	### *********************************
+	### END of example .ini file
+	### *********************************
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  7 16:26:07 EDT 2010] DOWNLOADED SOLID NA18507 DATA>
+
+
+
+
+
+PEGASUS DOWNLOAD SLOW, TRY KRONOS-X
+
+deepvac.pl \
+--url ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003913 \
+--outputdir /nethome/syoung/base/pipeline/solid/NA18507/SRP000726/SRX003913
+
+
+
+
+
+STUDY: SRP000726
+
+DESCRIPTION: Genome variability analysis of Yoruba in Ibadan, Nigeria (NA18507) by SOLiD mediated whole genome re-sequencing.
+
+URL:
+http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?study=SRP000726
+
+
+
+DOWNLOAD THE RUNS ONTO PEGASUS
+
+FTP directory
+
+
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003913
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003914
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003915
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003917
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003918
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003919
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003936
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003959
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003960
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003961
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003962
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003963
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003964
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003965
+ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX004555
+
+
+download 	SRX003913 	138.9M 	6.9G
+	SRR015374 	138.9M 	6.9G
+download 	SRX003914 	178.5M 	8.9G
+	SRR016057 	178.5M 	8.9G
+download 	SRX003915 	135.9M 	6.8G
+	SRR016059 	135.9M 	6.8G
+download 	SRX003917 	86.6M 	4.3G
+	SRR016063 	86.6M 	4.3G
+download 	SRX003918 	153.2M 	7.7G
+	SRR016058 	153.2M 	7.7G
+download 	SRX003919 	109.0M 	5.5G
+	SRR015449 	109.0M 	5.5G
+	
+	
+download 	SRX003936 	86.5M 	7.4G
+	SRR016062 	86.5M 	7.4G
+download 	SRX003959 	66.0M 	3.3G
+	SRR016053 	32.7M 	1.6G
+	SRR016054 	33.3M 	1.7G
+download 	SRX003960 	52.9M 	2.6G
+	SRR016055 	28.3M 	1.4G
+	SRR016056 	24.6M 	1.2G
+download 	SRX003961 	68.5M 	3.4G
+	SRR016051 	68.5M 	3.4G
+download 	SRX003962 	60.9M 	2.7G
+	SRR016052 	60.9M 	2.7G
+download 	SRX003963 	75.9M 	3.8G
+	SRR016064 	75.9M 	3.8G
+	
+download 	SRX003964 	112.5M 	5.6G
+	SRR016060 	112.5M 	5.6G
+download 	SRX003965 	91.8M 	4.6G
+	SRR016061 	91.8M 	4.6G
+download 	SRX004555 	1.2G 	119.4G
+
+
+
+Total: 15 	2.6G 	193.0G
+download 	SRX003913 	138.9M 	6.9G
+	SRR015374 	138.9M 	6.9G
+download 	SRX003914 	178.5M 	8.9G
+	SRR016057 	178.5M 	8.9G
+download 	SRX003915 	135.9M 	6.8G
+	SRR016059 	135.9M 	6.8G
+download 	SRX003917 	86.6M 	4.3G
+	SRR016063 	86.6M 	4.3G
+download 	SRX003918 	153.2M 	7.7G
+	SRR016058 	153.2M 	7.7G
+download 	SRX003919 	109.0M 	5.5G
+	SRR015449 	109.0M 	5.5G
+download 	SRX003936 	86.5M 	7.4G
+	SRR016062 	86.5M 	7.4G
+download 	SRX003959 	66.0M 	3.3G
+	SRR016053 	32.7M 	1.6G
+	SRR016054 	33.3M 	1.7G
+download 	SRX003960 	52.9M 	2.6G
+	SRR016055 	28.3M 	1.4G
+	SRR016056 	24.6M 	1.2G
+download 	SRX003961 	68.5M 	3.4G
+	SRR016051 	68.5M 	3.4G
+download 	SRX003962 	60.9M 	2.7G
+	SRR016052 	60.9M 	2.7G
+download 	SRX003963 	75.9M 	3.8G
+	SRR016064 	75.9M 	3.8G
+download 	SRX003964 	112.5M 	5.6G
+	SRR016060 	112.5M 	5.6G
+download 	SRX003965 	91.8M 	4.6G
+	SRR016061 	91.8M 	4.6G
+download 	SRX004555 	1.2G 	119.4G
+
+
+deepvac.pl \
+--url ftp://ftp.ncbi.nlm.nih.gov/sra/Studies/SRP000/SRP000726/SRX003913 \
+--outputdir /store/Data01/NGS/syoung/base/pipeline/SRA/SRA000271
+
+
+
+
+
+
+Whole Genome Sequencing
+Submission:  SRA000272 by ABHTD on 2009-04-15T12:00:00Z
+Abstract:  High-throughput sequencing technologies have greatly increased the power of human genome variability studies. We have prepared multiple paired end libraries with insert sizes ranging from 500 bp to 10 kb and fragment libraries with average insert size of 60-100bp using the NA18507 DNA belonging to a Yoruba individual. These libraries were extensively sequenced using SOLiD (ABI's next generation sequencing platform). The deep sequence coverage obtained from these diverse libraries not only helps identify SNPs in this genome but also submicroscopic structural variations like insertions/deletions. In this high density genome re-sequencing effort we address the challenges of constructing multiple sized mate pair libraries of complex genomes.
+Description:  n/a
+Properties: 
+Project:  Homo sapiens [Applied Biosystems/Applied Biosystems, CTAG]
+NCBI Link:  NCBI Entrez (pubmed)
+External Links:  Poster Genome Variability Analysis
+Project home page
+
+
+
+
+
+1:    SRX004555    AB SOLiD sequencing of Human HapMap individual NA18507 genomic paired-end library	Links
+Experiment design: A collection of four instrument runs derived from a single library preparation.
+Submission: SRA000272 by ABHTD
+Study Summary: Genome variability analysis of Yoruba in Ibadan, Nigeria (NA18507) by SOLiD mediated whole genome re-sequencing. (SRP000726) • Study • All experiments   (more...)(less...)
+Project:
+Abstract: High-throughput sequencing technologies have greatly increased the power of human genome variability studies. We have prepared multiple paired end libraries with insert sizes ranging from 500 bp to 10 kb and fragment libraries with average insert size of 60-100bp using the NA18507 DNA belonging to a Yoruba individual. These libraries were extensively sequenced using SOLiD (ABI's next generation sequencing platform). The deep sequence coverage obtained from these diverse libraries not only helps identify SNPs in this genome but also submicroscopic structural variations like insertions/deletions. In this high density genome re-sequencing effort we address the challenges of constructing multiple sized mate pair libraries of complex genomes.
+External links: Poster Genome Variability Analysis, Project home page
+NCBI link: NCBI Entrez (pubmed)
+Center: ABHTD
+Center Project:
+Sample: This individual is a member of the HapMap Phase I/II YRI population, from the Yoruba in Ibadan, Nigeria. The genomic DNA sample was obtained from The Coriell Institute for Medical Research. (SRS000101) (more...)(less...)
+Organism: Human male HapMap individual NA18507
+Attributes:
+population: YRI
+Coriell plate: HAPMAPPT03
+Coriell cell culture ID: GM18507
+HapMap sample ID: NA18507
+Subject_id: Y009-3
+Family ID: Y009
+relationship: father
+sex: Male
+fosmid library source: ABC
+External links: Individual record in dbSNP, DNA source
+Library: NA18507 CRC  (more...)(less...)
+Strategy: WGS
+Source: GENOMIC
+Selection: RANDOM
+Layout: PAIRED, Orientation: 5'-3'Reverse,5'-3'Forward, Nominal length: 1500, Nominal Std Dev: 200
+Construction protocol: We prepared four libraries by shearing 200µg of NA18507 genomic DNA to 1.5kb. Libraries were prepared as a single sample until circularization, and then the sample was split into two parts to compare library excision when using S1 nuclease alone or a combination of T7 exonuclease and S1 nuclease. Prior to amplification the two libraries were once again divided in half to compare amplification efficiencies and bias between Invitrogen's Platinum Supermix and Applied Biosystem's SOLiD Library Amplification Master Mix. The slides correspond to the library prep as follows: CLARA_20080903_1 S1-Supermix, JOAN_20080829_1 S1-Master Mix, CLARA_20080903_2 T7/S1-Supermix, JOAN_20080911_2 T7/S1-Master Mix.
+Platform: ABI Solid 
+Processing:
+Base calls: Color Space, Spotfire 2.0
+Quality score: Spotfire 2.0, 40x1
+Spot descriptor:
+1 5051 
+	
+Total: 4 runs, 1.2G spots, 119.4G bases
+#	Run	# of Spots  	# of Bases  
+1. 	SRR016121	321,229,438	32.1G 
+2. 	SRR016407	250,796,062	25.1G 
+3. 	SRR017528	317,294,069	31.7G 
+4. 	SRR022546	304,922,160	30.5G
+
+
+
+
+
+
+NB: SMALL RNA DOWNLOAD LINKS BROKEN
+
+http://solidsoftwaretools.com/gf/project/srna/
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Apr  7 16:26:07 EDT 2010] INSTALLED bioscope 1.2.0 ON pegasus>
+
+
+
+INSTALLED TO HERE:
+
+/nethome/syoung/base/apps/bioscope/1.2.0
+
+
+INSTALLATION PROCESS:
+
+
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.0
+
+cd /package-installers
+
+./install-cli.sh
+
+	Unpacking in /nethome/syoung/apps/bioscope/1.2.0 directory ...
+	BioScope-1.2.rBS120CTS2-45893M_20100326163136/
+	BioScope-1.2.rBS120CTS2-45893M_20100326163136/.VERSION
+	BioScope-1.2.rBS120CTS2-45893M_20100326163136/lib/
+	...
+	apache-activemq-5.3.0/lib/geronimo-jms_1.1_spec-1.1.1.jar
+	apache-activemq-5.3.0/lib/activemq-console-5.3.0.jar
+	apache-activemq-5.3.0/lib/jaxb-impl-2.1.6.jar
+	apache-activemq-5.3.0/activemq-all-5.3.0.jar
+	apache-activemq-5.3.0/logs/
+	apache-activemq-5.3.0/data/
+	apache-activemq-5.3.0/data/activemq.log
+	apache-activemq-5.3.0/docs/
+	apache-activemq-5.3.0/docs/index.html
+	
+	Installation is complete ..
+ 
+ 
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/analysis/plugins.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/analysis/plugins.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/analysis/plugins.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/analysis/jndi.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/template/cluster.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/template/SGE_TEMPLATE.ftl: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/*.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/*.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/*.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/pairing.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/small.indel.frag.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/small.indel.frag.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/wt.merge.properties: No such file or directory
+sed: can't read /nethome/syoung/apps/bioscope/1.2.0/corona/etc/plugins/properties/mapping.stats.properties: No such file or directory
+[syoung@u01 package-installers]$
+
+
+
+THIS IS THE bioscope.conf FILE USED:
+
+
+cat /nethome/syoung/apps/bioscope/1.2.0/bioscope.conf
+
+	# This file contains the BioScope configuration.
+	# Refer to documentation for more details
+	# GENERATED BY BIOSCOPE INSTALLER
+	
+	# Define the bioscope install directory
+	bioscope.dir=/nethome/syoung/apps/bioscope/1.2.0
+	
+	# Define the bioscope root
+	# $BIOSCOPEROOT
+	bioscope.bioscoperoot=/nethome/syoung/apps/bioscope/1.2.0/corona
+	
+	# Define bioscope users group
+	bioscope.usersgroup=bioinfo
+	
+	# Define the resource manager for the cluster
+	# For pbs torque variants, use TORQUE
+	# For sge, use SGE
+	# For single server configuration use NONE for this option
+	bioscope.resourcemanager=TORQUE
+	bioscope.pe=smp
+	
+	# Define the queue necessary for Bioscope
+	# example bioscope.queue=secondary
+	bioscope.analysis.queue=large
+	
+	# Define the primary queue necessary for autoexport
+	# Only needed if cycle by cycle export is used
+	bioscope.primary.queue=large
+	
+	# Define the hostname of the master or submit node
+	bioscope.masternode=u01
+	
+	# Define results directory for bioscope
+	bioscope.results=/nethome/syoung/apps/bioscope/1.2.0/results
+	
+	# Define reference directory for bioscope
+	bioscope.reference=/nethome/syoung/apps/bioscope/1.2.0/reference
+	
+	# Define local scratch directory on compute/slave nodes and master node
+	bioscope.scratch=/scratch/syoung/base/apps/bioscope
+	
+	# Define cluster resources
+	# Enter the number of nodes available on existing cluster
+	# Enter the least
+	bioscope.number.of.nodes=280
+	bioscope.number.of.cores.per.node=8
+	bioscope.memory.size=16
+	
+	# DO NOT EDIT BELOW THIS LINE
+	bioscope.version=1.2.rBS120CTS2
+	bioscope.installer.directory=BioScope-1.2.rBS120CTS2-45893M_20100326163136
+	bioscope.tar=BioScope-1.2.rBS120CTS2-45893M_20100326163136.tar.gz
+	bioscope.installer.user=root
+	bioscope.installer.option=1
+	
+	
+
+http://10.141.60.249:8080/bioscope/views/bioscope/BioScopeMain.faces
+
+
+
+
+REINSTALLED WITH NEW VALUES IN bioscope.conf
+
+
+	# This file contains the BioScope configuration.
+	# Refer to documentation for more details
+	# GENERATED BY BIOSCOPE INSTALLER
+	
+	# Define the bioscope install directory
+	bioscope.dir=/nethome/syoung/base/apps/bioscope/1.2.0
+	
+	# Define the bioscope root
+	# $BIOSCOPEROOT
+	bioscope.bioscoperoot=/nethome/syoung/base/apps/bioscope/1.2.0
+	
+	# Define bioscope users group
+	bioscope.usersgroup=bioinfo
+	
+	# Define the resource manager for the cluster
+	# For pbs torque variants, use TORQUE
+	# For sge, use SGE
+	# For single server configuration use NONE for this option
+	bioscope.resourcemanager=LSF
+	bioscope.pe=smp
+	
+	# Define the queue necessary for Bioscope
+	# example bioscope.queue=secondary
+	bioscope.analysis.queue=large
+	
+	# Define the primary queue necessary for autoexport
+	# Only needed if cycle by cycle export is used
+	bioscope.primary.queue=large
+	
+	# Define the hostname of the master or submit node
+	bioscope.masternode=u04
+	
+	# Define results directory for bioscope
+	bioscope.results=/nethome/syoung/base/apps/bioscope/1.2.0/results
+	
+	# Define reference directory for bioscope
+	bioscope.reference=/nethome/syoung/base/apps/bioscope/1.2.0/reference
+	
+	# Define local scratch directory on compute/slave nodes and master node
+	bioscope.scratch=/scratch/syoung/base/apps/bioscope/output
+	
+	# Define cluster resources
+	# Enter the number of nodes available on existing cluster
+	# Enter the least
+	bioscope.number.of.nodes=280
+	bioscope.number.of.cores.per.node=8
+	bioscope.memory.size=16
+	
+	# DO NOT EDIT BELOW THIS LINE
+	bioscope.version=1.2.rBS120CTS2
+	bioscope.installer.directory=BioScope-1.2.rBS120CTS2-45893M_20100326163136
+	bioscope.tar=BioScope-1.2.rBS120CTS2-45893M_20100326163136.tar.gz
+	bioscope.installer.user=root
+	bioscope.installer.option=1
+
+
+INSTALL COMMAND
+
+cd /nethome/syoung/base/apps/bioscope/1.2.0/BioScope_1.2-installer/package-installers
+export BIOSCOPEROOT=/nethome/syoung/base/apps/bioscope/1.2.0
+./install-cli.sh
+
+
+GET SAME ERROR:
+
+	....
+	apache-activemq-5.3.0/lib/geronimo-jms_1.1_spec-1.1.1.jar
+	apache-activemq-5.3.0/lib/activemq-console-5.3.0.jar
+	apache-activemq-5.3.0/lib/jaxb-impl-2.1.6.jar
+	apache-activemq-5.3.0/activemq-all-5.3.0.jar
+	apache-activemq-5.3.0/logs/
+	apache-activemq-5.3.0/data/
+	apache-activemq-5.3.0/data/activemq.log
+	apache-activemq-5.3.0/docs/
+	apache-activemq-5.3.0/docs/index.html
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/plugins.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/plugins.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/plugins.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/analysis/jndi.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/template/cluster.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/template/SGE_TEMPLATE.ftl: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/*.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/*.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/*.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/pairing.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/small.indel.frag.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/small.indel.frag.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/wt.merge.properties: No such file or directory
+	sed: can't read /nethome/syoung/base/apps/bioscope/1.2.0/etc/plugins/properties/mapping.stats.properties: No such file or directory
+	 Installation is complete ..
+	 
+
+
+Genome Reference File(*.fasta):
+/data/CTS/WT/CTS_WT_single_read_demo/reference/human_filter_reference.fasta
+
+
+
+Filter Reference File(*.fasta):
+/data/CTS/WT/CTS_WT_single_read_demo/reference/human_filter_reference.fasta
+
+
+		
+Gene GTF File:
+/data/CTS/WT/CTS_WT_single_read_demo/reference/human_filter_reference.fasta
+
+		
+F3 Reads File(*.csfasta):
+/data/CTS/WT/CTS_WT_single_read_demo/HBR_2_150nt/F3/reads/solid0045_20100119_PE_BC_WTA_2_bcSample1_F3_HBR_2_150nt.csfasta
+
+		
+F3 Quality Value File(*.qual):
+	
+
+/data/CTS/WT/CTS_WT_single_read_demo/HBR_2_150nt/F3/reads/solid0045_20100119_PE_BC_WTA_2_bcSample1_F3_QV_HBR_2_150nt.qual
+
+
+		
+		
+		
+		
+		
+		

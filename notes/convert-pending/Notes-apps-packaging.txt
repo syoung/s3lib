@@ -1,0 +1,1184 @@
+Notes-apps-packaging
+
+
+</entry>
+
+
+
+<entry [Fri Feb 13 21:11:08 EDT 2008] PACKAGED UP ExomeSNP.pm ON solexa>
+
+
+
+1. CREATED ExomeSNP.pm
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP
+
+    drwxr-xr-x 2 syoung users  4096 Feb  5 09:29 DBase
+    -rw-r--r-- 1 syoung users 19457 Jan 27 22:28 DBase.pm
+    -rw-r--r-- 1 syoung users 42078 Feb 13 16:02 ExomeSNP.pm
+    drwxr-xr-x 3 syoung users  4096 Feb 13 16:16 t
+    -rw-r--r-- 1 syoung users 32493 Jan 10 12:18 Util.pm
+
+
+2. GENERATED PACKAGE FOR ExomeSNP
+
+mkdir /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package
+
+h2xs -b 5.6.0 -XA -n ExomeSNP
+
+    cd ExomeSNP/
+    [root@solexa01 ExomeSNP]# ll
+    -rw-r--r-- 1 root root  161 Feb 13 16:28 Changes
+    drwxr-xr-x 2 root root 4096 Feb 13 16:28 lib
+    -rw-r--r-- 1 root root  527 Feb 13 16:28 Makefile.PL
+    -rw-r--r-- 1 root root   65 Feb 13 16:28 MANIFEST
+    -rw-r--r-- 1 root root 1162 Feb 13 16:28 README
+    drwxr-xr-x 2 root root 4096 Feb 13 16:28 t
+
+
+2. ADD MODULES TO lib AND TESTS TO t
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package/ExomeSNP
+cp -r /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP/lib/* lib
+cp -r /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP/t/* t
+mv t/02.ExomeSNP.t t/ExomeSNP.t
+
+    [root@solexa01 ExomeSNP]# ll lib
+    drwxr-xr-x 2 root root  4096 Feb 13 16:32 DBase
+    -rw-r--r-- 1 root root 19457 Feb 13 16:32 DBase.pm
+    -rw-r--r-- 1 root root  1718 Feb 13 16:28 ExomeSNP.pm
+    -rw-r--r-- 1 root root 32493 Feb 13 16:32 Util.pm
+
+    [root@solexa01 ExomeSNP]# ll t
+    drwxr-xr-x 4 root root 4096 Feb 13 16:32 02-ExomeSNP
+    -rwxr-xr-x 1 root root 2594 Feb 13 16:32 ExomeSNP.t
+
+cat MANIFEST 
+
+    Changes
+    Makefile.PL
+    MANIFEST
+    README
+    t/ExomeSNP.t
+    lib/ExomeSNP.pm
+
+
+3. UPDATE MANIFEST AUTOMATICALLY
+(update MANIFEST to include all new files found in your distribution)
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package/ExomeSNP
+
+perl Makefile.PL
+make manifest
+
+    NB: "make: warning:  Clock skew detected.  Your build may be incomplete" ERROR MEANS:    
+    that a built file has a timestamp older than the source
+    file.  Usually this happens either when you reset the date in the middle
+    of a build or you set the date back after you do a cvs update.  Check
+    the current date and check the modification dates on your files, and
+    you'll find the problem.
+    
+cat MANIFEST
+
+    Changes
+    lib/DBase.pm
+    lib/DBase/SQLite.pm
+    lib/ExomeSNP.pm
+    lib/Util.pm
+    Makefile.PL
+    MANIFEST
+    README
+    t/02-ExomeSNP/CCDS30547.1-known-dbSNPs.txt
+    t/02-ExomeSNP/dbfile/exome.dbl
+    t/02-ExomeSNP/test-snps3-CCDS2.2-known-dbSNPs.txt
+    t/02-ExomeSNP/unknown/test-snps1.txt
+    t/ExomeSNP.t
+
+
+
+4. CHECK FOR MISSING FILES IN MANIFEST:
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package/ExomeSNP
+make distcheck
+
+    /usr/bin/perl "-MExtUtils::Manifest=fullcheck" -e fullcheck
+
+    (OK)
+
+5. BUILD A DISTRIBUTION
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package/ExomeSNP
+make tardist
+
+## OR make zipdist 
+
+ll | grep .gz
+    
+    -rw-r--r-- 1 root root 15393103 Feb 13 16:36 ExomeSNP-0.01.tar.gz
+
+
+6. CHECK DISTRIBUTION
+
+cd /home/syoung/base/pipeline/nimblegen-run1/ExomeSNP-package/ExomeSNP
+rm -fr test
+mkdir test
+cp ExomeSNP-0.01.tar.gz test
+cd test
+tar xvfz ExomeSNP-0.01.tar.gz
+cd ExomeSNP-0.01
+mkdir installdir
+perl Makefile.PL PREFIX=`pwd`/installdir
+make
+cd t
+./ExomeSNP.t
+
+    1..9
+    ok 1 - Actual and predicted dbSNPs match
+    ok 2 - Actual and predicted dbSNPs match
+    ok 3 - Actual and predicted dbSNPs match
+    ok 4 - Actual and predicted dbSNPs match
+    ok 5 - Actual and predicted dbSNPs match
+    ok 6 - Actual and predicted dbSNPs match
+    ok 7 - Actual and predicted dbSNPs match
+    ok 8 - Actual and predicted dbSNPs match
+    ok 9 - Actual and predicted dbSNPs match
+    
+    OK
+
+
+perldoc ExomeSNP
+
+    OK
+
+
+
+</entry>
+
+
+
+<entry [Mon May 26 21:11:08 EDT 2008] SET UP CPAN ACCOUNT>
+
+
+
+http://www.cpan.org/modules/04pause.html
+
+
+
+
+</entry>
+
+
+
+<entry [Mon May 26 18:54:23 EDT 2008] USE h2xs TO PACKAGE MODULES FOR PAPER 1 - Fuzzy, Match::Synonyms AND PValue>
+
+
+
+PACKAGE Fuzzy
+=============
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1 young$ ll
+total 56
+drwxr-xr-x   3 young  young   102B May 26 18:50 .
+drwxr-xr-x   3 young  young   102B May 26 18:49 ..
+-rwxr-xr-x   1 young  young    27K Mar 16 22:33 Fuzzy.pm
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1 young$ h2xs -XAn Fuzzy
+Defaulting to backwards compatibility with perl 5.8.6
+If you intend this module to be compatible with earlier perl versions, please
+specify a minimum perl version with the -b option.
+
+Writing Fuzzy/lib/Fuzzy.pm
+Writing Fuzzy/Makefile.PL
+Writing Fuzzy/README
+Writing Fuzzy/t/Fuzzy.t
+Writing Fuzzy/Changes
+Writing Fuzzy/MANIFEST
+
+TEST Fuzzy
+==========
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1 young$ ll
+total 56
+drwxr-xr-x   4 young  young   136B May 26 18:50 .
+drwxr-xr-x   3 young  young   102B May 26 18:49 ..
+drwxr-xr-x   8 young  young   272B May 26 18:50 Fuzzy
+-rwxr-xr-x   1 young  young    27K Mar 16 22:33 Fuzzy.pm
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1 young$ cd Fuzzy
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ ls
+Changes     MANIFEST    Makefile.PL README      lib         t
+
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ cat Makefile.PL 
+use 5.008006;
+use ExtUtils::MakeMaker;
+# See lib/ExtUtils/MakeMaker.pm for details of how to influence
+# the contents of the Makefile that is written.
+WriteMakefile(
+    NAME              => 'Fuzzy',
+    VERSION_FROM      => 'lib/Fuzzy.pm', # finds $VERSION
+    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
+      (ABSTRACT_FROM  => 'lib/Fuzzy.pm', # retrieve abstract from module
+       AUTHOR         => 'Stuart Young <young@apple.com>') : ()),
+);
+
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ cat MANIFEST 
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Fuzzy.t
+lib/Fuzzy.pm
+
+
+1) CREATE Makefile WITH PREFIX
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ perl Makefile.PL PREFIX=~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test   
+Checking if your kit is complete...
+Looks good
+Writing Makefile for Fuzzy
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ ll
+total 88
+drwxr-xr-x   10 young  young   340B May 26 18:59 .
+drwxr-xr-x    5 young  young   170B May 26 18:59 ..
+-rw-r--r--    1 young  young   144B May 26 18:50 Changes
+-rw-r--r--    1 young  young    59B May 26 18:50 MANIFEST
+-rw-r--r--    1 young  young    20K May 26 18:59 Makefile
+-rw-r--r--    1 young  young   536B May 26 18:57 Makefile.PL
+-rw-r--r--    1 young  young   528B May 26 18:50 Makefile.PL~
+-rw-r--r--    1 young  young     1K May 26 18:50 README
+drwxr-xr-x    3 young  young   102B May 26 18:50 lib
+drwxr-xr-x    3 young  young   102B May 26 18:50 t
+
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ cat Makefile
+>>>
+# This Makefile is for the Fuzzy extension to perl.
+#
+# It was generated automatically by MakeMaker version
+# 6.17 (Revision: 1.133) from the contents of
+# Makefile.PL. Don't edit this file, edit Makefile.PL instead.
+#
+#       ANY CHANGES MADE HERE WILL BE LOST!
+#
+#   MakeMaker ARGV: (q[PREFIX=/Users/young/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test])
+#
+#   MakeMaker Parameters:
+
+#     ABSTRACT_FROM => q[lib/Fuzzy.pm]
+#     AUTHOR => q[Stuart Young <youngstuart@hotmail.com>]
+#     NAME => q[Fuzzy]
+#     PREREQ_PM => {  }
+#     VERSION_FROM => q[lib/Fuzzy.pm]
+...<<<
+
+
+2) RUN make TO GENERATE FILES IN blib DIRECTORY
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ ll
+total 88
+drwxr-xr-x   10 young  young   340B May 26 18:59 .
+drwxr-xr-x    5 young  young   170B May 26 18:59 ..
+-rw-r--r--    1 young  young   144B May 26 18:50 Changes
+-rw-r--r--    1 young  young    59B May 26 18:50 MANIFEST
+-rw-r--r--    1 young  young    20K May 26 18:59 Makefile
+-rw-r--r--    1 young  young   536B May 26 18:57 Makefile.PL
+-rw-r--r--    1 young  young   528B May 26 18:50 Makefile.PL~
+-rw-r--r--    1 young  young     1K May 26 18:50 README
+drwxr-xr-x    3 young  young   102B May 26 18:50 lib
+drwxr-xr-x    3 young  young   102B May 26 18:50 t
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ make
+cp lib/Fuzzy.pm blib/lib/Fuzzy.pm
+Manifying blib/man3/Fuzzy.3pm
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ ll
+total 88
+drwxr-xr-x   12 young  young   408B May 26 19:03 .
+drwxr-xr-x    5 young  young   170B May 26 18:59 ..
+-rw-r--r--    1 young  young   144B May 26 18:50 Changes
+-rw-r--r--    1 young  young    59B May 26 18:50 MANIFEST
+-rw-r--r--    1 young  young    20K May 26 18:59 Makefile
+-rw-r--r--    1 young  young   536B May 26 18:57 Makefile.PL
+-rw-r--r--    1 young  young   528B May 26 18:50 Makefile.PL~
+-rw-r--r--    1 young  young     1K May 26 18:50 README
+drwxr-xr-x    5 young  young   170B May 26 19:03 blib
+drwxr-xr-x    3 young  young   102B May 26 18:50 lib
+-rw-r--r--    1 young  young     0B May 26 19:03 pm_to_blib
+drwxr-xr-x    3 young  young   102B May 26 18:50 t
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ ll blib
+total 0
+drwxr-xr-x    5 young  young  170B May 26 19:03 .
+drwxr-xr-x   12 young  young  408B May 26 19:03 ..
+drwxr-xr-x    3 young  young  102B May 26 19:03 arch
+drwxr-xr-x    5 young  young  170B May 26 19:03 lib
+drwxr-xr-x    4 young  young  136B May 26 19:03 man3
+
+
+3) RUN make test
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ make test
+PERL_DL_NONLAZY=1 /usr/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'blib/lib', 'blib/arch')" t/*.t
+t/Fuzzy....ok                                                                
+All tests successful.
+Files=1, Tests=4,  0 wallclock secs ( 0.62 cusr +  0.03 csys =  0.65 CPU)
+
+
+4) RUN make install
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/Fuzzy young$ make install
+Manifying blib/man3/Fuzzy.3pm
+Installing /Users/young/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test/lib/perl5/site_perl/Fuzzy.pm
+Installing /Users/young/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test/man/man3/Fuzzy.3pm
+Writing /Users/young/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test/lib/perl5/site_perl/5.8.6/darwin-thread-multi-2level/auto/Fuzzy/.packlist
+Appending installation info to /Users/young/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test/System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+
+
+5) CHECK man PAGE
+
+dlc-genomics:~/FUNNYBASE/thesis/all/chap1.paper/distribution/fuzzy1/test/man young$ man -M ./ Fuzzy
+
+Fuzzy(3)              User Contributed Perl Documentation             Fuzzy(3)
+
+               PACKAGE         Fuzzy
+
+               PURPOSE
+
+                       PROCEDURAL MODULE WITH SUBROUTINES FOR DOING FUZZY MATCHES
+
+               SUBROUTINE              groups
+
+               PURPOSE
+
+                       1. RETURN GROUPS OF SIMILAR WORDS FROM AN INPUT ARRAY OF COMMA-SEPARATED
+                       LISTS OF WORDS
+
+                       2. IN ITS SIMPLEST FORM, THE INPUT ARRAY CONSISTS OF AN ARRAY OF SINGLE WORDS
+
+                       3. IN ITS MOST COMPLEX FORM, THE INPUT ARRAY CONSISTS OF AN ARRAY
+                       OF MULTIPLE SENTENCES
+
+               INPUT
+
+                       1. ARRAY OF WORDS (E.G., array = ("word1,word2" , "word3,word4", "word5,word6")
+
+               NB: *** 'word' *** HERE INDICATES A SINGLE WORD OR A SENTENCE OF TWO OR MORE WORDS
+
+                   SEPARATED BY SPACES.
+
+               OUTPUT
+
+                       1. ARRAY OF GROUPS OF COMMA-SEPARATED WORDS
+
+                       E.G.: array = ( "word1,word2,word5,word6", "word3,word4");
+
+               NOTES
+
+                       MATCHES ARE CARRIED OUT BETWEEN EACH SINGLE WORD IN EACH ENTRY OF THE WORD
+                       ARRAY AGAINST ALL WORDS IN THE OTHER ENTRIES IN THE WORD ARRAY
+
+                       E.G.:
+
+                               "word1" OF WORD ARRAY ENTRY "word1,word2" AGAINST "word3,word4"
+
+                               "word2" OF WORD ARRAY ENTRY "word1,word2" AGAINST "word3,word4"
+
+                               ... ETC
+
+...<<<
+
+</entry>
+
+
+
+<entry [Thu Jun 21 19:12:22 EDT 2007] PAR AND pp DESCRIPTION>
+
+
+
+(
+    see also PAR_Tutorial in plmods/Perl-Binary/PAR folder
+
+    and PAR Wiki:
+    
+    http://par.perl.org/wiki/Main_Page
+)
+
+This module lets you easily bundle a typical blib/ tree into a zip file, called a Perl Archive, or PAR.
+
+This document describes version 0.90 of PAR, released November 25, 2005.
+
+SYNOPSIS
+
+*** If you want to make an executable that contains all module, scripts and data files, please consult the bundled pp utility instead. **
+
+Following examples assume a foo.par file in Zip format; support for compressed tar (*.tgz/*.tbz2) format is under consideration.
+
+To use Hello.pm from ./foo.par:
+
+    % perl -MPAR=./foo.par -MHello
+    % perl -MPAR=./foo -MHello          # the .par part is optional
+
+Same thing, but search foo.par in the @INC;
+
+    % perl -MPAR -Ifoo.par -MHello
+    % perl -MPAR -Ifoo -MHello          # ditto
+
+Following paths inside the PAR file are searched:
+
+    /lib/
+    /arch/
+    /i386-freebsd/              # i.e. $Config{archname}
+    /5.8.0/                     # i.e. $Config{version}
+    /5.8.0/i386-freebsd/        # both of the above
+    /
+
+PAR files may also (recursively) contain other PAR files. All files under following paths will be considered as PAR files and searched as well:
+
+    /par/i386-freebsd/          # i.e. $Config{archname}
+    /par/5.8.0/                 # i.e. $Config{version}
+    /par/5.8.0/i386-freebsd/    # both of the above
+    /par/
+
+Run script/test.pl or test.pl from foo.par:
+
+    % perl -MPAR foo.par test.pl        # only when $0 ends in '.par'
+
+However, if the .par archive contains either script/main.pl or main.pl, then it is used instead:
+
+    % perl -MPAR foo.par test.pl        # runs main.pl; @ARGV is 'test.pl'
+
+Use in a program:
+
+    use PAR 'foo.par';
+    use Hello; # reads within foo.par
+
+    # PAR::read_file() returns a file inside any loaded PARs
+    my $conf = PAR::read_file('data/MyConfig.yaml');
+
+    # PAR::par_handle() returns an Archive::Zip handle
+    my $zip = PAR::par_handle('foo.par')
+    my $src = $zip->memberNamed('lib/Hello.pm')->contents;
+
+You can also use wildcard characters:
+
+    use PAR '/home/foo/*.par';  # loads all PAR files in that directory
+
+DESCRIPTION ^
+
+This module lets you easily bundle a typical blib/ tree into a zip file, called a Perl Archive, or PAR.
+
+It supports loading XS modules by overriding DynaLoader bootstrapping methods; it writes shared object file to a temporary file at the time it is needed.
+
+To generate a .par file, all you have to do is compress the modules under arch/ and lib/, e.g.:
+
+    % perl Makefile.PL
+    % make
+    % cd blib
+    % zip -r mymodule.par arch/ lib/
+
+Afterward, you can just use mymodule.par anywhere in your @INC, use PAR, and it will Just Work.
+
+For convenience, you can set the PERL5OPT environment variable to -MPAR to enable PAR processing globally (the overhead is small if not used); setting it to -MPAR=/path/to/mylib.par will load a specific PAR file. Alternatively, consider using the par.pl utility bundled with this module, or using the self-contained parl utility on machines without PAR.pm installed.
+
+Note that self-containing scripts and executables created with par.pl and pp may also be used as .par archives:
+
+    % pp -o packed.exe source.pl        # generate packed.exe
+    % perl -MPAR=packed.exe other.pl    # this also works
+    % perl -MPAR -Ipacked.exe other.pl  # ditto
+
+Please see "SYNOPSIS" for most typical use cases.
+NOTES ^
+
+Settings in META.yml packed inside the PAR file may affect PAR's operation. For example, pp provides the -C (--clean) option to control the default behavior of temporary file creation.
+
+Currently, pp-generated PAR files may attach four PAR-specific attributes in META.yml:
+
+    par:
+      clean: 0          # default value of PAR_CLEAN
+      signature: ''     # key ID of the SIGNATURE file
+      verbatim: 0       # was packed prerequisite's PODs preserved?
+      version: x.xx     # PAR.pm version that generated this PAR
+
+User-defined environment variables, like PAR_CLEAN, always overrides the ones set in META.yml. The algorithm for generating caching/temporary directory is as follows:
+
+    * If PAR_GLOBAL_TEMP is specified, use it as the cache directory for extracted libraries, and do not clean it up after execution.
+    * If PAR_GLOBAL_TEMP is not set, but PAR_CLEAN is specified, set PAR_GLOBAL_TEMP to TEMP\par-USER\temp-PID\, cleaning it after execution.
+    * If both are not set, use TEMP\par-USER\temp-MTIME\ as the PAR_GLOBAL_TEMP, reusing any existing files inside. MTIME is the last-modified timestamp of the program.
+
+
+
+
+pp -h
+
+NAME
+       pp - Perl Packager
+
+SYNOPSIS
+       pp [ -BILMTSVXdeghilmoprsvz ] [ parfile | scriptfile ]...
+
+EXAMPLES
+       Note: When running on Microsoft Windows, the a.out below will be
+       replaced by a.exe instead.
+
+           % pp hello                  # Pack 'hello' into executable 'a.out'
+           % pp -o hello hello.pl      # Pack 'hello.pl' into executable 'hello'
+
+           % pp -o foo foo.pl bar.pl   # Pack 'foo.pl' and 'bar.pl' into 'foo'
+           % ./foo                     # Run 'foo.pl' inside 'foo'
+           % mv foo bar; ./bar         # Run 'bar.pl' inside 'foo'
+           % mv bar baz; ./baz         # Error: Can't open perl script "baz"
+
+           % pp -p file                # Creates a PAR file, 'a.par'
+           % pp -o hello a.par         # Pack 'a.par' to executable 'hello'
+           % pp -S -o hello file       # Combine the two steps above
+
+           % pp -p -o out.par file     # Creates 'out.par' from 'file'
+           % pp -B -p -o out.par file  # same as above, but bundles core modules
+           % pp -P -o out.pl file      # Creates 'out.pl' from 'file'
+           % pp -B -p -o out.pl file   # same as above, but bundles core modules
+                                       # (-B is assumed when making executables)
+
+           % pp -e "print 123"         # Pack a one-liner into 'a.out'
+           % pp -p -e "print 123"      # Creates a PAR file 'a.par'
+           % pp -P -e "print 123"      # Creates a perl script 'a.pl'
+
+           % pp -c hello               # Check dependencies from "perl -c hello"
+           % pp -x hello               # Check dependencies from "perl hello"
+           % pp -n -x hello            # same as above, but skips static scanning
+
+           % pp -I /foo hello          # Extra include paths
+           % pp -M Foo::Bar hello      # Extra modules in the include path
+           % pp -M abbrev.pl hello     # Extra libraries in the include path
+           % pp -X Foo::Bar hello      # Exclude modules
+           % pp -a data.txt hello      # Additional data files
+
+           % pp -r hello               # Pack 'hello' into 'a.out', runs 'a.out'
+           % pp -r hello a b c         # Pack 'hello' into 'a.out', runs 'a.out'
+                                       # with arguments 'a b c'
+
+           % pp hello --log=c          # Pack 'hello' into 'a.out', logs
+                                       # messages into 'c'
+
+           # Pack 'hello' into a console-less 'out.exe' with icon (Win32 only)
+           % pp --gui --icon hello.ico -o out.exe hello
+
+DESCRIPTION
+       pp creates standalone executables from Perl programs, using the com-
+       pressed packager provided by PAR, and dependency detection heuristics
+       offered by Module::ScanDeps.  Source files are compressed verbatim
+       without compilation.
+
+       You may think of pp as "perlcc that works without hassle". :-)
+
+       You may think of pp as "perlcc that works without hassle". :-)
+
+       A GUI interface is also available as the tkpp command.
+
+       It does not provide the compilation-step acceleration provided by
+       perlcc (however, see -f below for byte-compiled, source-hiding tech-
+       niques), but makes up for it with better reliability, smaller exe-
+       cutable size, and full retrieval of original source code.
+
+       When a single input program is specified, the resulting executable will
+       behave identically as that program.  However, when multiple programs
+       are packaged, the produced executable will run the one that has the
+       same basename as $0 (i.e. the filename used to invoke it).  If nothing
+       matches, it dies with the error "Can't open perl script "$0"".
+
+OPTIONS
+       Options are available in a short form and a long form.  For example,
+       the three lines below are all equivalent:
+
+           % pp -o output.exe input.pl
+           % pp --output output.exe input.pl
+           % pp --output=output.exe input.pl
+
+       -a, --addfile=FILE|DIR
+           Add an extra file into the package.  If the file is a directory,
+           recursively add all files inside that directory, with links turned
+           into actual files.
+
+           By default, files are placed under "/" inside the package with
+           their original names.  You may override this by appending the tar-
+           get filename after a ";", like this:
+
+               % pp -a "old_filename.txt;new_filename.txt"
+               % pp -a "old_dirname;new_dirname"
+
+           You may specify "-a" multiple times.
+
+       -A, --addlist=FILE
+           Read a list of file/directory names from FILE, adding them into the
+           package.  Each line in FILE is taken as an argument to -a above.
+
+           You may specify "-A" multiple times.
+
+       -B, --bundle
+           Bundle core modules in the resulting package.  This option is
+           enabled by default, except when "-p" or "-P" is specified.
+
+       -C, --clean
+           Clean up temporary files extracted from the application at runtime.
+           By default, these files are cached in the temporary directory; this
+           allows the program to start up faster next time.
+
+       -c, --compile
+           Run "perl -c inputfile" to determine additonal run-time dependen-
+           cies.
+
+       -d, --dependent
+           Reduce the executable size by not including a copy of perl inter-
+           preter.  Executables built this way will need a separate perl5x.dll
+           or libperl.so to function correctly.  This option is only available
+           if perl is built as a shared library.
+
+      -e, --eval=STRING
+           Package a one-liner, much the same as "perl -e '...'"
+
+       -x, --execute
+           Run "perl inputfile" to determine additonal run-time dependencies.
+
+       -X, --exclude=MODULE
+           Exclude the given module from the dependency search path and from
+           the package. If the given file is a zip or par or par executable,
+           all the files in the given file (except MANIFEST, META.yml and
+           script/*) will be excluded and the output file will "use" the given
+           file at runtime.
+
+       -f, --filter=FILTER
+           Filter source script(s) with a PAR::Filter subclass.  You may spec-
+           ify multiple such filters.
+
+           If you wish to hide the source code from casual prying, this will
+           do:
+
+               % pp -f Bleach source.pl
+
+           Users with Perl 5.8.1 and above may also try out the experimental
+           byte-compiling filter, which will strip away all comments and
+           indents:
+
+               % pp -f Bytecode source.pl
+
+       -g, --gui
+           Build an executable that does not have a console window. This
+           option is ignored on non-MSWin32 platforms or when "-p" is speci-
+           fied.
+
+       -h, --help
+           Show basic usage information.
+
+       -i, --icon=FILE
+           Specify an icon file (in .ico, .exe or .dll format) for the exe-
+           cutable. This option is ignored on non-MSWin32 platforms or when
+           "-p" is specified.
+
+       -N, --info=KEY=VAL
+           Add additional information for the packed file, both in "META.yml"
+           and in the executable header (if applicable).  The name/value pair
+           is joined by "=".  You may specify "-N" multiple times, or use ";"
+           to link several pairs.
+
+           For Win32 executables, these special "KEY" names are recognized:
+
+               Comments        CompanyName     FileDescription FileVersion
+               InternalName    LegalCopyright  LegalTrademarks OriginalFilename
+               ProductName     ProductVersion
+
+       -I, --lib=DIR
+           Add the given directory to the perl library file search path.  May
+           be specified multiple times.
+
+       -l, --link=FILE|LIBRARY
+           Add the given shared library (a.k.a. shared object or DLL) into the
+           packed file.  Also accepts names under library paths; i.e.  "-l
+           ncurses" means the same thing as "-l libncurses.so" or "-l
+
+
+      -l, --link=FILE|LIBRARY
+           Add the given shared library (a.k.a. shared object or DLL) into the
+           packed file.  Also accepts names under library paths; i.e.  "-l
+           ncurses" means the same thing as "-l libncurses.so" or "-l
+           /usr/local/lib/libncurses.so" in most Unixes.  May be specified
+           multiple times.
+
+       -L, --log=FILE
+           Log the output of packaging to a file rather than to stdout.
+
+       -F, --modfilter=FILTER
+           Filter included perl module(s) with a PAR::Filter subclass.  You
+           may specify multiple such filters.
+
+       -M, --module=MODULE
+           Add the specified module into the package, along with its dependen-
+           cies.  Also accepts filenames relative to the @INC path; i.e. "-M
+           Module::ScanDeps" means the same thing as "-M Module/ScanDeps.pm".
+
+           If MODULE has an extension that is not ".pm"/".ix"/".al", it will
+           not be scanned for dependencies, and will be placed under "/"
+           instead of "/lib/" inside the PAR file.  This use is deprecated --
+           consider using the -a option instead.
+
+           You may specify "-M" multiple times.
+
+       -m, --multiarch
+           Build a multi-architecture PAR file.  Implies -p.
+
+       -n, --noscan
+           Skip the default static scanning altogether, using run-time depen-
+           dencies from -c or -x exclusively.
+
+       -o, --output=FILE
+           File name for the final packaged executable.
+
+       -p, --par
+           Create PAR archives only; do not package to a standalone binary.
+
+       -P, --perlscript
+           Create stand-alone perl script; do not package to a standalone
+           binary.
+
+       -r, --run
+           Run the resulting packaged script after packaging it.
+
+       -S, --save
+           Do not delete generated PAR file after packaging.
+
+       -s, --sign
+           Cryptographically sign the generated PAR or binary file using Mod-
+           ule::Signature.
+
+       -T, --tempcache
+           Set the program unique part of the cache directory name that is
+           used if the program is run without -C. If not set, a hash of the
+           executable is used.
+
+
+       -V, --version
+           Display the version number and copyrights of this program.
+
+       -z, --compress=NUMBER
+           Set zip compression level; NUMBER is an integer from 0 to 9, 0 = no
+           compression, 9 = max compression.  Defaults to 6 if -z is not used.
+
+ENVIRONMENT
+       PP_OPTS
+           Command-line options (switches).  Switches in this variable are
+           taken as if they were on every pp command line.
+
+NOTES
+       Here are some recipes showing how to utilize pp to bundle source.pl
+       with all its dependencies, on target machines with different expected
+       settings:
+
+       Stand-alone setup
+               % pp -o packed.exe source.pl        # makes packed.exe
+               # Now, deploy 'packed.exe' to target machine...
+               $ packed.exe                        # run it
+
+       Perl interpreter only, without core modules:
+               % pp -B -P -o packed.pl source.pl   # makes packed.exe
+               # Now, deploy 'packed.exe' to target machine...
+               $ perl packed.pl                    # run it
+
+       Perl with core module installed:
+               % pp -P -o packed.pl source.pl      # makes packed.exe
+               # Now, deploy 'packed.pl' to target machine...
+               $ perl packed.pl                    # run it
+
+       Perl with PAR.pm and its dependencies installed:
+               % pp -p source.pl                   # makes source.par
+               % echo "use PAR 'source.par';" > packed.pl;
+               % cat source.pl >> packed.pl;       # makes packed.pl
+               # Now, deploy 'source.par' and 'packed.pl' to target machine...
+               $ perl packed.pl                    # run it
+
+       Note that even if your perl was built with a shared library, the
+       'Stand-alone setup' above will not need a separate perl5x.dll or
+       libperl.so to function correctly.  Use "--dependent" if you are willing
+       to ship the shared library with the application, which can signifi-
+       cantly reduce the executable size.
+
+SEE ALSO
+       tkpp, par.pl, parl, perlcc
+
+       PAR, PAR::Packer, Module::ScanDeps
+
+ACKNOWLEDGMENTS
+       Simon Cozens, Tom Christiansen and Edward Peschko for writing perlcc;
+       this program try to mimic its interface as close as possible, and
+       copied liberally from their code.
+
+       Jan Dubois for writing the exetype.pl utility, which has been partially
+       adapted into the "-g" flag.
+
+       Mattia Barbon for providing the "myldr" binary loader code.
+
+       Jeff Goff for suggesting the name "pp".
+
+AUTHORS
+       Autrijus Tang <autrijus@autrijus.org>
+
+       <http://par.perl.org/> is the official PAR website.  You can write to
+       the mailing list at <par@perl.org>, or send an empty mail to <par-sub-
+       scribe@perl.org> to participate in the discussion.
+
+       Please submit bug reports to <bug-par@rt.cpan.org>.
+
+COPYRIGHT
+       Copyright 2002, 2003, 2004, 2005 by Autrijus Tang <autrijus@autri-
+       jus.org>.
+
+       Neither this program nor the associated parl program impose any licens-
+       ing restrictions on files generated by their execution, in accordance
+       with the 8th article of the Artistic License:
+
+           "Aggregation of this Package with a commercial distribution is
+           always permitted provided that the use of this Package is embedded;
+           that is, when no overt attempt is made to make this Package's
+           interfaces visible to the end user of the commercial distribution.
+           Such use shall not be construed as a distribution of this Package."
+
+       Therefore, you are absolutely free to place any license on the result-
+       ing executable, as long as the packed 3rd-party libraries are also
+       available under the Artistic License.
+
+       This program is free software; you can redistribute it and/or modify it
+       under the same terms as Perl itself.
+
+       See <http://www.perl.com/perl/misc/Artistic.html>
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jun 21 17:26:41 EDT 2007] INSTALLED PAR (Perl ARchive toolkit)>
+
+
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR young$ cd PAR-0.973
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ ls
+AUTHORS     MANIFEST    Makefile.PL SIGNATURE   inc         t
+ChangeLog   META.yml    README      TODO        lib
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ em README 
+
+PAR uses the standard perl module install process:
+
+    cpansign -v         # optional; see SIGNATURE for details
+    perl Makefile.PL
+    make                # or 'nmake' on Win32
+    make test
+    make install
+
+
+WENT TO CREATE Makefile (HAD TO DO IT TWICE)
+
+sudo perl Makefile.PL 
+
+	*** Module::AutoInstall version 1.03
+	*** Checking for Perl dependencies...
+	[Core Features]
+	- File::Temp     ...loaded. (0.17 >= 0.05)
+	- Compress::Zlib ...loaded. (1.41 >= 1.3)
+	- Archive::Zip   ...loaded. (1.16 >= 1)
+	- PAR::Dist      ...missing. (would need 0.21)
+	- AutoLoader     ...missing. (would need 5.62)
+	==> Auto-install the 2 mandatory module(s) from CPAN? [y] y
+	CPAN: File::HomeDir loaded ok
+	*** Dependencies will be installed the next time you type 'make'.
+		(You may need to do that as the 'root' user.)
+	*** Module::AutoInstall configuration finished.
+	*** Installing dependencies...
+	*** Installing PAR::Dist...
+	CPAN: Storable loaded ok
+	Going to read /Users/young/.cpan/Metadata
+	  Database was generated on Thu, 18 Jan 2007 15:26:04 GMT
+	CPAN: LWP::UserAgent loaded ok
+	Fetching with LWP:
+	  ftp://archive.progeny.com/CPAN/authors/01mailrc.txt.gz
+	LWP failed with code[500] message[LWP::Protocol::MyFTP: Bad
+	...
+	Writing //System/Library/Perl/5.8.6/darwin-thread-multi-2level/auto/AutoLoader/.packlist
+	/usr/bin/make install -j3 UNINST=1 -- OK
+	*** AutoLoader successfully installed.
+	*** Module::AutoInstall installation finished.
+	Writing Makefile for PAR
+	
+
+make: *** No targets specified and no makefile found.  Stop.
+
+Makefile NOT FOUND IN DIRECTORY:
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ ls
+AUTHORS     ChangeLog   MANIFEST    META.yml    Makefile.PL README      SIGNATURE   TODO        inc         lib         t
+
+SO CREATED AGAIN:
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ sudo perl Makefile.PL 
+*** Module::AutoInstall version 1.03
+*** Checking for Perl dependencies...
+[Core Features]
+- File::Temp     ...loaded. (0.17 >= 0.05)
+- Compress::Zlib ...loaded. (1.42 >= 1.3)
+- Archive::Zip   ...loaded. (1.16 >= 1)
+- PAR::Dist      ...loaded. (0.22 >= 0.21)
+- AutoLoader     ...loaded. (5.63 >= 5.62)
+*** Module::AutoInstall configuration finished.
+Checking if your kit is complete...
+Looks good
+Writing Makefile for PAR
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ ls
+AUTHORS     MANIFEST    Makefile    README      TODO        lib
+ChangeLog   META.yml    Makefile.PL SIGNATURE   inc         t
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ 
+	
+Makefile FOUND!!!
+
+DID make SUCCESSFULLY:
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ make
+cp lib/PAR/FAQ.pod blib/lib/PAR/FAQ.pod
+cp lib/PAR/Tutorial.pod blib/lib/PAR/Tutorial.pod
+cp lib/PAR/Environment.pod blib/lib/PAR/Environment.pod
+cp lib/PAR/Heavy.pm blib/lib/PAR/Heavy.pm
+cp lib/PAR.pm blib/lib/PAR.pm
+Manifying blib/man3/PAR::Tutorial.3pm
+Manifying blib/man3/PAR::FAQ.3pm
+Manifying blib/man3/PAR::Environment.3pm
+Manifying blib/man3/PAR::Heavy.3pm
+Manifying blib/man3/PAR.3pm
+
+
+DID make test AND sudo make install:
+
+make test
+PERL_DL_NONLAZY=1 /usr/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'inc', 'blib/lib', 'blib/arch')" t/00-pod.t t/01-basic.t t/40-par-hashref.t t/50-autoloaderfix.t
+t/00-pod..............skipped
+        all skipped: Set environment variable PERL_TEST_POD=1 to test POD
+t/01-basic............ok                                                     
+t/40-par-hashref......ok                                                     
+t/50-autoloaderfix....ok                                                     
+All tests successful, 1 test skipped.
+Files=4, Tests=16,  3 wallclock secs ( 1.26 cusr +  0.53 csys =  1.79 CPU)
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$ sudo make install
+Password:
+Installing /Library/Perl/5.8.6/PAR.pm
+Installing /Library/Perl/5.8.6/PAR/Environment.pod
+Installing /Library/Perl/5.8.6/PAR/FAQ.pod
+Installing /Library/Perl/5.8.6/PAR/Heavy.pm
+Installing /Library/Perl/5.8.6/PAR/Tutorial.pod
+Installing /usr/local/man/man3/PAR.3pm
+Installing /usr/local/man/man3/PAR::Environment.3pm
+Installing /usr/local/man/man3/PAR::FAQ.3pm
+Installing /usr/local/man/man3/PAR::Heavy.3pm
+Installing /usr/local/man/man3/PAR::Tutorial.3pm
+Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/PAR/.packlist
+Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.973 young$
+
+
+*** BUT *** COULD NOT FIND THE pp BINARY, SO BACKTRACKED TO EARLIER VERSION PAR-0.90 WHERE pp WAS IN THE scripts DIRECTORY:
+
+
+
+dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90 young$ ls script/ 
+par.pl   parl.pod pp       tkpp
+
+INSTALLED PAR-0.90:
+
+sudo perl Makefile.PL 
+	*** ExtUtils::AutoInstall version 0.63
+	*** Checking for dependencies...
+	[Core Features]
+	- File::Temp       ...loaded. (0.17 >= 0.05)
+	- Compress::Zlib   ...loaded. (1.42 >= 1.3)
+	- Archive::Zip     ...loaded. (1.16 >= 1)
+	- Module::ScanDeps ...missing. (would need 0.45)
+	- PAR::Dist        ...loaded. (0.22 >= 0.06)
+	==> Auto-install the 1 mandatory module(s) from CPAN? [y] y
+	...
+	Running make install
+	Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+	Installing /Library/Perl/5.8.6/Module/ScanDeps.pm
+	Installing /Library/Perl/5.8.6/Module/ScanDeps/DataFeed.pm
+	Installing /usr/local/man/man1/scandeps.pl.1
+	Installing /usr/local/man/man3/Module::ScanDeps.3pm
+	Installing /usr/local/man/man3/Module::ScanDeps::DataFeed.3pm
+	Installing /usr/bin/scandeps.pl
+	Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/Module/ScanDeps/.packlist
+	  /usr/bin/make install -j3 UNINST=1 -- OK
+	*** Module::ScanDeps successfully installed.
+	*** ExtUtils::AutoInstall installation finished.
+	Couldn't change to directory /Users/young/.cpan/build/Module-ScanDeps-0.74/myldr: No such file or directory at inc/Module/Install/Makefile.pm - /usr/local/lib/perl5/site_perl/5.8.7/Module/Install/Makefile.pm line 93
+	Writing Makefile for Module::ScanDeps
+	Writing Makefile for PAR
+	fix_up_makefile: Couldn't open : No such file or directory at inc/Module/Install/Makefile.pm line 165.
+
+
+THEN RAN AGAIN BECAUSE Makefile WASN'T CREATED THE FIRST TIME.
+
+make
+	...
+	/usr/bin/perl -Iinc "-MExtUtils::MY" -e "MY->fixin(shift)" blib/script/par.pl
+	Manifying blib/man1/tkpp.1
+	Manifying blib/man1/parl.1
+	Manifying blib/man1/pp.1
+	Manifying blib/man1/par.pl.1
+	Manifying blib/man3/PAR::Filter::PodStrip.3pm
+	Manifying blib/man3/PAR::Filter::Obfuscate.3pm
+	Manifying blib/man3/PAR::Packer.3pm
+	Manifying blib/man3/App::Packer::PAR.3pm
+	Manifying blib/man3/PAR::Filter.3pm
+	Manifying blib/man3/PAR.3pm
+	Manifying blib/man3/PAR::Filter::PatchContent.3pm
+	Manifying blib/man3/PAR::Filter::Bytecode.3pm
+	Manifying blib/man3/PAR::FAQ.3pm
+	Manifying blib/man3/PAR::Tutorial.3pm
+	Manifying blib/man3/PAR::Heavy.3pm
+	Manifying blib/man3/PAR::Filter::Bleach.3pm
+
+make test
+
+	make[1]: Nothing to be done for `all'.
+	PERL_DL_NONLAZY=1 /usr/bin/perl "-MExtUtils::Command::MM" "-e" "test_harness(0, 'inc', 'blib/lib', 'blib/arch')" t/*.t
+	t/1-basic....ok                                                              
+	t/2-pp.......ok   		#### 34 TESTS TOOK 5 MINUTES                                                           
+	All tests successful.
+	Files=2, Tests=42, 187 wallclock secs (74.04 cusr + 47.98 csys = 122.02 CPU)
+	perl -e1
+
+sudo make install 
+
+	Installing /Library/Perl/5.8.6/PAR.pm
+	Installing /Library/Perl/5.8.6/App/Packer/PAR.pm
+	Installing /Library/Perl/5.8.6/PAR/FAQ.pod
+	Installing /Library/Perl/5.8.6/PAR/Filter.pm
+	Installing /Library/Perl/5.8.6/PAR/Heavy.pm
+	Installing /Library/Perl/5.8.6/PAR/Packer.pm
+	Installing /Library/Perl/5.8.6/PAR/Tutorial.pod
+	Installing /Library/Perl/5.8.6/PAR/Filter/Bleach.pm
+	Installing /Library/Perl/5.8.6/PAR/Filter/Bytecode.pm
+	Installing /Library/Perl/5.8.6/PAR/Filter/Obfuscate.pm
+	Installing /Library/Perl/5.8.6/PAR/Filter/PatchContent.pm
+	Installing /Library/Perl/5.8.6/PAR/Filter/PodStrip.pm
+	Installing /usr/local/man/man1/par.pl.1
+	Installing /usr/local/man/man1/parl.1
+	Installing /usr/local/man/man1/pp.1
+	Installing /usr/local/man/man1/tkpp.1
+	Installing /usr/local/man/man3/App::Packer::PAR.3pm
+	Installing /usr/local/man/man3/PAR.3pm
+	Installing /usr/local/man/man3/PAR::FAQ.3pm
+	Installing /usr/local/man/man3/PAR::Filter.3pm
+	Installing /usr/local/man/man3/PAR::Filter::Bleach.3pm
+	Installing /usr/local/man/man3/PAR::Filter::Bytecode.3pm
+	Installing /usr/local/man/man3/PAR::Filter::Obfuscate.3pm
+	Installing /usr/local/man/man3/PAR::Filter::PatchContent.3pm
+	Installing /usr/local/man/man3/PAR::Filter::PodStrip.3pm
+	Installing /usr/local/man/man3/PAR::Heavy.3pm
+	Installing /usr/local/man/man3/PAR::Packer.3pm
+	Installing /usr/local/man/man3/PAR::Tutorial.3pm
+	Installing /usr/bin/par.pl
+	Installing /usr/bin/parl
+	Installing /usr/bin/parldyn
+	Installing /usr/bin/pp
+	Installing /usr/bin/tkpp
+	Writing /Library/Perl/5.8.6/darwin-thread-multi-2level/auto/PAR/.packlist
+	Appending installation info to //System/Library/Perl/5.8.6/darwin-thread-multi-2level/perllocal.pod
+
+
+NEW FILES IN script DIRECTORY:
+
+	BEFORE
+	
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90 young$ ls script/ 
+	par.pl   parl.pod pp       tkpp
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90 young$ cd script/
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90/script young$ pp
+	-bash: cd: /Users/young/FUNNYBASE/bin/pipeline3: No such file or directory
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90/script young$ ./pp
+	Can't locate PAR/Packer.pm in @INC (@INC contains: /sw/lib/perl5/5.8.6/darwin-thread-multi-2level /sw/lib/perl5/5.8.6 /sw/lib/perl5 /sw/lib/perl5/darwin /System/Library/Perl/5.8.6/darwin-thread-multi-2level /System/Library/Perl/5.8.6 /Library/Perl/5.8.6/darwin-thread-multi-2level /Library/Perl/5.8.6 /Library/Perl /Network/Library/Perl/5.8.6/darwin-thread-multi-2level /Network/Library/Perl/5.8.6 /Network/Library/Perl /System/Library/Perl/Extras/5.8.6/darwin-thread-multi-2level /System/Library/Perl/Extras/5.8.6 /Library/Perl/5.8.1/darwin-thread-multi-2level /Library/Perl/5.8.1 .) at ./pp line 5.
+	BEGIN failed--compilation aborted at ./pp line 5.
+	
+	AFTER
+	
+	par.pl   parl     parl.pod parldyn  pp       tkpp
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90/script young$ ./pp
+	./pp: No input files specified
+	dlc-genomics:~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90/script young$ 
+	
+
+AND pp INSTALLED TO /usr/bin:
+
+dlc-genomics:~/FUNNYBASE/pipeline/funnybase11/iprscan young$ ll /usr/bin/pp
+-r-xr-xr-x   1 root  wheel    14K Jun 21 17:36 /usr/bin/pp
+
+TEST INSTALLATION:
+	
+	#### EXAMPLE
+	pp -o packed.exe source.pl        # generate packed.exe	
+	
+	
+	#### TEST
+	cd ~/FUNNYBASE/dev/plmods/Perl-Binary/PAR/PAR-0.90/script
+./pp -o /Users/young/FUNNYBASE/bin/pipeline4/colseqann /Users/young/FUNNYBASE/bin/pipeline4/colseqann.pl
+
+	IT WORKED!!
+	
+	dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ ./colseqann -d funnybase11
+	Doing annotations for collection sequences (total 11972)
+	Id: 9473
+	
+			SELECT collectionid, collectionaccession, targetsource, targetid, targetname, targetannotation, hitevalueexp, hitevaluedec, targethitstart, targethitstop, queryhitstart, queryhitstop
+		FROM collectionblast
+		WHERE collectionid = 9473
+		AND collectionaccession=1
+		AND targetsource = 'swissprot'
+		ORDER BY hitevalueexp, hitevaluedec
+		LIMIT 1
+	
+	Swissprot:
+	$VAR1 = {
+			  'targetsource' => 'swissprot',
+			  'collectionaccession' => '1',
+			  'hitevalueexp' => '-8',
+			  'targetannotation' => 'Cytochrome c oxidase subunit 2 (EC 1.9.3.1) (Cytochrome c oxidase polypeptide II)',
+			  'targethitstop' => '230',
+			  'targetname' => 'COX2_CYPCA',
+			  'collectionid' => '9473',
+			  'queryhitstop' => '0',
+			  'targethitstart' => '203',
+			  'hitevaluedec' => '6.48',
+			  'queryhitstart' => '0',
+			  'targetid' => 'P24987'
+			};
+	Refseq:
+	$VAR1 = undef;
+	Output .TSV file printed:
+	
+	/Users/young/FUNNYBASE/pipeline/funnybase11/collection/funnybase11.collectionsequencesannotation.tsv
+	
+	Annotated sequences: 1
+	Unknown sequences: 0
+	Swissprot defined: 1
+	Refseq defined: 0
+	Both defined: 0
+	Either defined: 1
+	dlc-genomics:~/FUNNYBASE/bin/pipeline4 young$ 
+	
+	
+
+
+TEST WITH .cgi FILE:
+	
+	cp /var/www/cgi-bin/sandbox19/blast.cgi /var/www/cgi-bin/blast.test.cgi
+	
+	
+	
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+	
+	

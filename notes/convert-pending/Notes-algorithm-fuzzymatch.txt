@@ -1,0 +1,297 @@
+Notes-algorithm-fuzzymatch
+
+
+</entry>
+
+
+
+<entry [Wed Dec 19 14:23:44 EST 2007] COMPARE SWISSPROT AND UNIGENE ANNOTATIONS (unigene2, etc.) USING FUZZY MATCH>
+
+
+
+1. RERUN blastbestevalue.pl, THIS TIME WITH swissprot AMONG THE TARGET DATABASES
+
+./blastbestevalue.pl -d unigene2 -t swissprot,unigene-dog,unigene-mouse,unigene-rat
+
+    select targetsource, count(*) from blastbestevalue group by targetsource ;
+    +---------------+----------+
+    | targetsource  | count(*) |
+    +---------------+----------+
+    | swissprot     |       73 |
+    | unigene-dog   |       74 |
+    | unigene-mouse |       71 |
+    | unigene-rat   |       73 |
+    +---------------+----------+
+
+2. DO FUZZY MATCH OF swissprot AND unigene-mouse
+
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+
+
+3. MANUAL MATCHING OF swissprot AND unigene-mouse
+
+INPUT: unigene2.blastbestevalueverify.tsv
+OUTPUT: unigene2.blastbestevalueverifymanual.tsv
+
+FOR unigene2 TO unigene6
+
+4. 
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 19 14:23:44 EST 2007] COMPARE SWISSPROT AND UNIGENE ANNOTATIONS (unigene2, etc.) USING FUZZY MATCH>
+
+
+
+1. RERUN blastbestevalue.pl, THIS TIME WITH swissprot AMONG THE TARGET DATABASES
+
+./blastbestevalue.pl -d unigene2 -t swissprot,unigene-dog,unigene-mouse,unigene-rat
+
+    select targetsource, count(*) from blastbestevalue group by targetsource ;
+    +---------------+----------+
+    | targetsource  | count(*) |
+    +---------------+----------+
+    | swissprot     |       73 |
+    | unigene-dog   |       74 |
+    | unigene-mouse |       71 |
+    | unigene-rat   |       73 |
+    +---------------+----------+
+
+2. DO FUZZY MATCH OF swissprot AND unigene-mouse
+
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+./blastbestevalueverify.pl -d unigene2 -t swissprot,unigene-mouse
+
+
+3. MANUAL MATCHING OF swissprot AND unigene-mouse
+
+INPUT: unigene2.blastbestevalueverify.tsv
+OUTPUT: unigene2.blastbestevalueverifymanual.tsv
+
+FOR unigene2 TO unigene6
+
+4. LOAD MANUAL MATCH INTO TABLES
+
+./arrayloaddata.pl -d unigene2 -t blastbestevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene2/collection/unigene2.blastbestevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_blastbestevalueverifymanual.sql
+
+./arrayloaddata.pl -d unigene3 -t blastbestevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene3/collection/unigene3.blastbestevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_blastbestevalueverifymanual.sql
+
+./arrayloaddata.pl -d unigene4 -t blastbestevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene4/collection/unigene4.blastbestevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_blastbestevalueverifymanual.sql
+
+./arrayloaddata.pl -d unigene5 -t blastbestevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene5/collection/unigene5.blastbestevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_blastbestevalueverifymanual.sql
+
+./arrayloaddata.pl -d unigene6 -t blastbestevalueverifymanual -i /Users/young/FUNNYBASE/pipeline/unigene6/collection/unigene6.blastbestevalueverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_blastbestevalueverifymanual.sql
+
+
+select * from blastbestevalueverifymanual limit 1\G
+*************************** 1. row ***************************
+ targetmatchmanual: 0
+  targetmatchscore: 0.00
+targetsourcematch1: 1
+targetsourcematch2: 0
+  sourceannotation: RAP1 GTPase activating protein
+     targetsource1: swissprot
+     targetsource2: unigene-mouse
+  targetaccession1: P47736
+  targetaccession2: AK078677
+   targetsynonyms1: Rap1 GTPase activating protein 1;Rap1GAP
+   targetsynonyms2:  adult male eyeball cDNA
+     hitevaluedec1: 6.62
+     hitevalueexp1: -317
+     hitevaluedec2: 1.66
+     hitevalueexp2: -28
+
+
+targetmatchmanual - do the two target annotations match? 1 if yes, 0 if no.
+targetmatchscore - fuzzy match score between the two target annotations
+targetsourcematch1 - does the target1 annotation match the source annotation? 1 if yes, 0 if no.
+targetsourcematch2 - does the target2 annotation match the source annotation? 1 if yes, 0 if no.
+
+
+
+5. OPTIMISE FUZZY MATCH USING STOPWORDS AND GET STATS:
+
+
+./selfblastverifyoptimised.pl -d unigene2
+    
+    /Users/young/FUNNYBASE/pipeline/unigene2/collection/unigene2.blastbestevalueverifystats.tsv
+    
+0.1     72      26      42      4       0       0.0869565217391304      0
+0.2     72      26      43      3       0       0.0652173913043478      0
+0.3     72      26      43      3       0       0.0652173913043478      0
+0.4     72      26      43      3       0       0.0652173913043478      0
+0.5     72      26      43      3       0       0.0652173913043478      0
+0.6     72      26      43      3       0       0.0652173913043478      0
+0.7     72      25      43      3       1       0.0652173913043478      0.0384615384615385
+0.8     72      24      43      3       2       0.0652173913043478      0.0769230769230769
+0.9     72      24      43      3       2       0.0652173913043478      0.0769230769230769
+1       72      23      43      3       3       0.0652173913043478      0.115384615384615
+
+
+unigene3
+
+0.1     68      18      45      5       0       0.1     0
+0.2     68      18      46      4       0       0.08    0
+0.3     68      18      46      4       0       0.08    0
+0.4     68      16      47      3       2       0.06    0.111111111111111
+0.5     68      16      48      2       2       0.04    0.111111111111111
+0.6     68      15      48      2       3       0.04    0.166666666666667
+0.7     68      15      48      2       3       0.04    0.166666666666667
+0.8     68      15      48      2       3       0.04    0.166666666666667
+0.9     68      14      48      2       4       0.04    0.222222222222222
+1       68      14      48      2       4       0.04    0.222222222222222
+
+
+unigene4
+
+0.1     68      22      37      7       1       0.159090909090909       0.0434782608695652
+0.2     68      22      38      6       1       0.136363636363636       0.0434782608695652
+0.3     68      21      39      5       2       0.113636363636364       0.0869565217391304
+0.4     68      20      41      3       3       0.0681818181818182      0.130434782608696
+0.5     68      20      41      3       3       0.0681818181818182      0.130434782608696
+0.6     68      20      41      3       3       0.0681818181818182      0.130434782608696
+0.7     68      20      41      3       3       0.0681818181818182      0.130434782608696
+0.8     68      20      41      3       3       0.0681818181818182      0.130434782608696
+0.9     68      20      41      3       3       0.0681818181818182      0.130434782608696
+1       68      20      41      3       3       0.0681818181818182      0.130434782608696
+
+unigene5
+
+0.1     141     46      84      11      0       0.115789473684211       0
+0.2     141     46      87      8       0       0.0842105263157895      0
+0.3     141     46      90      5       0       0.0526315789473684      0
+0.4     141     46      90      5       0       0.0526315789473684      0
+0.5     141     46      90      5       0       0.0526315789473684      0
+0.6     141     45      91      4       1       0.0421052631578947      0.0217391304347826
+0.7     141     43      91      4       3       0.0421052631578947      0.0652173913043478
+0.8     141     42      91      4       4       0.0421052631578947      0.0869565217391304
+0.9     141     40      91      4       6       0.0421052631578947      0.130434782608696
+1       141     39      91      4       7       0.0421052631578947      0.152173913043478
+
+unigene6
+
+0.1     68      27      37      4       0       0.0975609756097561      0
+0.2     68      27      39      2       0       0.0487804878048781      0
+0.3     68      27      39      2       0       0.0487804878048781      0
+0.4     68      26      39      2       1       0.0487804878048781      0.037037037037037
+0.5     68      26      40      1       1       0.024390243902439       0.037037037037037
+0.6     68      26      40      1       1       0.024390243902439       0.037037037037037
+0.7     68      26      40      1       1       0.024390243902439       0.037037037037037
+0.8     68      26      40      1       1       0.024390243902439       0.037037037037037
+0.9     68      26      40      1       1       0.024390243902439       0.037037037037037
+1       68      26      40      1       1       0.024390243902439       0.037037037037037
+
+
+
+6. GET A SUMMARY OF HITS AND FUZZY MATCH:
+
+./selfblastverifystats.pl -d unigene2
+
+
+Database    Total   Target_matches  Correct_target_matches  Target_source_matches
+UniGene2    72      26      26      27
+UniGene3    68      18      17      6
+UniGene4    68      24      23      32
+UniGene5    70      20      20      25
+UniGene6    68      27      25      22
+
+
+The calculations were as follows:
+
+        FOR ALL SEQUENCES WITH BLAST HITS:
+       
+            1. CHECK IF THE TWO BEST TARGET ANNOTATIONS IN THE blastbestevalueverify
+           
+                TABLE ARE THE SAME BY FUZZY MATCH AND, IF SO, ARE THEY ALSO
+               
+                MATCHES TO THE SOURCE ANNOTATION? REPORT THE COUNTS.
+       
+            2. IF THEY ARE DIFFERENT (BY FUZZY MATCH), TAKE THE TARGET WITH THE
+           
+                LOWEST E-VALUE AND CHECK IF IT IS A TRUE (MANUAL) MATCH WITH
+               
+                THE SOURCE ANNOTATION. REPORT THE COUNTS.
+
+
+
+</entry>
+
+
+
+<entry [Wed Dec 19 00:53:00 EST 2007] FUZZY MATCH>
+
+
+
+
+1. GET QUERY AND TARGET ANNOTATIONS FOR 100 SWISSPROT SEQUENCES
+
+sudo ./selfblastverify.pl -d indexer -s swissprotselfblast -b 32
+
+OUTPUT: A .TSV FILE FOR MANUAL ANNOTATION 
+
+
+2. MANUAL MATCHING OF ANNOTATIONS
+
+INPUT: /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotselfblastverify.tsv
+
+OUTPUT: /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotselfblastverifymanual.tsv
+
+fle2 indexer.swissprotselfblastverifymanual.tsv
+
+2. LOAD MANUAL MATCHES INTO TABLE swissprotselfblastverifymanual
+
+./arrayloaddata.pl -d indexer -t swissprotselfblastverifymanual -i /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotselfblastverifymanual.tsv -s /Users/young/FUNNYBASE/bin/orthologues/sql/create_selfblastverifymanual.sql
+
+
+    select count(distinct queryaccession)  from swissprotselfblastverifymanual;
+    +--------------------------------+
+    | count(distinct queryaccession) |
+    +--------------------------------+
+    |                            101 |
+    +--------------------------------+
+    
+    mysql> select count(*)  from swissprotselfblastverifymanual;
+    +----------+
+    | count(*) |
+    +----------+
+    |     7457 |
+    +----------+
+    
+    mysql> select count(distinct querysynonyms, targetsynonyms)  from swissprotselfblastverifymanual;
+    +-----------------------------------------------+
+    | count(distinct querysynonyms, targetsynonyms) |
+    +-----------------------------------------------+
+    |                                          4862 |
+    +-----------------------------------------------+
+
+3. OPTIMISE FUZZY MATCH USING STOPWORDS AND 
+
+sudo ./selfblastverifyoptimised.pl -d indexer -s swissprotselfblast
+
+
+Match cutoff	Total matches	True positives	True negatives	False positives	False negatives	Type I 	Type II
+0.1	7456	3226	1453	2558	216	0.638	0.063
+0.2	7456	3212	1532	2479	230	0.618	0.067
+0.3	7456	3207	1906	2105	235	0.525	0.068
+0.4	7456	3094	2511	1500	348	0.374	0.101
+0.5	7456	3090	2680	1331	352	0.332	0.102
+0.6	7456	3048	2756	1255	394	0.313	0.114
+0.7	7456	3009	2810	1201	433	0.299	0.126
+0.8	7456	2963	2810	1201	479	0.299	0.139
+0.9	7456	2962	2811	1200	480	0.299	0.139
+1	7456	2960	2813	1198	482	0.299	0.140
+
+
+

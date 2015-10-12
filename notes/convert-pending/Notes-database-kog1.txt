@@ -1,0 +1,298 @@
+Notes-database-kog1.txt
+
+</entry>
+
+
+
+<entry [Wed Jan 30 21:54:18 EST 2008] DO WHOLE PATHWAY FOR kog1>
+
+
+
+1. POPULATE kog1 DATABASE collection TABLE 
+===========================================
+
+    select count(*) from collection;
+   +----------+
+   | count(*) |
+   +----------+
+   |     1467 |
+   +----------+
+   1 row in set (0.00 sec)
+   
+    select count(distinct collectionid) from collection;
+   +------------------------------+
+   | count(distinct collectionid) |
+   +------------------------------+
+   |                          172 |
+   +------------------------------+
+
+
+1. GET INTERPRO HITS
+====================
+    
+OK
+
+2. Load InterPro hits into 'collectioniprscan' table
+====================================================
+
+OK
+    select count(distinct collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          169 |
+    +------------------------------+
+
+
+3. Load 'collection' and 'collectioniprscan' tables onto cluster
+================================================================
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d kog1 -t collection,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/kog1/collection/clusterloadtable.sh
+sudo /common/pipeline/kog1/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+3. GET IPRSCAN SET 
+==================
+
+(NB: ADDED SEED LIMIT ON collection ACCESSIONS BECAUSE TOO MANY, WHICH MEANT THERE
+WERE NO NEGATIVE AND POSITIVE EXAMPLES COMING FROM THE EXTERNAL, Swissprot
+SEQUENCES)
+
+sudo ./arrayiprscansetdaemon.pl -d kog1 -t 24 
+    
+    Run time: 00:03:15
+    Completed ./arrayiprscansetdaemon.pl
+    6:29PM, 6 February 2008
+    ****************************************
+    
+    select count(distinct collectionid) from iprscanset;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+
+4. GET IPRSCAN SET SEQUENCES
+============================
+
+./iprscansetsequence.pl -d kog1    
+    
+    Run time: 00:00:06
+    Completed ./iprscansetsequence.pl
+    10:37PM, 6 February 2008
+    ****************************************
+    
+    select count(distinct collectionid) from iprscansetsequence;    
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+
+5. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d kog1 -n 20
+
+    Run time: 00:04:42
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    6:38PM, 6 February 2008
+    ****************************************            
+
+6. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+./arrayiprscansetalignmentloaddata.pl -d kog1
+    
+    Run time: 00:00:04
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    6:46PM, 6 February 2008
+    ****************************************
+    
+    select count(distinct collectionid) from iprscansetalignment;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+    
+7. LOAD iprscanset AND iprscansetalignment TABLES TO CLUSTER
+============================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d kog1 -t iprscanset,iprscansetalignment
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/kog1/collection/clusterloadtable.sh
+sudo /common/pipeline/kog1/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+8. DO SUPERDOMAINS
+==================
+
+sudo ./arrayiprscansuperdomaindaemon.pl -d kog1 -t 20
+                    
+    Run time: 00:00:27
+    Completed ./arrayiprscansuperdomaindaemon.pl
+    7:14PM, 6 February 2008
+    ****************************************
+
+9. LOAD SUPERDOMAINS
+====================
+
+./arrayiprscansuperdomainloaddata.pl -d kog1 -t 20
+            
+    Run time: 00:00:01
+    Completed ./arrayiprscansuperdomainloaddata.pl
+    10:34PM, 6 February 2008
+    ****************************************    
+
+    select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+
+10. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d kog1
+        
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:00:13
+    10:35PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscanattributebayes; 
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+
+11. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d kog1
+
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:03
+    10:36PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from nfoldbayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+    
+12. Load TABLES onto cluster
+========================================================================================
+
+TABLES:
+iprscansetsequence
+iprscanattributebayes
+iprscansuperdomain 
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d kog1 -t iprscansetsequence,iprscansuperdomain,iprscanattributebayes
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/kog1/collection/clusterloadtable.sh
+
+sudo /common/pipeline/kog1/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+12. Populate 'iprscanattribute' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+
+USING:
+
+sudo ./signaturecommandengine.pl -d kog1
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g iprscan -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g size -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g size -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g size -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g both -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g both -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d kog1 -g both -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d kog1 -t 20
+
+    select distinct groupby, domainsize from iprscanattribute;
+    +---------+------------+
+    | groupby | domainsize |
+    +---------+------------+
+    | iprscan |          0 |
+    | size    |        100 |
+    | size    |        150 |
+    | size    |        300 |
+    +---------+------------+
+
+
+13. DO DECISION TREES
+=====================
+
+USING:
+
+sudo ./signaturecommandengine.pl -d kog1
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d kog1 -g both -s 300
+
+
+Tue Feb 12 15:08:33 EST 2008
+
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.6495 |
+| size    |        100 |       0.6575 |
+| size    |        150 |       0.7194 |
+| size    |        300 |       0.7523 |
++---------+------------+--------------+
+
+

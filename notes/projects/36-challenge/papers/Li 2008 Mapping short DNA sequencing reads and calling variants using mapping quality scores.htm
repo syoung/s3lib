@@ -1,0 +1,690 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="robots" content="INDEX,NOFOLLOW,NOARCHIVE"><link rel="schema.DC" href="http://purl.org/DC/elements/1.0/"><meta name="citation_journal_title" content="Genome Research"><meta name="citation_title" content="Mapping short DNA sequencing reads and calling variants using mapping quality scores"><meta name="citation_authors" content="Heng Li, Jue Ruan, and  Richard Durbin"><meta name="citation_date" content="2008 November"><meta name="citation_issue" content="11"><meta name="citation_volume" content="18"><meta name="citation_firstpage" content="1851"><meta name="citation_doi" content="10.1101/gr.078212.108"><meta name="citation_pdf_url" content="http://www.pubmedcentral.nih.gov/picrender.fcgi?artid=2577856&amp;blobtype=pdf"><meta name="citation_abstract_html_url" content="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=abstract"><meta name="citation_fulltext_html_url" content="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856"><meta name="citation_pmid" content="18714091"><meta name="DC.Title" content="Mapping short DNA sequencing reads and calling variants using mapping quality scores"><meta name="DC.Type" content="Text"><meta name="DC.Publisher" content="Cold Spring Harbor Laboratory Press"><meta name="DC.Contributor" content="Heng Li"><meta name="DC.Contributor" content="Jue Ruan"><meta name="DC.Contributor" content="Richard Durbin"><meta name="DC.Date" content="2008 November"><meta name="DC.Identifier" content="10.1101/gr.078212.108"><meta name="DC.Language" content="en"><link rel="stylesheet" href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmcstatic.css" type="text/css"><link rel="stylesheet" href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmcbase1.css" type="text/css"><link rel="stylesheet" href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmcbars-slateblue.css" type="text/css"><link rel="stylesheet" href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmcbody3.css" type="text/css"><link rel="stylesheet" href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmcrefs3.css" type="text/css"><script type="text/javascript" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/common.js"></script><script type="text/javascript">window.name="mainwindow";</script><link href="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/tileshop_pmc.css" type="text/css" rel="stylesheet"><script type="text/javascript" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/utils.js"></script><script>utils.jsLoader.sBase = "http://www.ncbi.nlm.nih.gov/corehtml/jsutils/";</script><script type="text/javascript" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/tileshop_pmc.js"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/firebugx.js" type="text/javascript"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/tile.js" type="text/javascript"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/notify.js" type="text/javascript"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/drag_n_drop.js" type="text/javascript"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/scale_pmc.js" type="text/javascript"></script><script type="text/javascript" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/tileshop_data_db.js"></script><script src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/remote_data_provider.js" type="text/javascript"></script><title>Mapping short DNA sequencing reads and calling variants using mapping quality scores</title></head><div FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body class="pmc-body"><div style="height: 0px;"><a id="top" name="top"></a></div><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr valign="top"><td colspan="3"><table style="border-collapse: collapse;" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td valign="top" width="145"><img style="border-style: none;" usemap="#pmclogo" alt="pmc logo image" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/pmc3_logo_v5.gif"><map name="pmclogo"><area shape="rect" coords="65,52,137,67" href="http://www.pubmedcentral.nih.gov/fprender.fcgi" alt="Journal List"><area shape="rect" coords="7,52,52,67" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Xap8VcT97_DC7knohrKQbWeW70cvZG9WmB9qH5zr&amp;reftype=other&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CLogo&amp;TO=Entrez%7CSearch%7CAll%20PMC&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?db=pmc" alt="Search"><area shape="rect" alt="pmc logo image" coords="0,0,145,75" href="http://www.pubmedcentral.nih.gov/"></map></td><td style="padding-left: 4px;" height="75" valign="top"><div><img style="border-style: none;" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/logo-genores.gif" alt="Logo of genores" usemap="#logo-imagemap" align="top"><map id="logo-imagemap" name="logo-imagemap"><area shape="rect" coords="0,58,94,74" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0XqFrTtegu7_sjSjNPUz-3Ys9D1O01cofB4r8nktR&amp;reftype=publisher&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBanner&amp;TO=Publisher%7COther%7CN%2FA&amp;rendering-type=normal&amp;&amp;http://www.cshlpress.com" alt="CSHL Press" title="CSHL Press" target="pmc_ext" onclick="focuswin('pmc_ext')"><area shape="rect" coords="95,58,196,74" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0pk56dQD2Xc-zsSjakcvnw5fpweCSlVocOnbs35f7&amp;reftype=publisher&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBanner&amp;TO=Publisher%7COther%7CN%2FA&amp;rendering-type=normal&amp;&amp;http://www.genome.org" alt="Journal Home" title="Journal Home" target="pmc_ext" onclick="focuswin('pmc_ext')"><area shape="rect" coords="197,58,298,74" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0N5yO06FosxxAmKqJJJYp9iooroHV3k7L6jjAt5d3&amp;reftype=publisher&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBanner&amp;TO=Publisher%7COther%7CN%2FA&amp;rendering-type=normal&amp;&amp;http://www.genome.org/subscriptions" alt="Subscriptions" title="Subscriptions" target="pmc_ext" onclick="focuswin('pmc_ext')"><area shape="rect" coords="299,58,390,74" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0JKY-AeJRmzQ7Uz2JYqGmpHhw3NWUzBNZlTv_SAhi&amp;reftype=publisher&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBanner&amp;TO=Publisher%7COther%7CN%2FA&amp;rendering-type=normal&amp;&amp;http://genome.cshlp.org/misc/etoc.dtl" alt="eTOC Alerts" title="eTOC Alerts" target="pmc_ext" onclick="focuswin('pmc_ext')"><area shape="rect" coords="391,58,499,74" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Vc53YaWteDk4xxrdaHsHfA4WSu5S2SV7l6zsKQY2&amp;reftype=publisher&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBanner&amp;TO=Publisher%7COther%7CN%2FA&amp;rendering-type=normal&amp;&amp;http://www.biosupplynet.com" alt="BioSupplyNet" title="BioSupplyNet" target="pmc_ext" onclick="focuswin('pmc_ext')"></map></div></td></tr></tbody></table></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="3" width="100%"><tbody><tr><td></td><td colspan="2"><div class="navlink-box navlink-box-gray"><a href="http://www.pubmedcentral.nih.gov/fprender.fcgi" class="navlink">Journal List</a><span> &gt; </span><a class="navlink" href="http://www.pubmedcentral.nih.gov/tocrender.fcgi?journal=102&amp;action=archive">Genome Res</a><span> &gt; </span><a class="navlink" href="http://www.pubmedcentral.nih.gov/tocrender.fcgi?iid=17839">Articles With Immediate Access</a></div></td></tr><tr><td class="sidebar-cell" valign="top" width="145"><div class="sidebar-article-navigation-box"><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=abstract" class="sidefm-pmclink">Abstract</a></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>Full Text</a></div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/picrender.fcgi?artid=2577856&amp;blobtype=pdf" class="sidefm-pmclink">PDF (376K)</a></div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/tocrender.fcgi?iid=17839" class="sidefm-pmclink">Contents</a></div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/tocrender.fcgi?journal=102&amp;action=archive" class="sidefm-pmclink">Archive</a></div></div><div class="sidebar-pubmed-box"><div class="sidebar-pubmed-links-to-box"><form name="pubmedLinks" onsubmit="return pubMedDbLinkSubmit(this)"><div class="sidefm-pmsubhead"><label for="pubmedOption">Related material:</label></div><select name="pubmedOption" id="pubmedOption" class="sidefm-pmart" onchange="return pubMedDbLinkSubmit(this)"><option value="redirect3.cgi?&amp;&amp;auth=0pwuj9sklmAgj5QbMuaC7XcDIMuRJh12aiFc1jQTb&amp;reftype=abs&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|PubMed|Record&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/18714091">PubMed record</option><option selected="selected" value="redirect3.cgi?&amp;&amp;auth=0pEVuQAR0BaGDxGg7OtxRdxZktj_1aF952dwH_QoV&amp;reftype=relart&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|PubMed|Related%20Records&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?db=PubMed&amp;cmd=Link&amp;dbFrom=PubMed&amp;from_uid=18714091">PubMed related arts</option><option value="redirect3.cgi?&amp;&amp;auth=0D5fhEtjgdGQcCb-lid9HqSnqBnPigAQ9zFU48kqA&amp;reftype=linkout&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|PubMed|Linkout&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&amp;Cmd=ShowLinkOut&amp;TermToSearch=18714091">PubMed LinkOut</option><option value="redirect3.cgi?&amp;&amp;auth=0ryoG1r9iNAjz2RwhTt9Xd0rWbsOsRcVU1glPtQDm&amp;reftype=Nucleotide&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|Crosslink|Nucleotide&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=link&amp;linkname=pmc_nuccore&amp;from_uid=2577856">Nucleotide</option><option value="redirect3.cgi?&amp;&amp;auth=0vQx2HGjd2gZauStFTwSDEocpP4K3lyxcaGySckoh&amp;reftype=Compound&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|Crosslink|PubChem%20Compound&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=link&amp;linkname=pmc_pccompound&amp;from_uid=2577856">Compound</option><option value="redirect3.cgi?&amp;&amp;auth=0ni1jQveaG-asxgjab_fhkHiBjYDwqgSuY4LWyQDI&amp;reftype=Substance&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|Crosslink|PubChem%20Substance&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=link&amp;linkname=pmc_pcsubstance&amp;from_uid=2577856">Substance</option><option value="redirect3.cgi?&amp;&amp;auth=0tUuJpYjW5mwjb6wbovR6sIbRBF5KD_W3EPIIYQgu&amp;reftype=Taxonomy&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|Crosslink|Taxonomy&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=link&amp;linkname=pmc_taxonomy&amp;from_uid=2577856">Taxonomy</option><option value="redirect3.cgi?&amp;&amp;auth=0Lq37EkGQNpI9ndReLrTr3OzHG7ajkkqxzBekNALf&amp;reftype=Taxonomy&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article|Navigation&amp;TO=Entrez|Crosslink|Taxonomy&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?Db=taxonomy&amp;DbFrom=pmc&amp;cmd=Link&amp;LinkName=pmc_taxonomy&amp;doptcmdl=TxTree&amp;IdsFromResult=2577856">Taxonomy tree</option></select><br><input class="sidefm-pmart" alt="GO" src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/go.gif" type="image"></form></div><div class="sidebar-pubmed-author-box"><div class="sidefm-pmsubhead">PubMed articles by:</div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0L94tRn8MDSQ-m9Zm433fqGgsexz00be44sG0X5rY&amp;reftype=authsrch&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CNavigation&amp;TO=Entrez%7CPubMed%7CAuthor%20Search&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=search&amp;db=PubMed&amp;term=%20Li+H%5Bauth%5D" class="sidefm-pmclink"> Li, H.</a></div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0xCa_aoLj1Dumt4xLa1eQYqluNr9MvzQgqJqjUA7e&amp;reftype=authsrch&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CNavigation&amp;TO=Entrez%7CPubMed%7CAuthor%20Search&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=search&amp;db=PubMed&amp;term=%20Ruan+J%5Bauth%5D" class="sidefm-pmclink"> Ruan, J.</a></div><div class="sidefm-pmclink-item"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=02Qybzhvgzs-2NctJVIK0zWCPC490nJUY5th68Am5&amp;reftype=authsrch&amp;refto=entrez&amp;reffrom=sidebar&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CNavigation&amp;TO=Entrez%7CPubMed%7CAuthor%20Search&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=search&amp;db=PubMed&amp;term=%20Durbin+R%5Bauth%5D" class="sidefm-pmclink"> Durbin, R.</a></div></div></div></td><td rowspan="103" background="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/wm-genores.gif" height="300" width="20"><div style="width: 20px;"></div></td><td class="content-cell" valign="top"><div class="front-matter-section"><table cellpadding="0" cellspacing="0" width="100%"><tbody><tr style="vertical-align: top;"><td><div class="fm-citation"><div><span class="citation-abbreviation">Genome Res. </span><span class="citation-publication-date">2008 November; </span><span class="citation-volume">18</span><span class="citation-issue">(11)</span><span class="citation-flpages">: 1851–1858. </span></div><div><span class="fm-vol-iss-date"> </span><span class="fm-vol-iss-date">doi: 10.1101/gr.078212.108.</span></div></div></td><td class="fm-citation-ids"><div class="fm-citation-pmcid"><span class="fm-citation-ids-label">PMCID: </span>PMC2577856</div></td></tr></tbody></table><div class="fm-copyright"><a class="int-reflink" href="http://www.pubmedcentral.nih.gov/about/copyright.html">Copyright</a>  © 2008, Cold Spring Harbor Laboratory Press</div><div class="fm-title">Mapping short DNA sequencing reads and calling variants using mapping quality scores</div><div class="contrib-group fm-author">Heng Li,<sup>1</sup> Jue Ruan,<sup>2</sup> and  Richard Durbin<sup>1,</sup><sup>3</sup></div><div class="fm-affl"><sup>1</sup> The Wellcome Trust Sanger Institute, Hinxton CB10 1SA, United Kingdom;</div><div class="fm-affl"><sup>2</sup> Beijing Genomics Institute, Chinese Academy of Science, Beijing 100029, China</div><div class="fm-footnote"></div><div class="fm-footnote" id="cor1"><sup>3</sup>Corresponding author.E-mail <span class="e_id485233"><a class="ext-reflink" href="mailto:rd@sanger.ac.uk">rd@sanger.ac.uk</a></span><script type="text/javascript" language="JavaScript"><!--
+                                    try{initUnObscureEmail ("e_id485233", '<a class="ext-reflink" href="' + reverseAndReplaceString('ku.ca.regnas/ta/dr:otliam', '/at/', '@') + '">' + reverseAndReplaceString('ku.ca.regnas/ta/dr', '/at/','@') + '</a>')}catch(e){}
+                                //--></script>; fax 44-1223496802.</div><div class="fm-pubdate">Received March 7, 2008; Accepted August 13, 2008.</div><div class="fm-copyright"><div class="p" id="id485292">Freely available online through the <em>Genome Research</em> Open Access option.</div></div><div class="links-box"><div class="fm-footnote"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rt-arrow.gif" alt="Small right arrow pointing to:" style="vertical-align: middle;"> This article has been <a class="int-reflink" href="http://www.pubmedcentral.nih.gov/tocrender.fcgi?artid=2577856&amp;action=cited">cited by</a> other articles in PMC.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);" style="text-transform: none;"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>Abstract</a></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441213" class="sidefm-pmclink" style="text-transform: none;">Results</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441678" class="sidefm-pmclink" style="text-transform: none;">Discussion</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441900" class="sidefm-pmclink" style="text-transform: none;">Methods</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id443037" class="sidefm-pmclink" style="text-transform: none;">References</a></div></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id485306">Abstract</div><div class="section-content"><!--article-meta--><div class="p p-first-last" id="id485307">New
+sequencing technologies promise a new era in the use of DNA sequence.
+However, some of these technologies produce very short reads, typically
+of a few tens of base pairs, and to use these reads effectively
+requires new algorithms and software. In particular, there is a major
+issue in efficiently aligning short reads to a reference genome and
+handling ambiguity or lack of accuracy in this alignment. Here we
+introduce the concept of <em>mapping quality</em>, a measure of the
+confidence that a read actually comes from the position it is aligned
+to by the mapping algorithm. We describe the software MAQ that can
+build assemblies by mapping shotgun short reads to a reference genome,
+using quality scores to derive genotype calls of the consensus sequence
+of a diploid genome, e.g., from a human sample. MAQ makes full use of
+mate-pair information and estimates the error probability of each read
+alignment. Error probabilities are also derived for the final genotype
+calls, using a Bayesian statistical model that incorporates the mapping
+qualities, error probabilities from the raw sequence quality scores,
+sampling of the two haplotypes, and an empirical model for correlated
+errors at a site. Both read mapping and genotype calling are evaluated
+on simulated data and real data. MAQ is accurate, efficient, versatile,
+and user-friendly. It is freely available at <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=08c4-n1kwrb_FAJrYnkq5XAjE5xH4g99Ymg3Kx5gT&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CFront%20Matter&amp;TO=External%7CLink%7CURI&amp;rendering-type=normal&amp;&amp;http://maq.sourceforge.net" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">http://maq.sourceforge.net</a></span>.</div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id485306" class="sidefm-pmclink" style="text-transform: none;">Abstract</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441213" class="sidefm-pmclink" style="text-transform: none;">Results</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441678" class="sidefm-pmclink" style="text-transform: none;">Discussion</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441900" class="sidefm-pmclink" style="text-transform: none;">Methods</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id443037" class="sidefm-pmclink" style="text-transform: none;">References</a></div></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id485349">&nbsp;</div><div class="section-content"><div class="p p-first" id="id485350" cite="cite-id485350" pmids="17512414 17055251 18204455 17540862 16056220 17558387">The advent of novel sequencing technologies such as 454 Life Sciences (Roche) (<a href="#B18" rid="B18" class="cite-reflink bibr popnode">Margulies et al. 2005</a>),
+Illumina (formerly known as Solexa sequencing), and Applied Biosystems
+SOLiD opens opportunities to a variety of biological applications,
+including resequencing (<a href="#B4" rid="B4" class="cite-reflink bibr popnode">Bentley, 2006</a>; <a href="#B11" rid="B11" class="cite-reflink bibr popnode">Hillier et al. 2008</a>), ChIP-seq (<a href="#B3" rid="B3" class="cite-reflink bibr popnode">Barski et al. 2007</a>; <a href="#B15" rid="B15" class="cite-reflink bibr popnode">Johnson et al. 2007</a>; <a href="#B22" rid="B22" class="cite-reflink bibr popnode">Robertson et al. 2007</a>),
+gene expression, miRNA discovery, DNA methylation study, cancer genome
+research, and whole-transcriptome sequencing. Most of these
+applications rely on fast and accurate read mapping, and some of them,
+in particular resequencing, require reliable SNP calling. Meeting these
+requirements is essential to realize the strength of the new sequencing
+technologies.</div><div class="p" id="id440978" cite="cite-id440978" pmids="9254694 11331236 11932250 11591649 12529312 15728110">Several
+of these technologies produce tens of millions of short reads of
+currently typically 30–40 bp in a single run. Mapping the enormous
+numbers of short reads to the reference genome poses serious challenges
+to alignment programs. These challenges come not only from the
+requirement of highly efficient algorithms but also from the need of
+accuracy. Whereas existing alignment algorithms (<a href="#B1" rid="B1" class="cite-reflink bibr popnode">Altschul et al. 1997</a>; <a href="#B5" rid="B5" class="cite-reflink bibr popnode">Buhler 2001</a>; <a href="#B21" rid="B21" class="cite-reflink bibr popnode">Ning et al. 2001</a>; <a href="#B16" rid="B16" class="cite-reflink bibr popnode">Kent 2002</a>; <a href="#B23" rid="B23" class="cite-reflink bibr popnode">Schwartz et al. 2003</a>; <a href="#B27" rid="B27" class="cite-reflink bibr popnode">Wu and Watanabe 2005</a>)
+can be effectively adapted to achieve efficiency, the requirement of
+accuracy is subtle. Most genomes contain at least some sequence that is
+repetitive or close to repetitive on the length scale of the reads. As
+a consequence, some reads will map equally well to multiple positions.
+Furthermore, one or two mutations or sequencing errors in a short read
+may lead to its mapping to the wrong location. It is possible to act
+conservatively by discarding reads that map ambiguously at some level,
+but this leaves no information in the repetitive regions and it also
+discards data, reducing coverage in an uneven fashion, which may
+complicate the calculation of coverage.</div><div class="p" id="id441055" cite="cite-id441055" pmids="9521917 9521922">An
+alternative solution to handling these ambiguities is to keep all the
+reads that can be mapped and to evaluate for each read the likelihood
+it has been wrongly positioned. Poor alignments can still be discarded
+later. This strategy essentially resembles <em>phred</em>’s (<a href="#B9" rid="B9" class="cite-reflink bibr popnode">Ewing et al. 1998</a>; <a href="#B9" rid="B9" class="cite-reflink bibr popnode">Ewing and Green 1998</a>) strategy for base-calling from capillary reads. In a capillary read, there are frequently low-quality regions. <em>Phred</em>
+does not discard these regions in the first instance. Instead, it calls
+each base as best as it can, and assigns a quality score that encodes
+the probability that the base is wrongly called. This per-base quality
+score is more informative and helpful than simply discarding poor data (<a href="#B8" rid="B8" class="cite-reflink bibr popnode">Durbin and Dear 1998</a>).
+Similarly, if the posterior error probability of each read alignment
+can be calculated, more information will be retained than if all poor
+data are discarded. Here, we show how to calculate the error
+probability of a read mapping.</div><div class="p" id="id441104" cite="cite-id441104" pmids="11029002 10581034 11591649 16493422 15741513 16261194">We
+also introduce a new statistical model for consensus genotype calling
+and subsequent SNP calling. For capillary reads, two different
+approaches have previously been taken to calling SNPs. The first type
+of approach works on PCR resequencing data from diploid samples. These
+algorithms directly examine chromatogram trace files and detect
+variants by extracting or comparing signals in the peaks of traces. The
+most widely used software includes PolyPhred (<a href="#B25" rid="B25" class="cite-reflink bibr popnode">Stephens et al. 2006</a>), SNPdetector (<a href="#B29" rid="B29" class="cite-reflink bibr popnode">Zhang et al. 2005</a>), and novoSNP (<a href="#B26" rid="B26" class="cite-reflink bibr popnode">Weckx et al. 2005</a>),
+each of which can call the genotype of the sample as well as detect
+variants. The second type of approach works for clone-based data. They
+are usually built upon <em>phred</em> base calls and detect variants
+by detecting base-pair differences between a read from a single
+haplotype and the reference sequence. Two representative software of
+this type are ssahaSNP (<a href="#B21" rid="B21" class="cite-reflink bibr popnode">Ning et al. 2001</a>) and PolyBayes (<a href="#B19" rid="B19" class="cite-reflink bibr popnode">Marth et al. 1999</a>). While ssahaSNP uses a heuristic rule known as the neighborhood quality standard (NQS) (<a href="#B2" rid="B2" class="cite-reflink bibr popnode">Altshuler et al. 2000</a>), PolyBayes develops an explicit statistical framework to model variants.</div><div class="p" id="id441183" cite="cite-id441183" pmids="10508846">All
+new sequencing technologies are shotgun methods that give sequences
+derived from a single molecule sampled from a larger population.
+(Current methods amplify the starting template by some form of PCR, but
+true single molecule methods are expected in the future.) This means
+the methods for calling variants from new technology data are most
+closely related to the second group described above, including ssahaSNP
+and PolyBayes. However, because of sampling and error rate, we need to
+combine data from multiple reads. In practice, errors at a particular
+site are correlated, and we must take this correlation into account.
+This is analogous to calling a consensus from a sequence assembly, and
+we propose a Bayesian approach to this issue that is related to that
+used in assembly software CAP3 (<a href="#B13" rid="B13" class="cite-reflink bibr popnode">Huang and Madan 1999</a>).</div><div class="p p-last" id="id441203">In
+summary, this article presents methods and software for mapping short
+sequence reads to a reference genome, calculating the probability of a
+read alignment being correct, and consensus genotype calling with a
+model that incorporates correlated errors and diploid sampling. The
+applicability and accuracy of the methods are evaluated based on both
+real data from the bacterium <em>Salmonella paratyphi</em> and simulated data from the diploid human X chromosome.</div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id485306" class="sidefm-pmclink" style="text-transform: none;">Abstract</a></div></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);" style="text-transform: none;"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>Results</a></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441678" class="sidefm-pmclink" style="text-transform: none;">Discussion</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441900" class="sidefm-pmclink" style="text-transform: none;">Methods</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id443037" class="sidefm-pmclink" style="text-transform: none;">References</a></div></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id441213">Results</div><div class="section-content"><div class="sec sec-first"><div class="head2 head-separate">Overview of MAQ algorithms</div><div class="p p-first" id="id441224">MAQ
+is a program that rapidly aligns short reads to the reference genome
+and accurately infers variants, including SNPs and short indels, from
+the alignment.</div><div class="p" id="id441228">At the alignment
+stage, MAQ first searches for the ungapped match with lowest mismatch
+score, defined as the sum of qualities at mismatching bases. To speed
+up the alignment, MAQ only considers positions that have two or fewer
+mismatches in the first 28 bp (default parameters). Sequences that fail
+to reach a mismatch score threshold but whose mate pair is mapped are
+searched with a gapped alignment algorithm in the regions defined by
+the mate pair. To evaluate the reliability of alignments, MAQ assigns
+each individual alignment a <em>phred</em>-scaled quality score
+(capped at 99), which measures the probability that the true alignment
+is not the one found by MAQ. MAQ always reports a single alignment, and
+if a read can be aligned equally well to multiple positions, MAQ will
+randomly pick one position and give it a mapping quality zero. Because
+their mapping score is set to zero, reads that are mapped equally well
+to multiple positions will not contribute to variant calling. However,
+they do give information on copy number of repetitive sequences and on
+the fraction of reads that can be aligned to the genome, and can easily
+be filtered out for downstream analysis if desired. Mapping quality
+scores and mapping all reads that match the genome even if repetitive
+are where MAQ differs from most other alignment programs.</div><div class="p" id="id441245">MAQ
+fully utilizes the mate-pair information of paired reads. It is able to
+use this information to correct wrong alignments, to add confidence to
+correct alignments, and to accurately map a read to repetitive
+sequences if its mate is confidently aligned. With paired-end reads,
+MAQ also finds short insertions/deletions (indels) from the gapped
+alignment described above.</div><div class="p p-last" id="id441251">At
+the SNP calling stage, MAQ produces a consensus genotype sequence from
+the alignment. The consensus sequence is inferred from a Bayesian
+statistical model, and each consensus genotype is associated with a <em>phred</em>
+quality that measures the probability that the consensus genotype is
+incorrect. Potential SNPs are detected by comparing the consensus
+sequence to the reference and can be further filtered by a set of
+predefined rules. These rules are designed to achieve the best
+performance on deep human resequencing data and aim to compensate for
+simplifications and assumptions used in the statistical model (e.g.,
+treating neighbor positions independently).</div></div><div class="sec"><div class="head2 head-separate">Implementation</div><div class="p p-first" id="id441267">We
+implemented the software MAQ to align short reads and call genotypes
+based on the algorithm described in the Methods section. MAQ consists
+of a set of related programs that are compiled into a single binary
+executable. It is able to map reads, call consensus sequences including
+SNP and indel variants, simulate diploid genomes and read sequences,
+and post-process the results in various ways. MAQ also has an option to
+process Applied Biosystems SOLiD data that uses two base “color-space”
+encoding. Further details are available from the documentation at the
+MAQ website.</div><div class="p" id="id441274">MAQ is easy to use. For
+bacterial genomes, alignments and variant calling can be done with a
+single command line, taking a few minutes on a laptop. In addition, MAQ
+comes with a compact and fast OpenGL-based read alignment viewer,
+MAQview, which shows the read alignments, base qualities, and mapping
+qualities in a graphical interface.</div><div class="p" id="id441279">Both
+MAQ and MAQview are designed with genome-wide human resequencing in
+mind. First, the read alignment, which is the slowest step in the whole
+pipeline, can be divided into small tasks and parallelized on a modern
+computer cluster using less than 1 GB of memory for each processor
+core. The separate subparts of the alignment can then be merged
+together to give the final alignment. Second, the read alignments are
+stored in a binary compressed file. Text-based information is only
+extracted when necessary. This strategy saves disk space by a factor of
+three to five. Third, a novel technique is implemented to index the
+compressed alignment file, which enables swift retrieval of reads in
+any region of the reference sequence. Viewing the alignments of a
+human-sized genome is as fast as viewing those of a single BAC
+sequence. As a whole, MAQ and MAQview provide an efficient suite for
+managing data from Illumina sequencing.</div><div class="p p-last" id="id441290">MAQ
+and MAQview are implemented in C/C++ with auxiliary tools in Perl. They
+have been extensively evaluated on large-scale simulated data and real
+data and have been tested by users from various research groups. MAQ
+software is freely distributed under the GNU General Public License
+(GPL). The project home page is at <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0tUtO3sDdB5m59bykL0KpbZRH4_cBnaGn_9RnTQa_&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=External%7CLink%7CURI&amp;rendering-type=normal&amp;&amp;http://maq.sourceforge.net" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">http://maq.sourceforge.net</a></span>.</div></div><div class="sec"><div class="head2 head-separate">SNP calling for large-scale simulated data</div><div class="p p-first" id="id441308">Although
+it is always good to look at real data, it is impossible to assess read
+alignment accuracy on real data, because in a shotgun sample we cannot
+know where the reads come from.</div><div class="p" id="id441312">We
+simulated a diploid sequence (two haploid sequences) from the human
+reference chromosome X, as described in the Methods: 136,012
+substitutions, 7377 1-bp insertions, and 7589 1-bp deletions were added
+to the diploid genome, giving an overall polymorphism rate of 0.001.
+From this mutated diploid genome, we simulated 100 million pairs of
+35-bp mate-pair reads with errors (∼45.2-fold coverage on chromosome
+X). The average insert size is 170 bp with a standard deviation of 20
+bp. Statistics on base qualities were estimated from real data where
+base qualities have been calibrated.</div><div class="p" id="id441320">With
+the default MAQ options, we aligned the simulated reads against the
+whole human reference genome excluding Y and unassembled contigs. It
+took 1100 CPU hours to do this alignment, and 97.44% of reads get
+mapped. <a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" class="fig-table-link" onclick="startTarget(this, 'figure', 1024, 800)">Figure 1B</a>
+shows the distribution of mapping qualities (red curve) and the mapping
+error rate (blue curve) in each 10-based quality interval. If the
+mapping quality were estimated precisely, we would expect to see a
+straight blue line between (“0–9,” 10<sup>0</sup>) and (“≥90,” 10<sup>−9</sup>).
+MAQ qualities appear to be overestimated; in other words, the true
+alignment error rate is higher than what mapping quality predicts to
+be. To investigate whether the overestimation is due to the fact that
+we did not consider mutations and indels in the model, we also
+simulated reads without introducing any mutations. For these data, the
+mapping quality could be estimated more accurately (data not shown),
+which confirms that mutations and indels may interfere with the
+calculation of mapping qualities. We see in <a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" class="fig-table-link" onclick="startTarget(this, 'figure', 1024, 800)">Figure 1</a> that this effect is greatest for mapping quality ∼70–80. However, even these reads have accuracy better than 10<sup>−4</sup>, which is sufficient for most mapping based applications, including structural variant calling and SNP calling.</div><div style="border-style: solid; border-color: rgb(153, 153, 153) rgb(153, 153, 153) rgb(170, 170, 170) rgb(170, 170, 170); border-width: 1px; margin: 1em 2em 1em 1em;"><div style="border-style: solid; border-color: rgb(240, 240, 240) rgb(240, 240, 240) rgb(248, 248, 248) rgb(248, 248, 248); border-width: 3px 3px 1px 1px;"><a id="F1" name="F1"></a><table style="clear: both; width: 100%;" border="0" cellpadding="5" cellspacing="5"><tbody><tr align="left" valign="top"><td align="center" width="100"><a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" class="icon-reflink" onclick="startTarget(this, 'figure', 1024, 800)"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender.gif" style="border: 1px solid ;" class="icon-reflink" alt="Figure 1." title="Figure 1."></a></td><td><a class="side-caption" href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" onclick="startTarget(this, 'figure', 1024, 800)"><strong>Figure 1.</strong></a><div class="figure-table-caption-in-article"><span>Distribution
+of mapping qualities, consensus qualities, true alignment error rate,
+and true consensus error rate. The red line shows the fraction of reads
+whose mapping qualities fall in each interval. (Pink line) The fraction
+of consensus genotypes whose</span><a class="side-caption" style="font-size: 100%;" href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" onclick="startTarget(this, 'figure', 1024, 800)"> (more ...)</a></div></td></tr></tbody></table></div></div><div style="clear: both;"></div><div class="p" id="id441398">We called the consensus sequence from the MAQ alignment. The pink curve in <a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F1" class="fig-table-link" onclick="startTarget(this, 'figure', 1024, 800)">Figure 1B</a>
+shows that most of the consensus bases have a quality over 60. About 5%
+of the consensus bases have a quality smaller than 10. They are in
+repetitive regions where read alignment is not reliable. We then
+compared the consensus to the diploid sequence from which reads were
+generated, and calculated the error rate of the consensus. The green
+curve indicates that the consensus quality also roughly agrees with the
+true error rate. We called indels using paired-end indel detection
+methods described in the Methods section, and required at least two
+reads to support the indel.</div><div class="p" id="id441416">After
+MAQ’s substitution calling, we further filtered the substitutions based
+on five rules: (1) discard SNPs within the 3-bp flanking region around
+a potential indel; (2) discard SNPs covered by three or fewer reads;
+(3) discard SNPs covered by no read with a mapping quality higher than
+60; (4) in any 10-bp window, if there are three or more SNPs, discard
+them all; and (5) discard SNPs with consensus quality smaller than 10.
+MAQ provides a Perl script maq.pl to achieve all these filters.</div><div class="p" id="id441422">To
+see how well MAQ calls SNPs and indels at different coverage, we chose
+several subsets of reads and called variants from those subsets. We
+compared the indels and filtered substitution calls to the true
+variants we added to the diploid genome in the simulation and measured
+the accuracy by false-positive rate (FP) and false-negative rate (FN) (<a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F2" class="fig-table-link" onclick="startTarget(this, 'figure', 1024, 800)">Fig. 2B</a>).
+MAQ consistently generates very few false positives but does miss true
+substitutions. Most of these missing substitutions fall in “filtered
+regions,” which tend to consist of repetitive sequences. In the human
+genome as represented by the X chromosome, we can call variants on ∼85%
+of the sequence using single end reads and 93% using paired-end reads.</div><div style="border-style: solid; border-color: rgb(153, 153, 153) rgb(153, 153, 153) rgb(170, 170, 170) rgb(170, 170, 170); border-width: 1px; margin: 1em 2em 1em 1em;"><div style="border-style: solid; border-color: rgb(240, 240, 240) rgb(240, 240, 240) rgb(248, 248, 248) rgb(248, 248, 248); border-width: 3px 3px 1px 1px;"><a id="F2" name="F2"></a><table style="clear: both; width: 100%;" border="0" cellpadding="5" cellspacing="5"><tbody><tr align="left" valign="top"><td align="center" width="100"><a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F2" class="icon-reflink" onclick="startTarget(this, 'figure', 1024, 800)"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender_002.gif" style="border: 1px solid ;" class="icon-reflink" alt="Figure 2." title="Figure 2."></a></td><td><a class="side-caption" href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F2" onclick="startTarget(this, 'figure', 1024, 800)"><strong>Figure 2.</strong></a><div class="figure-table-caption-in-article"><span>Accuracy
+of variant calling. In the figure, “filtered regions” are regions
+covered by three or fewer reads or by no reads with mapping quality
+higher than 60. For substitutions, FP equals the number of positions
+called as different from</span><a class="side-caption" style="font-size: 100%;" href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F2" onclick="startTarget(this, 'figure', 1024, 800)"> (more ...)</a></div></td></tr></tbody></table></div></div><div style="clear: both;"></div><div class="p" id="id441490">The
+difference between the blue and the red curves indicates the fraction
+of missing substitutions in the regions trusted by MAQ. This difference
+decreases from ∼15% at 8× down to 1% at 30×. Note that we apply more
+filters on SNPs than on filtered regions, which leads to the 1%
+difference between the two curves at high depth. Most of difference at
+low depth is accounted for by sampling variation. At, say, 10× coverage
+there is 5× coverage on average of each haplotype. However, the actual
+number of reads at a site will be distributed around the average at
+best according to a Poisson distribution. Given that we may need to see
+a variant several times to be confident enough to call it, there is a
+significant probability that not enough reads will be aligned and the
+variant will be missed.</div><div class="p" id="id441499">A simple model to this issue is to assume we require <em>k</em> reads to call an allele. We call this strategy the <em>k</em>-allele method. If we assume all read bases have an error rate 0.003, or <em>phred</em> quality 25, the theoretical FN and FP are shown in <a href="http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=2577856&amp;rendertype=figure&amp;id=F2" class="fig-table-link" onclick="startTarget(this, 'figure', 1024, 800)">Figure 2C.</a> If we require low FP rate, the FN rate of MAQ’s model largely agrees with that of the <em>k</em>-allele methods, allowing for the fact that some of the data have Q value lower than 25 or low mapping quality.</div><div class="p" id="id441531">A
+uniquely aligned read tends to be wrongly mapped if it has many good
+alternative hits. Mapping quality helps to downweight such a read in
+SNP calling and to reduce the false SNPs caused by wrong alignments. To
+see the effect of mapping quality, we altered our method to ignore the
+mapping quality and to use only uniquely mapped reads in calling SNPs.
+We filtered the resulting SNPs using the same five rules as previously,
+except the third one, as we assumed no mapping quality is available in
+this case. In comparison, without mapping quality, MAQ discovered 217
+false SNPs out of 127,910 predictions, and with mapping quality, MAQ
+gave 186 out of 126,228, yielding a 14% reduction in FP. This reduction
+amounts to 31 false SNPs, which is small in comparison to the 136,012
+true substitutions in the simulation. However, in real data the FP is
+higher and in some applications, such as in the study of somatic
+mutations in cancer, the number of true SNPs will be much lower and the
+rate of false SNPs more critical.</div><div class="p p-last" id="id441542">This
+simulation only gives a rough evaluation of MAQ’s performance. On one
+hand, in the simulation process, reads are evenly distributed along the
+genome, no contamination exists, base qualities are accurate and
+sequencing errors are entirely independent. All these factors make SNP
+calling simpler. The true accuracy on real data will almost always be
+lower than the simulation. On the other hand, although errors are
+independent, we use a dependent model to infer the consensus. Using an
+independent model would achieve higher accuracy for simulated data.
+Moreover, we were using the same set of filters across all depths.
+Adjusting the threshold in filters might help to reach a better balance
+point between FN and FP at different depths.</div></div><div class="sec sec-last"><div class="head2 head-separate">SNP calling for bacterial genomes</div><div class="p p-first" id="id441555" cite="cite-id441555" pmids="17384186">To evaluate MAQ on real data, we obtained one lane of 2.9 million 36-bp Illumina read sequences of <em>S. paratyphi</em>
+A AKU12601 strain collected by the pathogen group at the Sanger
+Institute. The short reads are purity filtered. To calibrate the
+quality values, we put PhiX sample on the fifth lane of the same run,
+calculate a quality calibration table from the alignment against the
+known PhiX genome, and then apply the table on reads from other lanes
+to infer base qualities. <em>S. paratyphi</em> is a 4.8-Mbp bacterium, including plasmid (<a href="#B12" rid="B12" class="cite-reflink bibr popnode">Holt et al. 2007</a>), and so we had ∼20× coverage. An initial reference genome sequence of the same strain (AC: <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0p75NBwQ_Kur2yfCuRRPCTEGj8fls9M7EzM0iHQr-&amp;reftype=extlink-entrez-nucleotide&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=Entrez%7CTerm%7CNucleotide&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=Retrieve&amp;db=nucleotide&amp;dopt=GenBank&amp;list_uids=197092687" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">FM200053</a></span>)
+was also produced by the pathogen group with capillary sequencing. Read
+sequences have been submitted to European Read Archive (AC: ERA000012).</div><div class="p" id="id441594">After
+mapping and consensus base calling, we filtered the SNPs based on the
+same five rules as for the human X simulation, but in comparison to SNP
+calling on simulated human X chromosome, we did not filter SNPs around
+indels as we only had single-end reads; we decreased the threshold on
+mapping quality (rule 3) to 40 because single end reads usually have
+lower mapping quality than using mate-pair reads; and we increased the
+threshold on consensus quality (rule 5) to 40 because for haploid
+genome where there are no true heterozygotes, it is easier to get
+higher consensus quality.</div><div class="p" id="id441601">After these
+filters, MAQ predicted two homozygous differences. Checking the
+capillary reads used in reference assembly confirms that the current
+reference is wrong at one of the homozygous sites. The other homozygous
+site is covered by 19 reads, with all of them identical to each other
+but different from the reference. This site is possibly a true mutation
+between the reference sequence and the Illumina-sequenced sample.</div><div class="p" id="id441607">As
+well as these two homozygous differences, MAQ also predicted four
+heterozygotes. All four cases look confident from read alignment and
+show excessively high read depth in comparison to the average depth.
+Three are clustered together, and it appears likely that there is an
+additional copy of this region that was not identified in the
+reference. The fourth position may also be in a duplicated region (see
+below).</div><div class="p" id="id441613" cite="cite-id441613" pmids="15531882">Alignment
+against the same reference strain only evaluates the FP of MAQ SNP
+calling. To assess the FN, we aligned the reads to a previously
+published sequence from another reference strain ATCC9150 (<a href="#B20" rid="B20" class="cite-reflink bibr popnode">McClelland et al. 2004</a>).</div><div class="p" id="id441628">We downloaded the sequence of strain ATCC9150 (AC: <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0RggnZBdtB5WGGW61nWrGR65lMnL4ntQ3NHtlq56g&amp;reftype=extlink-entrez-nucleotide&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=Entrez%7CTerm%7CNucleotide&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=Retrieve&amp;db=nucleotide&amp;dopt=GenBank&amp;list_uids=56412276" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">NC_006511</a></span>) from NCBI and aligned it, using cross_match (P. Green, unpubl.; <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0HIRenqI2kHKKYjlE6dTqd55zRHzs-Bx8NVn2eAdK&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=External%7CLink%7CURI&amp;rendering-type=normal&amp;&amp;http://www.phrap.org/phredphrapconsed" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">http://www.phrap.org/phredphrapconsed</a></span>.
+html), against the AKU12601 stain with the two homozygous SNPs
+discovered previously masked as N. Cross_match gave seven alignments,
+spanning the complete ATCC9150 and 99.97% of AKU12601 genome. 211
+substitutions and 39 indels (five of them longer than 20 bp) are
+contained in the alignment. MAQ did not give any false positives and
+predicted 173 true substitutions. Of the missing 38 substitutions, 35
+were covered by no uniquely aligned reads, and one site was covered by
+only one uniquely aligned read. Discovering SNPs at these 36 sites is
+almost impossible with single end short reads. Of the remaining two (38
+− 36) sites, one site was called as a SNP initially but was filtered
+out due to low read coverage (two reads), and the other was dropped
+because it was covered by no read with mapping quality higher than 24
+and so did not pass the filter, either. In regions passing the SNP
+calling filters (96.9% of ATCC9150 genome), no SNPs were missed.
+Interestingly, the four heterozygotes in the AKU12601 read mapping were
+not called as SNPs any more. One site became a repeat in ATCC9150, and
+the other three were called confident monomorphic sites with about the
+average read depth. This observation possibly revealed that around
+these three sites, there are no copy number changes between ATCC9150
+strain and the sample resequenced by Illumina.</div><div class="p p-last" id="id441663" cite="cite-id441663" pmids="18349386">It
+is worth noting that AKU12601 and ATCC9150 are highly similar strains.
+Aligning short reads against a reference genome that is more distant to
+the sample being resequenced would be harder, especially when there are
+highly variable regions. In these regions, doing de novo assembly (<a href="#B28" rid="B28" class="cite-reflink bibr popnode">Zerbino and Birney 2008</a>) first and then aligning the contigs may greatly help.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id485306" class="sidefm-pmclink" style="text-transform: none;">Abstract</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441213" class="sidefm-pmclink" style="text-transform: none;">Results</a></div></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);" style="text-transform: none;"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>Discussion</a></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441900" class="sidefm-pmclink" style="text-transform: none;">Methods</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id443037" class="sidefm-pmclink" style="text-transform: none;">References</a></div></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id441678">Discussion</div><div class="section-content"><div class="p p-first-last" id="id441685" cite="cite-id441685" pmids="18438408 18612301">MAQ
+is capable of human whole-genome alignments and supports SNP calling on
+a diploid sample. It has been used to map short sequencing reads for
+structural variant calling in cancer samples (<a href="#B6" rid="B6" class="cite-reflink bibr popnode">Campbell et al. 2008</a>) and for whole-genome methylation analyses (<a href="#B7" rid="B7" class="cite-reflink bibr popnode">Down et al. 2008</a>).
+It is able to accurately estimate the error probability of each
+alignment and of each consensus genotype as well. MAQ can also simulate
+reads from a diploid genome based on a haploid reference. Simulation
+suggests that 20- to 30-fold coverage is needed for achieving FNs below
+1% in the nonrepeat regions of a diploid sample.</div><div class="sec"><div class="head2 head-separate">The reliability of short read alignments</div><div class="p p-first" id="id441718">The
+reliability of read alignments can substantially affect the accuracy of
+the detection of variations. Knowing which alignment is reliable is key
+to the subsequent analyses. The most convenient way to measure the
+reliability is to define <em>uniqueness</em>: A read is said to be
+uniquely mapped if its second best hit contains more mismatches than
+its best hit. Generally this simple criterion works well, but potential
+difficulties are illustrated by the following scenarios: (1) a read has
+two one-mismatch hits, one with a Q30 mismatch and the other with a Q3
+mismatch; (2) a read has one perfect hit and 100 one-mismatch hits; and
+(3) a read has a perfect hit and a Q3-mismatch hit. In the first case,
+although the read is not unique, the hit with a Q30 mismatch may still
+be reliable. In the remaining two cases, although the read can be
+uniquely aligned, the alignments are not reliable. For the human
+genome, these types of scenarios may happen at times due to the large
+fraction of repetitive sequences.</div><div class="p p-last" id="id441733">In
+our view, it is better to regard the position a read is mapped to as a
+random variable, and the reliability of an alignment can be naturally
+interpreted as the likelihood of the read being mapped to the correct
+position. At this point, mapping quality directly measures the
+reliability. It considers the repeat structure of the reference and the
+base quality of read sequences, which is implied in <a href="#DE1" rid="DE1" class="cite-reflink disp-formula">Equation 1</a> (see Methods), and can easily handle the three cases shown above.</div></div><div class="sec"><div class="head2 head-separate">Time complexity</div><div class="p p-first" id="id441754">If we map <em>N</em> reads to an <em>L</em> long reference and use <em>k</em> bits in indexing, the time complexity of MAQ alignment algorithm is <em>O</em>(<em>c</em><sub>1</sub><em>N</em>log<em>N</em> + <em>c</em><sub>2</sub><em>L</em> + <em>c</em><sub>3</sub>2<sup>−</sup><em><sup>k</sup>NL</em>). The first term <em>N</em>log<em>N</em>
+corresponds to the time spent on sorting the indexes; the second, on
+scanning the whole reference sequence; and the third term, on
+processing the alignment when there is a seed hit. In MAQ alignment, <em>k</em> is 24 and <em>N</em> is typically 2 million and therefore 2<sup>−</sup><em><sup>k</sup>N</em> ≈ 0.1, but as constant <em>c</em><sub>3</sub> is usually much larger than <em>c</em><sub>2</sub> and the human genome has many repeats, the time spent on the last two terms is approximately equal.</div><div class="p p-last" id="id441853">By
+default, MAQ scans the reference three times against six hash tables.
+It would be possible to save time by stopping the scan for a read once
+a perfect or one-mismatch hit was found. The perfect and one-mismatch
+hits, which exist for the majority of reads, are found in the first
+scan. However, stopping after the first scan for these reads would
+greatly reduce the resolution of mapping qualities. Reads that can be
+mapped confidently may not be effectively distinguished from those
+poorly aligned when the suboptimal hits were not available.</div></div><div class="sec sec-last"><div class="head2 head-separate">Evaluating the accuracy</div><div class="p p-first" id="id441864">Short
+reads tend to be wrongly aligned because one or two mutations or
+sequencing errors may make the best position wrong. When evaluating the
+accuracy of alignments, we have to look at the fraction of discarded
+reads (FD) and the fraction of wrongly aligned reads (FW) at the same
+time. Only counting one type of the errors might be misleading.</div><div class="p" id="id441869">While
+on simulated data it is possible to estimate both FD and FW of
+alignments, on real data we cannot calculate FW as we do not know what
+the correct alignment is. As a consequence, we cannot directly measure
+the accuracy of the alignment using real data. To see what alignment
+strategy works best, we must evaluate a measurable outcome from the
+alignment, such as the accuracy of SNP calls, structural variations, or
+the agreement between expression profiling and microarray results. The
+criteria may vary with different applications.</div><div class="p" id="id441876">In
+resequencing, accuracy can be measured by the SNP accuracy, which,
+again, should be measured by the fraction of missing polymorphic sites
+(FN) and the fraction of wrong calls (FP) at the same time. We can
+always trade one type of error for the other and therefore once again
+counting one type of error is misleading.</div><div class="p" id="id441882">Unlike
+in an alignment, both FP and FN of SNPs on real data can be estimated
+from other sources of data. FP can be evaluated by capillary
+resequencing or genotyping a small subset of SNP calls. FN can be
+estimated by comparing SNP calls to the whole-genome chip-genotyping
+results. The fraction of chip-genotyping polymorphic sites that are not
+found is the FN. It should be noted that such a fraction is only the FN
+on the sites where probes can be designed for the genotyping
+microarray. These sites tend to be unique in the reference genome and
+are usually easier to find by short-read resequencing. The overall FN
+across the whole genome is higher.</div><div class="p p-last" id="id441890">In resequencing, it is also a good idea to explicitly define the <em>resequenceable</em>
+regions (or the regions where SNPs can be confidently called). We want
+to distinguish low SNP-density regions from hard-to-resequence regions.
+Using MAQ, the fraction of the human genome that is resequenceable with
+35-bp reads is ∼85%, and with read pairs separated by 170 bp it is
+∼93%. Achieving higher coverage would require a mixture of varying
+insert sizes and longer reads.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id485306" class="sidefm-pmclink" style="text-transform: none;">Abstract</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441213" class="sidefm-pmclink" style="text-transform: none;">Results</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441678" class="sidefm-pmclink" style="text-transform: none;">Discussion</a></div></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);" style="text-transform: none;"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>Methods</a></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id443037" class="sidefm-pmclink" style="text-transform: none;">References</a></div></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id441900">Methods</div><div class="section-content"><div class="sec sec-first"><div class="head2 head-separate">Single end read mapping</div><div class="p p-first" id="id441910">To
+map reads efficiently, MAQ first indexes read sequences and scans the
+reference genome sequence to identify hits that are extended and
+scored. With the Eland-like (A.J. Cox, unpubl.) hashing technique, MAQ,
+by default, guarantees to find alignments with up to two mismatches in
+the first 28 bp of the reads. MAQ maps a read to a position that
+minimizes the sum of quality values of mismatched bases. If there are
+multiple equally best positions, then one of them is chosen at random.</div><div class="p" id="id441917" cite="cite-id441917" pmids="11331236 11934743">In
+this article, we will call a potential read alignment position a hit.
+The algorithm MAQ uses to find the best hit is quite similar to the one
+used in Eland. It builds multiple hash tables to index the reads and
+scans the reference sequence against the hash tables to find the hits.
+By default, six hash tables are used, ensuring that a sequence with two
+mismatches or fewer will be hit. The six hash tables correspond to six
+noncontiguous seed templates (<a href="#B5" rid="B5" class="cite-reflink bibr popnode">Buhler 2001</a>; <a href="#B17" rid="B17" class="cite-reflink bibr popnode">Ma et al. 2002</a>).
+Given 8-bp reads, for example, the six templates are 11110000,
+00001111, 11000011, 00111100, 11001100, and 00110011, where nucleotides
+at 1 will be indexed while those at 0 are not. By default, MAQ indexes
+the first 28 bp of the reads, which are typically the most accurate
+part of the read.</div><div class="p" id="id441946">In alignment, MAQ
+loads all reads into memory and then applies the first template as
+follows. For each read, MAQ takes the nucleotides at the 1 positions of
+the template, hashes them into a 24-bit integer, and puts the integer
+together with the read identifier into a list. When all the reads are
+processed, MAQ orders the list based on the 24-bit integers, such that
+reads with the same hashing integer are grouped together in memory.
+Each integer and its corresponding region are then recorded in a hash
+table with the integer as the key. We call this process indexing.</div><div class="p" id="id441954">At
+the same time that MAQ indexes the reads with the first template, it
+also indexes the reads with the second template that is complementary
+to the first one. Taking two templates at a time helps the mate-pair
+mapping, which will be explained in the section below.</div><div class="p" id="id441959">After
+the read indexing with the two templates, the reference will be scanned
+base by base on both forward and reverse strands. Each 28-bp
+subsequence of the reference will be hashed through the two templates
+used in indexing and will be looked up in the two hash tables,
+respectively. If a hit is found to a read, MAQ will calculate the sum
+of qualities of mismatched bases <em>q</em> over the whole length of
+the read, extending out from the 28-bp seed without gaps (the current
+implementation has a read length limit of 63 bp). MAQ then hashes the
+coordinate of the hit and the read identifier into another 24-bit
+integer <em>h</em> and scores the hit as <em>q⋅</em>2<sup>24</sup> + <em>h</em>. In this score, <em>h</em> can be considered as a pseudorandom number, which differentiates hits with identical <em>q</em>: If there are multiple hits with the same <em>q</em>, the hit with the smallest <em>h</em>
+will be identified as the best, effectively selecting randomly from the
+candidates. For each read, MAQ only holds in memory the position and
+score of its two best scored hits and the number of 0-, 1-, and
+2-mismatch hits in the seed region.</div><div class="p" id="id442005">When
+the scan of the reference is complete, the next two templates are
+applied and the reference will be scanned once again until no more
+templates are left.</div><div class="p p-last" id="id442009">Using six
+templates guarantees to find seed hits with no more than two
+mismatches, and it also finds 57% of hits with three mismatches. In
+addition, MAQ can use 20 templates to guarantee finding all seed hits
+with three mismatches at the cost of speed. In this configuration, 64%
+of seed hits with four mismatches are also found, though our experience
+is that these hits are not useful in practice.</div></div><div class="sec"><div class="head2 head-separate">Single end mapping qualities</div><div class="p p-first" id="id442019" cite="cite-id442019" pmids="9521922">MAQ assigns each individual alignment a mapping quality. The mapping quality <em>Q<sub>s</sub></em> is the <em>phred</em>-scaled probability (<a href="#B9" rid="B9" class="cite-reflink bibr popnode">Ewing and Green 1998</a>) that a read alignment may be wrong:
+<a id="DE1" name="DE1"></a><div class="disp-formula"><table border="0" cellpadding="5" cellspacing="5" width="100%"><tbody><tr><td style="width: 95%;"><div class="eqn-image"><div><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender_005.jpg" title="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow." style="border-style: none;" alt="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow. The name of referred object is 1851equ1.jpg"></div><div style="clear: both;"></div></div></td><td style="width: 5%;"><div class="eqn-id"><span style="white-space: nowrap;"></span></div></td></tr></tbody></table></div>
+For example, <em>Q<sub>s</sub></em>
+= 30 implies there is a 1 in 1000 probability that the read is
+incorrectly mapped. In this section, we only consider a simplistic case
+where all reads are known to come from the reference and an ungapped
+exhaustive alignment is performed. A practical model for alignment with
+heuristic algorithms will be presented in the Supplemental material.</div><div class="p" id="id442068">Suppose we have a reference sequence <em>x</em> and a read sequence <em>z</em>. On the assumption that sequencing errors are independent at different sites of the read, the probability <em>p</em>(<em>z</em>|<em>x</em>,<em>u</em>) of <em>z</em> coming from the position <em>u</em> equals the product of the error probabilities of the mismatched bases at the aligned position. For example, if read <em>z</em> mapped to position <em>u</em> has two mismatches: one with <em>phred</em> base quality 20 and the other with 10, then <em>p</em>(<em>z</em>|<em>x</em>,<em>u</em>) = 10<sup>−(20 + 10)/10</sup> = 0.001.</div><div class="p" id="id442137">To calculate the posterior probability <em>p<sub>s</sub></em>(<em>u</em>|<em>x</em>,<em>z</em>), we assume a uniform prior distribution <em>p</em>(<em>u</em>|<em>x</em>), and applying the Bayesian formula gives
+<a id="DE2" name="DE2"></a><div class="disp-formula"><table border="0" cellpadding="5" cellspacing="5" width="100%"><tbody><tr><td style="width: 95%;"><div class="eqn-image"><div><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender_004.jpg" title="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow." style="border-style: none;" alt="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow. The name of referred object is 1851equ2.jpg"></div><div style="clear: both;"></div></div></td><td style="width: 5%;"><div class="eqn-id"><span style="white-space: nowrap;"></span></div></td></tr></tbody></table></div>
+where <em>L</em> = |<em>x</em>| is the length of <em>x</em> and <em>l</em> = |<em>z</em>|. Scaling <em>p<sub>s</sub></em> in the <em>phred</em> way, we get the mapping quality of the alignment: 
+<a id="DE3" name="DE3"></a><div class="disp-formula"><table border="0" cellpadding="5" cellspacing="5" width="100%"><tbody><tr><td style="width: 95%;"><div class="eqn-image"><div><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender_003.jpg" title="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow." style="border-style: none;" alt="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow. The name of referred object is 1851equ3.jpg"></div><div style="clear: both;"></div></div></td><td style="width: 5%;"><div class="eqn-id"><span style="white-space: nowrap;"></span></div></td></tr></tbody></table></div>
+The calculation of <a href="#DE1" rid="DE1" class="cite-reflink disp-formula">Equation 1</a>
+requires summing over all positions on the reference. It is impractical
+to calculate the sum given a human-sized genome. In practice, we
+approximate <em>Q<sub>s</sub></em> as: 
+<a id="DE4" name="DE4"></a><div class="disp-formula"><table border="0" cellpadding="5" cellspacing="5" width="100%"><tbody><tr><td style="width: 95%;"><div class="eqn-image"><div><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender.jpg" title="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow." style="border-style: none;" alt="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow. The name of referred object is 1851equ4.jpg"></div><div style="clear: both;"></div></div></td><td style="width: 5%;"><div class="eqn-id"><span style="white-space: nowrap;"></span></div></td></tr></tbody></table></div>
+Where <em>q</em><sub>1</sub> is the sum of quality values of mismatches of the best hit, <em>q</em><sub>2</sub> is the corresponding sum for the second best hit, <em>n</em><sub>2</sub> is the number of hits having the same number of mismatches as the second best hit, <em>k</em>′ is the minimum number of mismatches in the 28-bp seed, <em><span class="underline">q</span></em> is the average base quality in the 28-bp seed, 4.343 is 10/log10, and <em>p</em><sub>1</sub>(<em>k</em>,28) is the probability that a perfect hit and a <em>k</em>-mismatch
+hit coexists given a 28-bp sequence that can be estimated during
+alignment. Detailed deduction of this equation is given in the
+Supplemental material.</div><div class="p" id="id442316">It is also
+worth noting that in minimizing the sum of quality values of mismatched
+bases, MAQ is effectively maximizing the posterior probability <em>p<sub>s</sub></em>(<em>u</em>|<em>x</em>,<em>z</em>). This is the statistical interpretation of MAQ alignments.</div><div class="p p-last" id="id442339">On
+sequencing real samples, reads may also be different from the reference
+sequence due to the existence of sequence variants in different samples
+or strains. These variants behave in a similar manner to sequencing
+errors for mapping purposes, and therefore at the alignment stage, we
+should set the minimum base error probability as the rate of
+differences between the reference and the reads. However, this strategy
+is an approximation. When there are differences between the reference
+and reads, the best position might consistently give wrong alignments
+even if there are no sequencing errors, which can invalidate the
+calculation of mapping qualities. It would be possible in an iterative
+scheme to update the reference with an estimate of the new sample
+sequence from the first mapping and then remap to the updated reference.</div></div><div class="sec"><div class="head2 head-separate">Paired-end read alignment</div><div class="p p-first" id="id442353">MAQ jointly aligns the two reads in a read pair and fully utilizes the mate-pair information in the alignment.</div><div class="p" id="id442356">In
+the paired-end alignment mode, MAQ will by default build six hash
+tables for each end (12 tables in total). In one round of indexing, MAQ
+indexes the first end with two templates and the second end also with
+two templates. Four hash tables, two for each end, will be put in
+memory at a time. In the scan of the reference, when a hit of a read is
+found on the forward strand of the reference sequence, MAQ appends its
+position to a queue that always keeps the last two hits of this read on
+the forward strand. When a hit of a read is found on the reverse
+strand, MAQ checks the queue of its mate and tests whether its mate has
+a hit on the forward strand within a maximum allowed distance ahead of
+the current read. If there is one, MAQ will mark the two ends as a
+pair. In this way, MAQ jointly maps the reads without independently
+storing all the potential hits of each end.</div><div class="p" id="id442366">For
+each end, MAQ will only hold in memory two hash tables corresponding to
+two complementary templates (e.g., 11110000 and 00001111 for 8-bp
+reads). This strategy guarantees that any hit with no more than one
+mismatch can be always found in each round of the scan. Holding more
+hash tables in memory would help to find pairs containing more
+mismatches, but doing this would also increase memory footprint.</div><div class="p" id="id442372">Paired-end
+mapping qualities are derived from single end mapping qualities. There
+are two different cases when a pair can be wrongly mapped. In the first
+case, one of the two ends is wrongly aligned and the other is correct.
+This scenario may happen if a repetitive sequence appear twice or more
+in a short region. In the second instance, a pair is wrong because both
+ends are wrong at the same time.</div><div class="p p-last" id="id442378">In
+MAQ, if there is a unique pair mapping in which both ends hit
+consistently (i.e., in the right orientation within the proper
+distance), we give the mapping quality <em>Q</em><sub><em>p</em></sub> = <em>Q</em><sub><em>s</em><sub>1</sub></sub>+<em>Q</em><sub><em>s</em><sub>2</sub></sub>
+to both reads, assuming independent errors. If there are multiple
+consistent hit pairs, we take their single end mapping qualities as the
+final mapping qualities.</div></div><div class="sec"><div class="head2 head-separate">Detecting short indels</div><div class="p p-first-last" id="id442416" cite="cite-id442416" pmids="7265238">MAQ
+first aligns reads with the ungapped alignment algorithm described
+above and then finds short indels by utilizing mate-pair information.
+Given a pair of reads, if one end can be mapped with confidence but the
+other end is unmapped, a possible scenario is that a potential indel
+interrupts the alignment of the unmapped read. For this unmapped read,
+we can apply a standard Smith-Waterman gapped alignment (<a href="#B24" rid="B24" class="cite-reflink bibr popnode">Smith and Waterman 1981</a>)
+in a region determined by the aligned read. The coordinate and the size
+of the region is estimated from the distribution of all the aligned
+reads by taking the mean separation of read pairs plus or minus twice
+the standard deviation. As Smith-Waterman will only be applied to a
+small fraction of reads in short regions, efficiency is not a serious
+issue.</div></div><div class="sec"><div class="head2 head-separate">Consensus genotype calling</div><div class="p p-first" id="id442440">By
+default, MAQ assumes the sample is diploid. It calculates the posterior
+distribution of genotypes and calls the genotype that maximizes the
+posterior probability.</div><div class="p" id="id442444">Before
+consensus calling, MAQ first combines mapping quality and base quality.
+If a read is incorrectly mapped, any sequence differences inferred from
+the read cannot be reliable. Therefore, the base quality used in SNP
+calling cannot exceed the mapping quality of the read. MAQ reassigns
+the quality of each base as the smaller value between the read mapping
+quality and the raw sequencing base quality.</div><div class="p" id="id442450">We
+first calculate the probability of data given each possible genotype.
+In consensus calling, if there are no sequencing errors, at most two
+different nucleotides can be legitimately seen. Therefore, we can
+consider only the two most frequent nucleotides at any position and
+ignore others as errors. Assume we are observing data <em>D</em> which consist of <em>k</em> nucleotides <em>b</em> and <em>n</em>−<em>k</em> nucleotides <em>b</em>′ with <em>b</em>,<em>b</em>′∈{<em>A</em>,<em>C</em>,<em>G</em>,<em>T</em>} and <em>b</em> ≠ <em>b</em>′. Then the three possible genotypes are <img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">, <img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">, and <img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>′,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">. If the true genotype is <img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">, we have <em>n</em>−<em>k</em> errors from <em>n</em> bases. Let the probability of observing these errors be α<em><sub>n</sub></em><sub>,</sub><em><sub>n</sub></em><sub>-</sub><em><sub>k</sub></em>, and therefore <em>P</em>(<em>D</em>|<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = α<em><sub>n</sub></em><sub>,</sub><em><sub>n</sub></em><sub>-</sub><em><sub>k</sub></em>. Similarly we have <em>P</em>(<em>D</em>|<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>′,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = α<em><sub>nk</sub></em>. If the true genotype is <img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">, the probability can be approximated with a binomial distribution: <em>P</em>(<em>D</em>|<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = (<sup><em>n</em></sup><sub><em>k</em></sub>)/2<sup><em>n</em></sup>.</div><div class="p" id="id442671">If we further assume the prior of genotypes is <em>P</em>(<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = <em>P</em>(<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>′,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = (1 − <em>r</em>)/2 and <em>P</em>(<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/lang.gif" alt="left angle bracket" border="0"><em>b</em>,<em>b</em>′<img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/rang.gif" alt="right angle bracket" border="0">) = <em>r</em>, we can calculate the posterior probability <em>P</em>(<em>g</em>|<em>D</em>) of genotype <em>g</em> given the observation <em>D</em>. Then the estimated genotype is <em>ĝ</em> = argmax<em><sub>g</sub>P</em>(<em>g</em>|<em>D</em>) with a quality <em>Q<sub>g</sub></em> = −10log<sub>10</sub>[1 − <em>P</em>(<em>ĝ</em>|<em>D</em>)]. Here <em>r</em> is the probability of observing a heterozygote. We usually use <em>r</em> = 0.001 for the discovery of new SNPs and <em>r</em> = 0.2 for inferring genotypes at known SNP sites. In principle, a site-specific <em>r</em> can be used given known allele frequencies.</div><div class="p" id="id442797">The real difficulty is to calculate α<em><sub>nk</sub></em>, the probability of <em>k</em> errors observed from <em>n</em> nucleotides. If errors arise independently and error rates are identical for all bases, α<em><sub>nk</sub></em> can be calculated with a binomial distribution. When errors are correlated and not identical, MAQ approximates α<em><sub>nk</sub></em> by
+<a id="DE5" name="DE5"></a><div class="disp-formula"><table border="0" cellpadding="5" cellspacing="5" width="100%"><tbody><tr><td style="width: 95%;"><div class="eqn-image"><div><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/picrender_002.jpg" title="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow." style="border-style: none;" alt="A mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow. The name of referred object is 1851equ5.jpg"></div><div style="clear: both;"></div></div></td><td style="width: 5%;"><div class="eqn-id"><span style="white-space: nowrap;"></span></div></td></tr></tbody></table></div>
+Where ε<em><sub>i</sub></em> is the <em>i</em>th smallest base error probability and <em>c</em>′<em><sub>nk</sub></em> is a function of ε<em><sub>i</sub></em> but varies little with ε<em><sub>i</sub></em>.
+The only unknown parameter is θ , which controls the dependency of
+errors. The deduction of this equation and the calculation of <em>c</em>′<em><sub>nk</sub></em> will be presented in the Supplemental material.</div><div class="p p-last" id="id442882" cite="cite-id442882" pmids="10508846">Taking a form like <a href="#DE2" rid="DE2" class="cite-reflink disp-formula">Equation 2</a> is inspired by CAP3 (<a href="#B13" rid="B13" class="cite-reflink bibr popnode">Huang and Madan, 1999</a>),
+where θ is arbitrarily set to 0.5. In principle, θ can be estimated
+from real data. In practice, however, the estimate is complicated by
+the requirement of large data set where SNPs are known, by the
+inaccuracy of sequencing qualities, by the dependencies of mapping
+qualities, and also by the approximation made to derive the equation.
+To estimate θ, we just tried different values and selected the one that
+was giving the best final genotype calls. We found θ = 0.85 is a
+reasonable value for Illumina Genetic Analyzer data.</div></div><div class="sec"><div class="head2 head-separate">Simulating diploid genomes and short reads</div><div class="p p-first" id="id442915" cite="cite-id442915" pmids="11847089">MAQ
+also generates in silico mutated diploid sequences by adding random
+mutations to the known reference sequence. The human reference genome
+does not contain heterozygotes, but when we resequence a human sample
+and map reads to the reference genome, we will see both homozygous and
+heterozygous variants in comparison to the reference. If the sample and
+the reference come from the same population and at a potential
+polymorphic site the allele frequency is <em>f</em>, the probability of observing a heterozygote is 2<em>f</em>(1 − <em>f</em>) and of observing a homozygous variant is <em>f</em>(1 − <em>f</em>) (= <em>f</em><sup>2</sup>(1 − <em>f</em>) + <em>f</em>(1 − <em>f</em>)<sup>2</sup>).
+Consequently, on the condition that a site is different from the
+reference, the probability of a heterozygote is always 2/3, regardless
+of the allele frequency <em>f</em>, assuming the sample comes from the
+same population as the reference. Based on this observation, we can
+simulate a diploid genome as follows. We first used the reference
+genome as the two preprocessed haplotypes. We then generated a set of
+polymorphic sites, randomly selected two thirds of them as
+heterozygotes, and took the rest as homozygotes. At a heterozygous
+site, we randomly selected one haplotype and mutated the base into
+another one; on a homozygous site, we mutated both haplotypes. Both
+substitutions and indels can be simulated in this way. This simulation
+ignores linkage disequilibrium between variants. Although
+coalescent-based simulation (<a href="#B14" rid="B14" class="cite-reflink bibr popnode">Hudson 2002</a>)
+gives a more accurate long-range picture, the procedure described here
+is sufficient for the evaluation of the variant calling method for a
+single individual.</div><div class="p p-last" id="id442987">From a
+known sequence, paired-end reads can be simulated with insert sizes
+drawn from a normal distribution and with base qualities drawn from the
+empirical distribution estimated from real sequence data. Sequencing
+errors are introduced based on the base quality. With sufficiently
+large data, we are able to estimate the position-specific distributions
+of base qualities and the correlation between adjacent qualities as
+well. An order-one Markov chain is constructed, based on these
+statistics, to capture the fact that low-quality bases tend to appear
+at the 3′-end of a read and to appear successively along a read.</div></div><div class="sec sec-last"><div class="head2 head-separate">Alignment for Applied Biosystems SOLiD reads</div><div class="p p-first" id="id442999">SOLiD
+reads are presented in the color space, which comprises four colors
+with each color representing four types of combinations of two adjacent
+nucleotides. The SOLiD sequencing machine gives the last primer
+nucleotide base and the color read sequence. This information makes it
+possible to write down the nucleotide read sequence based on the
+meaning of colors. However, a single color error will completely change
+the nucleotide sequencing following that error. Mapping reads in the
+color space is preferable to mapping in the nucleotide space.</div><div class="p" id="id443006">To
+map reads in the color space, we need to convert the reference
+sequences into color sequences and to perform the alignment in the
+color space. Between the color alignment and nucleotide alignment, the
+main difference is that the complement of a color is identical to
+itself, and therefore in the color space, reads coming from the reverse
+strand of the reference only need to be reversed without
+complementation. Most alignment programs can be adapted to perform such
+an alignment with little effort. Another difference is for paired-end
+reads. In SOLiD sequencing, the two ends of a read pair should always
+come from the same strand, instead from two different strands like
+Illumina sequencing.</div><div class="p p-last" id="id443014">MAQ is
+able to map SOLiD mate-pair reads to the reference, but it has to trim
+off the primer nucleotide base and the following color because
+currently MAQ cannot work with color sequences and nucleotide sequences
+at the same time. Trimming the first color is equivalent to using reads
+1 bp shorter, which should not greatly affect the alignment results.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145">&nbsp;</td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id443021">Acknowledgments</div><div class="section-content"><div class="sec"><div class="p" id="id443025">We
+thank Tony Cox, Keira Cheetham, Richard Carter, and David Bentley from
+Illumina for beneficial discussions on consensus genotype calling. We
+thank Julian Parkhill, Kathryn Holt, and the Sanger Institute pathogen
+sequencing unit for providing the <em>S. paratyphi</em> sequence, and
+the sequencing team and the sequencing informatics group for generating
+and processing the data. We also thank Ken Chen, David Spencer, LaDeana
+Hillier, and all the MAQ users for their valuable feedback as MAQ has
+matured; Klaudia Walter and the members of the Durbin research group
+for their helpful comments; and the anonymous referees for their
+helpful suggestions. This work was funded by the Wellcome Trust.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145">&nbsp;</td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="footnotes">Footnotes</div><div class="section-content"><div class="fm-footnote"><div class="p p-first">[Supplemental material is available online at <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0HkjkEWcSSXgHTR91gJBmUu3aWahzzkmYR7JRQ51P&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=External%7CLink%7CURI&amp;rendering-type=normal&amp;&amp;www.genome.org" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">www.genome.org</a></span>. Short-read sequences have been deposited in the European Read Archive (ERA) under accession no. ERA000012 (<span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0z9vqSGx1h5l0C-Lac842cDr2mUf-4DTDieVTTAqH&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=External%7CLink%7CFTP&amp;rendering-type=normal&amp;&amp;ftp://ftp.era.ebi.ac.uk/ERA000012/" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">ftp://ftp.era.ebi.ac.uk/ERA000012/</a></span>).]</div></div><div class="fm-footnote"><div class="p p-first">Article published online before print. Article and publication date are at <span class="ext-reflink"><a href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0699f6kZOFOmDNo4lSxO3Sf6dGh8cVNVNUOfn-52m&amp;reftype=extlink&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CBody&amp;TO=External%7CLink%7CURI&amp;rendering-type=normal&amp;&amp;http://www.genome.org/cgi/doi/10.1101/gr.078212.108" class="ext-reflink" target="pmc_ext" onclick="focuswin('pmc_ext')">http://www.genome.org/cgi/doi/10.1101/gr.078212.108</a></span>.</div></div></div></td></tr><tr valign="top"><td class="sidebar-cell" width="145"><div class="side-section-group"><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#top" class="sidefm-pmclink" style="text-transform: none;">Top</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id485306" class="sidefm-pmclink" style="text-transform: none;">Abstract</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441213" class="sidefm-pmclink" style="text-transform: none;">Results</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441678" class="sidefm-pmclink" style="text-transform: none;">Discussion</a></div></div><div style="text-transform: none;"><div class="sidefm-pmclink-item"><a href="#id441900" class="sidefm-pmclink" style="text-transform: none;">Methods</a></div></div><div class="sidefm-pmccurrent-item"><a class="sidefm-pmclink" href="javascript:return(false);" style="text-transform: none;"><span class="sidebar-menu-square-image-holder"><img src="Li%202008%20Mapping%20short%20DNA%20sequencing%20reads%20and%20calling%20variants%20using%20mapping%20quality%20scores_files/square.gif" alt="&gt;" style="border-style: none;"></span>References</a></div></div></td><td class="content-cell"><div class="head1 section-title" style="text-transform: none;" id="id443037">References</div><div class="section-content"><div class="back-matter-section" id="reference-list"><ul class="back-ref-list-1st-line-shifted"><li id="B1"><div class="citation">Altschul
+S.F., Madden T.L., Schaffer A.A., Zhang J., Zhang Z., Miller W., Lipman
+D.J. Gapped BLAST and PSI-BLAST: A new generation of protein database
+search programs. <span><span class="ref-journal">Nucleic Acids Res. </span>1997;<span class="ref-vol">25</span>:3389–3402.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0N9ALBglPBZPL59B3eQr04AP-LonV22Y3WMN41Qin&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/9254694">PubMed</a>]</span></div></li><li id="B2"><div class="citation">Altshuler
+D., Pollara V.J., Cowles C.R., Van Etten W.J., Baldwin J., Linton L.,
+Lander E.S. An SNP map of the human genome generated by reduced
+representation shotgun sequencing. <span><span class="ref-journal">Nature. </span>2000;<span class="ref-vol">407</span>:513–516.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0l9BV7n6atf2awdC1SK9e1sPnxB5UMv5AhmXfEQeM&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11029002">PubMed</a>]</span></div></li><li id="B3"><div class="citation">Barski
+A., Cuddapah S., Cui K., Roh T.-Y., Schones D.E., Wang Z., Wei G.,
+Chepelev I., Zhao K. High-resolution profiling of histone methylations
+in the human genome. <span><span class="ref-journal">Cell. </span>2007;<span class="ref-vol">129</span>:823–837.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0B7tG8-cSh_ILCEF4IvqcOUacW4_Rg23FmioBH5TP&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/17512414">PubMed</a>]</span></div></li><li id="B4"><div class="citation">Bentley D.R. Whole-genome re-sequencing. <span><span class="ref-journal">Curr. Opin. Genet. Dev. </span>2006;<span class="ref-vol">16</span>:545–552.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0XGg2BnFhUNaYNVithS2tgWbtNBs1W4Z5TDrz6kvH&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/17055251">PubMed</a>]</span></div></li><li id="B5"><div class="citation">Buhler J. Efficient large-scale sequence comparison by locality-sensitive hashing. <span><span class="ref-journal">Bioinformatics. </span>2001;<span class="ref-vol">17</span>:419–428.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0z_GCptKoK1FK4movCM4pe3USoHHJkKzxhEsufkpP&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11331236">PubMed</a>]</span></div></li><li id="B6"><div class="citation">Campbell
+P.J., Stephens P.J., Pleasance E.D., O’Meara S., Li H., Santarius T.,
+Stebbings L.A., Leroy C., Edkins S., Hardy C., et al. Identification of
+somatically acquired rearrangements in cancer using genome-wide
+massively parallel paired-end sequencing. <span><span class="ref-journal">Nat. Genet. </span>2008;<span class="ref-vol">40</span>:722–729.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=08u7mq59YMjXirKeBSpGImjzBEwkZjzTzhBLzr5Mr&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/18438408">PubMed</a>]</span></div></li><li id="B7"><div class="citation">Down
+T.A., Rakyan V.K., Turner D.J., Flicek P., Li H., Thorne N.P., Kulesha
+E., Graf S., Tomazou E.M., Backdahl L., et al. A Bayesian deconvolution
+strategy for immunoprecipitation-based DNA methylation analysis. <span><span class="ref-journal">Nat. Biotechnol. </span>2008;<span class="ref-vol">26</span>:779–785.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0t_gHctGsAKLEuUFUD1v31Czf_6VVHuAVZHhq8k9_&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/18612301">PubMed</a>]</span></div></li><li id="B8"><div class="citation">Durbin R., Dear S. Base qualities help sequencing software. <span><span class="ref-journal">Genome Res. </span>1998;<span class="ref-vol">8</span>:161–162.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0DyIrzXHi8xTGvw6v6v_9mNj1HmrhhFIPFSvw_kgE&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/9521917">PubMed</a>]</span></div></li><li id="B9"><div class="citation">Ewing B., Green P. Base-calling of automated sequencer traces using phred. ii. Error probabilities. <span><span class="ref-journal">Genome Res. </span>1998;<span class="ref-vol">8</span>:186–194.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0fYr64P5amzQshifqK7Uw0qRr1-2uXrFQZjFBF5cO&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/9521922">PubMed</a>]</span></div></li><li id="B10"><div class="citation">Ewing B., Hillier L., Wendl M.C., Green P. Base-calling of automated sequencer traces using <em>phred</em>. i. Accuracy assessment. <span><span class="ref-journal">Genome Res. </span>1998;<span class="ref-vol">8</span>:175–185.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0vil-RU0OjDYSrYyF9iVHQoXDdoAJbsOJ35cVWkpk&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/9521921">PubMed</a>]</span></div></li><li id="B11"><div class="citation">Hillier
+L.W., Marth G.T., Quinlan A.R., Dooling D., Fewell G., Barnett D., Fox
+P., Glasscock J.I., Hickenbotham M., Huang W. Whole-genome sequencing
+and variant discovery in <em>C. elegans</em>. <span><span class="ref-journal">Nat. Methods. </span>2008;<span class="ref-vol">5</span>:183–188.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=04UXlmg3yW1urcAPUQVn_n4z1pd3MJukCHkhfI58_&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/18204455">PubMed</a>]</span></div></li><li id="B12"><div class="citation">Holt
+K.E., Thomson N.R., Wain J., Phan M.D., Nair S., Hasan R., Bhutta Z.A.,
+Quail M.A., Norbertczak H., Walker D., et al. Multidrug-resistant <em>Salmonella</em> <em>enterica</em> serovar paratyphi A harbors IncHI1 plasmids similar to those found in serovar typhi. <span><span class="ref-journal">J. Bacteriol. </span>2007;<span class="ref-vol">189</span>:4257–4264.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0NUzCJP6otVb03sxQXUEGnD2JCHtK2yZTSI0lyk2U&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/17384186">PubMed</a>]</span></div></li><li id="B13"><div class="citation">Huang X., Madan A. Cap3: A DNA sequence assembly program. <span><span class="ref-journal">Genome Res. </span>1999;<span class="ref-vol">9</span>:868–877.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=08sNHaO2eAS4QDH5e88xUge4eFZ4sQ-7ktEmcgAGu&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/10508846">PubMed</a>]</span></div></li><li id="B14"><div class="citation">Hudson R.R. Generating samples under a wright-fisher neutral model of genetic variation. <span><span class="ref-journal">Bioinformatics. </span>2002;<span class="ref-vol">18</span>:337–338.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0BOTElyh2jhSvJ9UKTsKVYuMMiWzq4fvjRODgi5AR&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11847089">PubMed</a>]</span></div></li><li id="B15"><div class="citation">Johnson D.S., Mortazavi A., Myers R.M., Wold B. Genome-wide mapping of in vivo protein-DNA interactions. <span><span class="ref-journal">Science. </span>2007;<span class="ref-vol">316</span>:1497–1502.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Dct3IUSYAhp7VSGorWPcrb72sjTug26oQHZJH54v&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/17540862">PubMed</a>]</span></div></li><li id="B16"><div class="citation">Kent W.J. BLAT—The BLAST-like alignment tool. <span><span class="ref-journal">Genome Res. </span>2002;<span class="ref-vol">12</span>:656–664.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0-EA1UHPq0PJ61znJ7evtzPEDncTqulON7ltuV5ne&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11932250">PubMed</a>]</span></div></li><li id="B17"><div class="citation">Ma B., Tromp J., Li M. Patternhunter: Faster and more sensitive homology search. <span><span class="ref-journal">Bioinformatics. </span>2002;<span class="ref-vol">18</span>:440–445.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Pm6fFMbgTlxA6b_9Q_9-hpqNYlFUuzbNyz_mqAbb&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11934743">PubMed</a>]</span></div></li><li id="B18"><div class="citation">Margulies
+M., Egholm M., Altman W.E., Attiya S., Bader J.S., Bemben L.A., Berka
+J., Braverman M.S., Chen Y.-J., Chen Z., et al. Genome sequencing in
+microfabricated high-density picolitre reactors. <span><span class="ref-journal">Nature. </span>2005;<span class="ref-vol">437</span>:376–380.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0D9_riS3BV96pvA7lncqcFld1E_AOEMeA4mwvzQ9p&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/16056220">PubMed</a>]</span></div></li><li id="B19"><div class="citation">Marth
+G.T., Korf I., Yandell M.D., Yeh R.T., Gu Z., Zakeri H., Stitziel N.O.,
+Hillier L., Kwok P.Y., Gish W.R. A general approach to
+single-nucleotide polymorphism discovery. <span><span class="ref-journal">Nat. Genet. </span>1999;<span class="ref-vol">23</span>:452–456.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0TMppwLk6OO_QtjVZyEg07rWX0059HydByxA1O5Ss&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/10581034">PubMed</a>]</span></div></li><li id="B20"><div class="citation">McClelland
+M., Sanderson K.E., Clifton S.W., Latreille P., Porwollik S., Sabo A.,
+Meyer R., Bieri T., Ozersky P., Mclellan M., et al. Comparison of
+genome degradation in Paratyphi and Typhi, human-restricted serovars of
+<em>Salmonella</em> <em>enterica</em> that cause typhoid. <span><span class="ref-journal">Nat. Genet. </span>2004;<span class="ref-vol">36</span>:1268–1274.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0HWAYdQzAHeCco9yc4hpLrwrH3lKGPRXMRvGs3ATG&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/15531882">PubMed</a>]</span></div></li><li id="B21"><div class="citation">Ning Z., Cox A.J., Mullikin J.C. SSAHA: A fast search method for large DNA databases. <span><span class="ref-journal">Genome Res. </span>2001;<span class="ref-vol">11</span>:1725–1729.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0ZwvShNzpdON4JZHY54Sq_0606XfGJuahn7Vmb5_j&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/11591649">PubMed</a>]</span></div></li><li id="B22"><div class="citation">Robertson
+G., Hirst M., Bainbridge M., Bilenky M., Zhao Y., Zeng T., Euskirchen
+G., Bernier B., Varhol R., Delaney A., et al. Genome-wide profiles of
+STAT1 DNA association using chromatin immunoprecipitation and massively
+parallel sequencing. <span><span class="ref-journal">Nat. Methods. </span>2007;<span class="ref-vol">4</span>:651–657.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0D79LoJPcTVwLy3hmiCmnKeJX57eqmbzLRpIVDA09&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/17558387">PubMed</a>]</span></div></li><li id="B23"><div class="citation">Schwartz
+S., Kent W.J., Smit A., Zhang Z., Baertsch R., Hardison R.C., Haussler
+D., Miller W. Human-mouse alignments with BLASTZ. <span><span class="ref-journal">Genome Res. </span>2003;<span class="ref-vol">13</span>:103–107.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0XUcHN17G9abs43_4yqoikbO6kbHHKRKbP5SDeQ53&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/12529312">PubMed</a>]</span></div></li><li id="B24"><div class="citation">Smith T.F., Waterman M.S. Identification of common molecular subsequences. <span><span class="ref-journal">J. Mol. Biol. </span>1981;<span class="ref-vol">147</span>:195–197.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Puh8v8GKzyCNqWZw0HdKj07Ai0tmvCgtWFnuGAQJ&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/7265238">PubMed</a>]</span></div></li><li id="B25"><div class="citation">Stephens
+M., Sloan J.S., Robertson P.D., Scheet P., Nickerson D.A. Automating
+sequence-based detection and genotyping of SNPs from diploid samples. <span><span class="ref-journal">Nat. Genet. </span>2006;<span class="ref-vol">38</span>:375–381.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0Pe6-qIiYI0iT--ThuBwHC6ewnake7IECK2bTqQ53&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/16493422">PubMed</a>]</span></div></li><li id="B26"><div class="citation">Weckx
+S., Del-Favero J., Rademakers R., Claes L., Cruts M., De Jonghe P., Van
+Broeckhoven C., De Rijk P. novoSNP, a novel computational tool for
+sequence variation discovery. <span><span class="ref-journal">Genome Res. </span>2005;<span class="ref-vol">15</span>:436–442.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0ZeVPAHNYbBlBrEX02C2xnATTKm7IBYioIoV0rkxz&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/15741513">PubMed</a>]</span></div></li><li id="B27"><div class="citation">Wu T.D., Watanabe C.K. GMAP: A genomic mapping and alignment program for mRNA and EST sequences. <span><span class="ref-journal">Bioinformatics. </span>2005;<span class="ref-vol">21</span>:1859–1875.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0ToL278KlfsjVYeMX_ieAAJ-eeKeT5LFekV0mxQtl&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/15728110">PubMed</a>]</span></div></li><li id="B28"><div class="citation">Zerbino D.R., Birney E. Velvet: Algorithms for de novo short read assembly using de Brujin graphs. <span><span class="ref-journal">Genome Res. </span>2008;<span class="ref-vol">18</span>:821–829.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0DAyitkB6B6KhZX0MuaCH5jUxZFhomN7aH6aGwQh3&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/18349386">PubMed</a>]</span></div></li><li id="B29"><div class="citation">Zhang
+J., Wheeler D.A., Yakub I., Wei S., Sood R., Rowe W., Liu P.P., Gibbs
+R.A., Buetow K.H. SNPdetector: A software tool for sensitive and
+accurate SNP detection. <span><span class="ref-journal">PLoS Comput. Biol. </span>2005;<span class="ref-vol">1</span>:e53. doi: 10.1371/journal.pcbi.0010053.</span>  <span style="white-space: nowrap;">[<a class="ref-extlink" href="http://www.pubmedcentral.nih.gov/redirect3.cgi?&amp;&amp;auth=0hIp8Qfm61_2ayG3qjn80LB3pp1r-Fv5ehKBiTkFq&amp;reftype=pubmed&amp;artid=2577856&amp;article-id=2577856&amp;iid=17839&amp;issue-id=17839&amp;jid=102&amp;journal-id=102&amp;FROM=Article%7CCitationRef&amp;TO=Entrez%7CPubMed%7CRecord&amp;rendering-type=normal&amp;&amp;http://www.ncbi.nlm.nih.gov/pubmed/16261194">PubMed</a>]</span></div></li></ul></div></div></td></tr><tr><td></td><td class="content-cell"><div class="footer-section"><hr><div class="sans90" style="margin: 0em 1em 1em; text-align: center;">Articles from <span class="acknowledgment-journal-title">Genome Research</span> are provided here courtesy of <br><b>Cold Spring Harbor Laboratory Press</b></div>
+    <div class="footer-link" id="fp-footer">
+      <div>
+          <a class="link" href="mailto:pubmedcentral@nih.gov">Write to PMC</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.pubmedcentral.nih.gov/">PMC Home</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.ncbi.nlm.nih.gov/pubmed">PubMed</a>
+        </div>
+        <div>
+          <a class="link" href="http://www.ncbi.nlm.nih.gov/">NCBI</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.nlm.nih.gov/">U.S. National Library of Medicine</a>
+        </div>
+        <div>
+          <a class="link" href="http://www.nih.gov/">NIH</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.hhs.gov/">Department of Health and Human Services</a>
+        </div>
+        <div>
+          <a class="link" href="http://www.pubmedcentral.nih.gov/about/privacypolicy.html">Privacy Policy</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.ncbi.nlm.nih.gov/About/disclaimer.html">Disclaimer</a>
+          &nbsp;|&nbsp;
+          <a class="link" href="http://www.nih.gov/icd/od/foia/index.htm">Freedom of Information Act</a>
+        </div>
+      </div>
+    </div></td></tr></tbody></table><!--host:ipmc2-->
+
+</body></html>

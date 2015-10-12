@@ -1,0 +1,722 @@
+Notes-project04b-artificial.txt
+
+
+</entry>
+
+
+
+<entry [Wed Jun 17 23:44:30 EDT 2009] USE export2maq TO CONVERT ELAND TO MAQ .map FILE (SINCE eland2maq GIVES AN ERROR)>
+
+
+
+
+export2maq maq export2maq [-1 read1len] [-2 read2len] [-a maxdist] [-n]
+                   out.map in.list in.export
+ 
+                   Convert Illumina’s Export format to Maq’s .map format.
+                   Export format is a new alignment format since
+                   SolexaPipeline-0.3.0 which also calculates mapping qualities
+                   like maq. The resultant file can be used to call consensus
+                   genotypes as most of necessary information is available for
+                   maq to do this accurately.
+ 
+                   OPTIONS:
+ 
+                   -1 INT   Length of the first read [0]
+ 
+                   -2 INT   Length of the second read [0]
+ 
+                   -a INT   Maximum outer distance for a correct read pair
+                            [250]
+ 
+                   -n       Retain filtered reads
+
+
+NOTES
+
+export, sorted AND multi FILE FORMATS
+-------------------------------------
+
+cd /mihg/data/solexa/090408_HWI-EAS185_0003_20CRUAAXX_mito5-11_ENJH/Data/IPAR_1.3/Bustard1.3.2_16-04-2009_jhoffman/GERALD_15-05-2009_jhoffman
+
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ ll *export*
+-rw-r--r-- 1 832 mihg-data-drive-full 736M May 15 13:12 s_3_1_export.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 732M May 15 13:12 s_3_2_export.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 738M May 15 13:12 s_4_1_export.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 734M May 15 13:12 s_4_2_export.txt
+
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ head  s_3_1_export.txt
+HWI-EAS185      3       3       1       0       1072    0       1       ACAAAAAAAAAAAAAACACAAACAAAATCACAAACCGGTCAACACACCCA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      N
+HWI-EAS185      3       3       1       0       768     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       75      0       1       CACCACAGAAAAAAAAACACCCCACCACACACACACCCCAAAAAACACAC      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      N
+HWI-EAS185      3       3       1       0       989     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      ISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       506     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       365     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       836     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      ISSSSSSSSSSSSSSSSSSIIISSSSSSSSSSSSSSSSSSSSSSSSSSSS  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       393     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAT      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       351     0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+HWI-EAS185      3       3       1       0       1385    0       1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAA      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB  NM                                                                                      Y
+
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ head  s_3_1_sorted.txt
+HWI-EAS185      3       3       100     1185    1985    0       1       ATCCATCTAAGCATTTTCAGTGCTTTGCTTTGTTATTAAGCTACATTAAC      aa_Xaa`baaa`aaba_``a^\T^a``^`a_`]]T^a^\WL\^XZ^_^\\  sion_ref.txt            1       R       50      146     228                     16258   F
+HWI-EAS185      3       3       100     1236    1204    0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      baabbba`aa^abaaaaaX_aa_]_a^YZ`[a```a[X[QQ`[aYZ^ZYR  sion_ref.txt            1       F       50      147     0                       0       N
+HWI-EAS185      3       3       100     324     1799    0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      babbbbbXbbbba^abbbbbbabbbbbaababb`Y]]b``XI_a`Y^aab  sion_ref.txt            1       F       50      146     256                     39      R
+HWI-EAS185      3       3       10      267     1123    0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      _G]T_Z_U_ba\^a`_T_baWG]aa]]^aa_]]XX]S^Y[O^SS_]\BBB  sion_ref.txt            1       F       50      131     131                     191     R
+HWI-EAS185      3       3       10      530     363     0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      Vaabb_\__L^bab]a_aaaa`^a\\W`[J\aa[O^QO^_`_Q\a`YFPV  sion_ref.txt            1       F       50      144     0                       0       N
+HWI-EAS185      3       3       1       1091    1997    0       1       ATCCATCTAAGCATTTTCAGTGCTTTGCTTTGTTATTAAGCTACATTAAC      baaaababbabaabbbb`]a`aabbbaaaabbaaaaaa`_X]aa`aaa`Y  sion_ref.txt            1       R       50      147     294                     16259   F
+HWI-EAS185      3       3       11      1313    841     0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      a_aabaa_aa`aaaaaaa_`aZL^^``_^`__`__a_[WY_`_`_^`[\^  sion_ref.txt            1       F       50      147     163                     194     R
+HWI-EAS185      3       3       1       1166    1163    0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAA      b`aabaa`bb`abbbabbaaab`aaaa``a_aa```a^`_a```a`a^Y`  sion_ref.txt            1       F       49T     110     0                       0       R
+HWI-EAS185      3       3       12      351     650     0       1       ATCCATCTAAGCATTTTCAGTGCTTTGCTTTGTTATTAAGCTACATTAAC      aaaa\aaba`aaa`a`aa`a]`aaa^]``a`a[`^^WJZ^[`^XZZYLWY  sion_ref.txt            1       R       50      146     288                     16081   F
+HWI-EAS185      3       3       13      215     877     0       1       GTTAATGTAGCTTAATAACAAAGCAAAGCACTGAAAATGCTTAGATGGAT      a_a`_\_^baaba_a]H_b_V]^a^a__`aa``_Z]a`\_\_Z`]__RO\  sion_ref.txt            1       F       50      146     154                     195     R
+
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ head  s_3_1_*multi*.txt
+>HWI-EAS185:3:1:0:1072#0/1      ACAAAAAAAAAAAAAACACAAACAAAATCACAAACCGGTCAACACACCCA      NM
+>HWI-EAS185:3:1:0:768#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:75#0/1        CACCACAGAAAAAAAAACACCCCACCACACACACACCCCAAAAAACACAC      NM
+>HWI-EAS185:3:1:0:989#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:506#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:365#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:836#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:393#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAT      NM
+>HWI-EAS185:3:1:0:351#0/1       AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA      NM
+>HWI-EAS185:3:1:0:1385#0/1      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAA      NM
+
+
+export, sorted AND multi FILE SIZES
+-----------------------------------
+
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ ll s_3_1_*multi*.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 442M May 15 12:27 s_3_1_eland_multi.txt
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ ll  s_3_1_sorted.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 537M May 15 13:19 s_3_1_sorted.txt
+[syoung@kronos GERALD_15-05-2009_jhoffman]$ ll  s_3_1_export.txt
+-rw-r--r-- 1 832 mihg-data-drive-full 736M May 15 13:12 s_3_1_export.txt
+
+
+
+</entry>
+
+
+
+<entry [Sun Jun  7 23:44:30 EDT 2009] RUN ELAND ON HUMAN mtDNA ARTIFICIAL READS AND CONVERT ELAND TO MAQ AND CALL SNPs>
+
+
+
+1. CONVERT ARTIFICIAL FASTQ FILES INTO FASTQ FILE
+
+/home/syoung/base/bin/nextgen/fastq2fasta.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq \
+--outputfile /nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta
+	
+	-rw-rw-rw- 1 syoung bioinfo 34M Jun 16 22:22 /nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta
+lines /nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta
+	/nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta: 2000000
+
+/home/syoung/base/bin/nextgen/fastq2fasta.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq \
+--outputfile /nethome/syoung/base/pipeline/comparison/maq/simread_2.fasta
+
+	OK
+
+1. RUN ELAND
+
+
+/home/syoung/base/bin/nextgen/eland.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta \
+--outputfile /nethome/syoung/base/pipeline/comparison/eland/simread_1.eland_multi.txt \
+--refdir /nethome/syoung/base/pipeline/comparison/refdir \
+--length 32 \
+--multi
+	
+	... done User: 2.44063s System: 0.138979s Actual: 2.80916s Efficiency: 91.8285%
+	Run complete! Time now: Tue Jun 16 23:24:27 2009
+	
+	Run time: 00:00:18
+	Completed /home/syoung/base/bin/nextgen/eland.pl
+	11:24PM, 16 June 2009
+	****************************************
+
+-rw-rw-rw- 1 syoung bioinfo 110M Jun 16 23:24 simread_1.eland_multi.txt
+
+head simread_1.eland_multi.txt
+
+	>gi|115315570|ref|AC_000021.2|_5415_5600_0/1    CAGTTTGAACATACAAAACCCACCCCATTCCT        1:0:0   mtDNA-AC_000021.fa:5415F0
+	>gi|115315570|ref|AC_000021.2|_8995_9205_1/1    GCCGTACGCCTAACCGCTAACATTACTGCAGG        1:0:0   mtDNA-AC_000021.fa:8995F0
+	>gi|115315570|ref|AC_000021.2|_13585_13756_2/1  GGGAAATGTTGTTAGTAATGAGAAATCCTGCG        1:0:0   mtDNA-AC_000021.fa:13725R0
+	>gi|115315570|ref|AC_000021.2|_13412_13563_3/1  TAGGGCTCAGGCGTTTGTGTATGATATGTTTG        1:0:0   mtDNA-AC_000021.fa:13532R0
+	>gi|115315570|ref|AC_000021.2|_8433_8630_4/1    TCACCCAACTAAAAATATTAAACACAAACTAC        1:0:0   mtDNA-AC_000021.fa:8433F0
+	>gi|115315570|ref|AC_000021.2|_15041_15193_5/1  TAAGTTTGTAATTACTGTGGCCCCTCAGAATG        1:0:0   mtDNA-AC_000021.fa:15162R0
+	>gi|115315570|ref|AC_000021.2|_11440_11614_6/1  GTCAATAGTACTTGCCGCAGTACTCTTAAAAC        1:0:0   mtDNA-AC_000021.fa:11440F0
+	>gi|115315570|ref|AC_000021.2|_8238_8423_7/1    TCTTTGAAATAGGGCCCGTATTTACCCTATAG        1:0:0   mtDNA-AC_000021.fa:8238F0
+	>gi|115315570|ref|AC_000021.2|_4310_4466_8/1    AGCTTAAACCCCCTTATTTCTAGGACTATGAG        1:0:0   mtDNA-AC_000021.fa:4310F0
+	>gi|115315570|ref|AC_000021.2|_14444_14634_9/1  TCCTCAATAGCCATCGCTGTAGTATATCCAAA        1:0:0   mtDNA-AC_000021.fa:14444F0
+
+	
+/home/syoung/base/bin/nextgen/eland.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_2.fasta \
+--outputfile /nethome/syoung/base/pipeline/comparison/eland/simread_2.eland_multi.txt \
+--refdir /nethome/syoung/base/pipeline/comparison/refdir \
+--length 32 \
+--multi
+
+	Run time: 00:00:19
+	Completed /home/syoung/base/bin/nextgen/eland.pl
+	11:28PM, 16 June 2009
+	****************************************
+	
+head simread_2.eland_multi.txt
+
+	>gi|115315570|ref|AC_000021.2|_5415_5600_0/2    TTTTGCAGTCCTTAGCTGTTACAGAAATTAAG        1:0:0   mtDNA-AC_000021.fa:5569R0
+	>gi|115315570|ref|AC_000021.2|_8995_9205_1/2    ATGTGTTGTCGTGCAGGTAGAGGCTTACTAGA        1:0:0   mtDNA-AC_000021.fa:9174R0
+	>gi|115315570|ref|AC_000021.2|_13585_13756_2/2  TCCCTGACAAGCGCCTATAGCACTCGAATAAT        1:0:0   mtDNA-AC_000021.fa:13585F0
+	>gi|115315570|ref|AC_000021.2|_13412_13563_3/2  TAGGAGGACTACTCAAAACCATACCTCTCACT        1:0:0   mtDNA-AC_000021.fa:13412F0
+	>gi|115315570|ref|AC_000021.2|_8433_8630_4/2    TTGGAGGTGGGGATCAATAGAGGGGGAAATAG        1:0:0   mtDNA-AC_000021.fa:8599R0
+	>gi|115315570|ref|AC_000021.2|_15041_15193_5/2  GGGCGAGGCCTATATTACGGATCATTTCTCTA        1:0:0   mtDNA-AC_000021.fa:15041F0
+	>gi|115315570|ref|AC_000021.2|_11440_11614_6/2  GAGCGATTTTAGGTCTGTTTGTCGTAGGCAGA        1:0:0   mtDNA-AC_000021.fa:11583R0
+	>gi|115315570|ref|AC_000021.2|_8238_8423_7/2    GTGTAAGGAGTATGGGGGTAATTATGGTGGGC        1:0:0   mtDNA-AC_000021.fa:8392R0
+	>gi|115315570|ref|AC_000021.2|_4310_4466_8/2    TACGGGAAGGGTATAACCAACATTTTCGGGGT        1:0:0   mtDNA-AC_000021.fa:4435R0
+	>gi|115315570|ref|AC_000021.2|_14444_14634_9/2  ATGGGGTTTGTGGGGTTTTCTTCTAAGCCTTC        1:0:0   mtDNA-AC_000021.fa:14603R0
+
+
+RERUN WITH NORMAL ELAND OUTPUT (I.E., NO --multi OPTION):
+
+/home/syoung/base/bin/nextgen/eland.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_2.fasta \
+--outputfile /nethome/syoung/base/pipeline/comparison/eland/simread_2.eland.txt \
+--refdir /nethome/syoung/base/pipeline/comparison/refdir \
+--length 32
+
+
+/home/syoung/base/bin/nextgen/eland.pl \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_1.fasta \
+--outputfile /nethome/syoung/base/pipeline/comparison/eland/simread_1.eland.txt \
+--refdir /nethome/syoung/base/pipeline/comparison/refdir \
+--length 32
+
+
+
+2. CONVERT ELAND OUTPUT TO MAQ .map FILE
+
+PREPARE in.list FILE
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+emacs in.list
+mtDNA-AC_000021.fa	mtDNA-AC_000021.fa
+
+
+CONVERT simread_1 AND simread_2
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+time /nethome/syoung/base/apps/maq/0.7.1/maq eland2maq simread_1.map in.list simread_1.eland.txt
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+time /nethome/syoung/base/apps/maq/0.7.1/maq eland2maq simread_2.map in.list simread_2.eland.txt
+
+	Usage: maq eland2maq [-q qual] <out.map> <in.list> <in.eland>
+	
+	in.list FILE = sequence names that appear at the seventh column of the eland alignment file in.eland and the name you expect to see in maq alignment.
+	
+	EXAMPLE OF THE in.list FILE:
+	
+	  cX.fa chrX
+	  c1.fa chr1
+	  c2.fa chr2
+
+
+
+TESTED export2maq BUT DIDN'T WORK: 
+
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq export2maq -1 32 -2 32 -n out.map in.list simread_1.eland.txt simread_2.eland.txt
+
+
+
+
+
+3. CHECK .map FILE
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+time /nethome/syoung/base/apps/maq/0.7.1/maq mapstat simread_1.map 
+	
+	-- Total number of reads: 995586
+	-- Sum of read length: 31858752
+	-- Error rate: 0.000720
+	-- Average read length: 32.00
+	
+	-- Mismatch statistics:
+	
+	-- MM  0             972888
+	-- MM  1              22471
+	-- MM  2                227
+	
+	-- Mapping quality statistics:
+	
+	-- MQ 20-29             227             227
+	-- MQ 50-59           22471           22471
+	-- MQ 70-79          972888          972888
+	
+	-- Flag statistics:
+	
+	-- FG   0            995586
+
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq mapstat simread_2.map 
+
+	-- Total number of reads: 995754
+	-- Sum of read length: 31864128
+	-- Error rate: 0.000725
+	-- Average read length: 32.00
+	
+	-- Mismatch statistics:
+	
+	-- MM  0             972872
+	-- MM  1              22671
+	-- MM  2                211
+	
+	-- Mapping quality statistics:
+	
+	-- MQ 20-29             211             211
+	-- MQ 50-59           22671           22671
+	-- MQ 70-79          972872          972872
+	
+	-- Flag statistics:
+	
+	-- FG   0            995754
+
+
+
+
+
+4. GET SNPs
+
+cd /nethome/syoung/base/pipeline/comparison/eland
+
+# 2. Statistics from the alignment
+time /nethome/syoung/base/apps/maq/0.7.1/maq mapcheck ../mtDNA-AC_000021.bfa simread_1.map > simread_1.mapcheck.txt
+
+
+?????????????????????????????????????????
+???? mapcheck.txt FILE IS EMPTY OF DATA
+?????????????????????????????????????????
+
+
+
+# 3. Build the mapping assembly
+time /nethome/syoung/base/apps/maq/0.7.1/maq assemble simread_1.consensus.cns ../mtDNA-AC_000021.bfa simread_1.map > assemble.log
+
+# 4. Extract consensus sequences and qualities
+time /nethome/syoung/base/apps/maq/0.7.1/maq cns2fq simread_1.consensus.cns > simread_1.cns.fq
+
+# 5. Extract list of SNPs 
+time /nethome/syoung/base/apps/maq/0.7.1/maq cns2snp simread_1.consensus.cns > simread_1.cns.snp
+
+
+
+
+SOLiD Related
+
+fasta2csfa	maq fasta2csfa in.nucl-ref.fasta > out.colour-ref.fasta
+Convert nucleotide FASTA to colour-coded FASTA. Flag -c should be then applied to map command. In the output, letter ‘A’ stands for color 0, ‘C’ for 1, ‘G’ for 2 and ‘T’ for 3. Each sequence in the output is 1bp shorter than the input.
+
+csmap2nt	maq csmap2nt out.nt.map in.ref.nt.bfa in.cs.map
+Convert color alignment to nucleotide alignment. The input in.ref.nt.bfa is the nucleotide binary FASTA reference file. It must correspond to the original file from which the color reference is converted. Nucleotide consensus can be called from the resultant alignment.
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jun  7 23:44:30 EDT 2009] TEST ELAND, BOWTIE, MAQ, NOVOALIGN, SOAP AND SHRIMP ON SIMULATED PAIRED END READS GENERATED BY MAQ>
+
+
+
+REFERENCE: 	/nethome/syoung/base/pipeline/comparison/maq/CCDS_nucleotide.20090327.fa
+READS: 		/nethome/syoung/base/pipeline/comparison/
+
+
+BOWTIE
+------
+
+
+1. BUILD REFERENCE ebwt FILE FOR BOWTIE
+
+/nethome/syoung/base/apps/bowtie/0.9.4/bowtie-build \
+-f /nethome/syoung/base/pipeline/comparison/mtDNA-AC_000021.fa \
+/nethome/syoung/base/pipeline/comparison/bowtie/mtDNA-AC_000021.ebwt 
+	
+	-rw-r--r-- 1 syoung bioinfo 4.1M Jun  8  2009 mtDNA-AC_000021.ebwt.1.ebwt
+	-rw-r--r-- 1 syoung bioinfo 2.2K Jun  8  2009 mtDNA-AC_000021.ebwt.2.ebwt
+	-rw-r--r-- 1 syoung bioinfo 4.1M Jun  8  2009 mtDNA-AC_000021.ebwt.rev.1.ebwt
+	-rw-r--r-- 1 syoung bioinfo 2.2K Jun  8  2009 mtDNA-AC_000021.ebwt.rev.2.ebwt
+	
+	
+
+2. RUN bowtie
+
+COPY SIMREAD FILES FROM maq TO bowtie FOLDER
+
+cp ../maq/simread_* ./
+
+
+RUN bowtie
+	Usage: bowtie [options]* <ebwt> {-1 <mates1> -2 <mates2> | <singles>} [<hits>] 
+
+cd /nethome/syoung/base/pipeline/comparison/bowtie
+/nethome/syoung/base/apps/bowtie/0.9.4/bowtie -q /nethome/syoung/base/pipeline/comparison/bowtie/mtDNA-AC_000021.ebwt /nethome/syoung/base/pipeline/comparison/bowtie/simread_1.fastq,/nethome/syoung/base/pipeline/comparison/bowtie/simread_2.fastq /nethome/syoung/base/pipeline/comparison/bowtie/mtDNA-simread-match.bwt
+
+NB: VERY LARGE OUTPUT FILE:
+
+	-rw-r--r-- 1 syoung bioinfo 163G Jun  8  2009 mtDNA-simread-match.txt
+
+lines mtDNA-simread-match.txt
+	
+	mtDNA-simread-match.txt: 1267831572
+
+ 
+  The 'bowtie' aligner outputs each alignment on a separate line.  Each
+  line is a collection of 8 fields separated by tabs; from left to
+  right, the fields are:
+  
+   1. Read name
+   2. Read orientation ('-' or '+')
+   3. Index of reference sequence aligned to
+   4. Offset into reference sequence of alignment
+   5. Read sequence (reverse-complemented if orientation is '-')
+   6. Read qualities (reversed if orientation is '-')
+   7. Reserved
+   8. Comma-separated list of mismatch positions, as offsets from high-
+      quality end
+
+
+RERUN WITH DIFFERENT PARAMS:
+
+/nethome/syoung/base/apps/bowtie/0.9.4/bowtie \
+-t \
+/nethome/syoung/base/pipeline/comparison/bowtie/mtDNA-AC_000021.ebwt \
+/nethome/syoung/base/pipeline/comparison/bowtie/simread_1.fastq,/nethome/syoung/base/pipeline/comparison/bowtie/simread_2.fastq \
+out.bwt
+
+
+
+3. CONVERT REFERENCE .fa TO MAQ BINARY FASTA .bfa FILE
+
+cd /nethome/syoung/base/pipeline/comparison/bowtie
+time /nethome/syoung/base/apps/maq/0.7.1/maq fasta2bfa mtDNA-AC_000021.fa mtDNA-AC_000021.bfa
+
+
+FILE CREATED:
+
+	-rw-r--r-- 1 syoung bioinfo 8.2K Jun 16 20:59 mtDNA-AC_000021.bfa
+
+
+4. CONVERT BOWTIE OUTPUT TO MAQ .map FILE
+
+cd /nethome/syoung/base/pipeline/comparison/bowtie
+time /nethome/syoung/base/apps/bowtie/0.9.4/bowtie-convert -v mtDNA-simread-match.bwt out.map mtDNA-AC_000021.bfa
+
+
+ Usage: bowtie-convert [-v] <in.bwtmap> <out.map> <chr.bfa>
+ 
+    <in.bwtmap>   An alignments file generated by Bowtie.  Need not
+                  have any particular extension.
+
+    <out.map>     Name of Maq-alignment file to output.  Need not have
+                  any particular extension.
+    
+    <chr.bfa>     The .bfa version of the reference sequences(s).  Use
+                  'maq fasta2bfa' to build this.  It must be built
+                  using the exact same reference sequences as were used
+                  to build the Bowtie index.
+
+    -v            Verbose output
+
+
+
+NOTES:
+  
+BOWTIE 0.9.4 USAGE:
+
+Usage: bowtie [options]* <ebwt_base> <query_in> [<hit_outfile>]
+  <ebwt_base>        ebwt filename minus trailing .1.ebwt/.2.ebwt
+  <query_in>         comma-separated list of files containing query reads
+                     (or the sequences themselves, if -c is specified)
+  <hit_outfile>      file to write hits to (default: stdout)
+Options:
+  -q                 query input files are FASTQ .fq/.fastq (default)
+  -f                 query input files are (multi-)FASTA .fa/.mfa
+  -r                 query input files are raw one-sequence-per-line
+  -c                 query sequences given on command line (as <query_in>)
+  -e/--maqerr <int>  max sum of mismatch quals (rounds like maq; default: 70)
+  -l/--seedlen <int> seed length (default: 28)
+  -n/--seedmms <int> max mismatches in seed (can be 0-3, default: 2)
+  -v <int>           report end-to-end hits w/ <=v mismatches; ignore qualities
+  -5/--trim5 <int>   trim <int> bases from 5' (left) end of reads
+  -3/--trim3 <int>   trim <int> bases from 3' (right) end of reads
+  -u/--qupto <int>   stop after the first <int> reads
+  -t/--time          print wall-clock time taken by search phases
+  --solexa-quals     convert FASTQ qualities from solexa-scaled to phred
+  --ntoa             Ns in reads become As; default: Ns match nothing
+  --concise          write hits in a concise format
+  --maxns <int>      skip reads w/ >n no-confidence bases (default: no limit)
+  -o/--offrate <int> override offrate of Ebwt; must be <= value in index
+  --seed <int>       seed for random number generator
+  --verbose          verbose output (for debugging)
+  --version          print version information and quit
+
+
+
+BOWTIE MANUAL (OUT OF DATE???):
+ 
+Usage: bowtie [options]* <ebwt_base> <query_in> [<hit_outfile>]
+
+  
+  -t/--time          Print the amount of wall-clock time taken by each
+                     search phase and index turnover.
+					 
+  --concise          Print alignments in a concise format. Each line
+                     has format 'read_idx{-|+}:<ref_idx,ref_off,mms>',
+                     where read_idx is the index of the read mapped,
+                     {-|+} is the orientation of the read, ref_idx is
+                     the index of the reference sequence aligned to,
+                     ref_off is the offset into the reference sequence,
+                     and mms is the number of mismatches in the
+                     alignment. 
+
+
+ Using the 'bowtie-convert' Alignment Converter
+ ----------------------------------------------
+
+  Command Line
+  ------------
+ 
+ Usage: bowtie-convert [-v] <in.bwtmap> <out.map> <chr.bfa>
+ 
+    <in.bwtmap>   An alignments file generated by Bowtie.  Need not
+                  have any particular extension.
+
+    <out.map>     Name of Maq-alignment file to output.  Need not have
+                  any particular extension.
+    
+    <chr.bfa>     The .bfa version of the reference sequences(s).  Use
+                  'maq fasta2bfa' to build this.  It must be built
+                  using the exact same reference sequences as were used
+                  to build the Bowtie index.
+
+    -v            Verbose output
+
+
+
+
+
+MAQ
+---
+
+cd /nethome/syoung/base/pipeline/comparison/maq
+emacs /nethome/syoung/base/pipeline/comparison/maq/simread-maq.sh
+#!/bin/sh
+
+/nethome/syoung/base/bin/nextgen/run-maq.pl \
+--outputdir /nethome/syoung/base/pipeline/comparison/maq \
+--inputfile /nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq,/nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq \
+--referencefile /nethome/syoung/base/pipeline/comparison/CCDS_nucleotide.20090327.fa \
+&> /nethome/syoung/base/pipeline/comparison/maq/simread-maq-out.txt
+
+
+chmod 755 /nethome/syoung/base/pipeline/comparison/maq/simread-maq.sh
+qsub -q psmall /nethome/syoung/base/pipeline/comparison/maq/simread-maq.sh
+date
+
+	[syoung@kronos maq]$ qsub -q psmall /nethome/syoung/base/pipeline/comparison/maq/simread-maq.sh
+	53535.kronos.ccs.miami.edu
+	[syoung@kronos maq]$ date
+	Tue Jun 16 20:45:11 EDT 2009
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Jun  7 23:44:30 EDT 2009] GENERATE SIMULATED PAIRED END READS WITH MAQ>
+
+
+
+NB:
+*	 Reads generated from this command are independent, which deviates from the truth. Whereas alignment evaluation is less affected by this, evaluation on SNP calling should be performed with caution. Error dependency may be one of the major causes of wrong SNP calls.
+
+
+CREATED THESE TWO FILES:
+
+-rw-r--r-- 1 syoung bioinfo 113M Jun  8 00:39 /nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq
+-rw-r--r-- 1 syoung bioinfo 113M Jun  8 00:39 /nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq
+
+lines /nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq
+	
+	/nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq: 4000000
+
+lines /nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq
+	
+	/nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq: 4000000
+
+head /nethome/syoung/base/pipeline/comparison/maq/simread_1.fastq
+
+	@gi|115315570|ref|AC_000021.2|_5415_5600_0/1
+	CAGTTTGAACATACAAAACCCACCCCATTCCT
+	+
+	]]]]]]]YQ]]]Y]]]W]P[[[][^^]XT[[[
+	@gi|115315570|ref|AC_000021.2|_8995_9205_1/1
+	GCCGTACGCCTAACCGCTAACATTACTGCAGG
+	+
+	]]]]]]]]]]]]][]YY]]]]]]]]]T[][[\
+	@gi|115315570|ref|AC_000021.2|_13585_13756_2/1
+	GGGAAATGTTGTTAGTAATGAGAAATCCTGCG
+
+head /nethome/syoung/base/pipeline/comparison/maq/simread_2.fastq
+
+	@gi|115315570|ref|AC_000021.2|_5415_5600_0/2
+	TTTTGCAGTCCTTAGCTGTTACAGAAATTAAG
+	+
+	]]]]][]]]]]OJ]]]]Y]][]_QPJ]]]]T[
+	@gi|115315570|ref|AC_000021.2|_8995_9205_1/2
+	ATGTGTTGTCGTGCAGGTAGAGGCTTACTAGA
+	+
+	]]]]]][]]]]]][]]]]][]][]ZRLNYCQK
+	@gi|115315570|ref|AC_000021.2|_13585_13756_2/2
+	TCCCTGACAAGCGCCTATAGCACTCGAATAAT
+
+
+BY THE FOLLOWING PROCEDURE...
+
+
+1. GENERATE in.simupars.dat
+
+simutrain GENERATES THE FILE in.simupars.dat, WHICH DETERMINES THE READ LENGTHS AND QUALITY
+
+Usage: maq simutrain <simupars.dat> <known_reads.fastq>
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq simutrain /nethome/syoung/base/pipeline/comparison/maq/in.sumupars.dat /nethome/syoung/base/pipeline/comparison/maq/s_4_sequence.txt 
+
+	-rw-r--r-- 1 syoung bioinfo 164K Jun  8  2009 in.sumupars.dat
+
+
+2. RUN simulate TO GENERATE SIMULATED PAIRED END simread_1.fastq AND simread_2.fastq FILES:
+
+cd /nethome/syoung/base/pipeline/comparison/maq 
+time /nethome/syoung/base/apps/maq/0.7.1/maq simulate \
+-d 170 -s 20 -N 1000000 -1 32 -2 32 -r 0.001 -R 0.1 \
+simread_1.fastq simread_2.fastq \
+/nethome/syoung/base/pipeline/comparison/maq/mtDNA-AC_000021.fa \
+/nethome/syoung/base/pipeline/comparison/maq/in.sumupars.dat \
+&> /nethome/syoung/base/pipeline/comparison/maq/simulate-log.txt 
+
+	real    0m24.909s
+	user    0m13.625s
+	sys     0m4.533s
+
+	-rw-r--r-- 1 syoung bioinfo 113M Jun  8  2009 simread_1.fastq
+	-rw-r--r-- 1 syoung bioinfo 113M Jun  8  2009 simread_2.fastq
+
+	
+head /nethome/syoung/base/pipeline/comparison/maq/simulate-log.txt 
+	
+	-- 1 sequences, total length: 16569
+	gi|115315570|ref|AC_000021.2|   403     T       K       +
+	gi|115315570|ref|AC_000021.2|   482     -       A       -
+	gi|115315570|ref|AC_000021.2|   571     C       T       -
+	gi|115315570|ref|AC_000021.2|   1695    C       -       +
+	gi|115315570|ref|AC_000021.2|   4548    T       W       +
+	gi|115315570|ref|AC_000021.2|   4678    T       W       +
+	gi|115315570|ref|AC_000021.2|   4798    C       S       +
+	gi|115315570|ref|AC_000021.2|   6120    A       R       +
+	gi|115315570|ref|AC_000021.2|   6359    A       M       +
+	gi|115315570|ref|AC_000021.2|   6920    C       M       +
+	gi|115315570|ref|AC_000021.2|   8559    C       Y       +
+	gi|115315570|ref|AC_000021.2|   8637    C       T       -
+	gi|115315570|ref|AC_000021.2|   9155    A       T       -
+	gi|115315570|ref|AC_000021.2|   10000   G       R       +
+	gi|115315570|ref|AC_000021.2|   11192   G       A       -
+	gi|115315570|ref|AC_000021.2|   12686   T       G       -
+	gi|115315570|ref|AC_000021.2|   13486   C       A       -
+	gi|115315570|ref|AC_000021.2|   14011   G       C       -
+
+
+
+
+
+NOTES:
+
+
+    fakemut     simulate references: randomly generate mutations
+    simutrain   train parameters for simulation
+    simulate    simulate reads: randomly generate sequencing errors
+    simucns     evaluate consensus based on simulation
+    simustat    evaluate alignment based on simulation
+
+
+simulate	maq simulate [-d insize] [-s stdev] [-N nReads] [-1 readLen1] [-2 readLen2] [-r mutRate] [-R indelFrac] [-h] out.read1.fastq out.read2.fastq in.ref.fasta in.simupars.dat
+
+Simulate paired end reads. File in.simupars.dat determines the read lengths and quality distribution. It is generated from simutrain, or can be downloaded from Maq website. In the output read files, a read name consists of the reference sequence name and the outer coordinates of the pair of simulated reads. By default, simulate assumes reads come from a diploid sequence which is generated by adding two different sets of mutations, including one base-pair indels, to in.ref.fasta.
+
+OPTIONS:
+-d INT	 mean of the outer distance of insert sizes [170]
+-s INT	 standard deviation of insert sizes [20]
+-N INT	 number of pairs of reads to be generated [1000000]
+-1 INT	 length of the first read [set by in.simupars.dat]
+-2 INT	 length of the second read [set by in.simupars.dat]
+-r FLOAT	 mutation rate [0.001]
+-R FLOAT	 fraction of 1bp indels [0.1]
+-h	 add all mutations to in.ref.fasta and generate reads from the single mutated sequence (haploid mode)
+NOTE:
+*	 Reads generated from this command are independent, which deviates from the truth. Whereas alignment evaluation is less affected by this, evaluation on SNP calling should be performed with caution. Error dependency may be one of the major causes of wrong SNP calls.
+simustat	maq simustat in.simu-aln.map > out.simustat
+Evaluate mapping qualities from simulated reads.
+
+
+
+
+fakemut	maq fakemut [-r mutrate] [-R indelfrac] in.ref.fasta > out.fakeref.fasta 2> out.fake.snp
+
+Randomly introduce substitutions and indels to the reference. Substitutions and sinlge base-pair indels can be added.
+
+OPTIONS:
+-r FLOAT	 Mutation rate [0.001]
+-R FLOAT	 Fraction of mutations to be indels [0.1]
+simutrain	maq simutrain out.simupars.dat in.read.fastq
+Estimate/train parameters for read simulation.
+
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq fakemut  mtDNA-AC_000021.fa > mtDNA-mut-R0.1-r0.001
+
+	gi|115315570|ref|AC_000021.2|   1294    G       A       99
+	gi|115315570|ref|AC_000021.2|   1513    G       A       99
+	gi|115315570|ref|AC_000021.2|   2991    G       T       99
+	gi|115315570|ref|AC_000021.2|   3583    T       A       99
+	gi|115315570|ref|AC_000021.2|   4052    G       C       99
+	gi|115315570|ref|AC_000021.2|   5630    G       A       99
+	gi|115315570|ref|AC_000021.2|   6794    T       A       99
+	gi|115315570|ref|AC_000021.2|   6865    A       T       99
+	gi|115315570|ref|AC_000021.2|   8705    C       T       99
+	gi|115315570|ref|AC_000021.2|   9233    A       T       99
+	gi|115315570|ref|AC_000021.2|   9805    A       C       99
+	gi|115315570|ref|AC_000021.2|   10813   A       C       99
+	gi|115315570|ref|AC_000021.2|   11286   C       T       99
+	gi|115315570|ref|AC_000021.2|   11995   -       C       99
+	gi|115315570|ref|AC_000021.2|   12592   A       C       99
+	gi|115315570|ref|AC_000021.2|   12999   T       G       99
+	gi|115315570|ref|AC_000021.2|   13997   T       C       99
+	gi|115315570|ref|AC_000021.2|   14224   G       C       99
+	gi|115315570|ref|AC_000021.2|   15970   C       T       99
+	
+	real    0m0.147s
+	user    0m0.004s
+	sys     0m0.018s
+
+
+

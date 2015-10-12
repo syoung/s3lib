@@ -1,0 +1,106 @@
+Notes-apps-pyrobayes.txt
+
+</entry>
+
+
+
+<entry [Mon Jan 19 23:32:12 EST 2009] RUN pyrobayes>
+
+
+
+    SEE
+    Mon Jan 19 23:32:12 EST 2009
+    RAN pyrobayes/mosaik/polybayes PIPELINE WITH NIMBLEGEN SFF DATA ON solexa
+
+    1. RUN pyrobayes ON EACH .SFF FILE 
+    
+    INPUT FILES:
+    /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff
+    /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff
+    /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff
+    /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff 
+    
+    FILE 1. GENERATE AND RUN SHELL SCRIPT
+    -------------------------------------
+    cd /nethome/syoung/base/pipeline/nimblegen-sff
+    emacs pyrobayes-1.sh
+    
+    #/bin/sh    
+    
+    time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff -r hd2-FLR2L3301-
+        
+    RUN SHELL SCRIPT
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/pyrobayes-1.sh
+    
+    
+    
+
+</entry>
+
+
+
+<entry [Sat Jan 10 11:50:12 EST 2009] DOWNLOADED AND INSTALLED pyrobayes>
+
+
+
+1. DOWNLOADED FROM MARTH LAB WEBSITE
+
+http://bioinformatics.bc.edu/marthlab/PyroBayes
+
+2. UNZIPPED
+
+cd /store/home/syoung/base/apps/pyrobayes
+gunzip pyroBayes.linux64.gz
+ll 
+    -rw-r--r--  1 syoung users 124K Jan 10 01:51 pyroBayesBetaDocumentation.pdf
+    -rwxr-xr-x  1 syoung users 1.7M Jan 10 01:51 pyroBayes.linux64
+ 
+ 
+./pyroBayes.linux64 --help
+
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    PyroBayes beta (v0.9)                                  07-16-2007
+    Aaron R. Quinlan (quinlaaa@bc.edu)                               
+    Marth Laboratory (http://bioinformatics.bc.edu/marthlab)         
+    Department of Biology                                            
+    Boston College                                                   
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    USAGE: 
+    
+       ./pyroBayes.linux64  [-r <string>] [-m <int>] [-n <int>] [-o <string>]
+                            -i <string> [--] [-v] [-h]
+    
+    
+    Where: 
+    
+       -r <string>,  --readPrefix <string>
+         (value required)  Prefix to add to each read from the sff file.  Helps
+         to identify reads in an assembly
+    
+       -m <int>,  --mapFile <int>
+         (value required)  Flag Determining Whether or Not the Flow to Base Map
+         File Should Be Written
+    
+       -n <int>,  --numTraces <int>
+         (value required)  Number of Traces to Process in this file
+    
+       -o <string>,  --outStub <string>
+         (value required)  The Stub for the output filenames
+    
+       -i <string>,  --sffFile <string>
+         (required)  (value required)  SFF File To Process
+    
+       --,  --ignore_rest
+         Ignores the rest of the labeled arguments following this flag.
+    
+       -v,  --version
+         Displays version information and exits.
+    
+       -h,  --help
+         Displays usage information and exits.
+    
+    
+       PyroBayes Base Caller Command Line Options
+
+

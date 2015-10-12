@@ -1,0 +1,1574 @@
+
+</entry>
+
+
+
+<entry [Fri Aug 24 17:00:05 EDT 2007] EBI URL FOR GO LOOKUP>
+
+
+
+http://www.ebi.ac.uk/ego/DisplayGoTerm?id=GO:0000166
+
+
+</entry>
+
+
+
+<entry [Tue Aug 21 01:55:35 EDT 2007] MYSQL TABLE RESULTS FROM swissprot2... APPLICATIONS>
+
+
+
+
+	RESULTS IN TABLE swissprot2symbol:
+
+	select count(*) from swissprot2symbol;
+	+----------+
+	| count(*) |
+	+----------+
+	|   264216 |
+	+----------+
+	
+	select count(distinct id, accession) from swissprot2symbol;
+	+-------------------------------+
+	| count(distinct id, accession) |
+	+-------------------------------+
+	|                        202754 |
+	+-------------------------------+
+
+	select count(distinct symbol) from swissprot2symbol;
+	+------------------------+
+	| count(distinct symbol) |
+	+------------------------+
+	|                 202754 |
+	+------------------------+
+
+
+
+	RESULTS IN swissprot2keyword TABLE (CONNECTS WITH external2go.spkw2go.tsv):
+
+	select count(*) from swissprot2keyword;
+	+----------+
+	| count(*) |
+	+----------+
+	|  1242360 |
+	+----------+
+	
+	select count(distinct id, accession) from swissprot2keyword;
+	+-------------------------------+
+	| count(distinct id, accession) |
+	+-------------------------------+
+	|                        237640 |
+	+-------------------------------+
+
+	select count(distinct keyword) from swissprot2keyword;
+	+-------------------------+
+	| count(distinct keyword) |
+	+-------------------------+
+	|                    5035 |
+	+-------------------------+
+
+
+
+	RESULTS IN swissprot2swissprot TABLE:
+
+	select count(*) from swissprot2swissprot;
+	+----------+
+	| count(*) |
+	+----------+
+	|   515443 |
+	+----------+
+	
+	select count(distinct id) from swissprot2swissprot;
+	+--------------------+
+	| count(distinct id) |
+	+--------------------+
+	|             241365 |
+	+--------------------+
+	
+	select count(distinct name) from swissprot2swissprot;
+	+----------------------+
+	| count(distinct name) |
+	+----------------------+
+	|               150124 |
+	+----------------------+
+
+
+
+</entry>
+
+
+
+<entry [Tue Aug 21 00:40:08 EDT 2007] GO URL AT AMIGO>
+
+
+
+http://amigo.geneontology.org/cgi-bin/amigo/go.cgi?xpand=GO:0003674&search_constraint=terms&query=GO:0003674&session_id=3498b1187671212&view=details&show_associations=list
+
+
+</entry>
+
+
+
+<entry [Tue Aug 21 00:35:46 EDT 2007] GO 'STOP WORDS'>
+
+
+
+GO:0005575 cellular component
+GO:0008150 biological_process
+GO:0003674 molecular_function
+
+ALL THE 'GO SLIM' TERMS...
+
+CREATED goslim.pl IN mappings TO STORE ALL OF THE GO SLIM IDs IN THE goslim
+TABLE.
+
+
+</entry>
+
+
+
+<entry [Tue Jul 10 16:11:54 EDT 2007] fuzzyswissprot2go RESULTS>
+
+
+
+select count(*) from fuzzyswissprot2go;
++----------+
+| count(*) |
++----------+
+|    24298 |
++----------+
+
+select swissprotname, count(godescription) as descriptions from fuzzyswissprot2go group by swissprotname having count(godescription) > 0 order by descriptions;
+6033
+
+| TUAG_BACSU    |           32 |
+| TUAH_BACSU    |           32 |
+| WCAA_ECOLI    |           32 |
+| WCAC_ECOLI    |           32 |
+| WCAE_ECOLI    |           32 |
+| WCAI_ECOLI    |           32 |
+| WCAL_ECOLI    |           32 |
+| WCAL_SALTY    |           32 |
++---------------+--------------+
+
+> 0 6033
+> 1	3263
+> 2	1759
+> 3	1192
+> 4	887
+> 5	735
+> 6	667
+> 7	643
+> 8	638
+> 9	633
+> 10	618
+> 15	486
+> 20	481
+> 25	174
+> 30	74
+> 32	0
+
+
+DELETED OLD, INCOMPLETE fuzzyswissprot2go AND LOADED COMPLETE FILE:
+
+delete from fuzzyswissprot2go;
+Query OK, 24298 rows affected (0.17 sec)
+
+mysql> LOAD DATA INFILE '/Users/young/FUNNYBASE/pipeline/indexer/fuzzyswissprot2go.tsv' INTO TABLE fuzzyswissprot2go;
+Query OK, 226320 rows affected (3.29 sec)
+Records: 226320  Deleted: 0  Skipped: 0  Warnings: 65023
+
+
+select count(*) from fuzzyswissprot2go;
++----------+
+| count(*) |
++----------+
+|   226320 |
++----------+
+
+select swissprotname, count(godescription) as descriptions from fuzzyswissprot2go group by swissprotname having count(godescription) > 0 order by descriptions;
+> 0 46397
+> 1	23341
+> 2	14883
+> 3	10802
+> 4	8596
+> 5	8010
+> 6	7516
+> 7	7355
+> 8	7282
+> 9	7224
+> 10	7024
+> 15	5781
+> 20	5399
+> 25	1360
+> 30	403
+> 35	4
+> 37	4
+> 38	0
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jun 28 23:44:12 EDT 2007] DOWNLOADED KEGG DATA FILES>
+
+
+
+-rw-r--r--   1 young  wheel          2G Jun 28 06:27 genes.genome
+-rw-r--r--   1 young  wheel        936M Jun 28 23:10 genes.pep
+
+~/FUNNYBASE/dev/annotation/KEGG/ftp.genome.jp/pub/kegg/genes/fasta young$ head genes.pep 
+
+>hsa:4940  OAS3; 2'-5'-oligoadenylate synthetase 3, 100kDa [EC:2.7.7.-]
+MDLYSTPAAALDRFVARRLQPRKEFVEKARRALGALAAALRERGGRLGAAAPRVLKTVKG
+GSSGRGTALKGGCDSELVIFLDCFKSYVDQRARRAEILSEMRASLESWWQNPVPGLRLTF
+PEQSVPGALQFRLTSVDLEDWMDVSLVPAFNVLGQAGSGVKPKPQVYSTLLNSGCQGGEH
+AACFTELRRNFVNIRPAKLKNLILLVKHWYHQVCLQGLWKETLPPVYALELLTIFAWEQG
+CKKDAFSLAEGLRTVLGLIQQHQHLCVFWTVNYGFEDPAVGQFLQRQLKRPRPVILDPAD
+PTWDLGNGAAWHWDLLAQEAASCYDHPCFLRGMGDPVQSWKGPGLPRAGCSGLGHPIQLD
+PNQKTPENSKSLNAVYPRAGSKPPSCPAPGPTGAASIVPSVPGMALDLSQIPTKELDRFI
+QDHLKPSPQFQEQVKKAIDIILRCLHENCVHKASRVSKGGSFGRGTDLRDGCDVELIIFL
+NCFTDYKDQGPRRAEILDEMRAQLESWWQDQVPSLSLQFPEQNVPEALQFQLVSTALKSW
+
+records genes.pep 
+2328905
+
+records genes.genome (ORGANISMS, PLASMIDS, ETC.)
+1043
+
+</entry>
+
+
+
+<entry [Thu Jun 28 21:36:31 EDT 2007] CREATED external2kegg>
+
+
+
+NB:
+REACTION NUMBER (RN) VIEW
+http://www.genome.ad.jp/dbget-bin/www_bget?rn+R00623
+
+
+    NAME       external2kegg
+    
+    PURPOSE
+    
+        CREATE A DATABASE CONTAINING THE MAPPINGS BETWEEN KEGG 'KO' IDS AND EXTERNAL
+        
+        SOURCES, INCLUDING GO, EC, REFSEQ 
+    
+    INPUT
+    
+        1. KEGG ko FILE
+    
+    OUTPUT
+    
+        1. PRINT .TSV FILE FOR THE MYSQL TABLE external2kegg
+
+        2. LOAD .TSV FILE DATA INTO MYSQL TABLE external2kegg
+        
+            CREATE TABLE IF NOT EXISTS external2kegg (
+
+                ko              VARCHAR(20),
+                description     VARCHAR(255),
+                externalid      VARCHAR(20),
+                externalsource  VARCHAR(20),
+                
+                PRIMARY KEY (ko, description, externalid, externalsource)
+            )
+
+    NOTES
+    
+		ko FILE HAS 10,000 RECORDS
+		
+		TABLE STATS:
+	
+		select count(*) from external2kegg;
+		+----------+
+		| count(*) |
+		+----------+
+		|    16548 |
+		+----------+
+		
+		MOST OF THE GO ENTRIES ARE COMMON BETWEEN external2kegg AND external2go
+		
+		select count(distinct external2kegg.ko ) from external2kegg, external2go where external2kegg.externalsource='go' and external2kegg.externalid=external2go.goid;
+		+-----------------------------------+
+		| count(distinct external2kegg.ko ) |
+		+-----------------------------------+
+		|                              3202 |
+		+-----------------------------------+
+	
+		select externalsource , count(*) from external2kegg group by externalsource ;
+		+----------------+----------+
+		| externalsource | count(*) |
+		+----------------+----------+
+		| cog            |     4340 |
+		| ec             |     4383 |
+		| go             |     3563 |
+		| reaction       |     4262 |
+		+----------------+----------+
+	
+		select count(distinct ko) from external2kegg where externalsource='ec' or externalsource='go';
+		+--------------------+
+		| count(distinct ko) |
+		+--------------------+
+		|               4846 |
+		+--------------------+
+		
+		select count(distinct ko) from external2kegg where externalsource='ec' or externalsource='go' or externalsource='cog';
+		+--------------------+
+		| count(distinct ko) |
+		+--------------------+
+		|               6872 |
+		+--------------------+
+	
+		select count(distinct ko) from external2kegg where externalsource='ec' or externalsource='go' or externalsource='cog' or externalsource='reaction';
+	   +--------------------+
+	   | count(distinct ko) |
+	   +--------------------+
+	   |               6890 |
+	   +--------------------+
+    
+    USAGE
+
+        ./external2kegg.pl [-h]
+        
+        -h  help        :   PRINT THIS HELP MESSAGE    
+
+    EXAMPLES
+
+./external2kegg.pl
+    
+
+
+SUMMARY OF CROSS REFERENCES BETWEEN THE DIFFERENT TABLES
+
+	MOST OF THE GO ENTRIES IN external2kegg ARE ALSO IN external2go
+	
+	select count(distinct external2kegg.ko ) from external2kegg, external2go where external2kegg.externalsource='go' and external2kegg.externalid=external2go.goid;
+	+-----------------------------------+
+	| count(distinct external2kegg.ko ) |
+	+-----------------------------------+
+	|                              3202 |
+	+-----------------------------------+
+
+	select count(*) from external2kegg WHERE externalsource='go';
+	+----------+
+	| count(*) |
+	+----------+
+	|     3563 |
+	+----------+
+
+	select count(distinct goid) from external2go;
+	+----------------------+
+	| count(distinct goid) |
+	+----------------------+
+	|                14969 |
+	+----------------------+
+
+	select count(distinct external2kegg.ko ) from external2kegg, name2go where external2kegg.externalsource='go' and external2kegg.externalid=name2go.goid;
+	+-----------------------------------+
+	| count(distinct external2kegg.ko ) |
+	+-----------------------------------+
+	|                              3202 |
+	+-----------------------------------+
+
+	select count(distinct goid) from name2go;
+	+----------------------+
+	| count(distinct goid) |
+	+----------------------+
+	|                 3658 |
+	+----------------------+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jun 28 16:07:02 EDT 2007] SWISSPROT TO EC AND OTHER MAPPINGS FOR PATHWAY ANNOTATION>
+
+
+
+name2go.pl, swissprot2ec.pl AND OTHER APPS WERE CREATED IN Feb 2007:
+
+    NAME        name2go
+
+    PURPOSE
+    
+        GET THE PATHWAY ANNOTATION FOR COLLECTION SEQUENCES
+
+    INPUT
+    
+        1. GO IDS AND DESCRIPTIONS IN ec2go.txt FILE
+
+    OUTPUT
+    
+        1. name2go.tsv FILE
+
+        2. LOAD name2go.tsv INTO name2go MYSQL TABLE
+        
+    NOTES
+    
+        FORMAT:         
+
+        EC:1 > GO:oxidoreductase activity ; GO:0016491
+        EC:1.1 > GO:oxidoreductase activity, acting on CH-OH group of donors ; GO:0016614
+        EC:1.1.1 > GO:oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as accept
+
+    USAGE
+
+        ./name2go.pl [-h]
+
+
+	desc name2go;
+	+-------+--------------+------+-----+---------+-------+
+	| Field | Type         | Null | Key | Default | Extra |
+	+-------+--------------+------+-----+---------+-------+
+	| name  | varchar(255) |      | PRI |         |       |
+	| goid  | varchar(20)  |      | PRI |         |       |
+	+-------+--------------+------+-----+---------+-------+
+	
+	select count(*) from name2go;
+	+----------+
+	| count(*) |
+	+----------+
+	|     3658 |
+	+----------+
+
+
+    NAME		swissprot2ec.pl
+
+    PURPOSE
+	
+		PARSE OUT EC NUMBERS FROM THE ANNOTATIONS IN THE SWISSPROT
+		
+		FASTA FILE
+
+    INPUT:
+            1. SWISSPROT FASTA FILE CONTAINING ALL 188,477 ENTRIES
+			
+
+    OUTPUT:
+
+            1. swissprot2ec.tsv FILE
+			
+			2. LOAD .TVS FILE INTO swissprot2ec TABLE IN indexer DATABASE
+            
+    USAGE:
+
+        ./swissprot2ec.pl -h 
+
+
+	desc swissprot2ec;
+	+-----------+-------------+------+-----+---------+-------+
+	| Field     | Type        | Null | Key | Default | Extra |
+	+-----------+-------------+------+-----+---------+-------+
+	| swissprot | varchar(20) |      | PRI |         |       |
+	| ec        | varchar(20) |      | PRI |         |       |
+	+-----------+-------------+------+-----+---------+-------+
+	
+	select count(*) from swissprot2ec;
+	+----------+
+	| count(*) |
+	+----------+
+	|    74314 |
+	+----------+
+
+
+    NAME:       ec2go
+    
+    PURPOSE:    CREATE AN INDEX OF GO TERMS, ec (INTERNATIONAL PROTEIN INDEX) IDs AND REFSEQ IDs
+    
+    INPUT:      human.xrefs AND gene_association.goa_human, AND ALSO FOR mouse AND rat
+    
+    OUTPUT:     1. A .TSV CONSISTENT WITH THE MYSQL TABLE refseq2go (SEE BELOW)
+
+                2. LOAD .TSV FILE DATA INTO MYSQL TABLE refseq2go
+                
+                CREATE TABLE IF NOT EXISTS refseq2go (
+                    
+                    ec                         VARCHAR(20) NOT NULL,       # 
+                    goid                        VARCHAR(20) NOT NULL,       #
+                
+                    PRIMARY KEY (ec, goid)
+                )
+
+    USAGE:
+                ./ec2go.pl [-h]
+                
+            -h  help        :   PRINT THIS HELP MESSAGE    
+
+
+
+	desc ec2go;
+	+---------------+-------------+------+-----+---------+-------+
+	| Field         | Type        | Null | Key | Default | Extra |
+	+---------------+-------------+------+-----+---------+-------+
+	| ec            | varchar(20) |      | PRI |         |       |
+	| goid          | varchar(20) |      | PRI |         |       |
+	| godescription | text        | YES  |     | NULL    |       |
+	+---------------+-------------+------+-----+---------+-------+
+	3 rows in set (0.00 sec)
+	
+	select count(*) from ec2go;
+	+----------+
+	| count(*) |
+	+----------+
+	|     3665 |
+	+----------+
+
+
+FUZZYSWISSPROT CHECKS FOR MATCHES IN THE GO NAMES IN name2go AGAINST ALL
+THE SWISSPROT FASTA RECORDS
+
+
+    NAME		fuzzyswissprot2go
+
+    PURPOSE
+	
+		GET FUZZY MATCHES FOR GO DESCRIPTIONS IN SWISSPROT ANNOTATIONS
+
+    INPUT
+
+        1. name2go TABLE (3,568 entries)
+
+        2. swissprot FASTA FILE (180,000 entries)
+
+    OUTPUT
+
+        1. fuzzyswissprot2go.tsv FILE
+
+        2. LOAD FILE INTO TABLE fuzzyswissprot2go
+
+	NOTES
+	
+		ALGORITHM
+		
+			1. TAKE QUERY STRING (GO DESCRIPTION) AND TARGET STRING (SWISSPROT ANNOTATION)
+			
+			2. BREAK UP QUERY STRING INTO WORDS, SAME FOR TARGET STRING
+			
+			3. DO FUZZY MATCH FOR EACH QUERY WORD AGAINST EACH TARGET WORD, SAVING THE
+				HIGHEST SCORE (0 TO 1)
+				
+			4. ADD UP THE CUMULATIVE SCORE OF ALL QUERY WORDS
+			
+			5. IF CUMULATIVE SCORE EXCEEDS THRESHOLD, INCLUDE IN OUTPUT .TSV FILE
+			
+			6. SCREEN POSSIBLE MATCHES MANUALLY
+
+
+    USAGE
+
+        ./fuzzyswissprot2go.pl [-h]
+
+            ...
+            188470
+            Output file printed:
+            
+            /Users/young/FUNNYBASE/pipeline/indexer/fuzzyswissprot2go.tsv
+            
+            Loading data into table 'fuzzyswissprot2go'... done.
+            Completed ./fuzzyswissprot2go.pl
+            Run time: 29:07:35
+            7:36PM, 4 July 2007
+            ****************************************
+
+
+fuzzyexternal2go GETS A LIST OF SYNONYMS FOR THE INPUT GENE DESCRIPTION:
+
+
+    NAME       fuzzyexternal2go
+    
+    PURPOSE
+	
+		RETRIEVE A LIST OF SYNONYMS FOR THE USER-INPUT GENE DESCRIPTION
+    
+    INPUT
+
+		1. GENE FUNCTION NAME
+		
+		2. fuzzyexternal2go MYSQL TABLE (FROM fuzzyexternal2go.pl)
+
+		3. use String::Approx qw(amatch);
+
+    OUTPUT
+	
+		1. A .TSV LIST OF ROWS OF THE MYSQL TABLE fuzzyexternal2go:
+                
+			CREATE TABLE IF NOT EXISTS fuzzyexternal2go (
+				goid            VARCHAR(20),
+				goname          VARCHAR(255),
+				externalid      VARCHAR(20),
+				externalname    VARCHAR(255),
+				externalsource  VARCHAR(20),
+				
+				PRIMARY KEY (goid, externalid, externalname, externalsource)
+			)
+
+    USAGE:
+	
+                ./fuzzyexternal2go.pl <-n gene_function_name> [-h]
+                
+                -h  help        :   PRINT THIS HELP MESSAGE    
+
+    EXAMPLES:
+
+./fuzzyexternal2go.pl -n "aldehyde dehydrogenase"
+
+    NOTES:
+    
+    spkw2go: 
+    - The correspondence between SWISS_PROT keywords and GO terms.
+    - Original mapping constructed by David Hill of MGI. Current version
+      constructed and maintained by Evelyn Camon, EBI
+   
+   ec2go:           #### NO SYNONYMS
+    - The correspondence between EC numbers and GO terms. Parsed from the
+      molecular function ontology.
+    - Original version parsed by Michael Ashburner. Current file parsed
+      from function.ontology Revision 2.537 flat file by Daniel Barrell,
+      EBI
+   
+   egad2go:
+    - The correspondence between the TIGR EGAD categories and GO terms.
+    - Constructed by Michael Ashburner.
+   
+   genprotec2go:
+    - The correspondence between the GenProtEC functional categories and
+      GO terms.
+    - Constructed by Heather Butler and Michael Ashburner
+   
+   tigr2go:
+    - The correspondence between the TIGR role categories and GO terms.
+    - Constructed by Michael Ashburner.
+   
+   tigrfams2go
+    - The correspondence between TIGRFAMS protein families and GO terms.
+    - Constructed by Mihcelle Gwinn and other TIGR staff.
+   
+   interpro2go:
+    - The correspondence between InterPro entries and GO terms.
+    - Constructed and maintained by Nicola Mulder.
+   
+   mips2go
+    - The correspondence between MIPS Funcat categories and GO terms.
+    - Constructed by Michael Ashburner and Midori Harris.
+   
+   metacyc2go
+    - The correspondence between MetaCyc pathways and GO process terms,
+      and between MetaCyc reactions and GO function terms.
+    - Constructed by Michael Ashburner, Midori Harris, Suparna Mundodi and Amelia Ireland.
+   
+   multifun2go
+    - The correspondence between MultiFun classifications and GO terms.
+    - Constructed by Michael Ashburner, Jane Lomax and Margrethe Hauge Serres.
+   
+   pfam2go
+    - The correspondence between Pfam domains and GO terms; a subset of interpro2go.
+    - Constructed and maintained by Nicola Mulder.
+   
+   prodom2go
+    - The correspondence between ProDom domains and GO terms; a subset of interpro2go.
+    - Constructed and maintained by Nicola Mulder.
+   
+   prints2go        #### VERY LARGE GRAIN
+    - The correspondence between PRINTS protein fingerprints and GO terms; a subset of interpro2go.
+    - Constructed and maintained by Nicola Mulder.
+   
+   prosite2go
+    - The correspondence between Prosite domains and GO terms; a subset of interpro2go.
+    - Constructed and maintained by Nicola Mulder.
+   
+   reactome2go      #### NO SYNONYMS
+    - Reactome:10219 > GO:glutaminase activity ; GO:0004359
+    - Reactome:10287 > GO:enoyl-CoA hydratase activity ; GO:0004300
+    
+   smart2go
+    - The correspondence between SMART domains and GO terms; a subset of interpro2go.
+    - Constructed and maintained by Nicola Mulder.
+   
+   rfam2go
+    - The correspondence between Rfam families and GO terms.
+    - Constructed and maintained by Sam Griffiths-Jones and Jennifer Daub.
+
+
+    #### GO SYNONYMS
+    go.component.ontology.txt           
+    go.function.ontology.txt
+    go.process.ontology.txt
+ 
+	
+   select externalsource, count(*) from fuzzyexternal2go group by externalsource ;
+   +-----------------------+----------+
+   | externalsource        | count(*) |
+   +-----------------------+----------+
+   | cog2go                |       69 |
+   | ec2go                 |     3665 |
+   | egad2go               |       35 |
+   | genprotec2go          |      236 |
+   | go_component_ontology |     1152 |
+   | go_function_ontology  |     4922 |
+   | go_process_ontology   |    18948 |
+   | hamap2go              |     2795 |
+   | interpro2go           |    17312 |
+   | metacyc2go            |     3937 |
+   | mips2go               |      840 |
+   | multifun2go           |      464 |
+   | pfam2go               |     8708 |
+   | prints2go             |     4460 |
+   | prodom2go             |     1810 |
+   | prosite2go            |     3720 |
+   | reactome2go           |     2502 |
+   | rfam2go               |      491 |
+   | smart2go              |      943 |
+   | spkw2go               |      713 |
+   | tigr2go               |      172 |
+   | tigrfams2go           |     4632 |
+   | um_bbd_enzymeid2go    |      449 |
+   | um_bbd_pathwayid2go   |      109 |
+   +-----------------------+----------+
+	   
+
+
+fuzzyexternal2go RETRIEVES ANY MATCHES IN THE external2go TABLE ABOVE THE
+String::Approx qw(amatch) APPROXIMATENESS THRESHOLD (DEFAULT = "25%"):
+
+
+    NAME       fuzzyexternal2go
+    
+    PURPOSE
+	
+		RETRIEVE A LIST OF SYNONYMS FOR THE USER-INPUT GENE DESCRIPTION
+    
+    INPUT
+
+		1. GENE FUNCTION NAME
+		
+		2. fuzzyexternal2go MYSQL TABLE (FROM fuzzyexternal2go.pl)
+
+		3. use String::Approx qw(amatch);
+
+    OUTPUT
+	
+		1. A .TSV LIST OF ROWS OF THE MYSQL TABLE fuzzyexternal2go:
+                
+			CREATE TABLE IF NOT EXISTS fuzzyexternal2go (
+				goid            VARCHAR(20),
+				goname          VARCHAR(255),
+				externalid      VARCHAR(20),
+				externalname    VARCHAR(255),
+				externalsource  VARCHAR(20),
+				
+				PRIMARY KEY (goid, externalid, externalname, externalsource)
+			)
+
+    USAGE:
+	
+                ./fuzzyexternal2go.pl <-n gene_function_name> [-h]
+                
+                -h  help        :   PRINT THIS HELP MESSAGE    
+
+    EXAMPLES:
+
+./fuzzyexternal2go.pl -n "aldehyde dehydrogenase"
+
+
+
+refseq2go MAPS GO IDS TO REFSEQ IDS:
+
+
+    NAME       refseq2go
+    
+    PURPOSE
+    
+            CREATE TWO TABLES:
+            
+                refseq2ipi  MAPPING OF REFSEQ IDS VS IPI (INTERNATIONAL PROTEIN INDEX) IDs 
+                
+                ipi2go      MAPPING OF GO IDS VS IPI IDs 
+                            
+    INPUT
+    
+        1. human.xrefs
+        
+        2. gene_association.goa_human, *.goa_mouse AND *.goa_rat (DOG NOT AVAILABLE)
+    
+	OUTPUT
+    
+        1. .TSV FILES FOR THE refseq2ipi AND ipi2go TABLES
+
+        2. LOAD .TSV FILE DATA INTO TABLES
+        
+    NOTES
+                
+            CREATE TABLE refseq2ipi (
+                
+                species     varchar(20) NOT NULL default '',
+                ipi         varchar(20) NOT NULL default '',
+                refseq      varchar(20) NOT NULL default '',
+                
+                PRIMARY KEY  (ipi,refseq)
+            )
+
+            CREATE TABLE ipi2go (
+                
+                species     varchar(20) NOT NULL default '',
+                ipi         varchar(20) NOT NULL default '',
+                goid        varchar(20) NOT NULL default '',
+                
+                PRIMARY KEY  (ipi,goid)
+            )
+	
+    USAGE
+                ./refseq2go.pl <-s species > [-h]
+                
+            -s  species     :   E.G., '-s human' DENOTES human.xrefs AND gene_association.goa_human
+            -h  help        :   PRINT THIS HELP MESSAGE    
+    
+    EXAMPLES
+
+./refseq2go.pl -s human
+
+
+	THERE IS ONLY A PARTIAL MAPPING BETWEEN THE TWO TABLES:
+
+	select count(*) from refseq2ipi;
+   +----------+
+   | count(*) |
+   +----------+
+   |    33786 |
+   +----------+
+   1 row in set (0.13 sec)
+   
+   mysql> select count(*) from ipi2go;    
+   +----------+
+   | count(*) |
+   +----------+
+   |   323859 |
+   +----------+
+
+	SELECT count(distinct refseq2ipi.ipi) from refseq2ipi, ipi2go
+	WHERE refseq2ipi.ipi=ipi2go.ipi;
+	+--------------------------------+
+	| count(distinct refseq2ipi.ipi) |
+	+--------------------------------+
+	|                           7234 |
+	+--------------------------------+
+
+	select count(distinct ipi) from refseq2ipi;
+	+---------------------+
+	| count(distinct ipi) |
+	+---------------------+
+	|               25227 |
+	+---------------------+
+
+	select count(distinct ipi) from ipi2go;
+	+---------------------+
+	| count(distinct ipi) |
+	+---------------------+
+	|               67634 |
+	+---------------------+
+
+	
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DOWNLOAD KEGG 
+
+ftp://ftp.genome.jp/pub/kegg/genes/etc
+
+ftp://ftp.genome.jp/pub/kegg/genes/fasta/
+
+File: genes.genome  	2624455 KB  	6/28/07  	6:27:00 AM
+File: genes.nuc 	2635682 KB 	6/27/07 	9:12:00 AM
+File: genes.pep 	959056 KB 	6/27/07 	9:12:00 AM
+
+XML IS AVAILABLE WITH ***POSITIONS: X AND Y COORDS***
+ftp://ftp.genome.jp/pub/kegg/xml/ko/ko00010.xml
+
+MAP ALSO AVAILABLE
+ftp://ftp.genome.jp/pub/kegg/xml/map/map00010.xml
+
+HUMAN PATHWAYS XML
+ftp://ftp.genome.jp/pub/kegg/xml/organisms/hsa/hsa00010.xml
+
+KEGG AUTOMATIC ANNOTATION SERVER (KAAS)
+http://www.genome.jp/kegg/kaas/
+
+ONLINE EST ASSEMBLY ANNOTATION
+http://egassembler.hgc.jp/
+
+
+METABOLIC SUBSYSTEMS FORUM
+
+http://brucella.uchicago.edu/SubsystemForum/
+
+
+PRODOM - LIST OF SEQUENCES SHARING AT LEAST ONE DOMAIN
+
+
+http://prodom.prabi.fr/prodom/current/cgi-bin/request.pl?sptr_ac2=Q97AZ4
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jun 27 23:55:15 EDT 2007
+ANNOTATION STRATEGY
+
+Annotator.pm - ADD FUNCTION THAT RUNS THROUGH ALL POSSIBLE MATCHES, NOTING THE
+
+INTERMEDIATE STEPS (BRIDGES)
+
+
+
+
+select externalsource, count(*) from external2go group by externalsource ;
++-----------------------+----------+
+| externalsource        | count(*) |
++-----------------------+----------+
+| cog2go                |       69 |
+| ec2go                 |     3665 |
+| egad2go               |       35 |
+| genprotec2go          |      236 |
+| go_component_ontology |     1152 |
+| go_function_ontology  |     4922 |
+| go_process_ontology   |    18948 |
+| hamap2go              |     2795 |
+| interpro2go           |    17312 |
+| metacyc2go            |     3937 |
+| mips2go               |      840 |
+| multifun2go           |      464 |
+| pfam2go               |     8708 |
+| prints2go             |     4460 |
+| prodom2go             |     1810 |
+| prosite2go            |     3720 |
+| reactome2go           |     2502 |
+| rfam2go               |      491 |
+| smart2go              |      943 |
+| spkw2go               |      713 |
+| tigr2go               |      172 |
+| tigrfams2go           |     4632 |
+| um_bbd_enzymeid2go    |      449 |
+| um_bbd_pathwayid2go   |      109 |
++-----------------------+----------+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Wed Jun 27 23:52:05 EDT 2007
+CLEANED OUT DATABASES (FROM 130 TO 64)
+
+show databases;
++------------------------------+
+| Database                     |
++------------------------------+
+| 384blast                     |
+| 384funnybase11               |
+| 384library2                  |
+| 384library4                  |
+| BREVISBASE_BACKUP_9_18_05    |
+| BREVISBASE_TEST              |
+| BREVISBASE_WORKING           |
+| FUNNYBASE_ANNOTATION         |
+| FUNNYBASE_PRODUCTION         |
+| FUNNYBASE_WORKING            |
+| alice_aplysia                |
+| annotate_pipeline            |
+| aplysia1                     |
+| aplysia2                     |
+| aplysia3                     |
+| aplysia4                     |
+| backup                       |
+| biopipe                      |
+| brevisbaseX                  |
+| butterfly_base               |
+| funnybase0                   |
+| funnybase10                  |
+| funnybase11                  |
+| funnybase12                  |
+| funnybase7                   |
+| funnybase8                   |
+| funnybase9                   |
+| funnybase_annotation_old     |
+| g5_aplysia                   |
+| indexer                      |
+| karenia0                     |
+| karenia1                     |
+| karenia2                     |
+| karenia3                     |
+| karenia3_p100                |
+| karenia3_p100_o100           |
+| karenia3_p75_o100            |
+| karenia3_p80_o100            |
+| karenia3_p85_o100            |
+| karenia3_p90_o100            |
+| karenia3_p91                 |
+| karenia3_p95_o100            |
+| karenia4                     |
+| karenia4_p100                |
+| karenia5                     |
+| myEST                        |
+| mygo                         |
+| mysql                        |
+| ncbi_funny                   |
+| orthologues                  |
+| super_craw11                 |
+| super_craw12                 |
+| super_craw4                  |
+| super_craw5                  |
+| super_craw5_analysis         |
+| super_craw5_backup_2_18_2005 |
+| super_craw5_extra_11_4_04    |
+| super_craw6                  |
+| super_craw7                  |
+| super_craw8                  |
+| supercraw0                   |
+| supercraw5                   |
+| towle                        |
+| vandolah                     |
++------------------------------+
+64 rows in set (0.02 sec)
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Sun Jun  9 22:38:00 EDT 2007
+QUICK OVERVIEW OF DATABASES
+
+mysql> show databases;
++------------------------------+
+| Database                     |
++------------------------------+
+| 127library2                  |
+| 127library3                  |
+| 128jelly                     |
+| 384_analysis                 |
+| 384_analysis2_GO             |
+| 384blast                     |
+| 384library2                  |
+| 384library4                  |
+| BREVISBASE_BACKUP_9_18_05    |
+| BREVISBASE_TEST              |
+| BREVISBASE_WORKING           |
+| FUNNYBASE_384_ANALYSIS       |
+| FUNNYBASE_ANNOTATION         |
+| FUNNYBASE_PRODUCTION         |
+| FUNNYBASE_WORKING            |
+| alice_aplysia                |
+| annotate_pipeline            |
+| aplysia1                     |
+| aplysia2                     |
+| aplysia3                     |
+| aplysia4                     |
+| backup                       |
+| biopipe                      |
+| brevisbaseX                  |
+| butterfly_base               |
+| funnybase0                   |
+| funnybase10                  |
+| funnybase11                  |
+| funnybase3                   |
+| funnybase4                   |
+| funnybase5                   |
+| funnybase6                   |
+| funnybase7                   |
+| funnybase7.bkp               |
+| funnybase8                   |
+| funnybase9                   |
+| funnybase_annotation_old     |
+| funnybasepwd                 |
+| g5_aplysia                   |
+| indexer                      |
+| karenia0                     |
+| karenia1                     |
+| karenia2                     |
+| karenia3                     |
+| karenia3_p100                |
+| karenia3_p100_o100           |
+| karenia3_p100_o25            |
+| karenia3_p100_o50            |
+| karenia3_p100_o75            |
+| karenia3_p75_o100            |
+| karenia3_p75_o25             |
+| karenia3_p75_o50             |
+| karenia3_p75_o75             |
+| karenia3_p80_o100            |
+| karenia3_p80_o25             |
+| karenia3_p80_o50             |
+| karenia3_p80_o75             |
+| karenia3_p85_o100            |
+| karenia3_p85_o25             |
+| karenia3_p85_o50             |
+| karenia3_p85_o75             |
+| karenia3_p87                 |
+| karenia3_p90_o100            |
+| karenia3_p90_o25             |
+| karenia3_p90_o50             |
+| karenia3_p90_o75             |
+| karenia3_p91                 |
+| karenia3_p95_o100            |
+| karenia3_p95_o25             |
+| karenia3_p95_o50             |
+| karenia3_p95_o75             |
+| karenia4                     |
+| karenia4_o21                 |
+| karenia4_o23                 |
+| karenia4_o26                 |
+| karenia4_o29                 |
+| karenia4_o32                 |
+| karenia4_o35                 |
+| karenia4_o38                 |
+| karenia4_o41                 |
+| karenia4_o44                 |
+| karenia4_o50                 |
+| karenia4_p100                |
+| karenia4_p66                 |
+| karenia4_p69                 |
+| karenia4_p72                 |
+| karenia4_p76                 |
+| karenia4_p79                 |
+| karenia4_p83                 |
+| karenia4_p86                 |
+| karenia4_p89                 |
+| karenia4_p93                 |
+| karenia4_s1000               |
+| karenia4_s101                |
+| karenia4_s190                |
+| karenia4_s280                |
+| karenia4_s370                |
+| karenia4_s460                |
+| karenia4_s550                |
+| karenia4_s640                |
+| karenia4_s730                |
+| karenia4_s820                |
+| karenia5                     |
+| mpwd                         |
+| myEST                        |
+| mygo                         |
+| mysql                        |
+| ncbi_funny                   |
+| orthologues                  |
+| super_craw11                 |
+| super_craw12                 |
+| super_craw4                  |
+| super_craw5                  |
+| super_craw5_analysis         |
+| super_craw5_backup_2_18_2005 |
+| super_craw5_extra_11_4_04    |
+| super_craw6                  |
+| super_craw7                  |
+| super_craw8                  |
+| supercraw0                   |
+| supercraw0.bkp               |
+| supercraw5                   |
+| test                         |
+| test1                        |
+| test2                        |
+| test3                        |
+| test4                        |
+| test5                        |
+| towle                        |
+| vandolah                     |
++------------------------------+
+130 rows in set (0.09 sec)
+
+use indexer;
+
+show tables;
++-------------------+
+| Tables_in_indexer |
++-------------------+
+| ec2go             |
+| external2go       |
+| fuzzyswissprot2go |
+| idannotation      |
+| indexes           |
+| indexinfo         |
+| ipi2go            |
+| name2go           |
+| refseq2ipi        |
+| swissprot2ec      |
+| synonyms          |
++-------------------+
+
+desc ec2go;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| ec            | varchar(20) |      | PRI |         |       |
+| goid          | varchar(20) |      | PRI |         |       |
+| godescription | text        | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+select count(*) from ec2go;
++----------+
+| count(*) |
++----------+
+|     3665 |
++----------+
+
+desc external2go;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| goid           | varchar(20)  |      | PRI |         |       |
+| goname         | varchar(255) | YES  |     | NULL    |       |
+| externalid     | varchar(20)  |      | PRI |         |       |
+| externalname   | varchar(255) |      | PRI |         |       |
+| externalsource | varchar(30)  |      | PRI |         |       |
++----------------+--------------+------+-----+---------+-------+
+
+select count(*) from external2go;
++----------+
+| count(*) |
++----------+
+|    83084 |
++----------+
+
+select externalsource, count(*) from external2go group by externalsource ;
++-----------------------+----------+
+| externalsource        | count(*) |
++-----------------------+----------+
+| cog2go                |       69 |
+| ec2go                 |     3665 |
+| egad2go               |       35 |
+| genprotec2go          |      236 |
+| go_component_ontology |     1152 |
+| go_function_ontology  |     4922 |
+| go_process_ontology   |    18948 |
+| hamap2go              |     2795 |
+| interpro2go           |    17312 |
+| metacyc2go            |     3937 |
+| mips2go               |      840 |
+| multifun2go           |      464 |
+| pfam2go               |     8708 |
+| prints2go             |     4460 |
+| prodom2go             |     1810 |
+| prosite2go            |     3720 |
+| reactome2go           |     2502 |
+| rfam2go               |      491 |
+| smart2go              |      943 |
+| spkw2go               |      713 |
+| tigr2go               |      172 |
+| tigrfams2go           |     4632 |
+| um_bbd_enzymeid2go    |      449 |
+| um_bbd_pathwayid2go   |      109 |
++-----------------------+----------+
+
+desc fuzzyswissprot2go;
++---------------------+--------------+------+-----+---------+-------+
+| Field               | Type         | Null | Key | Default | Extra |
++---------------------+--------------+------+-----+---------+-------+
+| score               | decimal(4,2) | YES  |     | NULL    |       |
+| godescription       | varchar(255) |      |     |         |       |
+| swissprotannotation | varchar(255) |      |     |         |       |
+| goid                | varchar(20)  |      | PRI |         |       |
+| swissprotname       | varchar(20)  |      | PRI |         |       |
++---------------------+--------------+------+-----+---------+-------+
+
+select count(*) from fuzzyswissprot2go;
++----------+
+| count(*) |
++----------+
+|       75 |
++----------+
+
+show tables;
++-------------------+
+| Tables_in_indexer |
++-------------------+
+| ec2go             |
+| external2go       |
+| fuzzyswissprot2go |
+| idannotation      |
+| indexes           |
+| indexinfo         |
+| ipi2go            |
+| name2go           |
+| refseq2ipi        |
+| swissprot2ec      |
+| synonyms          |
++-------------------+
+
+desc ipi2go;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| species | varchar(20) |      |     |         |       |
+| ipi     | varchar(20) |      | PRI |         |       |
+| goid    | varchar(20) |      | PRI |         |       |
++---------+-------------+------+-----+---------+-------+
+
+select count(*) from ipi2go;
++----------+
+| count(*) |
++----------+
+|   323859 |
++----------+
+
+desc name2go;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| name  | varchar(255) |      | PRI |         |       |
+| goid  | varchar(20)  |      | PRI |         |       |
++-------+--------------+------+-----+---------+-------+
+
+select count(*) from name2go;
++----------+
+| count(*) |
++----------+
+|     3658 |
++----------+
+
+desc refseq2ipi;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| species | varchar(20) |      |     |         |       |
+| ipi     | varchar(20) |      | PRI |         |       |
+| refseq  | varchar(20) |      | PRI |         |       |
++---------+-------------+------+-----+---------+-------+
+
+select count(*) from refseq2ipi;
++----------+
+| count(*) |
++----------+
+|    33786 |
++----------+
+
+desc swissprot2ec;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| swissprot | varchar(20) |      | PRI |         |       |
+| ec        | varchar(20) |      | PRI |         |       |
++-----------+-------------+------+-----+---------+-------+
+
+select count(*) from swissprot2ec;
++----------+
+| count(*) |
++----------+
+|    74314 |
++----------+
+
+desc synonyms;
++--------+----------------------+------+-----+---------+-------+
+| Field  | Type                 | Null | Key | Default | Extra |
++--------+----------------------+------+-----+---------+-------+
+| db     | varchar(20)          |      | PRI |         |       |
+| id     | varchar(20)          |      | PRI |         |       |
+| name   | varchar(255)         | YES  |     | NULL    |       |
+| isname | enum('TRUE','FALSE') | YES  |     | NULL    |       |
++--------+----------------------+------+-----+---------+-------+
+
+select count(*) from synonyms;
++----------+
+| count(*) |
++----------+
+|        0 |
++----------+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Jun 19 17:50:17 EDT 2007] PRODOM HARD LINK>
+
+
+
+VIEW OTHER SEQUENCES WITH THE SAME PRODOM DOMAIN - USING SWISSPROT ID
+
+http://prodomweb.univ-lyon1.fr/prodom/current/cgi-bin/request.pl?sptr_ac2=O10341
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jun 15 14:02:45 EDT 2007] GET SIMILAR ANNOTATIONS TO TEST Annotator.pm>
+
+
+
+
+use funnybase10
+
+select collectionsequencesiprscandomain.collectionid, collectionsequencesiprscandomain.name , collectionsequencesannotation.collectionid from collectionsequencesiprscandomain, collectionsequencesannotation where collectionsequencesiprscandomain.name like collectionsequencesannotation.targetannotation  limit 1;
++--------------+-------------------+--------------+
+| collectionid | name              | collectionid |
++--------------+-------------------+--------------+
+|           65 | prothymosin alpha |           65 |
++--------------+-------------------+--------------+
+1 row in set (0.16 sec)
+
+mysql> select collectionsequencesiprscandomain.collectionid, collectionsequencesiprscandomain.name , collectionsequencesannotation.collectionid from collectionsequencesiprscandomain, collectionsequencesannotation where collectionsequencesiprscandomain.name like '%collectionsequencesannotation.targetannotation%'  limit 1;
+Empty set (0.68 sec)
+
+mysql> select collectionsequencesiprscandomain.collectionid, collectionsequencesiprscandomain.name , collectionsequencesannotation.collectionid from collectionsequencesiprscandomain, collectionsequencesannotation where collectionsequencesiprscandomain.name like '%' + collectionsequencesannotation.targetannotation + '%'  limit 1;
++--------------+-------------+--------------+
+| collectionid | name        | collectionid |
++--------------+-------------+--------------+
+|            1 | trypsin_ser |            1 |
++--------------+-------------+--------------+
+1 row in set (0.01 sec)
+
+
+use funnybase11;
+
+SELECT targetsource, targetannotation FROM collectionblast WHERE targetannotation like '%prothymosin alpha%' GROUP BY targetsource ORDER BY hitevalueexp, hitevaluedec;
++--------------+--------------------------------------------------------+
+| targetsource | targetannotation                                       |
++--------------+--------------------------------------------------------+
+| refseq-mouse | prothymosin alpha [Mus musculus]                       |
+| refseq-rat   | prothymosin alpha [Rattus norvegicus]                  |
+| swissprot    | Prothymosin alpha                                      |
+| refseq-human | PREDICTED: similar to prothymosin alpha [Homo sapiens] |
++--------------+--------------------------------------------------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jun 13 23:03:49 EDT 2007] SWISSPROT TO GO MAPPING>
+
+
+
+OLD METHOD:
+===========
+
+USE funnybase10;
+select count(*) from sp_go_term;
++----------+
+| count(*) |
++----------+
+|    36770 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> desc sp_go_term;
++----------+-----------+------+-----+---------+-------+
+| Field    | Type      | Null | Key | Default | Extra |
++----------+-----------+------+-----+---------+-------+
+| ID       | char(10)  | YES  | MUL | NULL    |       |
+| refdb_id | char(20)  | YES  | MUL | NULL    |       |
+| name     | char(255) |      | MUL |         |       |
++----------+-----------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from sp_go_term limit 10;
++------------+------------+------------------------------------------------+
+| ID         | refdb_id   | name                                           |
++------------+------------+------------------------------------------------+
+| 128U_DROME | GO:0005525 | GTP binding                                    |
+| 143E_DROME | GO:0000077 | DNA damage checkpoint                          |
+| 143E_DROME | GO:0007088 | regulation of mitosis                          |
+| 143E_HUMAN | GO:0007242 | intracellular signaling cascade                |
+| 143S_HUMAN | GO:0005737 | cytoplasm                                      |
+| 143S_HUMAN | GO:0005615 | extracellular space                            |
+| 143S_HUMAN | GO:0008426 | protein kinase C inhibitor                     |
+| 143S_HUMAN | GO:0008283 | cell proliferation                             |
+| 143S_HUMAN | GO:0006469 | negative regulation of protein kinase activity |
+| 143S_HUMAN | GO:0000074 | regulation of cell cycle                       |
++------------+------------+------------------------------------------------+
+10 rows in set (0.02 sec)
+
+
+
+NEW METHOD:
+===========
+
+USE indexer;
+
+select externalsource, count(*) from external2go group by externalsource ;
++-----------------------+----------+
+| externalsource        | count(*) |
++-----------------------+----------+
+| cog2go                |       69 |
+| ec2go                 |     3665 |
+| egad2go               |       35 |
+| genprotec2go          |      236 |
+| go_component_ontology |     1152 |
+| go_function_ontology  |     4922 |
+| go_process_ontology   |    18948 |
+| hamap2go              |     2795 |
+| interpro2go           |    17312 |
+| metacyc2go            |     3937 |
+| mips2go               |      840 |
+| multifun2go           |      464 |
+| pfam2go               |     8708 |
+| prints2go             |     4460 |
+| prodom2go             |     1810 |
+| prosite2go            |     3720 |
+| reactome2go           |     2502 |
+| rfam2go               |      491 |
+| smart2go              |      943 |
+| spkw2go               |      713 |
+| tigr2go               |      172 |
+| tigrfams2go           |     4632 |
+| um_bbd_enzymeid2go    |      449 |
+| um_bbd_pathwayid2go   |      109 |
++-----------------------+----------+
+24 rows in set (0.30 sec)
+
+
+desc external2go;
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| goid           | varchar(20)  |      | PRI |         |       |
+| goname         | varchar(255) | YES  | MUL | NULL    |       |
+| externalid     | varchar(20)  |      | PRI |         |       |
+| externalname   | varchar(255) |      | PRI |         |       |
+| externalsource | varchar(30)  |      | PRI |         |       |
++----------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from external2go where externalsource = 'spkw2go' limit 10;
++---------+------------------------------------+------------+---------------------------------+----------------+
+| goid    | goname                             | externalid | externalname                    | externalsource |
++---------+------------------------------------+------------+---------------------------------+----------------+
+| 0051537 | 2 iron, 2 sulfur cluster binding   | KW-0001    | 2Fe-2S                          | spkw2go        |
+| 0051538 | 3 iron, 4 sulfur cluster binding   | KW-0003    | 3Fe-4S                          | spkw2go        |
+| 0051539 | 4 iron, 4 sulfur cluster binding   | KW-0004    | 4Fe-4S                          | spkw2go        |
+| 0046872 | metal ion binding                  | KW-0066    | ATP synthesis                   | spkw2go        |
+| 0006754 | ATP biosynthetic process           | KW-0066    | ATP synthesis                   | spkw2go        |
+| 0005524 | ATP binding                        | KW-0067    | ATP-binding                     | spkw2go        |
+| 0009688 | abscisic acid biosynthetic process | KW-0937    | Abscisic acid biosynthesis      | spkw2go        |
+| 0009738 | abscisic acid mediated signaling   | KW-0938    | Abscisic acid signaling pathway | spkw2go        |
+| 0045151 | acetoin biosynthetic process       | KW-0005    | Acetoin biosynthesis            | spkw2go        |
+| 0045150 | acetoin catabolic process          | KW-0006    | Acetoin catabolism              | spkw2go        |
++---------+------------------------------------+------------+---------------------------------+----------------+
+10 rows in set (0.19 sec)
+
+
+SEARCH FOR SWISSPROT KEYWORDS BY MYSQL FULLTEXT SEARCH USING SWISSPROT ANNOTATION.
+=================================================================================
+
+FULLTEXT ALREADY EXISTS IN external2go TABLE:
+
+CREATE TABLE external2go (
+  goid varchar(20) NOT NULL default '',
+  goname varchar(255) default NULL,
+  externalid varchar(20) NOT NULL default '',
+  externalname varchar(255) NOT NULL default '',
+  externalsource varchar(30) NOT NULL default '',
+  PRIMARY KEY  (goid,externalid,externalname,externalsource),
+  FULLTEXT KEY synonyms (goname,externalname)
+);
+
+ADD FULLTEXT 
+============
+
+ALTER TABLE external2go ADD FULLTEXT names(goname, externalname);

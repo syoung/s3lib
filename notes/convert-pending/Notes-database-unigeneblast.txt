@@ -1,0 +1,3278 @@
+Notes-database-unigeneblast.txt
+
+
+</entry>
+
+
+
+<entry [Sun Apr 13 23:39:42 EDT 2008] ASSESSMENT OF 300 AMINO ACID DOMAIN FOR CREATING DECISION TREES BASED ON human UniGene SEQUENCES AND TESTED WITH TOP BLAST HITS>
+
+
+
+SELECT count(*) FROM treelookupbesthit WHERE collectionid != targetid ORDER BY collectionid;
++----------+
+| count(*) |
++----------+
+|      238 |
++----------+
+1 row in set (0.01 sec)
+
+SELECT count(*) FROM treelookupbesthit;                                                     
++----------+
+| count(*) |
++----------+
+|      855 |
++----------+
+1 row in set (0.00 sec)
+
+SELECT count(*) FROM treelookupbesthit WHERE collectionid = targetid ORDER BY collectionid;
++----------+
+| count(*) |
++----------+
+|      617 |
++----------+
+
+
+
+</entry>
+
+
+
+<entry [Wed Mar 19 13:57:54 EDT 2008] CHECK MISSING collectionids AT DIFFERENT STEPS IN signature WORKFLOW OF unigeneblast>
+
+
+
+
+select count(distinct collectionid) from collectioniprscan;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          949 |
++------------------------------+
+
+select count(distinct collectionid) from collectioniprscan where targetname != 'seg';
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          917 |
++------------------------------+
+
+
+select count(distinct collectionid) from treelookup;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          855 |
++------------------------------+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar  8 22:17:20 EST 2008] CHECK MISSING collectionids AT DIFFERENT STEPS IN signature WORKFLOW OF unigene (cont.)>
+
+
+
+2. ALL COLLECTION IDS IN iprscanset ARE iprscansetsequence
+==========================================================
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          892 |
++------------------------------+
+
+select count(distinct collectionid) from iprscansetsequence;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          892 |
++------------------------------+
+
+use unigene;
+SELECT DISTINCT(iprscanset.collectionid) 
+FROM iprscanset
+LEFT JOIN iprscansetsequence
+ON iprscanset.collectionid = iprscansetsequence.collectionid
+WHERE iprscansetsequence.collectionid IS NULL;
+
+Empty set (14.51 sec)
+
+
+
+3. 39 COLLECTION IDS IN iprscansetsequence ARE **NOT*** IN iprscanattributebayes
+================================================================================
+
+- MOST LIKELY DUE TO UNBALANCED SETS WITH EITHER NO '0' OR NO '1' LABELS
+
+
+select count(distinct collectionid) from iprscanattributebayes;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          853 |
++------------------------------+
+
+
+use unigene;
+SELECT DISTINCT(iprscansetsequence.collectionid) 
+FROM iprscansetsequence
+LEFT JOIN iprscanattributebayes
+ON iprscansetsequence.collectionid = iprscanattributebayes.collectionid
+WHERE iprscanattributebayes.collectionid IS NULL;
+
++--------------+
+| collectionid |
++--------------+
+|            1 |
+|           63 |
+|           77 |
+|           94 |
+|          100 |
+|          142 |
+|          144 |
+|          157 |
+|          186 |
+|          190 |
+|          197 |
+|          214 |
+|          284 |
+|          287 |
+|          295 |
+|          314 |
+|          412 |
+|          419 |
+|          433 |
+|          443 |
+|          459 |
+|          472 |
+|          477 |
+|          480 |
+|          542 |
+|          558 |
+|          595 |
+|          611 |
+|          630 |
+|          698 |
+|          705 |
+|          708 |
+|          787 |
+|          827 |
+|          845 |
+|          896 |
+|          967 |
+|          978 |
+|          984 |
++--------------+
+39 rows in set (18.92 sec)
+
+
+
+4. ALL COLLECTION IDS IN iprscanattributebayes ARE IN iprscanattribute
+======================================================================
+
+select count(distinct collectionid) from iprscanattribute;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          853 |
++------------------------------+
+
+use unigene;
+SELECT DISTINCT(iprscanattributebayes.collectionid) 
+FROM iprscanattributebayes
+LEFT JOIN iprscanattribute
+ON iprscanattributebayes.collectionid = iprscanattribute.collectionid
+WHERE iprscanattribute.collectionid IS NULL;
+
+
+Empty set (2.87 sec)
+
+
+5. FIND ALL COLLECTION IDS IN iprscanattribute THAT ARE NOT IN learningtrees
+=========================================================================
+
+select count(distinct collectionid) from learningtrees;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          656 |
++------------------------------+
+
+use unigene;
+SELECT DISTINCT(iprscanattribute.collectionid) 
+FROM iprscanattribute
+LEFT JOIN learningtrees
+ON iprscanattribute.collectionid = learningtrees.collectionid
+WHERE learningtrees.collectionid IS NULL;
+
++--------------+
+| collectionid |
++--------------+
+|            2 |
+|            3 |
+|            9 |
+|           10 |
+|           12 |
+|           13 |
+|           20 |
+|           28 |
+|           30 |
+|           44 |
+|           48 |
+|           50 |
+|           53 |
+|           56 |
+|           93 |
+|           95 |
+|           98 |
+|          102 |
+|          103 |
+|          104 |
+|          113 |
+|          116 |
+|          123 |
+|          126 |
+|          131 |
+|          132 |
+|          137 |
+|          141 |
+|          148 |
+|          151 |
+|          155 |
+|          161 |
+|          165 |
+|          169 |
+|          177 |
+|          179 |
+|          180 |
+|          183 |
+|          189 |
+|          204 |
+|          209 |
+|          211 |
+|          215 |
+|          216 |
+|          217 |
+|          220 |
+|          230 |
+|          236 |
+|          242 |
+|          252 |
+|          259 |
+|          262 |
+|          272 |
+|          273 |
+|          276 |
+|          278 |
+|          282 |
+|          296 |
+|          298 |
+|          300 |
+|          301 |
+|          304 |
+|          305 |
+|          317 |
+|          325 |
+|          329 |
+|          334 |
+|          337 |
+|          341 |
+|          344 |
+|          349 |
+|          350 |
+|          353 |
+|          354 |
+|          355 |
+|          359 |
+|          366 |
+|          369 |
+|          378 |
+|          380 |
+|          383 |
+|          385 |
+|          386 |
+|          388 |
+|          393 |
+|          395 |
+|          396 |
+|          397 |
+|          404 |
+|          405 |
+|          409 |
+|          410 |
+|          411 |
+|          420 |
+|          427 |
+|          432 |
+|          436 |
+|          438 |
+|          446 |
+|          455 |
+|          465 |
+|          466 |
+|          467 |
+|          470 |
+|          481 |
+|          484 |
+|          486 |
+|          489 |
+|          492 |
+|          500 |
+|          506 |
+|          516 |
+|          520 |
+|          521 |
+|          523 |
+|          543 |
+|          552 |
+|          560 |
+|          565 |
+|          566 |
+|          571 |
+|          575 |
+|          577 |
+|          580 |
+|          587 |
+|          590 |
+|          591 |
+|          593 |
+|          594 |
+|          601 |
+|          602 |
+|          603 |
+|          612 |
+|          615 |
+|          620 |
+|          623 |
+|          628 |
+|          636 |
+|          644 |
+|          645 |
+|          648 |
+|          654 |
+|          656 |
+|          657 |
+|          658 |
+|          659 |
+|          660 |
+|          665 |
+|          668 |
+|          669 |
+|          681 |
+|          682 |
+|          683 |
+|          687 |
+|          703 |
+|          706 |
+|          713 |
+|          718 |
+|          725 |
+|          726 |
+|          731 |
+|          743 |
+|          747 |
+|          751 |
+|          766 |
+|          770 |
+|          776 |
+|          777 |
+|          778 |
+|          783 |
+|          785 |
+|          805 |
+|          819 |
+|          820 |
+|          835 |
+|          850 |
+|          877 |
+|          891 |
+|          897 |
+|          906 |
+|          909 |
+|          911 |
+|          916 |
+|          922 |
+|          932 |
+|          933 |
+|          939 |
+|          942 |
+|          944 |
+|          946 |
+|          952 |
+|          953 |
+|          973 |
+|          974 |
+|          980 |
+|          982 |
+|          993 |
++--------------+
+197 rows in set (1 min 0.11 sec)
+
+
+PUT THESE COLLECTION IDS INTO notrees:
+
+DROP TABLE notrees;
+CREATE TABLE notrees ( collectionid int(8) );
+
+INSERT INTO notrees
+SELECT DISTINCT(iprscanattribute.collectionid) 
+FROM iprscanattribute
+LEFT JOIN learningtrees
+ON iprscanattribute.collectionid = learningtrees.collectionid
+WHERE learningtrees.collectionid IS NULL;
+
+
+6. FIND ALL COLLECTION IDS IN iprscanset WHERE EXISTS label = 0 OR label = 1, AND WHERE BOTH EXIST
+================================================================================================
+
+use unigene;
+DROP TABLE labelzero;
+CREATE TABLE labelzero ( collectionid int(8), count int(8) );
+INSERT INTO labelzero SELECT collectionid, count(label) as count FROM iprscanset WHERE label = 0 GROUP BY collectionid HAVING count > 0;
+DROP TABLE labelone;
+CREATE TABLE labelone ( collectionid int(8), count int(8) );
+INSERT INTO labelone SELECT collectionid, count(label) as count FROM iprscanset WHERE label = 1 GROUP BY collectionid HAVING count > 0;
+DROP TABLE labelboth;
+CREATE TABLE labelboth ( collectionid int(8));
+INSERT INTO labelboth SELECT labelone.collectionid FROM labelone, labelzero WHERE labelone.collectionid = labelzero.collectionid;
+
+ select * from labelboth limit 10;
++--------------+
+| collectionid |
++--------------+
+|            4 |
+|            7 |
+|            8 |
+|           11 |
+|           15 |
+|           16 |
+|           17 |
+|           18 |
+|           19 |
+|           22 |
++--------------+
+
+select distinct collectionid from learningtrees limit 10;
++--------------+
+| collectionid |
++--------------+
+|            4 |
+|            7 |
+|            8 |
+|           11 |
+|           15 |
+|           16 |
+|           17 |
+|           18 |
+|           19 |
+|           22 |
++--------------+
+
+SELECT collectionid, count(label) as count FROM iprscanset WHERE label = 0 AND collectionid < 21 GROUP BY collectionid HAVING count > 0;
+SELECT collectionid, count(label) as count FROM iprscanset WHERE label = 1 AND collectionid < 21 GROUP BY collectionid HAVING count > 0;
+
+
+7. GET COLLECTION IDS WHERE BOTH LABELS EXIST (labelboth) BUT NO TREE EXISTS (notrees)
+======================================================================================
+
+SELECT labelboth.collectionid FROM labelboth, notrees WHERE labelboth.collectionid = notrees.collectionid;
+
++--------------+
+| collectionid |
++--------------+
+|           28 |
+|          102 |
+|          103 |
+|          151 |
+|          165 |
+|          215 |
+|          216 |
+|          230 |
+|          282 |
+|          298 |
+|          305 |
+|          329 |
+|          355 |
+|          380 |
+|          395 |
+|          396 |
+|          397 |
+|          404 |
+|          405 |
+|          411 |
+|          432 |
+|          436 |
+|          465 |
+|          484 |
+|          486 |
+|          489 |
+|          492 |
+|          520 |
+|          521 |
+|          565 |
+|          575 |
+|          577 |
+|          593 |
+|          603 |
+|          628 |
+|          645 |
+|          654 |
+|          657 |
+|          660 |
+|          665 |
+|          669 |
+|          682 |
+|          706 |
+|          726 |
+|          751 |
+|          766 |
+|          820 |
+|          850 |
+|          897 |
+|          911 |
+|          922 |
+|          933 |
+|          973 |
+|          974 |
+|          982 |
++--------------+
+55 rows in set (0.01 sec)
+
+
+select distinct label, accession from iprscanattribute where collectionid = 102;
++-------+-----------+
+| label | accession |
++-------+-----------+
+|     1 | 1         |
+|     0 | O24750    |
+|     0 | O32967    |
+|     1 | Q08446    |
++-------+-----------+
+4 rows in set (0.04 sec)
+
+mysql> select distinct label, accession from iprscanattribute where collectionid = 103;
++-------+-----------+
+| label | accession |
++-------+-----------+
+|     1 | 1         |
+|     0 | O54714    |
+|     0 | O74747    |
+|     1 | Q13435    |
++-------+-----------+
+4 rows in set (0.02 sec)
+
+mysql> select distinct label, accession from iprscanattribute where collectionid = 151;
++-------+-----------+
+| label | accession |
++-------+-----------+
+|     1 | 1         |
+|     0 | P14201    |
++-------+-----------+
+2 rows in set (0.06 sec)
+
+mysql> select distinct label, accession from iprscanattribute where collectionid = 165;
++-------+-----------+
+| label | accession |
++-------+-----------+
+|     1 | 1         |
+|     0 | Q5BB35    |
+|     0 | Q5EA36    |
+|     1 | Q62504    |
++-------+-----------+
+4 rows in set (0.06 sec)
+
+mysql> select distinct label, accession from iprscanattribute where collectionid = 215;
++-------+-----------+
+| label | accession |
++-------+-----------+
+|     1 | 1         |
+|     1 | O42175    |
+|     0 | P80961    |
+|     0 | Q56TU0    |
++-------+-----------+
+4 rows in set (0.06 sec)
+
+
+PUT THE COLLECTION IDS IN LABEL BOTH THAT ARE ALSO IN notrees INTO TABLE notreeslabelboth:
+
+CREATE TABLE notreeslabelboth ( collectionid varchar(20) );
+INSERT INTO notreeslabelboth SELECT labelboth.collectionid FROM labelboth, notrees WHERE labelboth.collectionid = notrees.collectionid;
+
+
+GET THE COUNT OF label 0 AND label 1 ACCESSION IN iprscanattribute FOR COLLECTION IDS IN notreeslabelboth:
+
+SELECT iprscanattribute.collectionid, COUNT(distinct iprscanattribute.label, iprscanattribute.accession) AS count FROM iprscanattribute, notreeslabelboth
+WHERE iprscanattribute.collectionid = notreeslabelboth.collectionid GROUP BY iprscanattribute.collectionid;
+
+
++--------------+-------+
+| collectionid | count |
++--------------+-------+
+|           28 |     4 |
+|          102 |     4 |
+|          103 |     4 |
+|          151 |     2 |
+|          165 |     4 |
+|          215 |     4 |
+|          216 |     4 |
+|          230 |     4 |
+|          282 |     2 |
+|          298 |     4 |
+|          305 |     4 |
+|          329 |     2 |
+|          355 |     4 |
+|          380 |     4 |
+|          395 |     2 |
+|          396 |     4 |
+|          397 |     4 |
+|          404 |     4 |
+|          405 |     4 |
+|          411 |     4 |
+|          432 |     4 |
+|          436 |     4 |
+|          465 |     2 |
+|          484 |     4 |
+|          486 |     2 |
+|          489 |     4 |
+|          492 |     4 |
+|          520 |     2 |
+|          521 |     4 |
+|          565 |     2 |
+|          575 |     2 |
+|          577 |     4 |
+|          593 |     4 |
+|          603 |     4 |
+|          628 |     4 |
+|          645 |     2 |
+|          654 |     4 |
+|          657 |     4 |
+|          660 |     4 |
+|          665 |     4 |
+|          669 |     4 |
+|          682 |     4 |
+|          706 |     4 |
+|          726 |     2 |
+|          751 |     4 |
+|          766 |     2 |
+|          820 |     2 |
+|          850 |     2 |
+|          897 |     4 |
+|          911 |     2 |
+|          922 |     4 |
+|          933 |     2 |
+|          973 |    16 |
+|          974 |     2 |
+|          982 |     2 |
++--------------+-------+
+55 rows in set (0.33 sec)
+
+
+
+SELECT iprscanattribute.collectionid, COUNT(distinct iprscanattribute.label, iprscanattribute.accession) AS count FROM iprscanattribute, notreeslabelboth
+WHERE iprscanattribute.collectionid = notreeslabelboth.collectionid AND iprscanattribute.label = 1 GROUP BY iprscanattribute.collectionid;
+
++--------------+-------+
+| collectionid | count |
++--------------+-------+
+|           28 |     2 |
+|          102 |     2 |
+|          103 |     2 |
+|          151 |     1 |
+|          165 |     2 |
+|          215 |     2 |
+|          216 |     2 |
+|          230 |     2 |
+|          282 |     1 |
+|          298 |     2 |
+|          305 |     2 |
+|          329 |     1 |
+|          355 |     2 |
+|          380 |     2 |
+|          395 |     1 |
+|          396 |     2 |
+|          397 |     2 |
+|          404 |     2 |
+|          405 |     2 |
+|          411 |     2 |
+|          432 |     2 |
+|          436 |     2 |
+|          465 |     1 |
+|          484 |     2 |
+|          486 |     1 |
+|          489 |     2 |
+|          492 |     2 |
+|          520 |     1 |
+|          521 |     2 |
+|          565 |     1 |
+|          575 |     1 |
+|          577 |     2 |
+|          593 |     2 |
+|          603 |     2 |
+|          628 |     2 |
+|          645 |     1 |
+|          654 |     2 |
+|          657 |     2 |
+|          660 |     2 |
+|          665 |     2 |
+|          669 |     2 |
+|          682 |     2 |
+|          706 |     2 |
+|          726 |     1 |
+|          751 |     2 |
+|          766 |     1 |
+|          820 |     1 |
+|          850 |     1 |
+|          897 |     2 |
+|          911 |     1 |
+|          922 |     2 |
+|          933 |     1 |
+|          973 |     8 |
+|          974 |     1 |
+|          982 |     1 |
++--------------+-------+
+55 rows in set (0.32 sec)
+
+
+SELECT iprscanattribute.collectionid, COUNT(distinct iprscanattribute.label, iprscanattribute.accession) AS count FROM iprscanattribute, notreeslabelboth
+WHERE iprscanattribute.collectionid = notreeslabelboth.collectionid AND iprscanattribute.label = 0 GROUP BY iprscanattribute.collectionid;
+
++--------------+-------+
+| collectionid | count |
++--------------+-------+
+|           28 |     2 |
+|          102 |     2 |
+|          103 |     2 |
+|          151 |     1 |
+|          165 |     2 |
+|          215 |     2 |
+|          216 |     2 |
+|          230 |     2 |
+|          282 |     1 |
+|          298 |     2 |
+|          305 |     2 |
+|          329 |     1 |
+|          355 |     2 |
+|          380 |     2 |
+|          395 |     1 |
+|          396 |     2 |
+|          397 |     2 |
+|          404 |     2 |
+|          405 |     2 |
+|          411 |     2 |
+|          432 |     2 |
+|          436 |     2 |
+|          465 |     1 |
+|          484 |     2 |
+|          486 |     1 |
+|          489 |     2 |
+|          492 |     2 |
+|          520 |     1 |
+|          521 |     2 |
+|          565 |     1 |
+|          575 |     1 |
+|          577 |     2 |
+|          593 |     2 |
+|          603 |     2 |
+|          628 |     2 |
+|          645 |     1 |
+|          654 |     2 |
+|          657 |     2 |
+|          660 |     2 |
+|          665 |     2 |
+|          669 |     2 |
+|          682 |     2 |
+|          706 |     2 |
+|          726 |     1 |
+|          751 |     2 |
+|          766 |     1 |
+|          820 |     1 |
+|          850 |     1 |
+|          897 |     2 |
+|          911 |     1 |
+|          922 |     2 |
+|          933 |     1 |
+|          973 |     8 |
+|          974 |     1 |
+|          982 |     1 |
++--------------+-------+
+55 rows in set (0.33 sec)
+
+
+NB: ALL ACCESSION FOR COLLECTION ID 973 HAVE VALUE 'defensin_propep'
+
+
+8. GET ALL UNIGENE BLAST BEST HIT MISMATCHES
+============================================
+
+USE unigeneblast;
+select collectionid, SUBSTRING(sourceannotation, 1, 50), SUBSTRING(targetannotation, 1, 50) from  blastevalueannotationverifymanual where manualmatch = 0;
++--------------+----------------------------------------------------+----------------------------------------------------+
+| collectionid | SUBSTRING(sourceannotation, 1, 50)                 | SUBSTRING(targetannotation, 1, 50)                 |
++--------------+----------------------------------------------------+----------------------------------------------------+
+|            6 | Sperm associated antigen 17                        | PREDICTED: Canis familiaris similar to projection  |
+|           38 | Rap guanine nucleotide exchange factor (GEF) 1     | Rattus norvegicus partial mRNA for C3G protein (c3 |
+|           86 | Palmitoyl-protein thioesterase 2                   | Multiple EGF-like-domain protein 8 precursor (Vasc |
+|          143 | Leukotriene C4 synthase                            | Mastermind-like protein 1                          |
+|          144 | "Neuroblastoma breakpoint family, member 1"        | Trichohyalin                                       |
+|          177 | "Phosphatidylinositol glycan anchor biosynthesis,  | Endothelial zinc finger protein induced by tumor n |
+|          179 | Zinc finger protein 138                            | PREDICTED: Canis familiaris similar to selenophosp |
+|          189 | Rheumatoid factor RF-ET12                          | Ig heavy chain V-III region HPC76 (Fragment)       |
+|          218 | Chemokine (C-C motif) receptor 10                  | PREDICTED: Rattus norvegicus G protein-coupled rec |
+|          237 | Transmembrane protein 106A                         | PREDICTED: Canis familiaris similar to CCAAT displ |
+|          287 | Exocyst complex component 7                        | Rattus norvegicus rexo70 mRNA                      |
+|          300 | "Mannosidase, alpha, class 2B, member 1"           | PREDICTED: Canis familiaris similar to mitogen-act |
+|          302 | Nucleoporin 85kDa                                  | PREDICTED: Canis familiaris similar to pericentrin |
+|          310 | MAP/microtubule affinity-regulating kinase 2       | R.norvegicus mRNA for serine/threonine kinase MARK |
+|          329 | Dopey family member 1                              | PREDICTED: Canis familiaris similar to pad-1-like  |
+|          331 | Dual oxidase maturation factor 1                   | PREDICTED: Canis familiaris similar to Numb-intera |
+|          347 | Fibronectin leucine rich transmembrane protein 3   | Rattus norvegicus Shal-related potassium channel K |
+|          374 | Neuronal growth regulator 1                        | Rattus norvegicus mRNA for Kilon                   |
+|          381 | Tetraspanin 32                                     | Phemx protein                                      |
+|          450 | Neuronal PAS domain protein 4                      | PREDICTED: Canis familiaris similar to HLH-PAS tra |
+|          458 | Cathepsin C                                        | LINE-1 reverse transcriptase homolog               |
+|          464 | "Inositol polyphosphate-5-phosphatase, 40kDa"      | PREDICTED: Rattus norvegicus NK6 transcription fac |
+|          471 | "Phospholipase A2 receptor 1, 180kDa"              | Lymphocyte antigen 75 precursor (DEC-205) (CD205 a |
+|          499 | C1q and tumor necrosis factor related protein 9 (C | Otolin-1 precursor                                 |
+|          518 | free fatty acid receptor 3 (FFAR3)                 | Putative G-protein coupled receptor 41             |
+|          552 | solute carrier family 4                            | Anion exchange protein 4 (Anion exchanger 4) (Sodi |
+|          563 | 5-methyltetrahydrofolate-homocysteine methyltransf | PREDICTED: Canis familiaris similar to methionine  |
+|          590 | mRNA for Ras association (RalGDS/AF-6) domain fami | Rattus norvegicus Maxp1 mRNA                       |
+|          601 | Fc-epsilon receptor III mRNA                       | C-type lectin superfamily member 6 (Dendritic cell |
+|          612 | vitamin D receptor-interacting protein (DRIP92) mR | PREDICTED: Rattus norvegicus thyroid hormone recep |
+|          644 | integrin                                           | LINE-1 reverse transcriptase homolog               |
+|          683 | NADH dehydrogenase (ubiquinone) 1 alpha subcomplex | "Complex I intermediate-associated protein 30, mit |
+|          713 | tyrosine 3-monooxygenase/tryptophan 5-monooxygenas | Rattus norvegicus mRNA for 14-3-3 protein gamma-su |
+|          714 | E2k=alpha-ketoglutarate dehydrogenase complex dihy | Rattus norvegicus dihydrolipoamide S-succinyltrans |
+|          735 | cytochrome P450                                    | "25-hydroxyvitamin D-1 alpha hydroxylase, mitochon |
+|          743 | mucin (MUC3) mRNA                                  | Histidine-rich glycoprotein precursor              |
+|          774 | otoraplin (OTOR)                                   | Mus musculus mRNA for melanoma inhibitory activity |
+|          805 | aldehyde dehydrogenase 18 family                   | PREDICTED: Rattus norvegicus pyrroline-5-carboxyla |
+|          928 | phosphoribosylaminoimidazole carboxylase           | PREDICTED: Mus musculus similar to Multifunctional |
+|          953 | regulatory solute carrier protein                  | PREDICTED: Rattus norvegicus pleckstrin homology d |
+|          961 | protease                                           | Prostasin precursor (EC 3.4.21.-)                  |
+|          977 | receptor-interacting serine-threonine kinase 4 (RI | PREDICTED: Canis familiaris similar to ankyrin rep |
+|          981 | peroxisome proliferative activated receptor        | Rattus norvegicus PPAR delta protein (PPAR delta)  |
++--------------+----------------------------------------------------+----------------------------------------------------+
+
+
+9. GET ALL unigeneblast.treelookup ENTRIES WHERE BEST HIT targetid IS NOT collectionid
+======================================================================================
+
+CREATE TABLE CONTAINING ALL BEST HITS:
+
+DROP TABLE treelookupbesthit;
+CREATE TABLE treelookupbesthit (
+  collectionid int(6) NOT NULL default '0',
+  targetid int(6) NOT NULL default '0',
+  hits int(6) default NULL,
+  PRIMARY KEY  (collectionid,targetid)
+);
+INSERT INTO treelookupbesthit SELECT collectionid, targetid, hits FROM treelookup GROUP BY collectionid ORDER BY hits;
+Query OK, 855 rows affected (0.02 sec)
+
+CREATE TABLE CONTAINING MAX HITS FOR EACH COLLECTION ID:
+
+DROP TABLE treelookupmaxhit;
+CREATE TABLE treelookupmaxhit (
+  collectionid int(6) NOT NULL default '0',
+  hits int(6) default NULL,
+  PRIMARY KEY  (collectionid)
+);
+INSERT INTO treelookupmaxhit SELECT collectionid, max(hits) FROM treelookup GROUP BY collectionid ORDER BY collectionid;
+Query OK, 855 rows affected (0.01 sec)
+
+
+CHECK MAX HITS IN treelookupbesthit IS THE SAME AS MAX HITS IN treelookup (YES):
+
+SELECT treelookupbesthit.collectionid, treelookupbesthit.hits AS besthits, treelookupmaxhit.hits AS maxhits FROM treelookupbesthit, treelookupmaxhit WHERE treelookupbesthit.hits != treelookupmaxhit.hits AND treelookupbesthit.collectionid = treelookupmaxhit.collectionid GROUP BY treelookupbesthit.collectionid ;
+
+Empty set (0.01 sec)
+
+
+GET THE ENTRIES IN treelookupbesthit WHERE collectionid != targetid:
+
+SELECT * FROM treelookupbesthit WHERE collectionid != targetid ORDER BY collectionid;
+
+238 rows in set (0.00 sec)
+
+
+10. COMPARE BLAST MISMATCHES FROM unigene WITH treelookup MISMATCHES IN unigeneblast
+====================================================================================
+
+GET ALL BLAST MISMATCHES FROM unigene:
+
+
+CREATE TABLE unigenemismatch ( collectionid int(8), sourceannotation varchar(255), targetannotation varchar(255));
+INSERT INTO unigenemismatch SELECT unigene.blastevalueannotationverifymanual.collectionid, unigene.blastevalueannotationverifymanual.sourceannotation, unigene.blastevalueannotationverifymanual.targetannotation FROM unigene.blastevalueannotationverifymanual WHERE unigene.blastevalueannotationverifymanual.manualmatch = 0;
+43 rows in set (0.01 sec)
+
+
+GET ALL treelookupbesthit ENTRIES WHERE COLLECTION ID IS THE SAME AS unigenemismatch;
+
+SELECT treelookupbesthit.* from treelookupbesthit, unigenemismatch WHERE treelookupbesthit.collectionid = unigenemismatch.collectionid;
+
+38 rows in set (0.00 sec)
+
+SELECT treelookupbesthit.* from treelookupbesthit, unigenemismatch WHERE treelookupbesthit.collectionid = unigenemismatch.collectionid AND treelookupbesthit.collectionid != treelookupbesthit.targetid;
+
++--------------+----------+------+
+| collectionid | targetid | hits |
++--------------+----------+------+
+|          144 |      465 |    2 |
+|          177 |      852 |   75 |
+|          189 |      262 |    6 |
+|          237 |      164 |   54 |
+|          331 |      577 |    1 |
+|          347 |      699 |   78 |
+|          381 |      249 |    1 |
+|          464 |     1000 |   23 |
+|          601 |      120 |   20 |
+|          774 |      904 |   30 |
+|          953 |      150 |   20 |
++--------------+----------+------+
+11 rows in set (0.00 sec)
+
+11 / 38 = 0.29
+
+I.E., 29% OF treelookupbesthit ENTRIES THAT HAVE MISMATCHING BLAST TARGET AND QUERY ANNOTATIONS ALSO HAVE MISMATCHING collectionid AND targetid
+
+
+SELECT COUNT(*) FROM treelookupbesthit;
++----------+
+| COUNT(*) |
++----------+
+|      855 |
++----------+
+
+SELECT COUNT(*) FROM treelookupbesthit WHERE collectionid != targetid;
+
++----------+
+| COUNT(*) |
++----------+
+|      238 |
++----------+
+
++-----------+
+| 238 / 855 |
++-----------+
+|      0.28 |
++-----------+
+
+
+I.E., 28% OF ALL treelookupbesthit ENTRIES HAVE MISMATCHING collectionid AND targetid
+
+
+DROP TABLE unigenemismatch;
+CREATE TABLE unigenemismatch ( collectionid int(8), sourceannotation varchar(255), targetannotation varchar(255));
+INSERT INTO unigenemismatch SELECT unigene.blastevalueannotationverifymanual.collectionid, unigene.blastevalueannotationverifymanual.sourceannotation, unigene.blastevalueannotationverifymanual.targetannotation FROM unigene.blastevalueannotationverifymanual WHERE unigene.blastevalueannotationverifymanual.manualmatch = 0 AND unigene.blastevalueannotationverifymanual.targetsource = 'swissprot';
+43 rows in set (0.01 sec)
+
+
+GET ALL treelookupbesthit ENTRIES WHERE COLLECTION ID IS THE SAME AS unigenemismatch;
+
+SELECT treelookupbesthit.* from treelookupbesthit, unigenemismatch WHERE treelookupbesthit.collectionid = unigenemismatch.collectionid;
+17 rows in set (0.00 sec)
+
+SELECT treelookupbesthit.* from treelookupbesthit, unigenemismatch WHERE treelookupbesthit.collectionid = unigenemismatch.collectionid AND treelookupbesthit.collectionid != treelookupbesthit.targetid;
++--------------+----------+------+
+| collectionid | targetid | hits |
++--------------+----------+------+
+|          144 |      465 |    2 |
+|          177 |      852 |   75 |
+|          189 |      262 |    6 |
+|          381 |      249 |    1 |
+|          601 |      120 |   20 |
++--------------+----------+------+
+
+
+5 / 17 = 0.29
+
+I.E., 29% OF treelookupbesthit ENTRIES THAT HAVE MISMATCHING swissprot BLAST TARGET AND QUERY ANNOTATIONS ALSO HAVE MISMATCHING collectionid AND targetid
+
+REM: 28% OF ALL treelookupbesthit ENTRIES HAVE MISMATCHING collectionid AND targetid
+
+
+
+ALSO, 29% OF treelookup COLLECTION IDS WHERE THERE IS NO MATCHING targetid ALSO HAVE MISMATCHING BLAST ANNOTATIONS:
+
+
+select notreelookup.*, unigenemismatch.* from notreelookup, unigenemismatch where notreelookup.collectionid = unigenemismatch.collectionid\G
+
+*************************** 1. row ***************************
+    collectionid: 143
+    collectionid: 143
+sourceannotation: Leukotriene C4 synthase
+targetannotation: Mastermind-like protein 1
+*************************** 2. row ***************************
+    collectionid: 144
+    collectionid: 144
+sourceannotation: "Neuroblastoma breakpoint family, member 1"
+targetannotation: Trichohyalin
+*************************** 3. row ***************************
+    collectionid: 177
+    collectionid: 177
+sourceannotation: "Phosphatidylinositol glycan anchor biosynthesis, class F"
+targetannotation: Endothelial zinc finger protein induced by tumor necrosis factor alpha (Zinc finger protein 71) (ZNF47)
+*************************** 4. row ***************************
+    collectionid: 381
+    collectionid: 381
+sourceannotation: Tetraspanin 32
+targetannotation: Phemx protein
+*************************** 5. row ***************************
+    collectionid: 743
+    collectionid: 743
+sourceannotation: mucin (MUC3) mRNA
+targetannotation: Histidine-rich glycoprotein precursor
+5 rows in set (0.00 sec)
+
+
+
+
+
+
+
+11. GET ALL targetsource, targetaccession FOR UNIGENE BLAST BEST HIT MISMATCHES
+===============================================================================
+
+
+SELECT collectionid, targetsource, targetaccession FROM blastevalueannotationverifymanual WHERE manualmatch = 0 AND targetsource = 'swissprot';
+
+
+SELECT collectionid, targetsource, targetaccession FROM blastevalueannotationverifymanual WHERE manualmatch = 0 AND targetsource = 'swissprot';
++--------------+--------------+-----------------+
+| collectionid | targetsource | targetaccession |
++--------------+--------------+-----------------+
+|           86 | swissprot    | Q99944          |
+|          143 | swissprot    | Q6T264          |
+|          144 | swissprot    | P37709          |
+|          177 | swissprot    | Q9NQZ8          |
+|          189 | swissprot    | P01804          |
+|          381 | swissprot    | Q96QS1          |
+|          458 | swissprot    | P08547          |
+|          471 | swissprot    | O60449          |
+|          499 | swissprot    | P83371          |
+|          518 | swissprot    | O14843          |
+|          552 | swissprot    | Q96Q91          |
+|          601 | swissprot    | Q9UMR7          |
+|          644 | swissprot    | P08547          |
+|          683 | swissprot    | Q9Y375          |
+|          735 | swissprot    | O15528          |
+|          743 | swissprot    | P04929          |
+|          961 | swissprot    | Q16651          |
++--------------+--------------+-----------------+
+17 rows in set (0.00 sec)
+
+
+GIVEN THAT treelookup DOES NOT SEEM TO DIFFERENTIATE BETWEEN CORRECT AND INCORRECT BLAST HITS, THIS MAY BE DUE TO THE LIMITATIONS OF THE SAMPLE - I.E., THE CORRECT ANNOTATION IS NOT AMONG THE OTHER BLAST HITS SO DOES NOT EVEN APPEAR IN THE treelookup TABLE (LET ALONE HAVE MORE hits THAN THE INCORRECT BLAST HIT).
+
+
+HOWEVER, THE treelookupbesthit TABLE CONSISTENTLY GIVES A CORRECT ANNOTATION HIT (I.E., SIMILAR TO THE ORIGINAL unigene ANNOTATION)
+
+
+SO, DO IT THE OTHER WAY ROUND:
+
+
+CREATE treelibrary FOR ALL 77,000 SWISSPROT UNIQUE ANNOTATIONS THEN SEE IF THE CORRECT TARGET HOMOLOGUES HAVE THE MOST HITS IN treelookup
+
+
+
+
+
+12. CHECK TO MAKE SURE THE OPTIMAL DOMAIN SIZE IS CONSTANT FOR ALL COLLECTION IDS
+=================================================================================
+
+
+USE unigene;
+
+
+PUT THE AVERAGE CORRECT VALUES FOR ALL groupby AND domainsize INTO treecorrect:
+
+DROP TABLE treecorrect;
+CREATE TABLE treecorrect ( collectionid int(8), groupby varchar(20), domainsize int(8), correct decimal(4,2) );
+INSERT INTO treecorrect SELECT collectionid, groupby, domainsize, avg(correct) FROM learningtrees GROUP BY collectionid, groupby, domainsize;
+# Query OK, 3566 rows affected (0.30 sec)
+
+SELECT THE BEST AVERAGE CORRECT VALUE FOR EACH COLLECTION ID AND PUT IN treecorrectbest:
+
+CREATE TABLE treecorrectbest ( collectionid int(8), groupby varchar(20), domainsize int(8), correct decimal(4,2) );
+INSERT INTO treecorrectbest SELECT * FROM treecorrect GROUP BY collectionid ORDER BY correct;
+Query OK, 656 rows affected (0.02 sec)
+
+
+GET THE AVERAGE CORRECT VALUE FOR EACH COLLECTION ID USING groupby = 'size' AND domainsize = 300: 
+
+DROP TABLE treecorrect300;
+CREATE TABLE treecorrect300 ( collectionid int(8), correct decimal(4,2) );
+INSERT INTO treecorrect300 SELECT collectionid, correct FROM treecorrect WHERE groupby = 'size' AND domainsize = '300';
+# Query OK, 653 rows affected (0.01 sec)
+
+
+GET THE COLLECTION IDS THAT HAVE BEST AVERAGE CORRECT VALUES HIGHER THAN THAT IN treecorrect300:
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct;
+126 rows in set (0.13 sec)
+
+BREAKDOWN BY groupby:
+
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'both';
+100 rows in set (0.10 sec)
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'size';
+21 rows in set (0.02 sec)
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'iprscan';
+5 rows in set (0.01 sec)
+
+
+
+BREAKDOWN BY domainsize FOR groupby = 'both':
+
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'both' AND domainsize = 100;
+92 rows in set (0.10 sec)
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'both' AND domainsize = 150;
+6 rows in set (0.00 sec)
+
+SELECT treecorrectbest.* FROM treecorrectbest, treecorrect300 WHERE treecorrectbest.collectionid = treecorrect300.collectionid AND treecorrectbest.correct > treecorrect300.correct AND treecorrectbest.groupby = 'both' AND domainsize = 300;
+2 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+NB: REPOPULATE treelibrary
+
+
+use unigene;
+SELECT DISTINCT(learningtrees.collectionid) 
+FROM learningtrees
+LEFT JOIN treelibrary
+ON learningtrees.collectionid = treelibrary.collectionid
+WHERE treelibrary.collectionid IS NULL;
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  6 23:10:58 EST 2008] CHECK MISSING collectionids AT DIFFERENT STEPS IN signature WORKFLOW OF unigene>
+
+
+
+1. FIND ALL COLLECTION IDS IN collectioniprscan THAT ARE NOT IN iprscanset
+==========================================================================
+
+select count(distinct collectionid) from collectioniprscan where targetid != 'seg';
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          930 |
++------------------------------+
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                          892 |
++------------------------------+
+
+use unigene;
+SELECT DISTINCT(collectioniprscan.collectionid) 
+FROM collectioniprscan
+LEFT JOIN iprscanset
+ON collectioniprscan.collectionid = iprscanset.collectionid
+WHERE iprscanset.collectionid IS NULL
+AND collectioniprscan.targetid != 'seg' and collectioniprscan.collectionid;
+
++--------------+
+| collectionid |
++--------------+
+|            6 |
+|           21 |
+|           73 |
+|           75 |
+|          127 |
+|          130 |
+|          140 |
+|          160 |
+|          193 |
+|          212 |
+|          221 |
+|          223 |
+|          229 |
+|          280 |
+|          281 |
+|          319 |
+|          321 |
+|          327 |
+|          328 |
+|          358 |
+|          364 |
+|          415 |
+|          447 |
+|          519 |
+|          529 |
+|          604 |
+|          618 |
+|          700 |
+|          721 |
+|          740 |
+|          849 |
+|          870 |
+|          872 |
+|          899 |
+|          908 |
+|          915 |
+|          918 |
+|          989 |
++--------------+
+38 rows in set (2.36 sec)
+
+
+
+**** ALL OF THE ABOVE SEQUENCES HAVE IPRSCAN HITS WITH targetids WHICH WERE NOT FOUND IN swissprotiprscan
+
+SEE: /Users/young/FUNNYBASE/pipeline/unigene/collection/unigene.noiprscanset.out
+
+
+E.G., MANUALLY CHECK THE COLLECTION IDS MISSING FROM iprscanset:
+
+ON node006:
+
+cd /common/myEST/bin/signature
+./arrayiprscanset.pl -d unigene -i 1 -t 20 &> out
+
+
+Collection id: 6
+
+    SELECT DISTINCT sourceannotation FROM collection WHERE collectionid='6'
+    Source annotations: Sperm associated antigen 17
+    
+    *******************************
+    Collection ID 6 source annotations:
+    Sperm associated antigen 17
+    *******************************
+    SELECT DISTINCT collectionaccession FROM collectioniprscan
+        WHERE collectionid='6'
+        ORDER BY collectionaccession LIMIT 2
+    SELECT DISTINCT targetsource, targetid, targetname FROM collectioniprscan WHERE collectionid='6' AND collectionaccession = '1'***
+    Hit targetid: PTHR21963
+    Hit targetid: seg
+    PANTHER PTHR21963
+    SEG     seg
+    Target id: PTHR21963
+    
+            SELECT DISTINCT accession
+            FROM swissprotpanther
+            WHERE MATCH(targetid)
+            AGAINST('PTHR21963')
+            LIMIT 2000
+    No sequences in swissprotpanther have motif PTHR21963
+    
+
+Collection id: 21
+
+    G-coupled receptor 175
+    No sequences in swissprotpanther have motif PTHR23304:SF76
+    
+
+Collection id: 73
+
+    Signal recognition particle 68kDa
+    No sequences in swissprotpanther have motif PTHR12860
+
+
+Collection id: 75
+
+    Source annotations: Defensin, beta 115
+    No sequences in swissprotprodom have motif PD866254
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb 19 20:37:42 EST 2008] RERUN arrayblast FOR unigene>
+
+
+
+1. GET collection ids THAT DO NOT HAVE AN ENTRY IN collectionblast
+==================================================================
+
+SELECT DISTINCT unigeneblast.collection.collectionid, unigeneblast.collection.sourceaccession
+FROM unigeneblast.collection
+LEFT JOIN indexer.swissprotnt
+ON indexer.swissprotnt.accession = unigeneblast.collection.sourceaccession
+WHERE indexer.swissprotnt.accession IS NULL
+AND unigeneblast.collection.source = 'swissprot';
+
+use unigene;
+
+SELECT collection.collectionid
+FROM collection 
+LEFT JOIN collectionblast 
+ON collectionblast.collectionid = collection.collectionid
+WHERE collectionblast.collectionid IS NULL;
+
++--------------+
+| collectionid |
++--------------+
+|            1 |
+|           33 |
+|           68 |
+|          172 |
+|          253 |
+|          275 |
+|          277 |
+|          306 |
+|          322 |
+|          428 |
+|          461 |
+|          469 |
+|          496 |
+|          653 |
+|          689 |
+|          740 |
+|          902 |
++--------------+
+
+
+NB: 238 has a hit against unigene-mouse
+
+unigene-unigene-mouse.blast.tsv:164962:unigene-human    238     1       Ribonuclease, RNase A family, 3 (eosinophil cationic protein)   unigene-mouse   CA494836        24957889        AGENCOURT_10812996 NIH_MGC_154 Mus musculus cDNA clone IMAGE:6775878 5' 1.4     -25     5       47      719             125     178     171     224     +2 / +3 0.50
+unigene-unigene-mouse.blast.tsv:164963:unigene-human    238     1       Ribonuclease, RNase A family, 3 (eosinophil cationic protein)   unigene-mouse   AY316149        32441900        Mus musculus C57BL/6 eosinophil-associated ribonuclease 1 mRNA  2.9     -23     1       139     719     739     384     530     390     536     +3 / +3 0.55
+unigene-unigene-mouse.blast.tsv:164964:unigene-human    238     1       Ribonuclease, RNase A family, 3 (eosinophil cationic protein)   unigene-mouse   AY316149        32441900        Mus musculus C57BL/6 eosinophil-associated ribonuclease 1 mRNA  2.9     -23     2       122     719             192     335     204     347     +3 / +3 0.50
+unigene-unigene-mouse.blast.tsv:164965:unigene-human    238     1       Ribonuclease, RNase A family, 3 (eosinophil cationic protein)   unigene-mouse   AY316149        32441900        Mus musculus C57BL/6 eosinophil-associated ribonuclease 1 mRNA  1.0     -13     3       70      719             443     532     449     538     +2 / +2 0.60
+
+
+
+
+1. LOAD collection TABLE ONTO CLUSTER
+=====================================
+
+ON genomics:
+
+sudo ./clusterloadtable.pl -d unigene -t collection
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigene/collection/clusterloadtable.sh
+
+sudo /common/pipeline/unigene/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+2. RUN arrayblast ON gems
+=========================
+
+cd ~/FUNNYBASE/bin/orthologues
+sudo ./arrayblast.pl -d unigene -q unigene -t swissprot
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb 19 01:19:56 EST 2008] CHECK unigeneblast collection id 1>
+
+
+
+use unigeneblast;
+select * from iprscansetsequence where collectionid = 1\G
+
+*************************** 1. row ***************************
+collectionid: 1
+   accession: 1
+       label: 1
+      source: unigeneblast
+    sequence: MVQLRPRASRAPASAEAMVDEGQLASEEEEAEHGLLLGQPSSGAAAEPLEEDEEGDDEFDDEAPEELTFASAQAEAREEERRVRETVRRDKTLLKEKRKRREELFIEQKKRKLLPDTILEKLTTASQTNIKKSPGKVKEVNLQKKNEDCEKGNDSKKVKVQKVQSVSQNKSYLAVRLKDQDLRDSRQQAAQAFIHNSLYGPGTNRTTVNKFLSLANKRLPVKRAAVQFLNNAWGIQKKQNAKRFKRRWMVRKMKTKK
+*************************** 2. row ***************************
+collectionid: 1
+   accession: Q9D7Z3
+       label: 1
+      source: swissprot
+    sequence: MVQLRPRLSRIPAPAEAMVDEDQAASEEEEAEHGLLLAQPSSGAAAEPLDEEEDADDEAPEELTFASAQAEAREEELRVRASARRDKTLLKEKRKRREELFIEQKKRKLLPDAVLEQLTTASEADIKKSPENVKVNLKKKSEQHAKGRNSKKVKVQKVQSVGQIESYMAVRLKDEDLRDSRQEAAKHFIHSCLYGSDSKRTTVNKFLSLNNKRSPVKKAAAQFLTSTWGAQKQQNAKRFKKRWMAKKMKKKTYK
+*************************** 3. row ***************************
+collectionid: 1
+   accession: Q9UMY1
+       label: 1
+      source: swissprot
+    sequence: MVQLRPRASRAPASAEAMVDEGQLASEEEEAEHGLLLGQPSSGAAAEPLEEDEEGDDEFDDEAPEELTFASAQAEAREEERRVRETVRRDKTLLKEKRKRREELFIEQKKRKLLPDTILEKLTTASQTNIKKSPGKVKEVNLQKKNEDCEKGNDSKKVKVQKVQSVSQNKSYLAVRLKDQDLRDSRQQAAQAFIHNSLYGPGTNRTTVNKFLSLANKRLPVKRAAVQFLNNAWGIQKKQNAKRFKRRWMVRKMKTKK
+3 rows in set (0.00 sec)
+
+
+use unigene;
+select * from collection where collectionid = 1;
+
+ select * from collection where collectionid = 1\G
+*************************** 1. row ***************************
+       collectionid: 1
+collectionaccession: 1
+             source: unigene-human-100
+    sourceaccession: S4269055
+           sourceid: BM914668
+   sourceannotation: Nucleolar protein 7, 27kDa
+           sequence: TGGTGCAGCTCCGACCGCGAGCGTCTCGCGCCCCGGCGTCGGCGGAGGCGATGGTGGACGAGGGCCAGCTGGCCTCGGAGGAGGAGGAGGCGGAGCACGGGCTGTTGCTCGGGCAGCCCAGCAGCGGCGCGGCCGCCGAGCCCCTGGAGGAAGACGAGGAAGGGGACGATGAGTTTGACGATGAGGCCCCGGAGGAGCTGACTTTCGCCAGCGCCCAGGCGGAAGCGAGAGAAGAGGAGCGGCGAGTGCGGGAGACCGTGCGCAGGGATAAAACGCTCCTGAAGGAGAAGAGGAAGCGACGCGAGGAGCTGTTCATCGAACAGAAGAAAAGAAAACTCCTTCCAGACACTATTTTGGAGAAGTTAACCACAGCTTCACAGACTAACATCAAGAAATCGCCAGGAAAGGTGAAAGAAGTTAATTTGCaaaagaaaaatgaagactgtgaaaaaggaaatgactccaagaaagttaaagTACAAAAAGTACAGTCTGTCAGCCAGAATAAAAGCTACTTGGCCGTAAGGCTAAAAGACCAAGATCTGAGAGATTCAAGGCAACAAGCAGCACAAGCCTTCATACCTACTTCATTATATGGGCCAGCAACCAACCGGACTACTGCAGACTAGTCGCTTGGCCCCTTGACAGCGCCAGGGCTCCCTCCGTATCCCCCCCTGCCCGCCCATTGTCTCCACTACCGCCTGCGCCCTCCCCATTATACCCTTGTAGTACCTTTTTTCTCCGCCCACCGCTCCTAGCActccccccccgctccacgcatccccctcccccATCACTCGCCGAGACCATTAACACCGCAATAGACGccccccccTAGCCCTCCTTGATCCTGCCTTGCCCGCCTTAATACCGAGATGTcccctccccccacccccGATTTCACTAACCCCCACCGAAGTAGTCACTCATGCGCCGCCCCGCGCCGCTCTTATCTCCACCGTGCACCGCCCAAGTTACGCGCCACCCACACCGTTACATGTCTCTCTCATATGCCATACCTTATTCTCCATTCTACCGCACGTACTCGATAGACGTTTCCTCCTACCTGTCATTAATAACCGCACGCCCGCCCCCTAACCACAGCTCACGCCTCGCTCCGACCACGATAATGAACCACCGCACCGCTCCCCTCGCAGTGCCTCTACGCATGCTACTACACATCGCGGCGCCTTATCCCGACAGTCTATcccccccccgtcccattattcccccctcgccccTGTTTTC
+
+
+
+PROBLEM WITH BLAST AGAINST SWISSPROT ALTHOUGH BLAST AGAINST UNIGENE-MOUSE WORKS:
+
+
+BLASTMAT=/common/apps/wublast/matrix
+export BLASTMAT
+
+Here's the output for BLASTN:
+
+$  sudo /common/apps/wublast/wu-blastall -p blastn -d /common/data/unigene-mouse -i /common/pipeline/unigene/blast/unigene.1.fasta -o /common/pipeline/unigene/blast/unigene-unigene-mouse.1.blast
+
+head /common/pipeline/unigene/blast/unigene-unigene-mouse.1.blast
+
+>>>
+BLASTN 2.0MP-WashU [10-May-2005] [macosx-10.2-ppc-ILP32F64 2005-05-10T20:04:03]
+
+Copyright (C) 1996-2005 Washington University, Saint Louis, Missouri USA.
+All Rights Reserved.
+
+Reference:  Gish, W. (1996-2005) http://blast.wustl.edu
+
+Notice:  this program and its default parameter settings are optimized to find
+nearly identical sequences rapidly.  To identify weak protein similarities
+encoded in nucleic acid, use BLASTX, TBLASTN or TBLASTX.
+...<<<
+
+And here's the output for BLASTX:
+
+$ sudo /common/apps/wublast/wu-blastall -p blastx -d /common/data/swissprot -i /common/pipeline/unigene/blast/unigene.1.fasta -o /common/pipeline/unigene/blast/unigene.1.blast
+nfs server gems.rsmas.miami.edu:/Volumes/gemshd3: not responding
+
+FATAL:  Bus Error signal received.
+
+EXIT CODE 4
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 20:29:57 EST 2008] RUN arraytreealign AND THEN treepredict>
+
+
+
+5. REDID treealign:
+
+sudo ./arraytreealigndaemon.pl -d unigeneblast -t unigene -g size -s 300 -n 20
+
+    Run time: 00:42:13
+    Completed ./arraytreealigndaemon.pl
+    0:23AM, 16 February 2008
+    ****************************************
+
+
+6. LOADED ALIGNMENT FILES INTO treealign
+
+    Run time: 00:01:08
+    Completed ./arraytreealignloaddata.pl
+    1:20AM, 16 February 2008
+    ****************************************
+
+
+7. TEST PREDICTIONS
+
+./treepredict.pl -d unigeneblast -t unigene -g size -s 300
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 01:58:07 EST 2008] REPOPULATED unigeneblast.collection WITH NUCLEOTIDE SEQUENCES IN ORDER TO RUN arraytreealign AND THEN treepredict>
+
+
+
+
+1. ALTERED blastorthologues.pl TO USE swissprotnt TO LOAD NUCLEOTIDE SEQUENCE INTO unigeneblast.collection TABLE
+
+BACKUP unigeneblast.collection TABLE
+
+use unigeneblast;
+select * from collection into outfile '/private/var/tmp/unigeneblast.collection.swissprot-peptides.tsv';
+sudo mv /private/var/tmp/unigeneblast.collection.swissprot-peptides.tsv /Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast.collection.swissprot-peptides.tsv
+
+RUN ALTERED blastorthologues.pl
+
+./blastorthologues.pl -d unigene -t unigeneblast
+
+use unigeneblast;
+SELECT * from collection where source = 'swissprot' limit 1\G
+
+*************************** 1. row ***************************
+       collectionid: 3
+collectionaccession: 1
+             source: swissprot
+    sourceaccession: Q16773
+           sourceid: 
+   sourceannotation: Kynurenine--oxoglutarate transaminase I (EC 2.6.1.7) (Kynurenine aminotransferase I) (KATI) (Glutamine--phenylpyruvate transaminase) (EC 2.6.1.64) (Glutamine transaminase K) (GTK) (Cysteine-S-conjugate beta-lyase) (EC 4.4.1.13)
+           sequence: atggccaaacagctgcaggcccgaaggctagacgggatcgactacaacccctgggtggagtttgtgaaactggccagtgagcatgacgtcgtgaacttgggccagggcttcccggatttcccaccaccagactttgccgtggaagcctttcagcacgctgtcagtggagacttcatgcttaaccagtacaccaagacatttggttacccaccactgacgaagatcctggcaagtttctttggggagctgctgggtcaggagatagacccgctcaggaatgtgctggtgactgttggtggctatggggccctgttcacagccttccaggccctggtggacgaaggagacgaggtcatcatcatcgaacccttttttgactgctacgagcccatgacaatgatggcagggggtcgtcctgtgtttgtgtccctgaagccgggtcccatccagaatggagaactgggttccagcagcaactggcagctggaccccatggagctggccggcaaattcacatcacgcaccaaagccctggtcctcaacacccccaacaaccccctgggcaaggtgttctccagggaagagctggagctggtggccagcctttgccagcagcatgacgtggtgtgtatcactgatgaagtctaccagtggatggtctacgacgggcaccagcacatcagcattgccagcctccctggcatgtgggaacggaccctgaccatcggcagcgccggcaagaccttcagcgccactggctggaaggtgggctgggtcctgggtccagatcacatcatgaagcacctgcggaccgtgcaccagaactccgtcttccactgccccacgcagagccaggctgcagtagccgagagctttgaacgggagcagctgctcttccgccaacccagcagctactttgtgcagttcccgcaggccatgcagcgctgccgtgaccacatgatacgtagcctacagtcagtgggcctgaagcccatcatccctcagggcagctacttcctcatcacagacatctcagacttcaagaggaagatgcctgacttgcctggagctgtggatgagccctatgacagacgcttcgtcaagtggatgatcaagaacaagggcttggtggccatccctgtctccatcttctatagtgtgccacatcagaagcactttgaccactatatccgcttctgttttgtgaaggatgaagccacgctccaggccatggacgagaagctgcggaagtggaaggtggaactctag
+1 row in set (0.01 sec)
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 01:55:55 EST 2008] FILTERING ERRONEOUS PROTEIN ANNOTATION>
+
+
+
+GOOGLE
+
+"protein annotation" "decision tree" 
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 01:55:43 EST 2008] PARSE SWISSPROT NUCLEOTIDE SEQUENCES FROM cds.dat.gz FILE INTO swissprotnt TABLE AND DO id,accession FULLTEXT>
+
+
+
+
+1. RUN swissprotnt
+
+
+	NAME	swissprotnt
+	
+	PURPOSE
+	
+		CREATE THE swissprotnt TABLE FROM THE EMBL cds.data.gz FILE
+		
+	INPUT
+
+		1. DOWNLOADED nt FILE:
+		
+			cd /swissprot.nucleotide
+            wget ftp://ftp.ebi.ac.uk/pub/databases/embl/cds/cds.dat.gz
+
+		2. gzcat BINARY
+
+	OUTPUT
+	
+		1. swissprotnt TABLE
+	
+	NOTES
+
+        CREATE TABLE IF NOT EXISTS swissprotnt
+        (
+            accession		VARCHAR(20),
+            emblid          VARCHAR(20),
+            sequence		LONGTEXT,
+            sequence		LONGTEXT,
+
+            PRIMARY KEY (accession, emblid)
+        )
+
+	USAGE
+
+		./swissprotnt.pl [-h]
+		
+	EXAMPLES
+	
+./swissprotnt.pl -i /swissprot.nucleotide/cds.dat.gz
+
+    496679 out of 12070000
+    ...
+    /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotnt.25.tsv
+    ...
+    RUN TIME: 00:16:13
+    Completed ./swissprotnt.pl
+    1:48AM, 18 February 2008
+    ****************************************
+
+    SELECT COUNT(*) from swissprotnt;
+    +----------+
+    | COUNT(*) |
+    +----------+
+    |   499916 |
+    +----------+
+
+
+2. DO emblid,accession FULLTEXT
+
+cd ~/FUNNYBASE/bin/orthologues
+
+./addfullte ./addfulltext.pl -d indexer -t swissprotnt -f emblid,accession -n ids
+
+    Run time: 00:00:23
+    Completed ./addfulltext.pl
+    2:20AM, 18 February 2008
+    ****************************************
+    
+    
+3. CHECK ALL unigeneblast SWISSPROT SEQUENCES ARE IN THE swissprotnt TABLE
+
+Only 15 collection ids of the 478 unigeneblast swissprot sequences do not have an entry in the swissprotnt table.
+
+
+unigeneblast
+============
+
+use unigeneblast;
+
+create table if not exists noswissprot ( collectionid int(6), sourceaccession varchar(20) );
+INSERT INTO noswissprot
+SELECT DISTINCT unigeneblast.collection.collectionid, unigeneblast.collection.sourceaccession
+FROM unigeneblast.collection
+LEFT JOIN indexer.swissprotnt
+ON indexer.swissprotnt.accession = unigeneblast.collection.sourceaccession
+WHERE indexer.swissprotnt.accession IS NULL
+AND unigeneblast.collection.source = 'swissprot';
+
+    
+select * from noswissprot;
++--------------+-----------------+
+| collectionid | sourceaccession |
++--------------+-----------------+
+|           28 | P01742          |
+|           30 | P01848          |
+|           63 | P60673          |
+|          189 | P01804          |
+|          296 | P06331          |
+|          352 | P01769          |
+|          573 | P01824          |
+|          602 | P01744          |
+|          620 | P01742          |
+|          778 | P01742          |
+|          825 | Q5DRC3          |
+|          877 | P01744          |
+|          916 | P01744          |
+|          917 | Q5DRD2          |
+|          937 | P06331          |
++--------------+-----------------+
+15 rows in set (0.00 sec)
+    
+
+    UNIQUE SWISSPROT ACCESSIONS:
+    
+    SELECT DISTINCT unigeneblast.collection.sourceaccession
+    FROM unigeneblast.collection
+    LEFT JOIN indexer.swissprotnt
+    ON indexer.swissprotnt.accession = unigeneblast.collection.sourceaccession
+    WHERE indexer.swissprotnt.accession IS NULL
+    AND unigeneblast.collection.source = 'swissprot';
+    +-----------------+
+    | sourceaccession |
+    +-----------------+
+    | P01742          |
+    | P01848          |
+    | P60673          |
+    | P01804          |
+    | P06331          |
+    | P01769          |
+    | P01824          |
+    | P01744          |
+    | Q5DRC3          |
+    | Q5DRD2          |
+    +-----------------+
+    10 rows in set (0.01 sec)
+
+
+USE unigeneblast;
+SELECT COUNT(DISTINCT collectionid)
+FROM collection
+WHERE source = 'swissprot';
++------------------------------+
+| COUNT(DISTINCT collectionid) |
++------------------------------+
+|                          478 |
++------------------------------+
+
+
+
+
+
+unigene
+=======
+
+use unigene;
+
+create table if not exists noswissprotnt ( collectionid int(6), sourceaccession varchar(20) );
+INSERT INTO noswissprotnt
+SELECT DISTINCT unigene.blastevalueannotation.collectionid, unigene.blastevalueannotation.targetaccession
+FROM unigene.blastevalueannotation
+LEFT JOIN indexer.swissprotnt
+ON indexer.swissprotnt.accession = unigene.blastevalueannotation.targetaccession
+WHERE indexer.swissprotnt.accession IS NULL
+AND unigene.blastevalueannotation.targetsource = 'swissprot';
+
+
+Query OK, 35 rows affected (0.02 sec)
+Records: 35  Duplicates: 0  Warnings: 0
+
+
+ select * from noswissprotnt;
++--------------+-----------------+
+| collectionid | sourceaccession |
++--------------+-----------------+
+|           28 | P01742          |
+|           30 | P01848          |
+|           48 | P39193          |
+|           56 | P39192          |
+|           63 | P60673          |
+|           72 | P39188          |
+|          155 | P39194          |
+|          189 | P01804          |
+|          209 | P39194          |
+|          270 | P39192          |
+|          296 | P06331          |
+|          315 | P39195          |
+|          352 | P01769          |
+|          354 | P39192          |
+|          378 | P39192          |
+|          380 | P39194          |
+|          386 | P39189          |
+|          407 | P39194          |
+|          458 | P08547          |
+|          466 | P39188          |
+|          470 | P39192          |
+|          487 | P39194          |
+|          490 | P39192          |
+|          571 | P39188          |
+|          573 | P01824          |
+|          602 | P01744          |
+|          620 | P01742          |
+|          644 | P08547          |
+|          671 | P39188          |
+|          778 | P01742          |
+|          825 | Q5DRC3          |
+|          877 | P01744          |
+|          916 | P01744          |
+|          917 | Q5DRD2          |
+|          937 | P06331          |
++--------------+-----------------+
+35 rows in set (0.00 sec)
+    
+
+    UNIQUE SWISSPROT ACCESSIONS:
+    
+    SELECT DISTINCT unigene.blastevalueannotation.targetaccession
+    FROM unigene.blastevalueannotation
+    LEFT JOIN indexer.swissprotnt
+    ON indexer.swissprotnt.accession = unigene.blastevalueannotation.targetaccession
+    WHERE indexer.swissprotnt.accession IS NULL
+    AND unigene.blastevalueannotation.targetsource = 'swissprot';
+
+    +-----------------+
+    | targetaccession |
+    +-----------------+
+    | P01742          |
+    | P01848          |
+    | P39193          |
+    | P39192          |
+    | P60673          |
+    | P39188          |
+    | P39194          |
+    | P01804          |
+    | P06331          |
+    | P39195          |
+    | P01769          |
+    | P39189          |
+    | P08547          |
+    | P01824          |
+    | P01744          |
+    | Q5DRC3          |
+    | Q5DRD2          |
+    +-----------------+
+    17 rows in set (0.01 sec)
+
+
+USE unigene;
+SELECT COUNT(DISTINCT collectionid)
+FROM blastevalueannotation
+WHERE targetsource = 'swissprot';
+
+
++------------------------------+
+| COUNT(DISTINCT collectionid) |
++------------------------------+
+|                          498 |
++------------------------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Feb 17 00:52:35 EST 2008] DOWNLOAD EMBL cds.dat.gz FILE>
+
+
+
+cd /swissprot.nucleotide
+wget ftp://ftp.ebi.ac.uk/pub/databases/embl/cds/cds.dat.gz
+
+(~ 8 hours)
+
+
+</entry>
+
+
+
+<entry [Sun Feb 17 00:46:39 EST 2008] DOWNLOAD CLUSTALW2>
+
+
+
+ftp://ftp.ebi.ac.uk/pub/software/clustalw2/clustalw-2.0.1-macosx.dmg
+
+
+</entry>
+
+
+
+<entry [Sun Feb 17 00:46:26 EST 2008] THERE ARE 2 embl entries per SWISSPROT entry>
+
+
+
+http://www.expasy.org/sprot/relnotes/   
+
+                                   Total    Number of  Average
+Line type / subtype                number   entries    per entry
+---------------------------------  -------- ---------  ---------
+   EMBL                             523989    267709    1.90
+
+
+AND 28,421 DISTINCT INTERPROS IN THE swissprotiprscan TABLE
+
+select count(DISTINCT targetid) from swissprotiprscan;
++--------------------------+
+| count(DISTINCT targetid) |
++--------------------------+
+|                    28421 |
++--------------------------+
+
+
+
+6.  STATISTICS FOR SOME LINE TYPES
+
+The following table summarizes the total number of some UniProtKB/Swiss-Prot lines,
+as well as the number of entries with at least one such line, and the
+frequency of the lines.
+
+                                   Total    Number of  Average
+Line type / subtype                number   entries    per entry
+---------------------------------  -------- ---------  ---------
+
+References (RL)                     550759              1.99
+   Journal                          478204    245229    1.73
+   Submitted to EMBL/GenBank/DDBJ    67287     59130    0.24
+   Submitted to other databases       2988      2775    0.01
+   Unpublished observations            633       627   <0.01
+   Book citation                       578       568   <0.01
+   Plant Gene Register                 537       525   <0.01
+   Thesis                              389       387   <0.01
+   Patent                              137       135   <0.01
+   Worm Breeder's Gazette                6         6   <0.01
+
+Comments (CC)                      1128537              4.09
+   SIMILARITY                       318972    253893    1.15
+   FUNCTION                         195810    188699    0.71
+   SUBCELLULAR LOCATION             152959    152959    0.55
+   SUBUNIT                          105026    105026    0.38
+   CATALYTIC ACTIVITY               102651     94032    0.37
+   PATHWAY                           54987     46371    0.20
+   COFACTOR                          41486     37238    0.15
+   TISSUE SPECIFICITY                26128     26128    0.09
+   PTM                               23627     19322    0.09
+   MISCELLANEOUS                     22651     20422    0.08
+   DOMAIN                            18132     15735    0.07
+   ALTERNATIVE PRODUCTS              12699     12699    0.05
+   INTERACTION                        8120      8120    0.03
+   SEQUENCE CAUTION                   7633      7633    0.03
+   INDUCTION                          7512      7512    0.03
+   DEVELOPMENTAL STAGE                6587      6587    0.02
+   ENZYME REGULATION                  4821      4821    0.02
+   WEB RESOURCE                       4281      3472    0.02
+   DISEASE                            3888      2742    0.01
+   CAUTION                            3659      3580    0.01
+   MASS SPECTROMETRY                  3008      2435    0.01
+   BIOPHYSICOCHEMICAL PROPERTIES      1793      1793    0.01
+   POLYMORPHISM                        611       594   <0.01
+   RNA EDITING                         496       496   <0.01
+   ALLERGEN                            422       422   <0.01
+   TOXIC DOSE                          331       324   <0.01
+   BIOTECHNOLOGY                       174       174   <0.01
+   PHARMACEUTICAL                       73        73   <0.01
+
+Features (FT)                      1860993              6.74
+   CHAIN                            281223    272612    1.02
+   TRANSMEM                         179620     39486    0.65
+   METAL                            118481     29154    0.43
+   CONFLICT                          95800     33149    0.35
+   DOMAIN                            93021     52258    0.34
+   STRAND                            92321      8670    0.33
+   TOPO_DOM                          89201     18184    0.32
+   HELIX                             88720      9107    0.32
+   CARBOHYD                          79407     20018    0.29
+   DISULFID                          77002     19621    0.28
+   BINDING                           73356     25193    0.27
+   MOD_RES                           72933     27627    0.26
+   ACT_SITE                          66177     38366    0.24
+   REPEAT                            60127      9182    0.22
+   VARIANT                           48775     10403    0.18
+   NP_BIND                           43766     31429    0.16
+   REGION                            42789     22999    0.15
+   VAR_SEQ                           27872     11982    0.10
+   COMPBIAS                          27816     16202    0.10
+   SIGNAL                            25883     25873    0.09
+   TURN                              23765      7394    0.09
+   MUTAGEN                           20666      5030    0.07
+   ZN_FING                           20432      7801    0.07
+   MOTIF                             19329     12719    0.07
+   SITE                              17097      9484    0.06
+   INIT_MET                          11353     11353    0.04
+   COILED                            10903      7114    0.04
+   NON_TER                           10693      8198    0.04
+   PROPEP                             8294      6993    0.03
+   LIPID                              8074      5202    0.03
+   DNA_BIND                           7324      6770    0.03
+   PEPTIDE                            6823      4279    0.02
+   TRANSIT                            4813      4762    0.02
+   CA_BIND                            2766      1151    0.01
+   CROSSLNK                           2299      1592    0.01
+   NON_CONS                           1308       536   <0.01
+   UNSURE                              502       188   <0.01
+   SE_CYS                              262       189   <0.01
+
+Cross-references (DR)              3933954             14.24
+   InterPro                         629121    253999    2.28
+   EMBL                             523989    267709    1.90
+   Pfam                             354417    247932    1.28
+   GO                               351705    143924    1.27
+   PROSITE                          261031    158819    0.94
+   KEGG                             184994    167349    0.67
+   GenomeReviews                    159422    142494    0.58
+   HAMAP                            111335    111212    0.40
+   TIGRFAMs                         108864    101865    0.39
+   PIR                              107524     98237    0.39
+   PRINTS                            96822     76679    0.35
+   BioCyc                            94765     87112    0.34
+   SMART                             83386     63657    0.30
+   PANTHER                           83290     77583    0.30
+   HSSP                              81747     81747    0.30
+   ProDom                            74589     72198    0.27
+   Gene3D                            73453     62434    0.27
+   UniGene                           67015     61114    0.24
+   Ensembl                           55170     55140    0.20
+   GermOnline                        42027     41411    0.15
+   PDB                               38787     10559    0.14
+
+</entry>
+
+
+
+<entry [Sat Feb 16 12:46:26 EST 2008] GET SWISSPROT NUCLEOTIDE SEQUENCES FOR treealign BEFORE RUNNING treepredict (above)>
+
+
+
+
+PROBLEM: Running 'treepredict' results in the alignment length being a third of the iprscan length because the aligned sequences is a protein sequence and the iprscans are based on the nucleotide length:
+
+unigene COLLECTION ID 3:
+
+++++ Signature::Attribute::Iprscan::attributes(self, arguments)
+ID: unigeneblast.3.1
+
+Getting alignment row for sequence: unigeneblast.3.1
+Alignment array for ID unigeneblast.3.1: (422 entries): 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89
+
+BUT Iprscans:
+
+BEFORE Redoing iprscan start/stop based on clustalw alignment...
+Iprscan 129..900 G3DSA:4.10.640.10
+Iprscan 135..1257 PTHR11537:SF38
+Iprscan 135..1257 PTHR11751
+Iprscan 84..1245 PF00155
+Iprscan 279..339 PR00753
+Iprscan 516..588 PR00753
+Iprscan 624..693 PR00753
+Iprscan 12..1263 SSF53383
+
+
+SOLUTION: EXTRACT ALL OF THE SWISSPROT NUCLEOTIDE SEQUENCES ONE BY ONE USING fastacmd.
+
+    **** FROM ftp://ftp.ncbi.nih.gov/blast/db/blastdb.html:
+    
+    NCBI BLAST home pages (http://www.ncbi.nih.gov/BLAST/) use a standard 
+    set of BLAST databases for Nucleotide, Protein, and Translated BLAST 
+    searches.  These databases are made available in the /blast/db directory as 
+    compressed archives (ftp://ftp.ncbi.nih.gov/blast/db/) in pre-formatted 
+    format. The FASTA databases reside under the /blast/db/FASTA directory.
+    
+    The pre-formatted databases offer the following advantages:
+    
+        * The pre-formatted databases are smaller in size and therefore are
+          faster to download;
+        * Sequences in FASTA format can be generated from the pre-formatted
+          databases by the fastacmd utility;
+        * A convenient script (update_blastdb.pl) is available to download 
+          the pre-formatted databases from the NCBI ftp site;
+
+
+1. DOWNLOAD ALL nt PRE-FORMATTED DATABASES
+
+sudo mkdir /swissprot.nucleotide
+sudo chown young:young /swissprot.nucleotide
+cd /swissprot.nucleotide
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.00.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.01.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.02.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.03.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.04.tar.gz
+wget ftp://ftp.ncbi.nih.gov/blast/db/nt.05.tar.gz
+
+2. DOWNLOAD nt FASTA DATABASES
+
+cd /swissprot.nucleotide
+wget ftp://ftp.ncbi.nih.gov/blast/db/FASTA/nt.gz
+
+head nt.gz
+
+>gi|2695846|emb|Y13255.1|ABY13255 Acipenser baeri mRNA for immunoglobulin heavy chain, clone ScH 3.3
+TGGTTACAACACTTTCTTCTTTCAATAACCACAATACTGCAGTACAATGGGGATTTTAACAGCTCTCTGTATAATAATGA
+
+
+gzcat nt.gz | grep <some_swissprot_id>
+
+<NO OUTPUT>
+
+
+SO nt.gz FILE DOES NOT CONTAIN SWISSPROT ACCESSIONS AND THERE IS NO READILY AVAILABLE MAPPING BETWEEN SWISSPROT ACCESSIONS AND GENBANK IDS~~!
+
+So, used the embl cds file (above).
+
+
+</entry>
+
+
+
+<entry [Sat Feb 16 00:03:02 EST 2008] RESOLVE MISSING ENTRIES IN TREELOOKUP   >
+
+
+
+Some of the collection sequences in 'unigeneblast' don't have their corresponding collection id as a match in the 'treelookup' table. Check whether this is because the particular sequences in 'unigene' don't have entries in the 'treebranch' table, or further upstream in the 'treelibrary' table.
+
+
+1. Get 'unigeneblast.collection' sequences with no corresponding 'unigene' collection id in 'unigeneblast.treelookup' table
+
+ON genomics:
+
+use unigeneblast;
+drop table if exists ids;
+create temporary table if not exists ids ( collectionid int(6) );
+INSERT INTO ids
+SELECT collectionid
+FROM treelookup
+WHERE collectionid = targetid;
+
+|          987 |
+|          988 |
+|          990 |
+|          991 |
+|          992 |
+|          993 |
+|          995 |
+|          996 |
+|          997 |
+|          998 |
+|          999 |
+|         1000 |
++--------------+
+724 rows in set (0.01 sec)
+
+create table if not exists notreelookup ( collectionid int(6) );
+INSERT INTO notreelookup
+SELECT DISTINCT collection.collectionid
+FROM collection
+LEFT JOIN ids
+ON ids.collectionid = collection.collectionid
+WHERE ids.collectionid IS NULL;
+
+|          929 |
+|          937 |
+|          940 |
+|          952 |
+|          953 |
+|          954 |
+|          966 |
+|          968 |
+|          979 |
+|          986 |
+|          989 |
+|          994 |
++--------------+
+239 rows in set (4.03 sec)
+
+SELECT * FROM notreelookup INTO OUTFILE '/private/var/tmp/unigeneblast.notreelookup.tsv';
+
+sudo mv /private/var/tmp/unigeneblast.notreelookup.tsv /common/pipeline/unigeneblast/collection/unigeneblast.notreelookup.tsv
+
+2. Check if these sequences also don't have entries in the 'unigene.treebranch' table
+
+use unigene;
+create table if not exists notreebranch ( collectionid int(6) );
+INSERT INTO notreebranch
+SELECT DISTINCT unigeneblast.notreelookup.collectionid
+FROM unigeneblast.notreelookup
+LEFT JOIN unigene.treebranch
+ON unigene.treebranch.collectionid = unigeneblast.notreelookup.collectionid
+WHERE unigene.treebranch.collectionid IS NULL;
+
+
+**** unigeneblast COLLECTION IDS WITHOUT CORRESPONDING unigene IN treelookup TABLE AND FOR WHICH THERE IS NO treebranch ENTRY IN unigene:
+
+|          887 |
+|          899 |
+|          908 |
+|          910 |
+|          915 |
+|          918 |
+|          940 |
+|          968 |
+|          979 |
+|          986 |
+|          989 |
++--------------+
+97 rows in set (0.23 sec)
+
+SELECT DISTINCT unigeneblast.notreelookup.collectionid
+FROM unigeneblast.notreelookup, unigene.treebranch
+WHERE unigene.treebranch.collectionid = unigeneblast.notreelookup.collectionid;
+
+**** unigeneblast COLLECTION IDS WITHOUT CORRESPONDING unigene IN treelookup TABLE AND FOR WHICH THERE **IS** A treebranch ENTRY IN unigene:
+
+|          909 |
+|          916 |
+|          919 |
+|          929 |
+|          937 |
+|          952 |
+|          953 |
+|          954 |
+|          966 |
+|          994 |
++--------------+
+142 rows in set (0.00 sec)
+
+
+OUT OF 239 unigeneblast SEQUENCES THAT DON'T HAVE treelookup ENTRIES FOR THEIR CORRESPONDING unigene ENTRIES:
+97 OF THE unigene SEQUENCES DON'T HAVE treebranch ENTRIES
+142 unigene SEQUENCES DO HAVE treebranch ENTRIES
+
+treelookup      239
+notreebranch    97
+withtreebranch  142
+
+
+3. Check if these sequences don't have entries in the 'unigene.treelibrary' table
+
+use unigene;
+create table if not exists notreelibrary ( collectionid int(6) );
+INSERT INTO notreelibrary
+SELECT DISTINCT unigeneblast.notreelookup.collectionid
+FROM unigeneblast.notreelookup
+LEFT JOIN unigene.treelibrary
+ON unigene.treelibrary.collectionid = unigeneblast.notreelookup.collectionid
+WHERE unigene.treelibrary.collectionid IS NULL;
+
+|          909 |
+|          910 |
+|          915 |
+|          916 |
+|          918 |
+|          940 |
+|          952 |
+|          953 |
+|          968 |
+|          986 |
+|          989 |
++--------------+
+142 rows in set (0.01 sec)
+
+
+SELECT DISTINCT unigeneblast.notreelookup.collectionid
+FROM unigeneblast.notreelookup, unigene.treelibrary
+WHERE unigene.treelibrary.collectionid = unigeneblast.notreelookup.collectionid;
+
+|          876 |
+|          879 |
+|          886 |
+|          893 |
+|          903 |
+|          919 |
+|          929 |
+|          937 |
+|          954 |
+|          966 |
+|          979 |
+|          994 |
++--------------+
+97 rows in set (0.00 sec)
+
+
+
+OUT OF 239 unigeneblast SEQUENCES THAT DON'T HAVE treelookup ENTRIES FOR THEIR CORRESPONDING unigene ENTRIES:
+97 OF THE unigene SEQUENCES HAVE treelibrary ENTRIES
+142 OF THE unigene SEQUENCES DON'T HAVE treelibrary ENTRIES
+
+
+treelookup      239
+notreebranch    97
+withtreebranch  142
+notreelibrary   142
+withtreelibrary 97
+
+CHECK IF notreebranch AND notreelibrary HOLD THE SAME COLLECTION IDS:
+
+SELECT DISTINCT notreebranch.collectionid
+FROM notreebranch, notreelibrary
+WHERE notreelibrary.collectionid = notreebranch.collectionid;
+
+|          899 |
+|          908 |
+|          910 |
+|          915 |
+|          918 |
+|          940 |
+|          968 |
+|          986 |
+|          989 |
++--------------+
+92 rows in set (0.01 sec)
+
+
+SELECT DISTINCT notreebranch.collectionid
+FROM notreebranch
+LEFT JOIN notreelibrary
+ON notreelibrary.collectionid = notreebranch.collectionid
+WHERE notreelibrary.collectionid IS NULL;
+
++--------------+
+| collectionid |
++--------------+
+|          222 |
+|          312 |
+|          579 |
+|          646 |
+|          979 |
++--------------+
+5 rows in set (0.31 sec)
+
+
+select distinct collectionid from notreebranch;
+
+|          915 |
+|          918 |
+|          940 |
+|          968 |
+|          979 |
+|          986 |
+|          989 |
++--------------+
+97 rows in set (0.00 sec)
+
+
+4. Check if these sequences don't have entries in the 'unigene.learningtrees' table
+
+use unigene;
+create table if not exists nolearningtrees ( collectionid int(6) );
+INSERT INTO nolearningtrees
+SELECT DISTINCT unigeneblast.notreelookup.collectionid
+FROM unigeneblast.notreelookup
+LEFT JOIN unigene.learningtrees
+ON unigene.learningtrees.collectionid = unigeneblast.notreelookup.collectionid
+WHERE unigene.learningtrees.collectionid IS NULL;
+
+|          910 |
+|          915 |
+|          916 |
+|          918 |
+|          940 |
+|          952 |
+|          953 |
+|          968 |
+|          986 |
+|          989 |
++--------------+
+142 rows in set (0.46 sec)
+
+
+5. Check if nolearningtrees and notreelibrary hold the same collection ids.
+
+use unigene;
+SELECT notreelibrary.collectionid
+FROM notreelibrary
+LEFT JOIN nolearningtrees
+ON nolearningtrees.collectionid = notreelibrary.collectionid
+WHERE nolearningtrees.collectionid IS NULL;
+
+Empty set (0.21 sec)
+
+6. Inversely, check that learningtrees collection ids correspond completely to treelibrary collection ids:
+
+use unigene;
+
+SELECT treelibrary.collectionid
+FROM treelibrary
+LEFT JOIN learningtrees
+ON learningtrees.collectionid = treelibrary.collectionid
+WHERE learningtrees.collectionid IS NULL;
+
+Empty set (0.32 sec)
+
+7. Check if notreebranch and notreelibrary hold the same collection ids.
+
+use unigene;
+SELECT DISTINCT notreelibrary.collectionid
+FROM notreelibrary
+LEFT JOIN notreebranch
+ON notreebranch.collectionid = notreelibrary.collectionid
+WHERE notreebranch.collectionid IS NULL;
+
+|          743 |
+|          778 |
+|          785 |
+|          845 |
+|          877 |
+|          909 |
+|          916 |
+|          952 |
+|          953 |
++--------------+
+50 rows in set (0.15 sec)
+
+THERE ARE 100 COLLECTION IDS IN notreelibrary THAT ARE NOT IN notreebranch.
+
+
+SELECT DISTINCT notreebranch.collectionid
+FROM notreebranch
+LEFT JOIN notreelibrary
+ON notreelibrary.collectionid = notreebranch.collectionid
+WHERE notreelibrary.collectionid IS NULL;
+
++--------------+
+| collectionid |
++--------------+
+|          222 |
+|          312 |
+|          579 |
+|          646 |
+|          979 |
++--------------+
+5 rows in set (0.14 sec)
+
+
+SELECT DISTINCT notreelibrary.collectionid
+FROM notreelibrary, notreebranch
+WHERE notreebranch.collectionid = notreelibrary.collectionid;
+
+|          899 |
+|          908 |
+|          910 |
+|          915 |
+|          918 |
+|          940 |
+|          968 |
+|          986 |
+|          989 |
++--------------+
+92 rows in set (0.01 sec)
+
+
+select count(DISTINCT collectionid) from notreebranch;
++------------------------------+
+| count(DISTINCT collectionid) |
++------------------------------+
+|                           97 |
++------------------------------+
+
+select count(DISTINCT collectionid) from notreelibrary;
++------------------------------+
+| count(DISTINCT collectionid) |
++------------------------------+
+|                          142 |
++------------------------------+
+
+
+4. Check the 'unigene.iprscanset' entries for these entries
+
+SELECT COUNT(DISTINCT ACCESSION) 
+
+5. Check the 'unigene.iprscanset' entries for these entries
+
+
+
+6. Check the 'unigene.iprscanset' entries for these entries
+
+
+
+</entry>
+
+
+
+<entry [Sat Feb 16 00:02:48 EST 2008] GET AVERAGE MAX SPAN OF INTERPROS FOR unigeneblast COLLECTION SEQUENCES BY CREATING iprscanspan TABLE>
+
+
+
+Min: 21
+Average: 1,809
+Max: 15,522
+Mode: 933
+
+use unigeneblast;
+select count(DISTINCT collectionid) from collectioniprscan;
++------------------------------+
+| count(DISTINCT collectionid) |
++------------------------------+
+|                          949 |
++------------------------------+
+
+drop table iprscanspan;
+create table iprscanspan ( collectionid int(6), min int(8), max int(8), span int(8) );
+insert into iprscanspan
+select collectionid, min(querystart) as min , max(querystop) as max, max(querystop) - min(querystart) as span from collectioniprscan group by collectionid;
+
+select * from iprscanspan;
++--------------+------+------+------+
+| collectionid | min  | max  | span |
++--------------+------+------+------+
+|            2 |  157 | 1926 | 1769 |
+|            3 |   12 | 1263 | 1251 |
+|            4 |    4 |  376 |  372 |
+|            5 |    6 | 3885 | 3879 |
+...
+|          998 |    5 |  2567 |  2562 |
+|          999 |   12 |  2232 |  2220 |
+|         1000 |   14 |  1093 |  1079 |
++--------------+------+-------+-------+
+
+949 rows in set (0.04 sec)
+
+
+1. Get the average
+==================
+
+select avg(span) from iprscanspan;
++----------------+
+| avg(max - min) |
++----------------+
+|      1809.0685 |
++----------------+
+
+
+
+2. Get the min
+==============
+
+select min(span) from iprscanspan;
++----------------+
+| min(max - min) |
++----------------+
+|              0 |
++----------------+
+1 row in set (0.00 sec)
+
+select * from iprscanspan where min = max;
++--------------+------+------+
+| collectionid | min  | max  |
++--------------+------+------+
+|          367 |    0 |    0 |
++--------------+------+------+
+1 row in set (0.00 sec)
+
+select min(span) from iprscanspan where collectionid != 367;
++----------------+
+| min(max - min) |
++----------------+
+|             21 |
++----------------+
+1 row in set (0.01 sec)
+
+
+3. Get the max
+==============
+
+select max(span) from iprscanspan;
++----------------+
+| max(max - min) |
++----------------+
+|          15522 |
++----------------+
+1 row in set (0.00 sec)
+
+
+
+
+4. Get the mode
+===============
+
+SELECT collectionid, max-min AS span FROM iprscanspan GROUP BY collectionid ORDER BY span;
+
+SELECT span, count(span) as frequency from iprscanspan group by span order by frequency desc limit 10;
+
++------+-----------+
+| span | frequency |
++------+-----------+
+|  933 |        10 |
+|  927 |         8 |
+|  921 |         6 |
+|  930 |         6 |
+|  939 |         5 |
+...
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Feb 14 16:14:09 EST 2008] REDID collectioniprscan TABLE USING ID MAPPINGS FROM iprscanmapids>
+
+
+
+cd ~/FUNNYBASE/bin/signature
+./swissprotiprscan.pl -d unigeneblast
+
+    Run time: 00:00:04
+    Completed ./swissprotiprscan.pl
+    4:05PM, 14 February 2008
+    ****************************************
+
+    select count(DISTINCT collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          472 |
+    +------------------------------+
+
+./collectioniprscanmissing.pl -d unigeneblast -s nucleotide
+
+    Run time: 00:00:07
+    Completed ./collectioniprscanmissing.pl
+    4:14PM, 14 February 2008
+    ****************************************
+
+    select count(DISTINCT collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          949 |
+    +------------------------------+
+
+</entry>
+
+
+
+<entry [Tue Feb 12 23:55:34 EST 2008] TESTED unigeneblast AGAINST TREES OF unigene>
+
+
+
+1. REQUIRES TARGET DATABASE treebranch TABLE
+
+*** NOT NECESSARY AS ALREADY LOADED ONTO CLUSTER FOR arraytreealign
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigene -t treebranch,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigene/collection/clusterloadtable.sh
+sudo /common/pipeline/unigene/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+2. LOAD collection,collectioniprscan TABLES ON CLUSTER
+======================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t collection,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+3. RUN arraytreelookup
+======================
+
+    USE INTERPRO MOTIFS OF QUERY SEQUENCE, SEGREGATED BY DOMAINS IN treedomain, TO LOOKUP    
+    MOTIF PAIRS IN treebranch TABLE. ORDER BY NUMBER OF CORRECT CONSECUTIVE PAIRS.
+    
+
+sudo ./arraytreelookupdaemon.pl -d unigeneblast -t unigene -g size -s 300 -n 20
+    
+*******
+NB: WORKAROUND PROBLEMS WITH IPRSCANS IN collectioniprscan (FIXED blastorthologues SO DON'T NEED TO REPEAT THIS STEP IF NEW blastorthologues IS USED TO POPULATE collection):
+
+        1. SWISSPROT SEQUENCE IPRSCAN POSITIONS SHOULD BE MULTIPLIED BY 3
+
+        2. IPRSCAN collection ids DON'T CORRESPOND TO COLLECTION IDS IN collection NOR blastmapids
+        
+            -> CREATED iprscanmapids.pl (SEE ABOVE)
+            
+            -> REPOPULATED collectioniprscan FOR unigeneblast
+
+
+RELOADED unigeneblast TABLES collection,collectioniprscan ONTO CLUSTER:
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t collection
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+***
+
+
+4. LOAD DATA WITH arraytreelookuploaddata
+=========================================
+
+./arraytreelookuploaddata.pl -D -d unigeneblast -t unigene -g size -s 300 -n 20
+    
+    *** DID MANUALLY ~ 3 mins
+    Fri Feb 15 00:45:15 EST 2008
+
+    select collectionid, targetid, hits, sourceannotation, targetannotation  from treelookup into outfile '/private/var/tmp/unigeneblast-unigene.treelookup.summary.tsv';
+
+sudo mv /private/var/tmp/unigeneblast-unigene.treelookup.ssummary.tsv /Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast-unigene.treelookup.summary.tsv
+
+SUMMARY FILE:
+/Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast-unigene.treelookup.summary.tsv
+
+
+5. REDID treealign:
+
+sudo ./arraytreealigndaemon.pl -d unigeneblast -t unigene -g size -s 300 -n 20
+
+    Run time: 00:42:13
+    Completed ./arraytreealigndaemon.pl
+    0:23AM, 16 February 2008
+    ****************************************
+
+
+6. LOADED ALIGNMENT FILES INTO treealign
+
+    Run time: 00:01:08
+    Completed ./arraytreealignloaddata.pl
+    1:20AM, 16 February 2008
+    ****************************************
+
+
+    *********
+    PROBLEM : swissprot sequences are 
+    *********
+
+
+7. TEST PREDICTIONS
+
+./treepredict.pl -d unigeneblast -t unigene -g size -s 300
+
+    
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb 12 22:31:29 EST 2008] REDO unigeneblast SO THAT collectionids SYNC UP WITH unigene>
+
+
+
+./blastorthologues.pl -d unigene -t unigeneblast
+    
+    Completed ./blastorthologues.pl
+    Run time: 00:00:14
+    10:31PM, 12 February 2008
+    ****************************************
+
+MAPPED THE IDS:
+
+./blastmapids.pl -d unigeneblast -f /Users/young/FUNNYBASE/pipeline/unigeneblast/data/unigeneblast.collection.out-of-sync.txt
+
+
+THEN CONVERTED TO CORRECT collection ids IN collectioniprscan TABLE:
+
+SAVED TABLE TO FILE:
+
+select * from collectioniprscan order by collectionid into outfile '/private/var/tmp/unigeneblast.collectioniprscan.tsv';
+
+sudo mv /private/var/tmp/unigeneblast.collectioniprscan.tsv /Users/young/FUNNYBASE/pipeline/unigeneblast/data/unigeneblast.collectioniprscan.tsv
+
+cp /Users/young/FUNNYBASE/pipeline/unigeneblast/data/unigeneblast.collectioniprscan.tsv /Users/young/FUNNYBASE/pipeline/unigeneblast/data/unigeneblast.collectioniprscan.tsv.bkp
+
+RELOAD WITH REMAPPED IDS:
+
+./blastreloadids.pl -d unigeneblast -t collectioniprscan -f /private/var/tmp/unigeneblast.collectioniprscan.tsv
+
+    Completed ./blastreloadids.pl
+    Run time: 00:00:14
+    11:51PM, 12 February 2008
+    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Wed Jan 16 16:37:59 EST 2008] DO NAIVE BAYES AND DECISION TREES FOR BEST BLAST HITS OF unigene (1,000 human UniGenes) DATABASE>
+
+
+
+1. Create separate database for all BLAST hits in 'unigene' database
+====================================================================
+
+    APPLICATION     blastorthologues
+    
+    PURPOSE
+    
+        Load individual blast hits from the 'blastevalueannotation' table into the
+        
+        'orthologues' table of a new database.
+
+    
+./blastorthologues.pl -d unigene -t unigeneblast
+
+
+
+2. Get InterPro database hits for all Swissprot best hits 
+=========================================================
+Extract the InterPro hits from 'swissprotiprscan' table (from match.xml file).
+
+cd ~/FUNNYBASE/bin/signature
+./swissprotiprscan.pl -d unigeneblast
+    
+    /Users/young/FUNNYBASE/pipeline/unigeneblast/collection/unigeneblast.collectioniprscan.tsv
+    
+    Run time: 00:00:14
+    Completed ./swissprotiprscan.pl
+    0:37AM, 14 January 2008
+    ****************************************
+
+    select count(*) from collection;
+   +----------+
+   | count(*) |
+   +----------+
+   |      966 |
+   +----------+
+   1 row in set (0.01 sec)
+   
+    select count(DISTINCT collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          461 |
+    +------------------------------+
+
+
+3. Get ORFs for non-swissprot sequences
+=======================================
+
+cd ~/FUNNYBASE/bin/signature
+./collectionorfmissing.pl -d unigeneblast
+
+    Completed ./collectionorfmissing.pl
+    Run time: 00:00:30
+    10:45PM, 14 January 2008
+    ****************************************
+
+
+
+3. Get InterPro hits for all other best hits using Iprscan
+==========================================================
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscanmissingdaemon.pl -d unigeneblast -n 10
+
+    Run time: 16:13:15
+    Completed /Users/young/FUNNYBASE/bin/signature/arrayiprscanmissing.pl
+    7:13PM, 14 January 2008
+    ****************************************
+
+4. Load non-swissprot InterPro hits into 'collectioniprscan' table
+==================================================================
+
+cd ~/FUNNYBASE/bin/signature
+./collectioniprscanmissing.pl -d unigeneblast -s nucleotide
+    
+
+
+
+    select count(DISTINCT collectionid) from collectionorf;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          485 |
+    +------------------------------+
+    
+    select count(DISTINCT collectionid) from collection where source != 'swissprot';
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          485 |
+    +------------------------------+
+
+    select DISTINCT collectionid from collectioniprscan limit 10;
+    +--------------+
+    | collectionid |
+    +--------------+
+    |            1 |
+    |            2 |
+    |            3 |
+    |            4 |
+    |            5 |
+    |            6 |
+    |            7 |
+    |            8 |
+    |            9 |
+    |           10 |
+    +--------------+
+    10 rows in set (0.00 sec)
+    
+    mysql> select count(DISTINCT collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          950 |
+    +------------------------------+
+    1 row in set (0.08 sec)
+
+
+5. LOAD THE collection, collectioniprscan TABLES TO THE CLUSTER
+===============================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t collection,collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+4. POPULATE iprscanset
+======================
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscansetdaemon.pl -d unigeneblast -t 24
+
+    WHICH RUNS ON CLUSTER AND COLLECTS 20 MATCHES AND 40 MISMATCHES (OR LESS) PER SEQUENCE IN ORDER OF MOST MOTIF HITS:
+
+    ./arrayiprscanset.pl -d unigeneblast -t 24
+        
+    Run time: 00:13:32
+    Completed /Users/young/FUNNYBASE/bin/signature/arrayiprscansetdaemon.pl
+    3:38PM, 21 January 2008
+    ****************************************    
+    
+    select targetname, interproname from collectioniprscan where targetname != 'seg' and collectionid = 43;
+    +-------------------------------------+-------------------------------------+
+    | targetname                          | interproname                        |
+    +-------------------------------------+-------------------------------------+
+    | no description                      | unintegrated                        |
+    | no description                      | unintegrated                        |
+    | FUMARYLACETOACETATE HYDROLASE       | unintegrated                        |
+    | FUMARYLACETOACETATE HYDROLASE       | unintegrated                        |
+    | FUMARYLACETOACETATE HYDROLASE       | unintegrated                        |
+    | FAA_hydrolase                       | Fumarylacetoacetate (FAA) hydrolase |
+    | fum_ac_acetase: fumarylacetoacetase | Fumarylacetoacetase                 |
+    +-------------------------------------+-------------------------------------+
+
+    
+    use unigeneblast;    
+    select DISTINCT targetname, SUBSTRING(interproname, 1, 30) from iprscanset where collectionid = 43; 
+    +----------------------+--------------------------------+
+    | targetname           | SUBSTRING(interproname, 1, 30) |
+    +----------------------+--------------------------------+
+    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydr |
+    | Fum_ac_acetase       | Fumarylacetoacetase            |
+    | TONB_DEPENDENT_REC_1 | TonB box, N-terminal           |
+    | BZIP_BASIC           | Basic-leucine zipper (bZIP) tr |
+    | HpaG-C-term          | 4-hydroxyphenylacetate degrada |
+    | HpaG-N-term          | 4-hydroxyphenylacetate degrada |
+    +----------------------+--------------------------------+
+    
+
+    select DISTINCT accession, targetname, SUBSTRING(interproname, 1, 50) from iprscanset where collectionid = 43;
+    +-----------+----------------------+----------------------------------------------------+
+    | accession | targetname           | SUBSTRING(interproname, 1, 50)                     |
+    +-----------+----------------------+----------------------------------------------------+
+    | O28058    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | O58377    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P16930    | Fum_ac_acetase       | Fumarylacetoacetase                                |
+    | P16930    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P25093    | Fum_ac_acetase       | Fumarylacetoacetase                                |
+    | P25093    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P34673    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P34673    | TONB_DEPENDENT_REC_1 | TonB box, N-terminal                               |
+    | P35505    | Fum_ac_acetase       | Fumarylacetoacetase                                |
+    | P35505    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P35505    | BZIP_BASIC           | Basic-leucine zipper (bZIP) transcription factor   |
+    | P37352    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P37352    | HpaG-C-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | P37352    | HpaG-N-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | P53889    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | P76004    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q00770    | Fum_ac_acetase       | Fumarylacetoacetase                                |
+    | Q00770    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q2HJ98    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q2KIB0    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q3TC72    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q46978    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q46978    | HpaG-C-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | Q46978    | HpaG-N-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | Q59050    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q5RCX5    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q5RDW0    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q6AYQ8    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q6P2I3    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q6P587    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q8R0F8    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q96GK7    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q9P7L4    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q9RPU5    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    | Q9RPU5    | HpaG-C-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | Q9RPU5    | HpaG-N-term          | 4-hydroxyphenylacetate degradation bifunctional is |
+    | Q9UYW0    | FAA_hydrolase        | Fumarylacetoacetate (FAA) hydrolase                |
+    +-----------+----------------------+----------------------------------------------------+
+    37 rows in set (0.00 sec)
+
+
+5. GET SEQUENCES FOR IPRSCAN SET
+================================
+
+NB: NOT NECESSARILY A BALANCED SET BECAUSE WE WANT TO USE THE ONES WITH THE HIGHEST NUMBER OF MOTIFS IN COMMON TO CREATE THE MULTIPLE ALIGNMENT IN THE NEXT STEP.
+
+./iprscansetsequence.pl -d unigeneblast
+
+	OK
+
+    Run time: 00:01:14
+    Completed ./iprscansetsequence.pl
+    4:40PM, 13 January 2008
+    ****************************************
+
+
+6. CREATE IPRSCAN SET ALIGNMENT
+===============================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d unigeneblast -n 24
+
+    WHICH RUNS ON CLUSTER:
+    
+    ./arrayiprscansetalignment.pl 
+    
+    Run time: 00:29:14
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    0:52AM, 22 January 2008
+    ****************************************
+    
+
+7. LOAD ALIGNMENTS
+==================
+
+./arrayiprscansetalignmentloaddata.pl -d unigeneblast
+    
+    Run time: 00:00:43
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    0:56AM, 22 January 2008
+    ****************************************
+
+    select count(DISTINCT collectionid) from iprscansetalignment;
+    +------------------------------+
+    | count(DISTINCT collectionid) |
+    +------------------------------+
+    |                          887 |
+    +------------------------------+
+    
+
+
+8. CREATE SUPERDOMAINS
+======================
+
+./iprscansuperdomain.pl -d unigeneblast
+
+    RUN TIME: 00:14:25
+    Completed ./iprscansuperdomain.pl
+    2:02AM, 22 January 2008
+    ****************************************
+
+9. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d unigeneblast
+
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:01:20
+    2:59AM, 22 January 2008
+    ****************************************
+
+
+10. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d unigeneblast
+
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:13
+    3:16AM, 22 January 2008
+    ****************************************
+
+
+11. Load TABLES onto cluster
+========================================================================================
+
+TABLES:
+iprscanset
+iprscansetsequence
+iprscansetalignment
+iprscanattributebayes
+iprscansuperdomain 
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t iprscanset,iprscansetsequence,iprscansetalignment,iprscansuperdomain,iprscanattributebayes
+
+    
+    Run time: 00:00:37
+    Completed ./clusterloadtable.pl
+    3:17AM, 22 January 2008
+    ****************************************
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+12. Populate 'iprscanattributes' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE (already loaded for arrayiprscanset.pl)
+iprscanset TABLE
+iprscansetsequence TABLE
+iprscansetalignment TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+GROUP BY IPRSCAN, BY SIZE AND BY BOTH IPRSCAN AND SIZE
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g iprscan -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 100 -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 150 -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 300 -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 100 -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 150 -t 24
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 300 -t 24
+
+
+    select DISTINCT groupby, domainsize from iprscanattribute;
+    +---------+------------+
+    | groupby | domainsize |
+    +---------+------------+
+    | iprscan |          0 |
+    | size    |        100 |
+    | size    |        150 |
+    | size    |        300 |
+    | both    |        100 |
+    | both    |        150 |
+    | both    |        300 |
+    +---------+------------+
+
+
+11. TEST THE BAYESIAN MODELS (USING THE BALANCED DATA SET IN nfoldbayes, FROM iprscanattributebayes):
+
+INPUT: nfoldbayes TABLE
+    
+    ./learningbayes.pl -d pfalagam
+
+
+    select avg(correct) from learningbayes;
+    +--------------+
+    | avg(correct) |
+    +--------------+
+    |       0.7801 |
+    +--------------+
+
+
+12. DO learningtrees
+
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d unigeneblast -g both -s 300
+    
+    STARTED ALL AT 8.25AM
+    ....
+    Completed /Users/young/FUNNYBASE/bin/signature/learningtrees.pl
+    Run time: 00:04:20
+    8:56AM, 22 January 2008
+    ****************************************
+
+    
+
+
+
+ select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.7584 |
+| both    |        150 |       0.7634 |
+| both    |        300 |       0.7524 |
+| iprscan |          0 |       0.8019 |
+| size    |        100 |       0.8226 |
+| size    |        150 |       0.8166 |
+| size    |        300 |       0.8258 |
++---------+------------+--------------+
+
+
+
+12. GET OPTIMUM GROUPINGS FOR EACH SEQUENCE
+
+./learningtreesharvest.pl -d unigene
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Jan 16 16:10:06 EST 2008] CREATE A Cluster::Worker::Ant OBJECT VERSION OF iprscanattribute.pl>
+
+
+
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g iprscan -t 24
+
+    WHICH RUNS AS AN ARRAY JOB ON gems OR CLUSTER:
+    
+    sudo ./arrayiprscanattribute.pl 1 /common/pipeline/unigeneblast/collection/unigeneblast.iprscanattribute.args
+
+1. LOAD unigeneblast DATABASE TABLES iprscanset AND iprscansuperdomain TO CLUSTER
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t iprscanset
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d unigeneblast -t iprscansuperdomain
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo /common/pipeline/unigeneblast/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+2. RUN arrayiprscanattributedaemon:
+
+sudo ./arrayiprscanattributedaemon.pl -d unigeneblast -g iprscan -t 24
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g iprscan -t 24
+
+    Run time: 00:33:36
+    Completed /Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl
+    5:28AM, 22 January 2008
+    ****************************************
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+    
+    Run time: 00:00:08
+    Completed /Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl
+    5:28AM, 22 January 2008
+    ****************************************
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 100 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 150 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g size -s 300 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 100 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 150 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d unigeneblast -g both -s 300 -t 24
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d unigeneblast -t 24
+    ...
+    ALL COMPLETED
+    ...
+    Run time: 00:01:01
+    Completed /Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl
+    8:25AM, 22 January 2008
+    ****************************************
+
+
+
+

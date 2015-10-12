@@ -1,0 +1,873 @@
+Notes-apps-mummer.txt
+
+</entry>
+
+
+
+<entry [Sat Jul 26 20:42:13 EDT 2008] TEST mummer AND ali2gff ON RANGE OF FILE SIZES>
+
+
+
+1. CREATE TEST DIRECTORY
+
+mkdir /home/syoung/base/pipeline/human1-velvet/mummer.chr1
+cd /home/syoung/base/pipeline/human1-velvet/mummer.chr1
+
+COPY INPUT FILES INTO TEST DIRECTORY
+
+cp ../assembly/contigs.fa ./
+cp  ../../human.genome/ucsc/chr1.fa ./
+ 
+ll
+    -rw-r--r-- 1 syoung users 241M Jul 26 21:12 chr1.fa
+    -rw-r--r-- 1 syoung users 100K Jul 26 21:13 contigs.fa
+
+
+2. RUN mummer WITH -F (CONSISTENT FORMAT) OPTION
+
+Usage: ./mummer [options] <reference-file> <query-files>
+
+Mummer's memory usage is dependent on the size of the reference file.
+So its best to make the smaller of the input files the reference to assure the program does not exhaust your computer's memory resources.
+
+The -F option is useful for forcing mummer to output a consistent format regardless of the number of input sequences.
+
+cd /home/syoung/base/pipeline/human1-velvet/mummer.chr1
+/store/home/syoung/base/apps/mummer/MUMmer3.20/mummer -F contigs.fa chr1.fa > contigs_fa-chr1_fa.mummer
+
+
+    # reading input file "contigs.fa" of length 83349
+    # construct suffix tree for sequence of length 83349
+    # (maximum input length is 536870908)
+    # CONSTRUCTIONTIME /store/home/syoung/base/apps/mummer/MUMmer3.20/mummer contigs.fa 0.02
+    # reading input file "chr1.fa" of length 247249719
+    # matching query-file "chr1.fa"
+    # against subject-file "contigs.fa"
+    # COMPLETETIME /store/home/syoung/base/apps/mummer/MUMmer3.20/mummer contigs.fa 65.71
+    # SPACE /store/home/syoung/base/apps/mummer/MUMmer3.20/mummer contigs.fa 240.61
+    
+
+tail contigs_fa-chr1_fa.mummer
+    ...
+    NODE_7_length_625_cov_183.227203         634  247160919        20
+    NODE_247_length_150_cov_7.586667           1  247172116        30
+    NODE_247_length_150_cov_7.586667          39  247172154        54
+    NODE_247_length_150_cov_7.586667          94  247172209        85
+    NODE_334_length_66_cov_8.060606           13  247182918        20
+
+
+MUMMER USAGE:
+
+    Find and output (to stdout) the positions and length of all sufficiently long maximal matches of a substring in <query-file> and <reference-file>
+    
+    Options:
+    -mum           compute maximal matches that are unique in both sequences
+    -mumcand       same as -mumreference
+    -mumreference  compute maximal matches that are unique in the reference-
+                   sequence but not necessarily in the query-sequence (default)
+    -maxmatch      compute all maximal matches regardless of their uniqueness
+    -n             match only the characters a, c, g, or t
+                   they can be in upper or in lower case
+    -l             set the minimum length of a match
+                   if not set, the default value is 20
+    -b             compute forward and reverse complement matches
+    -r             only compute reverse complement matches
+    -s             show the matching substrings
+    -c             report the query-position of a reverse complement match
+                   relative to the original query sequence
+    -F             force 4 column output format regardless of the number of
+                   reference sequence inputs
+    -L             show the length of the query sequences on the header line
+    -h             show possible options
+    -help          show possible options
+
+
+    THE MUMMER SUITE CONTAINS THESE MAIN APPLICATIONS:
+
+        run-mummer1:    1-TO-1 WITH NO/FEW TRANSLOCATIONS
+    
+        run-mummer3:   Multi-FastA query file for 1-vs-many sequence comparisons (improved version of run-mummer1, uses a new clustering algorithm that handles multiple sequence rearrangements and inversions).
+        
+        nucmer:   all-vs-all comparison of nucleotide sequences contained in multi-FastA data files.  It is best used for highly similar sequence that may have large rearrangements (e.g., comparing two unfinished shotgun sequencing assemblies, mapping an unfinished sequencing assembly to a finished genome, and comparing two fairly similar genomes that may have large rearrangements and duplications).
+        
+        promer:  Protein level all-vs-all comparison of nucleotide sequences contained in multi-FastA data files.  The nucleotide input files are translated in all 6 reading frames and then aligned to one another via the same methods as nucmer.  It is best used for highly divergent sequences that may have moderate to high similarity on the protein level.  Common use cases are: identifying syntenic regions between highly divergent genomes, comparative genome annotation i.e. using an already annotated genome to help in the annotation of a newly sequenced genome, and the general comparison of two fairly divergent genomes that have large rearrangements and may only be similar on the protein level.
+    
+        dnadiff:    A wrapper around nucmer that builds an alignment using default parameters, and runs many of nucmer's helper scripts to process the output and report alignment statistics, SNPs, breakpoints, etc. It is designed for evaluating the sequence and structural similarity of two highly similar sequence sets (e.g., comparing two different assemblies of the same organism, or comparing two strains of the same species).
+    
+        show-coords:    Parses the delta alignment output of nucmer and promer and displays the coordinates, and other useful information about the alignments.
+
+
+3. RUN ali2gff
+
+
+CONVERT MUMMER OUTPUT TO JUST THREE COLUMNS OF NUMBERS USING cut:
+
+cut -b 40-80 contigs_fa-chr1_fa.mummer > contigs_fa-chr1_fa.mummer.3cols
+
+AND ADD > chr1 HEADER TO FILE:
+
+> chr1
+    104     62203        20
+    634     67037        22
+    634     71996        22
+     13     84729        20
+    634    114708        20
+     13    119293        20
+
+
+NAME
+
+    /home/syoung/base/apps/gff2aplot/src/ali2gff/ali2gff - Module to translate a MUMmer output files into gff formatted output.
+
+SYNOPSIS
+
+    /home/syoung/base/apps/gff2aplot/src/ali2gff/ali2gff [-r] [-t <.|0|1|2>] [-x <name>] [-y <name>] [-H] [-f] [-h] <MUMmer_output_file>
+
+DESCRIPTION
+
+
+OPTIONS
+
+-r               interchange the order of sequences (sequence 1 on y-axis, sequence 2 on x-axis)
+-t <.|0|1|2>     put label 'frame' in gff output
+-x <name>        specify the species name for species 1 (default: Seq1)
+-y <name>        specify the species name for species 2 (default: Seq2)
+-i               ignore full sequence identities
+-f               write output to file
+-h               print this help text
+
+
+
+cd /home/syoung/base/pipeline/human1-velvet/mummer.chr1
+
+/home/syoung/base/apps/gff2aplot/src/ali2gff/ali2gff -f contigs_fa-chr1_fa.mummer.3cols
+
+
+
+CREATE A TEST VERSION OF ali2gff:
+
+/home/syoung/base/apps/gff2aplot/test/ali2gff -f contigs_fa-chr1_fa.mummer.3cols
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Jul 26 20:41:04 EDT 2008] TEST ssaha2 ON velvet CONTIGS - segmentation fault WHEN USING > 100 LINES OF chr1>
+
+
+
+ll -h
+total 370M
+-rw-r--r-- 1 syoung users 241M Jul 23 15:01 chr1.fa
+-rw-r--r-- 1 syoung users  34K Jul 23 15:02 contigs.base
+-rw-r--r-- 1 syoung users  28K Jul 23 15:02 contigs.body
+-rw-r--r-- 1 syoung users 100K Jul 23 15:02 contigs.fa
+-rw-r--r-- 1 syoung users 128M Jul 23 15:02 contigs.head
+-rw-r--r-- 1 syoung users  17K Jul 23 15:02 contigs.name
+-rw-r--r-- 1 syoung users 4.2K Jul 23 15:02 contigs.size
+[syoung@solexa01 ssaha.chr1]$ pwd
+/home/syoung/base/pipeline/human1-velvet/ssaha.chr1
+
+THIS RAN BUT NEVER ENDED:
+
+cd /home/syoung/base/pipeline/human1-velvet/ssaha.chr1
+/store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa chr1.fa
+
+    Max. sequence length: 1473
+    ##gff-version 2
+    ##source-version 2.0.0
+    ##date 08/07/23
+    (NO MORE OUTPUT)
+
+SO TOOK A SUBSAMPLE OF chr1:'
+
+[syoung@solexa01 ssaha.chr1]$ ll -h
+total 374M
+-rw-r--r-- 1 syoung users 241M Jul 23 15:01 chr1.fa
+-rw-r--r-- 1 syoung users 4.9M Jul 26 20:29 chr1.fa-100000
+-rw-r--r-- 1 syoung users  34K Jul 23 15:02 contigs.base
+-rw-r--r-- 1 syoung users  28K Jul 23 15:02 contigs.body
+-rw-r--r-- 1 syoung users 100K Jul 23 15:02 contigs.fa
+-rw-r--r-- 1 syoung users 128M Jul 23 15:02 contigs.head
+-rw-r--r-- 1 syoung users  17K Jul 23 15:02 contigs.name
+-rw-r--r-- 1 syoung users 4.2K Jul 23 15:02 contigs.size
+
+AND TESTED IT:
+
+cd /home/syoung/base/pipeline/human1-velvet/ssaha.chr1
+/store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa chr1.fa-100000
+
+>>>
+Max. sequence length: 1473
+##gff-version 2
+##source-version 2.0.0
+##date 08/07/26
+Segmentation fault
+<<<
+
+1,000 LINES WILL NOT WORK EITHER BUT 100 LINES WORKS:
+
+
+[syoung@solexa01 ssaha.chr1]$ /store/home/syoung/base/apps/ssaha2/ssaha2 -output gff contigs.fa chr1.fa-100
+Max. sequence length: 1473
+##gff-version 2
+##source-version 2.0.0
+##date 08/07/26
+gff: chr1       SSAHA2  similarity      3716    3593    115     -       .       Subject "NODE_528_length_96_cov_6.520833" 2 125;        Align 3716 2 124;
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Jul 21 21:19:53 EDT 2008] INSTALL SSAHA2>
+
+
+
+1. DOWNLOAD ssaha2_v2.0.0_x86_64.tar.gz
+
+http://www.sanger.ac.uk/Software/analysis/SSAHA2/formats.shtml
+
+2. INSTALL
+
+cd /store/home/syoung/base/apps/ssaha2
+-rw-r--r--  1 syoung users  15K May 22 13:23 README
+-rwxr-xr-x  1 syoung users 179K Jun 19 04:33 ssaha2
+-rwxr-xr-x  1 syoung users  82K Jun 19 04:33 ssaha2Build
+drwxr-xr-x  2 syoung users 4.0K Jul 21 20:53 ssaha2_v2.0.0_x86_64
+-rw-r--r--  1 syoung users 237K Jul 21 20:55 ssaha2_v2.0.0_x86_64.tgz
+-rwxr-xr-x  1 syoung users 226K Jun 19 04:33 ssahaSNP
+
+3. TEST BUILD A SUFFIX TREE HASH FILE USING ssaha2Build
+
+mkdir /store/home/syoung/base/apps/ssaha2/test
+cd /store/home/syoung/base/apps/ssaha2/test
+emacs query.fa
+
+>query
+AACTAAGCTTTCATATCTGCAAGCATCTTTGGGAATACTCTTGACATTGATTTTAGGCTAGGCTGAGATACTACTATGAACTTCATTTTTAAATTATGATACATTTCCAATAAAGTAAAAA
+
+emacs query_RC.fa
+
+>query_RC
+TTTTTACTTTATTGGAAATGTATCATAATTTAAAAATGAAGTTCATAGTAGTATCTCAGCCTAGCCTAAAATCAATGTCAAGAGTATTCCCAAAGATGCTTGCAGATATGAAAGCTTAGTT
+
+emacs subject.fa
+
+>subject
+AACTAAGCTTTCATATCTCCAAGCATCTTTGGGAATACTCTTGACATTGATTTTAGGGCTAGGTTGAGATACTACTATGAACTTCATTTTTAAAATGATACATTTCCAATAAAGTAAAAA
+
+ll
+    -rw-r--r-- 1 syoung users  130 Jul 21 20:59 query.fa
+    -rw-r--r-- 1 syoung users  133 Jul 21 21:00 query_RC.fa
+    -rw-r--r-- 1 syoung users  131 Jul 21 21:00 subject.fa
+
+BUILD HASH FILE
+
+/store/home/syoung/base/apps/ssaha2/ssaha2Build -save subject subject.fa
+
+    DNA hashing completed
+
+ll
+    THE ORIGINAL FILES
+    -rw-r--r-- 1 syoung users  130 Jul 21 20:59 query.fa
+    -rw-r--r-- 1 syoung users  133 Jul 21 21:00 query_RC.fa
+    -rw-r--r-- 1 syoung users  131 Jul 21 21:00 subject.fa
+    
+    THE HASH FILES
+    -rw-r--r-- 1 syoung users   60 Jul 21 21:02 subject.base
+    -rw-r--r-- 1 syoung users  440 Jul 21 21:02 subject.body
+    -rw-r--r-- 1 syoung users 128M Jul 21 21:02 subject.head
+    -rw-r--r-- 1 syoung users    8 Jul 21 21:02 subject.name
+    -rw-r--r-- 1 syoung users   16 Jul 21 21:02 subject.size
+    
+
+4. TEST ALIGNMENT 
+
+cd /store/home/syoung/base/apps/ssaha2/test
+
+/store/home/syoung/base/apps/ssaha2/ssaha2 -output gff subject.fa query.fa
+
+    Max. sequence length: 121
+    ##gff-version 2
+    ##source-version 2.0.0
+    ##date 08/07/21
+    gff: query      SSAHA2  similarity      1       121     91      +       .       Subject "subject" 1 121;      Align 1 1 57;    Align 58 59 2;  Align 60 62 34; Align 96 96 26;
+
+
+
+
+
+
+SSAHA2 OPTIONS
+==============
+
+[syoung@solexa01 ssaha2]$ ./ssaha2 -h
+
+
+================
+= SSAHA2 2.0.0 =
+================
+
+by Hannes Ponstingl, Adam Spargo and Zemin Ning.
+
+Copyright (C) 2003-2008 The Wellcome Trust Sanger Institute, Cambridge, UK.
+All Rights Reserved.
+
+SSAHA2 is a package combining SSAHA with cross_match developed
+by Phil Green at the University of Washington.
+
+Reference: Ning Z, Cox AJ, Mullikin JC.
+           SSAHA: a fast search method for large DNAdatabases.
+           Genome Res. 2001 Oct;11(10):1725-9.
+
+DESCRIPTION:
+
+ssaha2Build  This program constructs the hashtable
+             required by the other ssaha2 programs.
+             This provides an index for the given subject
+             sequence.
+
+ssaha2       This program aligns query sequences against a
+             subject hashtable.
+
+ssahaSNP     ssahaSNP is a polymorphism detection tool.
+             It detects homozygous SNPs and indels by aligning
+             shotgun reads to the finished genome sequence.
+             From the best alignment, SNP candidates are
+             screened, taking into account the quality value
+             of the bases with variation as well as the quality
+             values in the neighbouring bases, using 
+             neighbourhood quality standard (NQS).
+
+ssaha2Server This program reads in previously constructed
+             hashtables and runs the DNA search engine. Clients
+             are accepted over a TCP connection which pass query
+             sequences from the user.
+
+USAGE:
+   *************************************************************
+   * NOTE: SSAHA2 & SSAHASNP COMMAND LINE FORMATS HAVE CHANGED *
+   *       with version 1.0.9                                  *
+   *************************************************************
+
+      ssaha2Build [OPTIONS] -save hash_name subject_file
+
+      ssaha2 [OPTIONS] -save hash_name query_file
+      ssaha2 [OPTIONS] subject_file query_file
+
+      ssahaSNP [OPTIONS] -save hash_name query_file
+      ssahaSNP [OPTIONS] subject_file query_file
+
+      ssaha2Server [OPTIONS] hash_name
+
+   where subject_file and query_file are fasta or fastq files with the
+   reference (subject) and query sequence files. hash_name is the root
+   name of the hash table files for the reference sequence created
+   using ssaha2Build.
+
+OPTIONS:
+
+ -h, -help     Print this page.
+ -v, -version  Print version information.
+ -c, -cookbook Print some example parameter sets, suitable
+               for common tasks.
+
+All other options, except the '-solexa' and '-454' flags and the '-output ssaha2 cigar'
+option, are key-value pairs. Options are described below (default values in brackets):
+
+ -save <FILENAME>
+            ssaha2Build: Root name of the files to which the
+                         hash table is saved. The set of files
+                         have the extensions FILENAME.head FILENAME.body
+                         FILENAME.name FILENAME.base FILENAME.size
+            ssaha2, ssahaSNP: Read hash table from files created by ssaha2Build.
+                           If -save is not specified then the first file name
+                         specifies the reference sequence for which a hash
+                         table is constructed on the fly
+ -kmer      Word size for ssaha hashing (12).
+ -skip      Step size for ssaha hashing (12).
+ -ckmer     Word size for cross_match matching (10).
+ -cmatch    Minimum match length for cross_match matching (14).
+ -cut       Number of repeats allowed before this kmer is ignored (10000).
+ -seeds     Number of kmer matches required to flag a hit (5).
+ -depth     Number of hits to consider for alignment (50).
+ -memory:   Memory assigned in MBs for the alignment matrix (200).
+ -score     Minimum score for match to be reported (30).
+ -identity  Minimum identity for match to be reported (50.000000).
+ -port      Port number for server (60000).
+ -align     If set to > 0, output graphical alignment (0).
+            If set to 2 and -solexa flag is set: output also quality score.
+ -edge      (obsolete as of release 2.0.0) Augment hit by this many bases before alignment (200).
+ -array:    Memory assigned in bytes for frequency arrays (4000000).
+ -start:    first sequence to process in query (0).
+ -end:      last sequence to process in query, 0 means process all (0).
+ -sense     (obsolete as of release 2.0.0) Allow really patchy hits to go for alignment (0).
+ -best      If set to 1, only report the best alignment for each
+            match, if multiple best scores report all (0).
+ -454:      (see -rtype) Tune for 454 reads (0).
+ -NQS:      Use NQS to filter SNPs if set to 1, otherwise output all candidates (1).
+ -quality:  Quality value to use for variation base in NQS (23).
+ -tags:     If set to 1, prefix added to output summary lines to
+            aid parsing, the prefix depends upon the chosen
+            output format, e.g. if output is ssaha2 then the
+            prefix is ALIGNMENT (1).
+ -output:   ssaha2       - original ssaha2 line only (default)
+            sugar        - Simple UnGapped Alignment Report
+            cigar        - Compact Idiosyncratic Gapped Alignment Report
+            vulgar       - Verbose Useful Labelled Gapped Alignment Report
+            psl          - Tab separated format similar to BLT
+                         - http://genome.ucsc.edu/goldenPath/help/customTrack.html
+            pslx         - Tab separated format with sequence
+            gff          - http://www.sanger.ac.uk/Software/formats/GFF/
+            ssaha2 cigar - alternate between ssaha2 and cigar format lines
+            for a full description of output formats see:
+                 http://www.sanger.ac.uk/Software/analysis/SSAHA2/formats.shtml
+ -name      Flag that modifies option '-output cigar' such that read name
+            and length are also reported when there was no hit found.
+ -diff:     Output all hits within diff of the best (-1).
+ -udiff:    Ignore best hit if second best score within udiff (0).
+ -fix:      If set to 1, fix -edge, -seeds, -score so that they
+            are not updated according to read length in ssahaSNP (0).
+ -disk:     If set to 1, read hashtable from disk rather than
+            loading to memory (0)
+ -weight:   If >0, apply this much weighting to rare kmers (0).
+ -solexa:   (see -rtype) implies (ssaha2 and ssahaSNP only):
+            -seeds 2 -score 12 -cmatch 9 -ckmer 6 -skip 1.
+            Top scoring hits with lower quality at the mismatch positions have
+            their Smith-Waterman score incremented by 1. Mapping scores are
+            changed accordingly. SsahaSNP reports in such cases only the top
+            scoring hit (no Repeat lines).
+ -rtype:    solexa          - like -solexa flag
+                              with the same direction along the strand.
+            454             - like -454 flag
+            abi             - tunes for ABI reads (default)
+
+
+
+</entry>
+
+
+
+<entry [Mon Jul 21 20:12:25 EDT 2008] INSTALL GFF2APLOT v2.0>
+
+
+
+    NB: DECIDED TO USE SSAHA2 INSTEAD (SEE ABOVE)
+
+    cd /home/syoung/base/apps
+    tar xvfz gff2aplot_2.0.orig.tar.gz
+    cd gff2aplot_2.0
+
+    sudo su
+    make
+    
+        ###
+        ### RUNNING MAKEFILE
+        ###
+        ### Mon Jul 21 00:13:45 EDT 2008 -- syoung
+        ###
+        ### Finishing PERL script from "src/gff2aplot.pl" -> "bin/gff2aplot.pl"
+        ### Finishing PERL script from "src/parseblast.pl" -> "bin/parseblast.pl"
+        ### Finishing PERL script from "src/blat2gff.pl" -> "bin/blat2gff.pl"
+        ### Finishing PERL script from "src/sim2gff.pl" -> "bin/sim2gff.pl"
+        ### Making ALI2GFF...
+        make[1]: Entering directory `/store/home/syoung/base/apps/gff2aplot/src/ali2gff'
+        ali2gff.c: In function âprocessMumfileâ:
+        ali2gff.c:523: warning: format â%dâ expects type âintâ, but argument 3 has type âsize_tâ
+        ali2gff.c:523: warning: format â%dâ expects type âintâ, but argument 4 has type âsize_tâ
+        ali2gff.c:764: warning: format â%dâ expects type âintâ, but argument 3 has type âsize_tâ
+        ali2gff.c:764: warning: format â%dâ expects type âintâ, but argument 4 has type âsize_tâ
+        make[1]: Leaving directory `/store/home/syoung/base/apps/gff2aplot/src/ali2gff'
+        `./src/ali2gff/ali2gff' -> `./bin/ali2gff'
+        mode of `bin/gff2aplot.pl' changed to 0755 (rwxr-xr-x)
+        mode of `bin/parseblast.pl' changed to 0755 (rwxr-xr-x)
+        mode of `bin/blat2gff.pl' changed to 0755 (rwxr-xr-x)
+        mode of `bin/sim2gff.pl' changed to 0755 (rwxr-xr-x)
+        ###
+        ### MAKEFILE DONE...
+        ###
+
+    make install
+        ###
+        ### RUNNING MAKEFILE
+        ###
+        ### Mon Jul 21 00:14:05 EDT 2008 -- root
+        ###
+        ### COPYING BIN FILES TO /usr/local/bin...
+        `bin/gff2aplot.pl' -> `/usr/local/bin/gff2aplot.pl'
+        `bin/parseblast.pl' -> `/usr/local/bin/parseblast.pl'
+        `bin/blat2gff.pl' -> `/usr/local/bin/blat2gff.pl'
+        `bin/sim2gff.pl' -> `/usr/local/bin/sim2gff.pl'
+        `bin/ali2gff' -> `/usr/local/bin/ali2gff'
+        ###
+        ### MAKEFILE DONE...
+        ###
+    
+    
+NOTES
+=====
+
++ PROGRAM's PRE-REQUISITES:
+
+  gff2aplot needs the following Perl modules:
+
+    "Getopt::Long" - processing command-line options.
+    "Benchmark" - checking and comparing running times of code.
+    "Data::Dumper" - pretty printing data structures for debugging (*?).
+
+
++ INSTALLING SOFTWARE:
+
+  You will find a Makefile in the distribution directory that you may need
+  to edit in order to install GFF2APLOT. In principle, you only need to
+  modify the INSTALLDIR variable, although you can achieve the same effect
+  from command-line, as shown latter in this document.
+  Depending on the system, you may also have to modify/update the ali2gff
+  Makefile that can be found at the src/ali2gff directory.
+
+  GFF2APLOT Makefiles were developed and tested on a Red Hat Linux box
+  running GNU Make version 3.79.1.
+
+
+GFF2APLOT Makefiles were developed and tested on a Red Hat Linux box
+  running GNU Make version 3.79.1.
+
+  Once you have set up the makefile, just type:
+
+     make
+
+  and then:
+
+     make install
+
+  By default, the latter command will move all the scripts to /usr/local/bin
+  but if you want to place all the exec files into another directory, just
+  define the new installation path as follows:
+
+     make INSTALLDIR=/your/path/bin install
+
+  Another way of doing that is modifying that variable on the Makefile
+  accordingly to your needs.
+
+  Our apologies but there is not a 'make test' yet...
+
+  Thanks for using GFF2APLOT, we hope you will enjoy it and it will
+  be useful for your research.
+
+
+
+USE gff2aplot:
+
+src/
+                         GFF2APLOT and related scripts.
+
+    src/gff2aplot.pl
+                         The main program, which converts GFF input
+                         into alignment PostScript plots.
+    src/parseblast.pl
+                         A parser for the standard output
+                         from most of the BLAST programs available
+                         (NCBI-Blast/WashU-Blast/WebBlast/MegaBlast).
+    src/blat2gff.pl
+                         Filtering BLAT output into GFF.
+    src/sim2gff.pl
+                         Converting SIM output into GFF.
+    src/ali2gff
+                         C program that parses SIM/Mummer output
+                         and produces GFF records for the alignment.
+
+  bin/
+                         It is empty until you make
+                         the executables for the distribution.
+
+  doc/
+                         Contains documentation for gff2aplot,
+                         initially the "User's Manual".
+
+  examples/              A set of three examples,
+                         in separate directories, each containing
+                         GFF data, customization files and
+                         PostScript output obtained with gff2aplot.
+
+
+
+</entry>
+
+
+
+<entry [Mon Jul 21 00:07:59 EDT 2008] INSTALL MUMMER (INCLUDES nucmer)>
+
+
+
+1. DOWNLOADED MUMmer3.20.tar.gz
+
+    http://sourceforge.net/project/showfiles.php?group_id=133157
+
+2. INSTALLED
+
+    cd /home/syoung/base/apps
+
+    tar xvfz MUMmer3.20.tar.gz
+    cd MUMmer3.20
+    make check
+    make install
+    #OK
+
+
+3. nucmer DESCRIPTION
+
+
+NUCmer (NUCleotide MUMmer) a pipeline many vs. many alignments (e.g., comparing two finished sequences to one another):
+
+It is a three step process:
+
+    1. maximal exact matching (It begins by using mummer to find all of the maximal unique matches of a given length between the two input sequences)
+
+    2. match clustering (individual matches are clustered into closely grouped sets with mgaps clustering routine which allows for rearrangements, duplica
+tions and inversions; *** as a consequence, nucmer is best suited for large-scale global alignments ***)
+
+    3. alignment extension (the non-exact sequence between matches is aligned via a modified Smith-Waterman algorithm, and the clusters themselves are extended outwards in order to increase the overall coverage of the alignments)
+
+
+
+ USAGE: nucmer  [options]  <Reference>  <Query>
+
+  DESCRIPTION:
+    nucmer generates nucleotide alignments between two mutli-FASTA input
+    files. Two output files are generated. The .cluster output file lists
+    clusters of matches between each sequence. The .delta file lists the
+    distance between insertions and deletions that produce maximal scoring
+    alignments between each sequence.
+
+  MANDATORY:
+    Reference       Set the input reference multi-FASTA filename
+    Query           Set the input query multi-FASTA filename
+
+  OPTIONS:
+    --mum           Use anchor matches that are unique in both the reference
+                    and query
+    --mumcand       Same as --mumreference
+    --mumreference  Use anchor matches that are unique in in the reference
+                    but not necessarily unique in the query (default behavior)
+    --maxmatch      Use all anchor matches regardless of their uniqueness
+
+    -b|breaklen     Set the distance an alignment extension will attempt to
+                    extend poor scoring regions before giving up (default 200)
+    -c|mincluster   Sets the minimum length of a cluster of matches (default 65)
+    --[no]delta     Toggle the creation of the delta file (default --delta)
+    --depend        Print the dependency information and exit
+    -d|diagfactor   Set the clustering diagonal difference separation factor
+                    (default 0.12)
+    --[no]extend    Toggle the cluster extension step (default --extend)
+    -f
+    --forward       Use only the forward strand of the Query sequences
+    -g|maxgap       Set the maximum gap between two adjacent matches in a
+                    cluster (default 90)
+    -h
+    --help          Display help information and exit
+    -l|minmatch     Set the minimum length of a single match (default 20)
+    -o
+    --coords        Automatically generate the original NUCmer1.1 coords
+                    output file using the 'show-coords' program
+    --[no]optimize  Toggle alignment score optimization, i.e. if an alignment
+                    extension reaches the end of a sequence, it will backtrack
+                    to optimize the alignment score instead of terminating the
+                    alignment at the end of the sequence (default --optimize)
+    -p|prefix       Set the prefix of the output files (default "out")
+    -r
+    --reverse       Use only the reverse complement of the Query sequences
+    --[no]simplify  Simplify alignments by removing shadowed clusters. Turn
+                    this option off if aligning a sequence to itself to look
+                    for repeats (default --simplify)
+    -V
+    --version       Display the version information and exit
+    
+
+
+
+
+file:///C:/DATA/bioapps/next.generation/mummer/The%20MUMmer%203%20manual.htm#mapview
+
+4.1.3. Fairly similar sequences
+
+While run-mummer1 and run-mummer3 focus more on what is different between two sequences, nucmer focuses on what is the same. It has very few restrictions on what it will align, so rearrangements, inversions and repeats will all be identified by nucmer. For a single reference sequence ref.fasta and a single query sequence qry.fasta in FastA format, type:
+
+nucmer --maxgap=500 --mincluster=100 --prefix=ref_qry ref.fasta qry.fasta
+
+show-coords -r ref_qry.delta > ref_qry.coords
+
+show-aligns ref_qry.delta refname qryname > ref_qry.aligns
+
+Where refname and qryname are the FastA IDs of the two sequences. The output of NUCmer can often be voluminous and is best visualized with mummerplot. In addition, its output can be filtered in a varity of ways with the delta-filter program. For example, to select and display a one-to-one local mapping of reference to query sequences, use:
+
+delta-filter -q -r ref_qry.delta > ref_qry.filter
+
+mummerplot ref_qry.filter -R ref.fasta -Q qry.fasta
+
+This will first filter the delta file, selecting only those alignments which comprise the one-to-one mapping between reference and query, and then display a dotplot of the selected alignments. Note that NUCmer allows for multiple reference and query sequences, so the above methods will also work for such and input. See the delta-filter and mummerplot sections for more details.
+
+
+
+
+4.3. Mapping a draft sequence to a finished sequence
+
+There are many benefits of mapping a draft sequence to the finished sequence of a related organism. Determining the location and orientation of each query contig as it maps to the finished reference sequence can significantly speed up the closure process of the draft sequence, and by examining the areas of conservation, the annotation of the draft sequence can be improved and refined. Since NUCmer and PROmer have an almost identical user interface, this use case will only be explained using nucmer. If the two inputs are to divergent for nucmer, simply use promer instead. For a finished reference chromosome(s) ref.fasta and a set of near identical contigs qry.fasta, type:
+
+nucmer --prefix=ref_qry ref.fasta qry.fasta
+
+show-coords -rcl ref_qry.delta > ref_qry.coords
+
+show-aligns ref_qry.delta refname qryname > ref_qry.aligns
+
+show-tiling ref_qry.delta > ref_qry.tiling
+
+Where refname and qryname are the FastA IDs of two sequences. The show-aligns step will have to be repeated for every combination of sequences that the user wishes to analyze. If mapping the draft sequences to each of their repeat locations is not required, the delta-filter program can quickly select the optimal placement of each draft sequence to the reference using the following:
+
+delta-filter -q ref_qry.delta > ref_qry.filter
+
+
+
+5.3.1. NUCmer
+NUCmer (NUCleotide MUMmer) is the most user-friendly alignment script for standard DNA sequence alignment. It is a robust pipeline that allows for multiple reference and multiple query sequences to be aligned in a many vs. many fashion. For instance, a very common use for nucmer is to determine the position and orientation of a set of sequence contigs in relation to a finished sequence, however it can be just as effective in comparing two finished sequences to one another. Like all of the other alignment scripts, it is a three step process - maximal exact matching, match clustering, and alignment extension. It begins by using mummer to find all of the maximal unique matches of a given length between the two input sequences. Following the matching phase, individual matches are clustered into closely grouped sets with mgaps. Finally, the non-exact sequence between matches is aligned via a modified Smith-Waterman algorithm, and the clusters themselves are extended outwards in order to increase the overall coverage of the alignments. nucmer uses the mgaps clustering routine which allows for rearrangements, duplications and inversions; as a consequence, nucmer is best suited for large-scale global alignments, as is shown in the following plot:
+
+ 
+This dot plot represents a nucmer alignment of two different strains of Helicobacter pylori (26695 on the x-axis and J99 on the y-axis). Forward matches are shown in red, while reverse matches are shown in green. This alignment, which took only 12 seconds to compute, clearly shows a major inversion event centered around the origin of replication, and demonstrates NUCmer's ability to handle large scale rearrangements between sequences of high nucleotide similarity.
+
+Command line syntax
+nucmer [options] <reference file> <query file>
+
+The reference and query files should both be in multi-FastA format and have no limit on the number of sequences they man contain. However, because nucmer uses mummer for its maximal exact matching, the memory usage will be dependent on the size of the reference file, so it may be advisable to make the smaller of the input files the reference to assure the program does not exhaust your computer's memory resources. In addition, masking the uninteresting regions of the input with any character other than a, c, g, or t will both speed up nucmer by reducing the number of possible matches and also cut down on the number of alignments induced by repetitive sequence.
+
+Program options
+--mum Use anchor matches that are unique in both the reference and query 
+--mumreference Use anchor matches that are unique in the reference but not necessarily unique in the query (default behavior) 
+--maxmatch Use all anchor matches regardless of their uniqueness 
+-b int
+--breaklen  Distance an alignment extension will attempt to extend poor scoring regions before giving up (default 200) 
+-c int
+--mincluster  Minimum cluster length (default 65) 
+--[no]delta Toggle the creation of the delta file. Setting --nodelta prevents the alignment extension step and only outputs the match clusters (default --delta) 
+--depend Print the dependency information and exit 
+-d float
+--diagfactor Maximum diagonal difference factor for clustering, i.e. diagonal difference / match separation (default 0.12) 
+--[no]extend Toggle the outward extension of alignments from their anchoring clusters. Setting --noextend will prevent alignment extensions but still align the DNA between clustered matches and create the .delta file (default --extend) 
+-f
+--forward Align only the forward strands of each sequence 
+-g int
+--maxgap  Maximum gap between two adjacent matches in a cluster (default 90) 
+-h
+--help  Print the help information and exit 
+-l int
+--minmatch  Minimum length of an maximal exact match (default 20) 
+-o
+--coords  Automatically generate the <prefix>.coords file using the 'show-coords' program with the -r option 
+--[no]optimize Toggle alignment score optimization. Setting --nooptimize will prevent alignment score optimization and result in sometimes longer, but lower scoring alignments (default --optimize) 
+-p string
+--prefix  Set the output file prefix (default out) 
+-r
+--reverse Align only the reverse strand of the query sequence to the forward strand of the reference 
+--[no]simplify Simplify alignments by removing shadowed clusters. Turn this option off if aligning a sequence to itself to look for repeats (default --simplify) 
+-V
+--version Print the version information and exit 
+
+All values are measured in DNA bases unless otherwise noted. Using either the -mum or -mumreference options (along with masking the input sequences) can help reduce the number of repeat induced alignments, and is suggested for most applications. If no uniqueness options are set, the program will default to -mumreference. Decreasing the values of the -mincluster and --minmatch options will increase the sensitivity of the alignment but may produce less reliable alignments. In addition, significantly raising the value of the --maxgap value (say to 1000) can be crucial in producing alignments for more divergent genomes. Setting --noextend speeds up the process by preventing alignment extensions outward from each cluster, while --nodelta takes this a step further and doesn't even align the sequence between the matches in a cluster, however both of these reduce the amount of information contained in the output. See mgaps description for hints on setting the clustering parameters --mincluster, --diagdiff and --maxgap. The --coords option exists only for NUCmer1.0 compatibility; instead, it is recommended to run show-coords afterwards with more specific options. The --nooptimize option will force alignments within --breaklen bases of the sequence end to extend all the way to the sequence end, regardless of the resulting alignment score. The --prefix string should be unique in the output directory to prevent overwriting pre-existing data. Finally, by default nucmer matches the forward and reverse strands of the query sequences to the forward strand of the reference sequence unless the --forward or --reverse options were used, and all output coordinates always reference the forward strand of their respective sequence. Only use the --nosimplify option when aligning a sequence to itself in order to find inexact repeats.
+
+Output format
+Because nucmer and promer produce the same output files, this section will serve to explain the <prefix>.cluster and <prefix>.delta for both programs (that we will refer to as the cluster and delta files respectively). The cluster file contains a list of all the clustered maximal exact matches identified in the "seed" phase of the pipeline, and the delta file contains an encoded representation of all the alignments generated in the "extend" phase of the pipeline. The cluster file is a derivative of both the gaps and mgaps output, while the delta file is a unique format for concise, machine representation of the pair-wise alignments. Several tools described in the Utilities section were designed to interpret these files and extract useful, human-readable information from them, however the full format description for both the cluster and delta files is described below to aid developers.
+
+The "cluster" file format
+The "cluster" file contains a list of the match clusters that were generated during the clustering phase of the NUCmer or PROmer pipeline. It is primarily a five column match list, with the exception of the headers to be described later. For example, a few "match" rows could read:
+
+
+     168        2     30     -      -
+     288      122     51    90     90
+     354      188     84    15     15
+
+Where the columns are the start of the match in the reference, the start of the match in the query, the length of the match, the gap between this match and the previous match in the reference, and the gap between this match and the previous match in the query respectively. All coordinates reference the forward strand of each sequence, regardless of match direction, and are always measured in DNA bases regardless of alignment type (DNA or amino acid). Therefore, when running PROmer, all the numbers in the length and gaps columns must be multiples of three. In addition, because the matches reference the forward DNA strand forward match clusters will be sorted in ascending fashion while reverse match clusters will be sorted in descending fashion.
+
+Each individual cluster has a header formed from two digits in the set [-1, -2, -3, 1, 2, 3]. These two digits represent the direction of the cluster (negative for reverse and positive for forward) and the frame of the cluster in the reference and query sequences respectively (note that matches within the same cluster must have a consistent reading frame). For NUCmer output, the header will always show a "1" for the reference and a "-1" or "1" for the query, since only the query can be reverse complemented. However, for PROmer output all 36 combinations of these two digits are valid headers. For instance, " -2 3" would represent a cluster on the 2nd reading frame of the reversed reference sequence and on the 3rd reading frame of the forward query sequence.
+
+There are also three other types of headers. The first line of each cluster file lists the two original input files separated by a space, while the second line of each cluster file lists the type of alignment data - either "NUCMER" or "PROMER". Finally the third type of header lists two sequences and their sequence lengths following a '>' character and separated by whitespace. Each of these sequence headers is unique, so all clusters/matches between any two sequences will appear under a single header identifying those two sequences. These sequence headers will only be present if there is at least one cluster between the two sequences, otherwise the sequence header will be omitted from the file. Below is a short example of what a cluster file might look like:
+
+
+/home/username/reference.fasta /home/username/query.fasta
+PROMER
+>tagA1 tagB1 1000 2000000
+ 1  3
+     184       18     21     -      -
+     223       57    123    18     18
+ 3  2
+     168        2     30     -      -
+     288      122     51    90     90
+     354      188     84    15     15
+     483      317     24    45     45
+     558      392     81    51     51
+     642      476    144     3      3
+>tagA2 tagB1 2000000 2000000
+-3 -2
+ 1665663  1641799     18     -      -
+ 1665585  1641712     21    60     69
+ 1665546  1641673     39    18     18
+(output continues ...)
+The "delta" file format
+The "delta" file is an encoded representation of the all-vs-all alignment between the input sequences to either the NUCmer or PROmer pipeline. It is the primary output of these alignment scripts and there are various utilities described in section 5.4. that are designed to take the delta file as input, and output some human-readable information to the user. Also, the delta-filter utility is designed to manipulate these files and select desired alignments. The primary function of the delta file is to catalog the coordinates of each alignment and note the distance between insertions and deletions contained in these alignments. By only storing the location of each indel as an offset, disk space is efficiently utilized, and a potentially enormous alignment can be stored in a relatively small space. The first two lines of the file are identical to the cluster file. The first line lists the two original input files separated by a space, while the second line specifies the alignment data type, either "NUCMER" or "PROMER". Every grouping of alignments have a unique header specifying the two aligning sequences. Only sequences with shared alignments will have a header, therefore, as in the cluster file, there can be no empty headers (i.e. those that have no alignments following them). An example header might look like
+
+
+>tagA1 tagB1 500 20000000
+
+Following this sequence header is the alignment data. Each alignment following also has a header that describes the coordinates of the alignment and some error information. These coordinates are inclusive and reference the forward strand of the DNA sequence, regardless of the alignment type (DNA or amino acid). Thus, if the start coordinate is greater than the end coordinate, the alignment is on the reverse strand. The four coordinates are the start and end in the reference and the start and end in the query respectively. The three digits following the location coordinates are the number of errors (non-identities + indels), similarity errors (non-positive match scores), and stop codons (does not apply to DNA alignments, will be "0"). An example header might look like: 
+
+2631 3401 2464 3234 15 15 2
+
+Notice that the start coordinate points to the first base in the first codon, and the end coordinate points to the last base in the last codon. Therefore making (end - start + 1) % 3 = 0. This makes determining the frame of the amino acid alignment a simple matter of determining the reading frame of the start coordinate for the reference and query. Obviously, these calculations are not necessary when dealing with vanilla DNA alignments.
+
+Each of these alignment headers is followed by a string of signed digits, one per line, with the final line before the next header equaling 0 (zero). Each digit represents the distance to the next insertion in the reference (positive int) or deletion in the reference (negative int), as measured in DNA bases OR amino acids depending on the alignment data type. For example, with the PROMER data type, the delta sequence (1, -3, 4, 0) would represent an insertion at positions 1 and 7 in the translated reference sequence and an insertion at position 3 in the translated query sequence. Or with letters:
+
+
+A = ABCDACBDCAC$
+B = BCCDACDCAC$
+Delta = (1, -3, 4, 0)
+A = ABC.DACBDCAC$
+B = .BCCDAC.DCAC$
+
+Using this delta information, it is possible to re-generate the alignments calculated by nucmer or promer as is done in the show-coords program. This allows various utilities to be crafted to process and analyze the alignment data using a universal format. This also means the delta only needs to be created once, yet it can be analyzed numerous times without ever having to rerun the costly alignment algorithm. Below is an example of what a delta file might look like:
+
+
+/home/username/reference.fasta /home/username/query.fasta
+PROMER
+>tagA1 tagB1 3000000 2000000
+1667803 1667078 1641506 1640769 14 7 2
+-145
+-3
+-1
+-40
+0
+1667804 1667079 1641507 1640770 10 5 3
+-146
+-1
+-1
+-34
+0
+>tagA2 tagB4 4000 3000
+2631 3401 2464 3234 4 0 0
+0
+2608 3402 2456 3235 10 5 0
+7
+1
+1
+1
+1
+0
+(output continues ...)
+
+5.3.2. PROmer
+PROmer (PROtein MUMmer) is a close relative to the NUCmer script. It follows the exact same steps as NUCmer and even uses most of the same programs in its pipeline, with one exception - all matching and alignment routines are performed on the six frame amino acid translation of the DNA input sequence. This provides promer with a much higher sensitivity than nucmer because protein sequences tends to diverge much slower than their underlying DNA sequence. Therefore, on the same input sequences, promer may find many conserved regions that nucmer will not, simply because the DNA sequence is not as highly conserved as the amino acid translation.
+
+All of this is performed behind the scenes, as the input is still the raw DNA sequence and output coordinates are still reported in reference to the DNA, so the two programs (nucmer and promer) exhibit little difference in their interfaces and usability. Because of its greatly increased sensitivity, it is usually best to use promer on those sequences that cannot be adequately compared by nucmer, because if run on very similar sequences the promer output can be quite voluminous. This is because promer makes no effort to distinguish between proteins and junk amino acid translations, therefore a single highly conserved gene may have up to six alignments in promer output, one for each of the six amino acid reading frames, when only the correct reading frame would be sufficient. This makes promer ideally suited for highly divergent sequences that show little DNA sequence conservation, as is shown in the following two plots:
+

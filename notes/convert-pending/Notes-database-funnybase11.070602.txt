@@ -1,0 +1,397 @@
+Notes-database-funnybase11
+
+</entry>
+
+
+
+<entry [++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++] Wed May 30 16:25:20 EDT 2007>
+
+
+CREATE funnybase11
+
+
+Thu Feb 22 14:23:33 EST 2007
+REDO funnybase11
+
+0. CREATE DATABASE
+==================
+
+./collectiondatabase.pl -d funnybase11
+
+1. LOAD READS
+=============
+
+COPY THE READS FROM supercraw0 TO funnybase11:
+./supercraw0reads.pl -d funnybase11
+
+select experiment, count(*) from reads group by experiment ;
++------------+----------+
+| experiment | count(*) |
++------------+----------+
+|          1 |    14100 |
+|        123 |     3473 |
+|        124 |     1152 |
+|        125 |    14096 |
+|        189 |       89 |
+|        190 |      182 |
+|        199 |       96 |
+|        999 |       96 |
++------------+----------+
+8 rows in set (0.04 sec)
+
+
+COPY screenedreads TABLE FROM funnybase10 TO funnybase11 (AVOID DOING SCREENING AGAIN):
+
+sudo ./mysqlcopytable.pl -d funnybase10 -t funnybase11 -c screenedreads
+
+./reads.pl -d funnybase11
+
+        
+
+
+2. SCREEN READS ( *** SKIPPED THIS )
+====================================
+
+ON gems:
+
+./readsarrayscreen.pl -d funnybase11
+
+3. LOAD SCREENED READS ( *** SKIPPED THIS )
+===========================================
+
+ON genomics:
+
+./readsarrayscreenloaddata.pl -d funnybase11
+
+
+4. CREATE READS .FASTA FILE AND .QUAL FILE FOR ASSEMBLY
+=======================================================
+
+cd /Users/young/FUNNYBASE/bin/pipeline4
+./readsfastafile.pl -d funnybase11
+
+    /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta
+    /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta.qual
+    
+    RUN TIME: 00:00:07
+    Completed ./readsfastafile.pl
+    3:38PM, 31 May 2007
+****************************************
+
+5. DO cap3 ASSEMBLY
+===================
+
+cap3 /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/funnybase11.fasta -p 90 -o 100 > /Users/young/FUNNYBASE/pipeline/funnybase11/edit_dir/cap3.out
+
+STARTED: Thu May 31 15:40:24 EDT 2007
+ENDED: Thu May 31 18:12
+
+cap3.out 22M 
+
+
+
+6. LOAD ASSEMBLYSEQUENCES FROM funnybase11 ASSEMBLY (QUALITY CUTOFF = 10) 
+===================================================
+
+CREATE SINGLETS QUALITY FILE
+
+./readsfastasingletsqualfile.pl -d funnybase11
+
+    Completed ./readsfastasingletsqualfile.pl
+    Run time: 00:00:02
+    7:06PM, 31 May 2007
+    ****************************************
+
+
+CREATE ASSEMBLY READS AND ASSEMBLY SEQUENCES .TSV FILES
+
+./assemblyreadsassemblysequences.pl -d funnybase11 -q 10
+
+    8769 out of 15449 singlets added to 'assemblysequences' table
+    2411 out of 2425 contigs added to 'assemblysequences' table
+
+    /Users/young/FUNNYBASE/pipeline/funnybase11/collection/funnybase11.cap.contigs.assemblysequences.tsv
+    /Users/young/FUNNYBASE/pipeline/funnybase11/collection/funnybase11.cap.contigs.assemblyreads.tsv
+    
+    Completed ./assemblyreadsassemblysequences.pl
+    Run time: 00:04:52
+    7:05PM, 31 May 2007
+    ****************************************
+
+LOAD ASSEMBLY READS AND ASSEMBLY SEQUENCES
+
+./assemblyreadsassemblysequencesloaddata.pl -d funnybase11
+
+    3 secs.
+
+
+7. POPULATE collectionsequences
+===============================
+./collectionsequences.pl -d funnybase11
+
+Run time: 00:00:13
+7:16PM, 31 May 2007
+****************************************
+
+    select assemblyname, count(*) from collectionsequences group by assemblyname;
+    +--------------+----------+
+    | assemblyname | count(*) |
+    +--------------+----------+
+    | funnybase11  |    11180 |
+    +--------------+----------+
+    
+    COMPARED TO funnybase10
+    
+    select assemblyname, count(*) from collectionsequences group by assemblyname;
+    +--------------+----------+
+    | assemblyname | count(*) |
+    +--------------+----------+
+    | funnybase11  |    21845 |
+    | supercraw0   |     1455 |
+    +--------------+----------+
+
+
+8. BLAST COLLECTION SEQUENCES
+=============================
+sudo ./collectionarrayblast.pl -d funnybase11
+
+    
+    Run time: 00:55:49
+    Completed ./collectionarrayblast.pl
+    9:48PM, 31 May 2007
+    ****************************************
+
+
+sudo ./collectionblastloaddata.pl -d funnybase11
+
+    Run time: 00:01:22
+    Completed ./collectionblastloaddata.pl
+    10:32PM, 31 May 2007
+    ****************************************
+
+    select targetsource, count(distinct targetid) from collectionblast group by targetsource;
+    
+    +--------------+--------------------------+
+    | targetsource | count(distinct targetid) |
+    +--------------+--------------------------+
+    | refseq-dog   |                    18145 |
+    | refseq-human |                    13369 |
+    | refseq-mouse |                    11604 |
+    | refseq-rat   |                    11134 |
+    | swissprot    |                    53808 |
+    +--------------+--------------------------+
+    
+    COMPARED TO funnybase10:
+
+    +--------------+--------------------------+
+    | targetsource | count(distinct targetid) |
+    +--------------+--------------------------+
+    | refseq-dog   |                    18989 |
+    | refseq-human |                    13438 |
+    | refseq-mouse |                    12061 |
+    | refseq-rat   |                    10389 |
+    | swissprot    |                    57587 |
+    +--------------+--------------------------+
+
+9. POPULATE collectionsequencesannotation
+=========================================
+
+./collectionsequencesannotation.pl -d funnybase11
+
+    Run time: 00:01:55
+    Completed ./collectionsequencesannotation.pl
+    11:31PM, 31 May 2007
+    ****************************************
+
+
+10. DO ANNOTATION COMPARISON BETWEEN supercraw0 AND funnybase11
+===============================================================
+
+GET funnybase11 UNIQUE SEQUENCES
+
+./collectionsequencesuniquesequences.pl -d funnybase11
+
+./collectionsequencesuniquesequences.pl -d funnybase11
+
+    Getting best hit for each target hit cluster (total 2845) in database 'funnybase11'
+    ...
+    /Users/young/FUNNYBASE/pipeline/funnybase11/annotation/funnybase11.uniquesequences.tsv
+
+    Creating table 'collectionsequencesunique'... done.
+    Deleting from 'collectionsequencesunique'... done.
+    Loading data into table 'collectionsequencesunique'... done.
+    
+    Run time: 00:00:36
+    Completed ./collectionsequencesuniquesequences.pl
+    11:40PM, 31 May 2007
+    ****************************************
+
+
+COMPARE WITH supercraw0 UNIQUE SEQUENCES
+
+./comparemultiplecollectionannotation.pl -d supercraw0 -t funnybase11
+
+    Comparing sequences from databases: supercraw0 funnybase11 
+    'supercraw0' sequences: 2457
+    'funnybase11' sequences: 2845
+    /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase11.tsv
+    
+    Deleting from table 'comparemultipleannotation_supercraw0_funnybase11'... done.
+    Loading data into table 'comparemultipleannotation_supercraw0_funnybase11'... done.
+    Completed ./comparemultiplecollectionannotation.pl
+    Run time: 00:00:50
+    8:57PM, 1 June 2007
+    ****************************************
+    
+    select count(*) from comparemultipleannotation_supercraw0_funnybase11 where database1!='' and database0!='';
+    +----------+
+    | count(*) |
+    +----------+
+    |      493 |
+    +----------+
+    
+    select count(*) from comparemultipleannotation_supercraw0_funnybase11 where database1='';
+   +----------+
+   | count(*) |
+   +----------+
+   |     1964 |
+   +----------+
+   1 row in set (0.01 sec)
+   
+   mysql> select count(*) from comparemultipleannotation_supercraw0_funnybase11;
+   +----------+
+   | count(*) |
+   +----------+
+   |     4809 |
+   +----------+
+   1 row in set (0.00 sec)
+   
+   mysql> select count(*) from comparemultipleannotation_supercraw0_funnybase11 where database0='';
+   +----------+
+   | count(*) |
+   +----------+
+   |     2352 |
+   +----------+
+
+   
+11. EXTRACT ASSEMBLY SEQUENCES (CONTIGS AND SINGLETS) FROM supercraw0 THAT DON'T SHARE ANNOTATION WITH funnybase11
+=================================================================================================================
+
+./comparemultipleextractassemblysequences.pl -d supercraw0 -m funnybase11 -t comparemultipleannotation_supercraw0_funnybase11
+
+    Printing sequence fasta files with header info (total 1964)...
+    ...
+    /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase11.extract.contigs
+    /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase11.extract.singlets
+    
+    Completed ./comparemultipleextractassemblysequences.pl
+    Run time: 00:00:01
+    9:11PM, 1 June 2007
+    ****************************************
+    
+
+
+12. LOAD ASSEMBLYSEQUENCES FROM UNIQUE SEQUENCES OF supercraw0 THAT DON'T SHARE ANNOTATION WITH funnybase7
+=========================================================================================================
+
+CREATE supercraw0 .FASTA AND .QUAL FILES
+
+./readsfastafile.pl -d supercraw0
+
+CREATE SINGLETS .QUAL FILE ( UPDATED readsfastasingletsqualfile TO USE Indexer.pm VIA Pipeline.pm )
+
+./readsfastasingletsqualfile.pl -d supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase11.extract.singlets
+
+
+./assemblyreadsassemblysequences.pl -d funnybase11 -n supercraw0 -f /Users/young/FUNNYBASE/pipeline/supercraw0/annotation/comparemultiple.supercraw0-funnybase11.extract.contigs -w
+
+
+
+
+    BEFORE:
+    
+    select assemblyname, count(*) from assemblysequences group by assemblyname;
+    +--------------+----------+
+    | assemblyname | count(*) |
+    +--------------+----------+
+    | funnybase11  |    11180 |
+    +--------------+----------+
+
+
+
+13. POPULATE collectionsequences WITH supercraw0 UNIQUE SEQUENCES)
+====================================================================================================
+
+./collectionsequences.pl -d funnybase11 -n supercraw0
+
+
+14. BLAST supercraw0 SEQUENCES (JUST IN CASE) (*** ADAPT collectionarrayblast.pl )
+=============================================
+
+./collectionarrayblast.pl -d funnybase11 -n supercraw0
+
+
+15. POPULATE collectionsequencesannotation WITH supercraw0 SEQUENCES
+====================================================================
+
+./collectionsequencesannotation.pl -d funnybase11 -n supercraw0
+
+
+16. CALCULATE READ COVERAGE
+==========================
+
+./assemblysequencesreadcoverage.pl -d funnybase11
+...
+Total 21846 coverages added (total sequences 21846)
+Completed ./assemblysequencesreadcoverage.pl
+
+Run time: 00:22:23
+0:22AM, 24 February 2007
+****************************************
+
+
+17. CALCULATE DIVS
+==================
+
+FOR ASSEMBLED SEQUENCE VIEW:
+./collectionsequencesdiv.pl -d funnybase11
+./assemblyreadsdiv.pl -d funnybase11
+
+./assemblysequencesdiv.pl -d funnybase11
+
+FOR blastdiv OF collectionsequencesdiv TABLE:
+./collectionsequencesblastdiv.pl -d funnybase11
+
+FOR selectexperiment HTML OF platesinfo TABLE:
+./experimentplatesdiv.pl
+
+FOR HTML divs OF ALL PLATES IN THE MYSQL TABLE 'plates'
+./platesdiv.pl
+
+
+
+18. CALCULATE STATS
+===================
+
+./collectionstats.pl -d funnybase11
+
+19. DO PLATES
+=============
+
+./plates.pl -d funnybase11
+./platesinfo.pl -d funnybase11
+
+
+20. DO PATHWAYS
+==============
+
+./collectionsequencespathways.pl -d funnybase11
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

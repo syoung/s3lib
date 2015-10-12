@@ -1,0 +1,259 @@
+[workflow bowtiesnp]
+2011-01-14 02:19:24
+
+
+Workflow:
+name           bowtiesnp
+owner          anonymous
+outputdir      /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/run
+wkfile         /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/bowtiesnp.wk
+outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/run/bowtiesnp.wk.bkp
+	
+  App:
+  name           bowtie
+  owner          anonymous
+  type           aligner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through files doing Bowtie alignment with split read input files
+  notes          TEST - files 1 and 2 only
+  ordinal        1
+
+    Parameters:
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    replicates     1-2
+    loop           parallel
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.10000.sequence.txt
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.10000.sequence.txt
+    species        human
+    distance       200
+    label          bowtie-%REPLICATE%
+    maxjobs        1000
+    walltime       24
+    clean          
+    queue          small
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    cluster        LSF
+    cpus           1
+    reads          1000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/bowtie.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-bowtie.out
+
+	
+  App:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        2
+
+    Parameters:
+    replicates     1-2
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%
+    binlevel       1000000
+    reference      chr22
+    maxjobs        2000
+    walltime       48
+    queue          small
+    cluster        LSF
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/binbam.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-binbam.out
+
+	
+  App:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively merge .bam files, can use UCSC bins or user-defined genomic intervals
+  ordinal        3
+
+    Parameters:
+    binlevel       1000000
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/2
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative
+    species        human
+    label          bowtie-test-cumulative
+    walltime       48
+    cluster        LSF
+    queue          small
+    cpus           1
+    maxjobs        1000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative/cumulative.out
+
+
+
+[app bowtie]
+2011-01-14 02:19:24
+
+  App:
+  name           bowtie
+  owner          anonymous
+  type           aligner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Concurrent loop through files doing Bowtie alignment with split read input files
+  notes          TEST - files 1 and 2 only
+  ordinal        1
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/run/1-bowtie.app.bkp
+
+    Parameters:
+    executable     /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl
+    replicates     1-2
+    loop           parallel
+    inputfiles     /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.10000.sequence.txt
+    matefiles      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.10000.sequence.txt
+    species        human
+    distance       200
+    label          bowtie-%REPLICATE%
+    maxjobs        1000
+    walltime       24
+    clean          
+    queue          small
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%
+    reference      /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22
+    cluster        LSF
+    cpus           1
+    reads          1000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/bowtie.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-bowtie.out
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --executable /nethome/syoung/0.5/bin/apps/aligners/BOWTIE.pl \
+ --replicates 1-2 \
+ --loop parallel \
+ --inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.10000.sequence.txt \
+ --matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.10000.sequence.txt \
+ --species human \
+ --distance 200 \
+ --label bowtie-%REPLICATE% \
+ --maxjobs 1000 \
+ --walltime 24 \
+ --clean \
+ --queue small \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE% \
+ --reference /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr22 \
+ --cluster LSF \
+ --cpus 1 \
+ --reads 1000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/bowtie.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-bowtie.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-bowtie.out
+
+
+
+[app binbam]
+2011-01-14 02:20:05
+
+  App:
+  name           binbam
+  owner          anonymous
+  type           binner
+  location       /nethome/syoung/0.5/bin/apps/logic/loop.pl
+  description    Bin a .bam file into smaller .bam files covering UCSC bins or user-defined genomic intervals
+  ordinal        2
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/run/2-binbam.app.bkp
+
+    Parameters:
+    replicates     1-2
+    loop           parallel
+    executable     /nethome/syoung/0.5/bin/apps/snp/binBam.pl
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%
+    binlevel       1000000
+    reference      chr22
+    maxjobs        2000
+    walltime       48
+    queue          small
+    cluster        LSF
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/binbam.out
+    loopout        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-binbam.out
+
+Command:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+ --replicates 1-2 \
+ --loop parallel \
+ --executable /nethome/syoung/0.5/bin/apps/snp/binBam.pl \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE% \
+ --binlevel 1000000 \
+ --reference chr22 \
+ --maxjobs 2000 \
+ --walltime 48 \
+ --queue small \
+ --cluster LSF \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/%REPLICATE%/binbam.out \
+ --loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-binbam.out 
+
+
+Output:
+
+Loop::run    Printing STDOUT to loopout:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/loop-binbam.out
+
+
+
+[app cumulativebam]
+2011-01-14 02:21:11
+
+  App:
+  name           cumulativebam
+  owner          anonymous
+  type           binner
+  location       perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl
+  description    Cumulatively merge .bam files, can use UCSC bins or user-defined genomic intervals
+  ordinal        3
+  outputfile     /nethome/syoung/0.5/bin/workflows/apps/cluster/bowtie-test/run/3-cumulativebam.app.bkp
+
+    Parameters:
+    binlevel       1000000
+    filename       hit.bam
+    inputdirs      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/2
+    outputdir      /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative
+    species        human
+    label          bowtie-test-cumulative
+    walltime       48
+    cluster        LSF
+    queue          small
+    cpus           1
+    maxjobs        1000
+    stdout         /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative/cumulative.out
+
+Command:
+
+perl /nethome/syoung/0.5/bin/apps/snp/cumulativeBam.pl \
+ --binlevel 1000000 \
+ --filename hit.bam \
+ --inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/1,/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/2 \
+ --outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative \
+ --species human \
+ --label bowtie-test-cumulative \
+ --walltime 48 \
+ --cluster LSF \
+ --queue small \
+ --cpus 1 \
+ --maxjobs 1000 \
+ --stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative/cumulative.out 
+
+
+Output:
+
+cumulativeBam.pl    Printing STDOUT to stdoutfile:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-test/cumulative/cumulative.out
+
+
+
+
+Completed workflow bowtiesnp

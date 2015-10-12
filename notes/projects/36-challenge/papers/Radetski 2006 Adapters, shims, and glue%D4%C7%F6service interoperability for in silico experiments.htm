@@ -1,0 +1,2841 @@
+<html><head>
+
+
+
+
+
+
+
+ 
+ 
+  
+
+
+
+
+
+
+
+<title>
+	
+	Adapters, shims, and glue--service interoperability for in silico experiments -- Radetzki et al. 22 (9): 1137 -- Bioinformatics</title>
+
+
+	<script language="JavaScript">
+	<!--
+	function startTarget(windowname,wid,hei) {
+	
+	var dotpos = windowname.indexOf(".");
+	if (dotpos > -1)
+	{
+	var tempwn = windowname.substring(0,dotpos) +
+		windowname.substring(dotpos + 1, windowname.length);
+	windowname = tempwn;
+	}
+	var sizestring = 'width=' + wid + ',height=' + hei;
+	window.open('',windowname,'scrollbars,resizable,' + sizestring + '\'');
+	}
+	// -->
+	</script>
+
+
+
+
+	<!-- has inhead tag -->
+	
+		 
+	
+		
+	<script language="JavaScript">
+		<!--
+			function RightslinkPopUp( title, date, author, copyright, contentID, volumeNum, issueNum, startPage, endPage, issn, eissn )
+			{
+				var url = "https://s100.copyright.com/AppDispatchServlet"; 
+				var location = url
+				+ "?publisherName=" + escape("oup")
+				+ "&publication=" + escape("bioinformatics")
+				+ "&title=" + escape(title)
+				+ "&publicationDate=" + escape(date)
+				+ "&author=" + escape(author)
+				+ "&copyright=" + escape(copyright)
+				+ "&contentID=" + escape(contentID)
+				+ "&volumeNum=" + escape(volumeNum)
+				+ "&issueNum=" + escape(issueNum)
+				+ "&startPage=" + escape(startPage)
+				+ "&endPage=" + escape(endPage)
+				+ "&issn=" + escape(issn)
+				+ "&eissn=" + escape(eissn)
+				+ "&orderBeanReset=true";
+				
+				PopUp = window.open( location,'Rightslink','location=no,toolbar=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=650,height=550');
+			}
+		// -->
+	</script>
+
+	
+		
+<style type="text/css"><!--
+	@media screen,print,handheld
+{
+    .notonscreen { display: none; }
+}
+--></style>
+<!-- ac in the head available -->
+
+ 
+
+		<style type="text/css"><!--
+table.content_box_outer_table {
+	padding-left:10px;
+	padding-bottom:5px;
+	padding-top:0px;
+	padding-right:0px;
+	}
+
+table.content_box_outer_table_in_sidebar_frame {
+	padding-left:10px;
+	padding-bottom:0px;
+	padding-top:10px;
+	padding-right:10px;
+	}
+
+table.content_box_inner_table {
+	background-color:#f0f0f0;
+	font-family:Verdana,Arial,Helvetica,sans-serif;
+	font-size:65%;
+	padding-top:0px;
+	padding-left:0px;
+	padding-right:0px;
+	padding-bottom:5px;
+	}
+
+table.content_box_pdfinframes {
+	padding-top:0px;
+	padding-left:0px;
+	padding-right:0px;
+	padding-bottom:4px;
+	}
+
+td.content_box_title_highlight {
+	font-family:"Trebuchet MS",Verdana,Arial,Helvetica,sans-serif;
+	font-style:italic;
+	color:#ffffff;
+	background-color:#99CCFF;
+	font-size:120%;
+	font-weight:bold;
+	text-align:center;
+	padding:1px;
+	vertical-align:middle;
+	}
+
+td.content_box_title {
+	font-family:"Trebuchet MS",Verdana,Arial,Helvetica,sans-serif;
+	font-style:italic;
+	color:#ffffff;
+	background-color:#828282;
+	font-size:120%;
+	font-weight:bold;
+	padding:1px;
+	text-align:center;
+	vertical-align:middle;
+	}
+
+td.content_box_space_between_sections {
+	padding-top:2px;
+	}
+
+td.content_box_arrow {
+	text-align:right;
+	padding-left:5px;
+	padding-right:0px;
+	padding-top:0px;
+	padding-bottom:3px;
+	}
+
+td.content_box_item {
+	text-align:left;
+	vertical-align:top;
+	padding-left:3px;
+	padding-right:5px;
+	padding-top:0px;
+	padding-bottom:3px;
+	}
+
+td.content_box_pdfinframes_citation_cell {
+	background-color:#ffffff;
+	border:1px #000000 solid;
+	padding:3px;
+	font-family:Verdana,Arial,Helvetica,sans-serif;
+	font-size:65%;
+	text-align:left;
+	}
+
+
+font.openaccess {
+	font-weight:bold;
+	padding-left:3px;
+	padding-right:3px;
+	background-color:#ffffff;
+	}
+font.openaccess_open {
+	color:#000000;
+	}
+font.openaccess_access {
+	color:#cc0000;
+	}
+font.openaccess_oa {
+	}
+.content_box_openaccess_title {
+	text-align:center;
+	white-space:nowrap;
+	background-color:#BABABA;
+	}
+
+
+
+
+div.referrer-based-search-line {
+	font-family: arial,sans-serif;
+	font-size: 0.75em;
+	background-color: #009918;
+	padding: 3px 25px;
+	margin: 0px 4px 5px 0px;
+}
+
+div.referrer-based-search-line .search-terms{
+	font-weight: bold;
+}
+
+div.referrer-based-search-line .collection-name{
+	font-style: italic;
+}
+
+@media screen,print,handheld
+{
+    .notonscreen { display: none; }
+}
+--></style>
+
+		
+<!-- START HIGHWIRE INHEAD.MC -->
+<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1">
+<style type="text/css" media="screen">
+@import "/resource/css/hw.css";
+@import "/resource/css/bioinformatics.css";
+</style>
+<link rel="stylesheet" type="text/css" href="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/print.css" media="print">
+<script type="text/javascript" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/main.js"></script>
+<!-- END HIGHWIRE INHEAD.MC -->
+
+		
+	    <script language="javascript">
+		<!-- 
+	function popwin(url,wid,hei,fromtop,fromleft) {
+		var winPref = "channelmode=no,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=auto,resizable=no,width=" + wid + ",height=" + hei + ",top=" + fromtop + ",left=" + fromleft;
+		window.open(url, "popwin", winPref);
+	}
+	// -->
+	</script>
+        <script type="text/javascript" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/xmlhttprequest.js"></script>
+<script type="text/javascript" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/utility.js"></script>
+<script type="text/javascript" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/callback.js"></script>
+
+	
+		
+	
+	
+<link rel="alternate" type="application/rss+xml" title="Bioinformatics current issue" href="http://bioinformatics.oxfordjournals.org/rss/current.xml"> 
+<link rel="alternate" type="application/rss+xml" title="Bioinformatics latest 3 issues" href="http://bioinformatics.oxfordjournals.org/rss/recent.xml"> 
+<link rel="alternate" type="application/rss+xml" title="Bioinformatics Advance Access articles" href="http://bioinformatics.oxfordjournals.org/rss/ahead.xml"> 
+
+
+<meta name="robots" content="nofollow">
+
+
+
+<meta name="citation_journal_title" content="Bioinformatics">
+<meta name="citation_publisher" content="Oxford Univ Press">
+<meta name="citation_issn" content="1367-4803">
+<meta name="citation_issn" content="1460-2059">
+
+<meta name="citation_authors" content="Radetzki, U.; Leser, U.; Schulze-Rauschenbach, S. C.; Zimmermann, J.; Lussem, J.; Bode, T.; Cremers, A. B.">
+<meta name="citation_title" content="Adapters, shims, and glue--service interoperability for in silico experiments">
+<meta name="citation_date" content="05/01/2006">
+<meta name="citation_volume" content="22">
+<meta name="citation_issue" content="9">
+<meta name="citation_firstpage" content="1137">
+<meta name="citation_id" content="22/9/1137">
+<meta name="citation_mjid" content="bioinfo;22/9/1137">
+<meta name="citation_doi" content="10.1093/bioinformatics/btl054">
+<meta name="citation_abstract_html_url" content="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/22/9/1137">
+<meta name="citation_fulltext_html_url" content="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137">
+<meta name="citation_pdf_url" content="http://bioinformatics.oxfordjournals.org/cgi/reprint/22/9/1137.pdf">
+<meta name="citation_pmid" content="16481335">
+
+<meta name="dc.Contributor" content="Radetzki, U.">
+<meta name="dc.Contributor" content="Leser, U.">
+<meta name="dc.Contributor" content="Schulze-Rauschenbach, S. C.">
+<meta name="dc.Contributor" content="Zimmermann, J.">
+<meta name="dc.Contributor" content="Lussem, J.">
+<meta name="dc.Contributor" content="Bode, T.">
+<meta name="dc.Contributor" content="Cremers, A. B.">
+<meta name="dc.Title" content="Adapters, shims, and glue--service interoperability for in silico experiments">
+<meta name="dc.Identifier" content="10.1093/bioinformatics/btl054">
+<meta name="dc.Date" content="05/01/2006">
+
+<meta name="ROBOTS" content="NOARCHIVE"> 
+
+<!-- /our_journals/body.mc -->
+</head><div FirebugVersion="1.3.3" style="display: none;" id="_firebugConsole"></div><body class="general_page journal bioinformatics">
+
+
+<a name="top"><!-- null --></a>
+
+
+<!-- OAS SETUP begin -->
+<script type="text/javascript">
+<!--
+//configuration
+OAS_url ='http://oas.oxfordjournals.org/RealMedia/ads/';
+OAS_listpos = 'Top,Bottom';
+OAS_query = '?';
+OAS_sitepage = location.hostname + location.pathname;
+//end of configuration
+OAS_version = 10;
+OAS_rn = '001234567890'; OAS_rns = '1234567890';
+OAS_rn = new String (Math.random()); OAS_rns = OAS_rn.substring (2, 11);
+function OAS_NORMAL(pos) { document.write('<a href="' + OAS_url + 'click_nx.ads/' + OAS_sitepage + '/1' + OAS_rns + '@' + OAS_listpos + '!' + pos + OAS_query + '" target=_top>');
+document.write('<img scr="' + OAS_url + 'adstream_nx.ads?' + OAS_sitepage + '/1' + OAS_rns + '@' + OAS_listpos + '!' + pos + OAS_query + '" border=0></a>');
+}
+//-->
+</script>
+<script type="text/javascript">
+<!--
+OAS_version = 11;
+if (navigator.userAgent.indexOf('Mozilla/3') != -1)
+OAS_version = 10;
+if (OAS_version >= 11)
+document.write('<SC'+'ript language=JavaScript1.1 SRC="' + OAS_url + 'adstream_mjx.ads/' + OAS_sitepage + '/1' + OAS_rns + '@' + OAS_listpos + OAS_query + '"><\/SCRIPT>');
+//-->
+</script><script language="JavaScript1.1" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/1467607365TopBottom.js"></script><script type="text/javascript">
+<!-- document.write('');
+function OAS_AD(pos) {
+if (OAS_version >= 11 && typeof(OAS_RICH)!='undefined')
+OAS_RICH(pos);
+else
+OAS_NORMAL(pos);
+}
+//-->
+</script>
+<!-- OAS SETUP end -->
+<!-- test -->
+<div id="wrap">
+<p class="hide">
+<a href="#content">Skip Navigation</a>
+</p>
+<div id="secondary_nav">
+<strong id="page_logo" title="Oxford Journals"><a href="http://www.oxfordjournals.org/"><span>Oxford Journals</span></a></strong>
+<ul>
+<li id="nav_contact_us" title="Contact Us"><a href="http://www.oxfordjournals.org/contact_us.html"><span>Contact Us</span></a></li>
+<li id="nav_my_basket" title="My Basket"><a href="https://secure.oxfordjournals.org/basket.html"><span>My Basket</span></a></li>
+<li id="nav_my_account" title="My Account"><a href="http://services.oxfordjournals.org/cgi/tslogin?url=http://www.oxfordjournals.org/service/Register"><span>My Account</span></a></li>
+</ul>
+</div>
+<div id="header">
+<h1 id="page_title" title="Bioinformatics"><a href="http://bioinformatics.oxfordjournals.org/"><span>Bioinformatics</span></a></h1>
+</div>
+<div id="primary_nav">
+<ul>
+<li id="nav_about_this_journal" title="About This Journal"><a href="http://www.oxfordjournals.org/bioinformatics/about.html"><span>About This Journal</span></a></li>
+<li id="nav_contact_this_journal" title="Contact This Journal"><a href="http://bioinformatics.oxfordjournals.org/cgi/feedback/"><span>Contact This Journal</span></a></li>
+<li id="nav_subscriptions" title="Subscriptions"><a href="http://bioinformatics.oxfordjournals.org/subscriptions/index.dtl"><span>Subscriptions</span></a></li>
+<li id="nav_current_issue" title="Current Issue"><a href="http://bioinformatics.oxfordjournals.org/current.dtl"><span>Current Issue</span></a></li>
+<li id="nav_archive" title="Archive"><a href="http://bioinformatics.oxfordjournals.org/archive/"><span>Archive</span></a></li>
+<li id="nav_search" title="Search"><a href="http://bioinformatics.oxfordjournals.org/search.dtl"><span>Search</span></a></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="user_nav">
+<!-- subline logic: standard default -->
+
+
+
+
+
+
+
+
+	
+	
+
+	
+
+
+
+
+
+	
+	
+	
+	 
+	
+
+
+	
+	
+
+
+
+
+				<!-- inst auth StSL--><!-- default inst auth  --><font face="verdana,arial,helvetica" size="-2">
+	<nobr><strong>Institution: University Of Miami School of Medicine</strong></nobr>
+	<nobr><a target="_top" href="http://bioinformatics.oxfordjournals.org/cgi/login?uri=%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137">Sign In as Personal Subscriber</a></nobr>
+	
+		
+		
+	
+	
+	</font>
+	
+ <!-- showauthstring -->
+	<!-- INST -->
+	<!-- INDV -->
+        <!-- SPONSORED -->
+	<!-- USER.PFA -->
+	<!-- USER.PFABSAIC -->
+	<!-- NOT GUEST -->
+	
+
+	
+
+
+
+ 
+
+
+</div>
+
+
+
+<div id="breadcrumbs">
+<ul>
+<li class="first">
+<a href="http://www.oxfordjournals.org/">Oxford Journals</a>
+</li>
+
+<li>
+<a href="http://www.oxfordjournals.org/subject/life_sciences//">Life Sciences</a>
+</li>
+
+
+<li><a href="http://bioinformatics.oxfordjournals.org/">Bioinformatics</a></li>
+
+<li><a href="http://bioinformatics.oxfordjournals.org/content/vol22/issue9/index.dtl">Volume 22, Number 9</a></li>
+
+<li>Pp. 1137-1143</li>
+
+</ul>
+</div>
+
+<div id="articlenav">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/22/9/1130"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/toc_arrowprev.gif" alt="left arrow" border="0"></a>&nbsp;<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/22/9/1130">Previous Article</a>&nbsp;|&nbsp;<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/22/9/1144">Next Article</a>&nbsp;<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/22/9/1144"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/toc_arrownext.gif" alt="right arrow" border="0"></a>
+</div> <div id="content">
+<a name="content"></a>
+<div id="hw">
+<!--OAS AD'Top'begin-->
+<div id="oas_top">
+<script type="text/javascript">
+<!--
+OAS_AD('Top');
+//-->
+</script><a href="http://oas.oxfordjournals.org/RealMedia/ads/click_lx.ads/bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/L45/1843983995/Top/OxfordJournals/H_ALLJrnls_OJ_ANY_02MAR09_SuppSD/Peer-reviewed-supplements-a_Final.gif/6761755769456d6244686b41444a4678?x" target="_top"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/Peer-reviewed-supplements-a_Final.gif" alt="High Quality Peer Reviewed Supplements Available" border="0" height="60" width="468"></a>
+</div>
+<!--OAS AD'Top'end-->
+
+
+
+
+
+
+
+
+
+
+
+ 
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+	
+		 
+
+
+	
+	
+	
+
+
+ 
+
+
+
+
+        
+        	
+			
+			
+			
+        
+        	
+			
+			
+			
+        
+         <br><font color="#a70716" size="-1"><strong>
+        
+         Bioinformatics Advance Access originally published online on February 15, 2006
+        
+         </strong></font><font size="-1"><br>
+       </font>
+    
+
+
+	 
+ 
+
+
+
+
+
+
+<font size="-1">Bioinformatics 2006 22(9):1137-1143; doi:10.1093/bioinformatics/btl054
+
+<br></font> 
+
+
+
+ 
+	 
+		  
+			
+	
+		<table class="content_box_outer_table" align="right">
+		
+		
+			<tbody><tr>
+			<td>
+		
+	
+
+<!-- beginning of inner table -->
+	<table class="content_box_inner_table">
+<!-- citation -->
+
+	
+		
+
+
+
+
+	
+
+	
+
+	
+		
+			
+<tbody><tr><td class="content_box_title_highlight" colspan="2">This Article</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+				
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/22/9/1137">
+				Abstract</a></strong>
+				 					<img alt="Freely available" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/free.gif" border="0" height="7" width="32">
+				
+	
+				</td></tr>
+			
+		
+		
+	
+
+	
+	
+	
+
+	
+	
+	
+
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+		
+		
+	
+	
+		
+	
+
+	
+
+	
+		
+			
+		
+	
+
+	
+
+	
+	 
+
+	
+	 
+
+		
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		<strong>
+		
+		
+		
+			
+				
+				
+					<a href="http://bioinformatics.oxfordjournals.org/cgi/reprint/22/9/1137">
+		<strong>FREE Full Text</strong> (Print PDF) <img alt="Freely available" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/free.gif" border="0" height="7" width="32"> </a>
+
+
+				
+			
+		
+		</strong>
+		</td></tr>
+	
+	
+
+	
+	
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+
+
+
+
+
+	
+		
+
+	
+		
+
+	
+		
+		
+
+			
+
+
+	
+
+			
+
+			
+		
+	
+
+			
+	  
+	
+
+			
+
+			
+
+			
+	
+	
+
+	
+		
+	
+
+
+
+
+
+
+
+
+
+	
+		
+	
+		
+		
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item"><strong>
+			All Versions of this Article:<br>
+		
+			
+					22/9/1137
+				
+		&nbsp;&nbsp;&nbsp;<font color="#99ccff"><em>most recent</em></font><br>
+	
+
+	
+		
+		
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/btl054v1">
+					btl054v1</a>
+			
+		</strong></td></tr>
+	
+
+	
+
+
+
+
+
+	
+	
+	
+
+	
+		
+	
+
+	 
+
+	
+	
+		  
+    
+
+	
+	
+	
+	
+
+
+
+
+
+
+
+		
+	
+		
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/ctalert?alertType=citedby&amp;addAlert=cited_by&amp;saveAlert=no&amp;cited_by_criteria_resid=bioinfo;22/9/1137&amp;return_type=article&amp;return_url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137">
+				Alert me when this article is cited</a></strong>
+			</td></tr>
+	
+
+		
+		
+
+		
+		
+
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/ctalert?alertType=correction&amp;addAlert=correction&amp;saveAlert=no&amp;correction_criteria_value=22/9/1137&amp;return_type=article&amp;return_url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137">
+				Alert me if a correction is posted</a></strong>
+			</td></tr>
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+		
+	
+
+			
+			
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Services</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/mailafriend?url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments">
+				Email this article to a friend</a></strong>
+			</td></tr>
+			
+			
+
+
+	
+
+	
+
+	
+
+		
+		
+
+
+
+			
+			
+			
+		
+	
+
+		
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		<strong>
+		<a href="http://bioinformatics.oxfordjournals.org/cgi/search?qbe=bioinfo;btl054&amp;journalcode=bioinfo&amp;minscore=5000">
+		Similar articles in this journal</a>
+		</strong>
+		</td></tr>
+
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=bioinfo%3B22%2F9%2F1137&amp;link_type=ISI_RelatedRecords">
+				Similar articles in ISI Web of Science</a>
+			</td></tr>
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=16481335&amp;link_type=MED_NBRS">
+				Similar articles in PubMed</a></strong>
+			</td></tr>
+		
+	
+
+
+		
+
+
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/etoc">
+				Alert me to new issues of the journal</a></strong>
+			</td></tr>
+		
+
+		
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/folders?action=addtofolder&amp;wherefrom=JOURNALS&amp;wrapped_id=bioinfo;22/9/1137">
+				Add to My Personal Archive</a></strong>
+			</td></tr>
+		
+		
+	
+
+		
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+			<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/citmgr?gca=bioinfo;22/9/1137">
+			Download to citation manager</a></strong>
+			</td></tr>
+		
+		
+	
+
+
+	
+		
+	
+
+	
+
+
+
+  			
+		
+		
+		
+	
+
+	
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong>
+				Search for citing articles in:
+				<br>
+				<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=bioinfo%3B22%2F9%2F1137&amp;link_type=ISI_Citing">
+				ISI Web of Science (1)</a>
+				</strong>
+			</td></tr>
+		
+	
+	
+	
+	
+	
+
+
+
+	
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item"><strong><a href="#" onclick="RightslinkPopUp('Adapters, shims, and glue--service interoperability for in silico experiments',
+	'1 May 2006',
+	
+'U. Radetzki, et. al.'
+
+,
+	'Copyright (c) 2006 by the Oxford University Press.',
+	'10.1093/bioinformatics/btl054',
+	'22',
+	'9',
+	'1137',
+	'1143',
+	'1367-4803',
+	'1460-2059'); 
+	return false;">Request Permissions</a></strong></td></tr>
+
+	
+
+
+		
+
+		
+
+	
+	
+	
+		
+
+
+	
+
+
+
+
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+				
+				
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Google Scholar</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://scholar.google.com/scholar?q=%22author%3AU.+author%3ARadetzki%22">
+							Articles by Radetzki, U.</a></strong>
+						</td></tr>
+				
+				
+			
+				
+			
+				
+			
+				
+			
+				
+			
+				
+			
+				
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://scholar.google.com/scholar?q=%22author%3AA.%20B.+author%3ACremers%22">
+							Articles by Cremers, A. B.</a></strong>
+						</td></tr>
+				
+				
+			
+		
+		
+	
+	
+	
+		
+	
+	
+
+		
+			
+				
+					
+						
+						
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=http://bioinformatics.oxfordjournals.org/cgi/content/abstract/22/9/1137&amp;link_type=GOOGLESCHOLARRELATED">Search for Related Content</a></strong>
+						</td></tr>		
+						
+				
+			
+		
+	
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+		
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">PubMed</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=16481335&amp;link_type=PUBMED">
+				PubMed Citation</a></strong>
+			</td></tr>
+		
+	
+
+	
+		
+		
+			
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=Radetzki+U&amp;link_type=AUTHORSEARCH">
+							Articles by Radetzki, U.</a></strong>
+						</td></tr>
+				
+			
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=Cremers+AB&amp;link_type=AUTHORSEARCH">
+							Articles by Cremers, A. B.</a></strong>
+						</td></tr>
+				
+			
+		
+
+		
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+
+	
+
+		
+			
+		
+	 
+		
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Social Bookmarking</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+	<tr><td class="content_box_arrow"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CITEULIKE" title="CiteULike"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/citeulike.gif" alt="Add to CiteULike" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CONNOTEA" title="Connotea"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/connotea.gif" alt="Add to Connotea" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=DEL_ICIO_US" title="Del.icio.us"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/delicious.gif" alt="Add to Del.icio.us" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+		
+			
+		
+			
+		
+			
+		
+		<br><a href="http://www.oxfordjournals.org/help/features/index.html#socialbookmarking">What's this?</a>
+	</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</tbody></table>
+</td></tr></tbody></table> 
+
+
+		
+	
+
+
+
+ 
+
+
+
+
+
+
+
+<p> 
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+    
+	
+	
+	
+	
+		<font size="-1">
+<a href="http://bioinformatics.oxfordjournals.org/misc/terms.shtml">©
+The Author 2006. Published by Oxford University Press. All rights
+reserved. For Permissions, please email:
+journals.permissions@oxfordjournals.org</a>
+</font><br>
+</p><h2>
+Adapters, shims, and glue&#8212;service interoperability for <i>in silico</i> experiments
+</h2>
+
+<strong>
+<nobr>U. Radetzki <sup>1</sup><sup>,*</sup></nobr>, 
+<nobr>U. Leser <sup>2</sup></nobr>, 
+<nobr>S. C. Schulze-Rauschenbach <sup>3</sup></nobr>, 
+<nobr>J. Zimmermann <sup>1</sup></nobr>, 
+<nobr>J. Lüssem <sup>1</sup></nobr>, 
+<nobr>T. Bode <sup>1</sup></nobr> and 
+<nobr>A. B. Cremers <sup>1</sup></nobr>
+</strong><p>
+<font size="-1">
+<sup>1</sup> Department of Computer Science, University of Bonn D-53117 Bonn, Germany<br>
+<sup>2</sup> Department of Computer Science, Humboldt-Universität Berlin D-10099 Berlin, Germany<br>
+<sup>3</sup> Clinic for Psychiatry and Psychotherapy, University of Bonn Medical Center D-53105 Bonn, Germany
+</font></p><p>
+
+</p><p> <sup>*</sup>To whom correspondence should be addressed.</p><p>
+</p><p>
+<a name="ABS"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+ABSTRACT
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">ABSTRACT</font><br>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+</p><p>
+<b>Motivation:</b> Computationally, <i>in silico</i> experiments in biology<sup> </sup>are workflows describing the collaboration of people, data and<sup> </sup>methods. The Grid and Web services are proposed to be the next<sup> </sup>generation infrastructure supporting the deployment of bioinformatics<sup> </sup>workflows. But the growing number of autonomous and heterogeneous<sup> </sup>services pose challenges to the used middleware w.r.t. composition,<sup> </sup>i.e. discovery and interoperability of services required within<sup> </sup><i>in silico</i> experiments. In the IRIS project, we handle the problem<sup> </sup>of service interoperability by a semi-automatic procedure for<sup> </sup>identifying and placing customizable adapters into workflows<sup> </sup>built by service composition.<sup> </sup></p><p>
+
+<b>Results:</b> We show the effectiveness and robustness of the software-aided<sup> </sup>composition procedure by a case study in the field of life science.<sup> </sup>In this study we combine different database services with different<sup> </sup>analysis services with the objective of discovering required<sup> </sup>adapters. Our experiments show that we can identify relevant<sup> </sup>adapters with high precision and recall.<sup> </sup></p><p>
+
+<b>Availability:</b> The IRIS software and the profile language can<sup> </sup>be downloaded from <a href="http://www.cs.uni-bonn.de/III/bio/iris">http://www.cs.uni-bonn.de/III/bio/iris</a><sup> </sup></p><p>
+
+<b>Contact:</b> <span id="em0"><a href="mailto:ur@iai.uni-bonn.de">ur@iai.uni-bonn.de</a></span><script type="text/javascript"><!--
+ var u = "ur", d = "iai.uni-bonn.de"; document.getElementById("em0").innerHTML = '<a href="mailto:' + u + '@' + d + '">' + u + '@' + d + '<\/a>'//--></script><sup> </sup></p><p>
+
+
+
+
+<a name="SEC1"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+1 INTRODUCTION
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">1 INTRODUCTION</font><br>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+The bioinformatics research community has created several hundred<sup> </sup>databases and analysis methods (<a href="#B4">Galperin, 2005</a>). These resources<sup> </sup>(services) differ in data formats, interfaces and semantics<sup> </sup>of concepts used. <i>In silico</i> experiments, however, requiring<sup> </sup>a flexible combination of services in bioinformatics workflows<sup> </sup>by applying selected methods to data extracted from databases<sup> </sup>(<a href="#B15">Stevens <i>et al</i>., 2003b</a>), but high dynamics in the field of bioinformatics<sup> </sup>is making the development of stable data formats and semantics<sup> </sup>required for easy service interoperability almost impossible.<sup> </sup>These characteristics make the composition of services into<sup> </sup>meaningful workflows supporting <i>in silico</i> experiments a difficult,<sup> </sup>often time-consuming and error-prone task. Modern high-level<sup> </sup>middleware is necessitated to properly address current challenges<sup> </sup>of composition which involves the discovery and the interoperability<sup> </sup>of often heterogeneous services.<sup> </sup></p><p>
+
+Today, Web services are proposed for building bioinformatics<sup> </sup>services. A Web service is a software entity designed to support<sup> </sup>machine-to-machine interaction over a network. Interaction is<sup> </sup>reached by standardized interface and message protocols based<sup> </sup>on the eXtensible Markup Language (XML). The preferred standard<sup> </sup>for describing interfaces is the Web Services Description Language<sup> </sup>(WSDL). WSDL defines an interface in a port type that specifies<sup> </sup>the messages which a Web service can produce and consume. Messages<sup> </sup>are described by parameter names and data types. WSDL, however,<sup> </sup>ignores semantic issues on the application level, i.e. it does<sup> </sup>not contain semantic information about the services and the<sup> </sup>data. Such interfaces cannot distinguish between a sequence<sup> </sup>in FASTA format or in EMBL format (both are represented as strings)<sup> </sup>nor can it distinguish between a DNA sequence and a journal<sup> </sup>article. Hence, Web services failed to achieve semantic interoperability<sup> </sup>in bioinformatics (<a href="#B18">Wilkinson <i>et al</i>., 2005</a>). For discovery and<sup> </sup>integration the Web services technology suggests the Universal<sup> </sup>Description, Discovery and Integration (UDDI). It supports mainly<sup> </sup>keyword-based retrieval that can be realized by using term frequency-inverse<sup> </sup>document frequency (TF-IDF). But UDDI can neither create new<sup> </sup>service compositions nor does it support semantic-aware service<sup> </sup>discovery.<sup> </sup></p><p>
+
+The Grid is proposed to be the next generation middleware supporting<sup> </sup>design and execution of bioinformatics workflows. Workflows<sup> </sup>are being defined by control flow and data flow of services.<sup> </sup>Within the data flow, service outputs of previously executed<sup> </sup>services are used as inputs to following services. Today, several<sup> </sup>BioGrid middlewares are underway, like <sup>my</sup>Grid (<a href="#B14">Stevens <i>et al</i>., 2003a</a>)<sup> </sup>or BioOpera (<a href="#B1">Bausch <i>et al</i>., 2003</a>), supporting the discovery<sup> </sup>and orchestration of services to form workflows. The creation<sup> </sup>of workflows is often done through visual builder tools like<sup> </sup>Taverna (<a href="#B8">Oinn <i>et al</i>., 2004</a>). However, today's Grid middleware<sup> </sup>lacks suitable mechanisms for handling the issue of service<sup> </sup>interoperability. We tackle this problem by customizable intermediates,<sup> </sup>called adapters. Adapters like services are technically represented<sup> </sup>as Web service, but they have a different application purpose.<sup> </sup>A service is an entity providing business functionality. They<sup> </sup>represent external and internally created bioinformatics databases<sup> </sup>and applications. Adapters are entities that are automatically<sup> </sup>identified and combined in order to glue these (business) services<sup> </sup>(<a href="#B10">Radetzki <i>et al</i>., 2003</a>). They are concerned with data transformation,<sup> </sup>identifier mapping and so forth.<sup> </sup></p><p>
+
+Adapters are described by WSDL and additionally by profiles<sup> </sup>in the Mediator Profile Language (MPL, <a href="http://www.cs.uni-bonn.de/III/bio/iris/MediatorProfile.owl">http://www.cs.uni-bonn.de/III/bio/iris/MediatorProfile.owl</a>)<sup> </sup>a language developed in the IRIS project<a name="RFN1"></a><sup><a href="#FN1">1</a></sup>. These profiles are<sup> </sup>stored in a repository, called adapter pool. Registered adapters<sup> </sup>are identified based on a novel Software-aided Procedure (SP)<sup> </sup>supported by IRIS (<a href="#FIG1">Fig. 1</a>). In SP we automatically derive a<sup> </sup>query against the adapter pool from the input and output descriptions<sup> </sup>of services connected by a data flow, in order to identify relevant<sup> </sup>adapters and adapter compositions. This query contains syntactic<sup> </sup>information as well as semantic concepts of a domain ontology.<sup> </sup>The discovery and matchmaking of appropriate adapters is a difficult<sup> </sup>task, because often there are only adapters transforming the<sup> </sup>data partially, thus requiring additional adapters. Our matchmaking<sup> </sup>algorithms provide the user with both a ranked list of (exact<sup> </sup>and less exact) matching adapters and a possible composition<sup> </sup>of adapters that form an operation network. These algorithms<sup> </sup>further support syntactic and semantic retrieval that is based<sup> </sup>on data types and ontologies, respectively (<a href="#B12">Radetzki <i>et al</i>., 2004</a>).<sup> </sup>When all matching adapters and adapter compositions (composite<sup> </sup>adapters) are generated, the user selects the most appropriate<sup> </sup>adapters for the given workflow. Finally these adapters are<sup> </sup>customized and stored in the adapter pool for future workflows.<sup> </sup></p><p>
+
+<a name="FIG1"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG1"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f1.gif" alt="Figure 1" border="2" height="106" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (19K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG1">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG1" onclick="startTarget('FIG1', 590, 434); this.href='/cgi/content-nw/full/22/9/1137/FIG1'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG1">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 1</b> Architecture of the IRIS platform. Different phases of
+the Software-aided Procedure (SP) for service interoperability are
+shown.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+This paper is organized as follows: Section 2 describes the<sup> </sup>generation of a query against the adapter pool. Section 3 addresses<sup> </sup>the aspects of discovering suitable adapters. The SP will be<sup> </sup>evaluated in Section 4 by an example bioinformatics experiment.<sup> </sup>In Section 5 this use case will successively be modified to<sup> </sup>simulate evolution in <i>in silico</i> experiments. Section 6 discusses<sup> </sup>our approach and Section 7 gives a conclusion of this paper.<sup> </sup><p>
+
+<a name="SEC2"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+2 DERIVING ADAPTER REQUIREMENTS
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">2 DERIVING ADAPTER REQUIREMENTS</font><br>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+The first phase of the SP is query generation, i.e. deriving<sup> </sup>the capabilities an adapter has to fulfill in order to glue<sup> </sup>between different services of a workflow. Hence, we have to<sup> </sup>analyze the WSDL descriptions of the data producing and data<sup> </sup>consuming services and extract the knowledge for the query.<sup> </sup>This knowledge should contain semantic as well as syntactic<sup> </sup>aspects. These queries are expressed by MPL in form of query<sup> </sup>profiles. An adapter with the same or a similar profile is considered<sup> </sup>as an answer to the query (see Section 3).<sup> </sup></p><p>
+
+A major problem is that port types of WSDL only declare syntactic<sup> </sup>aspects and textual descriptions of services, but lack precisely<sup> </sup>defined semantics. It is not possible to assign concepts&#8212;specified<sup> </sup>by a domain ontology&#8212;to a WSDL description. The parameter<sup> </sup>names within service descriptions are often meaningless, and<sup> </sup>the data types of the parameters are often misleading. For instance<sup> </sup>often a character string is declared but the string contains<sup> </sup>a complex XML document, e.g. representing a sequence in FASTA<sup> </sup>format. Thus, it is difficult to exactly specify&#8212;semantically<sup> </sup>and syntactically&#8212;the requirements for wanted adapters.<sup> </sup></p><p>
+
+We tackle this problem by an algorithm used at design-time of<sup> </sup>the workflow. Our algorithm analyzes the available WSDL information<sup> </sup>of the participating services. In the first step of this algorithm<sup> </sup>the syntactic signature (name and data type of parameters) as<sup> </sup>well as the available documentation specified in WSDL are included<sup> </sup>into the query profile. Thus, the WSDL port type information<sup> </sup>is fully included in MPL.<sup> </sup></p><p>
+
+In the next step we analyze the parameter names and operation<sup> </sup>names as well as the available documentations in order to identify<sup> </sup>descriptive terms that can be used for matchmaking with concepts<sup> </sup>from domain ontologies. These names are split as far as possible,<sup> </sup>in order to specify more meaningful terms, e.g. we split &#8216;getNucSeq&#8217;<sup> </sup>in &#8216;get&#8217;, &#8216;nuc&#8217; and &#8216;seq&#8217;.<sup> </sup>After that, resulting terms of the splitting as well as terms<sup> </sup>from the documentations are normalized by stemming algorithms<sup> </sup>and included in a bag of terms. Finally we use stopword lists,<sup> </sup>in order to filter non-specific terms, like &#8216;get&#8217;.<sup> </sup>The user can further decide if linguistic methods defined by<sup> </sup>general-purpose ontologies should be applied to the bag of terms,<sup> </sup>like synonyms, hyponyms or abbreviations. These elements can<sup> </sup>enhance the bag of terms making it less exact. Finally, the<sup> </sup>algorithm uses these terms for concept matching with a domain<sup> </sup>ontology. If a concept matches it will be added to the query<sup> </sup>profile. This is a major advantage of MPL over WSDL, because<sup> </sup>MPL allows the explicit annotation of concepts. The domain ontology<sup> </sup>can arise from a community-driven approach, like BioMOBY's object<sup> </sup>ontology (MOBY-S, <a href="http://biomoby.org/resources/moby-s/objects">http://biomoby.org/resources/moby-s/objects</a>)<sup> </sup>(<a href="#B17">Wilkinson and Links, 2002</a>) containing concepts that are related<sup> </sup>to data formats and data types usually used in bioinformatics.<sup> </sup>Moreover, it is possible to use a single domain ontology as<sup> </sup>well as several domain ontologies. Finally, the user has the<sup> </sup>possibility to modify and enhance the resulting query profile.<sup> </sup></p><p>
+
+<a name="SEC3"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+3 DISCOVERY OF NEEDED ADAPTERS
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">3 DISCOVERY OF NEEDED...</font><br>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+A derived query profile specifies the requirements an adapter<sup> </sup>has to fulfill in order to glue together heterogeneous bioinformatics<sup> </sup>services of a designed workflow. In the discovery phase, we<sup> </sup>have to identify adapters that exactly match the requirements<sup> </sup>or that can be plugged-in between the participating services<sup> </sup>of the bioinformatics workflow.<sup> </sup></p><p>
+
+Owing to the fact that we cannot expect to identify a single<sup> </sup>adapter that can directly be plugged-in nor an adapter that<sup> </sup>exactly matches the requirements, the discovery should also<sup> </sup>support relaxed matchings. There are several reasons obstructing<sup> </sup>a simple solution: first of all, the derived query profile is<sup> </sup>rather diffuse than exact (see Section 2). The specifications<sup> </sup>of the capabilities of adapters are also diffuse, because some<sup> </sup>calculations are very complex, making it difficult to describe<sup> </sup>the effects of these calculations or the calculations themselves<sup> </sup>by pure logical conditions. Furthermore, adapters can be built<sup> </sup>by third parties which are independent from those who built<sup> </sup>the services. Finally, it is more likely that a combination<sup> </sup>of several adapters may fulfill the requirements of the query,<sup> </sup>i.e. that their profiles together match the query profile. Thus,<sup> </sup>matching algorithms have to support relaxed matchings as well<sup> </sup>as they have to identify new compositions of adapters.<sup> </sup></p><p>
+
+We address these requirements by a sophisticated registry and<sup> </sup>discovery unit called adapter pool. The adapter pool contains<sup> </sup>the profiles of registered adapters. An adapter profile that<sup> </sup>is declared by MPL specifies in machine- and human-readable<sup> </sup>terms the capabilities of a customizable adapter. In order to<sup> </sup>be available for discovery, every adapter has to provide such<sup> </sup>a profile that is advertized by the adapter pool.<sup> </sup></p><p>
+
+The retrieval engine of the adapter pool supports different<sup> </sup>kinds of matchmaking algorithms. Some of them act as filters,<sup> </sup>while other realize relaxed matchings of adapters that also<sup> </sup>consider possible compositions of adapters (<a href="#B11">Radetzki and Cremers, 2004</a>).<sup> </sup>The latter algorithms are based on available syntactic and semantic<sup> </sup>information of adapters, while the former use tree structures,<sup> </sup>like adapter and service taxonomies, or keyword bags. In the<sup> </sup>following we limit our discussion on the signature (syntax)<sup> </sup>and concept (semantic) matching. Information on remaining filter<sup> </sup>algorithms can be found in <a href="#B11">Radetzki and Cremers (2004)</a>.<sup> </sup></p><p>
+
+The algorithms for signature and concept matching operate on<sup> </sup>the parameter names, data types and the concepts of a domain<sup> </sup>ontology. They identify new compositions of adapters, support<sup> </sup>polymorphism as well as linguistic analysis like synonyms and<sup> </sup>abbreviations. Polymorphism is applied to the data types as<sup> </sup>well as the concepts, whereas linguistic analysis is applied<sup> </sup>to parameter names and descriptions.<sup> </sup></p><p>
+
+A data type <i>t</i>' is a subtype of a data type <i>t</i>, iff every instance<sup> </sup>of <i>t</i>' is an instance of <i>t</i>. The subtype hierarchies can be defined<sup> </sup>explicitly by the type system, but can also be implicitly determined<sup> </sup>by inference rules (<a href="#B16">Sycara <i>et al</i>., 2002</a>). Very similar, a concept<sup> </sup><i>c</i> subsumes a concept <i>c</i>', iff every instance of the concept <i>c</i>'<sup> </sup>is also an instance of the concept <i>c</i>. Likewise to subtype hierarchies,<sup> </sup>subsumption hierarchies can be defined explicitly by an ontology<sup> </sup>or can be implicitly derived by inference rules. Explicit subsumption<sup> </sup>relations of concepts are defined by is-a relations between<sup> </sup>concepts of an ontology.<sup> </sup></p><p>
+
+In our adapter pool we have designed several database relations:<sup> </sup>for the adapter profiles, the subtype as well as the subsumption<sup> </sup>hierarchies, the linguistic methods, like synonyms, and the<sup> </sup>interconnections between different adapters. Let <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/pre.gif" alt="{preceq}" border="0"></sub> be the relation<sup> </sup>for subtypes, then <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/pre.gif" alt="{preceq}" border="0"></sub>(<i>t, t</i>') holds iff <i>t</i>' is a subtype of <i>t</i>.<sup> </sup>Let <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054i1.gif" alt="Formula " align="bottom" border="0" height="10" width="13"> be the relation for<sup> </sup>subsumption hierarchies, then <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054i1.gif" alt="Formula " align="bottom" border="0" height="10" width="13">(<i>c, c</i>') holds iff <i>c</i> subsumes <i>c</i>'. Let <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/ap.gif" alt="{approx}" border="0"></sub> be the relation for<sup> </sup>synonyms and abbreviations, then <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/ap.gif" alt="{approx}" border="0"></sub>(<i>n, n</i>') holds iff <i>n</i>' is a<sup> </sup>synonym or an abbreviation of <i>n</i>. Then, two adapters <i>A</i> and <i>B</i><sup> </sup>can be automatically composed by the discovery unit, if one<sup> </sup>or more of the rules in <a href="#E1">Equation (1)</a> hold.<sup> </sup></p><p>
+
+Let <i>p<sub>A</sub></i> be an output parameter of <i>A</i> and let <i>p<sub>B</sub></i> be an input parameter<sup> </sup>of <i>B</i>. Let <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/f1.gif" alt="Formula" border="0"> be data types, let <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/f2.gif" alt="Formula" border="0"> be sets of concepts, and let <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/f3.gif" alt="Formula" border="0"> be parameter names assigned to parameter <i>p<sub>A</sub></i> and <i>p<sub>B</sub></i> respectively.<a name="E1"><!-- null --></a>
+<sup> </sup><br clear="right"></p><p><table border="0" width="100%"><tbody><tr><td align="center">
+<sup> </sup><br clear="right"><p align="center"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054e1.gif" alt="Formula 1" align="bottom" border="0" height="59" width="315"></p></td><td align="right" valign="bottom" width="20">(1)</td></tr></tbody></table><sup> </sup></p><p>
+
+Sets of concepts like <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/f2.gif" alt="Formula" border="0"> are assigned to parameters to tackle the problem that adapters often<sup> </sup>consume and produce different data belonging to several concepts.<sup> </sup></p><p>
+
+If a new adapter is advertized in the adapter pool, the capabilities<sup> </sup>are inserted into the corresponding database relation. Furthermore<sup> </sup>interconnections to other adapters are calculated based on <a href="#E1">Equation (1)</a>.<sup> </sup>To achieve this, every parameter name <i>n</i> of the newly advertized<sup> </sup>adapter is compared with parameter names <i>n</i>' of already registered<sup> </sup>adapters, also considering the relation <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/ap.gif" alt="{approx}" border="0"></sub>, i.e. the algorithm<sup> </sup>verifies that <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/ap.gif" alt="{approx}" border="0"></sub>(<i>n, n</i>') holds. At the same time the corresponding<sup> </sup>data types and concepts are compared also considering the relation<sup> </sup><i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/pre.gif" alt="{preceq}" border="0"></sub> and <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054i1.gif" alt="Formula " align="bottom" border="0" height="10" width="13">. Here the algorithm<sup> </sup>checks, if <i>r</i><sub><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/pre.gif" alt="{preceq}" border="0"></sub> holds for the data types and <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054i1.gif" alt="Formula " align="bottom" border="0" height="10" width="13"> holds for the concepts. If <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054i1.gif" alt="Formula " align="bottom" border="0" height="10" width="13"> holds for two parameters, we include an adapter<sup> </sup>link into the domain ontology between the concept of the input<sup> </sup>parameter and the concept of the output parameter. Thus, during<sup> </sup>discovery the ontology can act like an index structure for registered<sup> </sup>adapters.<sup> </sup></p><p>
+
+Depending on the precision required for the given workflow the<sup> </sup>user can decide, if only one or more rules have to be fulfilled<sup> </sup>in order to allow a valid interconnection between two adapters.<sup> </sup>If the algorithm considers the data types only [<a href="#E1">Equation (1a)</a>],<sup> </sup>it might result in poor precision. Taking also the names of<sup> </sup>the parameters into account may lead to a better precision,<sup> </sup>but a worse recall, because the matching may be too strict [<a href="#E1">Equation (1a)</a><sup> </sup>and (<a href="#E1">1c</a>)]. If concepts are available, then interconnections<sup> </sup>based on concepts [<a href="#E1">Equation (1b)</a>] are often the best choice,<sup> </sup>because in most cases concepts are more accurate and meaningful<sup> </sup>than parameter names and data types.<sup> </sup></p><p>
+
+During matchmaking, the algorithm iteratively has to query the<sup> </sup>database relation for interconnections, in order to retrieve<sup> </sup>adapters and new adapter compositions. Compositions can be identified,<sup> </sup>if we consider that the relation for interconnections define<sup> </sup>a graph of adapters. Furthermore, because the ontology is a<sup> </sup>graph, one can traverse this graph using adapter links as well<sup> </sup>as other available relations (e.g. is-a, part-of), in order<sup> </sup>to identify paths from one concept to another concept. Here,<sup> </sup>the source concept and target concept are specified by the query<sup> </sup>profile. Possible paths specify compositions of adapters, even<sup> </sup>though a concrete adapter is missing in the path. This can happen<sup> </sup>if no adapter link is available. In this case the algorithm<sup> </sup>inserts an empty so-called proxy adapter and provides its corresponding<sup> </sup>profile.<sup> </sup></p><p>
+
+The result of the matchmaking process is an adapter composition<sup> </sup>in form of an operation network that fulfills the query profile.<sup> </sup><a href="#FIG2">Figure 2</a> illustrates such a composition. For instance, adapter<sup> </sup><i>A</i> may process an identifier (accession number in NCBI's GenBank)<sup> </sup>and generates different identifiers for other services (identifier<sup> </sup>for MGI database, <a href="http://www.informatics.jax.org/">http://www.informatics.jax.org/</a>, or EMBL database).<sup> </sup>Because the output corresponds to different concepts in the<sup> </sup>domain ontology, we call the corresponding parameter a disjunctive<sup> </sup>parameter. Now it is possible to split the composition into<sup> </sup>independent subparts, each subpart processing one of the possible<sup> </sup>concepts of the disjunctive parameter. In our example <i>A</i>, <i>E</i>,<sup> </sup><i>F</i> and <i>A</i>, [<i>B</i>, <i>C</i>], <i>D</i>, where <i>B</i> and <i>C</i> can be executed in parallel.<sup> </sup>This is a difference to adapter <i>D</i> and <i>F</i>, where all the parameters<sup> </sup>are mandatory and need to be filled up by previous adapters.<sup> </sup>Optional parameters are not included for simplicity. However,<sup> </sup>it is not required that all data for input parameters of one<sup> </sup>adapter come from the same adapter. For instance, <i>D</i> gets data<sup> </sup>from <i>B</i> and <i>C</i>. Disjunctions and conjunctions of parameters can<sup> </sup>appear for input parameters as well as for output parameters.<sup> </sup></p><p>
+
+<a name="FIG2"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG2"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f2.gif" alt="Figure 2" border="2" height="79" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (11K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG2">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG2" onclick="startTarget('FIG2', 590, 374); this.href='/cgi/content-nw/full/22/9/1137/FIG2'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG2">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 2</b> Abstract operation network of an adapter composition:
+dashed arrows represent the query profile and solid arrows represent
+adapter links. Conjunctions represent parameters that have to be filled
+up by data, while disjunctions provide choices in the processing of the
+composition.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+In the last step of the SP, the user may customize the adapters<sup> </sup>of a composition in order to bridge the bioinformatics services<sup> </sup>of the given workflow. This customization can sometimes include<sup> </sup>the realization of required proxy adapters. In some cases these<sup> </sup>adapters can be automatically created by schema matching approaches<sup> </sup>(<a href="#B13">Rahm and Bernstein, 2001</a>) with the use of ontologies (<a href="#B2">Bowers and Ludäscher, 2004</a>).<sup> </sup>For more information about this subject see <a href="#B9">Radetzki (2005)</a>.<sup> </sup>Finally the customized adapters and the composition are stored<sup> </sup>in the adapter pool for future workflows.<sup> </sup><p>
+
+<a name="SEC4"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+4 SERVICE INTEROPERABILITY USING IRIS
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">4 SERVICE INTEROPERABILITY USING...</font><br>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+Owing to the lack of space and time, we cannot discuss a complete<sup> </sup><i>in silico</i> experiment, but a small fraction of two types of services<sup> </sup>often occurring combined in a bioinformatics workflow. Consider<sup> </sup>the case where a user wants to analyze and annotate nucleotide<sup> </sup>or protein sequences, e.g. related to schizophrenia, within<sup> </sup>the human genome and between the target genome and related species.<sup> </sup>Identification of homologous genes within the genome provides<sup> </sup>a resource for annotation as well as for evolutionary studies<sup> </sup>to examine gene and genome duplication events within humans.<sup> </sup>This can be achieved by alignment of the genome with sequences<sup> </sup>from related species through methods like BLAST or FASTA (<a href="#B19">Yuan <i>et al</i>., 2005</a>).<sup> </sup>The sequence information can be provided in various formats<sup> </sup>by different database services. The use of a concrete database<sup> </sup>service depends on the species currently investigated. <a href="#FIG3">Figure 3</a><sup> </sup>depicts this fraction of a bioinformatics workflow.<sup> </sup></p><p>
+
+<a name="FIG3"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG3"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f3.gif" alt="Figure 3" border="2" height="97" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (22K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG3">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG3" onclick="startTarget('FIG3', 590, 414); this.href='/cgi/content-nw/full/22/9/1137/FIG3'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG3">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 3</b> Fraction of a bioinformatics workflow: combined services
+require and provide semantically similar information, but syntactically
+different data.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+Services, like those represented in <a href="#FIG3">Figure 3</a>, are independently<sup> </sup>built using different data formats and semantics. Thus the service<sup> </sup>interoperability is not guaranteed as the output of one service<sup> </sup>often is in a different format than the input required by the<sup> </sup>next service. Further, biologists demand to replace services<sup> </sup>without jeopardizing the entire workflow, e.g. replacing a BLAST<sup> </sup>service operating on one database with a BLAST or FASTA service<sup> </sup>operating on a different database. Here, the problem of heterogeneity<sup> </sup>arises again, because interfaces and data structures of the<sup> </sup>replaced and replacing services may differ in unexpected ways.<sup> </sup>At this point, the SP of the IRIS platform exerts its advantage.<sup> </sup><p>
+
+For practical illustration of the SP we assume two composed<sup> </sup>services. Let the XEMBL service (<a href="http://www.ebi.ac.uk/xembl/">http://www.ebi.ac.uk/xembl/</a>)<sup> </sup>and the DDBJ BLAST service (<a href="http://xml.nig.ac.jp/wsdl/">http://xml.nig.ac.jp/wsdl/</a>) be composed<sup> </sup>in a workflow, whereby XEMBL is the data provider and DDBJ BLAST<sup> </sup>is the data consumer. <a href="#TBL1">Table 1</a> depicts these services. The XEMBL<sup> </sup>service provides the operation &#8216;getNucSeq&#8217; that<sup> </sup>returns the parameter &#8216;result&#8217; of type &#8216;string&#8217;.<sup> </sup>Parameters also contain a textual documentation. But parameter<sup> </sup>names like &#8216;result&#8217; support no explicit semantical<sup> </sup>meaning. For example &#8216;result&#8217; says nothing about<sup> </sup>the contents of the &#8216;result&#8217; or how it is represented.<sup> </sup>The data type is misleading too, because it is declared as &#8216;string&#8217;,<sup> </sup>but it returns a complex XML document in form of BSML or AGAVE.<sup> </sup>Further, the DDBJ BLAST service requires besides others sequence<sup> </sup>information that is contained in BSML and AGAVE, but that is<sup> </sup>not directly equivalent to BSML or AGAVE. Thus, in order to<sup> </sup>have a fully functional workflow, we require an adapter that<sup> </sup>can glue between BSML and AGAVE, respectively, and the biological<sup> </sup>sequence.<sup> </sup></p><p>
+
+<a name="TBL1"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<strong>View this table:</strong><br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/TBL1">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/TBL1" onclick="startTarget('TBL1', 500, 400); this.href='/cgi/content-nw/full/22/9/1137/TBL1'" onmouseover="window.status='View table in a separate window'; return true" target="TBL1">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Table 1</b> WSDL of XEMBL service and DDBJ BLAST service<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+In this scenario we assume that the adapter pool does not contain<sup> </sup>such an adapter fulfilling the request. However, the adapter<sup> </sup>pool contains two other adapters specified in <a href="#TBL2">Table 2</a>: a &#8216;bio<sup> </sup>data adapter&#8217; and an &#8216;agave adapter&#8217;. The<sup> </sup>&#8216;bio data adapter&#8217; can convert biological information<sup> </sup>available in different data formats, like AGAVE or BSML, into<sup> </sup>a new data representation. This is semantically specified by<sup> </sup>the concept &#8216;biological data format&#8217;. The behavior<sup> </sup>of its operation &#8216;convert&#8217; can be manipulated by<sup> </sup>the specified property. Properties can be used during the customization<sup> </sup>phase in SP. A target of a customization, here the &#8216;convert&#8217;<sup> </sup>operation, is specified by a link (<img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarr.gif" alt="-&gt;" border="0">). In the case of the &#8216;bio<sup> </sup>data adapter&#8217;, one can determine the output format by<sup> </sup>using the value 0&#8211;3 of property &#8216;targetFormat&#8217;.<sup> </sup>The &#8216;agave adapter&#8217; can only process biological<sup> </sup>content that is represented in the AGAVE data format. This adapter<sup> </sup>can project on information contained in such documents, e.g.<sup> </sup>the annotated gene or the publications. The desired target is<sup> </sup>specified by the &#8216;projectOn&#8217; property. The different<sup> </sup>parameters and properties are semantically described in MPL<sup> </sup>by attaching concepts of a domain ontology. In this example,<sup> </sup>we use a small portion of a domain ontology represented in <a href="#FIG4">Figure 4</a>.<sup> </sup>Such a domain ontology should contain information on data formats<sup> </sup>and data types usually used by bioinformatics services.<sup> </sup><p>
+
+<a name="TBL2"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<strong>View this table:</strong><br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/TBL2">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/TBL2" onclick="startTarget('TBL2', 500, 400); this.href='/cgi/content-nw/full/22/9/1137/TBL2'" onmouseover="window.status='View table in a separate window'; return true" target="TBL2">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Table 2</b> Example of two advertized adapters<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+<a name="FIG4"><!-- null --></a>
+<br clear="all"><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG4"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f4.gif" alt="Figure 4" border="2" height="84" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (16K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG4">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG4" onclick="startTarget('FIG4', 590, 384); this.href='/cgi/content-nw/full/22/9/1137/FIG4'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG4">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 4</b> Small portion of a domain ontology for bioinformatics
+services representing usually used data formats and objects. Is-a
+relations are represented by solid arrows while part-of/contains
+relations are depicted as dashed arrows.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+Under these circumstances of the specified bioinformatics workflow<sup> </sup>as well as the advertized adapters we apply the SP implemented<sup> </sup>by the IRIS platform. In the first step the query generation<sup> </sup>of SP generates the query profile depicted in <a href="#TBL3">Table 3</a>. This<sup> </sup>query profile specifies the requirements for adapters gluing<sup> </sup>the XEMBL service with the DDBJ BLAST service. Besides the syntactic<sup> </sup>information this profile contains also semantical concepts,<sup> </sup>e.g. &#8216;agave&#8217;, &#8216;sequence&#8217;. These are<sup> </sup>identified by concept matching based on the used domain ontology<sup> </sup>(<a href="#FIG4">Fig. 4</a>). The concept &#8216;data format&#8217; is identified,<sup> </sup>because synonyms are applied to the term &#8216;format&#8217;,<sup> </sup>which is used in the description of the XEMBL service.<sup> </sup><p>
+
+<a name="TBL3"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<strong>View this table:</strong><br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/TBL3">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/TBL3" onclick="startTarget('TBL3', 500, 400); this.href='/cgi/content-nw/full/22/9/1137/TBL3'" onmouseover="window.status='View table in a separate window'; return true" target="TBL3">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Table 3</b> Generated query profile (XEMBL to DDBJ BLAST)<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+Next, the discovery phase of the SP is invoked. In our example<sup> </sup>we decided to use the matchmaking based on concepts [<a href="#E1">Equation (1b)</a>].<sup> </sup>The algorithm identifies all kinds of related adapters w.r.t.<sup> </sup>the concepts of the query profile. Owing to the fact that the<sup> </sup>XEMBL service provides BSML as well as AGAVE, which are both<sup> </sup>biological data formats, the bio data adapter for converting<sup> </sup>biological data formats is identified. Because nucleotides and<sup> </sup>amino acid sequences are biological sequences and these are<sup> </sup>parts of an annotated gene, the algorithm further identifies<sup> </sup>the AGAVE adapter for the projection on gene-related information.<sup> </sup>Finally, the algorithm proposes an adapter that should allow<sup> </sup>the extraction of the sequence based on the annotated gene.<sup> </sup>This adapter is not yet available in the adapter pool. Thus<sup> </sup>the algorithm includes an empty proxy adapter and provides its<sup> </sup>corresponding profile. The proxy adapter has to be realized<sup> </sup>in the customization phase. The composite adapter is illustrated<sup> </sup>in <a href="#FIG5">Figure 5</a>. At the end of the SP the implemented proxy adapter<sup> </sup>as well as the composite adapter is stored in the adapter pool.<sup> </sup><p>
+
+<a name="FIG5"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG5"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f5.gif" alt="Figure 5" border="2" height="68" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (19K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG5">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG5" onclick="startTarget('FIG5', 590, 349); this.href='/cgi/content-nw/full/22/9/1137/FIG5'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG5">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 5</b> Identified composite adapter bridging XEMBL service and DDBJ BLAST service.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+<a name="SEC5"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+5 SIMULATING WORKFLOW EVOLUTION
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">5 SIMULATING WORKFLOW EVOLUTION</font><br>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+In general, users want to alter bioinformatics workflows in<sup> </sup>order to get new insights into complex biological processes.<sup> </sup>For instance, they want to make an analysis of various datasets<sup> </sup>using different algorithms, but they do not want to jeopardize<sup> </sup>the service interoperability they have achieved before. We simulate<sup> </sup>this user behavior by successively replacing the XEMBL service<sup> </sup>by new services providing data and by successively replacing<sup> </sup>the DDBJ BLAST service by different alignment services of different<sup> </sup>databases. Our goal is to reuse the composite adapter and the<sup> </sup>other adapters including the implemented proxy adapter we have<sup> </sup>customized and stored in the previous example. Thus we want<sup> </sup>to identify these adapters with high precision and recall. In<sup> </sup>the test scenario, we use 3 data providing services with 7 operations<sup> </sup>in combination with 21 data consuming services with 34 operations<sup> </sup>(<a href="#TBL4">Table 4</a>), which we successively exchange. The adapter pool<sup> </sup>contains 14 adapters with 24 operations. We measure the overall<sup> </sup>performance using the average precision <i>p</i> and recall <i>r</i> out of<sup> </sup>238 runs of the SP and compare different matchmaking variants.<sup> </sup>Let TP (true positive) be the set of returned relevant adapters,<sup> </sup>FP (false positive) be the set of returned but wrong adapters<sup> </sup>and FN (false negative) be the set of relevant adapters not<sup> </sup>identified. Then we define <i>p</i> = TP/(TP + FP), <i>r</i> = TP/(TP + FN).<sup> </sup>The first matchmaking algorithm uses the keyword matching based<sup> </sup>on TF-IDF. It represents a UDDI-like discovery. TF-IDF is known<sup> </sup>to produce a high recall, but also a low precision. We use the<sup> </sup>TF-IDF as benchmark and compare it with four variations of the<sup> </sup>concept matchmaking algorithm using <a href="#E1">Equation (1b)</a>, whereby two<sup> </sup>of them using linguistic analysis (Ling). The Exact variants<sup> </sup>consider the information of connected parameters in the data<sup> </sup>flow separately, while the Merge variants merge the information<sup> </sup>of all parameters together before they start retrieval. Thus,<sup> </sup>we expect that the Merge variants will be less precise, but<sup> </sup>produce a higher recall. <a href="#FIG6">Figure 6</a> depicts the results of this<sup> </sup>test scenario.<sup> </sup><p>
+
+<a name="TBL4"><!-- null --></a>
+<br clear="all"></p><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<strong>View this table:</strong><br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/TBL4">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/TBL4" onclick="startTarget('TBL4', 500, 400); this.href='/cgi/content-nw/full/22/9/1137/TBL4'" onmouseover="window.status='View table in a separate window'; return true" target="TBL4">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Table 4</b> Service providers used for simulating workflow evolution<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+<a name="FIG6"><!-- null --></a>
+<br clear="all"><center><table cellpadding="0" cellspacing="0" width="95%"><tbody><tr bgcolor="#e1e1e1"><td><table cellpadding="2" cellspacing="2">
+<tbody><tr bgcolor="#e1e1e1"><td align="center" bgcolor="#ffffff" valign="top">
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG6"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/btl054f6.gif" alt="Figure 6" border="2" height="112" hspace="10" vspace="5" width="200"></a><br>
+
+<strong>View larger version</strong> (21K):<br>
+<nobr><a href="http://bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/FIG6">[in this window]</a><br>
+<a href="http://bioinformatics.oxfordjournals.org/cgi/content-nw/full/22/9/1137/FIG6" onclick="startTarget('FIG6', 590, 446); this.href='/cgi/content-nw/full/22/9/1137/FIG6'" onmouseover="window.status='View figure in a separate window'; return true" target="FIG6">[in a new window]</a><br>&nbsp;</nobr>
+</td><td align="left" valign="top">
+<b>Fig. 6</b> Precision and recall measurements of discovered adapters in modified bioinformatics workflows.<p>
+
+
+</p></td></tr></tbody></table>
+</td></tr></tbody></table></center>&nbsp;<br>
+
+
+As expected, the TF-IDF produces a high recall, <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">100%, but a<sup> </sup>low precision, <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">51%. That means, nearly every second adapter<sup> </sup>is FP. The Exact variant without linguistic analysis produces<sup> </sup>a recall and a precision below average. In contrast using the<sup> </sup>LingExact variant that uses linguistic analysis achieves the<sup> </sup>best precision, <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">81%, and at the same time a good recall, <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">89%.<sup> </sup>Merging all parameter information enhances the recall of the<sup> </sup>algorithm in both cases, with and without linguistic analysis<sup> </sup>(LingMerge and Merge, respectively), but LingMerge produces<sup> </sup>a recall <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">96% that is near to the recall value of the TF-IDF.<sup> </sup>The precision is in both merge cases nearly the same, <img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/sim.gif" alt="~" border="0">61% and<sup> </sup>63%, and as expected below the LingExact precision. To sum up,<sup> </sup>LingExact outperforms all other variants including TF-IDF, because<sup> </sup>only its recall is slightly lesser than the recall of LingMerge<sup> </sup>and TF-IDF and it has a much higher precision which is required<sup> </sup>in order to produce meaningful adapter compositions. Further,<sup> </sup>unlike the TF-IDF, LingExact is able to identify new composite<sup> </sup>adapters, if the bioinformatics workflow is requiring that.<sup> </sup><p>
+
+<a name="SEC6"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+6 DISCUSSION
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">6 DISCUSSION</font><br>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+BioMiddleware supporting <i>in silico</i> experiments is an evolving<sup> </sup>issue in bioinformatics. Such middleware provides a framework<sup> </sup>where integration and combination of data and method services<sup> </sup>can happen on-the-fly. This is a major advantage of this kind<sup> </sup>of middleware over-distributed query systems (DQS) which are<sup> </sup>realized as warehouses or federated databases. Unlike DQS the<sup> </sup>BioMiddleware offer a higher flexibility allowing users to tap<sup> </sup>into the most recent data from a number of different databases<sup> </sup>and combining it in novel ways that could not have been foreseen<sup> </sup>by DQS designers (<a href="#B18">Wilkinson <i>et al</i>., 2005</a>). This flexibility<sup> </sup>is reached at the expense of combining autonomous and heterogeneous<sup> </sup>services where interoperability is not guaranteed.<sup> </sup></p><p>
+
+The IRIS project fills in this blank by providing a software-aided<sup> </sup>solution for service interoperability. It is based on the identification<sup> </sup>of light-weight, customizable adapters that are inserted between<sup> </sup>incompatible services. A major precondition for identification<sup> </sup>is the availability of standard service ontologies and data<sup> </sup>ontologies. The development of such ontologies is not an integral<sup> </sup>part within IRIS, but available ontologies can be used within<sup> </sup>IRIS. The BioMOBY project as well as the <sup>my</sup>Grid project support<sup> </sup>such types of de facto standard ontologies that show their benefits<sup> </sup>in practical scenarios (<a href="#B15">Stevens <i>et al</i>., 2003b</a>; <a href="#B18">Wilkinson <i>et al</i>., 2005</a>).<sup> </sup>They can directly be used by the adapter pool. Furthermore,<sup> </sup>the BioMOBY project and the IRIS project are complementary and<sup> </sup>can benefit from each other. Because in BioMOBY services are<sup> </sup>defined by ontology-based object definitions (<a href="#B18">Wilkinson <i>et al</i>., 2005</a>),<sup> </sup>required adapters can be precisely identified by the adapter<sup> </sup>pool. Even if a new service requires extensions of the ontology,<sup> </sup>the adapter pool can detect valuable adapters that can be beneficial<sup> </sup>for bridging the gap as well as it describes missing proxy adapters.<sup> </sup>In the scenario of Section 4 we have presented such a case where<sup> </sup>the adapter pools contain adapters that only partially meet<sup> </sup>the requirements to bridge two services. We used this setup<sup> </sup>to illustrate benefits as well as restrictions of our approach.<sup> </sup>It can happen that a new (proxy) adapter has to be realized.<sup> </sup>We are aware of the problem that the realization of the proxy<sup> </sup>adapter could be more complex than the realization of an adapter<sup> </sup>for the whole bridge. Here the user has to decide what to do.<sup> </sup>However, in both cases the new adapter is stored and therefore<sup> </sup>available for future workflows. Furthermore, sometimes the realization<sup> </sup>can be done automatically by schema matching. Schema matching<sup> </sup>is a complementary approach to reach service interoperability<sup> </sup>that can be directly integrated in SP. Several groups address<sup> </sup>the problem of deriving mappings between heterogeneous schemas<sup> </sup>(<a href="#B2">Bowers and Ludäscher, 2004</a>; <a href="#B5">Madhavan <i>et al</i>., 2003</a>; <a href="#B6">Magnani <i>et al</i>., 2005</a>;<sup> </sup><a href="#B7">Miller <i>et al</i>., 2001</a>). <a href="#B13">Rahm and Bernstein (2001)</a> give a good<sup> </sup>survey and compare prominent approaches. However, often schema<sup> </sup>matching approaches cannot generate complex mappings required<sup> </sup>in bioinformatics nor can generated mappings be customized and<sup> </sup>directly reused in different scenarios.<sup> </sup></p><p>
+
+The query generation module of SP allows standard conforming<sup> </sup>services, i.e. WSDL services, to be mapped on MOBY-S services<sup> </sup>or services defined by MPL. By this mapping we are able to register<sup> </sup>adapters as well as bioinformatics services, like the alignment<sup> </sup>and data providing services presented above. Therefore, the<sup> </sup>discovery mechanisms of IRIS are suitable to search not only<sup> </sup>for adapters and composite adapters, but also for services and<sup> </sup>new data-driven bioinformatics workflows. These workflows are<sup> </sup>characterized, like composite adapters, by operation networks<sup> </sup>containing disjunctive as well as conjunctive parameters. Owing<sup> </sup>to limited space we cannot go into details any further. An extended<sup> </sup>discussion can be found in <a href="#B9">Radetzki (2005)</a>.<sup> </sup></p><p>
+
+Although the algorithms for query generation and discovery provide<sup> </sup>valuable results, we plan to enhance them in a future release<sup> </sup>by modern data mining methods based on association rules (<a href="#B3">Dong <i>et al</i>., 2004</a>).<sup> </sup>Currently, concept matching is based on linguistic methods using<sup> </sup>general-purpose ontologies. This requires the equality of terms<sup> </sup>which is a serious problem, e.g. when using not established<sup> </sup>abbreviations, acronyms or different spellings. When using association<sup> </sup>rules for the clustering of terms, where every cluster corresponds<sup> </sup>to a concept of the domain ontology, we could calculate the<sup> </sup>distance of a term to a cluster. Thus, no equality of terms<sup> </sup>would be required anymore.<sup> </sup></p><p>
+
+<a name="SEC7"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+7 CONCLUSION
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">7 CONCLUSION</font><br>
+<a href="#BIBL"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/darrow.gif" border="0" height="9" hspace="5" width="11">REFERENCES<br></a>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+The SP of the IRIS platform provides a practical solution to<sup> </sup>the problem of service interoperability within <i>in silico</i> experiments.<sup> </sup>Customizable adapters and adapter compositions are identified,<sup> </sup>configured and inserted into workflows, thereby bridging the<sup> </sup>gap between heterogeneous services. By simulating workflow modifications<sup> </sup>SP has demonstrated to achieve service interoperability with<sup> </sup>high precision and recall. Current limitations of the query<sup> </sup>generation and discovery mechanisms, as discussed above, are<sup> </sup>actively addressed by the IRIS team and enhanced features will<sup> </sup>be available in the next release of the platform.<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+<sup> </sup></p><p>
+
+
+<a name="ACK"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+Acknowledgments
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+The authors would like to thank S. Mancke and H. Wendt for assistance<sup> </sup>in the implementation work and T. Erdenberger, M. Schaefers<sup> </sup>and G. Witterstein for valuable discussions and fruitful comments.<sup> </sup></p><p>
+
+<i>Conflict of Interest:</i> none declared.<sup> </sup></p><p>
+
+
+<a name="FN"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+FOOTNOTES
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+<a name=""><!-- null --></a>
+Associate Editor: Alfonso Valencia<sup> </sup></p><p>
+
+<a name="FN1"><!-- null --></a>
+<sup>1</sup>The project Interoperability and Reusability of Internet Services<sup> </sup>(IRIS) was initiated at the beginning of 2001 with the objective<sup> </sup>of developing middleware services for interoperability of Web<sup> </sup>services in science applications.<sup> </sup><a href="#RFN1"><img alt="Back" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/back.gif" border="0" height="12" width="12"></a></p><p>
+
+<font size="-1">Received on October 20, 2005</font><font size="-1">; revised on February  9, 2006</font><font size="-1">; accepted on February  9, 2006</font><br>
+
+<a name="BIBL"><!-- null --></a>
+<br clear="right"><table bgcolor="#e1e1e1" cellpadding="0" cellspacing="0" width="100%">
+ <tbody><tr><td align="left" bgcolor="#ffffff" valign="middle" width="5%"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/rarrow.gif" height="21" hspace="5" width="10"></td>
+ <th align="left" valign="middle" width="95%"><font size="+2">&nbsp;&nbsp;
+REFERENCES
+</font></th></tr></tbody></table>
+<table align="right" border="1" cellpadding="5"><tbody><tr><th align="left"><font size="-1">
+<a href="#top"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">TOP<br></a>
+<a href="#ABS"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">ABSTRACT<br></a>
+<a href="#SEC1"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">1 INTRODUCTION<br></a>
+<a href="#SEC2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">2 DERIVING ADAPTER REQUIREMENTS<br></a>
+<a href="#SEC3"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">3 DISCOVERY OF NEEDED...<br></a>
+<a href="#SEC4"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">4 SERVICE INTEROPERABILITY USING...<br></a>
+<a href="#SEC5"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">5 SIMULATING WORKFLOW EVOLUTION<br></a>
+<a href="#SEC6"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">6 DISCUSSION<br></a>
+<a href="#SEC7"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/uarrow.gif" border="0" height="9" hspace="5" width="11">7 CONCLUSION<br></a>
+<img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/dot.gif" border="0" height="9" hspace="5" width="11"><font color="#464c53">REFERENCES</font><br>
+</font></th></tr></tbody></table>
+&nbsp;<br>
+
+</p><ol compact="compact">
+<a name="B1"><!-- null --></a><p>Bausch, W., Pautasso, C., Alonso, G.
+(2003) Programming for dependability in a service-based grid.
+Proceedings of the 3rd IEEE/ACM International Symposium on Cluster
+Computing and the Grid (CCGrid)Tokyo, Japan , pp. 164&#8211;171<!-- HIGHWIRE ID="22:9:1137:1" --><!-- /HIGHWIRE -->.<a name="B2"><!-- null --></a></p><p>Bowers,
+S. and Ludäscher, B. (2004) An ontology-driven framework for data
+transformation in scientific workflows. Proceedings of the
+International Workshop on Data Integration in the Life Sciences
+(DILS'04)<!-- HIGHWIRE ID="22:9:1137:2" --><!-- /HIGHWIRE -->.<a name="B3"><!-- null --></a></p><p>Dong,
+X., Halevy, A., Madhavan, J., Nemes, E., Zhang, J. (2004) Similarity
+search for web services. Proceedings of the 30th VLDB
+ConferenceToronto, Canada<!-- HIGHWIRE ID="22:9:1137:3" --><!-- /HIGHWIRE -->.<a name="B4"><!-- null --></a></p><p>Galperin, M.Y.  (2005) The molecular biology database collection: 2005 update.  <em>Nucleic Acids Res</em>, .   <strong>33</strong>,  D5&#8211;D24<!-- HIGHWIRE ID="22:9:1137:4" --><a href="http://bioinformatics.oxfordjournals.org/cgi/ijlink?linkType=ABST&amp;journalCode=nar&amp;resid=33/suppl_1/D5"><nobr>[Abstract/<font color="#cc0000">Free</font>&nbsp;Full&nbsp;Text]</nobr></a><!-- /HIGHWIRE -->.<a name="B5"><!-- null --></a></p><p>Madhavan,
+J., Bernstein, P.A., Chen, K., Halevy, A., Shenoy, P. (2003)
+Corpus-based schema matching. Proceedings of the Workshop on
+Information Integration on the Web at the 18th International Joint
+Conference on Artificial Intelligence (IJCAI'2003)Acapulco, Mexico<!-- HIGHWIRE ID="22:9:1137:5" --><!-- /HIGHWIRE -->.<a name="B6"><!-- null --></a></p><p>Magnani, M., et al.  (2005) Schema integration based on uncertain semantic mappings.  <em>Proceedings of the Conceptual Modeling&#8212;ER 2005, LNCS</em>,    <strong>3716</strong>,  31&#8211;46<!-- HIGHWIRE ID="22:9:1137:6" --><!-- /HIGHWIRE -->.<a name="B7"><!-- null --></a></p><p>Miller, R.J., et al.  (2001) The clio project: managing heterogenity.  <em>ACM Sigmod Rec</em>, .   <strong>30</strong>,  78&#8211;83<!-- HIGHWIRE ID="22:9:1137:7" --><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=10.1145/373626.373713&amp;link_type=DOI">[CrossRef]</a><!-- /HIGHWIRE -->.<a name="B8"><!-- null --></a></p><p>Oinn, T., et al.  (2004) Taverna: a tool for the composition and enactment of bioinformatics workflows.  <em>Bioinformatics</em>,    <strong>20</strong>,  3045&#8211;3054<!-- HIGHWIRE ID="22:9:1137:8" --><a href="http://bioinformatics.oxfordjournals.org/cgi/ijlink?linkType=ABST&amp;journalCode=bioinfo&amp;resid=20/17/3045"><nobr>[Abstract/<font color="#cc0000">Free</font>&nbsp;Full&nbsp;Text]</nobr></a><!-- /HIGHWIRE -->.<a name="B9"><!-- null --></a></p><p>Radetzki,
+U. (2005) Service-interoperability for science applications:
+identification and adaptation of component-based service mediators. ,
+Germany PhD thesis University of Bonn<!-- HIGHWIRE ID="22:9:1137:9" --><!-- /HIGHWIRE -->.<a name="B10"><!-- null --></a></p><p>Radetzki,
+U., Bode, T., Witterstein, G., Gnasa, M., Cremers, A.B. (2003) A
+service-centric computing environment for heterogeneous biological
+databases and methods. Proceedings of the Currents in Computational
+Molecular Biology (RECOMB 2003)Berlin, Germany , pp. 25&#8211;26<!-- HIGHWIRE ID="22:9:1137:10" --><!-- /HIGHWIRE -->.<a name="B11"><!-- null --></a></p><p>Radetzki,
+U. and Cremers, A.B. (2004) IRIS: a framework for mediator-based
+composition of service-oriented software. Proceedings of the 2004 IEEE
+International Conference on Web Services (ICWS 2004)San Diego, CA, USA
+, pp. 752&#8211;755<!-- HIGHWIRE ID="22:9:1137:11" --><!-- /HIGHWIRE -->.<a name="B12"><!-- null --></a></p><p>Radetzki,
+U., Leser, U., Cremers, A.B. (2004) IRIS: a mediator-based approach
+achieving interoperability of web services in life science
+applications. Proceedings of the 3rd E-BioSci/ORIEL Annual
+WorkshopHinxton, UK , pp. 25&#8211;26 (invited talk paper)<!-- HIGHWIRE ID="22:9:1137:12" --><!-- /HIGHWIRE -->.<a name="B13"><!-- null --></a></p><p>Rahm, E. and Bernstein, P.A.  (2001) A survey of approaches to automatic schema matching.  <em>VLDB J</em>, .   <strong>10</strong>,  334&#8211;350<!-- HIGHWIRE ID="22:9:1137:13" --><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=10.1007/s007780100057&amp;link_type=DOI">[CrossRef]</a><!-- /HIGHWIRE -->.<a name="B14"><!-- null --></a></p><p>Stevens, R.D., et al.  (2003a) myGrid: personalised bioinformatics on the information grid.  <em>Bioinformatics</em>,    <strong>19</strong>,  302&#8211;304<!-- HIGHWIRE ID="22:9:1137:14" --><!-- /HIGHWIRE -->.<a name="B15"><!-- null --></a></p><p>Stevens, R.D., et al.  (2003b) Exploring Williams-Beuren syndrome using myGrid.  <em>Bioinformatics</em>,    <strong>20</strong>,  303&#8211;310<!-- HIGHWIRE ID="22:9:1137:15" --><!-- /HIGHWIRE -->.<a name="B16"><!-- null --></a></p><p>Sycara, K., et al.  (2002) LARKS: dynamic matchmaking among heterogeneous software agents in cyberspace.  <em>Autonomous Agents Multi-Agent Syst</em>, .   <strong>5</strong>,  173&#8211;203<!-- HIGHWIRE ID="22:9:1137:16" --><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=10.1023/A:1014897210525&amp;link_type=DOI">[CrossRef]</a><!-- /HIGHWIRE -->.<a name="B17"><!-- null --></a></p><p>Wilkinson, M.D. and Links, M.  (2002) BioMOBY: an open-source biological web services proposal.  <em>Briefings Bioinformatics</em>,    <strong>3</strong>,  331&#8211;341<!-- HIGHWIRE ID="22:9:1137:17" --><a href="http://bioinformatics.oxfordjournals.org/cgi/ijlink?linkType=ABST&amp;journalCode=bib&amp;resid=3/4/331"><nobr>[Abstract/<font color="#cc0000">Free</font>&nbsp;Full&nbsp;Text]</nobr></a><!-- /HIGHWIRE -->.<a name="B18"><!-- null --></a></p><p>Wilkinson,
+M., et al. (2005) BioMOBY successfully integrates distributed
+heterogeneous bioinformatics web services. The PlaNet exemplar case. <em>Plant Physiol</em>, .   <strong>138</strong>,  5&#8211;17<!-- HIGHWIRE ID="22:9:1137:18" --><a href="http://bioinformatics.oxfordjournals.org/cgi/ijlink?linkType=ABST&amp;journalCode=plantphysiol&amp;resid=138/1/5"><nobr>[Abstract/<font color="#cc0000">Free</font>&nbsp;Full&nbsp;Text]</nobr></a><!-- /HIGHWIRE -->.<a name="B19"><!-- null --></a></p><p>Yuan, Q., et al.  (2005) The institute for genomic research Osa1 rice genome annotation database.  <em>Plant Physiol</em>, .   <strong>138</strong>,  18&#8211;16<!-- HIGHWIRE ID="22:9:1137:19" --><a href="http://bioinformatics.oxfordjournals.org/cgi/ijlink?linkType=ABST&amp;journalCode=plantphysiol&amp;resid=138/1/18"><nobr>[Abstract/<font color="#cc0000">Free</font>&nbsp;Full&nbsp;Text]</nobr></a><!-- /HIGHWIRE -->.</p></ol>
+
+
+		
+        
+        
+	
+	
+	
+	
+	
+
+
+
+
+ 
+
+<img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" alt=" " height="30" width="0"><br><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CITEULIKE" style="text-decoration: none; font-size: smaller;" title="CiteULike"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/citeulike.gif" alt="Add to CiteULike" border="0"> CiteULike</a>&nbsp;&nbsp;&nbsp;<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CONNOTEA" style="text-decoration: none; font-size: smaller;" title="Connotea"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/connotea.gif" alt="Add to Connotea" border="0"> Connotea</a>&nbsp;&nbsp;&nbsp;<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=DEL_ICIO_US" style="text-decoration: none; font-size: smaller;" title="Del.icio.us"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/delicious.gif" alt="Add to Del.icio.us" border="0"> Del.icio.us</a>&nbsp;&nbsp;&nbsp; <a href="http://bioinformatics.oxfordjournals.org/help/social_bookmarks.dtl" style="font-size: smaller;">What's this?</a>
+
+
+
+
+
+
+
+
+<br clear="all">
+
+
+
+
+  <font face="">
+  
+  </font>
+<br clear="all">
+<br clear="all">
+
+
+
+
+
+
+	
+	
+	
+
+<a name="otherarticles"><!-- null --></a>
+
+
+
+<p><font size="+2"><strong>
+This article has been cited by other articles:</strong></font> 
+
+
+</p><p>
+
+
+	
+		
+ 
+ 
+ <table border="0" cellpadding="0" cellspacing="0" width="600">
+ 
+ <tbody><tr bgcolor="#d9d4c5">
+ 
+ 
+  <td align="center" valign="top" width="25"><img alt="" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="5" width="25"><br>
+   
+  </td>
+ 
+ <td width="5"><img alt="" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="5" width="5"></td>
+ 
+ <td align="center" nowrap="nowrap" valign="top" width="61">
+ 	<a href="http://bib.oxfordjournals.org/"><img alt="Home page" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/search_result.gif" border="1" height="80" vspace="5" width="59"></a><br>
+ </td>
+ <td width="5"><img alt="" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="5" width="5"></td>
+ <td nowrap="nowrap" valign="top" width="499">
+ <a href="http://bib.oxfordjournals.org/"><img alt="Brief Bioinform" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/bib.gif" border="0" height="16" vspace="5" width="450"><img alt="Home page" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/homelink.gif" border="0" height="16" vspace="5" width="49"></a><br>
+ <font face="verdana,arial,helvetica" size="-1">
+	P. Romano<br>
+	<strong>Automation of in-silico data analysis processes through workflow management systems</strong><br>
+	
+		
+			Brief Bioinform,
+		
+	
+        
+        January&nbsp;1,&nbsp;2008;
+	9(1):
+	57 - 68.
+<br>
+<a href="http://bib.oxfordjournals.org/cgi/content/abstract/9/1/57">[Abstract]</a>
+
+<a href="http://bib.oxfordjournals.org/cgi/content/full/9/1/57">[Full Text]</a>
+<a href="http://bib.oxfordjournals.org/cgi/reprint/9/1/57">[PDF]</a>
+<br><img alt="" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="499">
+ </font></td>
+ <td width="5"><img alt="" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="5" width="5"></td>
+ </tr>
+ <tr><td colspan="6"><hr align="left" color="#828282" noshade="noshade" size="1" width="600"></td></tr>
+</tbody></table>
+
+	
+
+
+
+
+
+
+
+
+
+
+<br clear="all">
+
+
+	
+	 
+		
+		
+		  
+			
+	
+		<table class="content_box_outer_table" align="right">
+		
+		
+			<tbody><tr>
+			<td>
+		
+	
+
+<!-- beginning of inner table -->
+	<table class="content_box_inner_table">
+<!-- citation -->
+
+	
+		
+
+
+
+
+	
+
+	
+
+	
+		
+			
+<tbody><tr><td class="content_box_title_highlight" colspan="2">This Article</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+				
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/22/9/1137">
+				Abstract</a></strong>
+				 					<img alt="Freely available" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/free.gif" border="0" height="7" width="32">
+				
+	
+				</td></tr>
+			
+		
+		
+	
+
+	
+	
+	
+
+	
+	
+	
+
+
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+		
+		
+	
+	
+		
+	
+
+	
+
+	
+		
+			
+		
+	
+
+	
+
+	
+	 
+
+	
+	 
+
+		
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		<strong>
+		
+		
+		
+			
+				
+				
+					<a href="http://bioinformatics.oxfordjournals.org/cgi/reprint/22/9/1137">
+		<strong>FREE Full Text</strong> (Print PDF) <img alt="Freely available" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/free.gif" border="0" height="7" width="32"> </a>
+
+
+				
+			
+		
+		</strong>
+		</td></tr>
+	
+	
+
+	
+	
+	
+	
+	
+
+	
+	
+	
+
+	
+	
+
+
+
+
+
+	
+		
+
+	
+		
+
+	
+		
+		
+
+			
+
+
+	
+
+			
+
+			
+		
+	
+
+			
+	  
+	
+
+			
+
+			
+
+			
+	
+	
+
+	
+		
+	
+
+
+
+
+
+
+
+
+
+	
+		
+	
+		
+		
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item"><strong>
+			All Versions of this Article:<br>
+		
+			
+					22/9/1137
+				
+		&nbsp;&nbsp;&nbsp;<font color="#99ccff"><em>most recent</em></font><br>
+	
+
+	
+		
+		
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/content/short/btl054v1">
+					btl054v1</a>
+			
+		</strong></td></tr>
+	
+
+	
+
+
+
+
+
+	
+	
+	
+
+	
+		
+	
+
+	 
+
+	
+	
+		  
+    
+
+	
+	
+	
+	
+
+
+
+
+
+
+
+		
+	
+		
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/ctalert?alertType=citedby&amp;addAlert=cited_by&amp;saveAlert=no&amp;cited_by_criteria_resid=bioinfo;22/9/1137&amp;return_type=article&amp;return_url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137">
+				Alert me when this article is cited</a></strong>
+			</td></tr>
+	
+
+		
+		
+
+		
+		
+
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/ctalert?alertType=correction&amp;addAlert=correction&amp;saveAlert=no&amp;correction_criteria_value=22/9/1137&amp;return_type=article&amp;return_url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137">
+				Alert me if a correction is posted</a></strong>
+			</td></tr>
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
+		
+	
+
+			
+			
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Services</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/mailafriend?url=http%3A%2F%2Fbioinformatics.oxfordjournals.org%2Fcgi%2Fcontent%2Ffull%2F22%2F9%2F1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments">
+				Email this article to a friend</a></strong>
+			</td></tr>
+			
+			
+
+
+	
+
+	
+
+	
+
+		
+		
+
+
+
+			
+			
+			
+		
+	
+
+		
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		<strong>
+		<a href="http://bioinformatics.oxfordjournals.org/cgi/search?qbe=bioinfo;btl054&amp;journalcode=bioinfo&amp;minscore=5000">
+		Similar articles in this journal</a>
+		</strong>
+		</td></tr>
+
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=bioinfo%3B22%2F9%2F1137&amp;link_type=ISI_RelatedRecords">
+				Similar articles in ISI Web of Science</a>
+			</td></tr>
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=16481335&amp;link_type=MED_NBRS">
+				Similar articles in PubMed</a></strong>
+			</td></tr>
+		
+	
+
+
+		
+
+
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/alerts/etoc">
+				Alert me to new issues of the journal</a></strong>
+			</td></tr>
+		
+
+		
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/folders?action=addtofolder&amp;wherefrom=JOURNALS&amp;wrapped_id=bioinfo;22/9/1137">
+				Add to My Personal Archive</a></strong>
+			</td></tr>
+		
+		
+	
+
+		
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+			<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/citmgr?gca=bioinfo;22/9/1137">
+			Download to citation manager</a></strong>
+			</td></tr>
+		
+		
+	
+
+
+	
+		
+	
+
+	
+
+
+
+  			
+		
+
+	
+		
+		
+
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong>
+				Search for citing articles in:
+				<br>
+				<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=bioinfo%3B22%2F9%2F1137&amp;link_type=ISI_Citing">
+				ISI Web of Science (1)</a>
+				</strong>
+			</td></tr>
+		
+	
+	
+	
+	
+	
+
+
+
+	
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item"><strong><a href="#" onclick="RightslinkPopUp('Adapters, shims, and glue--service interoperability for in silico experiments',
+	'1 May 2006',
+	
+'U. Radetzki, et. al.'
+
+,
+	'Copyright (c) 2006 by the Oxford University Press.',
+	'10.1093/bioinformatics/btl054',
+	'22',
+	'9',
+	'1137',
+	'1143',
+	'1367-4803',
+	'1460-2059'); 
+	return false;">Request Permissions</a></strong></td></tr>
+
+	
+
+
+		
+
+		
+
+	
+	
+	
+		
+
+
+	
+
+
+
+
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+			
+				
+				
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Google Scholar</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://scholar.google.com/scholar?q=%22author%3AU.+author%3ARadetzki%22">
+							Articles by Radetzki, U.</a></strong>
+						</td></tr>
+				
+				
+			
+				
+			
+				
+			
+				
+			
+				
+			
+				
+			
+				
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://scholar.google.com/scholar?q=%22author%3AA.%20B.+author%3ACremers%22">
+							Articles by Cremers, A. B.</a></strong>
+						</td></tr>
+				
+				
+			
+		
+		
+	
+	
+	
+		
+	
+	
+
+		
+			
+				
+					
+						
+						
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=http://bioinformatics.oxfordjournals.org/cgi/content/abstract/22/9/1137&amp;link_type=GOOGLESCHOLARRELATED">Search for Related Content</a></strong>
+						</td></tr>		
+						
+				
+			
+		
+	
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+	
+		
+<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">PubMed</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+			
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+				<strong><a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=16481335&amp;link_type=PUBMED">
+				PubMed Citation</a></strong>
+			</td></tr>
+		
+	
+
+	
+		
+		
+			
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=Radetzki+U&amp;link_type=AUTHORSEARCH">
+							Articles by Radetzki, U.</a></strong>
+						</td></tr>
+				
+			
+				
+
+						
+		<tr><td class="content_box_arrow" valign="top" width="4"><img alt="Right arrow" src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/arrowTtrim.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+							<strong><a target="_blank" href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?access_num=Cremers+AB&amp;link_type=AUTHORSEARCH">
+							Articles by Cremers, A. B.</a></strong>
+						</td></tr>
+				
+			
+		
+
+		
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+		
+
+	
+
+		
+			
+		
+	 
+		
+
+
+
+
+
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr><tr><td class="content_box_title" colspan="2">Social Bookmarking</td></tr>
+	<tr><td class="content_box_space_between_sections" colspan="2"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" height="1" width="200"></td></tr>
+	<tr><td class="content_box_arrow"><img alt=" " src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/spacer.gif" border="0" height="11" width="4"></td><td class="content_box_item">
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CITEULIKE" title="CiteULike"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/citeulike.gif" alt="Add to CiteULike" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=CONNOTEA" title="Connotea"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/connotea.gif" alt="Add to Connotea" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+			<a href="http://bioinformatics.oxfordjournals.org/cgi/external_ref?tag_url=http://bioinformatics.oxfordjournals.org/cgi/content/long/22/9/1137&amp;title=Adapters%2C+shims%2C+and+glue--service+interoperability+for+in+silico+experiments+--+Radetzki+et+al.+22+%289%29%3A+1137+--+Bioinformatics&amp;doi=10.1093/bioinformatics/btl054&amp;link_type=DEL_ICIO_US" title="Del.icio.us"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/delicious.gif" alt="Add to Del.icio.us" border="0"></a>&nbsp;&nbsp;
+			
+		
+			
+		
+			
+		
+			
+		
+			
+		
+		<br><a href="http://www.oxfordjournals.org/help/features/index.html#socialbookmarking">What's this?</a>
+	</td></tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	</tbody></table>
+</td></tr></tbody></table> 
+
+
+					
+					
+	
+
+<br clear="all">
+
+
+
+
+
+
+
+
+	
+</p></div>
+<!-- /footer.mc begins -->
+</div>
+<!-- OAS AD 'Bottom' begin -->
+<div id="oas_bottom">
+<script type="text/javascript">
+<!--
+OAS_AD('Bottom');
+//-->
+</script><a href="http://oas.oxfordjournals.org/RealMedia/ads/click_lx.ads/bioinformatics.oxfordjournals.org/cgi/content/full/22/9/1137/L45/1374452757/Bottom/OxfordJournals/H_AllComETOC_OJ_ANY_26NOV08_AJ/large_etoc-728x90.gif/6761755769456d6244686b41444a4678?x" target="_top"><img src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/large_etoc-728x90.gif" alt="Receive electronic tables of contents for this journal" border="0" height="90" width="728"></a>
+</div>
+<!--OAS AD'Bottom'end -->
+
+<div id="secondary_footer">
+<div id="issn">
+Online ISSN 1460-2059 - Print ISSN 1367-4803</div>
+<div id="copyright">
+<a href="http://bioinformatics.oxfordjournals.org/misc/terms.dtl">Copyright ©</a> 2008 Oxford University Press</div>
+<div id="inst_logo"></div>
+</div>
+<div id="primary_footer">
+<div id="site_logo">
+<strong><span>Oxford Journals</span></strong>
+<em><span>Oxford University Press</span></em>
+</div>
+<div id="third_nav">
+<ul>
+<li><a href="http://www.oxfordjournals.org/site_map.html">Site Map</a></li>
+<!-- <li><a href="http://www.oxfordjournals.org/terms_conditions.html">Terms &amp; Conditions</a></li> -->
+<li><a href="http://www.oup.co.uk/privacy/">Privacy Policy</a></li>
+<li><a href="http://www.oxfordjournals.org/faq/">Frequently Asked Questions</a></li>
+</ul>
+</div>
+<div id="other_oup_sites">
+<form action="http://www.oxfordjournals.org/service/redirect">
+<div>
+<label for="site_list">Other Oxford University Press sites:</label>
+<select name="url" id="site_list">
+<option value="http://www.oup.com/">Oxford University Press</option>
+<option value="http://www.oxfordjournals.org/japan/">Oxford Journals Japan</option>
+<option value="http://www.anb.org/">American National Biography</option>
+<option value="http://www.oup.co.uk/booksellers/">Booksellers' Information Service</option>
+<option value="http://www.oup.co.uk/oxed/children/">Children's Fiction and Poetry</option>
+<option value="http://www.oup.co.uk/oxed/children/">Children's Reference</option>
+<option value="http://www.oup.co.uk/corporate/">Corporate &amp; Special Sales</option>
+<option value="http://www.oup.co.uk/dictionaries/">Dictionaries</option>
+<option value="http://www.oup.co.uk/newdnb/">Dictionary of National Biography</option>
+<option value="http://www.oup.co.uk/digital_reference/">Digital Reference</option>
+<option value="http://www.oup.com/elt/">English Language Teaching</option>
+<option value="http://www.oup.co.uk/best.textbooks/">Higher Education Textbooks</option>
+<option value="http://www.oup.co.uk/academic/humanities/">Humanities</option>
+<option value="http://www.oup.co.uk/ieu/">International Education Unit</option>
+<option value="http://www.oup.co.uk/law/">Law</option>
+<option value="http://www.oup.co.uk/academic/medicine/">Medicine</option>
+<option value="http://www.oup.co.uk/music/">Music</option>
+<option value="http://www.oup.com/online">Online Products</option>
+<option value="http://www.oed.com/">Oxford English Dictionary</option>
+<option value="http://www.oup.co.uk/reference/">Reference</option>
+<option value="http://www.oup.co.uk/rights/">Rights and Permissions</option>
+<option value="http://www.oup.co.uk/academic/science/">Science</option>
+<option value="http://www.oup.co.uk/oxed/">School Books</option>
+<option value="http://www.oup.co.uk/academic/socsci/">Social Sciences</option>
+<option value="http://www.oup.co.uk/general/vsi/">Very Short Introductions</option>
+<option value="http://www.oup.co.uk/worldsclassics/">World's Classics</option>
+</select>
+<input src="Radetski%202006%20Adapters,%20shims,%20and%20glue%E2%80%94service%20interoperability%20for%20in%20silico%20experiments_files/go.gif" alt="Go" class="inline_button" type="image">
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- /footer.mc ends -->
+
+
+
+
+</body></html>

@@ -1,0 +1,290 @@
+Notes-apps-gsmapper.txt
+
+
+</entry>
+
+
+
+<entry [Thu Mar 18 10:21:15 EDT 2010] COPY TEST GSMAPPER DATA TO /nethome/bioinfo/data/sequence/gsmapper/paired>
+
+
+
+1. ORIGINAL HUMAN SAMPLES
+=========================
+
+ll /nethome/nnorton/S901435UMI_2_2/sff
+
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 28  2009 FV4HAC001.sff
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 28  2009 FV4HAC002.sff
+
+ll /nethome/nnorton/S901435UMI_2_2/READS_AND_METRICS
+
+    -rw-r--r-- 1 nnorton hershberger 199M May 28  2009 1.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 520M May 28  2009 1.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger 198M May 28  2009 2.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 516M May 28  2009 2.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger  55K May 28  2009 454BaseCallerMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger 2.1K May 28  2009 454QualityFilterMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger  32K May 28  2009 454RuntimeMetricsAll.txt
+
+
+2. COPY DATA TO /nethome/bioinfo/data/sequence/gsmapper
+=======================================================
+
+mkdir -p /nethome/bioinfo/data/sequence/gsmapper/human/sff
+cd /nethome/bioinfo/data/sequence/gsmapper/human/sff
+
+cp /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2/sff/FV4HAC001.sff /nethome/bioinfo/data/sequence/gsmapper/human/sff/sample1.sff
+cp /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2/sff/FV4HAC002.sff /nethome/bioinfo/data/sequence/gsmapper/human/sff/sample2.sff
+
+cp /nethome/nnorton/S901435UMI_2_2/READS_AND_METRICS/1.TCA.454Reads.fna /nethome/bioinfo/data/sequence/gsmapper/human/sff/sample1.fna
+
+[syoung@kronos gsmapper]$ ll /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2/sff/FV4HAC001
+.sff 
+ls: /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2/sff/FV4HAC001.sff: Operation not permitted
+-rw-r--r-- 1 nnorton hershberger 2.1G May 28  2009 /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2/sff/FV4HAC001.sff
+
+
+</entry>
+
+
+
+<entry [Fri June 20 07:46:47 EDT 2009] INSTALL GSMAPPER VERSION 2.0.01.12 (64 BIT) AT /home/bioinfo/apps/GSMapper/2.0.01.12>
+
+
+
+
+1. DOWNLOAD AND UNZIP TO /home/bioinfo/apps/GSMapper/2.0.01.12/install.archive:
+
+mkdir -p /home/bioinfo/apps/GSMapper/2.0.01.12/install.archive
+
+cd /home/bioinfo/apps/GSMapper/2.0.01.12/install.archive
+
+
+2. INSTALL TO /home/bioinfo/apps/GSMapper/2.0.01.12:
+
+[syoung@kronos install.archive]$ ./INSTALL 
+
+    which: no newbler in (/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto:/home/apps/alta-cyclic/0.1.0/perlexternal:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/usr/local/bin:/bin:/usr/bin:/usr/lpp/mmfs/bin)
+    0
+    0
+    /nethome/syoung/454
+    
+    **************************************************************************
+    
+    This will install the 2.0.01.12 release of the off-instrument applications
+    package.  It is recommended to install as root to the default location (/opt/454)
+    
+    If installing to a cluster, restart this script with
+    
+            "sudo ./INSTALL"
+    
+    However, it is possible to specify the installation location.
+    Users without root permission will be able to install to a
+    directory of their choosing as long as it has write permissions.
+    NOTE: It will be necessary to add the installation location to the user's PATH
+    variable when installing to a non-default location
+    
+    At any prompt, press the ENTER key to accept the default value
+    
+    Please enter the number corresponding to the option:
+    
+    [1] Install Off-Instrument Apps AND gsRunProcessor
+    [2] Install Off-Instrument Apps ONLY
+    [3] Install gsRunProcessor ONLY
+    [4] Quit
+    
+    Enter number [1]: 
+    
+    
+    **************************************************************************
+    Before continuing with the installation, ensure that all
+    data processing jobs are shutdown.
+    Only continue if you are sure there are no jobs currently
+    processing.
+    Do you want to continue? (yes|no) [Default is yes]: 
+    
+    
+    **************************************************************************
+    Please enter the directory in which to install.
+    [default: /nethome/syoung/454]
+    or type "quit" to exit the installation: /home/bioinfo/apps/GSMapper/2.0.01.12
+    
+    
+    **************************************************************************
+    Directory "/home/bioinfo/apps/GSMapper/2.0.01.12" already exists
+    Continuing will update packages already installed in /home/bioinfo/apps/GSMapper/2.0.01.12
+    [Default: yes]
+    or type "quit" to exit the installation: 
+    
+            Creating directory "/home/bioinfo/apps/GSMapper/2.0.01.12"
+    
+    
+    
+            Be sure to add '/home/bioinfo/apps/GSMapper/2.0.01.12/bin' to your PATH.
+            For example:
+    
+            export PATH=$PATH:"/home/bioinfo/apps/GSMapper/2.0.01.12/bin"
+    
+    
+            Command line apps successfully installed
+            JRE successfully installed
+            gsMapper successfully installed
+            gsAssembler successfully installed
+            gsAmplicon successfully installed
+            gsRunBrowser successfully installed
+    
+            Version 2.0.01.12 Off-Instrument Apps successfully installed.
+    
+    INSTALLING AS LOCAL USER
+    find: ./usr/lib: No such file or directory
+    
+    Roche/454 Support Tool v1.17.04 - Installation Utility
+    
+    Roche/454 Support Tool v1.17.04
+    (c) 454 Life Sciences 2008-9. All rights reserved.
+    Installed in /home/bioinfo/apps/GSMapper/2.0.01.12/apps/gsSupportTool.
+    Run the tool by calling /home/bioinfo/apps/GSMapper/2.0.01.12/apps/gsSupportTool/usr/bin/gsSupportTool
+            gsRunProcessor successfully installed
+    
+            Version 2.0.01.12 gsRunProcessor Suite successfully installed.
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri June 20 07:46:47 EDT 2009] RUN GSMAPPER ON 454 SEQUENCES>
+
+
+
+
+1. GET 454 .sff FILE OR .fna AND .qual FILES
+
+mkdir -p /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1
+mkdir -p /nethome/syoung/base/pipeline/gsmapper/S901435UMI_2_2
+cd /nethome/syoung/base/pipeline/gsmapper
+
+
+READ 1
+------
+
+ll /nethome/nnorton//S902023UMI_2_1/sff
+
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 19 09:57 FV2J5AZ01.sff
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 19 09:58 FV2J5AZ02.sff
+
+
+ll /nethome/nnorton//S902023UMI_2_1/READS_AND_METRICS
+
+    -rw-r--r-- 1 nnorton hershberger 216M May 19 09:58 1.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 568M May 19 09:58 1.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger 213M May 19 09:58 2.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 560M May 19 09:58 2.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger  53K May 19 09:58 454BaseCallerMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger 2.1K May 19 09:58 454QualityFilterMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger  32K May 19 09:58 454RuntimeMetricsAll.txt
+
+
+READ 2
+------
+
+ll /nethome/nnorton/S901435UMI_2_2/sff
+
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 28 11:36 FV4HAC001.sff
+    -rw-r--r-- 1 nnorton hershberger 2.1G May 28 11:36 FV4HAC002.sff
+
+
+ll /nethome/nnorton/S901435UMI_2_2/READS_AND_METRICS
+
+    -rw-r--r-- 1 nnorton hershberger 199M May 28 11:36 1.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 520M May 28 11:37 1.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger 198M May 28 11:36 2.TCA.454Reads.fna
+    -rw-r--r-- 1 nnorton hershberger 516M May 28 11:36 2.TCA.454Reads.qual
+    -rw-r--r-- 1 nnorton hershberger  55K May 28 11:37 454BaseCallerMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger 2.1K May 28 11:37 454QualityFilterMetrics.txt
+    -rw-r--r-- 1 nnorton hershberger  32K May 28 11:37 454RuntimeMetricsAll.txt
+
+
+
+2. sfffile - MERGE TWO .sff FILES 
+    
+/nethome/syoung/base/apps/454/2.0.00.20-64/bin/sfffile -o /nethome/syoung/base/pipeline/gsmapper/reads1.sff /nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ01.sff /nethome/nnorton/S901435UMI_2_2/sff/FV4HAC002.sff
+
+TWO POSSIBLE OUTPUTS:
+
+Reading the input SFF file(s)...
+Generating the SFF file...
+   XXX reads written into the SFF file.
+
+OR:
+
+Reading the input SFF file(s)...
+Error:  The computation ran out of memory and is unable to continue.
+
+
+3. sffinfo - GENERATE .fna AND .qual FILES FROM .sff FILE 
+
+/nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ01.sff
+/nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ02.sff
+    
+/nethome/syoung/base/apps/454/2.0.00.20-64/bin/sffinfo -seq /nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ01.sff > /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ01.fna
+/nethome/syoung/base/apps/454/2.0.00.20-64/bin/sffinfo -qual /nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ01.sff > /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ01.qual
+
+/nethome/syoung/base/apps/454/2.0.00.20-64/bin/sffinfo -seq /nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ02.sff > /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ02.fna
+/nethome/syoung/base/apps/454/2.0.00.20-64/bin/sffinfo -qual /nethome/nnorton/S902023UMI_2_1/sff/FV2J5AZ02.sff > /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ02.qual
+
+
+4. CREATE MAPPING OUTPUT FOLDER
+-------------------------------
+
+mkdir -p /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01
+mkdir -p /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02
+
+REFERENCE SEQUENCE IS CCDS:
+
+/nethome/syoung/base/pipeline/nimblegen-gsmapper/CCDS_nucleotide.20080430.fa
+
+
+5. RUN runMapping USING CCDS REFERENCE
+--------------------------------------
+
+/nethome/syoung/base/bin/exome/cluster-runMapping.pl \
+--inputfiles /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ01.fna,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/sff/FV2J5AZ02.fna \
+--referencefile /nethome/syoung/base/pipeline/nimblegen-gsmapper/CCDS_nucleotide.20080430.fa \
+--outputdirs /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02
+
+    
+    
+    
+
+
+
+6. FILTER RAW SNPS
+------------------
+
+Filter SNPs in 454*Diffs.txt file using 'diffs.pl'
+
+/nethome/syoung/base/bin/exome/cluster-diffs.pl \
+--inputfiles /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01/454HCDiffs.txt,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02/454HCDiffs.txt \
+--outputfiles /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01/454HCDiffs-headers-SNPs.txt,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02/454HCDiffs-headers-SNPs.txt
+
+
+
+mshow
+
+    
+
+
+7. Extract '454PairAlign.txt' hits to sqlite database 	    pairalign.pl
+
+/nethome/syoung/base/bin/exome/cluster-pairalign.pl \
+--queue "-q psmall" \
+--inputfiles /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01/454PairAlign.txt,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02/454PairAlign.txt \
+--outputfiles /nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ01/pairalign.bsv,/nethome/syoung/base/pipeline/gsmapper/S902023UMI_2_1/ccds/FV2J5AZ02/pairalign.bsv
+
+

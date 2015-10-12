@@ -1,0 +1,125 @@
+
+</entry>
+
+
+
+<entry [Tue Sep 18 10:13:58 EDT 2007] ERROR ON make: _cfree UNDEFINED SYMBOL FOR ld>
+
+
+
+
+~/FUNNYBASE/dev/annotation/learning/decision.trees/C4.5/R8/Src young$ make
+cc -o c4.5 c4.5.o besttree.o build.o info.o discr.o contin.o subset.o prune.o stats.o st-thresh.o classify.o confmat.o sort.o getnames.o getdata.o trees.o getopt.o header.o -lm
+/usr/bin/ld: Undefined symbols:
+_cfree
+collect2: ld returned 1 exit status
+make: *** [c4.5] Error 1
+
+SOLUTION:
+
+
+Q:
+	Hallo Leute, ich versuche gerade die C-Implementierung des C4.5 Algorithmus von der Hompage dessen Erfinders Ross Quinlan zu Ÿbersetzen.
+	Dabei meckert mich ld an:
+	
+	ld: Undefined symbols:
+	_cfree
+		
+	
+	welche Lib fehlt mir noch? grep -r cfree /usr/lib/* habe ich schon ohne Erfolg probiert und Google zeigt mir Seiten, wo es wohl ein Problem bei sendmail gibt, die haben aber dort _cfree doppelt definiert. Mir wŸrde ja einmal schon reichen.
+	
+	Wie geht ihr bei Šhnlich gearteten Problemen (fehlende lib, .h-file enthŠlt nicht den passenden Prototypen, etc) vor?
+	
+	Gruss!
+
+A:
+	RE: welche Lib enthŠlt cfree?  	antworten zitieren Šndern melden       Zum Anfang der Seite springen
+   Sollte eigentlich zu stdlib.h gehšren. soweit ich gelesen habe, macht die Funktion dasselbe wie free, ich wŸrde das also mit einem Define lšsen:
+   
+   #define cfree(x) free(x)
+
+
+Q:
+	danke, es ist ja ein Linker-Problem, dein #define hat's gelšst, super!
+	
+	
+	
+WHICH FILE TO PUT THE #define IN:
+
+
+~/FUNNYBASE/dev/annotation/learning/decision.trees/C4.5/R8/Src young$ grep -n cfree ./*
+./besttree.c:191:    cfree(ClassFreq);
+Binary file ./besttree.o matches
+./makerules.c:86:       cfree(CondSatisfiedBy[i]);
+./makerules.c:87:       cfree(Stack[i]);
+./makerules.c:89:    cfree(Deleted);
+./makerules.c:90:    cfree(CondSatisfiedBy);
+./makerules.c:91:    cfree(Stack);
+./makerules.c:93:    cfree(Actual);
+./makerules.c:94:    cfree(Total);
+./makerules.c:95:    cfree(Errors);
+./makerules.c:96:    cfree(Pessimistic);
+./makerules.c:98:    cfree(CondSigLevel);
+./makerules.c:100:    cfree(TargetClassFreq);
+./makerules.c:197:      cfree(Term);
+./rules.c:136:  cfree(Cond);
+./rules.c:163:      cfree(Newtest);
+./siftrules.c:96:    cfree(Value);
+./siftrules.c:97:    cfree(RuleIn);
+./siftrules.c:98:    cfree(ClassRules);
+./siftrules.c:99:    cfree(Subset);
+./siftrules.c:100:    cfree(Covered);
+./siftrules.c:101:    cfree(FalsePos);
+./siftrules.c:102:    cfree(NoRule);
+./siftrules.c:105:      cfree(Match[r]);
+./siftrules.c:107:    cfree(Match);
+./siftrules.c:727:    cfree(Included);
+./st-thresh.c:45:    cfree(ThreshErrs);
+./st-thresh.c:46:    cfree(RHSErr);
+./st-thresh.c:47:    cfree(LHSErr);
+./st-thresh.c:48:    cfree(CVals);
+Binary file ./st-thresh.o matches
+./testrules.c:252:    cfree(Better);
+./testrules.c:253:    cfree(Worse);
+./trees.c:514:  cfree(Node->Branch);
+./trees.c:518:      cfree(Node->Subset);
+./trees.c:523:    cfree(Node->ClassDist);
+./trees.c:524:    cfree(Node);
+Binary file ./trees.o matches
+
+
+ADDED #define LINE TO besttree.c BUT GOT THIS ERROR:
+
+~/FUNNYBASE/dev/annotation/learning/decision.trees/C4.5/R8/Src young$ make 
+cc -O2 -c besttree.c
+besttree.c: In function 'OneTree':
+besttree.c:41: warning: incompatible implicit declaration of built-in function 'calloc'
+besttree.c: In function 'BestTree':
+besttree.c:77: warning: incompatible implicit declaration of built-in function 'calloc'
+besttree.c: In function 'FormTarget':
+besttree.c:149: warning: incompatible implicit declaration of built-in function 'calloc'
+besttree.c: In function 'Evaluate':
+besttree.c:378: warning: incompatible implicit declaration of built-in function 'calloc'
+cc -o c4.5 c4.5.o besttree.o build.o info.o discr.o contin.o subset.o prune.o stats.o st-thresh.o classify.o confmat.o sort.o getnames.o getdata.o trees.o getopt.o header.o -lm
+/usr/bin/ld: Undefined symbols:
+_cfree
+collect2: ld returned 1 exit status
+make: *** [c4.5] Error 1
+
+
+LOOKED UP _cfree INSTALLAION;
+
+
+The macro GnuMallocLibrary is no longer being used in Imake.tmpl, so the
+  NetBSD.cf file needs to be updated to define ExtraLibraries to -lgnumalloc.
+  transfig 3.1.2 fails to link because the symbol _cfree is not defined.
+  Under NetBSD, cfree is in the gnumalloc library, so -lgnumalloc is needed
+  for successful linking.  In the distributed NetBSD.cf GnuMallocLibrary
+  is intended to handle the introduction of -lgnumalloc into EXTRA_LIBRARIES.
+  While this works under X11R6, the R6.1 distribution has eliminated
+  GnuMallocLibrary from the configuration system, but it was not removed from
+  NetBSD.cf.  Instead, ExtraLibraries should now be used to provide -lgnumalloc.
+  Here's the patch:
+  
+  
+  

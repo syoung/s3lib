@@ -1,0 +1,424 @@
+Notes-apps-oracle.txt
+
+</entry>
+
+
+
+<entry [Tue Aug  5 15:34:13 EDT 2008] ORACLE INSTALLED ON VM>
+
+
+
+
+    From: Warnes, Sebastian 
+    Sent: Tuesday, August 05, 2008 3:23 PM
+    To: Young, Stuart; Zysman, Joel
+    Cc: Khuri, Sawsan; Warnes, Sebastian
+    Subject: RE: Oracle on linux machine
+    
+    A  virtual machine with linux/oracle is created
+    You can access it  with this ip address 
+    
+    10.136.120.231
+    
+    The user is oracle  and the password is kernel,  the environment will be set up to access oracle soft, if you need to know the oracle home do echo $ORACLE_HOME. You can do whatever you need to do,  it is virtual machine that can be restored to the original state
+    
+    Let me know if you have any problem with it.
+    
+    Sebastian
+
+
+echo $ORACLE_HOME
+    
+    /app/oracle/product/10.2.0/db_1
+
+
+</entry>
+
+
+
+<entry [Mon Jul 28 14:38:33 EDT 2008] CONNECT TO TCLINIC ON allele.med.miami.edu>
+
+
+
+
+1. GOT CONNECT DETAILS
+
+    From: Cabrera, Joe 
+    Sent: Friday, July 25, 2008 2:31 PM
+    To: Young, Stuart
+    Cc: McCauley, Jacob L; Slifer, Susan; Gurnani, Girish
+    Subject: FW: CCS
+    
+    Stuart, 
+    
+    I have setup your account on TCLINIC.  Your username is syoung.  Please call me so I can give you the password.  It will expire immediately.  Here is the tnsnames.ora entry to connect:
+    
+    
+    TCLINIC.WORLD =
+      (DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = allele.med.miami.edu)(PORT = 1556))
+        (CONNECT_DATA =
+          (SID = tclinic)
+        )
+    )
+    
+    Thanks, 
+    
+    Joe Cabrera
+    
+
+2. DOWNLOAD ORACLE 10g CLIENT RELEASE FOR WINDOWS
+
+http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/10201winsoft.html
+
+TAKE Oracle Database 10g Client Release 2 (10.2.0.1.0):
+
+    10201_client_win32.zip (475,090,051 bytes) (cksum - 946434250)
+
+
+3. COPY .ora DETAILS TO HERE
+
+C:\oracle\product\10.2.0\client_1\NETWORK\ADMIN\tsanames.org
+
+
+4. CONNECT WITH SQL_Plus
+
+Start-->Run-->'cmd' --> 'sqlplus'
+
+LOGIN WINDOW POPS UP, INPUT ID AND PASS AND GO!
+
+    #PATH=C:\DATA\SNP.orientation\instantclient_10_2
+    #sqlplus syoung/welcome08@allele.med.miami.edu:1556/TCLINIC.WORLD
+
+
+4. INSTALL perl
+
+www.activestate.com
+
+
+5. DOWNLOAD nmake
+
+http://download.microsoft.com/download/vc15/patch/1.52/w95/en-us/nmake15.exe
+AT
+http://support.microsoft.com/default.aspx?scid=kb;en-us;Q132084
+
+COPY TO PERL BIN:
+
+c:\Perl\bin\nmake.exe
+
+
+6. 
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Jul 25 16:29:11 EDT 2008
+
+LINUX CLIENT OR DATABASE INSTALL DIDN'T WORK BECAUSE OF JAVA ERROR WHEN RUNNING ./runInstaller
+(SEE BELOW)
+
+3. DOWNLOAD ORACLE 10g CLIENT RELEASE FOR LINUX
+
+http://www.oracle.com/technology/software/products/database/oracle10g/htdocs/linuxsoft.html
+
+ship.client.lnx32.cpio.gz
+
+
+DOWNLOAD INSTANT CLIENT FOR LINUX X86-64
+
+http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/linuxx86_64soft.html
+
+cd "/store/home/syoung/oracle.client"
+
+unzip basic-10.2.0.4.0-linux-x86_64.zip 
+    Archive:  basic-10.2.0.4.0-linux-x86_64.zip
+      inflating: instantclient_10_2/BASIC_README  
+      inflating: instantclient_10_2/classes12.jar  
+      inflating: instantclient_10_2/genezi  
+      inflating: instantclient_10_2/libclntsh.so.10.1  
+      inflating: instantclient_10_2/libnnz10.so  
+      inflating: instantclient_10_2/libocci.so.10.1  
+      inflating: instantclient_10_2/libociei.so  
+      inflating: instantclient_10_2/libocijdbc10.so  
+      inflating: instantclient_10_2/ojdbc14.jar  
+
+
+unzip sqlplus-10.2.0.4.0-linux-x86_64.zip 
+
+    Archive:  sqlplus-10.2.0.4.0-linux-x86_64.zip
+      inflating: instantclient_10_2/SQLPLUS_README  
+      inflating: instantclient_10_2/glogin.sql  
+      inflating: instantclient_10_2/libsqlplus.so  
+      inflating: instantclient_10_2/libsqlplusic.so  
+      inflating: instantclient_10_2/sqlplus  
+    
+ll instantclient_10_2/
+
+    -rw-rw-r-- 1 syoung users  228 Mar 12 02:37 BASIC_README
+    -r--r--r-- 1 syoung users 1.6M Mar 12 02:37 classes12.jar
+    -rwxrwxr-x 1 syoung users  66K Mar 12 02:37 genezi
+    -r--r--r-- 1 syoung users 1.5K Mar 12 02:37 glogin.sql
+    -rwxrwxr-x 1 syoung users  21M Mar 12 02:37 libclntsh.so.10.1
+    -r-xr-xr-x 1 syoung users 3.7M Mar 12 02:37 libnnz10.so
+    -rwxrwxr-x 1 syoung users 1.6M Mar 12 02:37 libocci.so.10.1
+    -rwxrwxr-x 1 syoung users  70M Mar 12 02:37 libociei.so
+    -r-xr-xr-x 1 syoung users 135K Mar 12 02:37 libocijdbc10.so
+    -r-xr-xr-x 1 syoung users 1.4M Mar 12 02:37 libsqlplusic.so
+    -r-xr-xr-x 1 syoung users 975K Mar 12 02:37 libsqlplus.so
+    -r--r--r-- 1 syoung users 1.5M Mar 12 02:37 ojdbc14.jar
+    -r-xr-xr-x 1 syoung users 7.6K Mar 12 02:37 sqlplus
+    -rw-rw-r-- 1 syoung users  232 Mar 12 02:37 SQLPLUS_README
+
+
+
+    INSTALL DIRECTIONS:
+    
+  	  	1. Run "gunzip <filename>" on all the files.   Eg.: ship.db.lnx32.cpio.gz
+
+            gunzip 10201_database_linux_x86_64.cpio.gz
+
+
+  	  	2. Extract the cpio archives with the command "cpio -idmv < <filename>"
+ 
+            cpio -idmv < 10201_database_linux_x86_64.cpio
+
+
+            ALTERNATELY:
+            
+                To extract make a tempdir to be safe, cd into it and then "zcat /path/to/name.cpio.gz | cpio -idv".
+
+                To compress (asserting you're in the tempdir) "find ../tempdir | cpio -o | gzip > /path/to/newname.cpio.gz"
+
+                If you need full path names or none play with the "find ../tempdir" path part or look in cpio's man page.
+
+        3.
+        
+        ll database/stage/Components/oracle.rdbms.oci/10.2.0.1.0/1/DataFiles/include.jar
+        ll database/stage/Components/oracle.rsf.rdbms_rsf/10.2.0.1.0/1/DataFiles/lib.jar
+        ll database/stage/Components/oracle.rdbms/10.2.0.1.0/1/DataFiles/lib.jar
+        ll database/stage/Components/oracle.rsf.clntsh_rsf/10.2.0.1.0/1/DataFiles/lib.jar 
+
+
+
+        THE 32-64bit VERSION DOES NOT HAVE THE ABOVE FILES...
+
+
+
+
+
+
+
+
+
+        4. INSTALL ONLY A PORTION OF ORACLE - ENOUGH TO INSTALL DBD::Oracle
+        
+        Once the cpio-archive is unpacked, you'll have many files jar files in a
+        directory tree in the directory Disk1. The Oracle installer is a Java
+        application that works itself through all Java packages installing
+        whatever necessary on the way. Fortunately, the files necessary to
+        compile DBD can easy extracted with a normal unzip from these archives:
+        
+        MAKE THE ORACLE_HOME DIRECTORY
+        
+        mkdir /home/syoung/oracle
+
+        COPY AND UNZIP .jar FILES IN ORACLE_HOME DIRECTORY
+        
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rdbms.oci/10.1.0.3.0/1/DataFiles/include.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip include.jar
+
+        [syoung@solexa01 oracle]$ ll
+            total 5.2M
+            drwxr-xr-x  5 syoung users 4.0K Jul 25 20:08 .
+            drwxr-x--- 13 syoung users 4.0K Jul 25 20:02 ..
+            -rwxr-xr-x  1 syoung users 249K Jul 25 20:04 include.jar
+            -rwxr-xr-x  1 syoung users 4.8M Jul 25 20:07 lib.jar
+            drwxr-xr-x  6 syoung users 4.0K Jul 25 20:08 rdbms
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rsf.rdbms_rsf/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+        [syoung@solexa01 oracle]$ ll
+            total 5.2M
+            drwxr-xr-x  5 syoung users 4.0K Jul 25 20:08 .
+            drwxr-x--- 13 syoung users 4.0K Jul 25 20:02 ..
+            -rwxr-xr-x  1 syoung users 249K Jul 25 20:04 include.jar
+            drwxr-xr-x  2 syoung users 4.0K Jul 25 20:08 jlib
+            drwxr-xr-x  2 syoung users 4.0K Jul 25 20:08 lib
+            -rwxr-xr-x  1 syoung users 4.8M Jul 25 20:07 lib.jar
+            drwxr-xr-x  6 syoung users 4.0K Jul 25 20:08 rdbms
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rdbms/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+
+        #### COULD NOT FIND oracle.rdbms DIRECTORY
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+        cd /home/syoung/oracle.download        
+        cp Disk1/stage/Components/oracle.rsf.clntsh_rsf/10.1.0.3.0/1/DataFiles/lib.jar /home/syoung/oracle
+        cd /home/syoung/oracle        
+        unzip lib.jar
+
+
+        NB: COPIES OVER EXISTING DIRECTORY
+        
+            
+            [syoung@solexa01 oracle]$         unzip lib.jar
+            Archive:  lib.jar
+            replace lib/libagent10.a? [y]es, [n]o, [A]ll, [N]one, [r]ename: A
+              inflating: lib/libagent10.a        
+              inflating: lib/libskgxpu.a         
+              inflating: lib/libskgxpu.so        
+              inflating: rdbms/lib/wpspldrv.o    
+              inflating: lib/libclient10.a       
+              inflating: lib/libcommon10.a       
+              inflating: lib/libgeneric10.a      
+              inflating: lib/libmm.a             
+              inflating: rdbms/lib/kpudfo.o      
+              inflating: rdbms/lib/kpundf.o      
+              inflating: rdbms/lib/xaonsl.o      
+              inflating: rdbms/lib/xaondy.o      
+              inflating: rdbms/lib/defopt.o      
+              inflating: rdbms/lib/ins_rdbms.mk  
+              inflating: rdbms/lib/env_rdbms.mk  
+              inflating: lib/libskgxpd.so        
+              inflating: lib/libskgxpd.a         
+              inflating: lib/libskgxp10.so       
+              inflating: lib/libskgxp10.a        
+              inflating: rdbms/lib/kgupc.o       
+              inflating: rdbms/lib/kgutc.o       
+              inflating: rdbms/jlib/qsma.jar     
+              inflating: jlib/opm.jar            
+              inflating: lib/libnnetd10.a        
+              inflating: lib/libnnet10.a         
+              inflating: rdbms/lib/sjsex.o       
+              inflating: lib/libxdb.so           
+              inflating: rdbms/jlib/xdb.jar      
+              inflating: rdbms/lib/genezi.o      
+              inflating: rdbms/public/xa.h
+              
+
+        
+        5. INSTALL DBD::Oracle
+        
+        export ORACLE_HOME=/home/syoung/oracle
+        echo $ORACLE_HOME
+            /home/syoung/oracle
+
+
+        cd /home/syoung/SNP.orientation/DBD-Oracle-1.21
+        perl Makefile.PL
+
+        OK
+        
+        make
+        
+            ERROR: i386 architecture of input file `/home/syoung/oracle/rdbms/lib/defopt.o' is incompatible with i386:x86-64 output
+
+        
+        
+        
+              
+        #4. CONNECT USING xAXE
+        #
+        #    Start X-session, rightclick icon in taskbar --> Run --> Telnet, select SSH2
+
+
+        #4. SET ENVIRONMENT VARIABLES AND GO
+        #
+        #   DISPLAY=192.168.1.128:0.0; export DISPLAY
+        #   echo $DISPLAY
+        #       192.168.1.128:0.0
+        #
+        #    xclock
+        #        Error: Can't open display: 192.168.1.128:0.0
+        #
+        #
+        #    I often run into this when I forget to install xorg-x11-xauth on the
+        #    server. I'd suggest you check that with 'rpmquery xorg-x11-xauth' and
+        #    otherwise install it, then try a new ssh -Y login
+        #
+        #        [root@solexa01 Disk1]# rpmquery xorg-x11-xauth
+        #        xorg-x11-xauth-1.0.1-2.1
+
+
+    
+        #5. GO TO UNZIPPED ORACLE INSTALL DIRECTORY
+        #
+        #cd /store/home/syoung/oracle/Disk1
+        #./runInstaller -ignoreSysPrereqs   
+        #
+        #GIVES JAVA ERROR AND FAILS TO OPEN X-WINDOW
+        
+        
+
+4. INSTALL DBD::Oracle
+
+DOWNLOAD AND UNTAR DBD-Oracle-1.21.tar.gz
+
+SET ORACLE_HOME ENVIRONMENT VARIABLE
+
+export ORACLE_HOME=/store/home/syoung/SNP.orientation/DBD-Oracle-1.21
+
+
+
+desc all_tables
+
+    IOT_NAME                                           VARCHAR2(30)
+    PCT_FREE                                           NUMBER
+    PCT_USED                                           NUMBER
+    INI_TRANS                                          NUMBER
+    MAX_TRANS                                          NUMBER
+    INITIAL_EXTENT                                     NUMBER
+    NEXT_EXTENT                                        NUMBER
+    MIN_EXTENTS                                        NUMBER
+    MAX_EXTENTS                                        NUMBER
+    PCT_INCREASE                                       NUMBER
+    FREELISTS                                          NUMBER
+    FREELIST_GROUPS                                    NUMBER
+    LOGGING                                            VARCHAR2(3)
+    BACKED_UP                                          VARCHAR2(1)
+    NUM_ROWS                                           NUMBER
+    BLOCKS                                             NUMBER
+    EMPTY_BLOCKS                                       NUMBER
+    AVG_SPACE                                          NUMBER
+    CHAIN_CNT                                          NUMBER
+    AVG_ROW_LEN                                        NUMBER
+    AVG_SPACE_FREELIST_BLOCKS                          NUMBER
+    NUM_FREELIST_BLOCKS                                NUMBER
+    DEGREE                                             VARCHAR2(10)
+    INSTANCES                                          VARCHAR2(10)
+    CACHE                                              VARCHAR2(5)
+    TABLE_LOCK                                         VARCHAR2(8)
+    SAMPLE_SIZE                                        NUMBER
+    LAST_ANALYZED                                      DATE
+    PARTITIONED                                        VARCHAR2(3)
+    IOT_TYPE                                           VARCHAR2(12)
+    TEMPORARY                                          VARCHAR2(1)
+    SECONDARY                                          VARCHAR2(1)
+    NESTED                                             VARCHAR2(3)
+    BUFFER_POOL                                        VARCHAR2(7)
+    ROW_MOVEMENT                                       VARCHAR2(8)
+    GLOBAL_STATS                                       VARCHAR2(3)
+    USER_STATS                                         VARCHAR2(3)
+    DURATION                                           VARCHAR2(15)
+    SKIP_CORRUPT                                       VARCHAR2(8)
+    MONITORING                                         VARCHAR2(3)
+    CLUSTER_OWNER                                      VARCHAR2(30)
+    DEPENDENCIES                                       VARCHAR2(8)
+    COMPRESSION                                        VARCHAR2(8)
+
+
+select table_name_2 from all_tables;
+
+
+desc bio_info;
+
+

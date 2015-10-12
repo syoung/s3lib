@@ -1,0 +1,357 @@
+Notes-project45-macmini.txt
+
+</entry>
+
+
+
+<entry [Fri Sep 18 23:12:23 EDT 2009] CONNECTING TO ngsdev FROM HOME>
+
+
+
+MACMINI USING sg SHOWS UP USING who AS
+
+10.150.11.132
+
+AS DOES HPLAPTOP USING sg
+
+
+ALTHOUGH THE CONNECTION IP ADDRESS FOR THE MACMINI IS
+
+76.109.14.73
+
+    whois 76.109.14.73
+    Comcast Cable Communications, Inc. JUMPSTART-5 (NET-76-96-0-0-1) 
+                                      76.96.0.0 - 76.127.255.255
+    Comcast Cable Communications, Inc. MIAMI-12 (NET-76-108-0-0-1) 
+                                      76.108.0.0 - 76.109.255.255
+
+
+
+</entry>
+
+
+
+<entry [Sun Sep 13 21:24:08 EDT 2009] SETUP APACHE ON macmini>
+
+
+
+THE HTTPD INSTALLATION on OSX Leopard DETAILS:
+
+CONF FILE:
+
+/private/etc/apache2/httpd.conf
+
+ERROR FILE:
+
+/private/var/apache2/error_log
+
+RUN AS apache:
+
+
+NB: Fix can't sudo to www user on OSX
+
+sudo passwd www
+sudo -u www bash
+
+
+Then:
+
+sudo su
+su www
+whoami
+
+   _www
+
+
+
+But, if i cahnge the "User" and "Group" n the httpd.conf file 
+(User and Group that Apache use to start) i finally got the 
+cgi to work... but dunno why  :blink:  
+
+
+FIX MACHINE TYPE
+
+
+cd lib/5.8.8
+ln -s x86_64-linux-thread-multi darwin-thread-multi-2level
+
+
+
+
+FIX DBI VERSION
+
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/
+perl project.cgi 
+
+
+DBI object version 1.52 does not match $DBI::VERSION 1.607 at /System/Library/Perl/5.8.8/darwin-thread-multi-2level/DynaLoader.pm line 253, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/5.8.8/darwin-thread-multi-2level/DBI.pm line 263, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 31, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 31, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+spud-2:0.3 syoung$ 
+
+
+DIAGNOSIS
+
+THE MACHINE HAS AN OLD VERSION OF DBI.pm:
+
+emacs /System/Library/Perl/Extras/5.8.8/darwin-thread-multi-2level/DBI.pm
+
+    ...
+    require 5.006_00;
+
+    BEGIN {
+    $DBI::VERSION = "1.52"; # ==> ALSO update the version in the pod text below!                                                                                                        
+    }
+    ...
+
+WHEREAS AQWA HAS A NEWER VERSION (VERSION 1.607) OF DBI.pm:
+
+emacs /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level/DBI.pm
+
+	...
+	require 5.006_00;
+
+	BEGIN {
+	$DBI::VERSION = "1.607"; # ==> ALSO update the version in the pod text below!                                                                                                     
+	}
+	...
+
+
+AND THE MACHINE'S BINARY FILE DBI.bundle CONTAINS THE REFERENCE TO THE OLD VERSION 1.52
+
+cd /System/Library/Perl/Extras/5.8.8/darwin-thread-multi-2level/auto/DBI
+
+spud-2:DBI syoung$ ll
+total 1312
+drwxr-xr-x  11 root  wheel   374B Feb  9  2009 .
+drwxr-xr-x  63 root  wheel   2.1K Feb  9  2009 ..
+-rw-r--r--   1 root  wheel     0B Sep 24  2007 DBI.bs
+-rwxr-xr-x   1 root  wheel   476K Sep 24  2007 DBI.bundle
+-rw-r--r--   1 root  wheel    20K Mar 27  2006 DBIXS.h
+-rw-r--r--   1 root  wheel    19K Feb  7  2006 Driver.xst
+-rw-r--r--   1 root  wheel   3.3K Feb  7  2006 Driver_xst.h
+-rw-r--r--   1 root  wheel   2.9K Feb  7  2006 dbd_xsh.h
+-rw-r--r--   1 root  wheel   3.7K Feb  7  2006 dbi_sql.h
+-rw-r--r--   1 root  wheel   115K May 10  2006 dbipport.h
+-rw-r--r--   1 root  wheel   2.0K Mar 25  2005 dbivport.h
+
+spud-2:DBI syoung$ grep -n "1.52" *
+
+    Binary file DBI.bundle matches
+
+
+SOLUTION:
+
+
+DON'T USE AQWA'S DBI.pm
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level
+mv DBI.pm DBI.pm.old
+
+
+BUT THEN GET THIS ERROR:
+
+
+spud-2:0.3 syoung$ cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/
+spud-2:0.3 syoung$ perl project.cgi 
+
+
+DBD::SQLite object version 1.13 does not match bootstrap parameter 1.14 at /System/Library/Perl/5.8.8/darwin-thread-multi-2level/DynaLoader.pm line 253, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 32, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 32, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+
+
+MACHINE HAS VERSION 1.13
+
+emacs /System/Library/Perl/Extras/5.8.8/darwin-thread-multi-2level/DBD/SQLite.pm
+
+AND AQWA HAS VERSION 1.14
+
+
+
+NEED TO UPDATE DBD::SQLite
+
+
+
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level
+grep -R -n "1\.52" *
+
+DBD/.svn/text-base/SQLite.pm.svn-base:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBD/SQLite.pm:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+TASKS.pod:11:   http://pjcj.sytes.net/cover/latest/DBI-1.52/coverage.html
+TASKS.pod:15:   http://pjcj.sytes.net/cover/latest/DBI-1.52/blib-lib-DBI-pm--subroutine.html
+auto/DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+auto/DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+bash-3.2$ 
+
+
+
+
+
+
+
+
+
+
+I'm generating the package with the core modules and all additional
+modules that I need, including DBI.pm (my first problem). Once the
+package is generated, it's copied to another system (the same perl and
+operating system version), which also has a DBI.pm, but an older version.
+
+When I run the par package, it stops ate the following error:
+===============
+Couldn't instantiate component "MyApp::Model::MyApp",
+"DBIx::Class::Schema::connection(): No arguments to load_classes and
+couldn't load DBIx::Class::Storage::DBI (DBI object version 1.605 does
+not match $DBI::VERSION 1.607 at /usr/lib/perl/5.10/DynaLoader.pm line 219.
+BEGIN failed--compilation aborted at DBI.pm line 263.
+Compilation failed in require at DBIx/Class/Storage/DBI.pm line 8.
+BEGIN failed--compilation aborted at DBIx/Class/Storage/DBI.pm line 8.
+) at Catalyst/Model/DBIC/Schema.pm line 318" at
+./script/kickstart_server.pl line 58
+===============
+
+My guess is that it loads the DBI.pm from the par package, but it
+prioritize the DBI.so installed in the system, which is an older
+version. In the par package there are some .so libraries, and one of
+them was the DBI.so installed in the system which the package was generated.
+
+
+
+
+- using strace to read the syscalls to get the stat and open, it always
+stat the hash.so, and then stat DBI.so installed in the operating system
+(outside par package), and then open and read DBI.so from the operating
+system
+- the module PAR::Heavy, there is a routine override in DynaLoader:
+*{'DynaLoader::dl_findfile'}    = \&_dl_findfile;
+that override doesn't seem to work, because it's never called
+
+
+
+
+\
+THE HTTPD INSTALLATION on OSX Leopard IS HERE:
+
+
+
+/private/etc/apache2/httpd.conf
+
+
+THE ERROR FILE IS HERE:
+
+/private/var/apache2/error_log
+
+
+RUN AS apache:
+
+
+Fix can't sudo to www user on OSX
+
+Try:
+sudo passwd www
+sudo -u www bash
+
+
+Then:
+
+sudo su
+su www
+whoami
+
+   _www
+
+
+
+
+**** IN httpd.conf FILE, CHANGED FROM User AND Group 
+
+FROM 
+
+www 
+
+TO 
+
+_www 
+
+BUT NOT SURE IF THIS WAS NECESSARY...
+
+
+FIX MACHINE TYPE
+
+
+cd lib/5.8.8
+ln -s x86_64-linux-thread-multi darwin-thread-multi-2level
+
+
+
+
+FIX DBI VERSION
+
+
+
+DBI object version 1.52 does not match $DBI::VERSION 1.607 at /System/Library/Perl/5.8.8/darwin-thread-multi-2level/DynaLoader.pm line 253, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/5.8.8/darwin-thread-multi-2level/DBI.pm line 263, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 31, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/DBase/SQLite.pm line 31, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/lib/Project.pm line 177, <DATA> line 225.
+Compilation failed in require at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+BEGIN failed--compilation aborted at /Users/syoung/aqwa/cgi-bin.linux/project.pl line 121, <DATA> line 225.
+spud-2:0.3 syoung$ 
+
+
+DIAGNOSIS
+
+
+VERSION 1.607 IN AQWA'S DBI.pm
+
+emacs /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level/DBI.pm
+
+	...
+	require 5.006_00;
+
+	BEGIN {
+	$DBI::VERSION = "1.607"; # ==> ALSO update the version in the pod text below!                                                                                                     
+	}
+	...
+
+
+cd /Library/WebServer/CGI-Executables/aqwa/trunk/0.3/lib/5.8.8/darwin-thread-multi-2level
+grep -R -n "1\.52" *
+
+DBD/.svn/text-base/SQLite.pm.svn-base:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBD/SQLite.pm:1:# $Id: SQLite.pm,v 1.52 2006/04/10 01:50:05 matt Exp $
+DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+TASKS.pod:11:   http://pjcj.sytes.net/cover/latest/DBI-1.52/coverage.html
+TASKS.pod:15:   http://pjcj.sytes.net/cover/latest/DBI-1.52/blib-lib-DBI-pm--subroutine.html
+auto/DBI/.svn/text-base/Changes.pm.svn-base:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/.svn/text-base/Changes.pm.svn-base:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+auto/DBI/Changes.pm:366:=head2 Changes in DBI 1.52 (svn rev 6840),   30th July 2006
+auto/DBI/Changes.pm:371:  Fixed for perl 5.9.4. Users of Perl >= 5.9.4 will require DBI >= 1.52.
+bash-3.2$ 
+
+
+
+
+

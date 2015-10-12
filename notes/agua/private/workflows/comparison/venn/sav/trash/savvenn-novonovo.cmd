@@ -1,0 +1,20 @@
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--looplabel novoalign-savvenn-dbsnp \
+--executable /nethome/syoung/0.5/bin/apps/venn/SNPVENN.pl \
+--bamfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/1/chr22/hit.bam \
+--querydir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22 \
+--targetdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/sav/novoalignnovoalign \
+--querylabel novoalign-%REPLICATE%-dbsnp \
+--targetlabel novoalign-33-dbsnp \
+--binlevel 500000 \
+--suffix sav \
+--queryindex %REPLICATE% \
+--targetindex 33 \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/sav/novoalignnovoalign/savvenn-dbsnp.out

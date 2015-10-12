@@ -1,0 +1,1658 @@
+Notes-apps-casava.txt
+
+
+</entry>
+
+
+
+<entry [Fri Oct 15 13:36:44 EDT 2010] TROUBLESHOOTING CASAVA 1.7 ERROR>
+
+
+
+
+
+
+
+From: Cabrera, Joe 
+Sent: Friday, October 15, 2010 12:09 PM
+To: Young, Stuart
+Subject: RE: casava 1.7
+
+Hi Stuart, 
+
+Sorry about that – yes, I am doing better – thanks for asking.
+
+The issue we were having was that during the demultiplexing process, we would get file existence errors.  For example:
+
+mv: cannot move `004/s_3_1_0007_qseq.txt.tmp' to `004/s_3_1_0007_qseq.txt': No such file or directory
+make: *** [002/s_3_1_0007_qseq.txt] Error 1
+make: *** Waiting for unfinished jobs....
+
+
+However, the files did in fact exist.  
+
+We thought this would be fixed by using a bsub directive to only process on a single-node (#BSUB -R span[ptile=8]
+) .  However we had the same error (see below):
+
+Job <demulti_B80312_all.sh> was submitted from host <u01> by user <jcabrera1> in cluster <lsfcluster>.
+Job was executed on host(s) <8*n0005>, in queue <small>, as user <jcabrera1> in cluster <lsfcluster>.
+</mihg/users/jcabrera1> was used as the home directory.
+</q/nextGen/HISEQ/INTERNAL/MPV/100922_SN158_0360_B80312ABXX> was used as the working directory.
+Started at Thu Oct  7 14:37:18 2010
+Results reported at Fri Oct  8 18:45:29 2010
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#BSUB -J demulti_B80312_all.sh
+#BSUB -o /q/nextGen/HISEQ/INTERNAL/MPV/100922_SN158_0360_B80312ABXX/%J.out
+#BSUB -e /q/nextGen/HISEQ/INTERNAL/MPV/100922_SN158_0360_B80312ABXX/%J.err
+#BSUB -W 96:00
+#BSUB -q small
+#BSUB -n 8
+#BSUB -B
+#BSUB -N
+#BSUB -u jcabrera1@med.miami.edu
+#BSUB -R span[ptile=8]
+cd /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/Demultiplexed
+make -j 8 
+
+------------------------------------------------------------
+
+Exited with exit code 2.
+
+Resource usage summary:
+
+    CPU time   : 358901.84 sec.
+    Max Memory :        26 MB
+    Max Swap   :       718 MB
+
+    Max Processes  :        20
+    Max Threads    :        21
+
+Read file </q/nextGen/HISEQ/INTERNAL/MPV/100922_SN158_0360_B80312ABXX/1977076.out> for stdout output of this job.
+Read file </q/nextGen/HISEQ/INTERNAL/MPV/100922_SN158_0360_B80312ABXX/1977076.err> for stderr output of this job.
+
+The error in the *.err file was:
+
+…
+
+/k/analysis/src/CASAVA/1.7/share/CASAVA-1.7.0/makefiles/DemultiplexLane.mk:41: [002/s_3_1_0026_qseq.txt (/q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_1_0026_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_2_0026_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_3_0026_qseq.txt) (/q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_1_0026_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_2_0026_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_3_0026_qseq.txt)]
+/k/analysis/src/CASAVA/1.7/share/CASAVA-1.7.0/makefiles/DemultiplexLane.mk:41: [002/s_3_1_0027_qseq.txt (/q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_1_0027_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_2_0027_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_3_0027_qseq.txt) (/q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_1_0027_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_2_0027_qseq.txt /q/hiseq/100922_SN158_0360_B80312ABXX/Data/Intensities/BaseCalls/s_3_3_0027_qseq.txt)]
+mv: cannot move `004/s_3_1_0007_qseq.txt.tmp' to `004/s_3_1_0007_qseq.txt': No such file or directory
+make: *** [002/s_3_1_0007_qseq.txt] Error 1
+make: *** Waiting for unfinished jobs....
+
+
+After resubmission, it worked.
+
+
+From: Young, Stuart 
+Sent: Friday, October 15, 2010 11:49 AM
+To: Cabrera, Joe
+Subject: casava 1.7
+
+Hi Joe,
+
+I popped by on Wednesday to ask you about this but I heard that you were off ill. I hope you’re better now.
+
+I was wondering if you could let me know the specific error you’re getting when you try to run casava v1.7 on Pegasus?
+
+Cheers,
+
+Stuart.
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Oct 15 11:57:26 EDT 2010] INSTALLED CASAVA 1.7 ON PEGASUS>
+
+
+
+
+
+cd /nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0
+./configure
+
+	...
+	-- Verifying target directories access
+	-- Creating external tools in subdirectory opt
+	-- Could NOT find Boost
+	-- Boost 1.41.0 not found. Boost will be built from the distribution...
+	Decompressing /nethome/syoung/base/apps/casava/1.7.0/src/../redist/boost_1_41_0.tar.gz
+	Building Boost.Jam with toolset gcc... tools/jam/src/bin.linuxx86_64/bjam
+	Unicode/ICU support for Boost.Regex?... not found.
+	Generating Boost.Build configuration in project-config.jam...
+	
+	Bootstrapping is done. To build, run:
+	
+		./bjam
+		
+	To adjust configuration, edit 'project-config.jam'.
+	Further information:
+	
+	   - Command line help:
+		 ./bjam --help
+		 
+	   - Getting started guide: 
+		 http://www.boost.org/more/getting_started/unix-variants.html
+		 
+	   - Boost.Build documentation:
+		 http://www.boost.org/boost-build2/doc/html/index.html
+	
+	warning: Building Boost.Regex with the optional Unicode/ICU support disabled.
+	note: Please refer to the Boost.Regex documentation for more information
+	note: this is a strictly optional feature.
+	...patience...
+	...patience...
+	...
+	-- Adding the c++    program subdirectory: PostAlignment
+	-- Adding the c++    program subdirectory: Demultiplex
+	-- Could NOT find Doxygen  (missing:  DOXYGEN_EXECUTABLE)
+	-- Doxygen: DOXYGEN_EXECUTABLE-NOTFOUND. Dot: DOXYGEN_DOT_EXECUTABLE-NOTFOUND.
+	-- Configuring done
+	-- Generating done
+	-- Build files have been written to: /nethome/syoung/base/apps/casava/1.7.0/src
+	
+	Warning: it is recommended to build CASAVA outside of the source directory:
+
+		mkdir ../CASAVA-build
+		cd ../CASAVA-build
+		../src/configure --prefix=/path/to/install/dir
+		make
+		make install
+	
+	The build directory /nethome/syoung/base/apps/casava/1.7.0/src was configured succesfully
+	
+	Type make at the top level of the root directory to build CASAVA
+
+
+
+mkdir /nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build
+cd /nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build
+
+CONFIGURE AND MAKE
+
+/nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0/src/configure --prefix=/nethome/syoung/base/apps/casava/1.7.0
+
+	...
+	-- Build files have been written to: /nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build
+	The build directory /nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build was configured succesfully
+	
+	Type make at the top level of the root directory to build CASAVA
+
+make
+
+	...
+	[ 11%] Building CXX object c++/lib/common/CMakeFiles/casava_common.dir/Compression.cpp.o
+	/nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build/opt/bootstrap/include/boost/iostreams/filter/gzip.hpp: In constructor â€˜boost::iostreams::basic_gzip_compressor<Alloc>::basic_gzip_compressor(const boost::iostreams::gzip_params&, int) [with Alloc = std::allocator<char>]â€™:
+	/nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0/src/c++/lib/common/Compression.cpp:58:   instantiated from â€˜void casava::common::DoFilter<E, D, F, COMPRESSION_TYPE>::operator()(boost::iostreams::filtering_ostream&) const [with E = boost::iostreams::basic_gzip_compressor<std::allocator<char> >, D = boost::iostreams::basic_gzip_decompressor<std::allocator<char> >, F = casava::common::Compression, int COMPRESSION_TYPE = 1]â€™
+	/nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0/src/c++/lib/common/Compression.cpp:152:   instantiated from here
+	/nethome/syoung/base/apps/casava/archive/CASAVA-1.7.0-build/opt/bootstrap/include/boost/iostreams/filter/gzip.hpp:606: warning: overflow in implicit constant conversion
+	[ 11%] Building CXX object c++/lib/common/CMakeFiles/casava_common.dir/File_Buffer.cpp.o
+	[ 12%] Building CXX object c++/lib/common/CMakeFiles/casava_common.dir/Alignment.cpp.o
+	[ 12%] Building CXX object c++/lib/common/CMakeFiles/casava_common.dir/Tile_List.cpp.o
+	[ 13%] Building CXX object c++/lib/common/CMakeFiles/casava_common.dir/Exceptions.cpp.o
+	[ 13%] Building C
+	...
+	Linking CXX executable samMD2Export
+	[ 98%] Built target samMD2Export
+	Scanning dependencies of target varling_caller
+	[ 99%] Building CXX object c++/libexec/DataAnalysis/PostAlignment/CMakeFiles/varling_caller.dir/varling_caller.cpp.o
+	Linking CXX executable varling_caller
+	[ 99%] Built target varling_caller
+	Scanning dependencies of target demultiplexTile
+	[100%] Building CXX object c++/libexec/Demultiplex/CMakeFiles/demultiplexTile.dir/demultiplexTile.cpp.o
+	Linking CXX executable demultiplexTile
+	[100%] Built target demultiplexTile	
+	
+	
+
+
+
+make install
+
+
+cd /nethome/syoung/base/apps/casava/1.7.0
+
+	drwxrwxr-x 3 syoung bioinfo 8.0K Oct 15 12:36 bin
+	drwxrwxr-x 3 syoung bioinfo 2.0K Oct 15 12:36 etc
+	drwxrwxr-x 3 syoung bioinfo 2.0K Oct 15 12:36 lib
+	drwxrwxr-x 3 syoung bioinfo 2.0K Oct 15 12:36 libexec
+	drwxrwxr-x 3 syoung bioinfo 2.0K Oct 15 12:36 share
+
+
+
+#### CHECK 'use lib' FILEPATHS IN bin DIR
+
+grep -n "casava/1.7.0/lib" *
+
+	buildExport.pl:19:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	buildExtendedAlign.pl:20:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	build.pl:54:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	buildQref.pl:48:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	buildSeq.pl:21:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	configureAlignment.pl:89:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	demultiplex.pl:171:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	ELAND_standalone.pl:28:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	GERALD.pl:35:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	jerboa.pl:23:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	maskQseq.pl:15:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	pickBestAlignment.pl:18:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	pickBestAlignmentRNA.pl:36:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';    # substituted by CMake during install
+	pickBestPair.pl:18:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	plotCoverage.pl:20:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	plot_error_graphs.pl:13:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+	run.pl:19:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	run.pl:289:my $binDir              = '/nethome/syoung/base/apps/casava/1.7.0/libexec/CASAVA-1.7.0';
+	spliceSites.pl:135:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	task2dot.pl:21:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	task2gantt.pl:19:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	taskServer.pl:22:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl';
+	taskServer.pl:157:    my $agentCmd = File::Spec->catfile('/nethome/syoung/base/apps/casava/1.7.0/libexec/CASAVA-1.7.0', 'TaskManager', 'taskAgent.pl');
+	trivialQualityFilter.pl:13:use lib '/nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl'; # substituted by CMake during install
+
+
+###2. UPDATE 'use lib' FILEPATHS TO NEW LOCATION
+###
+###cd /nethome/syoung/base/apps/GAPipeline/1.6.0/bin
+###
+###perl -pi -e "s|mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl|/nethome/syoung/base/apps/GAPipeline/1.6.0/lib/CASAVA-1.6.0/perl|g;" *
+
+
+
+
+3. TEST
+
+
+
+[syoung@u04 bin]$ ./run.pl --help
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin alignability
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin indels
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin poisson
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin rnaRead
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin cov2bin
+[15/10/10 12:59:06]     [run.pl]        INFO: Detected plugin bam
+
+Usage: run.pl [options]
+        -e, --exportDir=PATH       - source directory PATH also known as GERALD directory or run directory
+        -l, --lanes=NUMBER_LIST    - list of the lanes to use
+        -p, --projectDir=PATH      - project directory PATH (where we keep CASAVA build)
+        -r, --runId=STRING         - unique identifier of each run
+        -ref, --refSequences=PATH  - PATH of the reference genome sequences
+OPTIONAL (BEHAVIOUR)
+        -a, --applicationType=TYPE - type of analysis [DNA, RNA] default DNA
+        --postRunCmd=CMDLINE       - executes CMDLINE after all tasks are finished
+        -f, --force                - ignore errors from previous run
+        --help[=TARGET]            - prints usage guide. If TARGET is specified, prints usage guide for the corresponding plugin target
+        -rt, --removeTemps=ON/OFF  - removes temporary data (default ON)
+        --dirTemp                  - overrides default path for local temporary files
+        --targets LIST             - space-separated LIST of targets to run (default: all)
+        -w, --workflow             - instead of running the program generates the workflow definition file.
+        -wa --workflowAuto         - generates the workflow definition file and runs it. See --jobsLimit.
+        -sa --sgeAuto              - generates the workflow definition file and runs it on SGE (use with --sgeQueue)
+        --jobsLimit                - limit number of parallel jobs. Defaults: -1 (unlimited) for --sgeAuto. 1 for --workflowAuto.
+        --sgeQueue                 - SGE queue name - used with --sgeAuto or --workflow (e.g: all.q)
+        --workflowFile=FILE        - overrides workflow file name. (default workflow.<date>.txt)
+        --verbose=NUMBER           - sets the console log verbose level (default 0 - minimum)
+        --version                  - prints version information
+OPTIONAL (ANALYSIS)
+        --refFlatFile=PATH         - PATH to UCSC refFlat.txt.gz file. The file must be gz-compressed.
+        --seqGeneMdFile=PATH       - PATH to NCBI seq_gene.md.gz file. The file must be gz-compressed.
+        --snpThreshold=NUMBER      - sets the SNPCaller primary allele threshold to NUMBER (default 10)
+        --snpThreshold2=NUMBER     - sets the SNPCaller secondary allele threshold to NUMBER (default 6)
+        --snpMaxRatio=NUMBER       - sets the SNPCaller max ratio to NUMBER (default 3)
+        --snpCovCutoff=NUMBER      - sets the SNPCaller coverage cutoff depth to NUMBER times the chromosomal mean. (default 3)
+                                       Set this value to -1 to disable the coverage filter (recommended for RNA and targeted resequencing)
+        -rm, --readMode            - Runread-mode for all runs [paired, single] (default paired)
+        --QVCutoff=NUMBER          - sets the alleleCaller PE aligment score threshold to NUMBER (default 6)
+        --QVCutoffSingle=NUMBER    - sets the alleleCaller SE aligment score threshold to NUMBER (default 10)
+        --singleScoreForPE=VALUE   - sets the alleleCaller to filter reads with single score below QVCutoffSingle in PE mode YES|NO (default NO)
+        --baseQualityCutOff=NUMBER - sets minimum base quality in allele caller (default 0)
+        --qualityType=VALUE        - Quality to probability scheme Phred64|Solexa64 (default Phred64)
+        --toNMScore=NUMBER         - minimum SE alignment score to put a read to NM (default -1 - off)
+        --rmDup=YES|NO             - Turn On/Off PCR duplicates removal in PE mode (default YES)
+        --denseAlleleCalls         - Leave empty rows out of the allele-call file (already set for RNA analysis)
+TARGETS
+        all                        - build targets that are pre-configured for the given analysis type. This is the default.
+        export                     - loads the export files to export directory
+        sort                       - sorts reads and moves them to bins in the build directory (Parsed_...), optionally also removes pcr duplicates
+        allele                     - allele calling in the build directory
+        snp                        - finds SNP and exports them to GFF format
+        exp2sra                    - converts all export files from GERALD folders to a zipped fastq files and generates sra.xml
+        clean                      - soft clean - allows to restart the build without removing project.conf and run.conf.xml
+        allClean                   - removes all data
+        snpClean                   - removes snp data
+        sortClean                  - removes sort data
+        alleleClean                - removes allele data
+PLUGIN TARGETS: bam cov2bin rnaRead poisson indels alignability
+        use ./run.pl --help <target> for plugin target usage details
+EXAMPLES:
+
+CASAVA_PATH=/nethome/syoung/base/apps/casava/1.7.0/bin
+CASAVA_FEATURES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples/features
+CASAVA_EXAMPLES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples
+
+#Run default paired DNA analysis targets on test E_coli data run TestEColiPE lane 4
+${CASAVA_PATH}/run.pl --runId=TestEColiPE --projectDir=./DNA_EColi_PE \
+-e ${CASAVA_EXAMPLES}/GERALD -l 4 \
+--refSequences=${CASAVA_EXAMPLES}/genomes/E_coli --snpCovCutoff=-1 --indelsCovCutoff=-1
+
+#Run default single-ended DNA analysis targets on E_coli data run TestEColiSE lane 4
+${CASAVA_PATH}/run.pl --runId=TestEColiSE --projectDir=./DNA_EColi_SE \
+-e ${CASAVA_EXAMPLES}/GERALD -l 4 \
+--refSequences=${CASAVA_EXAMPLES}/genomes/E_coli --snpCovCutoff=-1 --readMode=single
+
+#Run default RNA analysis targets on Human_UHR chromosome 22 data run TestRNAUHR lane 2
+${CASAVA_PATH}/runRNA.pl --runId=TestRNAUHR --projectDir=./RNA_UHR \
+--seqGeneMdFile=${CASAVA_FEATURES}/human/NCBI/Build36.3/seq_gene.md.gz \
+-e ${CASAVA_EXAMPLES}/RNA_UHR_GERALD -l 2 \
+--refSequences ${CASAVA_EXAMPLES}/genomes/human
+
+
+
+
+GERALD FILES ARE HERE:
+
+cd /nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples/GERALD
+
+	-rw-r--r-- 1 syoung bioinfo 5.8K Dec  9  2009 config.xml
+	-rw-r--r-- 1 syoung bioinfo 4.4M Dec  9  2009 s_4_1_export.txt
+	-rw-r--r-- 1 syoung bioinfo 4.5M Dec  9  2009 s_4_2_export.txt
+	-rw-r--r-- 1 syoung bioinfo 4.4M Dec  9  2009 s_4_export.txt
+	-rw-r--r-- 1 syoung bioinfo 6.5K Dec  9  2009 s_4_pair.xml
+	-rw-r--r-- 1 syoung bioinfo 267K Dec  9  2009 Summary.htm
+	-rw-r--r-- 1 syoung bioinfo 839K Dec  9  2009 Summary.xml
+
+
+
+
+
+
+CREATE OUTPUT DIRECTORY (projectDir)
+------------------------------------
+
+mkdir -p /scratch/syoung/base/pipeline/casava/dnaseq
+cd /scratch/syoung/base/pipeline/casava/dnaseq
+
+
+SET ENVIRONMENT VARIABLES
+-------------------------
+
+export CASAVA_PATH=/nethome/syoung/base/apps/casava/1.7.0/bin
+export CASAVA_FEATURES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples/features
+export CASAVA_EXAMPLES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples
+
+#Run default paired DNA analysis targets on test E_coli data run TestEColiPE lane 4
+${CASAVA_PATH}/run.pl --runId=TestEColiPE --projectDir=/scratch/syoung/base/pipeline/casava/dnaseq \
+-e ${CASAVA_EXAMPLES}/GERALD -l 4 \
+--refSequences=${CASAVA_EXAMPLES}/genomes/E_coli --snpCovCutoff=-1 --indelsCovCutoff=-1
+
+	
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin alignability
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin indels
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin poisson
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin rnaRead
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin cov2bin
+	[15/10/10 13:08:58]     [run.pl]        INFO: Detected plugin bam
+	[15/10/10 13:08:58]     [run.pl]        INFO: Reference E_coli.fa has 4639675 known out of 4639675 bases total
+	[15/10/10 13:08:58]     [run.pl]        Using /scratch/syoung/base/pipeline/casava/dnaseq/tmp for scratchpad
+	[15/10/10 13:08:58]     [run.pl]        INFO: Will configure following targets:configure,export,sort,allele,snp,indels
+	[15/10/10 13:08:58]     [run.pl]        CHECK Directory structure                      [OK]
+	[15/10/10 13:08:58]     [run.pl]        CHECK Reference sequence exists                [OK]
+	[15/10/10 13:08:59]     [run.pl]        CHECK All required input files exist           [OK]
+	[15/10/10 13:08:59]     [run.pl]        CHECK Parameters validation                    [OK]
+	[15/10/10 13:08:59]     [run.pl]        CHECK Creating/updating data directories       [IN-PROGRESS]
+	[15/10/10 13:08:59]     [run.pl]        CHECK Creating/updating data directories       [DONE]
+	[15/10/10 13:09:08]     [run.pl]        TARGET configure                               [OK]
+	[15/10/10 13:09:08]     [run.pl]        TARGET export                                  [OK]
+	[15/10/10 13:09:08]     [run.pl]        TARGET sort                                    [OK]
+	[15/10/10 13:09:09]     [run_allele_call.pl]    INFO: alleleCaller for E_coli.fa
+	[15/10/10 13:09:09]     [run.pl]        TARGET allele                                  [OK]
+	[15/10/10 13:09:09]     [runSNPcaller.pl]       INFO:  SNPCaller for E_coli.fa/0000
+	[15/10/10 13:09:09]     [run.pl]        TARGET snp                                     [OK]
+	[15/10/10 13:09:09]     [run.pl]        TARGET indels                                  [OK]
+	[15/10/10 13:09:09]     [run.pl]        Task description in /scratch/syoung/base/pipeline/casava/dnaseq/tasks.13_08_58_15_10_10.txt.
+	[15/10/10 13:09:09]     [run.pl]        INFO: Support for SGE (qsub) detected
+	
+	[15/10/10 13:09:09]     [run.pl]        To run on SGE, submit through all.q queue:
+
+	/nethome/syoung/base/apps/casava/1.7.0/bin/taskServer.pl --tasksFile=/scratch/syoung/base/pipeline/casava/dnaseq/tasks.13_08_58_15_10_10.txt --host=u04 --mode=sge --sgeQueue=all.q 
+
+	[15/10/10 13:09:09]     [run.pl]        To run locally on 1 processors:
+	/nethome/syoung/base/apps/casava/1.7.0/bin/taskServer.pl --tasksFile=/scratch/syoung/base/pipeline/casava/dnaseq/tasks.13_08_58_15_10_10.txt --host=localhost --jobsLimit=1
+
+
+
+SUBMIT TO LSF
+-------------
+
+	/nethome/syoung/base/apps/casava/1.7.0/bin/taskServer.pl --tasksFile=/scratch/syoung/base/pipeline/casava/dnaseq/tasks.13_08_58_15_10_10.txt --host=u04 --mode=sge --sgeQueue=all.q 
+
+	
+	[15/10/10 13:14:14]     [taskServer.pl] INFO: Using port 8001 to set up server on host u04...
+	[15/10/10 13:14:14]     [taskServer.pl] INFO: Server ready.  Waiting for connections . . . 
+	[15/10/10 13:14:14]     [taskServer.pl] INFO: Support for qsub ON
+	[15/10/10 13:14:15]     [taskServer.pl] INFO: found 1 new task(s) ready to run
+	qstat: illegal option -- f
+	Usage: qstat [-l] [-m] [-x] [-a] [-u user-name] [queue-name ...]
+	qstat: illegal option -- g
+	Usage: qstat [-l] [-m] [-x] [-a] [-u user-name] [queue-name ...]
+	Argument "submit2SGE Could not parse the job id from qsub response..." isn't numeric in scalar assignment at /nethome/syoung/base/apps/casava/1.7.0/lib/CASAVA-1.7.0/perl/Casava/TaskManager/Sge.pm line 169.
+
+
+
+####mkdir -p /scratch/syoung/base/pipeline/casava/dnaseq
+####cd /scratch/syoung/base/pipeline/casava/dnaseq
+####rm -fr /scratch/syoung/base/pipeline/casava/dnaseq/run.sh
+####emacs /scratch/syoung/base/pipeline/casava/dnaseq/run.sh
+
+#####!/bin/sh
+####
+#####BSUB -J DNA-seq               # The name of the job
+#####BSUB -W 24:00
+#####BSUB -o /scratch/syoung/base/pipeline/casava/dnaseq/dnaseq.out
+#####BSUB -e /scratch/syoung/base/pipeline/casava/dnaseq/dnaseq.err
+####
+####echo "LS_JOBID: " $LS_JOBID
+####echo "LS_JOBPID: " $LS_JOBPID
+####echo "LSB_JOBINDEX: " $LSB_JOBINDEX
+####echo "LSB_JOBNAME: " $LSB_JOBNAME
+####echo "LSB_QUEUE: " $LSB_QUEUE
+####echo "LSFUSER: " $LSFUSER
+####echo "LSB_JOB_EXECUSER: " $LSB_JOB_EXECUSER
+####echo "HOSTNAME: " $HOSTNAME
+####echo "LSB_HOSTS: " $LSB_HOSTS
+####echo "LSB_ERRORFILE: " $LSB_ERRORFILE
+####echo "LSB_JOBFILENAME: " $LSB_JOBFILENAME
+####echo "LD_LIBRARY_PATH: " $LD_LIBRARY_PATH
+####
+####export CASAVA_PATH=/nethome/syoung/base/apps/casava/1.7.0/bin
+####export CASAVA_FEATURES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples/features
+####export CASAVA_EXAMPLES=/nethome/syoung/base/apps/casava/1.7.0/share/CASAVA-1.7.0/examples
+####
+#####Run default paired DNA analysis targets on test E_coli data run TestEColiPE lane 4
+####${CASAVA_PATH}/run.pl --runId=TestEColiPE --projectDir=/scratch/syoung/base/pipeline/casava/dnaseq \
+####-e ${CASAVA_EXAMPLES}/GERALD -l 4 \
+####--refSequences=${CASAVA_EXAMPLES}/genomes/E_coli --snpCovCutoff=-1 --indelsCovCutoff=-1
+####
+####	
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Apr 30 02:53:42 EDT 2010] INSTALL CASAVA 1.6 INTO GAPipeline 1.6 ON PEGASUS>
+
+
+
+
+
+1. COPY OVER FROM kronos-x
+
+scp -r syoung@kronos-x.ccs.miami.edu:/mihg/analysis/software/CASAVA/1.6 \
+/nethome/syoung/base/apps/GAPipeline/1.6.0
+
+
+2. UPDATE 'use lib' FILEPATHS TO NEW LOCATION
+
+cd /nethome/syoung/base/apps/GAPipeline/1.6.0/bin
+
+perl -pi -e "s|mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl|/nethome/syoung/base/apps/GAPipeline/1.6.0/lib/CASAVA-1.6.0/perl|g;" *
+
+
+3. TEST
+
+./ELAND_standalone.pl 
+
+	Usage: ./ELAND_standalone.pl options
+	--input-file|if 
+	  must specify at least one file, specify two for paired analysis
+	--input-type|it 
+	  type of input file: fastq, fasta, export or qseq
+	--read-length|rl
+	  will work it out from input file(s) if not specified
+	--seed-length|sl
+	  length of read used for ELAND alignment 
+	  - default is to min of read-length and 32
+	--eland-genome|eg
+	  full path of a squashed genome directory
+	--output-prefix|op
+	  will produce a set of output files whose names prefixed by this
+	  - defaults to 'reanalysis'  
+	--pipeline-dir|pd
+	  path of pipeline installation to call 
+	  - by default, looks in same dir as executable is found)
+	--base-quality|bq
+	  in fasta mode assume all bases have this quality
+	  - default is set to 30
+	--pair-params|pp
+	  paired read analysis parameters to pass to pickBestPair
+	  - multiple arguments must go in quotes
+	  - defaults to '--circular' - treats all chromosomes as circular
+	  NB: for a paired read analysis, both reads must share same
+	  input-type, read-length and seed-length
+
+OK!
+
+</entry>
+
+
+
+<entry [Mon Mar 29 14:00:38 EDT 2010] INSTALL VERSION 1.6 ON KRONOS>
+
+
+
+
+SOURCE DIRECTORY:
+
+/mihg/analysis/src/CASAVA/1.6/
+
+
+
+INSTALLATION DIRECTORY:
+
+mkdir -p /mihg/analysis/software/CASAVA/1.6
+
+
+
+COPY COMMAND:
+
+cp -r /mihg/analysis/src/CASAVA/1.6/bin /mihg/analysis/software/CASAVA/1.6
+cp -r /mihg/analysis/src/CASAVA/1.6/etc /mihg/analysis/software/CASAVA/1.6
+cp -r /mihg/analysis/src/CASAVA/1.6/lib /mihg/analysis/software/CASAVA/1.6
+cp -r /mihg/analysis/src/CASAVA/1.6/libexec /mihg/analysis/software/CASAVA/1.6
+cp -r /mihg/analysis/src/CASAVA/1.6/opt /mihg/analysis/software/CASAVA/1.6
+
+
+
+TEST INSTALLATION:
+
+/mihg/analysis/software/CASAVA/1.6/bin/ELAND_standalone.pl
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Feb 10 17:29:04 EST 2010] TEST SUBMIT CASAVA.pl WITHOUT -q ARGUMENT>
+
+
+
+
+#!/bin/sh
+
+#PBS -N noq-casava-sample2
+#PBS -l ncpus=8
+#PBS -j oe
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/CASAVA.pl \
+--inputfiles s_1_1_export.txt \
+--matefiles s_1_2_export.txt \
+--sequencedir /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung \
+--rundir /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+--referencedir /nethome/syoung/base/pipeline/human-genome/illumina \
+--outputdir /nethome/syoung/base/pipeline/casava/sample2 \
+--lane 1
+
+
+		[syoung@ngsdev sample2]$ checkjob 228814
+		job 228814
+		
+		AName: noq-casava-sample2
+		State: Running 
+		Creds:  user:syoung  group:bioinfo  account:bioinfo  class:default
+		WallTime:   00:00:00 of 4:00:00
+		SubmitTime: Wed Feb 10 17:28:36
+		  (Time Queued  Total: 00:00:01  Eligible: 00:00:00)
+		
+		StartTime: Wed Feb 10 17:28:37
+		Total Requested Tasks: 8
+		
+		Req[0]  TaskCount: 8  Partition: base  
+		Memory >= 0  Disk >= 0  Swap >= 0
+		
+		Allocated Nodes:
+		[n27:1][n10:4][n09:3]
+		
+		
+		
+		IWD:            $HOME/base/pipeline/casava/sample2
+		Executable:     /opt/moab/spool/moab.job.BxxMbW
+		
+		StartCount:     1
+		Partition List: ALL,base
+		Flags:          BACKFILL,GLOBALQUEUE
+		Attr:           BACKFILL,checkpoint
+		StartPriority:  1
+		Reservation '228814' (-00:00:16 -> 3:59:44  Duration: 4:00:00)
+
+
+
+
+</entry>
+
+
+
+<entry [Wed Feb 10 01:01:44 EST 2010] CREATED CASAVA.pl TO AUTOMATE RUNNING CASAVA>
+
+
+
+cd /nethome/syoung/base/pipeline/casava/sample1
+
+perl /nethome/bioinfo/apps/agua/0.4/bin/apps/CASAVA.pl \
+--inputfiles s_1_1_export.txt \
+--matefiles s_1_2_export.txt \
+--sequencedir /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung \
+--rundir /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+--referencedir /nethome/syoung/base/pipeline/human-genome/illumina \
+--outputdir /nethome/syoung/base/pipeline/casava/sample1 \
+--lane 1
+
+		CASAVA.pl    casava: /nethome/syoung/base/apps/casava/1.0.10.1
+		inputfiles: s_1_1_export.txt
+		outputdir: /nethome/syoung/base/pipeline/casava/sample1
+		referencedir: /nethome/syoung/base/pipeline/human-genome/illumina
+		CASAVA.pl    no. files: 1
+		CASAVA.pl    ins: s_1_1_export.txt
+		CASAVA.pl    mates: s_1_2_export.txt
+		CASAVA.pl    Checking paired files match up.
+		CASAVA.pl    Paired files match
+		CASAVA.pl    Copying input files
+		CASAVA.pl    firstfile: s_1_1_export.txt
+		CASAVA.pl    firstlane: 1
+		CASAVA::new    CASAVA::new(arguments)
+		CASAVA::new    arguments:
+		$VAR1 = {
+				  'rundir' => '/p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3',
+				  'sequencedir' => '/p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung',
+				  'inputfile' => '/nethome/syoung/base/pipeline/casava/sample1/s_1_1_export.txt',
+				  'jobs' => 30,
+				  'msub' => '/usr/local/bin/msub',
+				  'lane' => 1,
+				  'referencedir' => '/nethome/syoung/base/pipeline/human-genome/illumina',
+				  'firstlane' => '1',
+				  'casava' => '/nethome/syoung/base/apps/casava/1.0.10.1',
+				  'qstat' => undef,
+				  'matefile' => '/nethome/syoung/base/pipeline/casava/sample1/s_1_2_export.txt',
+				  'outputdir' => '/nethome/syoung/base/pipeline/casava/sample1',
+				  'queue' => undef,
+				  'cpus' => 8,
+				  'dot' => 1,
+				  'sleep' => 5
+				};
+		$VAR1 = bless( {
+						 '_msub' => '/usr/local/bin/msub',
+						 '_firstlane' => '1',
+						 '_referencedir' => '/nethome/syoung/base/pipeline/human-genome/illumina',
+						 '_jobs' => 30,
+						 '_sequencedir' => '/p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung',
+						 '_cpus' => 8,
+						 '_matefile' => '/nethome/syoung/base/pipeline/casava/sample1/s_1_2_export.txt',
+						 '_sleep' => 5,
+						 '_rundir' => '/p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3',
+						 '_lane' => 1,
+						 '_dot' => 1,
+						 '_inputfile' => '/nethome/syoung/base/pipeline/casava/sample1/s_1_1_export.txt',
+						 '_outputdir' => '/nethome/syoung/base/pipeline/casava/sample1',
+						 '_casava' => '/nethome/syoung/base/apps/casava/1.0.10.1'
+					   }, 'CASAVA' );
+		CASAVA.pl    Doing copyFiles()
+		CASAVA::build_rds    paired: 1
+		CASAVA.pl    Doing shellScript()
+		CASAVA::build_rds    paired: 1
+		CASAVA::shellScript    shellscript: /nethome/syoung/base/pipeline/casava/sample1/casava-1.sh
+		CASAVA::shellScript    script:
+		
+		#!/bin/sh
+		
+		#PBS -N casava-1
+		#PBS -l ncpus=8
+		#PBS -j oe
+		
+		cd /nethome/syoung/base/pipeline/casava/sample1
+		
+		/nethome/syoung/base/apps/casava/1.0.10.1/run.pl \
+		--exportDir=/nethome/syoung/base/pipeline/casava/sample1 \
+		--genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml \
+		--lanes=1 \
+		--projectDir=/nethome/syoung/base/pipeline/casava/sample1/casava-1 \
+		--runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+		--refSequences=/nethome/syoung/base/pipeline/human-genome/illumina \
+		--workflowAuto \
+		--snpCovCutoff=-1
+		
+		#### END OF SCRIPT
+		
+		
+		CASAVA.pl    shellscript: /nethome/syoung/base/pipeline/casava/sample1/casava-1.sh
+		CASAVA.pl    Run time: 00:04:41
+		CASAVA.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/CASAVA.pl
+		CASAVA.pl    4:38AM, 10 February 2010
+		CASAVA.pl    ****************************************
+
+
+
+RAN WITH msub
+
+checkjob 228554
+
+		Last login: Wed Feb 10 13:49:24 2010 from 10.150.191.222
+		[syoung@ngsdev ~]$ qstat
+		Job id                    Name             User            Time Use S Queue
+		------------------------- ---------------- --------------- -------- - -----
+		228554.kronos             casava-1         syoung          06:29:41 R gsmall         
+		[syoung@ngsdev ~]$ checkjob 228554
+		job 228554
+		
+		AName: casava-1
+		State: Running 
+		Creds:  user:syoung  group:bioinfo  account:bioinfo  class:gsmall
+		WallTime:   3:15:35 of 7:00:00:00
+		SubmitTime: Wed Feb 10 12:47:23
+		  (Time Queued  Total: 00:00:00  Eligible: 00:00:00)
+		
+		StartTime: Wed Feb 10 12:47:23
+		Total Requested Tasks: 8
+		
+		Req[0]  TaskCount: 8  Partition: base  
+		Memory >= 0  Disk >= 0  Swap >= 0
+		NodeCount:  2
+		
+		Allocated Nodes:
+		[n14:2][n04:6]
+		
+		
+		
+		IWD:            $HOME/base/pipeline/casava/sample1
+		Executable:     /opt/moab/spool/moab.job.76f67R
+		
+		StartCount:     1
+		Partition List: ALL,base
+		Flags:          BACKFILL,GLOBALQUEUE
+		Attr:           BACKFILL,checkpoint
+		StartPriority:  100
+		Reservation '228554' (-3:15:46 -> 6:20:44:14  Duration: 7:00:00:00)
+
+
+
+[syoung@ngsdev casava-1]$ checkjob 228554
+job 228554
+
+AName: casava-1
+State: Running 
+Creds:  user:syoung  group:bioinfo  account:bioinfo  class:gsmall
+WallTime:   4:14:58 of 7:00:00:00
+SubmitTime: Wed Feb 10 12:47:23
+  (Time Queued  Total: 00:00:00  Eligible: 00:00:00)
+
+StartTime: Wed Feb 10 12:47:23
+Total Requested Tasks: 8
+
+Req[0]  TaskCount: 8  Partition: base  
+Memory >= 0  Disk >= 0  Swap >= 0
+NodeCount:  2
+
+Allocated Nodes:
+[n14:2][n04:6]
+
+
+
+IWD:            $HOME/base/pipeline/casava/sample1
+Executable:     /opt/moab/spool/moab.job.76f67R
+
+StartCount:     1
+Partition List: ALL,base
+Flags:          BACKFILL,GLOBALQUEUE
+Attr:           BACKFILL,checkpoint
+StartPriority:  100
+Reservation '228554' (-4:14:56 -> 6:19:45:04  Duration: 7:00:00:00)
+
+
+
+
+
+PREVIOUS RUN WITH NO '-q gsmall' OPTION DID NOT COMPLETE. WENT TO RERUN:
+
+
+
+		----------RUN_04_40_50_10_02_10-----------------
+		targets         = configure,export,duplicates,sort,allele,snp,taskManager
+		target          = all
+		_runId          = 04_40_50_10_02_10
+		argv            = --exportDir=/nethome/syoung/base/pipeline/casava/sample1 --genomeSize=/nethome/syoung/base\
+		/apps/casava/1.0.10.1/features/human_genome_size.xml --lanes=1 --projectDir=/nethome/syoung/base/pipeline/ca\
+		sava/sample1/casava-1 --runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 --refSequences=/nethome/syoung/bas\
+		e/pipeline/human-genome/illumina --workflowAuto --snpCovCutoff=-1
+		startTime               = 04_40_50_10_02_10
+		currentStatus           = taskManager
+		force           = 0
+		------------------------------------------------
+		
+		ERROR: previous run [04_40_50_10_02_10] didn't finish
+		To continue:
+		/nethome/syoung/base/apps/casava/1.0.10.1/run.pl --projectDir=/nethome/syoung/base/pipeline/casava/sample1/casava-1 --target=continue
+		To remove ALL data and restart:
+		/nethome/syoung/base/apps/casava/1.0.10.1/run.pl --projectDir=/nethome/syoung/base/pipeline/casava/sample1/casava-1 --target=allClean
+		/nethome/syoung/base/apps/casava/1.0.10.1/run.pl --exportDir=/nethome/syoung/base/pipeline/casava/sample1 --genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml --lanes=1 --projectDir=/nethome/syoung/base/pipeline/casava/sample1/casava-1 --runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 --refSequences=/nethome/syoung/base/pipeline/human-genome/illumina --workflowAuto --snpCovCutoff=-1
+		To ignore this warning:
+		/nethome/syoung/base/apps/casava/1.0.10.1/run.pl --exportDir=/nethome/syoung/base/pipeline/casava/sample1 --genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml --lanes=1 --projectDir=/nethome/syoung/base/pipeline/casava/sample1/casava-1 --runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 --refSequences=/nethome/syoung/base/pipeline/human-genome/illumina --workflowAuto --snpCovCutoff=-1 --force
+		Epilogue Args:
+		Job ID: 228525.kronos.ccs.miami.edu
+		User ID: syoung
+		Group ID: bioinfo
+		Job Name: casava-1
+		Session ID: 8590
+		Resource List: ncpus=8
+		Resources Used: cput=00:00:00,mem=0kb,vmem=0kb,walltime=00:00:02
+		Queue Name: gsmall
+		Account String:
+
+
+
+
+
+TIME
+====
+
+TWO MERGED LANES TAKE APPROX 4 HOURS ON 8 CPUS
+
+LOCATION
+========
+
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged2
+
+
+PROCESS
+=======
+
+CREATE DIRECTORIES
+
+BASE DIR WITH SEQUENCES
+
+mkdir /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged
+
+BUILD DIR
+
+mkdir /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged/build
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged/build
+
+
+
+COPY OVER ELAND OUTPUT export FILES
+
+
+RUN 15
+
+cd /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/
+ll *sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.8G Jul 13 17:58 s_1_1_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.7G Jul 13 17:59 s_1_2_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 2.2G Jul 13 19:49 s_2_1_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 2.1G Jul 13 19:48 s_2_2_sorted.txt
+
+
+RUN 12
+
+cd /p/NGS/syoung/base/pipeline/run15/1.4.0/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan/Data/C1-108_Firecrest1.4.0_11-07-2009_syoung/Bustard1.4.0_11-07-2009_syoung/GERALD_11-07-2009_syoung/
+ll *sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.5G Jul 12 09:51 s_1_1_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.2G Jul 12 09:47 s_1_2_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.7G Jul 12 10:49 s_2_1_sorted.txt
+    -rw-rw----+ 1 syoung bioinfo 1.2G Jul 12 10:49 s_2_2_sorted.txt
+
+
+
+CHECK READLENGTHS:
+
+
+RUN 15
+
+cd /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/
+
+perl /nethome/syoung/base/bin/utils/readLengths.pl --inputfile s_1_1_sequence.txt --type fastq
+
+    Length  Sequences
+    53      13469207
+    
+    Run time: 00:01:16
+    Completed /nethome/syoung/base/bin/utils/readLengths.pl
+    2:18PM, 7 August 2009
+    ****************************************
+
+perl /nethome/syoung/base/bin/utils/readLengths.pl --inputfile s_2_1_sequence.txt --type fastq
+
+    Length  Sequences
+    53      15876862
+    
+    Run time: 00:01:43
+    Completed /nethome/syoung/base/bin/utils/readLengths.pl
+    2:22PM, 7 August 2009
+    ****************************************
+
+
+
+
+RUN 12
+
+cd /p/NGS/syoung/base/pipeline/run15/1.4.0/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan/Data/C1-108_Firecrest1.4.0_11-07-2009_syoung/Bustard1.4.0_11-07-2009_syoung/GERALD_11-07-2009_syoung/
+
+perl /nethome/syoung/base/bin/utils/readLengths.pl --inputfile s_1_1_sequence.txt --type fastq
+
+    Length  Sequences
+    55      11742728
+    
+    Run time: 00:01:17
+    Completed /nethome/syoung/base/bin/utils/readLengths.pl
+    2:23PM, 7 August 2009
+    ****************************************
+
+perl /nethome/syoung/base/bin/utils/readLengths.pl --inputfile s_2_1_sequence.txt --type fastq
+
+    Length  Sequences
+    53      15876862
+    
+    Run time: 00:01:43
+    Completed /nethome/syoung/base/bin/utils/readLengths.pl
+    2:22PM, 7 August 2009
+    ****************************************
+
+
+
+MERGE *sorted.txt FILES INTO A SINGLE FILE FOR EACH MATE
+
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged
+
+RUN 12 + RUN 15 s_1_1
+
+cat /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_1_1_export.txt /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_1_1_export.txt > s_1_1_export.txt 
+
+RUN 12 + RUN 15 s_1_2
+
+cat /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_1_2_export.txt /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_1_2_export.txt > s_1_2_export.txt 
+
+
+COPY REQUIRED FILES FROM RUN DIRECTORY:
+
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged
+ll ..
+
+cp /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_1_pair.xml  ./
+
+cp /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/s_2_pair.xml  ./
+
+cp /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/Summary.htm  ./
+
+cp /p/NGS/syoung/base/pipeline/run12/1.4.0/090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3/Data/C1-104_Firecrest1.4.0_12-07-2009_syoung/Bustard1.4.0_12-07-2009_syoung/GERALD_12-07-2009_syoung/config.xml  ./
+
+
+
+MOVE TO BUILD DIR AND CREATE .sh FILE
+
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged/build
+
+rm -fr workflowAuto.sh
+emacs workflowAuto.sh
+#!/bin/sh
+
+#PBS -q cvaMerged
+#PBS -l ncpus=8
+#PBS -j oe
+#PBS -M syoung@med.miami.edu
+#PBS -m abe
+
+cd /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged/build
+
+/nethome/syoung/base/apps/casava/1.0.10.1/run.pl \
+--exportDir=/p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged \
+--genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml \
+--lanes=1,2 \
+--projectDir=/p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane2/casavaMerged/build \
+--runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+--refSequences=/nethome/syoung/base/pipeline/human-genome/illumina \
+--workflowAuto
+
+
+
+RUN CASAVA WITH workflowAuto
+
+
+
+qsub -q psmall workflowAuto.sh ; date; qstat
+    
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Aug  6 16:01:54 EDT 2009] DOWNLOADED MOST RECENT VERSION OF CASAVA WITH Features DIRECTORY>
+
+
+
+
+mkdir /nethome/syoung/base/pipeline/human-genome/illumina
+cd /nethome/syoung/base/pipeline/human-genome/illumina
+
+
+
+/nethome/syoung/base/bin/utils/deepvac.pl \
+--url ftp://ftp.illumina.com/Human%20May%202006%20%28hg18%29/Sequence/ \
+--username guest \
+--password illumina \
+--outputdir /nethome/syoung/base/pipeline/human-genome/illumina \
+--regex "\\.fa$"
+
+	Run time: 01:09:34
+	Completed /nethome/syoung/base/bin/utils/deepvac.pl
+	5:26PM, 6 August 2009
+	****************************************
+
+
+TO DOWNLOAD THESE SEQUENCE FILES;
+
+
+Index of ftp://ftp.illumina.com/Human%20May%202006%20(hg18)/Sequence/
+
+Name 	Size 	Last Modified
+File:chr1.fa 	246284 KB 	12/9/2005 	12:00:00 AM
+File:chr10.fa 	134846 KB 	12/9/2005 	12:00:00 AM
+File:chr11.fa 	133928 KB 	12/9/2005 	12:00:00 AM
+File:chr12.fa 	131833 KB 	12/9/2005 	12:00:00 AM
+File:chr13.fa 	113698 KB 	12/9/2005 	12:00:00 AM
+File:chr14.fa 	105954 KB 	12/9/2005 	12:00:00 AM
+File:chr15.fa 	99947 KB 	12/9/2005 	12:00:00 AM
+File:chr16.fa 	88481 KB 	12/9/2005 	12:00:00 AM
+File:chr17.fa 	78468 KB 	12/9/2005 	12:00:00 AM
+File:chr18.fa 	75820 KB 	12/9/2005 	12:00:00 AM
+File:chr19.fa 	63563 KB 	12/9/2005 	12:00:00 AM
+File:chr2.fa 	242003 KB 	12/9/2005 	12:00:00 AM
+File:chr20.fa 	62193 KB 	12/9/2005 	12:00:00 AM
+File:chr21.fa 	46761 KB 	12/9/2005 	12:00:00 AM
+File:chr22.fa 	49498 KB 	12/9/2005 	12:00:00 AM
+File:chr3.fa 	198723 KB 	12/9/2005 	12:00:00 AM
+File:chr4.fa 	190526 KB 	12/9/2005 	12:00:00 AM
+File:chr5.fa 	180152 KB 	12/9/2005 	12:00:00 AM
+File:chr6.fa 	170233 KB 	12/9/2005 	12:00:00 AM
+File:chr7.fa 	158202 KB 	12/9/2005 	12:00:00 AM
+File:chr8.fa 	145704 KB 	12/9/2005 	12:00:00 AM
+File:chr9.fa 	139726 KB 	12/9/2005 	12:00:00 AM
+File:chrX.fa 	154309 KB 	12/9/2005 	12:00:00 AM
+File:chrY.fa 	57548 KB 	12/9/2005 	12:00:00 AM
+File:cM.fa 	17 KB 	12/9/2005 	12:00:00 AM
+
+
+
+NOTE THAT THERE ARE CHIP-RELATED FILES HERE:
+
+ftp://ftp.illumina.com/Whole%20Genome%20Genotyping%20Files
+
+E.G., 
+ftp://ftp.illumina.com/Whole%20Genome%20Genotyping%20Files/Human-1%20annotation%20files/
+
+
+FROM MESSAGE FROM EUGENE GOLTSMAN:
+
+
+
+-----Original Message-----
+From: Eugene Goltsman [mailto:techsupport-ilmn@illumina.com] 
+Sent: Thursday, August 06, 2009 3:16 PM
+To: Young, Stuart
+Subject: RE: SFC#00093848 - GA Pipeline + CASAVA questions
+
+Hello Stuart,
+
+Thank you for contacting Illumina's Technical Support with your inquiry.   Please see my comments below:
+
+1)      Where is the Features directory ?
+
+
+The features/ directory contains all the auxiliary data you need to run CASAVA on human, mouse, or rat samples (not including the genomic reference).   I'd like you to download the most recent pre-release version of CASAVA.  This version should have the featured directory included as well as have a few issues fixed.  You can get it from our ftp site:
+
+ftp.illumina.com
+u: guest
+p: illumina
+
+Once logged in, download the archive  CASAVA_Version1_0_10_1.tar.gz
+
+
+
+2)      How do I use a sample lane for quality calibration instead of the PhiX control? (i.e., get an additional lane of sample sequencing
+
+Quality scores are calibrated using quality tables that come included with the software.  Unless you have a reson to suspect that the scores are not accurate you don't need to worry about calibrating them using a control.    However, we do strongly recommend using a control lane for phasing and matrix calculation, and you can set that to any lane on the flow cell using the --control-lane option when running goat_pipeline.py or bustard.py 
+
+3)      Could you give me an actual command to run CASAVA? I've been able to generate build files using the documentation but cannot run my build - it's probably just my misunderstanding of the documentation so a working example would really help.
+
+run.pl in the top level of the CASAVA_1.0.10 directory is the program that executes all of the CASAVA components.  If you run it without any options it will print a little help page that includes some usage examples at the end.  These examples run on the data included in the TestData directory.  For instance, there is a Gerald output of three lanes of E.coli sequence aligned to the reference genome (see TestData/GERALD), and one of the example commands will take that data as the input and create a CASAVA build under TestData/TestProject.      If you can't get run.pl to run using your data please send me the command you used and any messages or errors that got printed on the screen.  Also, please send me the listing of the contents of both, the reference directory and the Gerald output directory you specified on the command line.
+
+Best regards,
+
+Eugene
+
+
+
+Eugene Goltsman
+Bioinformatics Support Scientist 
+Scientific and Technical Support 
+Illumina Inc.
+Phone: 1-510-723-9229 
+Email: techsupport-ilmn@illumina.com
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Aug  6 13:14:07 EDT 2009
+USE MULTIPLE CPUS FOR CASAVA WITH runTasks.pl
+
+
+TaskManager - simple task management application. The script allows running
+multiple dependent tasks(jobs) on SGE and/or multi-processor machine. 
+
+USAGE:
+runTasks.pl [options]
+        -t, --tasksFile            - file with task description
+        -n, --numberOfProcesses    - number of clients to start (if 0 the SGE will not be used)
+        -p, --port                 - port where is the server
+        -h, --host                 - hostname where is the server
+        -s, --server               - Start also server
+        -q, --queue                - SGE queue name (default research.q)
+        --sge                      - number of SGE nodes (if 0 the SGE will not be used)
+EXAMPLE
+Run task description tasks.txt using two processors
+        ./runTasks.pl -t tasks.txt -h localhost -p 8001 -n 2 -s
+Run task description tasks.txt using two processors on SGE
+        ./runTasks.pl -t tasks.txt -h localhost -p 8001 --sge=2 -s        
+        
+        
+		
+		
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Aug  6 09:14:07 EDT 2009
+CASAVA FAQ + DOWNLOAD
+
+1. DOWNLOAD FROM HERE:
+
+https://icom.illumina.com/icom/icom.ilmn
+
+Username: syoung@med.miami.edu
+Password: @knf*iwc
+
+
+	
+2. faqs: software - pipline and casava
+
+ELAND (click to expand)
+
+      Q1. What reference for ELAND should I use?
+            A1. If you need text for a reference to ELAND, use the following:
+
+            “The results were generated using the ELAND module within the Illumina Genome Analyzer Pipeline Software, vx.x (Illumina, Inc., San Diego, CA).”
+
+Quality Scoring (click to expand)
+
+      Q1. What kind of quality scoring scheme does Illumina use?
+            A1. Since Pipeline release 1.3, the quality scoring scheme is the Phred scoring scheme, usually en-coded as an ASCII character by adding 64 to the Phred value.
+
+            A Phred score of a base is
+            Qphred =-10 log10(e)
+            where e is the estimated probability of a base being wrong. If a base is estimated to have a 1% chance of being wrong, it gets a Phred score of 20. Phred score=30 corresponds to 0.1% esti-mated error, 40 to 0.01%, and so on.
+
+            The base scores produced by the base caller use a 4-values-per-base scheme which also en-codes information on the next most likely base call.
+
+            NOTE:
+
+            The obsolete prb files (only produced in Pipeline 1.3 and later when explicitly directed) use the old Illumina base scoring scheme:
+            QIllumina_old =10log10(p(X)/(1-p(X))
+            To convert from an old Illumina score back to a probability value use:
+            p(X) = 1 - 1/(1+10 (QIllumina/10) )
+            Important point: the highest old Illumina base score and the Phred score are asymptotically identical. This means that for scores of about 15 and above they are so close as to be effectively the same.
+      Q2. What are the different quality scores used by the PhageAlign program?
+            A2. When run in the “ANALYSIS default” mode, the Pipeline uses the When run in the “ANALYSIS default” mode, the Pipeline uses the PhageAlign program to align reads against a reference, weighting each base according to the intensity-based quality values produced by the base caller. The quality scores are not calibrated, underestimate base quality for lower quality values, and overestimate base quality for higher values.
+
+            However in “ANALYSIS default” mode the Pipeline also generates its own “empirical quality values” and realigns using those values. This predates intensity-based quality values being produced by the base caller and still provides a useful validation of the intensity-based quality values.
+
+            NOTE:
+
+            At the moment PhageAlign still uses the scoring scheme S=100log10(p(X)/(1-p(X)), i.e. 10 times as high as the _prb.txt scores.
+
+            This is done as follows:
+
+            A first PhageAlign alignment is done giving all bases equal weight and stored in an _uncal_export.txt file. A match base is arbitrarily given a score of 500, equating to 100000:1 chance of the base being wrong. If the base is assumed to have an equal probability of being mis-sequenced as each of the three possible mismatches, a score of -547 for a mismatch results.
+
+            This alignment is used to compute an empirical error probability for each base at each cycle.
+
+            These probabilities are converted to Illumina scores and stored in the _score.txt files.
+
+            The sequences are realigned, weighting the bases according to the alignment scores, and written to an _export.txt file. (Whether or not a sequence has passed filtering is indicated by a flag column. See Table 24, Final Output File Formats, on page 124 of the Sequencing Analysis User Guide for file descriptions.)
+      Q3. How valid is it to estimate base quality by looking at alignments?
+            A3. Depends on:
+
+            — What you are aligning against.
+            — What you are using to do the alignment.
+
+            When estimating error rates from alignments, keep in mind that what you want is the probability that a base is wrong. However, what you actually get is the probability that a base is wrong given that the read it is in is uniquely alignable to your reference. This in turn depends on several things:
+                + How sensitive your alignment program is. The ELAND program only detects alignments with at most two errors per fragment, therefore the noisier reads having three or more errors will be ignored, meaning that error rate estimates obtained from ELAND alignments underestimate the true error rate.
+                + The uniqueness of reads in your target. This in turn depends on your read length, the length of your reference sequence, and how repetitive your reference sequence is. Obviously, only the first of these is (mostly) under your control. If your read length is too short to compensate for the other two factors, then it may be the case that a read with three errors will often also be “three errors similar” to another position in the reference, as well as to its originating position. It therefore can not be uniquely aligned.
+
+                  This means, again, that noisier reads tend to be “lost” and so not contribute to the error rate calculation. So, again, the estimated error rate will underestimate the true error rate, but it's im-portant to realize that we get the same effect as in point a, but for a different reason. Even if we have a “perfect” alignment program, we are still subject to this phenomenon.
+
+      Q4. Where are the alignment scores in ELAND and PhageAlign output?
+            A4. Alignment scores are produced as part of eland_extended, eland_pair, eland_rna and default (phageAlign) analyses and the results are placed in the export file. See Table 24, Final Output File Formats, on page 124 of the Sequencing Analysis User Guide, for a description of the export file.
+      Q5. How do Illumina scores relate to BLAST scores?
+            A5. Short answer: not closely. Most of the existing work on alignment statistics, including Karlin-Altschul statistics and the theory behind BLAST, pertains to local alignments: given two se-quences, e.g. your 500 base pair read and a public database, find the “maximal scoring pair” where subregions of the two sequences having the highest alignment score according to some scoring scheme. This problem is exactly solved by the Smith-Waterman algorithm and approxi-mately solved more quickly by BLAST and other alignment programs.
+
+            The alignment problem for Illumina and other short reads is a global alignment problem: what is the best alignment of all bases of the read in the target database?
+
+CASAVA (click to expand)
+
+      Q1. I get the following error message, what should I do?
+      ERROR: previous run [13_01_39_04_09_08] didn't finish
+            One option is to clean all your data and run your command CMD again
+            ˜/ CMD --target=allClean
+            ˜/ CMD
+      Q2. I get the following error message, what should I do?
+      ERROR: reference sequence /data/runs/genomes_human/c1.fa does not exists
+            A2. Assuming that you have specify reference genome to be:
+            --refSequences=/data/runs/genomes_human
+
+            and genome size file:
+
+            -g conf/human_rna_size.xml
+
+            you have three options:
+                + Use the human reference genome provided by Illumina. This is preferable since the GenomeStudio Software assumes human reference genome provided by Illumina.
+                + Change the names of your fasta files in ?data?runs?genomes_human to match the names in human_rna_size.xml.
+                + Instead of using conf?human_rna_size.xml, use genome_sizes.xml produced by Pipeline.
+
+            NOTE:
+
+            For CASAVA for RNA Sequencing all reference sequences and genome_size files are provided by Illumina. If you run into the ERROR: reference sequence ?data?runs?genomes_human?c1.fa does not exists problem, you are probably not using files provided by Illumina.
+      Q3. How should I specify the splice junction set?
+            A3. CASAVA will use splice file that comes with it. You just need to specify which set you want to use (31 or 46), for example:
+
+            --spliceJunction=splice_sites-31
+      Q4. The Features directory is missing.
+            A4. The Features directory contains splice junction/exon sets required for running CASAVA for RNA Sequencing. Please make sure that the Features directory is present in the CASAVA folder.
+      Q5. The CASAVA calls SNPs at areas where the coverage dips.
+            A5. These SNPs may not be real SNPs, but small indels. A small indel will cause a short run of snp calls (~indel+4) with a concomitant dip in coverage.
+
+            Check whether the apparent SNP can be explained by a short indel.
+
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul  2 13:04:42 EDT 2009] GENERATE SPLICE INPUT FILE FOR CASAVA>
+
+
+
+
+1. GET RefFlat.txt FILE OF EXON POSITIONS FROM UCSC FTP:
+
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.sql 
+http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.txt.gz 
+
+
+2. HUMAN GENOME FASTA FILES DOWNLOADED FROM UCSC ARE ALREADY PRESENT:
+
+cd /home/syoung/base/pipeline/human-genome/ucsc/
+    [syoung@solexa01 ucsc]$ ls
+    chr10.fa  chr14.fa  chr18.fa     chr20.fa  chr3.fa  chr7.fa  chrY.fa
+    chr11.fa  chr15.fa  chr19.fa     chr21.fa  chr4.fa  chr8.fa  dummy
+    chr12.fa  chr16.fa  chr1.fa      chr22.fa  chr5.fa  chr9.fa  human.fasta
+    chr13.fa  chr17.fa  chr1.fa.zip  chr2.fa   chr6.fa  chrX.fa  human.fasta.gff
+
+
+3. CREATE SPLICE OUTPUT DIRECTORY AND GENERATE SPLICE FILES WITH splice_sites.pl.
+
+mkdir -p /nethome/syoung/base/pipeline/human-genome/splice
+cd /nethome/syoung/base/pipeline/human-genome/splice
+
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.sql 
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.txt.gz 
+
+[syoung@kronos splice]$ head refFlat.txt 
+	WASH5P  NR_024540       chr1    -       14362   29370   29370   29370   11      14362,14969,15795,16606,16857,17232,17605,17914,18267,24737,29320,      14829,15038,15947,16765,17055,17368,17742,18061,18366,24891,29370,
+	OR4F5   NM_001005484    chr1    +       69090   70008   69090   70008   1       69090,  70008,
+	OR4F29  NM_001005221    chr1    +       367658  368595  367658  368595  1       367658, 368595,
+	OR4F3   NM_001005224    chr1    +       367658  368595  367658  368595  1       367658, 368595,
+	OR4F16  NM_001005277    chr1    +       367658  368595  367658  368595  1       367658, 368595,
+	OR4F29  NM_001005221    chr1    -       621097  622034  621097  622034  1       621097, 622034,
+	OR4F3   NM_001005224    chr1    -       621097  622034  621097  622034  1       621097, 622034,
+	OR4F16  NM_001005277    chr1    -       621097  622034  621097  622034  1       621097, 622034,
+	LOC643837       NR_015368       chr1    +       763063  789740  789740  789740  7       763063,764382,783033,787306,788050,788770,788956,       763155,764484,783186,787490,788146,788902,789740,
+	SAMD11  NM_152486       chr1    +       861120  879961  861321  879533  14      861120,861301,865534,866418,871151,874419,874654,876523,877515,877789,877938,878632,879077,879287,  861180,861393,865716,866469,871276,874509,874840,876686,877631,877868,878438,878757,879188,879961,
+
+
+RUN splice_sites.pl
+
+
+
+This script uses genome FASTA files (providing the
+genome sequence information as fully assembled
+chromosomes) and the RefFlat.txt files (providing exon
+and gene information) as input files, available from the
+UCSC Genome Bioinformatics Site (http://genome.ucsc.
+edu). The length of the left flank and right flank can be
+defined when running the script to customize the splice
+junction set.
+
+
+
+
+
+
+
+
+
+http://genome.ucsc.edu/FAQ/FAQformat
+
+GenePred table format 	
+  	
+genePred is a table format commonly used for gene prediction tracks in the Genome Browser. Variations of the genePred format are listed below.
+
+...
+
+Gene Predictions and RefSeq Genes with Gene Names
+A version of genePred that associates the gene name with the gene prediction information. In alternative-splicing situations, each transcript has a row in this table.
+
+table refFlat
+"A gene prediction with additional geneName field."
+(
+    string  geneName;           "Name of gene as it appears in Genome Browser."
+    string  name;               "Name of gene"
+    string  chrom;              "Chromosome name"
+    char[1] strand;             "+ or - for strand"
+    uint    txStart;            "Transcription start position"
+    uint    txEnd;              "Transcription end position"
+    uint    cdsStart;           "Coding region start"
+    uint    cdsEnd;             "Coding region end"
+    uint    exonCount;          "Number of exons"
+    uint[exonCount] exonStarts; "Exon start positions"
+    uint[exonCount] exonEnds;   "Exon end positions"
+)
+
+
+
+Splice Junction Set
+
+Eland_rna uses the splice junction set to align reads across splice junctions.
+The splice junction set is generated by the splice_sites.pl from publicly
+available genome data.
+The splice_sites.pl generates a mulit-fasta file containing the exonic
+sequence upstream and downstream of all splice junctions in multi-fasta
+format:
+>WDR78_28_19_1_67100573_67109640
+TGTGATAAAATCATAATGGAAGATAAAGGCATAATGTCCACTGCCTGGGATTTGTAGATTAGT
+Since the fasta file needs to be squashed before use in Eland_rna, one splice
+junction set ultimately consists of three files:
+?? splice_sites-xx.fa.2bpb
+?? splice_sites-xx.fa.vld
+?? splice_sites-xx.fa.idx
+with xx being the length of the sequence upstream and downstream of the
+splice junction that is retained in the fasta sequence file.
+This should be tailored to the length of the sequence reads; ideally,
+xx = read length - 1. For example, for a read length of 50 bases, you would
+like a splice junction set that contains 49 bases upstream and downstream of
+every splice site. For exons that are smaller than 49 bases, the entire exon is
+used.
+Human Eland_rna
+Reference Files
+The locations of the eland_rna reference files for human genome build 36 are
+indicated in the table below. Here we assume all genomic data are located in
+/data. The path mentioned below is just an example and is not hard coded.
+The path are defined for Eland_RNA in the configuration file as described in
+page 51.
+
+
+
+Splice_Junction_Set_TechNote970-2008-030.pdf
+
+
+The splice junction set is a file in the common multi-
+FASTA format containing the exonic sequence upstream
+and downstream of a non-redundant set of splice junctions
+from known RefSeq transcripts. The splice junction
+set should be tailored to the length of the sequence
+reads. Ideally, the length of the fl anking sequences is
+equal to the read length minus 1. For example, for a read
+length of 50 bases, a splice junction set that contains 49
+exonic bases upstream and downstream of every splice
+site would be optimal. For exons that are smaller than 49
+bases, the entire exon is used (Figure 3).
+If a read is mapped to the splice junction set, eland_rna
+will save the chromosome, chromosomal location, splice
+junction, alignment score, and other relevant read-specifi
+c information to an export.txt file. This file contains
+similar information for reads mapping to the genome or
+abundant sequences (such as ribosomal sequences), and
+is used by CASAVA to further process the RNA sequencing
+experiment.
+
+GENERATION OF THE SPLICE JUNCTION SET
+The splice junction set is generated with the Perl script
+splice_sites.pl.
+This script uses genome FASTA files (providing the
+genome sequence information as fully assembled
+chromosomes) and the RefFlat.txt files (providing exon
+and gene information) as input files, available from the
+UCSC Genome Bioinformatics Site (http://genome.ucsc.
+edu). The length of the left fl ank and right fl ank can be
+defined when running the script to customize the splice
+junction set.
+
+The script computes all splice junction entry coordinates,
+removes all junctions that are redundant (i.e.,
+present in more than one gene), generates the splice
+junction set sequences, and saves the sequences with
+headers in the splice junction set output file (Figure 4).
+FORMAT OF THE SPLICE JUNCTION SET
+Splice junction sequences are stored in FASTA format; an
+example of an entry is shown in Figure 5.
+The entries are annotated using the following format
+(delimited by underscores):
+ID_NumberOfBasesFrom5primeExon_
+NumberOfBasesFrom3primeExon_Chromosome_
+EndPosition5primeExon_StartPosition3primeExon
+This annotation has the following characteristics:
+• 5' and 3' refer to the forward genomic strand (not the
+mRNA).
+• Chromosomal positions and sequences are all based
+on the forward strand.
+• The first base of each chromosome is the base at position
+1.
+• Non-alphanumeric characters cannot be in the ID; if
+present these should be replaced by a dash.
+• Chromosome designations cannot contain chr or c, just
+the number or letter.
+• The chromosome positions are inclusive, meaning the
+base at EndPosition5primeExon belongs to the 5' exon
+(likewise for StartPosition3primeExon).
+• For UCSC-derived entries, the ID is the gene symbol or
+RefSeq ID.
+• The genome build on which these positions are based
+must be the same as the build that is used for alignment
+of the reads.
+GENERATING YOUR OWN SPLICE JUNCTION SET
+Researchers can generate their own splice junction set
+using the Perl script splice_sites.pl from publicly available
+reference files. With this it is possible to adjust the length
+of the fl anking sequences, use a different genome build,
+or align RNA sequencing reads to a species other than
+human, rat, or mouse.
+This script is available from the Pipeline v1.3 (or later)
+installation DVD. Detailed instructions are provided in the
+Pipeline v1.3 and CASAVA v1.0 User Guide.
+
+
+
+
+FIGURE 5: EXAMPLE OF SPLICE JUNCTION SET ENTRY
+>WDR78_28_19_1_67100573_67109640
+TGTGATAAAATCATAATGGAAGATAAAGGCATAATGTCCACTG
+CTGGGATTTGTANNNNN
+This junction has the following characteristics:
+• Belongs to gene WDR78
+• 28 bases were taken from the left exon, which ends at
+position 67,100,573 on chromosome 1
+• 19 bases were taken from the right exon, which starts at
+position 67,109,640
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul  2 13:04:42 EDT 2009] CASAVA RUN USAGE>
+
+
+
+
+Using ANALYSIS
+eland_rna
+
+Eland_rna is the eland module built specifically for RNA Sequencing, and is
+required to provide the input files for CASAVA RNA Sequencing on page 93.
+
+Eland_rna delivers the following information:
+
+    ?? Read alignments to the genome.
+    ?? Read alignments to splice junctions.
+    ?? Read alignments to contaminants.
+
+Prerequisites
+
+Three sets of data files are needed:
+    ?? A NCBI genome sequence.
+    ?? A set of splice junction sequences, generated using the same genome
+    build. This is provided for human, rat, and mouse.
+    ?? A set of contaminant sequences for the genome - typically the
+    mitochondrial and ribosomal sequences
+
+
+All three of these datasets must be squashed into the 2-bits-per-base format
+that the ELAND aligner understands. This is done by calling the program
+squashGenome in the Pipeline/Eland directory; the procedure is described in
+Preparing the Reference Genome on page 42.
+
+
+Description of the Eland_rna Algorithm
+
+The algorithm aligns the reads to each of three targets:
+?? Contaminants
+?? Genome
+?? Splice junctions
+Then a script decides which of the alignments is most likely for each read.
+The following steps are taken in order:
+1. If a read aligns to the contaminants then the read is discarded. It is
+marked in the export file as 'RM' - for 'repeat masked.'
+2. If the read aligns to the genome:
+• If there is a unique alignment to the genome then that alignment is
+printed.
+• If there are multiple possible alignments to the genome then the
+read is marked as 'RM' and discarded as above.
+
+    This is different from the behavior of eland_extended, which
+    will try to pick the most probable alignment from a set of
+    multiple possibilities. The algorithm from eland_extended is
+    not used as it assumes uniform coverage across the
+    genome, which is not a good assumption for RNA
+    sequencing.
+
+
+3. If there is no alignment to the genome but there is an alignment to the
+splice junctions:
+• If there is a unique alignment to the splice junctions then that
+alignment is printed.
+• If there are multiple alignments to the splice junctions then the read
+is marked as 'RM' and discarded.
+4. If there is no alignment to either the contaminants, the genome or the
+splice junctions then the read is marked as 'NM' - for 'not matched.'
+Running an Eland_rna Analysis
+The GERALD configuration file specifies how the sequences from a flow cell
+are processed, which is described in GERALD Configuration File on page 39.
+The ANALYSIS parameter within the GERALD configuration file specifies
+what analysis to perform on the sequences; you will need to set up this
+parameter the following way (example shown):
+
+ANALYSIS eland_rna
+ELAND_GENOME /data/Genome/ELAND/hg18
+ELAND_RNA_GENOME_SPLICE /data/Genome/ELAND_RNA/Human/human.34.splice
+ELAND_RNA_GENOME_CONTAM /data/Genome/ELAND_RNA/Human/MT_Ribo_Filter
+
+
+This tells GERALD it needs to perform eland_rna, and communicates the
+locations of the squashed genome, splice-junction and contaminant files.
+
+
+The following table describes the parameters for ANALYSIS eland_pair.
+Considerations When Running Eland_rna
+
+When running eland_rna, bear in mind the following points:
+?? The above parameters may be specified on a lane-by-lane basis in the
+usual fashion, for example to do lanes one, two, and four, enter the
+following for aligning 35 bases:
+124:ANALYSIS eland_rna
+124:ELAND_GENOME /data/Genome/ELAND/hg18
+124:ELAND_RNA_GENOME_SPLICE /data/Genome/ELAND_RNA/Human/human.34.splice
+124:ELAND_RNA_GENOME_CONTAM /data/Genome/ELAND_RNA/Human/MT_Ribo_Filter
+
+?? The output file export.txt has the same format as those generated by
+eland_extended; for a description see Table 24 on page 119. The
+existing code 'RM' ('repeat masked') denotes all reads that hit to
+abundant sequences or with any other unresolvable ambiguity.
+
+
+Table 14 Parameters for ANALYSIS eland_rna
+
+Parameter Description
+ELAND_GENOME Must point to a squashed version of the human genome, just like
+for a standard ELAND analysis.
+ELAND_RNA_GENOME_SPLICE Must point to a squashed version of the splice junction file. Note
+that the name of this squashed junction file, i.e. "splice_sites-34"
+need to be passed into CASAVA RNA as
+--spliceJunction=splice_sites-34
+ELAND_RNA_GENOME_CONTAM Must point to a squashed version of the files of ultra-abundant
+sequences (generally ribosomal and mitochondrial). Any read that
+hits to these is ignored.
+
+
+Considerations When Running Eland_rna
+When running eland_rna, bear in mind the following points:
+?? The above parameters may be specified on a lane-by-lane basis in the
+usual fashion, for example to do lanes one, two, and four, enter the
+following for aligning 35 bases:
+124:ANALYSIS eland_rna
+124:ELAND_GENOME /data/Genome/ELAND/hg18
+124:ELAND_RNA_GENOME_SPLICE /data/Genome/ELAND_RNA/Human/human.34.splice
+124:ELAND_RNA_GENOME_CONTAM /data/Genome/ELAND_RNA/Human/MT_Ribo_Filter
+?? The output file export.txt has the same format as those generated by
+eland_extended; for a description see Table 24 on page 119. The
+existing code 'RM' ('repeat masked') denotes all reads that hit to
+abundant sequences or with any other unresolvable ambiguity.
+

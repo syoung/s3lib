@@ -1,0 +1,3862 @@
+Notes-project50-benchmark.txt
+
+
+CHROMOSOME 1
+============
+
+
+ELAND SNPs
+==========
+
+
+INPUT FILE: /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq
+
+lines /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq
+/nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq: 43340996
+
+INPUT READS:
+
+10,835,249
+
+OUTPUT DIRECTORY:
+
+cd /nethome/syoung/base/pipeline/benchmark/eland/eland1-1000000
+
+REFERENCE SEQUENCE:
+
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chr1.fa
+
+SNP FILE:
+
+/nethome/syoung/base/pipeline/benchmark/eland/eland1-1000000/chr1.snp
+
+SNPS:
+
+110,594
+
+tail /nethome/syoung/base/pipeline/benchmark/eland/eland1-1000000/chr1.snp
+
+    chr1.fa 247188421       g       T       25      25      25      1       ^:t     ?
+    chr1.fa 247188432       a       C       25      25      25      1       c       A
+    chr1.fa 247188454       c       T       25      25      25      1       t       C
+    chr1.fa 247189371       G       T       33      33      42      2       tt      <B
+    chr1.fa 247190902       A       G       4       4       4       1       g       @
+    chr1.fa 247197433       T       C       69      69      31      14      CCCCCCCCCCCCCC  BBCCACCBCBABBB
+    chr1.fa 247197445       C       T       117     117     34      30      TTTTTTTTTTTTTTTTTTTTTTTTT^CT^OT^CT^BT^AT BBCBBCBAB?@<C@BCCCCCCCCCCC9B,C
+
+
+
+
+MAQ SNPs
+========
+
+
+INPUT FILE:
+/nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq
+
+INPUT READS:
+
+6,384,744
+
+OUTPUT DIRECTORY:
+
+/nethome/syoung/base/pipeline/benchmark/maq/maq3
+
+REFERENCE SEQUENCE:
+
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chr1.fa
+
+SNP FILE:
+
+/nethome/syoung/base/pipeline/benchmark/maq/maq3/chr*-bfa-cns.snp
+
+    chr10.bfa-cns.snp: 66955
+    chr11.bfa-cns.snp: 70471
+    chr12.bfa-cns.snp: 71688
+    chr13.bfa-cns.snp: 50504
+    chr14.bfa-cns.snp: 58467
+    chr15.bfa-cns.snp: 58734
+    chr16.bfa-cns.snp: 68032
+    chr17.bfa-cns.snp: 71624
+    chr18.bfa-cns.snp: 45748
+    chr19.bfa-cns.snp: 72228
+    chr1.bfa-cns.snp: 95279
+    chr20.bfa-cns.snp: 54434
+    chr21.bfa-cns.snp: 34085
+    chr22.bfa-cns.snp: 48820
+    chr2.bfa-cns.snp: 82404
+    chr3.bfa-cns.snp: 77844
+    chr4.bfa-cns.snp: 67224
+    chr5.bfa-cns.snp: 70585
+    chr6.bfa-cns.snp: 72487
+    chr7.bfa-cns.snp: 73015
+    chr8.bfa-cns.snp: 64491
+    chr9.bfa-cns.snp: 67531
+    chrX.bfa-cns.snp: 67538
+    chrY.bfa-cns.snp: 24866
+
+SNPS:
+
+1,535,054 RAW SNPS
+
+ESTIMATED PROCESSED 750,000 SNPs
+
+
+
+
+AVERAGE RATIO BETWEEN RAW AND PROCESSED SNPS (TWO LANES):
+
+/p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane1/maq
+
+lines out.SNPfilter 
+    317,971
+
+lines cns.snp
+    766,479
+
+head out.SNPfilter
+
+    -- 1383 potential pe-indels pass the filter.
+    chr1    6082    C       G       30      1       1.00    63      30      N       3       N
+    chr1    554461  A       G       118     255     1.00    63      62      K       255     T
+    chr1    554517  G       A       255     255     1.00    63      62      R       255     G
+    chr1    554677  G       R       255     119     1.12    63      62      G       255     A
+    chr1    554681  T       W       117     78      1.25    63      62      T       255     A
+    chr1    554725  T       C       255     145     1.00    63      62      M       255     A
+    chr1    554731  T       C       255     171     1.00    63      62      S       255     G
+    chr1    554869  T       C       255     255     1.62    63      62      M       255     A
+    chr1    555149  C       T       255     255     1.00    63      62      Y       255     C
+
+
+
+
+
+
+READ COUNTS
+===========
+
+lines /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt
+/nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt: 25538976
+
+lines /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq
+/nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq: 43340996
+
+
+
+
+
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq3b;
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq3b;
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--convert "post-1.3" \
+--queue ngs \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq3b \
+--inputfile /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+[syoung@u01 maq3]$ lines *snp
+chr10.bfa-cns.snp: 66955
+chr11.bfa-cns.snp: 70471
+chr12.bfa-cns.snp: 71688
+chr13.bfa-cns.snp: 50504
+chr14.bfa-cns.snp: 58467
+chr15.bfa-cns.snp: 58734
+chr16.bfa-cns.snp: 68032
+chr17.bfa-cns.snp: 71624
+chr18.bfa-cns.snp: 45748
+chr19.bfa-cns.snp: 72228
+chr1.bfa-cns.snp: 95279
+chr20.bfa-cns.snp: 54434
+chr21.bfa-cns.snp: 34085
+chr22.bfa-cns.snp: 48820
+chr2.bfa-cns.snp: 82404
+chr3.bfa-cns.snp: 77844
+chr4.bfa-cns.snp: 67224
+chr5.bfa-cns.snp: 70585
+chr6.bfa-cns.snp: 72487
+chr7.bfa-cns.snp: 73015
+chr8.bfa-cns.snp: 64491
+chr9.bfa-cns.snp: 67531
+chrX.bfa-cns.snp: 67538
+chrY.bfa-cns.snp: 24866
+
+
+    66955
+    70471
+    71688
+    50504
+    58467
+    58734
+    68032
+    71624
+    45748
+    72228
+    95279
+    54434
+    34085
+    48820
+    82404
+    77844
+    67224
+    70585
+    72487
+    73015
+    64491
+    67531
+    67538
+    24866
+    -----
+    1535054
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CHROMOSOME Y
+============
+
+ll */chrY/*bam
+
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \ 
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chrY.fa.fai  \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/10/chrY/export.bam \
+/nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/10/chrY/export.sam
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/11/chrY/export.bam \
+
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/11/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/12/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/13/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/14/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/15/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/16/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/17/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/18/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/19/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/1/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/20/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/21/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/22/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/2/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/3/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/4/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/5/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/6/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/7/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/8/chrY/export.sam
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/9/chrY/export.sam
+
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/12/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/13/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/14/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/15/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/16/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/17/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/18/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/19/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/1/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/20/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/21/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/22/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/2/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/3/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/4/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/5/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/6/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/7/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/8/chrY/export.bam \
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/9/chrY/export.bam \
+
+
+
+
+CONVERT SAM TO BAM
+
+time /nethome/syoung/base/apps/samtools/0.1.6/samtools view -bt \
+/nethome/bioinfo/data/sequence/chromosomes/human-fa/chry.fa.fai \
+-o /nethome/syoung/base/pipeline/benchmark/eland/eland1-500000/10/chrY/export.bam \
+/nethome/syoung/base/pipeline/benchmark/eland/eland1-1000000/2/chr1/export.sam
+
+
+
+MERGE ALL THE BAM FILES FOR CHROMOSOME Y:
+
+
+
+
+/nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt
+
+
+CONVERT eland_extended.txt -> .SAM -> .BAM -> SNPs
+
+
+
+lines /nethome/syoung/base/pipeline/benchmark/eland/eland1/10/s_1_1_sequence.10.fastq
+    
+    /nethome/syoung/base/pipeline/benchmark/eland/eland1/10/s_1_1_sequence.10.fastq: 2000000
+
+
+
+
+1. EXTRACT eland_extended.txt FILES TO .SAM FILES FOR FILES 10-20
+
+cd /nethome/syoung/base/pipeline/benchmark/eland/eland1
+ll */reanalysis_export.txt
+
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:16 10/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:16 11/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:15 12/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:15 13/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:16 14/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 60M Mar 12 04:17 15/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 60M Mar 12 04:16 16/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 60M Mar 12 04:16 17/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:15 18/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 60M Mar 12 04:17 19/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:16 20/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 60M Mar 12 04:16 21/reanalysis_export.txt
+    -rw-rw-rw- 1 syoung bioinfo 59M Mar 12 04:15 9/reanalysis_export.txt
+
+
+
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/10/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/11/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/12/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/13/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/14/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/15/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/16/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/17/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/18/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/19/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/20/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/21/reanalysis_export.txt
+/nethome/syoung/base/pipeline/benchmark/eland/eland1/9/reanalysis_export.txt
+
+
+1. CREATE REFERENCE LIST (INDEX OF FASTA REFERENCE FILE) FOR USE IN samtools view CONVERSION OF SAM TO BAM
+
+    samtools faidx ex1.fa                 # index the reference FASTA
+
+/nethome/syoung/base/apps/samtools/0.1.6/samtools faidx
+
+-t FILE	 This file is TAB-delimited. Each line must contain the reference name and the length of the reference, one line for each distinct reference; additional fields are ignored. This file also defines the order of the reference sequences in sorting. If you run ‘samtools faidx <ref.fa>’, the resultant index file <ref.fa>.fai can be used as this <in.ref_list> file.
+
+
+    samtools faidx ex1.fa                 # index the reference FASTA
+    samtools import ex1.fa.fai ex1.sam.gz ex1.bam   # SAM->BAM
+    samtools index ex1.bam                # index BAM
+    samtools tview ex1.bam ex1.fa         # view alignment
+    samtools pileup -cf ex1.fa ex1.bam    # pileup and consensus
+    samtools pileup -cf ex1.fa -t ex1.fa.fai ex1.sam.gz
+
+
+REQUIRES REFERENCE LIST
+
+samtools view -bt ref_list.txt -o aln.bam aln.sam.gz
+
+
+1. CREATE .SAM FILE
+
+cd /nethome/syoung/base/pipeline/benchmark/eland/eland1/1/chr1
+
+/nethome/syoung/base/apps/samtools/0.1.6/export2sam.pl reanalysis_eland_export.txt > reanalysis.sam
+
+
+OK!!!
+
+
+
+faidx	 samtools faidx <ref.fasta> [region1 [...]]
+Index reference sequence in the FASTA format or extract subsequence from indexed reference sequence. If no region is specified, faidx will index the file and create <ref.fasta>.fai on the disk. If regions are speficified, the subsequences will be retrieved and printed to stdout in the FASTA format. The input file can be compressed in the RAZF format.
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 30 13:04:23 EDT 2010] TOPHAT ANALYSES FAILED DUE TO DISC FULL>
+
+
+
+ANALYSIS 4
+
+    Cluster::runJobs    Completed.
+    Cluster::runJobs    END OF Cluster::runJobs
+    TOPHAT.pl    10-03-21 02:22:08    24:05:14    Completed TOPHAT alignment and CUFFLINKS transcriptome prediction
+    TOPHAT.pl    Run time: 24:05:14
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    2:22AM, 21 March 2010
+    TOPHAT.pl    ****************************************
+    
+ANALYSIS 3
+
+    e/pipeline/bixby/run1/ln/tophat-multi/analysis3/chr1_random/top-andom-stdout.txtTOPHAT.pl    10-03-23 09:55:42    79:39:13    Completed TOPHAT alignment and CUFFLINKS transcriptome prediction
+    TOPHAT.pl    Run time: 79:39:13
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    9:55AM, 23 March 2010
+    TOPHAT.pl    ****************************************
+
+ANALYSIS 2
+
+    Cluster::runJobs    Completed.
+    Cluster::runJobs    END OF Cluster::runJobs
+    TOPHAT.pl    10-03-21 04:27:27    26:11:49    Completed TOPHAT alignment and CUFFLINKS transcriptome prediction
+    TOPHAT.pl    Run time: 26:11:49
+    TOPHAT.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/TOPHAT.pl
+    TOPHAT.pl    4:27AM, 21 March 2010
+    TOPHAT.pl    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 30 13:04:23 EDT 2010] RUN 1.6 PIPELINE ON 2.5 DATA>
+
+
+
+ERROR:
+
+File does not exist:
+
+/mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/GERALD.xml
+
+COMMAND:
+
+
+
+GERALDFILE:
+
+/q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt
+
+    5:ANALYSIS eland_pair
+    5:ELAND_GENOME /q/nextGen/GA/refSeqs/control/phiXgenome
+    1:ANALYSIS eland_pair
+    1:ELAND_GENOME /q/nextGen/GA/refSeqs/hs/36.1/chromosomes/eland
+    SEQUENCE_FORMAT --fastq
+    USE_BASES nY*n,nY*n
+
+
+RUN FOLDER:
+
+/q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_30-03-2010_jcabrera1/Bustard1.6.0_30-03-2010_jcabrera1
+
+
+FULL ERROR MESSAGE:
+
+File does not exist: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/GERALD.xml at /mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl/Gerald/GERALD.pm line 708
+
+Error: GERALD.pl (/q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt) returned error code 9
+
+Error: Failed to process Gerald configuration.
+
+
+THE ERROR MESSAGE REFERS TO LINE 708 IN GERALD.pm:
+
+emacs /mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl/Gerald/GERALD.pm
+
+
+    =item readGeraldXml($$$$$\%\%$)
+    The procedure reads series of xml config files , parses them to                             $paramsRef, $multiParamsRef and $multi_lane_ref and finally writes text files.                          
+    B<Parameters:>
+    
+        $geraldXmlPath     - path to GERALD.xml                                                     $id                - script id                                                              $timeNow           - scalar(localtime)                                                      $thisDir           - GA_BIN_DIR                                                             $logName           - log name                                                               $macroDefsRef      - HASH MAP Ref to macro definitions                                      $geralXmlRef       - XML::Simple Ref to Gerald Xml                                                  
+    B<Returns:>                                                                                             
+        unique folder name
+    
+    =cut
+    
+    sub readGeraldXml($$$$$\%\%$) {
+        my ( $geraldXmlPath, $id, $timeNow, $thisDir, $logName, $paramsRef,
+            $macroDefsRef, $geralXmlRef ) = @_;
+    
+        # Create XML                                                                                        
+        $geralXmlRef = new XML::Simple(
+            suppressempty => '',
+            XMLDecl       => 1,
+            Variables     => {
+                id      => $id,
+                timeNow => $timeNow,
+                thisDir => $thisDir,
+                logName => $logName
+            }
+        );
+
+LINE 708 => 
+        my $configHash = $geralXmlRef->XMLin($geraldXmlPath);
+LINE 708 => 
+
+        %{$macroDefsRef} = %{ $configHash->{MacroDefinitions} };
+        %{$paramsRef}    = %{ $configHash->{DefaultRunParameters} };
+    
+    }    # sub readGeraldXml  
+
+
+
+THIS SUBROUTINE IS CALLED IN GERALD.pl at LINE 98:
+
+cd /mihg/analysis/software/CASAVA/1.6/bin
+grep -n readGeraldXml *
+
+    readGeraldXml( $geraldXmlPath, $id, $timeNow, $GA_BIN_DIR, $logName, %params,
+    %{$macroDefsRef}, $geralXmlRef );
+
+SO bin/Gerald.pl IS LOOKING FOR THE 'GERALD.xml' FILE IN THE $GA_DATA_DIR DIRECTORY IN LINE 80 OF GERALD.pl:
+
+    my $geraldXmlPath        = File::Spec->catfile( $GA_DATA_DIR, 'GERALD.xml' );
+
+
+AND ABOVE IN LINE 38:
+
+    my $GA_DATA_DIR = '/mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0';
+
+
+
+BUT THE GERALD.xml FILE DOES NOT EXIST AT:
+
+/mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0
+
+
+HOWEVER, I HAVE A COPY IN MY FRESHLY-MADE (Mar 29 15:22) COPY OF THE 1.6 INSTALLATION HERE:
+
+emacs /home/syoung/base/apps/casava/1.6.0/share/CASAVA-1.6.0/GERALD.xml
+
+    <?xml version='1.0' standalone='yes'?>
+    <!-- @(#) $Id: GERALD.xml,v 1.6 2009/11/04 17:11:11 craczy Exp $ -->
+    <GeraldConfigParameters>
+    <DefaultRunParameters>
+    <!-- Any site-wide definitions for your site go here -->
+      <ELAND_GENOME>Need_to_specify_ELAND_genome_directory</ELAND_GENOME>
+      <ELAND_MULTIPLE_INSTANCES></ELAND_MULTIPLE_INSTANCES>
+    ... 
+
+
+SOLUTION:
+
+COPY OVER THE ENTIRE share DIRECTORY INTO THE /mihg/analysis/software/CASAVA/1.6 INSTALLATION
+
+cp -r /home/syoung/base/apps/casava/1.6.0/share /mihg/analysis/software/CASAVA/1.6/
+
+
+
+
+
+
+
+
+
+
+
+-----Original Message-----
+From: Young, Stuart 
+Sent: Tuesday, March 30, 2010 1:03 PM
+To: Cabrera, Joe
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+Hi Joe,
+
+Got your message, thanks. I'll take a look and get back to you asap.
+
+Cheers,
+
+Stuart.
+
+
+
+-----Original Message-----
+From: Cabrera, Joe 
+Sent: Tuesday, March 30, 2010 12:46 PM
+To: Young, Stuart
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William; Wu, Xinglong; Zysman, Joel
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+Hi Stuart, 
+
+	I could not use the ELAND_standalone.pl because the *_sequence.txt files were never generated.  So I had to cleanup and restart the pipeline using goat.  With that said, perhaps I should clarify what is trying to be achieved here.  We have an SCS 2.5 run where we want to use pipeline 1.6 against.  So, we will not be using any of the RTA stuff and doing image analysis, base calling, and alignment via goat with the GERALD option.  
+
+	I tried re-running the goat script that I ran on Thursday and had worked.  However, I am getting the following error:
+
+
+Generating journals, Makefiles and parameter files ...
+GERALD.pl /q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt --EXPT_DIR /q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_30-03-2010_jcabrera1/Bustard1.6.0_30-03-2010_jcabrera1 --compression gzip --FORCE
+
+File does not exist: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/GERALD.xml at /mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl/Gerald/GERALD.pm line 708
+Error: GERALD.pl (/q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt) returned error code 9
+Error: Failed to process Gerald configuration.
+
+
+	I have included an echo of my PATH because on page 24 of the OLB User Guide, the bin folder of the 1.6 software (not OLB bin) needs to be a part of the path.  I encountered an error when this was NOT set on Thursday.  See below $PATH below:
+
+[jcabrera1@kronos 100212_HWI-EAS185_0009_61EAWAAXX]$ echo $PATH
+/usr/local/bin:/bin:/usr/bin:/usr/lpp/mmfs/bin:/mihg/users/jcabrera1/bin:/mihg/analysis/software/CASAVA/1.6/bin
+
+	As a secondary measure, I tried removing this and I get the original error:
+
+
+Generating journals, Makefiles and parameter files ...
+GERALD.pl /q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt --EXPT_DIR /q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_30-03-2010_jcabrera1/Bustard1.6.0_30-03-2010_jcabrera1 --compression gzip --FORCE
+sh: GERALD.pl: command not found
+Error: GERALD.pl (/q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt) returned error code 127
+Error: Failed to process Gerald configuration.
+
+	Can the install steps be reviewed?  I got beyond the " sh: GERALD.pl: command not found" error message on Thursday by setting the environment variable, but now receive the " File does not exist: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/GERALD.xml at /mihg/analysis/software/CASAVA/1.6/lib/CASAVA-1.6.0/perl/Gerald/GERALD.pm line 708" error message.  
+
+
+	Here is the script that I am using to call goat with the gerald option:
+
+
+/mihg/analysis/src/GAPipeline-2.6/OfflineBaseCaller-1.6/OLB-1.6.0/bin/goat_pipeline.py --GERALD /q/nextGen/GA/INTERNAL/DH/100212_HWI-EAS185_0009_61EAWAAXX/geraldfile_61EA_1.txt /q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX --control-lane=5 --tiles=s_1,s_5 --make
+
+
+
+Thanks, 
+
+Joe Cabrera
+
+-----Original Message-----
+From: Young, Stuart 
+Sent: Monday, March 29, 2010 4:33 PM
+To: Cabrera, Joe; Zysman, Joel
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+Hi Joe,
+
+You can feed ELAND_standalone.pl the *_sequence.txt files output by the pipeline, e.g.:
+
+/mihg/analysis/software/CASAVA/1.6/bin/ELAND_standalone.pl \
+--input-type fastq \
+--eland-genome /q/nextGen/GA/refSeqs/chromosomes/hs_chr_sq \
+--input-file /path/to/s_1_1_sequence.txt \
+--input-file /path/to/s_1_2_sequence.txt \
+
+It creates an ELAND export file as its output.
+
+Cheers,
+
+Stuart.
+
+
+-----Original Message-----
+From: Cabrera, Joe 
+Sent: Monday, March 29, 2010 4:23 PM
+To: Young, Stuart; Zysman, Joel
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+Thanks.  Never used ELAND_standalone.pl.  Always run the pipeline/GERALD.  What are the files (two in our case) for the --input-file|if parameter?
+
+-----Original Message-----
+From: Young, Stuart 
+Sent: Monday, March 29, 2010 3:29 PM
+To: Cabrera, Joe; Zysman, Joel
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+Hi All,
+
+I've reinstalled CASAVA 1.6 in its original position:
+
+/mihg/analysis/software/CASAVA/1.6/bin
+
+You should be able to run the applications as before, e.g.:
+
+/mihg/analysis/software/CASAVA/1.6/bin/ELAND_standalone.pl 
+
+Usage: ./ELAND_standalone.pl options
+--input-file|if 
+  must specify at least one file, specify two for paired analysis
+--input-type|it 
+  type of input file: fastq, fasta, export or qseq
+--read-length|rl
+  will work it out from input file(s) if not specified
+...
+
+
+Joe - please let me know if there are any problems.
+
+Cheers,
+
+Stuart.
+
+
+
+-----Original Message-----
+From: Cabrera, Joe 
+Sent: Monday, March 29, 2010 12:27 PM
+To: Zysman, Joel
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William; Young, Stuart
+Subject: RE: [ccstkt #3347] GA pipeline upgrade 
+
+That's fair.  Keep us posted.
+
+-----Original Message-----
+From: Zysman, Joel 
+Sent: Monday, March 29, 2010 12:26 PM
+To: Cabrera, Joe
+Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William; Young, Stuart
+Subject: Re: [ccstkt #3347] GA pipeline upgrade 
+
+Nor should it have changed, which is what my concern is.  We will verify the files, but we need a little bit.  directories should not (and really cannot) just disappear.
+
+
+~jz
+On Mar 29, 2010, at 12:18 PM, Cabrera, Joe wrote:
+
+> Joel, 
+> 
+> 	I ran goat on 3/25 (using the old location stated in Xinglong's email).  It appears that on 3/26, the location was moved - given the dates of the files:
+> 
+> [jcabrera1@kronos src]$ ls -ltrd CASAVA
+> drwxrwxr-x+ 4 root root 8192 Mar 26 13:42 CASAVA
+> [jcabrera1@kronos src]$
+> 
+> 	I never went back to check the location because I did not imagine that it would move.  Can we verify that I all the files are there while the investigation proceeds?  I would like to start the jobs that I have on my list.
+> 
+> 
+> Thanks, 
+> 
+> Joe Cabrera
+> 
+> -----Original Message-----
+> From: Zysman, Joel 
+> Sent: Monday, March 29, 2010 11:36 AM
+> To: Cabrera, Joe
+> Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William; Young, Stuart
+> Subject: Re: [ccstkt #3347] GA pipeline upgrade 
+> 
+> Wendell,
+> Please take a look at TSM and see what the dates are on the directory /mihg/analysis/software/CASAVA/ .  We need to figure out if they were deleted or moved or whatever.  The dates will give us a starting point.
+> 
+> Thanks,
+> 
+> 
+> Joel
+> On Mar 29, 2010, at 11:29 AM, Cabrera, Joe wrote:
+> 
+>> Nothing in the scripts changed.  Actually, in using the 1.6 OLB version of the software, an environment variable needs to be setup pointing to the 1.6 regular version's bin directory.  At one point (as early as Thurday/Friday, it was there), now it's the path is no longer available.  I used the original email from Xinglong below to setup the environment variable.  Looks the location moved.  I will need to re-run with the new location.  Thanks for locating the files.
+>> 
+>> -----Original Message-----
+>> From: Zysman, Joel 
+>> Sent: Monday, March 29, 2010 11:16 AM
+>> To: Cabrera, Joe
+>> Cc: CCS HPC (High Performance Computing - RT); Edwards, Yvonne; Hulme, William; Young, Stuart
+>> Subject: Re: [ccstkt #3347] GA pipeline upgrade 
+>> 
+>> Although interestingly enough they are in : /mihg/analysis/src/CASAVA/1.6/share/CASAVA-1.6.0/makefiles
+>> 
+>> Have the scripts changed or anything to point to /mihg/analysis/software as opposed to /mihg/analysis/src ?
+>> 
+>> 
+>> ~jz
+>> On Mar 29, 2010, at 10:59 AM, Cabrera, Joe wrote:
+>> 
+>>> Greetings, 
+>>> 
+>>> 	Has the location of the Illumina 1.6 version of the pipeline moved?  I received the locations below from Bill in the email listed below and at it appears that the OLB version is installed but not the other:
+>>> 
+>>> [jcabrera1@kronos software]$ cd /mihg/analysis/src/CASAVA/1.6/share/CASAVA-1.6.0/makefiles
+>>> -bash: cd: /mihg/analysis/software/CASAVA/1.6: No such file or directory
+>>> 
+>>> [jcabrera1@kronos software]$ cd /mihg/analysis/src/GAPipeline-2.6/OfflineBaseCaller-1.6/OLB-1.6.0
+>>> [jcabrera1@kronos OLB-1.6.0]$ pwd
+>>> /mihg/analysis/src/GAPipeline-2.6/OfflineBaseCaller-1.6/OLB-1.6.0
+>>> [jcabrera1@kronos OLB-1.6.0]$
+>>> 
+>>> 
+>>> 	Some jobs were running over the weekend and they failed with the errors listed at the end of this email.  However, the directory does not even exist.  Can you let me know what happened to the directory?  I would like to see if it is an issue on our-side before I send an email to the vendor.
+>>> 
+>>> 
+>>> Thanks, 
+>>> 
+>>> Joe Cabrera
+>>> 
+>>> 
+>>> Base-calling has completed successfully.
+>>> 
+>>> make[2]: Leaving directory `/q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_25-03-2010_jcabrera1.5/Bustard1.6.0_25-03-2010_jcabrera1'
+>>> make --directory=GERALD_25-03-2010_jcabrera1
+>>> make[2]: Entering directory `/q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_25-03-2010_jcabrera1.5/Bustard1.6.0_25-03-2010_jcabrera1/GERALD_25-03-2010_jcabrera1'
+>>> Makefile:28: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/Config.mk: No such file or directory
+>>> Makefile:31: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/Debug.mk: No such file or directory
+>>> Makefile.config:83: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:84: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile.config:89: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:90: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile.config:95: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:96: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile.config:101: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:102: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile.config:107: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:108: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/eland_pair.mk: No such file or directory
+>>> Makefile.config:113: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:114: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/eland_pair.mk: No such file or directory
+>>> Makefile.config:119: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:120: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile.config:125: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/ConfigureLane.mk: No such file or directory
+>>> Makefile.config:126: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/none.mk: No such file or directory
+>>> Makefile:42: /mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/FlowCellTargets.mk: No such file or directory
+>>> make[2]: *** No rule to make target `/mihg/analysis/software/CASAVA/1.6/share/CASAVA-1.6.0/makefiles/FlowCellTargets.mk'.  Stop.
+>>> make[2]: Leaving directory `/q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_25-03-2010_jcabrera1.5/Bustard1.6.0_25-03-2010_jcabrera1/GERALD_25-03-2010_jcabrera1'
+>>> make[1]: *** [GERALD_25-03-2010_jcabrera1] Error 2
+>>> make[1]: Leaving directory `/q/solexa_xfer/100212_HWI-EAS185_0009_61EAWAAXX/Data/C1-152_Firecrest1.6.0_25-03-2010_jcabrera1.5/Bustard1.6.0_25-03-2010_jcabrera1'
+>>> make: *** [Bustard1.6.0_25-03-2010_jcabrera1] Error 2
+>>> 
+>>> -----Original Message-----
+>>> From: Hulme, William 
+>>> Sent: Monday, March 22, 2010 2:33 PM
+>>> To: Cabrera, Joe
+>>> Subject: FW: [ccstkt #3347] GA pipeline upgrade 
+>>> 
+>>> 
+>>> 
+>>> William Hulme
+>>> Core Director of Sequencing
+>>> John P. Hussman Institute for Human Genomics
+>>> University of Miami Miller School of Medicine
+>>> 1501 NW 10th Avenue (M-860)
+>>> Miami, FL 33136
+>>> 305-243-8718 (office)
+>>> 305-213-7799 (mobile)
+>>> whulme@med.miami.edu
+>>> www.hihg.org
+>>> -----Original Message-----
+>>> From: Xinglong Wu via RT [mailto:mihg@ccs.miami.edu] 
+>>> Sent: Monday, March 08, 2010 4:06 PM
+>>> To: Hulme, William
+>>> Subject: [ccstkt #3347] GA pipeline upgrade 
+>>> 
+>>> By the way, the PATH for OFF-LINE BASE CALLER V1.6 is
+>>> 
+>>> /mihg/analysis/src/GAPipeline-2.6/OfflineBaseCaller-1.6/OLB-1.6.0
+>>> 
+>>> and the PATH for CASAVA V1.6 is
+>>> 
+>>> /mihg/analysis/software/CASAVA/1.6
+>>> 
+>>> Xinglong
+>>> 
+>>> ]On Mon Mar 08 15:34:11 2010, yedwards wrote:
+>>>> Hi,
+>>>> 
+>>>> The OFF-LINE BASE CALLER V1.6 SOFTWARE CASAVA V1.6 SOFTWARE is
+>>>> combined with the GApipeline v2.6. They are now one and the same
+>>>> product - ie GERALD is incorporated in this package and is no
+>>>> longer a separate package. ELAND is part of the OFF-LINE BASE
+>>>> CALLER V1.6 SOFTWARE CASAVA V1.6 SOFTWARE suite. According to
+>>>> illumina - data generated by 1.5 RTA is the same format as 2.6 RTA.
+>>>> We have the data we need to test 1.6 software. Joe and I will use
+>>>> these to R+D 1.6 version. We'll keep you posted.
+>>>> 
+>>>> Yvonne
+>>>> 
+>>>> 
+>>>> -----Original Message-----
+>>>> From: Xinglong Wu via RT [mailto:mihg@ccs.miami.edu]
+>>>> Sent: Monday, March 08, 2010 12:38 PM
+>>>> Cc: Hulme, William; HIHG Support; Edwards, Yvonne; Hahn, Justin;
+>>>> Cabrera, Joe; Hedges, Dale
+>>>> Subject: [ccstkt #3347] GA pipeline upgrade
+>>>> 
+>>>> Hi, The installation of
+>>>> 
+>>>> OFF-LINE BASE CALLER V1.6 SOFTWARE
+>>>> CASAVA V1.6 SOFTWARE
+>>>> 
+>>>> is done. Let us know when it would be ready for the installation
+>>>> GApipeline
+>>>> v2.6.
+>>>> 
+>>>> Xinglong
+>>>> 
+>>>> On Mon Mar 08 11:32:54 2010, whulme wrote:
+>>>>> thanks
+>>>>> 
+>>>>> William Hulme
+>>>>> Core Director of Sequencing
+>>>>> John P. Hussman Institute for Human Genomics
+>>>>> University of Miami Miller School of Medicine
+>>>>> 1501 NW 10th Avenue (M-860)
+>>>>> Miami, FL 33136
+>>>>> 305-243-8718 (office)
+>>>>> 305-213-7799 (mobile)
+>>>>> whulme@med.miami.edu
+>>>>> www.hihg.org
+>>>>> -----Original Message-----
+>>>>> From: Xinglong Wu via RT [mailto:mihg@ccs.miami.edu]
+>>>>> Sent: Monday, March 08, 2010 11:31 AM
+>>>>> To: Hulme, William
+>>>>> Subject: [ccstkt #3347] GA pipeline upgrade
+>>>>> 
+>>>>> Hi, I will do a separate installation of
+>>>>> 
+>>>>> * OFF-LINE BASE CALLER V1.6 SOFTWARE
+>>>>> * CASAVA V1.6 SOFTWARE
+>>>>> 
+>>>>> first, and let us know if it is ready to do the separate
+>>>> installation of
+>>>>> GApipeline-v2.6 (I will try to keep other versions of GApipeline
+>>>> untouched).
+>>>>> 
+>>>>> Xinglong
+>>>>> 
+>>>>> On Thu Mar 04 20:28:00 2010, whulme wrote:
+>>>>>> Sure. Actually when we do the upgrade on the GA we still leave the
+>>>> 2.5
+>>>>>> software on there.
+>>>>>> 
+>>>>> 
+>>>>> 
+>>>> 
+>>>> 
+>>> 
+>> 
+>> -- 
+>> Joel P. Zysman
+>> Director of HPC
+>> University of Miami Center for Computational Science
+>> Clinical Research Building (CRB)
+>> 1120 NW 14th Street, Suite 621
+>> Locator:  C-213
+>> Miami, FL  33136
+>> (305) 243-4962 (t)
+>> (305) 243-9304 (f)
+>> 
+>> 
+>> 
+> 
+> -- 
+> Joel P. Zysman
+> Director of HPC
+> University of Miami Center for Computational Science
+> Clinical Research Building (CRB)
+> 1120 NW 14th Street, Suite 621
+> Locator:  C-213
+> Miami, FL  33136
+> (305) 243-4962 (t)
+> (305) 243-9304 (f)
+> 
+> 
+> 
+
+-- 
+Joel P. Zysman
+Director of HPC
+University of Miami Center for Computational Science
+Clinical Research Building (CRB)
+1120 NW 14th Street, Suite 621
+Locator:  C-213
+Miami, FL  33136
+(305) 243-4962 (t)
+(305) 243-9304 (f)
+
+
+
+
+
+
+
+grep -R -n "Run time:" eland*/eland.outerr
+eland1-1000000/eland.outerr:363:Run time: 00:45:02
+eland1-1500000/eland.outerr:309:Run time: 01:00:08
+eland1-2000000/eland.outerr:304:Run time: 00:58:48
+eland1-2000000/eland.outerr:414:Run time: 01:36:30
+eland1-2500000/eland.outerr:500:Run time: 01:35:30
+eland1-2500000/eland.outerr:521:Run time: 01:45:59
+eland1-3000000/eland.outerr:421:Run time: 01:13:51
+eland1-3500000/eland.outerr:549:Run time: 01:52:19
+eland1-500000/eland.outerr:571:Run time: 00:36:44
+eland1.bkp/eland.outerr:583:Run time: 00:10:24
+eland2-1000000/eland.outerr:407:Run time: 00:57:50
+eland2-1500000/eland.outerr:320:Run time: 00:33:08
+eland2-2000000/eland.outerr:210:Run time: 00:21:45
+eland2-2500000/eland.outerr:227:Run time: 00:21:39
+eland2-3000000/eland.outerr:179:Run time: 00:23:45
+eland2-3500000/eland.outerr:167:Run time: 00:40:23
+eland2-500000/eland.outerr:582:Run time: 00:35:57
+eland3-1000000/eland.outerr:312:Run time: 00:35:28
+eland3-1500000/eland.outerr:245:Run time: 00:34:45
+eland3-2000000/eland.outerr:228:Run time: 00:44:16
+eland3-2500000/eland.outerr:179:Run time: 00:27:56
+eland3-3000000/eland.outerr:160:Run time: 00:42:57
+eland3-3500000/eland.outerr:174:Run time: 00:35:55
+eland3-500000/eland.outerr:570:Run time: 00:48:36
+eland4-1000000/eland.outerr:315:Run time: 00:38:02
+eland4-1500000/eland.outerr:244:Run time: 00:42:40
+eland4-2000000/eland.outerr:210:Run time: 00:36:43
+eland4-2500000/eland.outerr:195:Run time: 00:30:39
+eland4-3000000/eland.outerr:174:Run time: 00:45:38
+eland4-3500000/eland.outerr:203:Run time: 00:35:02
+eland4-500000/eland.outerr:574:Run time: 00:52:23
+
+
+
+1	1000000/eland.outerr:363:Run time: 00:45:02
+1	1500000/eland.outerr:309:Run time: 01:00:08
+1	2000000/eland.outerr:304:Run time: 00:58:48
+1	2000000/eland.outerr:414:Run time: 01:36:30
+1	2500000/eland.outerr:500:Run time: 01:35:30
+1	2500000/eland.outerr:521:Run time: 01:45:59
+1	3000000/eland.outerr:421:Run time: 01:13:51
+1	3500000/eland.outerr:549:Run time: 01:52:19
+1	500000/eland.outerr:571:Run time: 00:36:44
+2	1000000/eland.outerr:407:Run time: 00:57:50
+2	1500000/eland.outerr:320:Run time: 00:33:08
+2	2000000/eland.outerr:210:Run time: 00:21:45
+2	2500000/eland.outerr:227:Run time: 00:21:39
+2	3000000/eland.outerr:179:Run time: 00:23:45
+2	3500000/eland.outerr:167:Run time: 00:40:23
+2	500000/eland.outerr:582:Run time: 00:35:57
+3	1000000/eland.outerr:312:Run time: 00:35:28
+3	1500000/eland.outerr:245:Run time: 00:34:45
+3	2000000/eland.outerr:228:Run time: 00:44:16
+3	2500000/eland.outerr:179:Run time: 00:27:56
+3	3000000/eland.outerr:160:Run time: 00:42:57
+3	3500000/eland.outerr:174:Run time: 00:35:55
+3	500000/eland.outerr:570:Run time: 00:48:36
+4	1000000/eland.outerr:315:Run time: 00:38:02
+4	1500000/eland.outerr:244:Run time: 00:42:40
+4	2000000/eland.outerr:210:Run time: 00:36:43
+4	2500000/eland.outerr:195:Run time: 00:30:39
+4	3000000/eland.outerr:174:Run time: 00:45:38
+4	3500000/eland.outerr:203:Run time: 00:35:02
+4	500000/eland.outerr:574:Run time: 00:52:23
+
+
+
+1	1000000	0:45:02
+1	1500000	1:00:08
+1	2000000	0:58:48
+1	2000000	1:36:30
+1	2500000	1:35:30
+1	2500000	1:45:59
+1	3000000	1:13:51
+1	3500000	1:52:19
+1	500000	0:36:44
+eland1.bkp	0:10:24	
+2	1000000	0:57:50
+2	1500000	0:33:08
+2	2000000	0:21:45
+2	2500000	0:21:39
+2	3000000	0:23:45
+2	3500000	0:40:23
+2	500000	0:35:57
+3	1000000	0:35:28
+3	1500000	0:34:45
+3	2000000	0:44:16
+3	2500000	0:27:56
+3	3000000	0:42:57
+3	3500000	0:35:55
+3	500000	0:48:36
+4	1000000	0:38:02
+4	1500000	0:42:40
+4	2000000	0:36:43
+4	2500000	0:30:39
+4	3000000	0:45:38
+4	3500000	0:35:02
+4	500000	0:52:23
+
+
+1	1000000	0:45:02		1500000	1:00:08		2000000	1:36:30		2500000	1:45:59		3000000	1:13:51		3500000	1:52:19		500000	0:36:44
+2	1000000	0:57:50		1500000	0:33:08		2000000	0:21:45		2500000	0:21:39		3000000	0:23:45		3500000	0:40:23		500000	0:35:57
+3	1000000	0:35:28		1500000	0:34:45		2000000	0:44:16		2500000	0:27:56		3000000	0:42:57		3500000	0:35:55		500000	0:48:36
+4	1000000	0:38:02		1500000	0:42:40		2000000	0:36:43		2500000	0:30:39		3000000	0:45:38		3500000	0:35:02		500000	0:52:23
+
+
+sample  500000  1000000 1500000 2000000 2500000 3000000 3500000
+1	0:45:02	1:00:08	1:36:30	1:45:59	1:13:51	1:52:19	0:36:44
+2	0:57:50	0:33:08	0:21:45	0:21:39	0:23:45	0:40:23	0:35:57
+3	0:35:28	0:34:45	0:44:16	0:27:56	0:42:57	0:35:55	0:48:36
+4	0:38:02	0:42:40	0:36:43	0:30:39	0:45:38	0:35:02	0:52:23
+
+
+
+NEXT: CONVERT TO .SAM AND .BAM
+
+
+1. CREATE REFERENCE LIST (INDEX OF FASTA REFERENCE FILE) FOR USE IN samtools view CONVERSION OF SAM TO BAM
+
+    samtools faidx ex1.fa                 # index the reference FASTA
+
+/nethome/syoung/base/apps/samtools/0.1.6/samtools faidx
+
+-t FILE	 This file is TAB-delimited. Each line must contain the reference name and the length of the reference, one line for each distinct reference; additional fields are ignored. This file also defines the order of the reference sequences in sorting. If you run ‘samtools faidx <ref.fa>’, the resultant index file <ref.fa>.fai can be used as this <in.ref_list> file.
+
+
+    samtools faidx ex1.fa                 # index the reference FASTA
+    samtools import ex1.fa.fai ex1.sam.gz ex1.bam   # SAM->BAM
+    samtools index ex1.bam                # index BAM
+    samtools tview ex1.bam ex1.fa         # view alignment
+    samtools pileup -cf ex1.fa ex1.bam    # pileup and consensus
+    samtools pileup -cf ex1.fa -t ex1.fa.fai ex1.sam.gz
+
+
+REQUIRES REFERENCE LIST
+
+samtools view -bt ref_list.txt -o aln.bam aln.sam.gz
+
+
+1. CREATE .SAM FILE
+
+cd /nethome/syoung/base/pipeline/benchmark/eland/eland1/1/chr1
+
+/nethome/syoung/base/apps/samtools/0.1.6/export2sam.pl reanalysis_eland_export.txt > reanalysis.sam
+
+
+OK!!!
+
+
+
+faidx	 samtools faidx <ref.fasta> [region1 [...]]
+Index reference sequence in the FASTA format or extract subsequence from indexed reference sequence. If no region is specified, faidx will index the file and create <ref.fasta>.fai on the disk. If regions are speficified, the subsequences will be retrieved and printed to stdout in the FASTA format. The input file can be compressed in the RAZF format.
+
+
+
+
+
+
+
+
+
+
+eland2 PAIRED END, DUPLICATE 2, 500K READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/eland/eland2
+cd /nethome/syoung/base/pipeline/benchmark/eland/eland2
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/eland/eland2 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> eland.outerr
+
+
+
+
+10-03-15 01:35:22 
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Mar  13 17:14:32 EST 2010] USE loop.pl TO RUN FOUR REPLICATES OF ELAND.pl AT THE SAME TIME (2000+ CONCURRENT JOBS AT PEAK)>
+
+
+
+
+INPUT FILE: 37 BASES PER READ, READS
+
+head /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq
+@HWI-EAS185:1:1:17:1838#0/1
+CTTTGACGGGGGCATCTATGNCTGCAGGGCNACCAAC
++HWI-EAS185:1:1:17:1838#0/1
+aaaa`_aaaaa_aaaaaaaZD[a]K_aaaZD[aa`a[
+@HWI-EAS185:1:1:17:657#0/1
+
+
+REPLICATE 1
+===========
+
+screen -S eldsgl-rep1
+
+chmod 755 /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.4/bin/apps/ELAND.pl \
+--parameter "--reads" \
+--range 500000,1000000,1500000,2000000,2500000,3000000,3500000 \
+--times 1 \
+--inputtype fastq \
+--cluster LSF \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER% \
+--stdout /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER%/eland.outerr \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-sq \
+--jobs 600 \
+--parallel
+
+    Run time: 08:49:49
+    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+    1:35AM, 14 March 2010
+    ****************************************
+
+
+
+
+
+REPLICATE 2
+===========
+
+chmod 755 /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.4/bin/apps/ELAND.pl \
+--parameter "--reads" \
+--range 500000,1000000,1500000,2000000,2500000,3000000,3500000 \
+--times 2 \
+--inputtype fastq \
+--cluster LSF \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER% \
+--stdout /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER%/eland.outerr \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-sq \
+--jobs 600 \
+--parallel
+
+    LSF is processing your request. Please wait ...
+    
+    Run time: 08:40:11
+    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+    1:26AM, 14 March 2010
+    ****************************************
+
+
+
+REPLICATE 3
+===========
+
+chmod 755 /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.4/bin/apps/ELAND.pl \
+--parameter "--reads" \
+--range 500000,1000000,1500000,2000000,2500000,3000000,3500000 \
+--times 3 \
+--inputtype fastq \
+--cluster LSF \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER% \
+--stdout /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER%/eland.outerr \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-sq \
+--jobs 600 \
+--parallel
+
+
+    Run time: 09:08:28
+    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+    1:55AM, 14 March 2010
+    ****************************************
+
+
+
+REPLICATE 4
+===========
+
+chmod 755 /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.4/bin/apps/ELAND.pl \
+--parameter "--reads" \
+--range 500000,1000000,1500000,2000000,2500000,3000000,3500000 \
+--times 4 \
+--inputtype fastq \
+--cluster LSF \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER% \
+--stdout /nethome/syoung/base/pipeline/benchmark/eland/eland%COUNTER%-%PARAMETER%/eland.outerr \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-sq \
+--jobs 600 \
+--parallel
+
+
+    Run time: 09:06:57
+    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/loop.pl
+    1:54AM, 14 March 2010
+    ****************************************
+
+
+ 
+ 
+
+</entry>
+
+
+
+<entry [Tue Mar  9 14:42:32 EST 2010] USING DUAN (CARDIAC) DATA RUN 12 BECAUSE IT HAS PROVEN SNPS>
+
+
+
+SNPS PREDICTED ON kronos-x:
+
+cd /p/NGS/syoung/base/pipeline/run12/lane1
+ 
+ll
+    total 3.9G
+    drwxrwx--- 14 syoung bioinfo 8.0K Jun  8  2009 .
+    drwxrwx--- 14 syoung bioinfo 8.0K Feb 19 14:48 ..
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 1
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 10
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 11
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 2
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 3
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 4
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 5
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 6
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 7
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 8
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 9
+    -rw-rw----  1 syoung bioinfo 1.3M Jun  3  2009 assemble.log
+    -rw-rw----  1 syoung bioinfo  17M Jun  4  2009 CCDS_nucleotide.20080430.bfa
+    -rw-rw----  1 syoung bioinfo  33M Jun  3  2009 CCDS_nucleotide.20080430.fa
+    -rw-rw----  1 syoung bioinfo  65M Jun  3  2009 cns.fq
+    -rw-rw----  1 syoung bioinfo 6.0M Jun  3  2009 cns.snp
+    -rw-rw----  1 syoung bioinfo  42M Jun  3  2009 consensus.cns
+    drwxrwx---  2 syoung bioinfo 8.0K Jun  3  2009 lane2
+    -rw-rw----  1 syoung bioinfo 7.2K Jun  3  2009 mapcheck.txt
+    -rw-rw----  1 syoung bioinfo  58M Jun  3  2009 maq-runlog.txt
+    -rw-rw----  1 syoung bioinfo  42M Jun  3  2009 out.cns
+    -rw-rw----  1 syoung bioinfo 5.1M Jun  3  2009 out.indelpe
+    -rw-rw----  1 syoung bioinfo 3.4M Jun  3  2009 out.indelpe.filter
+    -rw-rw----  1 syoung bioinfo 766K Jun  3  2009 out.indelsoa
+    -rw-rw----  1 syoung bioinfo  28K Jun  3  2009 out.indelsoa.filter
+    -rw-rw----  1 syoung bioinfo    0 Jun  3  2009 out.indelsoa.filter.hetero
+    -rw-rw----  1 syoung bioinfo    0 Jun  3  2009 out.indelsoa.filter.homo
+    -rw-rw----  1 syoung bioinfo 299M Jun  3  2009 out.map
+    -rw-rw----  1 syoung bioinfo 261M Jun  3  2009 out.rmdup
+    -rw-rw----  1 syoung bioinfo 1.9M Jun  3  2009 out.SNPfilter
+    -rw-r-----  1 syoung bioinfo 1.4G Jun  3  2009 s_1_1_sequence.fastq
+    -rw-r-----  1 syoung bioinfo 1.7G Jun  3  2009 s_1_2_sequence.fastq
+    -rw-rw----  1 syoung bioinfo    0 Jun  8  2009 splitfiles
+    -rw-rw----  1 syoung bioinfo 1.7K Jun  3  2009 splitfiles.bkp
+    [syoung@u01 lane1]$ 
+
+
+COPIED SEQUENCE FILES TO run12 FOLDER:
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/data/duan/run12
+cd /nethome/syoung/base/pipeline/benchmark/data/duan/run12
+
+
+
+maq4 SINGLE READ, DUPLICATE 1, 1M READ CHUNKS
+=============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq4
+
+
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq4
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq4 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+##--clean \
+
+
+
+    MAQ.pl    length(jobs): 0
+    MAQ::runJobs    MAQ::runJobs(job_objects)
+    MAQ::runJobs    length job_objects: 16
+    MAQ::runJobs    Waiting until the last jobs are finished (0 left)...
+    MAQ::runJobs    Completed.
+    MAQ::runJobs    END OF MAQ::runJobs
+    MAQ.pl    Run time: 00:00:51
+    MAQ.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+    MAQ.pl    3:32PM, 9 March 2010
+    MAQ.pl    ****************************************
+
+
+    ALIGNMENT TOOK 23 MINS:
+    
+    Monitor::LSF::remainingJobs    remaining job_ids (0 left): 
+    MAQ.pl    Duration: 00:22:09    10:26PM, 9 March 2010   MAQ.pl    Completed alignments
+    MAQ.pl    Run time: 00:22:57
+    MAQ.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+    MAQ.pl    10:26PM, 9 March 2010
+    MAQ.pl    ****************************************
+
+
+    MERGING AND SNP/INDEL CALLING TOOK 9 MINS:
+
+    MAQ::usageStats    stdoutfile: /nethome/syoung/base/pipeline/benchmark/maq/maq4/chr2-stdout.txt
+    MAQ::usageStats    stdoutfile: /nethome/syoung/base/pipeline/benchmark/maq/maq4/chr1-stdout.txt
+    MAQ.pl    Run time: 00:09:03
+    MAQ.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+    MAQ.pl    11:04PM, 9 March 2010
+    MAQ.pl    ****************************************
+
+
+
+BUT THE out.indelpe, out.indelsoa AND out.indelsoa.filter FILES WERE EMPTY
+
+[syoung@u01 maq4]$ ll | grep chr5
+-rw-rw-rw-  1 syoung bioinfo 351M Mar  9 23:00 chr5.bfa-cns.fq
+-rw-rw-rw-  1 syoung bioinfo 5.8M Mar  9 23:01 chr5.bfa-cns.snp
+-rw-rw-rw-  1 syoung bioinfo  93M Mar  9 23:00 chr5.bfa-consensus.cns
+-rw-rw-rw-  1 syoung bioinfo 5.5K Mar  9 22:58 chr5.bfa-mapcheck.txt
+-rw-rw-rw-  1 syoung bioinfo    0 Mar  9 23:01 chr5.bfa-out.indelpe
+-rw-rw-rw-  1 syoung bioinfo    0 Mar  9 23:01 chr5.bfa-out.indelsoa
+-rw-rw-rw-  1 syoung bioinfo    0 Mar  9 23:01 chr5.bfa-out.indelsoa.filter
+-rw-rw-rw-  1 syoung bioinfo  39M Mar  9 22:58 chr5.bfa-out.map
+-rw-rw-rw-  1 syoung bioinfo  39M Mar  9 23:01 chr5.bfa-out.rmdup
+-rw-rw-rw-  1 syoung bioinfo   65 Mar  9 23:01 chr5.bfa-out.SNPfilter
+-rw-rw-rw-  1 syoung bioinfo  39M Mar  9 22:58 chr5.bfa-temp.map
+-rwxrwxrwx  1 syoung bioinfo 8.0K Mar  9 22:56 chr5.sh
+-rw-rw-rw-  1 syoung bioinfo 4.7K Mar  9 23:01 chr5-stdout.txt
+-rw-rw-rw-  1 syoung bioinfo  218 Mar  9 23:01 chr5-usage.txt
+[syoung@u01 maq4]$ 
+[syoung@u01 maq4]$ 
+[syoung@u01 maq4]$ 
+[syoung@u01 maq4]$ 
+[syoung@u01 maq4]$ time /nethome/bioinfo/apps/maq/0.7.1/maq mapcheck /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chr5.bfa chr5.bfa-out.map > chr5.bfa-mapcheck.txt
+[ma_mapcheck] processing chr5...
+
+
+
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq mapcheck /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chr5.bfa chr5.bfa-out.map > chr5.bfa-mapcheck.txt
+
+    [ma_mapcheck] processing chr5...
+    
+    real    0m13.622s
+    user    0m12.323s
+    sys     0m0.814s
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq assemble chr5.bfa-consensus.cns /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chr5.bfa chr5.bfa-out.map 2> chr5.assemble.log
+
+    real    2m11.882s
+    user    2m11.164s
+    sys     0m0.512s
+
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq cns2fq chr5.bfa-consensus.cns > chr5.bfa-cns.fq
+
+    real    0m42.314s
+    user    0m39.494s
+    sys     0m0.786s
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq cns2snp chr5.bfa-consensus.cns > chr5.bfa-cns.snp
+
+    real    0m34.056s
+    user    0m33.951s
+    sys     0m0.090s
+
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq rmdup chr5.bfa-out.rmdup chr5.bfa-out.map
+
+    real    0m18.931s
+    user    0m18.480s
+    sys     0m0.108s
+
+/nethome/bioinfo/apps/maq/0.7.1/maq indelpe /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chr5.bfa chr5.bfa-out.rmdup > chr5.bfa-out.indelpe
+    
+    real    0m23.973s
+    user    0m23.585s
+    sys     0m0.385s
+
+/nethome/bioinfo/apps/maq/0.7.1/maq indelsoa /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chr5.bfa chr5.bfa-out.map > chr5.bfa-out.indelsoa
+
+    real    0m5.581s
+    user    0m4.938s
+    sys     0m0.640s
+
+
+awk '$5+$6-$4 >= 3 && $4 <= 1' chr5.bfa-out.indelsoa > chr5.bfa-out.indelsoa.filter
+
+
+
+time /nethome/bioinfo/apps/maq/0.7.1/scripts/maq.pl SNPfilter -d 1 -s chr5.bfa-out.indelsoa -F chr5.bfa-out.indelpe chr5.bfa-cns.snp &> chr5.bfa-out.SNPfilter
+
+    DOES NOT RUN
+    real    0m1.811s
+    user    0m1.760s
+    sys     0m0.024s
+
+
+
+
+
+
+maq5 SINGLE READ, DUPLICATE 2, 1M READ CHUNKS
+=============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq5;
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq5;
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq5 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr.new
+
+
+
+
+maq6 PAIRED END, DUPLICATE 1, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq6
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq6
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq6 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq7 SINGLE READ, DUPLICATE 3, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq7
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq7
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq7 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq8 SINGLE, DUPLICATE 1, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq8
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq8
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq8 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq9 SINGLE, DUPLICATE 2, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq9
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq9
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq9 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq10 SINGLE READ, DUPLICATE 3, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq10
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq10
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq10 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq11 SINGLE READ, DUPLICATE 4, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq11
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq11
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq11 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq12 SINGLE READ, DUPLICATE 4, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq12
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq12
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq12 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq13 PAIRED END, DUPLICATE 2, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq13
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq13
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq13 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq14 PAIRED END, DUPLICATE 3, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq14
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq14
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq14 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq15 PAIRED END, DUPLICATE 4, 1M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq15
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq15
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq15 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+maq16 PAIRED END, DUPLICATE 1, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq16
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq16
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq16 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+maq17 PAIRED END, DUPLICATE 2, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq17
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq17
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq17 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+
+maq18 PAIRED END, DUPLICATE 3, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq18
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq18
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq18 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+
+maq19 PAIRED END, DUPLICATE 4, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq19
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq19
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 2000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq19 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+maq20 SINGLE, DUPLICATE 1, 3M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq20
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq20
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq20 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq21 SINGLE, DUPLICATE 2, 3M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq21
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq21
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq21 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq22 SINGLE READ, DUPLICATE 3, 3M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq22
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq22
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq22 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq23 SINGLE READ, DUPLICATE 4, 2M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq23
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq23
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq23 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq24 PAIRED END, DUPLICATE 1, 3M READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq24
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq24
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq24 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq25 PAIRED END, DUPLICATE 2, 3M READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq25
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq25
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq25 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+maq26 PAIRED END, DUPLICATE 3, 3M READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq26
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq26
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq26 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+maq27 PAIRED END, DUPLICATE 4, 3M READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq27
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq27
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 3000000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq27 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+AT 80% MAX LOAD ON PEGASUS:
+
+
+Wed Mar 10 17:41:32 EST 2010
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+small           100  Open:Active       -    -    -    -   439     0   439     0
+medium           90  Open:Active       -    -    -    -     0     0     0     0
+large            80  Open:Active       -    -    -    -     0     0     0     0
+owners           43  Open:Active       -    -    -    -     0     0     0     0
+priority         43  Open:Active       -    -    -    -   812     0   812     0
+night            40  Open:Inact        -    -    -    -     0     0     0     0
+chkpnt_rerun_qu  40  Open:Active       -    -    -    -     0     0     0     0
+short            35  Open:Active       -    -    -    -     0     0     0     0
+license          33  Open:Active       -    -    -    -     0     0     0     0
+normal           30  Open:Active       -    -    -    -     0     0     0     0
+idle             20  Open:Active       -    -    -    -     0     0     0     0
+
+
+ALL FINISHED WITHIN 1 HOUR AND 20 MINS:
+
+
+Wed Mar 10 19:02:58 EST 2010
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+small           100  Open:Active       -    -    -    -   260     0   260     0
+medium           90  Open:Active       -    -    -    -     0     0     0     0
+large            80  Open:Active       -    -    -    -     0     0     0     0
+owners           43  Open:Active       -    -    -    -     0     0     0     0
+priority         43  Open:Active       -    -    -    -     0     0     0     0
+night            40  Open:Inact        -    -    -    -     0     0     0     0
+chkpnt_rerun_qu  40  Open:Active       -    -    -    -     0     0     0     0
+short            35  Open:Active       -    -    -    -     0     0     0     0
+license          33  Open:Active       -    -    -    -     0     0     0     0
+normal           30  Open:Active       -    -    -    -     0     0     0     0
+idle             20  Open:Active       -    -    -    -     0     0     0     0
+
+
+
+
+
+maq28 PAIRED END, DUPLICATE 1, 500K READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq28
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq28
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq28 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+
+
+
+maq29 PAIRED END, DUPLICATE 2, 500K READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq29
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq29
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq29 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+maq30 PAIRED END, DUPLICATE 3, 500K READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq30
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq30
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq30 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq31 PAIRED END, DUPLICATE 2, 500K READ CHUNKS
+============================================
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq31
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq31
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq31 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+maq32 PAIRED END, DUPLICATE 2, 500K READ CHUNKS
+============================================
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq32
+
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq32
+
+chmod 755 /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--reads 500000 \
+--cluster LSF \
+--queue priority \
+--clean \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq32 \
+--inputfile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_1_sequence.fastq \
+--matefile /nethome/syoung/base/pipeline/benchmark/data/duan/run12/s_1_2_sequence.fastq \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+
+
+RUNNING ALMOST 900 CONCURRENT JOBS:
+
+    Thu Mar 11 15:33:37 EST 2010
+    :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+    small           100  Open:Active       -    -    -    -     0     0     0     0
+    medium           90  Open:Active       -    -    -    -     0     0     0     0
+    large            80  Open:Active       -    -    -    -     0     0     0     0
+    owners           43  Open:Active       -    -    -    -     0     0     0     0
+    priority         43  Open:Active       -    -    -    -   871     0   871     0
+    night            40  Open:Inact        -    -    -    -     0     0     0     0
+    chkpnt_rerun_qu  40  Open:Active       -    -    -    -     0     0     0     0
+    short            35  Open:Active       -    -    -    -     0     0     0     0
+    license          33  Open:Active       -    -    -    -     0     0     0     0
+    normal           30  Open:Active       -    -    -    -     0     0     0     0
+    idle             20  Open:Active       -    -    -    -     0     0     0     0
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar  9 12:38:09 EST 2010] BOWTIE DOESN'T SET 'N' RESIDUE QUALITY VALUES TO ZERO SO RESULTS DIFFER FROM MAQ, WHICH DOES>
+
+
+
+SOLUTION:
+
+SET QUALS TO ZERO IF RESIDUE IS 'N' WITH SCRIPT BELOW
+
+
+fixh the the .fq file with this script
+
+
+So I have some questions:
+
+a. Why BOWTIE and MAQ gave different results with the same data set (MAQ gave 745 mapped reads and BOWTIE gave 699)? How I can set parameters for both bowtie and maq to get the same results?
+
+b. e_coli.bowtie.txt is a nice text file together with a summary of the mapped reads and errors. How I can check with MAQ output files to have the same summary file, say a file with a summary of mapped reads and their errors?
+
+c. what software I can use for post-alignment analysis? I tried maq mapview but I can only see one mapped read at a time. Is there a software which can show a nice alignment view like BLAT with the error as well as the coordinates of the read on the reference?
+
+Sorry for such a long post and thank you all in advance. Any input will be greatly appreciated.
+
+
+ANSWER TO A:
+===========
+
+My fault. The reads/e_coli_1000.fq file I include with Bowtie has instances where an N in the read lines up with a non-zero quality value. The Illumina pipeline (AFAIK) doesn't do this, and Maq automatically rounds quality values corresponding to Ns down to 0. Bowtie doesn't, hence the difference. You can fix the .fq file with this script:
+
+Quote:
+#!/usr/bin/perl -w
+
+while(<>) {
+my $name = $_;
+my $seq = <>; chomp($seq);
+my @seqa = split(//, $seq);
+my $name2 = <>;
+my $quals = <>; chomp($quals);
+my @qualsa = split(//, $quals);
+for(my $i = 0; $i <= $#seqa; $i++) {
+$qualsa[$i] = "!" if($seqa[$i] eq 'N');
+}
+print "$name$seq\n$name2";
+print join("", @qualsa) . "\n";
+}
+Then, if you run bowtie with its default parameters on the fastq output by the script, you should see it report 753 alignments.
+
+Sorry for the confusion,
+Ben
+
+
+ANSWER TO C:
+
+http://www.phrap.org/consed/consed.html#howToGet
+
+
+</entry>
+
+
+
+<entry [Sun Mar  7 20:26:27 EST 2010] BENCHMARKS>
+
+
+
+
+RUN MAQ.pl ON ONE LANE AGAINST INDIV CHROMOSOMES IN PARALLEL, MAX 300 JOBS
+
+maq1    single  serial
+
+cd /nethome/syoung/base/pipeline/benchmark/maq
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--convert post-1.3 \
+--queue priority \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/single \
+--inputfile /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 
+
+
+
+maq2    single parallel notemp
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq2
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq2
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--convert "post-1.3" \
+--queue priority \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq2 \
+--inputfile /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+
+ALIGMENT ONLY
+
+    MAQ::runJobs    done.
+    MAQ::runJobs    Finished running maq match on every subfile
+    MAQ::runJobs    END OF MAQ::runJobs
+    MAQ.pl    Run time: 00:09:55
+    MAQ.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+    MAQ.pl    0:33AM, 8 March 2010
+    MAQ.pl    ****************************************
+
+
+
+maq3    single  parallel    temp
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq/maq3
+cd /nethome/syoung/base/pipeline/benchmark/maq/maq3
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--cluster LSF \
+--convert "post-1.3" \
+--queue priority \
+--tempdir /tmp \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/maq3 \
+--inputfile /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+--parallel &> maq.outerr
+
+    
+    MAQ::runJobs    done.
+    MAQ::runJobs    Finished running maq match on every subfile
+    MAQ::runJobs    END OF MAQ::runJobs
+    MAQ.pl    Run time: 00:02:06
+    MAQ.pl    Completed /nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl
+    MAQ.pl    0:53AM, 8 March 2010
+    MAQ.pl    ****************************************
+
+
+
+JOB COMPLETES BUT NO SNPfilter FILE ENTRIES. REDID ALL THE MERGE/SNPCALL COMMANDS MANUALLY FOR chrY AND GOT THE SAME RESULT:
+
+    #!/bin/sh
+        
+    #BSUB -J chrY             	# The name of the job
+    #BSUB -o /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY-stdout.txt 			# print STDOUT to this file
+    #BSUB -e /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY-stderr.txt 			# print STDOUT to this file
+    
+    
+    echo "LS_JOBID: " $LS_JOBID
+    echo "LS_JOBPID: " $LS_JOBPID
+    echo "LSB_JOBINDEX: " $LSB_JOBINDEX
+    echo "LSB_JOBNAME: " $LSB_JOBNAME
+    echo "LSB_QUEUE: " $LSB_QUEUE
+    echo "LSFUSER: " $LSFUSER
+    echo "LSB_JOB_EXECUSER: " $LSB_JOB_EXECUSER
+    echo "HOSTNAME: " $HOSTNAME
+    echo "LSB_HOSTS: " $LSB_HOSTS
+    echo "LSB_ERRORFILE: " $LSB_ERRORFILE
+    echo "LSB_JOBFILENAME: " $LSB_JOBFILENAME
+    echo "LD_LIBRARY_PATH: " $LD_LIBRARY_PATH
+    #### out.map: /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    #### temp.map: /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Merging out.map files...
+    #### Copying first submap file to temp.map...
+    
+    time cp /nethome/syoung/base/pipeline/benchmark/maq/maq3/1/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 0 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/2/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 1 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/3/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 2 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/4/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 3 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/5/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 4 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/6/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    #### Doing submap 5 of 6
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapmerge /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/7/chrY.bfa-out.map
+    ls -al /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    mv -f /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map
+    cp /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-temp.map /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY.bfa-out.map
+    time /nethome/bioinfo/apps/maq/0.7.1/maq mapcheck /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chrY.bfa chrY.bfa-out.map > chrY.bfa-mapcheck.txt
+    time /nethome/bioinfo/apps/maq/0.7.1/maq assemble chrY.bfa-consensus.cns /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chrY.bfa chrY.bfa-out.map 2> assemble.log
+    time /nethome/bioinfo/apps/maq/0.7.1/maq cns2fq chrY.bfa-consensus.cns > chrY.bfa-cns.fq
+    time /nethome/bioinfo/apps/maq/0.7.1/maq cns2snp chrY.bfa-consensus.cns > chrY.bfa-cns.snp
+    time /nethome/bioinfo/apps/maq/0.7.1/maq rmdup chrY.bfa-out.rmdup chrY.bfa-out.map
+    
+
+    
+ll chrY.bfa-cns.snp
+
+    -rw-rw-rw- 1 syoung bioinfo 948K Mar  9 13:45 chrY.bfa-cns.snp
+
+head chrY.bfa-cns.snp
+
+    chrY    224     G       A       3       2       1.00    25      28      T       3       W
+    chrY    2154    A       T       4       1       1.00    0       4       N       26      N
+    chrY    5436    C       T       1       1       0.00    0       4       N       29      N
+    chrY    5446    C       T       4       1       0.00    0       0       N       26      N
+    chrY    5557    T       C       14      4       35.00   27      34      T       12      Y
+    chrY    5936    T       C       7       2       2.50    0       6       N       26      N
+    chrY    5944    T       G       7       2       2.50    0       6       N       26      N
+    chrY    6009    A       G       4       1       2.00    0       4       N       26      N
+    chrY    11610   C       A       0       2       47.50   0       6       C       27      M
+    chrY    11793   G       A       7       2       2.00    0       6       N       26      N
+
+    
+    BUT indelpe FILE IS EMPTY:
+    
+    time /nethome/bioinfo/apps/maq/0.7.1/maq indelpe /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chrY.bfa chrY.bfa-out.rmdup > chrY.bfa-out.indelpe
+    
+    ll chrY.bfa-out.indelpe
+    
+        -rw-rw-rw- 1 syoung bioinfo 0 Mar  9 13:45 chrY.bfa-out.indelpe
+    
+    
+    time /nethome/bioinfo/apps/maq/0.7.1/maq indelsoa /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chrY.bfa chrY.bfa-out.map > chrY.bfa-out.indelsoa
+    
+    awk '$5+$6-$4 >= 3 && $4 <= 1' chrY.bfa-out.indelsoa > chrY.bfa-out.indelsoa.filter
+    
+    time /nethome/bioinfo/apps/maq/0.7.1/scripts/maq.pl SNPfilter -d 1 -s out.indelsoa -F out.indelpe chrY.bfa-cns.snp &> chrY.bfa-out.SNPfilter
+    
+    #`bhist $LSB_JOBID > /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY-usage.txt`;
+    echo "Printed usage file: /nethome/syoung/base/pipeline/benchmark/maq/maq3/chrY-usage.txt"
+
+
+
+
+
+
+
+
+INTERACTIVE JOB
+
+[syoung@u01 maq3]$  bsub -I -q priority -n 4,10 "ls -al /" 
+Job <7479> is submitted to queue <priority>.
+<<Waiting for dispatch ...>>
+<<Starting on n0143>>
+total 20
+drwxr-xr-x  25 root root      540 Mar  4 18:19 .
+drwxr-xr-x  25 root root      540 Mar  4 18:19 ..
+-rw-r--r--   1 root root        0 Mar  4 13:17 .autofsck
+drwxr-xr-x   2 root root     4096 Feb 26 04:03 bin
+drwxr-xr-x  11 root root     3320 Mar  4 18:19 dev
+
+
+
+
+NOTES
+=====
+
+SURPRISINGLY, COULD NOT OUTPUT TO /tmp DIR ON EXECUTION HOST IN METHOD solToSangerCommands
+
+THE mv /tmp/outpufile /outputdir/outputfile STRATEGY GETS STUCK PROBABLY DUE TO BOTTLENECT AT NFS 
+
+FILES ONLY PARTIALLY COPIED WHEN RUN AS JOBS ON CLUSTER:
+
+    [syoung@u01 maq3]$ ll */*fastq
+    -rw-rw-rw- 1 syoung bioinfo 19M Mar  9 11:17 1/s_1_sequence.1.fastq
+    -rw-rw-rw- 1 syoung bioinfo 19M Mar  9 11:17 2/s_1_sequence.2.fastq
+    -rw-rw-rw- 1 syoung bioinfo 19M Mar  9 11:17 3/s_1_sequence.3.fastq
+    -rw-rw-rw- 1 syoung bioinfo 20M Mar  9 11:17 4/s_1_sequence.4.fastq
+    -rw-rw-rw- 1 syoung bioinfo 22M Mar  9 11:17 5/s_1_sequence.5.fastq
+    -rw-rw-rw- 1 syoung bioinfo 22M Mar  9 11:17 6/s_1_sequence.6.fastq
+    -rw-rw-rw- 1 syoung bioinfo 12M Mar  9 11:17 7/s_1_sequence.7.fastq
+
+
+FILES COPIED COMPLETELY WHEN RUN MANUALLY:
+
+time /nethome/bioinfo/apps/maq/0.7.1/maq ill2sanger /nethome/syoung/base/pipeline/benchmar\
+> k/maq/maq3/1/s_1_sequence.1.txt /tmp/s_1_sequence.1.fastq
+
+    real    0m5.735s
+    user    0m5.047s
+    sys     0m0.679s
+
+[syoung@u01 maq3]$ time mv /tmp/s_1_sequence.1.fastq /nethome/syoung/base/pipeline/benchmark/maq/maq3/1/s_1_sequence.1.fastq
+
+mv: overwrite `/nethome/syoung/base/pipeline/benchmark/maq/maq3/1/s_1_sequence.1.fastq'? y
+
+    real    0m4.422s
+    user    0m0.013s
+    sys     0m0.589s
+
+[syoung@u01 maq3]$ ll */*fastq
+
+    -rw-r--r-- 1 syoung bioinfo 148M Mar  9 11:19 1/s_1_sequence.1.fastq
+    -rw-rw-rw- 1 syoung bioinfo  19M Mar  9 11:17 2/s_1_sequence.2.fastq
+    -rw-rw-rw- 1 syoung bioinfo  19M Mar  9 11:17 3/s_1_sequence.3.fastq
+    -rw-rw-rw- 1 syoung bioinfo  20M Mar  9 11:17 4/s_1_sequence.4.fastq
+    -rw-rw-rw- 1 syoung bioinfo  22M Mar  9 11:17 5/s_1_sequence.5.fastq
+    -rw-rw-rw- 1 syoung bioinfo  22M Mar  9 11:17 6/s_1_sequence.6.fastq
+    -rw-rw-rw- 1 syoung bioinfo  12M Mar  9 11:17 7/s_1_sequence.7.fastq
+
+[syoung@u01 maq3]$ lines */s_1_sequence.*.fastq
+
+    1/s_1_sequence.1.fastq: 4000000
+    2/s_1_sequence.2.fastq: 499536
+    3/s_1_sequence.3.fastq: 508303
+    4/s_1_sequence.4.fastq: 534255
+    5/s_1_sequence.5.fastq: 582753
+    6/s_1_sequence.6.fastq: 568154
+    7/s_1_sequence.7.fastq: 317320
+
+
+OUTPUT TO OUTPUTDIR ACROSS NFS WORKED FINE:
+
+
+    [syoung@u01 maq3]$ lines */s_1_sequence.*.fastq
+    1/s_1_sequence.1.fastq: 4000000
+    2/s_1_sequence.2.fastq: 4000000
+    3/s_1_sequence.3.fastq: 4000000
+    4/s_1_sequence.4.fastq: 4000000
+    5/s_1_sequence.5.fastq: 4000000
+    6/s_1_sequence.6.fastq: 4000000
+    7/s_1_sequence.7.fastq: 1538976
+
+
+sub solToSangerCommands
+{
+	my $self			=	shift;
+	my $inputfiles		=	shift;
+
+    my $DEBUG = 1;
+
+	#### MAQ, CONVERT, AND CLEAN
+	my $maq				=	$self->get_maq();
+	my $convert			=	$self->get_convert();
+	my $clean			=	$self->get_clean();
+
+	print "MAQ::solToSangerCommands    MAQ::solToSangerCommands(inputfiles)\n" if $DEBUG;
+	print "MAQ::solToSangerCommands    inputfiles: @$inputfiles\n" if $DEBUG;
+
+	#### GET TEMP DIR
+	my $tempdir = $self->get_tempdir();
+
+	my $commands = [];
+	my $fastqfiles = [];
+	if ( defined $convert and $$inputfiles[0] !~ /\.bfq$/ )
+	{
+		foreach my $inputfile ( @$inputfiles )
+		{
+            #### OUTPUT TO OUTPUTDIR ACROSS NFS
+			#### SET CONVERSION OUTPUT FILE SUFFIX TO .fastq			
+			my $fastqfile = $inputfile;
+			if ( $inputfile =~ /fastq$/ )
+			{
+				$fastqfile =~ s/fastq$/sanger.fastq/;
+			}
+			elsif ( $inputfile =~ /txt$/ )
+			{
+				$fastqfile =~ s/\.txt$/.fastq/;
+			}
+			else
+			{
+				print "Quitting - Input file has incorrect suffix:	$inputfile\n";
+				exit;
+			}
+			
+			push @$commands, "#### Converting solexa sequence file to Sanger fastq file";
+			
+			if ( $convert =~ /^post-1.3$/ )
+			{
+				push @$commands, "time $maq/maq ill2sanger $inputfile $fastqfile";
+			}
+			elsif ( $convert =~ /^pre-1.3$/ )
+			{
+				push @$commands, "time $maq/maq sol2sanger $inputfile $fastqfile";
+			}
+			else
+			{
+				print "MAQ::alignmentCommands    Conversion type not supported: $convert (must be 'post-1.3' or 'pre1.3')\n" and exit;
+			}
+			
+			#### SAVE .fastq FILE NAME
+			push @$fastqfiles, $fastqfile;
+
+            #### OUTPUT TO /tmp ON EXECUTION HOST
+			######## SET CONVERSION OUTPUT FILE SUFFIX TO .fastq			
+			####my ($outputdir, $fastqfile) = $inputfile =~ /^(.+?)\/([^\/]+)$/;
+			####if ( $inputfile =~ /fastq$/ )
+			####{
+			####	$fastqfile =~ s/fastq$/sanger.fastq/;
+			####}
+			####elsif ( $inputfile =~ /txt$/ )
+			####{
+			####	$fastqfile =~ s/\.txt$/.fastq/;
+			####}
+			####else
+			####{
+			####	print "Quitting - Input file has incorrect suffix:	$inputfile\n";
+			####	exit;
+			####}
+			####
+			####push @$commands, "#### Converting solexa sequence file to Sanger fastq file";
+			####
+			####if ( $convert =~ /^post-1.3$/ )
+			####{
+			####	push @$commands, "time $maq/maq ill2sanger $inputfile $tempdir/$fastqfile";
+			####    push @$commands, "time mv $tempdir/$fastqfile $outputdir/$fastqfile";
+			####}
+			####elsif ( $convert =~ /^pre-1.3$/ )
+			####{
+			####	push @$commands, "time $maq/maq sol2sanger $inputfile $tempdir/$fastqfile";
+			####    push @$commands, "time mv $tempdir/$fastqfile $outputdir/$fastqfile";
+			####}
+			####else
+			####{
+			####	print "MAQ::alignmentCommands    Conversion type not supported: $convert (must be 'post-1.3' or 'pre1.3')\n" and exit;
+			####}
+			
+			#### SAVE .fastq FILE NAME
+			push @$fastqfiles, "$outputdir/$fastqfile";
+
+		}
+	}
+	
+	return { commands => $commands, files => $fastqfiles };	
+}
+
+
+
+
+SUBMIT ARRAY JOB
+================
+
+WORKS BUT CAN'T RESUBMIT FROM EXECUTION NODES SO USE FOR NON-CLUSTERED CONTROLS.
+
+
+mkdir -p /nethome/syoung/base/pipeline/benchmark/maq
+
+cd /nethome/syoung/base/pipeline/benchmark/maq
+
+CREATE SCRIPT:
+
+rm -fr singlearray.sh
+emacs singlearray.sh
+
+#!/bin/sh                                                                                                       
+
+
+#BSUB -J test1                                                                                                  
+#BSUB -o %J.out                                                                                                 
+#BSUB -e %J.err                                                                                                 
+#BSUB -W 1:00                                                                                                   
+#BSUB -q priority                                                                                               
+#BSUB -n 1                                                                                                      
+#BSUB -B                                                                                                        
+#BSUB -N                                                                                                        
+#                                                                                                               
+echo "Running array job on MAQ"
+cd /nethome/syoung/base/pipeline/benchmark/maq
+/nethome/bioinfo/apps/agua/0.4/bin/apps/MAQ.pl \
+--convert \
+--outputdir /nethome/syoung/base/pipeline/benchmark/maq/single-s_1.$LSB_JOBINDEX \
+--inputfile /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human-bfa \
+--jobs 300 \
+
+exit;
+####
+
+
+RUN ARRAY JOB:
+
+cd /nethome/syoung/base/pipeline/benchmark/maq
+bsub -J "maq[1-10]" /nethome/syoung/base/pipeline/benchmark/maq/singlearray.sh -o "/nethome/syoung/base/pipeline/benchmark/maq/single-s_1.\$LSB_JOBINDEX/out.%J.%I" -e "/nethome/syoung/base/pipeline/benchmark/maq/single-s_1.\$LSB_JOBINDEX/err.%J.%I" 
+
+
+
+
+
+
+
+
+TROUBLESHOOTING
+===============
+
+ERROR
+
+maq: match.cc:569: int ma_match(int, char**): Assertion `size_l >= 12 && (size_r == 0 || size_r >= 12)' failed.
+
+
+[syoung@m1 1]$ time /nethome/bioinfo/apps/maq/0.7.1/maq match /nethome/syoung/base/pipeline/benchmark/maq/maq2/1/chrY.bfa-out.map /nethome/bioinfo/data/sequence/chromosomes/human-bfa/chrY.bfa /nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.bfq
+-- maq-0.7.1
+[ma_load_reads] loading reads...
+[ma_load_reads] 0*2 reads loaded.
+[ma_longread2read] encoding reads... 0 sequences processed.
+maq: match.cc:569: int ma_match(int, char**): Assertion `size_l >= 12 && (size_r == 0 || size_r >= 12)' failed.
+Aborted
+
+
+
+SOLUTION
+
+FILE IS EMPTY:
+
+/nethome/bioinfo/data/sequence/labs/flemington/single-read/s_1_sequence.bfq
+
+
+</entry>
+
+
+
+<entry [Tue Mar  2 17:52:52 EST 2010] COMPLETED BENCHMARKS>
+
+
+
+
+MAQ
+===
+
+lines /p/NGS/syoung/base/pipeline/run12/lane1/s_1_1_sequence.fastq
+    /p/NGS/syoung/base/pipeline/run12/lane1/s_1_1_sequence.fastq: 43340996
+
+lines /p/NGS/syoung/base/pipeline/run12/lane1/s_1_2_sequence.fastq
+    /p/NGS/syoung/base/pipeline/run12/lane1/s_1_2_sequence.fastq: 43340996
+
+
+CCDS REFERENCE
+
+ em /p/NGS/syoung/base/pipeline/run12+15/1.4.0/lane1/maq-ccds/clusterMAQ-l1s1M.log
+
+real    0m39.292s
+user    0m28.756s
+sys     0m8.600s
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq indelsoa /mihg/data/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080430.bfa out.map > out\
+.indelsoa
+
+real    0m22.929s
+user    0m22.745s
+sys     0m0.496s
+
+awk '$5+$6-$4 >= 3 && $4 <= 1' out.indelsoa > out.indelsoa.filter
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq.pl SNPfilter -d 1 -s out.indelsoa -F out.indelpe cns.snp &> out.SNPfilter
+
+real    0m0.061s
+user    0m0.002s
+sys     0m0.010s
+
+    Run time: 00:34:16
+    Completed /nethome/syoung/base/bin/nextgen/clusterMAQ.pl
+    5:21PM, 12 August 2009
+    ****************************************
+
+
+DONE
+
+/p/NGS/syoung/base/pipeline/run12+15
+
+
+/nethome/syoung/base/bin/nextgen/clusterMAQ.pl \
+--outputdir /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M \
+--inputfile /p/NGS/syoung/base/pipeline/run12/lane1/s_1_1_sequence.fastq,/p/NGS/syoung/base/pipeline/run12/lane1/s_1_2_sequence.fastq \
+--referencefile /p/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080430.fa \
+--reads  1000000 \
+--clean \
+--jobs 16 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -N ln2-cMAQ-1M -l ncpus=8" \
+&> /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M/ln2-cMAQ-1M.log
+
+
+
+
+TO DO
+
+
+SINGLE READ - FLEMINGTON lanes 1-4,6-7
+
+/nethome/bioinfo/data/sequence/labs/fleming/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4
+
+    Lane 1) EF1	 3pM
+    Lane 2) EF1	 3pM
+    Lane 3) EF2	 3pM
+    Lane 4) EF2	 3pM
+    Lane 5) PhiX	 3pM
+    Lane 6) EF3	 3pM
+    Lane 7) EF3	 3pM
+    Lane 8) EF4	 3pM
+
+
+PAIRED END - FLEMINGTON lanes 3,4,6,7,8
+
+/p/solexa/rhenson/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan
+
+    Lane	 Sample	 Owner	 
+    
+    1	 RF19-4002	 Duan 3.5 pM 
+    2	 RF12-3005	 Duan	 3 pM 
+    3	 EF2	 EFlemington	 2 pM 
+    4	 EF2	 EFlemington 2 pM 
+    5	 PhiX control	 Control	 3 pM 
+    6	 EF3	 EFlemington 3 pM 
+    7	 EF3 EFlemington	 3 pM 
+    8	 EF 4 EFlemington 3 pM
+
+
+mate 1:
+
+ll /p/solexa/rhenson/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan/Data/C1-54_Firecrest1.4.0_17-09-2009_rhenson/Bustard1.4.0_17-09-2009_rhenson/GERALD_17-09-2009_rhenson/
+
+    ...
+    -rw-r--r--+ 1 rhenson mihg  1.1G Sep 18 05:39 s_8_eland_contam.txt
+    -rw-r--r--+ 1 rhenson mihg  1.5G Sep 18 11:48 s_8_eland_extended.txt
+    -rw-r--r--+ 1 rhenson mihg  1.4G Sep 18 11:43 s_8_eland_multi.txt
+    -rw-r--r--+ 1 rhenson mihg  1.2G Sep 18 05:40 s_8_eland_splice.txt
+    -rw-r--r--+ 1 rhenson mihg  2.0G Sep 18 12:19 s_8_export.txt
+    -rw-r--r--+ 1 rhenson mihg  1.1G Sep 18 05:41 s_8_extended_contam.txt
+    ... 
+
+
+mate 2:
+
+ll /p/solexa/rhenson/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan/Data/C55-108_Firecrest1.4.0_18-09-2009_rhenson/Bustard1.4.0_18-09-2009_rhenson/GERALD_18-09-2009_rhenson/
+
+    ...
+    -rw-r--r--+ 1 rhenson mihg  994M Sep 19 06:40 s_8_1_eland_query.txt
+    -rw-r--r--+ 1 rhenson mihg  611M Sep 19 13:51 s_8_calsaf.txt
+    -rw-r--r--+ 1 rhenson mihg  1.1G Sep 19 06:44 s_8_eland_contam.txt
+    -rw-r--r--+ 1 rhenson mihg  1.5G Sep 19 13:30 s_8_eland_extended.txt
+    -rw-r--r--+ 1 rhenson mihg  1.4G Sep 19 13:26 s_8_eland_multi.txt
+    ...
+
+
+
+
+CASAVA
+======
+
+
+ELAND SORTED FILE:
+
+HWI-EAS185      7       8       36      1839    423     0       1       CCTAACACCATATGAAAGCTACAAAGGCTTATGGCTTGCACCCTCTGAAGCA  aabaa`````aaaaa`]``aa^^^__[W_``_[\\`\MVQPSYVLVHQTQRR    c10.fa          93475   F       52      31
+HWI-EAS185      7       8       21      1262    355     0       1       TGCGAGCCATCCCTCTCTGGAGGGGTGCTCCCCATGAATTGCAGATCGGAAG  `a`aaa_`aaa\\a`aaaa`^_OQV]a`a[XYSPZ^_^``a\^`X`]``XN_    c10.fa          122209  F       40T2CCC1A1C2    8
+
+
+SAMPLE 2 WHOLE GENOME
+=====================
+
+outputdir   /nethome/syoung/base/pipeline/casava/sample2
+cpus    8
+job     1
+
+cput    09:14:31
+mem     3390524kb
+vmem    11808636kb
+walltime   04:10:20
+
+INPUT FILES
+
+-rw-rw-rw- 1 syoung bioinfo 2.5G Feb 10 17:13 s_1_1_export.txt
+-rw-rw-rw- 1 syoung bioinfo 2.5G Feb 10 17:15 s_1_2_export.txt
+
+
+#!/bin/sh                                                                                                                                        
+
+#PBS -N noq-casava-sample2                                                                                                                       
+#PBS -l ncpus=8                                                                                                                                  
+#PBS -j oe                                                                                                                                       
+
+/nethome/syoung/base/apps/casava/1.0.10.1/run.pl \
+--exportDir=/nethome/syoung/base/pipeline/casava/sample2 \
+--genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml \
+--lanes=1 \
+--projectDir=/nethome/syoung/base/pipeline/casava/sample2/casava-1 \
+--runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+--refSequences=/nethome/syoung/base/pipeline/human-genome/illumina \
+--workflowAuto \
+--snpCovCutoff=-1
+
+
+
+SAMPLE 1 (DISCARD)  WHOLE GENOME
+==================
+
+outputdir   /nethome/syoung/base/pipeline/casava/sample1
+usagefile  casava-1.o228554
+cpus    8
+job     1
+finished    [10/02/10 18:26:50]
+cput   16:27:24
+mem    4257780kb
+vmem   12595300kb
+walltime    05:39:20
+
+
+INPUT FILES  -- PROBLEM WITH FIRST FILE!
+
+-rw-rw-rw- 1 syoung bioinfo 104M Feb 10 16:44 s_1_1_export.txt
+-rw-rw-rw- 1 syoung bioinfo 2.5G Feb 10 04:39 s_1_2_export.txt
+
+#!/bin/sh                                                                                                                                        
+
+#PBS -N noq-casava-sample2                                                                                                                       
+#PBS -l ncpus=8                                                                                                                                  
+#PBS -j oe                                                                                                                                       
+
+/nethome/syoung/base/apps/casava/1.0.10.1/run.pl \
+--exportDir=/nethome/syoung/base/pipeline/casava/sample2 \
+--genomeSize=/nethome/syoung/base/apps/casava/1.0.10.1/features/human_genome_size.xml \
+--lanes=1 \
+--projectDir=/nethome/syoung/base/pipeline/casava/sample2/casava-1 \
+--runId=090508_HWI-EAS185_0004_3031UAAXX_Duan4_Jia3 \
+--refSequences=/nethome/syoung/base/pipeline/human-genome/illumina \
+--workflowAuto \
+--snpCovCutoff=-1
+
+
+
+
+
+
+ELAND
+=====
+
+/nethome/bioinfo/apps/agua/0.4/bin/apps/ELANDc.pl \
+--inputfile /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_1.1.fastq,/p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_2.1.fastq \
+--inputtype fastq \
+--referencedir /q/nextGen/GA/refSeqs/chromosomes/hs_chr_sq \
+--outputdir /p/NGS/syoung/base/pipeline/SRA/eland/1 \
+--splitfile /p/NGS/syoung/base/pipeline/SRA/eland/1/reads.1.fastq.split \
+--paired \
+--queue "-q psmall" \
+--jobs 40
+
+
+CREATE SINGLE-CHROMOSOME SQUASH FILE DIRECTORIES ON kronos AND pegasus
+
+
+cd /nethome/bioinfo/data/sequence/chromosomes/human-sq
+mkdir chr1
+mkdir chr2
+mkdir chr3
+mkdir chr4
+mkdir chr5
+mkdir chr6
+mkdir chr7
+mkdir chr7
+mkdir chr8
+mkdir chr79
+mkdir chr9
+mkdir chr10
+mkdir chr11
+mkdir chr12
+mkdir chr13
+mkdir chr14
+mkdir chr15
+mkdir chr16
+mkdir chr17
+mkdir chr18
+mkdir chr19
+mkdir chr20
+mkdir chr21
+mkdir chr22
+mkdir chrX
+mkdir chrY
+
+
+
+LINK EXISTING SQUASHED CHROMOSOME FILES TO SINGLE-CHROMO DIRECTORIES:
+
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr1.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr1/chr1.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr1.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr1/chr1.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr2.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr2/chr2.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr2.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr2/chr2.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr3.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr3/chr3.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr3.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr3/chr3.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr4.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr4/chr4.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr4.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr4/chr4.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr5.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr5/chr5.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr5.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr5/chr5.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr6.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr6/chr6.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr6.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr6/chr6.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr7.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr7/chr7.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr7.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr7/chr7.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr8.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr8/chr8.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr8.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr8/chr8.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr9.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr9/chr9.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr9.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr9/chr9.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr10.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr10/chr10.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr10.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr10/chr10.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr11.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr11/chr11.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr11.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr11/chr11.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr12.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr12/chr12.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr12.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr12/chr12.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr13.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr13/chr13.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr13.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr13/chr13.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr14.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr14/chr14.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr14.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr14/chr14.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr15.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr15/chr15.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr15.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr15/chr15.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr16.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr16/chr16.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr16.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr16/chr16.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr17.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr17/chr17.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr17.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr17/chr17.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr18.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr18/chr18.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr18.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr18/chr18.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr19.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr19/chr19.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr19.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr19/chr19.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr20.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr20/chr20.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr20.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr20/chr20.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr21.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr21/chr21.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr21.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr21/chr21.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr22.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr22/chr22.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr22.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chr22/chr22.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrX.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrX/chrX.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrX.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrX/chrX.fa.vld 
+
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrY.fa.2bpb /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrY/chrY.fa.2bpb 
+ln -s /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrY.fa.vld /nethome/bioinfo/data/sequence/chromosomes/human-sq/chrY/chrY.fa.vld 
+
+
+COPY INPUT FILES 
+=================
+
+FLEMINGTON: SINGLE READ 8 LANES
+===============================
+
+
+DESTINATION
+
+/nethome/bioinfo/data/sequence/labs/flemington/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/GERALD_15-08-2009_syoung
+
+1. MAKE DIR
+
+mkdir -p /nethome/bioinfo/data/sequence/labs/fleming/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4
+
+
+2. GET *sequence.txt FILES
+
+cp /p/solexa/rhenson/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Data/C1-52_Firecrest1.4.0_10-09-2009_rhenson/Bustard1.4.0_10-09-2009_rhenson/GERALD_10-09-2009_rhenson/*sequence.txt \
+/nethome/bioinfo/data/sequence/labs/flemington/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4
+
+3. GET ELAND ALIGNMENT FILES
+
+cp -r /p/NGS/syoung/base/pipeline/profile/image2eland1/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Data/C1-52_Firecrest1.4.0_15-08-2009_syoung/Bustard1.4.0_15-08-2009_syoung/GERALD_15-08-2009_syoung \
+/nethome/bioinfo/data/sequence/labs/flemington/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4
+
+
+
+
+FLEMINGTON + DUAN: PAIRED END 8 LANES
+=====================================
+
+DESTINATION
+
+/nethome/bioinfo/data/sequence/labs/flemington-dli/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan
+
+
+
+1. MAKE DIR
+
+mkdir -p /nethome/bioinfo/data/sequence/labs/flemington-dli/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan
+
+
+2. COPY *sequence.txt AND ELAND ALIGNMENT FILES
+
+cp -r /p/solexa/rhenson/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan/Data/C1-54_Firecrest1.4.0_17-09-2009_rhenson/Bustard1.4.0_17-09-2009_rhenson/GERALD_17-09-2009_rhenson \
+/nethome/bioinfo/data/sequence/labs/flemington-dli/090528_HWI-EAS185_0007_42C1TAAXX_Flemington_Duan
+
+
+
+
+
+
+
+
+
+
+
+IMAGE2ELAND
+===========
+
+
+[syoung@u01 ~]$ ll /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_1.1.fastq
+-rw-rw----+ 1 syoung bioinfo 6.8G Sep 21 13:32 /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_1.1.fastq
+
+[syoung@u01 ~]$ ll /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_2.1.fastq
+
+    -rw-rw----+ 1 syoung bioinfo 6.8G Sep 21 13:33 /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_2.1.fastq
+
+
+lines /p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_2.1.fastq
+/p/NGS/syoung/base/pipeline/SRA/NA18507/samples/reads_ELAND_2.1.fastq: 199999536
+
+49,999,884 READS
+
+
+
+
+FLEMING DATA
+
+LANES   8
+CPUS    8
+REFERENCE  HUMAN GENOME
+
+cput    09:14:31
+mem     3390524kb
+vmem    11808636kb
+walltime   04:10:20
+
+
+
+
+
+c01
+Doing image2eland.pl...
+Goat pipeline: /nethome/syoung/base/apps/GAPipeline-1.4.0/bin/goat_pipeline.py
+Checking type...
+done.
+Checking rundir...
+done.
+Checking outputdir: /nethome/syoung/base/pipeline/profile/image2eland1/outdir ...
+done.
+Output dir: /nethome/syoung/base/pipeline/profile/image2eland1/outdir
+Type: paired
+Images dir: /nethome/syoung/base/pipeline/profile/image2eland1/090515_HWI-EAS185\
+_0005_4299MAAXX_EFlemington_1-4
+CPUs: 8
+Tiles: s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8
+Moving to rundir: /nethome/syoung/base/pipeline/profile/image2eland1/090515_HWI-\
+EAS185_0005_4299MAAXX_EFlemington_1-4
+PWD: /home/syoung/base/pipeline/profile/image2eland1/090515_HWI-EAS185_0005_4299\
+MAAXX_EFlemington_1-4
+
+
+    Run time: 15:09:43
+    Completed /home/syoung/base/bin/nextgen/image2eland.pl
+    9:11AM, 15 August 2009
+    ****************************************
+
+
+Run time: 18:39:38
+Completed /home/syoung/base/bin/nextgen/image2eland.pl
+3:51PM, 16 August 2009
+****************************************
+
+
+job id: 71549
+
+Printed usage file:
+/p/NGS/syoung/base/pipeline/profile/image2eland1/test-usage.txt
+
+E.G., submit_args = -q psmall -M syoung@med.miami.edu -m abe -l nodes=n02:ppn=8
+        -l walltime=72:00:00 -N 2-image2eland /nethome/syoung/base/pipeline/pr
+        ofile/image2eland2/run-image2eland.sh !
+
+1-image2eland
+
+    Job_Name = 1-image2eland
+    Job_Owner = syoung@kronos.ccs.miami.edu
+    resources_used.cput = 78:24:34
+    resources_used.mem = 6442488kb
+    resources_used.vmem = 7334024kb
+    resources_used.walltime = 18:39:01
+
+2-image2eland
+
+    resources_used.cput = 75:03:42
+    resources_used.mem = 6307144kb
+    resources_used.vmem = 7255816kb
+    resources_used.walltime = 18:38:24
+ 
+3-image2eland
+
+    resources_used.cput = 75:08:54
+    resources_used.mem = 6481556kb
+    resources_used.vmem = 7435976kb
+    resources_used.walltime = 18:38:08
+  
+4-image2eland
+
+    resources_used.cput = 78:29:42
+    resources_used.mem = 6564856kb
+    resources_used.vmem = 7569264kb
+    resources_used.walltime = 18:37:34
+
+
+
+
+SCRIPTFILE:
+
+/p/NGS/syoung/base/pipeline/profile/image2eland2/run-image2eland.sh
+
+
+    #!/bin/sh
+    
+    ## Request N CPUs (instead of nodes). CPUs are always on one machine.
+    #PBS -l ncpus=8                                                                                    #PBS -j oe
+    
+    HOST=`hostname`
+    echo $HOST
+    
+    echo "Doing image2eland.pl..."
+    
+    cd /nethome/syoung/base/bin/nextgen
+    
+    image2eland.pl --type paired --rundir /nethome/syoung/base/pipeline/profile/image2eland2/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4 --outp\
+    utdir /nethome/syoung/base/pipeline/profile/image2eland2/outdir --geraldfile /nethome/syoung/base/pipeline/profile/image2eland2/geraldfile.txt -\
+    -control 5 --cpus 8 --tiles s_1,s_2,s_3,s_4,s_5,s_6,s_7,s_8
+    
+    `/usr/local/bin/qstat -f $PBS_ID > $PBS_O_WORKDIR/test-usage.txt`;
+    echo "Printed usage file: $PBS_O_WORKDIR/test-usage.txt"
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Aug 14 06:31:18 EDT 2009] PROFILING OF AQWA PIPELINE APPS - cluster-image2eland.pl, clusterMAQ.pl AND clusterEland.pl>
+
+
+
+
+HOW TO SPECIFY NODE AND CPUS:
+
+qsub -M syoung@med.miami.edu -m abe -l nodes=n03:ppn=8 -l walltime=72:00:00 -N 1-image2eland -q psmall /nethome/syoung/base/pipeline/profile/image2eland1/run-image2eland.sh
+
+(submits to node 03 and uses 8 cpus with 3 days walltime)
+
+
+
+1) RUN cluster-image2eland.pl TO MEASURE TOTAL CPU USAGE, PEAK MEMORY, ETC.
+
+NB:
+
+http://www.gersteinlab.org/proj/chip-seq-simu/eland.html
+Eland uses up to 1GB of memory. The pipeline starts one Eland job per lane. In order to prevent most computers from running out of memory, an artificial dependency in the GERALD Makefile prevents multiple instances of Eland from running at the same time. This limitation can be removed by using the option
+
+ELAND_MULTIPLE_INSTANCES 8
+
+in the Gerald config file. Be aware that this may use up to 8 GB of memory on your analysis computer; if not enough memory is available, the analysis is likely to crash. Allowed values for this option are 1, 2, 4, 8. (1 means no lane parallelisation, and uses up to 1 GB RAM, 2 means two parallel jobs and up to 2 GB etc
+
+
+
+IMAGE2ELAND1
+------------
+
+## 1. SET UP OUTPUTDIR
+
+mkdir -p /nethome/syoung/base/pipeline/profile/image2eland1
+cd /nethome/syoung/base/pipeline/profile/image2eland1
+
+## 2. CREATE GERALDFILE:
+
+rm -fr /nethome/syoung/base/pipeline/profile/image2eland1/geraldfile.txt
+emacs /nethome/syoung/base/pipeline/profile/image2eland1/geraldfile.txt
+12345678:ANALYSIS eland_extended
+12345678:SEQUENCE_FORMAT --fastq
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+1234678:ELAND_GENOME /p/NGS/syoung/base/pipeline/human-chr-squashed
+12345678:USE_BASES nY*n
+ELAND_MULTIPLE_INSTANCES 8
+
+## 3. RUN cluster-image2eland.pl
+
+cd /nethome/syoung/base/pipeline/profile/image2eland1
+
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type paired \
+--rundir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4 \
+--imagedir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Images \
+--outputdir /nethome/syoung/base/pipeline/profile/image2eland1 \
+--geraldfile /nethome/syoung/base/pipeline/profile/image2eland1/geraldfile.txt \
+--control 5 \
+--cpus 8 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -l nodes=n01:ppn=8 -l walltime=72:00:00 -N 1-image2eland" \
+&> image2eland1.out
+
+
+
+IMAGE TO ELAND 2
+-----------------
+
+## 1. SET UP OUTPUTDIR
+
+mkdir -p /nethome/syoung/base/pipeline/profile/image2eland2
+cd /nethome/syoung/base/pipeline/profile/image2eland2
+
+## 2. CREATE GERALDFILE:
+
+rm -fr /nethome/syoung/base/pipeline/profile/image2eland2/geraldfile.txt
+emacs /nethome/syoung/base/pipeline/profile/image2eland2/geraldfile.txt
+12345678:ANALYSIS eland_extended
+12345678:SEQUENCE_FORMAT --fastq
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+1234678:ELAND_GENOME /p/NGS/syoung/base/pipeline/human-chr-squashed
+12345678:USE_BASES nY*n
+ELAND_MULTIPLE_INSTANCES 8
+
+## 3. RUN /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+
+cd /nethome/syoung/base/pipeline/profile/image2eland2
+
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type paired \
+--rundir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4 \
+--imagedir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Images \
+--outputdir /nethome/syoung/base/pipeline/profile/image2eland2 \
+--geraldfile /nethome/syoung/base/pipeline/profile/image2eland2/geraldfile.txt \
+--control 5 \
+--cpus 8 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -l nodes=n02:ppn=8 -l walltime=72:00:00  -N 2-image2eland" \
+&> image2eland2.out
+
+
+
+
+
+
+
+IMAGE TO ELAND 3
+-----------------
+
+## 1. SET UP OUTPUTDIR
+
+mkdir -p /nethome/syoung/base/pipeline/profile/image2eland3
+cd /nethome/syoung/base/pipeline/profile/image2eland3
+
+## 2. CREATE GERALDFILE:
+
+rm -fr /nethome/syoung/base/pipeline/profile/image2eland3/geraldfile.txt
+emacs /nethome/syoung/base/pipeline/profile/image2eland3/geraldfile.txt
+12345678:ANALYSIS eland_extended
+12345678:SEQUENCE_FORMAT --fastq
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+1234678:ELAND_GENOME /p/NGS/syoung/base/pipeline/human-chr-squashed
+12345678:USE_BASES nY*n
+ELAND_MULTIPLE_INSTANCES 8
+
+## 3. RUN /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+
+cd /nethome/syoung/base/pipeline/profile/image2eland3
+
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type paired \
+--rundir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4 \
+--imagedir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Images \
+--outputdir /nethome/syoung/base/pipeline/profile/image2eland3 \
+--geraldfile /nethome/syoung/base/pipeline/profile/image2eland3/geraldfile.txt \
+--control 5 \
+--cpus 8 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -l nodes=n03:ppn=8 -l walltime=72:00:00  -N 3-image2eland" \
+&> image2eland3.out
+
+
+
+
+
+
+IMAGE TO ELAND 4
+-----------------
+
+## 1. SET UP OUTPUTDIR
+
+mkdir -p /nethome/syoung/base/pipeline/profile/image2eland4
+cd /nethome/syoung/base/pipeline/profile/image2eland4
+
+## 2. CREATE GERALDFILE:
+
+rm -fr /nethome/syoung/base/pipeline/profile/image2eland4/geraldfile.txt
+emacs /nethome/syoung/base/pipeline/profile/image2eland4/geraldfile.txt
+12345678:ANALYSIS eland_extended
+12345678:SEQUENCE_FORMAT --fastq
+5:ELAND_GENOME /nethome/syoung/base/pipeline/solexa-reruns/genomes/phiXgenome
+1234678:ELAND_GENOME /p/NGS/syoung/base/pipeline/human-chr-squashed
+12345678:USE_BASES nY*n
+ELAND_MULTIPLE_INSTANCES 8
+
+## 3. RUN /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl
+
+cd /nethome/syoung/base/pipeline/profile/image2eland4
+
+perl /nethome/syoung/base/bin/nextgen/cluster-image2eland.pl \
+--type paired \
+--rundir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4 \
+--imagedir /p/solexa/090515_HWI-EAS185_0005_4299MAAXX_EFlemington_1-4/Images \
+--outputdir /nethome/syoung/base/pipeline/profile/image2eland4 \
+--geraldfile /nethome/syoung/base/pipeline/profile/image2eland4/geraldfile.txt \
+--control 5 \
+--cpus 8 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -l nodes=n04:ppn=8 -l walltime=72:00:00  -N 4-image2eland" \
+&> image2eland4.out
+
+
+	ALL 4 JOBS RUNNING:
+	[syoung@ngsdev image2eland4]$ qstat -n
+	
+	kronos.ccs.miami.edu: 
+																	   Req'd  Req'd   Elap
+	Job ID               Username Queue    Jobname    SessID NDS   TSK Memory Time  S Time
+	-------------------- -------- -------- ---------- ------ ----- --- ------ ----- - -----
+	71164.kronos.ccs.mia syoung   psmall   1-image2el  18652     1   8    --  72:00 R 00:00
+	   n01/7+n01/6+n01/5+n01/4+n01/3+n01/2+n01/1+n01/0
+	71165.kronos.ccs.mia syoung   psmall   2-image2el  32477     1   8    --  72:00 R   -- 
+	   n02/7+n02/6+n02/5+n02/4+n02/3+n02/2+n02/1+n02/0
+	71166.kronos.ccs.mia syoung   psmall   3-image2el  28488     1   8    --  72:00 R   -- 
+	   n03/7+n03/6+n03/5+n03/4+n03/3+n03/2+n03/1+n03/0
+	71167.kronos.ccs.mia syoung   psmall   4-image2el   6301     1   8    --  72:00 R   -- 
+	   n04/7+n04/6+n04/5+n04/4+n04/3+n04/2+n04/1+n04/0
+	[syoung@ngsdev image2eland4]$ qstat 
+	Job id                    Name             User            Time Use S Queue
+	------------------------- ---------------- --------------- -------- - -----
+	71164.kronos              1-image2eland    syoung          00:00:55 R psmall         
+	71165.kronos              2-image2eland    syoung                 0 R psmall         
+	71166.kronos              3-image2eland    syoung                 0 R psmall         
+	71167.kronos              4-image2eland    syoung                 0 R psmall         
+	[syoung@ngsdev image2eland4]$ 
+
+
+
+	###RUNNING
+	###
+	###[syoung@kronos image2eland4]$ date
+	###Thu Aug 13 12:17:48 EDT 2009
+	###[syoung@kronos image2eland4]$ qstat
+	###Job id                    Name             User            Time Use S Queue
+	###------------------------- ---------------- --------------- -------- - -----
+	###70906.kronos              ...mage2eland.sh syoung          00:00:00 C default        
+	###70907.kronos              ...mage2eland.sh syoung          00:00:00 C default        
+	###70908.kronos              ...mage2eland.sh syoung          00:02:09 R default        
+	###70910.kronos              ...mage2eland.sh syoung                 0 R default        
+	###70911.kronos              ...mage2eland.sh syoung                 0 R default        
+	###70912.kronos              ...mage2eland.sh syoung                 0 R default  
+
+
+
+
+2) RUN clusterMAQ.pl TO MEASURE TOTAL CPU USAGE, PEAK MEMORY, ETC.
+
+
+LANE 1 (RUNS 12 + 15) - 1M READ CHUNKS
+--------------------------------------
+
+	Run time: 00:34:16
+	Completed /nethome/syoung/base/bin/nextgen/clusterMAQ.pl
+	5:21PM, 12 August 2009
+	****************************************
+
+PARTIALLY COMPLETED - HAD TO FIX 'scripts' DIR AND RERUN SNP CALLING PORTION
+
+
+LANE 2 (RUNS 12 + 15) - 1M READ CHUNKS
+--------------------------------------
+
+ALSO COPIED TO:
+
+
+Notes-project22-aqwa.txt
+Fri Aug 14 06:31:18 EDT 2009
+PROFILING OF AQWA PIPELINE APPS - cluster-image2eland.pl, clusterMAQ.pl AND clusterEland.pl
+
+
+
+mkdir -p /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M
+cd /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M
+
+screen -S lane2-clusterMAQ-1M
+
+/nethome/syoung/base/bin/nextgen/clusterMAQ.pl \
+--outputdir /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M \
+--inputfile /p/NGS/syoung/base/pipeline/run12/lane1/s_1_1_sequence.fastq,/p/NGS/syoung/base/pipeline/run12/lane1/s_1_2_sequence.fastq \
+--referencefile /p/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080430.fa \
+--reads  1000000 \
+--clean \
+--jobs 16 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -N ln2-cMAQ-1M -l ncpus=8" \
+&> /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M/ln2-cMAQ-1M.log
+
+
+tail -f /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M/ln2-cMAQ-1M.log
+
+
+	QUEUEING
+	Fri Aug 14 06:47:28 EDT 2009
+
+	
+	Run time: 00:47:39
+	Completed /nethome/syoung/base/bin/nextgen/clusterMAQ.pl
+	7:34AM, 14 August 2009
+	****************************************
+	
+
+PROBLEM
+
+mapcheck GIVES SEGMENTATION FAULT:	
+
+emacs /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M/ln2-cMAQ-1M.log
+ 
+	...
+	time /nethome/syoung/base/apps/maq/0.7.1/maq mapcheck /p/NGS/syoung/base/pipeline/run12/lan\
+	e1/CCDS_nucleotide.20080430.fa out.map > mapcheck.txt
+	sh: line 1:  2652 Segmentation fault      /nethome/syoung/base/apps/maq/0.7.1/maq mapcheck /mihg/da\
+	ta/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080430.fa out.map >mapcheck.txt
+	...
+	
+
+DIAGNOSIS
+
+	out.map IS 331 MB
+
+	NOT ENOUGH MEMORY ON NODE
+	
+	
+SOLUTION
+
+DO mapcheck ON EACH SUB-MAP (COMBINE LATER?)
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+
+
+</entry>
+
+
+
+<entry [Wed Aug 12 15:51:03 EDT 2009] PROFILE MAQ 1, 4 AND 8 LANES ON CLUSTER FOR AQWA>
+
+
+
+USE NA18507, SAMPLE 1 FOR TESTING
+
+DISTRIBUTED:
+
+dEland
+dMAQ
+dBowtie
+
+SINGLE NODE, 8 CPUs:
+
+
+1. BLOCK THE NODE WITH DUMMY REQUEST WITH SLEEP
+USE qstat -n TO DETERMINE WHICH NODE IT IS
+
+
+2. RUN clusterMAQ/clusterEland FROM ngsdev SENDING JOBS TO THE BLOCKED NODE 
+
+
+3. EACH SUBJOB HAS ITS UNIQUE ID WHICH IS PUT IN A LOOKUP TABLE ALONG WITH ITS PID,
+A DESCRIPTION OF THE MASTER JOB, THE ARGUMENTS FOR THE SUBJOB AND JOB START TIME
+
+
+#####4. MANUALLY/Mail::Box::Mbox GET NEW MAIL AND CHECK ITS UNIQUE ID AND PID 
+4. PRINT REDIRECT OF JOB MEMORY AND CPU USAGE TO .qc FILE
+
+	echo "PBS ID: $PBS_ID"
+	echo `/usr/local/bin/qstat -f $PBS_ID`;
+	echo "Completed"
+
+
+		MAIL COMMANDS
+		-------------
+		
+		# EMAIL SOMEONE
+		mail syoung@med.miami.edu
+		
+		# GET MESSAGES
+		mail 
+
+
+
+image2eland
+cassava
+
+
+#PBS -l nodes=1
+
+
+
+
+
+UNKNOWNS: MAX MEMORY PER PROCESS - ISOLATE A WHOLE NODE AND RUN THE APPLICATION ON
+A SINGLE CPU TO ESTIMATE THE MEMORY USAGE 
+
+queueing time (which queue to use?), cpu processing time, 
+
+
+
+MATRIX OF PARAMETERS (LATIN SQUARE)
+
+lanes: 	1,4 and 8 lanes
+chunks:	 0.5M,1M,1.5M,2M
+
+
+solexa	eland
+
+lanes: 	1,4 and 7 lanes (8M, 32M, 64M READS TOTAL)
+chunks:	 0.5,1,2,6,4,8,10,12,14,16,18,20 (MILLION READS/JOB)
+
+
+	You replied on 8/12/2009 3:59 PM.
+	Sent:	 Wednesday, August 12, 2009 1:10 PM
+	Cc:	
+	Young, Stuart
+	Ok, the reservation has been made for Stuart for a period of 7 days on four
+	nodes (a maximum of 32 cores), starting from 13:00pm, August 12th. And the user
+	can submit the job as usual without any special additional options in the
+	scripts. The MOAB job scheduler will automatically allocate his job to reserved
+	nodes. In case the submitted job requires even more resources, the job
+	scheduler will then go to the other no-reserved nodes.
+	
+	Xinglong
+
+
+
+RUN JOBS ON ngsdev:
+
+
+
+MAQ
+---
+
+
+[maq_rmdup_core] 581753 / 2522770 = 0.2306
+117.07user 0.49system 1:59.27elapsed 98%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+2616minor)pagefaults 0swaps
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq indelpe /p/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080\
+430.bfa out.rmdup > out.indelpe
+
+real    0m23.822s
+user    0m18.107s
+sys     0m0.479s
+
+time /nethome/syoung/base/apps/maq/0.7.1/maq indelsoa /p/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.2008\
+0430.bfa out.map > out.indelsoa
+
+real    0m16.080s
+user    0m15.901s
+sys     0m0.150s
+
+awk '$5+$6-$4 >= 3 && $4 <= 1' out.indelsoa > out.indelsoa.filter
+
+time /nethome/syoung/base/apps/maq/0.7.1/scripts/maq.pl SNPfilter -d 1 -s out.indelsoa -F out.indelpe cns.snp &> out.SNPfi\
+lter
+
+real    0m2.196s
+user    0m1.123s
+sys     0m0.036s
+
+Run time: 00:47:39
+Completed /nethome/syoung/base/bin/nextgen/clusterMAQ.pl
+7:34AM, 14 August 2009
+****************************************
+
+
+LANE 1 OF RUNS 12 AND 15
+
+
+mkdir -p /p/NGS/syoung/base/pipeline/profile1/maq
+cd /p/NGS/syoung/base/pipeline/profile1/maq
+
+screen -S l1s1M
+
+/nethome/syoung/base/bin/nextgen/clusterMAQ.pl \
+--outputdir /p/NGS/syoung/base/pipeline/profile1/maq \
+--inputfile /p/NGS/syoung/base/pipeline/run12/lane1/s_1_1_sequence.fastq,/p/NGS/syoung/base/pipeline/run12/lane1/s_1_2_sequence.fastq \
+--referencefile /p/NGS/syoung/base/pipeline/run12/lane1/CCDS_nucleotide.20080430.fa \
+--reads  1000000 \
+--clean \
+--jobs 16 \
+--queue "-q psmall -M syoung@med.miami.edu -m abe -N l1s1M" \
+&> /p/NGS/syoung/base/pipeline/profile1/maq/clusterMAQ-l1s1M.log
+
+tail -f  /p/NGS/syoung/base/pipeline/profile1/maq/clusterMAQ-l1s1M.log
+	
+	
+	
+	...	
+	[maq_rmdup_core] 581974 / 2522986 = 0.2307
+	175.30user 3.53system 2:14.93elapsed 132%CPU (0avgtext+0avgdata 0maxresident)k
+	0inputs+0outputs (0major+2585minor)pagefaults 0swaps
+	
+	time /nethome/syoung/base/apps/maq/0.7.1/maq indelpe /p/NGS/syoung/base/pipeline/run12/\
+	lane1/CCDS_nucleotide.20080430.bfa out.rmdup > out.indelpe
+	
+	real    0m39.292s
+	user    0m28.756s
+	sys     0m8.600s
+	
+	time /nethome/syoung/base/apps/maq/0.7.1/maq indelsoa /p/NGS/syoung/base/pipeline/run12\
+	/lane1/CCDS_nucleotide.20080430.bfa out.map > out.indelsoa
+	
+	real    0m22.929s
+	
+		user    0m22.745s
+	sys     0m0.496s
+	
+	awk '$5+$6-$4 >= 3 && $4 <= 1' out.indelsoa > out.indelsoa.filter
+	
+	time /nethome/syoung/base/apps/maq/0.7.1/maq.pl SNPfilter -d 1 -s out.indelsoa -F out.indelpe c\
+	ns.snp &> out.SNPfilter
+	
+	real    0m0.061s
+	user    0m0.002s
+	sys     0m0.010s
+	
+	Run time: 00:34:16
+	Completed /nethome/syoung/base/bin/nextgen/clusterMAQ.pl
+	5:21PM, 12 August 2009
+	****************************************
+
+
+FAILED AT maq.pl BECAUSE OF INCORRECT PATH ('scripts' DIR MISSING). RERAN WITH CORRECT PATH:
+
+
+cd /p/NGS/syoung/base/pipeline/profile/clusterMAQ-1M
+
+time /nethome/syoung/base/apps/maq/0.7.1/scripts/maq.pl SNPfilter -d 1 -s out.indelsoa -F out.indelpe cns.snp &> out.SNPfilter
+
+
+ll
+
+	-rw-rw----+  1 syoung bioinfo 1.3M Aug 12 17:15 assemble.log
+	lrwxrwxrwx   1 syoung bioinfo   44 Aug 12 18:59 .#clusterMAQ-l1s1M.log -> syoung@ngsdev.ccs.miami.edu.14692:1241440567
+	-rw-rw----+  1 syoung bioinfo 1.1M Aug 12 19:00 #clusterMAQ-l1s1M.log#
+	-rw-rw----+  1 syoung bioinfo 1.1M Aug 12 17:19 clusterMAQ-l1s1M.log
+	-rw-rw----+  1 syoung bioinfo  65M Aug 12 17:15 cns.fq
+	-rw-rw----+  1 syoung bioinfo 6.0M Aug 12 17:15 cns.snp
+	-rw-rw----+  1 syoung bioinfo  42M Aug 12 17:15 consensus.cns
+	-rw-rw----+  1 syoung bioinfo  538 Aug 12 17:13 mapcheck.txt
+	-rw-rw----+  1 syoung bioinfo  442 Aug 12 15:59 miniMAQ.log
+	-rw-rw----+  1 syoung bioinfo  651 Aug 12 16:42 #miniMAQ.sh#
+	-rw-rw----+  1 syoung bioinfo  660 Aug 12 15:55 miniMAQ.sh
+	-rw-rw----+  1 syoung bioinfo    4 Aug 12 15:55 miniMAQ.sh~
+	-rw-------+  1 syoung bioinfo    0 Aug 12 15:54 miniMAQ.sh.o70593
+	-rw-------+  1 syoung bioinfo    0 Aug 12 15:57 miniMAQ.sh.o70595
+	-rw-------+  1 syoung bioinfo    0 Aug 12 16:00 miniMAQ.sh.o70598
+	-rw-rw----+  1 syoung bioinfo 5.2M Aug 12 17:18 out.indelpe
+	-rw-rw----+  1 syoung bioinfo 766K Aug 12 17:19 out.indelsoa
+	-rw-rw----+  1 syoung bioinfo  28K Aug 12 17:19 out.indelsoa.filter
+	-rw-rw----+  1 syoung bioinfo 310M Aug 12 17:13 out.map
+	-rw-rw----+  1 syoung bioinfo 270M Aug 12 17:18 out.rmdup
+	-rw-rw----+  1 syoung bioinfo 1.9M Aug 13 05:05 out.SNPfilter
+	-rw-rw----+  1 syoung bioinfo 1.7K Aug 12 16:48 splitfiles
+	-rw-rw----+  1 syoung bioinfo 310M Aug 12 17:13 temp.map
+	drwxrwx---+  2 syoung bioinfo 4.0K Aug 12 16:42 test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

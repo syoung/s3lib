@@ -1,0 +1,1649 @@
+Notes-database-swissprot.txt
+
+++</entry>
+
+
+
+<entry [Mon Mar 31 03:53:04 EDT 2008] TWEAKS: LATER REDO swissprotcollection.pl AND iprscansetsequence.pl TO TAKE LONGEST nt sequence FOR EACH ACCESSION>
+
+
+
+use swissprot;
+select length(sequence), sourceaccession  from collection where collectionid = 10893 and collectionaccession  = 2;
++------------------+-----------------+
+| length(sequence) | sourceaccession |
++------------------+-----------------+
+|              327 | Q9CPW0          |
++------------------+-----------------+
+
+use indexer;
+select length(sequencent) from swissprotnt where accession = 'Q9CPW0';
++--------------------+
+| length(sequencent) |
++--------------------+
+|                327 |
+|               3119 |
+|                327 |
+|               4201 |
++--------------------+
+
+NB: SOME ACCESSIONS WILL HAVE ALL * ATTRIBUTE VALUES BECAUSE THEIR IPRSCANS ARE OUTSIDE THE REGION OF MULTIPLE ALIGNMENT (FOR ALL LABEL '1' SEQUENCES):
+
+16492   0       Q5F4A3  0       0       swissprotnt     1       0       3       LRRCAP,LRR_1    size    300     iprscan 2184    2483
+16492   0       Q5F4A3  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5F4A3  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+16492   0       Q5FVI3  0       0       swissprotnt     1       0       1       *       size    300     iprscan 1584    1883
+16492   0       Q5FVI3  0       0       swissprotnt     1       0       2       LEURICHRPT,LRR_1,LRR_TYP        size    300     iprscan 1884    2183    \
+
+16492   0       Q5FVI3  0       0       swissprotnt     1       0       3       LEURICHRPT,LRR_1,LRR_TYP        size    300     iprscan 2184    2483    \
+
+16492   0       Q5FVI3  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5FVI3  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+16492   0       Q5I2M3  0       0       swissprotnt     1       0       1       *       size    300     iprscan 1584    1883
+16492   0       Q5I2M3  0       0       swissprotnt     1       0       2       *       size    300     iprscan 1884    2183
+16492   0       Q5I2M3  0       0       swissprotnt     1       0       3       *       size    300     iprscan 2184    2483
+16492   0       Q5I2M3  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5I2M3  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+16492   0       Q5I2M5  0       0       swissprotnt     1       0       1       *       size    300     iprscan 1584    1883
+16492   0       Q5I2M5  0       0       swissprotnt     1       0       2       *       size    300     iprscan 1884    2183
+16492   0       Q5I2M5  0       0       swissprotnt     1       0       3       *       size    300     iprscan 2184    2483
+16492   0       Q5I2M5  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5I2M5  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+16492   0       Q5I2M7  0       0       swissprotnt     1       0       1       *       size    300     iprscan 1584    1883
+16492   0       Q5I2M7  0       0       swissprotnt     1       0       2       *       size    300     iprscan 1884    2183
+16492   0       Q5I2M7  0       0       swissprotnt     1       0       3       *       size    300     iprscan 2184    2483
+16492   0       Q5I2M7  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5I2M7  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+16492   0       Q5IS82  0       0       swissprotnt     1       0       1       IG-LIKE_FOLD,KINASE_LIKE,PKINASE_TYR,PROTEIN_KINASE_ATP,PROTEIN_KINASE_D\
+OM,PROT_KINASE,TYRKC,TYRKINASE  size    300     iprscan 1584    1883
+16492   0       Q5IS82  0       0       swissprotnt     1       0       2       KINASE_LIKE,PKINASE_TYR,PROTEIN_KINASE_DOM,PROT_KINASE,RECEPTOR_TYR_KIN_\
+II,TYRKC,TYRKINASE      size    300     iprscan 1884    2183
+16492   0       Q5IS82  0       0       swissprotnt     1       0       3       *       size    300     iprscan 2184    2483
+16492   0       Q5IS82  0       0       swissprotnt     1       0       4       *       size    300     iprscan 2484    2783
+16492   0       Q5IS82  0       0       swissprotnt     1       0       5       *       size    300     iprscan 2784    3083
+
+
+LENGTH IS OKAY:
+
+use swissprot;
+select distinct accession, length(sequence)  from iprscansetsequence where collectionid = 16492;
++-----------+------------------+
+| accession | length(sequence) |
++-----------+------------------+
+| Q58A48    |             1044 |
+| Q5BJ41    |             1659 |
+| Q5BK65    |             2079 |
+| Q5DU56    |              939 |
+| Q5E9X4    |              921 |
+| Q5F4A3    |              771 |
+| Q5FVI3    |              720 |
+| Q5HZV9    |             1083 |
+| Q5I2M3    |             3093 |
+| Q5I2M5    |             3090 |
+| Q5I2M7    |             3096 |
+| Q5IS37    |             2478 |
+| Q5IS82    |             2478 |
+| Q61809    |             2151 |
+
+
+BUT IPRSCANS ARE ALL BEFORE THE FIRST DOMAIN:
+
+
+AFTER Redoing iprscan start/stop based on clustalw alignment...
+Iprscan 638..656 LRR_1
+Iprscan 658..680 LRR_1
+Iprscan 714..732 LRR_1
+Iprscan 735..757 LRR_1
+Iprscan 931..944 LEURICHRPT
+Iprscan 1011..1034 LRR_1
+Iprscan 1034..1047 LEURICHRPT
+Iprscan 1036..1058 LRR_1
+Iprscan 1143..1165 LRR_1
+Iprscan 1168..1190 LRR_1
+Iprscan 1190..1213 LRR_TYP
+Iprscan 1192..1211 LRR_1
+Iprscan 1216..1237 LRR_1
+Iprscan 1240..1262 LRR_1
+Iprscan 1370..1534 TIR
+Iprscan 1377..1391 INTRLKN1R1F
+Iprscan 1380..1528 TIR
+Iprscan 1384..1483 TIR
+Iprscan 1424..1451 INTRLKN1R1F
+
+*******************************
+Domain 0: nb-arc (1584..1883)
+Domain members' targetnames:
+NB-ARC, DISEASERSIST, 
+*******************************
+Domain 1: nb-arc (1884..2183)
+Domain members' targetnames:
+NB-ARC, DISEASERSIST, 
+*******************************
+Domain 2: nb-arc (2184..2483)
+Domain members' targetnames:
+NB-ARC, DISEASERSIST, 
+*******************************
+Domain 3: nb-arc (2484..2783)
+Domain members' targetnames:
+NB-ARC, DISEASERSIST, 
+*******************************
+Domain 4: lrr_1 (2784..3083)
+Domain members' targetnames:
+LRR_1, LEURICHRPT, DISEASERSIST, 
+
+
+++</entry>
+
+
+
+<entry [Tue Mar 25 16:18:51 EDT 2008] REDO SWISSPROT WORKFLOW USING name AS LABEL '1'>
+
+
+
+1. POPULATE swissprot.collection TABLE 
+======================================
+
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 20
+
+~ 3 HOURS
+
+    select count(distinct collectionid) from collection;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        88410 |
+    +------------------------------+
+
+
+2. Load 'collection' onto cluster
+=================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collection    
+
+
+3. Load InterPro hits into 'collectioniprscan' table
+====================================================
+
+sudo ./arrayswissprotcollectioniprscandaemon.pl -d swissprot -t 20
+
+    Run time: 00:03:01
+    Completed ./arrayswissprotcollectioniprscandaemon.pl
+    8:51PM, 16 March 2008
+    ****************************************
+    
+    select count(distinct collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        67953 |
+    +------------------------------+
+
+
+4. Load 'collectioniprscan' onto cluster
+========================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+5. GET IPRSCAN SET 
+==================
+
+    1. FILTER OUT sourceaccessions FOR collectionid
+
+    2. USE IPRSCAN targetids FOR UP TO 20 collectionaccessions FOR collectionid
+
+    3. COLLECT UP TO 100 SWISSPROT ACCESSIONS
+
+
+sudo ./arrayiprscansetdaemon.pl -d swissprot -s nucleotide -t 20 
+    
+
+    Run time: 03:54:14
+    Completed ./arrayswissprotiprscansetdaemon.pl
+    6:23AM, 25 March 2008
+    ****************************************
+    
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        62902 |
+    +------------------------------+
+    1 row in set (6 min 31.15 sec)
+    
+
+6. Load 'iprscanset' onto cluster
+=================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscanset
+
+    Run time: 00:02:58
+    Completed ./clusterloadtable.pl
+    12:23AM, 17 March 2008
+    ****************************************
+
+
+7. GET IPRSCAN SET SEQUENCES
+============================
+
+sudo ./arraysetsequencedaemon.pl -d swissprot -s nucleotide -t 20
+
+    Run time: 00:27:41
+    Completed ./arraysetsequencedaemon.pl
+    0:57AM, 30 March 2008
+    ****************************************    
+
+    select count(distinct collectionid) from iprscansetsequence;    
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        67522 |
+    +------------------------------+
+
+    
+8. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d swissprot -n 20
+
+    44,000 DONE
+ 
+    Run time: 150:32:39
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    9:20PM, 23 March 2008
+    ****************************************
+
+
+9. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+(REDO LATER WITH clustalw FILES)
+
+./arrayiprscansetalignmentloaddata.pl -d swissprot
+    
+    Run time: 00:00:04
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    6:46PM, 6 February 2008
+    ****************************************
+    
+    select count(*) from iprscansetalignment;
+    +----------+
+    | count(*) |
+    +----------+
+    |    25802 |
+    +----------+
+    
+    
+10. LOAD iprscansetsequence AND iprscansetalignment TABLES TO CLUSTER
+=============================================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscansetsequence
+
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscansetsequence,iprscansetalignment
+
+
+11. POPULATE setlabel
+=====================
+
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20
+
+    NB: STUCK ON ID NUMBER 25300
+
+    Run time: 00:26:34
+    Completed ./arraysetlabeldaemon.pl
+    0:18AM, 1 April 2008
+    ****************************************
+
+
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20 -w 
+
+    Run time: 00:28:57
+    Completed /Users/local/FUNNYBASE/bin/swissprot/arraysetlabeldaemon.pl
+    6:03AM, 29 March 2008
+    ****************************************
+    
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20 -m 0.25
+
+    Run time: 00:29:52
+    Completed /Users/local/FUNNYBASE/bin/swissprot/arraysetlabeldaemon.pl
+    6:33AM, 29 March 2008
+    ****************************************
+
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20 -m 0.5
+
+    Run time: 00:28:56
+    Completed /Users/local/FUNNYBASE/bin/swissprot/arraysetlabeldaemon.pl
+    7:02AM, 29 March 2008
+    ****************************************
+
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20 -m 0.75
+
+    Run time: 00:29:34
+    Completed /Users/local/FUNNYBASE/bin/swissprot/arraysetlabeldaemon.pl
+    7:32AM, 29 March 2008
+    ****************************************
+
+sudo ./arraysetlabeldaemon.pl -d swissprot -t 20 -m 1.0
+
+    Run time: 00:29:41
+    Completed /Users/local/FUNNYBASE/bin/swissprot/arraysetlabeldaemon.pl
+    8:01AM, 29 March 2008
+    ****************************************
+    
+    select distinct stopword , matchcutoff, count(distinct collectionid)  from setlabel group by stopword , matchcutoff order by matchcutoff ;
+    +----------+-------------+------------------------------+
+    | stopword | matchcutoff | count(distinct collectionid) |
+    +----------+-------------+------------------------------+
+    |        0 |        0.00 |                        21828 |
+    |        1 |        0.00 |                        21828 |
+    |        1 |        0.25 |                        21828 |
+    |        1 |        0.50 |                        21644 |
+    |        1 |        0.75 |                        21633 |
+    |        1 |        1.00 |                        21734 |
+    +----------+-------------+------------------------------+
+
+
+
+
+12. LOAD setlabel TO CLUSTER
+============================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t setlabel
+
+
+
+
+13. DO DOMAINS
+==============
+
+NB: USE sudo ./engine.pl -d swissprot
+
+
+sudo ./arraydomaindaemon.pl -d swissprot -t 20
+
+    Run time: 01:18:21
+    Completed ./arraydomaindaemon.pl
+    2:47PM, 30 March 2008
+    ****************************************
+
+    ./arraydomainloaddata.pl -d swissprot -t 20
+    
+        Run time: 00:08:18
+        Completed ./arrayattributeloaddata.pl
+        11:39PM, 31 March 2008
+        ****************************************
+
+        select distinct stopword , matchcutoff, count(distinct collectionid)  from domain group by stopword , matchcutoff order by matchcutoff ;
+        +----------+-------------+------------------------------+
+        | stopword | matchcutoff | count(distinct collectionid) |
+        +----------+-------------+------------------------------+
+        |        0 |        0.00 |                        21462 |
+        +----------+-------------+------------------------------+
+    
+    
+sudo ./arraydomaindaemon.pl -d swissprot -t 20 -w
+
+
+    ./arraydomainloaddata.pl -d swissprot -t 20 -w
+
+
+sudo ./arraydomaindaemon.pl -d swissprot -t 20 -m 0.5
+
+
+    ./arraydomainloaddata.pl -d swissprot -t 20 -m 0.5
+
+
+sudo ./arraydomaindaemon.pl -d swissprot -t 20 -m 1.0
+
+
+    ./arraydomainloaddata.pl -d swissprot -t 20 -m 1.0
+
+
+
+
+14. Load 'domain' onto cluster
+==============================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t domain
+
+
+
+    
+15. Populate 'attribute' table
+=====================================
+
+REQUIRED:
+collectioniprscan TABLE     (already loaded for arrayiprscanset.pl)
+iprscanset TABLE            (already loaded for arraydomain.pl)
+iprscansetalignment TABLE   (already loaded for arraydomain.pl)
+iprscansetsequence TABLE
+domain TABLE
+
+
+sudo ./arrayattributedaemon.pl -d swissprot -g size -s 300 -t 20
+
+    Run time: 04:13:49
+    Completed ./arrayattributedaemon.pl
+    11:24PM, 31 March 2008
+    ****************************************
+
+    ./arrayattributeloaddata.pl -d swissprot -g size -s 300 -t 20
+
+        Run time: 00:04:22
+        Completed ./arrayattributeloaddata.pl
+        4:43AM, 31 March 2008
+        ****************************************
+
+    select count(distinct collectionid) from attribute;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        21364 |
+    +------------------------------+
+
+
+
+USING:
+
+sudo ./engine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g size -s 300 -t 20
+
+    Run time: 00:03:24
+    Completed ./arrayattributedaemon.pl
+    12:53AM, 30 March 2008
+    ****************************************
+
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g size -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g size -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g size -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g both -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g both -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayattributedaemon.pl -d swissprot -g both -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadattribute.pl -d swissprot -t 20
+
+    select distinct stopword, matchcutoff, groupby, domainsize from attribute;
+
+
+
+
+16. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfold.pl -d swissprot -g size -s 300
+
+
+select count(distinct collectionid) from nfold;
+    
+
+./nfold.pl -d swissprot -g size -s 300 -w
+./nfold.pl -d swissprot -g size -s 300 -m 0.5
+./nfold.pl -d swissprot -g size -s 300 -m 1.0
+    
+
+17. DO DECISION TREES
+=====================
+
+./learningtrees.pl -d swissprot -g size -s 300 -t 20
+
+
+INPUT:
+
+attribute TABLE
+nfold    TABLE
+
+USING:
+
+sudo ./signaturecommandengine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 300
+
+
+Tue Feb 12 15:08:33 EST 2008
+
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.6495 |
+| size    |        100 |       0.6575 |
+| size    |        150 |       0.7194 |
+| size    |        300 |       0.7523 |
++---------+------------+--------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Mar 25 10:18:51 EDT 2008] DELETE ALL .aln FILES FOR collectionids WHERE THERE ARE MORE THAN 2 collectionaccessions AND REDO WITH NEW iprscansetsequence >
+
+
+
+
+
+1. GET collectionids WITH > 2 collectionaccessions
+
+    DROP TABLE IF EXISTS multiple;
+    CREATE TABLE multiple( collectionid INT(8), count INT(6));
+    INSERT INTO multiple
+    SELECT collectionid, count(collectionaccession ) as count FROM collection GROUP BY collectionid HAVING count > 2 ORDER BY count desc;
+    
+    Query OK, 16426 rows affected (0.47 sec)
+
+2. MOVE ALL .aln FILES FOR collectionids WITH > 2 collectionaccessions TO clustalw.multiple DIRECTORY
+
+    #!/usr/bin/perl -w
+    ...
+    my $query = qq{SELECT collectionid FROM multiple};
+    my $ids = Database($dbh, $query);
+    foreach my $collection_id ( $ids )
+    {
+        #### RM COMMAND
+    
+        my $rm_command = "rm -fr $clustalw_dir/$database.iprscansetalignment.$collection_id.in.aln $clustalw_dir/$database.iprscansetalignment.$collection_id.dnd";
+        print "RM COMMAND: $rm_command\n";
+        #`$rm_command`;
+    }
+
+
+3. DO MULTIPLE ALIGNMENTS WITH NEW arrayswissprotmultialigndaemon.pl
+
+    sudo ./arrayswissprotmultialigndaemon.pl -d swissprot -n 20
+
+    ~ 2 hrs
+
+
+4. REDO iprscanset
+
+    1. FILTER OUT sourceaccessions FOR collectionid
+
+    2. USE IPRSCAN targetids FOR UP TO 20 collectionaccessions FOR collectionid
+
+    3. COLLECT UP TO 100 SWISSPROT ACCESSIONS
+
+sudo ./arrayswissprotiprscansetdaemon.pl -d swissprot -s nucleotide -t 20
+
+    Run time: 03:54:14
+    Completed ./arrayswissprotiprscansetdaemon.pl
+    6:23AM, 25 March 2008
+    ****************************************
+
+
+5. REDO iprscansetsequence
+
+    1. TAKE UP TO 20 sourceaccessions PER collectionid
+
+    2. TAKE UP TO 40 SWISSPROT ACCESSIONS
+
+./arrayswissprotiprscansetsequence.pl -d swissprot -t 20
+
+
+6. DO REMAINING ALIGNMENTS WITH NEW iprscansetsequence:
+
+    1. USE UP TO 20 collectionaccessions FROM collection
+    
+    2. ALL collectionaccessions LABELED AS '1'
+    
+    3. EXCLUDE ALL collection sourceaccessions FROM SWISSPROT ACCESSIONS
+
+    4. ALL SWISSPROT ACCESSIONS LABELLED AS '0'
+
+
+7. POPULATE setlabel USING DIFFERENT VALUES OF FUZZY MATCH CUTOFF (NONE, 0-1)
+
+    1. ONLY LABEL sourceaccessions AS '1' (ALL SWISSPROT ACCESSIONS ARE '0'):
+    
+    ./arrayswissprotsetlabel.pl -d swissprot
+    
+    2. LABEL ALL sourceaccessions AS 1, AND ANY SWISSPROT ACCESSIONS THAT 
+    
+    MATCH THE sourceaccessions AFTER USING STOPWORDS (I.E., REMOVE 'protein',
+    
+    'precursor', etc.):
+    
+    ./arrayswissprotsetlabel.pl -d swissprot -s
+
+
+    3. FUZZY MATCH OF 1 (NB: ALL FUZZY MATCHES INCLUDE USING STOPWORDS):
+    
+    ./arrayswissprotsetlabel.pl -d swissprot -c 1
+    
+    
+    4. FUZZY MATCH OF 0.5 (NB: ALL FUZZY MATCHES INCLUDE USING STOPWORDS):
+
+    ./arrayswissprotsetlabel.pl -d swissprot -c 0.5
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Mar 24 00:54:21 EDT 2008] CREATED arrayswissprotiprscansetsequence.pl TO USE ORIGINAL ACCESSIONS AS LABEL '1' AND ALL OTHERS AS LABEL '0'>
+
+
+
+
+
+
+
+
+SELECT collectionid, count(collectionaccession ) as count FROM collection WHERE collectionid < 500 GROUP BY collectionid HAVING count > 1 ORDER BY count desc;
++--------------+-------+
+| collectionid | count |
++--------------+-------+
+|          336 |   128 |
+|          430 |    57 |
+|          422 |    50 |
+|          126 |    29 |
+|          328 |    25 |
+|          373 |    15 |
+|          380 |    15 |
+|           32 |    14 |
+|           89 |    14 |
+|          385 |    11 |
+|          379 |    10 |
+|           62 |     8 |
+|           72 |     8 |
+...
+|          458 |     2 |
+|          460 |     2 |
+|          482 |     2 |
+|          490 |     2 |
+|          493 |     2 |
++--------------+-------+
+136 rows in set (0.01 sec)
+
+SELECT collectionid, count(collectionaccession ) as count FROM collection WHERE collectionid < 500 GROUP BY collectionid HAVING count > 2 ORDER BY count desc;
+
+|          393 |     3 |
+|          398 |     3 |
+|          414 |     3 |
+|          415 |     3 |
+|          448 |     3 |
+|          456 |     3 |
+|          459 |     3 |
+|          463 |     3 |
+|          491 |     3 |
++--------------+-------+
+83 rows in set (0.00 sec)
+
+
+SELECT distinct accession from iprscansetsequence where collectionid = 493;
++-----------+
+| accession |
++-----------+
+| 1         |
+| 2         |
+| Q5EA36    |
+| Q5FVM4    |
+| Q5JQF8    |
+| Q5KBF5    |
+| Q5KBW2    |
+| Q5KNY5    |
+| Q5M9F1    |
+| Q5NVC8    |
+| Q5NVH8    |
+| Q5R469    |
+| Q5R8F7    |
+| Q5R9H4    |
+| Q5RAY5    |
+| Q5RBM8    |
+| Q5RBR8    |
+| Q5RF26    |
+| Q5RFT7    |
+| Q5RJM0    |
+| Q5SZQ8    |
+| Q5ZI72    |
+| Q5ZL34    |
+| Q5ZLP8    |
+| Q5ZMA3    |
+| Q60668    |
+| Q62176    |
+| Q62189    |
+| Q62504    |
+| Q64707    |
+| Q66H68    |
+| Q66J99    |
+| Q6AYK1    |
+| Q6BTS9    |
+| Q6CDH3    |
+| Q6DCB7    |
+| Q6DEZ7    |
+| Q6FKG4    |
+| Q6IQE0    |
+| Q6NV83    |
+| Q6NVF9    |
+| Q6NVP7    |
++-----------+
+42 rows in set (0.00 sec)
+
+select sourceaccession  from collection where collectionid = 493;
++-----------------+
+| sourceaccession |
++-----------------+
+| Q9NWB1          |
+| Q9JJ43          |
++-----------------+
+
+
+
+
+</entry>
+
+
+
+<entry [Sun Mar 23 17:43:51 EDT 2008] CHECK iprscanset INCLUDES ORIGINAL SWISSPROT ACCESSION IN SET>
+
+
+
+SELECT collectionaccession, sourceaccession, sourceannotation FROM collection where collectionid < 10;
+
+SELECT accession, label, annotation FROM iprscanset WHERE collectionid < 10;
+
+SELECT count(DISTINCT iprscanset.accession) FROM iprscanset, collection WHERE iprscanset.accession = collection.collectionaccession AND iprscanset.collectionid = collection.collectionid;
+
+SELECT count(DISTINCT iprscanset.collectionid) FROM iprscanset, collection WHERE iprscanset.collectionid = collection.collectionid AND iprscanset.accession = collection.sourceaccession;
++-----------------------------------------+
+| count(DISTINCT iprscanset.collectionid) |
++-----------------------------------------+
+|                                     535 |
++-----------------------------------------+
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                         1036 |
++------------------------------+
+
+
+
+CREATE TABLE WITH collectionids THAT DO NOT HAVE MATCHING ACCESSIONS IN iprscanset:
+
+DROP TABLE iprscansetcorrectaccession;
+CREATE TABLE iprscansetcorrectaccession ( collectionid INT(8) );
+INSERT INTO iprscansetcorrectaccession
+SELECT DISTINCT iprscanset.collectionid FROM iprscanset, collection WHERE iprscanset.collectionid = collection.collectionid AND iprscanset.accession = collection.sourceaccession;
+Query OK, 535 rows affected (16.29 sec)
+
+DROP TABLE iprscansetnoaccession;
+CREATE TABLE iprscansetnoaccession ( collectionid INT(8) );
+INSERT INTO iprscansetnoaccession
+SELECT DISTINCT iprscanset.collectionid FROM iprscanset
+LEFT JOIN iprscansetcorrectaccession
+ON iprscansetcorrectaccession.collectionid = iprscanset.collectionid
+WHERE iprscansetcorrectaccession.collectionid IS NULL;
+Query OK, 501 rows affected (19 min 45.53 sec)
+
+
+select * from iprscansetnoaccession limit 10;
++--------------+
+| collectionid |
++--------------+
+|            2 |
+|            7 |
+|            8 |
+|           12 |
+|           13 |
+|           17 |
+|           19 |
+|           22 |
+|           23 |
+|           24 |
++--------------+
+
+
+select collectionid, sourceaccession , sourceannotation from collection where collectionid < 11;
++--------------+-----------------+-------------------------------------------------------------------------+
+| collectionid | sourceaccession | sourceannotation                                                        |
++--------------+-----------------+-------------------------------------------------------------------------+
+|            1 | P15711          | 104 kDa microneme/rhoptry antigen precursor                             |
+|            2 | Q43495          | Protein 108 precursor                                                   |
+|            3 | P18646          | 10 kDa protein precursor                                                |
+|            4 | P13813          | 110 kDa antigen                                                         |
+|            5 | Q9XHP0          | 11S globulin seed storage protein 2 precursor                           |
+|            6 | P19084          | 11S globulin seed storage protein G3 precursor                          |
+|            7 | P13744          | 11S globulin subunit beta precursor [Contains: 11S globulin gamma chain |
+|            8 | P32234          | GTP-binding protein 128up                                               |
+|           10 | Q05349          | Auxin-repressed 12.5 kDa protein                                        |
++--------------+-----------------+-------------------------------------------------------------------------+
+
+
+SELECT collectionid, accession, label FROM iprscansetsequence WHERE collectionid = 2;
+
+ SELECT count(DISTINCT iprscansetsequence.collectionid) FROM iprscansetsequence, collection WHERE iprscansetsequence.collectionid = collection.collectionid AND iprscansetsequence.accession = collection.sourceaccession;
++-------------------------------------------------+
+| count(DISTINCT iprscansetsequence.collectionid) |
++-------------------------------------------------+
+|                                           37154 |
++-------------------------------------------------+
+
+select count(distinct collectionid) from iprscansetsequence;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        67522 |
++------------------------------+
+
+
+
+# CREATE TABLE WITH collectionids THAT DO NOT HAVE MATCHING ACCESSIONS IN iprscansetsequence:
+
+DROP TABLE iprscansetsequencecorrectaccession;
+CREATE TABLE iprscansetsequencecorrectaccession ( collectionid INT(8) );
+INSERT INTO iprscansetsequencecorrectaccession
+SELECT DISTINCT iprscansetsequence.collectionid FROM iprscansetsequence, collection WHERE iprscansetsequence.collectionid = collection.collectionid AND iprscansetsequence.accession = collection.sourceaccession;
+Query OK, 37154 rows affected (7.07 sec)
+
+
+DROP TABLE iprscansetsequencenoaccession;
+CREATE TABLE iprscansetsequencenoaccession ( collectionid INT(8) );
+INSERT INTO iprscansetsequencenoaccession
+SELECT DISTINCT iprscansetsequence.collectionid FROM iprscansetsequence
+LEFT JOIN iprscansetsequencecorrectaccession
+ON iprscansetsequencecorrectaccession.collectionid = iprscansetsequence.collectionid
+WHERE iprscansetsequencecorrectaccession.collectionid IS NULL;
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Mar 17 14:35:51 EDT 2008] DO signature WORKFLOW FOR swissprot>
+
+
+
+1. POPULATE swissprot.collection TABLE 
+======================================
+
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 20
+
+~ 3 HOURS
+
+    select count(distinct collectionid) from collection;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        88410 |
+    +------------------------------+
+
+2. Load 'collection' onto cluster
+=================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collection
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+3. Load InterPro hits into 'collectioniprscan' table from 'indexer.swissprotiprscan'
+====================================================================================
+
+sudo ./arrayswissprotcollectioniprscandaemon.pl -d swissprot -t 20
+
+    Run time: 00:03:01
+    Completed ./arrayswissprotcollectioniprscandaemon.pl
+    8:51PM, 16 March 2008
+    ****************************************
+    
+    select count(distinct collectionid) from collectioniprscan;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        67953 |
+    +------------------------------+
+
+
+4. Load 'collectioniprscan' onto cluster
+========================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+5. GET IPRSCAN SET 
+==================
+
+sudo ./arrayiprscansetdaemon.pl -d swissprot -s nucleotide -t 20 
+    
+    Run time: 03:54:14
+    Completed ./arrayswissprotiprscansetdaemon.pl
+    6:23AM, 25 March 2008
+    ****************************************
+    
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        62902 |
+    +------------------------------+
+    1 row in set (6 min 31.15 sec)
+    
+
+6. Load 'iprscanset' onto cluster
+=================================
+
+cd /common/myEST/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscanset
+
+    Run time: 00:02:58
+    Completed ./clusterloadtable.pl
+    12:23AM, 17 March 2008
+    ****************************************
+
+
+7. GET IPRSCAN SET SEQUENCES
+============================
+
+sudo ./arrayiprscansetsequencedaemon.pl -d swissprot -s nucleotide -t 20
+
+    Run time: 00:18:24
+    Completed ./arrayiprscansetsequencedaemon.pl
+    2:29PM, 17 March 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscansetsequence;    
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                        67522 |
+    +------------------------------+
+    
+    
+8. GET IPRSCAN SET MULTIPLE ALIGNMENT
+=====================================
+
+sudo ./arrayiprscansetalignmentdaemon.pl -d swissprot -n 20
+
+    44,000 DONE
+ 
+    Run time: 150:32:39
+    Completed ./arrayiprscansetalignmentdaemon.pl
+    9:20PM, 23 March 2008
+    ****************************************
+
+
+
+
+9. LOAD MULTIPLE ALIGNMENTS
+===========================
+
+./arrayiprscansetalignmentloaddata.pl -d swissprot
+    
+    Run time: 00:00:04
+    Completed ./arrayiprscansetalignmentloaddata.pl
+    6:46PM, 6 February 2008
+    ****************************************
+    
+    select count(distinct collectionid) from iprscansetalignment;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+    
+10. LOAD iprscanset AND iprscansetalignment TABLES TO CLUSTER
+=============================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscanset,iprscansetalignment
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+sudo dsh -a "ps aux | grep mysql"
+
+
+11. DO SUPERDOMAINS
+===================
+
+sudo ./arrayiprscansuperdomaindaemon.pl -d swissprot -t 20
+                    
+    Run time: 00:00:27
+    Completed ./arrayiprscansuperdomaindaemon.pl
+    7:14PM, 6 February 2008
+    ****************************************
+
+12. LOAD SUPERDOMAINS
+=====================
+
+./arrayiprscansuperdomainloaddata.pl -d swissprot -t 20
+            
+    Run time: 00:00:01
+    Completed ./arrayiprscansuperdomainloaddata.pl
+    10:34PM, 6 February 2008
+    ****************************************    
+
+    select count(distinct collectionid) from iprscansuperdomain;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+
+13. Populate 'iprscanattributebayes' table with BALANCED SET of negative and positive instances
+===============================================================================================
+
+./iprscanattributebayes.pl -d swissprot
+        
+    Completed ./iprscanattributebayes.pl
+    Run time: 00:00:13
+    10:35PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from iprscanattributebayes; 
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+
+14. DO N-FOLD PERMUTATIONS
+==========================
+
+./nfoldbayes.pl -d swissprot
+
+    Completed ./nfoldbayes.pl
+    Run time: 00:00:03
+    10:36PM, 6 February 2008
+    ****************************************
+
+    select count(distinct collectionid) from nfoldbayes;
+    +------------------------------+
+    | count(distinct collectionid) |
+    +------------------------------+
+    |                          158 |
+    +------------------------------+
+    
+    
+15. Load TABLES onto cluster
+============================
+
+TABLES:
+iprscansetsequence
+iprscanattributebayes
+iprscansuperdomain 
+
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t iprscansetsequence,iprscansuperdomain,iprscanattributebayes
+
+
+ON gems:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+
+16. Populate 'iprscanattribute' table
+=====================================
+
+INPUTS:
+
+collectioniprscan TABLE     (already loaded for arrayiprscanset.pl)
+iprscanset TABLE            (already loaded for arrayiprscansuperdomain.pl)
+iprscansetalignment TABLE   (already loaded for arrayiprscansuperdomain.pl)
+iprscansetsequence TABLE
+iprscansuperdomain TABLE
+iprscanattributebayes TABLE
+
+
+USING:
+
+sudo ./signaturecommandengine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g iprscan -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g size -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 100 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 150 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+/Users/young/FUNNYBASE/bin/signature/arrayiprscanattributedaemon.pl -d swissprot -g both -s 300 -t 20
+/Users/young/FUNNYBASE/bin/signature/loadiprscanattribute.pl -d swissprot -t 20
+
+    select distinct groupby, domainsize from iprscanattribute;
+    +---------+------------+
+    | groupby | domainsize |
+    +---------+------------+
+    | iprscan |          0 |
+    | size    |        100 |
+    | size    |        150 |
+    | size    |        300 |
+    +---------+------------+
+
+
+17. DO DECISION TREES
+=====================
+
+USING:
+
+sudo ./signaturecommandengine.pl -d swissprot
+
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g iprscan
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g size -s 300
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 100
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 150
+/Users/young/FUNNYBASE/bin/signature/learningtrees.pl -d swissprot -g both -s 300
+
+
+Tue Feb 12 15:08:33 EST 2008
+
+select groupby, domainsize, avg(correct) from learningtrees group by groupby, domainsize;
++---------+------------+--------------+
+| groupby | domainsize | avg(correct) |
++---------+------------+--------------+
+| both    |        100 |       0.6495 |
+| size    |        100 |       0.6575 |
+| size    |        150 |       0.7194 |
+| size    |        300 |       0.7523 |
++---------+------------+--------------+
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Mar 15 15:24:12 EDT 2008] RUN sudo arrayswissprotcollection ON CLUSTER>
+
+
+
+
+sudo ./arrayswissprotcollectiondaemon.pl -d swissprot -s nucleotide -t 1
+
+~ 3 HOURS
+
+
+ select count(distinct collectionid) from collection;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        88410 |
++------------------------------+
+
+select count(distinct collectionid) from collectioniprscan;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        78030 |
++------------------------------+
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        64920 |
++------------------------------+
+1 row in set (3 min 40.20 sec)
+
+
+
+TRANSFERRED swissprot AND swissprotnt TO nodes AND COPIED addfulltext.pl TO /common/myEST/bin/utils ON gems WITH THE FOLLOWING CHANGES:
+
+#### USE LIBRARIES
+use lib "/common/myEST/lib";
+.
+.
+.
+#### GET CONF
+my $conf = Util::conf("/common/myEST/conf");
+
+THEN ADDED 'name' FULLTEXT TO swissprot
+
+cd ../bin/utils/
+sudo dsh -a "/common/myEST/bin/utils//addfulltext.pl -d indexer -t swissprot -f name -n name"
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Feb 23 02:29:08 EST 2008] FIXED arrayiprscanset OVERSHOOT OF collectionids IN collectioniprscan>
+
+
+
+select count(distinct collectionid) from collectioniprscan;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        78030 |
++------------------------------+
+
+SO THIS QUERY ALWAYS OVERSHOT:
+
+SELECT DISTINCT collectionid FROM collectioniprscan ORDER BY collectionid LIMIT 78592,100;
+Empty set (0.00 sec)
+
+ sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+    
+    Printing script to script file: /common/pipeline/swissprot/collection/arrayiprscanset.sh ...done.
+    qsub command: qsub -sync y -t 1-18 /common/pipeline/swissprot/collection/arrayiprscanset.sh
+    Completed qsub. Job output:
+    qsub command: qsub -sync y -t 1-18 /common/pipeline/swissprot/collection/arrayiprscanset.sh
+    Completed qsub. Job output:
+    
+    Your job-array 1532211.1-18:1 ("arrayiprscanset.sh") has been submitted
+    Job 1532211.15 exited with exit code 0.
+    Job 1532211.11 exited with exit code 0.
+    Job 1532211.13 exited with exit code 0.
+    Job 1532211.9 exited with exit code 0.
+    Job 1532211.3 exited with exit code 0.
+    Job 1532211.10 exited with exit code 0.
+    Job 1532211.18 exited with exit code 0.
+    Job 1532211.17 exited with exit code 0.
+    Job 1532211.16 exited with exit code 0.
+    Job 1532211.6 exited with exit code 0.
+    Job 1532211.14 exited with exit code 0.
+    Job 1532211.4 exited with exit code 0.
+    Job 1532211.2 exited with exit code 0.
+    Job 1532211.12 exited with exit code 0.
+    Job 1532211.5 exited with exit code 0.
+    Job 1532211.7 exited with exit code 0.
+    Job 1532211.1 exited with exit code 0.
+    Job 1532211.8 exited with exit code 0.
+    
+    Job exit codes: 0 = Success, 99 = Requeue, Rest = Success: exit code in accounting file
+    
+    Dropping table 'iprscanset... done.
+    Creating table 'iprscanset' if not exists... done.
+    Loading data into table 'iprscanset'... Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    Query failed: The table 'iprscanset' is full (1114)
+    DID NOT LOAD!
+    done.
+    
+    Run time: 06:14:02
+    Completed ./arrayiprscansetdaemon.pl
+    8:58AM, 23 February 2008
+    ****************************************
+
+
+RESET TABLE MAX SIZE:
+
+
+CREATE TABLE IF NOT EXISTS iprscanset (
+    
+    collectionid    INT(6),
+    
+    label           INT(1),
+    annotation      VARCHAR(255),
+    
+    accession           VARCHAR(20) NOT NULL,
+    id              VARCHAR(20) NOT NULL,
+    targetsource    VARCHAR(20) NOT NULL default '',
+    targetid        VARCHAR(20) NOT NULL,
+    targetname      VARCHAR(200) NOT NULL,
+    interproid      VARCHAR(10) NOT NULL default '',
+    interproname    VARCHAR(200) NOT NULL default '',
+    interprotype    VARCHAR(20) NOT NULL default '',
+    hitscoredec     DECIMAL(4,2) NOT NULL,
+    hitscoreexp     SMALLINT(4) NOT NULL,
+    hitstatus       VARCHAR(1) NOT NULL,
+    querystart      INT(8) NOT NULL default '0',
+    querystop       INT(8) NOT NULL default '0',
+    childlist       VARCHAR(255) NOT NULL default '',
+    foundinlist     VARCHAR(255) NOT NULL default '',
+    golist          TEXT,
+    
+    PRIMARY KEY (collectionid, accession, targetsource, targetid, targetname, interproid, hitscoredec, hitscoreexp, querystart, querystop)
+)
+max_rows = 200000000000
+avg_row_length = 50;
+
+
+
+RELOAD .TSV FILES:
+
+sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+    Run time: 03:02:31
+    Completed ./arrayiprscansetdaemon.pl
+    0:50AM, 14 March 2008
+    ****************************************
+
+
+
+</entry>
+
+
+
+<entry [Mon Feb 18 01:55:43 EST 2008] (From Notes-database-unigeneblast.txt) PARSE SWISSPROT NUCLEOTIDE SEQUENCES FROM cds.dat.gz FILE INTO swissprotnt TABLE AND DO id,accession FULLTEXT>
+
+
+
+
+1. RUN swissprotnt
+
+
+	NAME	swissprotnt
+	
+	PURPOSE
+	
+		CREATE THE swissprotnt TABLE FROM THE EMBL cds.data.gz FILE
+		
+	INPUT
+
+		1. DOWNLOADED nt FILE:
+		
+			cd /swissprot.nucleotide
+            wget ftp://ftp.ebi.ac.uk/pub/databases/embl/cds/cds.dat.gz
+
+		2. gzcat BINARY
+
+	OUTPUT
+	
+		1. swissprotnt TABLE
+	
+	NOTES
+
+        CREATE TABLE IF NOT EXISTS swissprotnt
+        (
+            accession		VARCHAR(20),
+            emblid          VARCHAR(20),
+            sequence		LONGTEXT,
+            sequence		LONGTEXT,
+
+            PRIMARY KEY (accession, emblid)
+        )
+
+	USAGE
+
+		./swissprotnt.pl [-h]
+		
+	EXAMPLES
+	
+./swissprotnt.pl -i /swissprot.nucleotide/cds.dat.gz
+
+    496679 out of 12070000
+    ...
+    /Users/young/FUNNYBASE/pipeline/indexer/collection/indexer.swissprotnt.25.tsv
+    ...
+    RUN TIME: 00:16:13
+    Completed ./swissprotnt.pl
+    1:48AM, 18 February 2008
+    ****************************************
+
+    SELECT COUNT(*) from swissprotnt;
+    +----------+
+    | COUNT(*) |
+    +----------+
+    |   499916 |
+    +----------+
+
+
+2. DO emblid,accession FULLTEXT
+
+cd ~/FUNNYBASE/bin/orthologues
+
+./addfullte ./addfulltext.pl -d indexer -t swissprotnt -f emblid,accession -n ids
+
+    Run time: 00:00:23
+    Completed ./addfulltext.pl
+    2:20AM, 18 February 2008
+    ****************************************
+    
+    
+3. CHECK ALL unigeneblast SWISSPROT SEQUENCES ARE IN THE swissprotnt TABLE
+
+Only 15 collection ids of the 478 unigeneblast swissprot sequences do not have an entry in the swissprotnt table.
+
+
+</entry>
+
+
+
+<entry [Wed Feb 13 03:11:22 EST 2008] RUN TREE WORKFLOW FOR swissprot>
+
+
+
+use swissprot;
+show tables;
++---------------------+
+| Tables_in_swissprot |
++---------------------+
+| collection          |
+| collectioniprscan   |
+| iprscanset          |
++---------------------+
+
+select count(distinct targetid) from swissprotinterpro;
++--------------------------+
+| count(distinct targetid) |
++--------------------------+
+|                    10001 |
++--------------------------+
+
+select count(distinct accession) from swissprotmatch;
++---------------------------+
+| count(distinct accession) |
++---------------------------+
+|                    276372 |
++---------------------------+
+
+
+
+3. LOAD THE collectioniprscan TABLE TO THE CLUSTER
+==================================================
+
+cd ~/FUNNYBASE/bin/utils
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+
+    Run time: 00:00:57
+    Completed ./clusterloadtable.pl
+    3:15AM, 13 February 2008
+    ****************************************
+
+DO ON REMOTE:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a /common/bin/dsh -a mkdir -p /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYD /private/var/mysql/swissprot/collectioniprscan.MYD
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYI /private/var/mysql/swissprot/collectioniprscan.MYI
+sudo dsh -a /common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.frm /private/var/mysql/swissprot/collectioniprscan.frm
+sudo dsh -a /common/bin/dsh -a chmod -R 660 /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a chmod 700 /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/swissprot
+sudo dsh -a /common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+Input/Output error:
+
+
+
+sudo ./clusterloadtable.pl -d swissprot -t collectioniprscan
+Password:
+Table files: collectioniprscan.MYD collectioniprscan.MYI collectioniprscan.frm
+Copying files for table 'collectioniprscan' to remote mysql data directory...
+cp /usr/local/mysql/data/swissprot/collectioniprscan.MYD /common/mysql/data/swissprot/collectioniprscan.MYD
+cp: /common/mysql/data/swissprot/collectioniprscan.MYD: Input/output error
+cp /usr/local/mysql/data/swissprot/collectioniprscan.MYI /common/mysql/data/swissprot/collectioniprscan.MYI
+cp: /common/mysql/data/swissprot/collectioniprscan.MYI: Input/output error
+cp /usr/local/mysql/data/swissprot/collectioniprscan.frm /common/mysql/data/swissprot/collectioniprscan.frm
+Finished copying
+Commands (ON REMOTE):
+/common/bin/dsh -a mkdir -p /private/var/mysql/swissprot
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYD /private/var/mysql/swissprot/collectioniprscan.MYD
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.MYI /private/var/mysql/swissprot/collectioniprscan.MYI
+/common/bin/dsh -a cp /common/mysql/data/swissprot/collectioniprscan.frm /private/var/mysql/swissprot/collectioniprscan.frm
+/common/bin/dsh -a chmod -R 660 /private/var/mysql/swissprot
+/common/bin/dsh -a chmod 700 /private/var/mysql/swissprot
+/common/bin/dsh -a chown -R mysql:wheel /private/var/mysql/swissprot
+echo `pwd`
+/common/bin/dsh -a /common/myEST/bin/utils/restartmysql.pl
+Printing script to script file: /common/pipeline/swissprot/collection/clusterloadtable.sh ...done.
+Script file printed:
+
+/common/pipeline/swissprot/collection/clusterloadtable.sh
+
+DO ON REMOTE:
+
+sudo chmod 755 /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo /common/pipeline/swissprot/collection/clusterloadtable.sh
+
+sudo dsh -a "ps aux | grep mysql"
+
+
+Run time: 00:00:22
+Completed ./clusterloadtable.pl
+3:53PM, 21 February 2008
+****************************************
+
+
+
+4. For each orthologue cluster, get Swissprot sequences with the same iprscans
+==============================================================================
+
+cd ~/FUNNYBASE/bin/signature
+sudo ./arrayiprscansetdaemon.pl -d swissprot -t 18
+
+select count(distinct collectionid) from iprscanset;
++------------------------------+
+| count(distinct collectionid) |
++------------------------------+
+|                        64920 |
++------------------------------+
+1 row in set (3 min 40.20 sec)
+
+
+
+</entry>
+
+
+
+<entry [Tue Jan 22 19:26:19 EST 2008] DO SWISSPROT ORTHOLOGUES>
+
+
+
+1. GET ORTHOLOGUE GROUPS ASSOCIATED WITH SWISSPROT UNIQUE ANNOTATIONS AND CREATE collection TABLE WITH ORTHOLOGUE GROUPS
+
+./swissprotorthologues.pl
+
+    Getting distinct name from 'swissprot' table...
+    No. names: 88410
+
+    /Users/young/FUNNYBASE/pipeline/swissprot/collection/swissprot.collection.tsv
+    
+    Dropping 'collection' if exists... done.
+    Creating table 'collection'... done.
+    Loading data into table 'collection'... done.
+    Completed ./swissprotorthologues.pl
+    Run time: 13:13:57
+    12:22AM, 15 January 2008
+    ****************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+

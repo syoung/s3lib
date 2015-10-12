@@ -1,0 +1,18 @@
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/snpvenn/bowtie \
+--replicates 1-33 \
+--loop distributed \
+--looplabel bowtie-snpvenn \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-%REPLICATE%-dbsnp.snp \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit-33-dbsnp.snp \
+--querylabel bowtie-%REPLICATE%-dbsnp \
+--targetlabel bowtie-33-dbsnp \
+--suffix snp \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/snpvenn/bowtie \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/snpvenn/bowtie/snpvenn.out

@@ -1,0 +1,2593 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+<meta name="csrf-param" content="authenticity_token"/>
+<meta name="csrf-token" content="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs="/>
+<title>Wordnik Developer</title>
+<link href='/favicon.png' rel='shortcut icon'>
+<link href="css/screen.css?1333667828" media="screen, projection" rel="stylesheet" type="text/css" />
+<link href="css/print.css?1333667828" media="print" rel="stylesheet" type="text/css" />
+<!--[if IE]>
+<link href="css/ie.css?1333667828" media="screen, projection" rel="stylesheet" type="text/css" />
+<![endif]-->
+<!--[if lt IE 7]>
+<link href="/stylesheets/compiled/ie6.css?1333667828" media="screen, projection" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+
+<script src="js/head.min.js?1333667828" type="text/javascript"></script>
+
+<script type="text/javascript">head.js(
+    {'jquery': 'js/jquery.min.js' },
+    { 'jquery-ui': 'js/jquery-ui.min.js' },
+    { 'rails': 'js/rails.js?1333667828' },
+    { 'jquery.ezCookie_0.7.01': 'js/jquery.ezCookie_0.7.01.js?1333667828' },
+    { 'jquery.wiggle': 'js/jquery.wiggle.min.js?1333667828' },
+    { 'docs': 'js/docs.js?1333667828' },
+    { 'google_analytics': 'js/google_analytics.js?1333667828' },
+    { 'jquery.ba-bbq': 'js/jquery.ba-bbq.min.js?1333667828' },
+    { 'jquery.slideto': 'js/jquery.slideto.min.js?1333667828' },
+    { 'application': 'js/application.js?1333667828' } );
+
+</script>
+
+</head>
+<body>
+<div id='header'>
+<div class='container'>
+<h1 id='logo'>
+<a href="/"><span>developer</span><span class="light">.wordnik.com</span></a>
+</h1>
+<ul id='nav'>
+<li class="first odd"><a href="/docs" class="active">Docs</a></li>
+<li class="even"><a href="/libraries">Libraries</a></li>
+<li class="odd"><a href="/features">Showcase</a></li>
+<li class="even"><a href="/support">Support</a></li>
+<li class="odd"><a href="/posts">Changelog</a></li>
+<li class="last even"><a href="/">Sign Up</a></li>
+</ul>
+</div>
+</div>
+<div id='content'>
+<div class='container'>
+<div class='fullwidth_column'>
+<div class='heading_with_menu'>
+<h1>
+You know my methods. Apply them.
+</h1>
+</div>
+Here you'll find all the ways in which you can interact with Wordnik's APIs.
+<ul class='resources'>
+<li class='active resource' id='resource_word'>
+<div class='heading'>
+<h2>
+<a href="#!/word" onclick="Docs.toggleEndpointListForResource('word');">/word</a>
+</h2>
+<ul class='options'>
+<li><a href="#!/word" id="endpointListTogger_word" onclick="Docs.toggleEndpointListForResource('word');">Show/Hide</a></li>
+<li><a href="#" onclick="Docs.collapseOperationsForResource('word'); return false;">List Operations</a></li>
+<li><a href="#" onclick="Docs.expandOperationsForResource('word'); return false;">Expand Operations</a></li>
+<li><a href="http://api.wordnik.com//v4/word.json">Raw</a></li>
+</ul>
+</div>
+<ul class='endpoints' id='word_endpoint_list'>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_examples'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_examples" onclick="Docs.toggleOperationContent('word_get_examples_content');">get</a></span>
+<span class='path'><a href="#!/word/get_examples" class="path_or_nickname" data-nickname="get_examples" data-path="/word.{format}/{word}/examples" onclick="Docs.toggleOperationContent('word_get_examples_content');">/word.{format}/{word}/examples</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_examples" onclick="Docs.toggleOperationContent('word_get_examples_content');">Returns examples for a word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_examples_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to return examples for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>includeDuplicates</td>
+<td><select class="" id="parameters_includeDuplicates" name="parameters[includeDuplicates]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>Show duplicate examples from different sources</td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>skip</td>
+<td><input class="" id="parameters_skip" minlength="0" name="parameters[skip]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Results to skip</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/examples" />
+<input id="nickname" name="nickname" type="hidden" value="get_examples" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_examples_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_examples_content_sandbox_response_header'>
+<input class="submit" id="word_get_examples_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_examples_content_sandbox_response_hider" onclick="$('#word_get_examples_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_examples_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_examples_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_word'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_word" onclick="Docs.toggleOperationContent('word_get_word_content');">get</a></span>
+<span class='path'><a href="#!/word/get_word" class="path_or_nickname" data-nickname="get_word" data-path="/word.{format}/{word}" onclick="Docs.toggleOperationContent('word_get_word_content');">/word.{format}/{word}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_word" onclick="Docs.toggleOperationContent('word_get_word_content');">Given a word as a string, returns the WordObject that represents it</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_word_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>String value of WordObject to return; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>includeSuggestions</td>
+<td><select class="" id="parameters_includeSuggestions" name="parameters[includeSuggestions]"><option value="false">false</option>
+<option value="true" selected="selected">true (default)</option></select></td>
+<td width='500'>Return suggestions (for correct spelling, case variants, etc.)</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}" />
+<input id="nickname" name="nickname" type="hidden" value="get_word" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_word_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_word_content_sandbox_response_header'>
+<input class="submit" id="word_get_word_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_word_content_sandbox_response_hider" onclick="$('#word_get_word_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_word_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_word_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_definitions'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_definitions" onclick="Docs.toggleOperationContent('word_get_definitions_content');">get</a></span>
+<span class='path'><a href="#!/word/get_definitions" class="path_or_nickname" data-nickname="get_definitions" data-path="/word.{format}/{word}/definitions" onclick="Docs.toggleOperationContent('word_get_definitions_content');">/word.{format}/{word}/definitions</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_definitions" onclick="Docs.toggleOperationContent('word_get_definitions_content');">Return definitions for a word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_definitions_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to return definitions for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 200" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+<tr>
+<td class='code'>partOfSpeech</td>
+<td><select class="" id="parameters_partOfSpeech" name="parameters[partOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>CSV list of part-of-speech types</td>
+</tr>
+<tr>
+<td class='code'>includeRelated</td>
+<td><select class="" id="parameters_includeRelated" name="parameters[includeRelated]"><option value="true">true</option>
+<option value="false" selected="selected">false (default)</option></select></td>
+<td width='500'>Return related words with definitions</td>
+</tr>
+<tr>
+<td class='code'>sourceDictionaries</td>
+<td><select class="" id="parameters_sourceDictionaries" name="parameters[sourceDictionaries]"><option value=""></option>
+<option value="all">all</option>
+<option value="ahd">ahd</option>
+<option value="century">century</option>
+<option value="wiktionary">wiktionary</option>
+<option value="webster">webster</option>
+<option value="wordnet">wordnet</option></select></td>
+<td width='500'>Source dictionary to return definitions from.  If 'all' is received, results are returned from all sources. If multiple values are received (e.g. 'century,wiktionary'), results are returned from the first specified dictionary that has definitions. If left blank, results are returned from the first dictionary that has definitions. By default, dictionaries are searched in this order: ahd, wiktionary, webster, century, wordnet</td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>includeTags</td>
+<td><select class="" id="parameters_includeTags" name="parameters[includeTags]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>Return a closed set of XML tags in response</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/definitions" />
+<input id="nickname" name="nickname" type="hidden" value="get_definitions" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_definitions_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_definitions_content_sandbox_response_header'>
+<input class="submit" id="word_get_definitions_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_definitions_content_sandbox_response_hider" onclick="$('#word_get_definitions_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_definitions_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_definitions_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_top_example'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_top_example" onclick="Docs.toggleOperationContent('word_get_top_example_content');">get</a></span>
+<span class='path'><a href="#!/word/get_top_example" class="path_or_nickname" data-nickname="get_top_example" data-path="/word.{format}/{word}/topExample" onclick="Docs.toggleOperationContent('word_get_top_example_content');">/word.{format}/{word}/topExample</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_top_example" onclick="Docs.toggleOperationContent('word_get_top_example_content');">Returns a top example for a word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_top_example_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to fetch examples for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/topExample" />
+<input id="nickname" name="nickname" type="hidden" value="get_top_example" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_top_example_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_top_example_content_sandbox_response_header'>
+<input class="submit" id="word_get_top_example_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_top_example_content_sandbox_response_hider" onclick="$('#word_get_top_example_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_top_example_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_top_example_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_related_words'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_related_words" onclick="Docs.toggleOperationContent('word_get_related_words_content');">get</a></span>
+<span class='path'><a href="#!/word/get_related_words" class="path_or_nickname" data-nickname="get_related_words" data-path="/word.{format}/{word}/relatedWords" onclick="Docs.toggleOperationContent('word_get_related_words_content');">/word.{format}/{word}/relatedWords</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_related_words" onclick="Docs.toggleOperationContent('word_get_related_words_content');">Given a word as a string, returns relationships from the Word Graph</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_related_words_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to fetch relationships for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>relationshipTypes</td>
+<td><select class="" id="parameters_relationshipTypes" name="parameters[relationshipTypes]"><option value=""></option>
+<option value="synonym">synonym</option>
+<option value="antonym">antonym</option>
+<option value="variant">variant</option>
+<option value="equivalent">equivalent</option>
+<option value="cross-reference">cross-reference</option>
+<option value="related-word">related-word</option>
+<option value="rhyme">rhyme</option>
+<option value="form">form</option>
+<option value="etymologically-related-term">etymologically-related-term</option>
+<option value="hypernym">hypernym</option>
+<option value="hyponym">hyponym</option>
+<option value="inflected-form">inflected-form</option>
+<option value="primary">primary</option>
+<option value="same-context">same-context</option>
+<option value="verb-form">verb-form</option>
+<option value="verb-stem">verb-stem</option></select></td>
+<td width='500'>Limits the total results per type of relationship type</td>
+</tr>
+<tr>
+<td class='code'>limitPerRelationshipType</td>
+<td><input class="" id="parameters_limitPerRelationshipType" minlength="0" name="parameters[limitPerRelationshipType]" placeholder="default: 10" type="text" /></td>
+<td width='500'>Restrict to the supplied relatinship types</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/relatedWords" />
+<input id="nickname" name="nickname" type="hidden" value="get_related_words" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_related_words_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_related_words_content_sandbox_response_header'>
+<input class="submit" id="word_get_related_words_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_related_words_content_sandbox_response_hider" onclick="$('#word_get_related_words_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_related_words_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_related_words_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_text_pronunciations'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_text_pronunciations" onclick="Docs.toggleOperationContent('word_get_text_pronunciations_content');">get</a></span>
+<span class='path'><a href="#!/word/get_text_pronunciations" class="path_or_nickname" data-nickname="get_text_pronunciations" data-path="/word.{format}/{word}/pronunciations" onclick="Docs.toggleOperationContent('word_get_text_pronunciations_content');">/word.{format}/{word}/pronunciations</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_text_pronunciations" onclick="Docs.toggleOperationContent('word_get_text_pronunciations_content');">Returns text pronunciations for a given word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_text_pronunciations_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to get pronunciations for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return a correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>sourceDictionary</td>
+<td><select class="" id="parameters_sourceDictionary" name="parameters[sourceDictionary]"><option value=""></option>
+<option value="ahd">ahd</option>
+<option value="century">century</option>
+<option value="cmu">cmu</option>
+<option value="macmillan">macmillan</option>
+<option value="wiktionary">wiktionary</option>
+<option value="webster">webster</option>
+<option value="wordnet">wordnet</option></select></td>
+<td width='500'>Get from a single dictionary</td>
+</tr>
+<tr>
+<td class='code'>typeFormat</td>
+<td><select class="" id="parameters_typeFormat" name="parameters[typeFormat]"><option value=""></option>
+<option value="ahd">ahd</option>
+<option value="arpabet">arpabet</option>
+<option value="gcide-diacritical">gcide-diacritical</option>
+<option value="IPA">IPA</option></select></td>
+<td width='500'>Text pronunciation type</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 50" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/pronunciations" />
+<input id="nickname" name="nickname" type="hidden" value="get_text_pronunciations" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_text_pronunciations_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_text_pronunciations_content_sandbox_response_header'>
+<input class="submit" id="word_get_text_pronunciations_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_text_pronunciations_content_sandbox_response_hider" onclick="$('#word_get_text_pronunciations_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_text_pronunciations_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_text_pronunciations_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_hyphenation'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_hyphenation" onclick="Docs.toggleOperationContent('word_get_hyphenation_content');">get</a></span>
+<span class='path'><a href="#!/word/get_hyphenation" class="path_or_nickname" data-nickname="get_hyphenation" data-path="/word.{format}/{word}/hyphenation" onclick="Docs.toggleOperationContent('word_get_hyphenation_content');">/word.{format}/{word}/hyphenation</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_hyphenation" onclick="Docs.toggleOperationContent('word_get_hyphenation_content');">Returns syllable information for a word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_hyphenation_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to get syllables for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><input class="" id="parameters_useCanonical" minlength="0" name="parameters[useCanonical]" placeholder="default: false" type="text" /></td>
+<td width='500'>If true will try to return a correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>sourceDictionary</td>
+<td><input class="" id="parameters_sourceDictionary" minlength="0" name="parameters[sourceDictionary]" placeholder="" type="text" /></td>
+<td width='500'>Get from a single dictionary. Valid options: ahd, century, wiktionary, webster, and wordnet.</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 50" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/hyphenation" />
+<input id="nickname" name="nickname" type="hidden" value="get_hyphenation" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_hyphenation_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_hyphenation_content_sandbox_response_header'>
+<input class="submit" id="word_get_hyphenation_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_hyphenation_content_sandbox_response_hider" onclick="$('#word_get_hyphenation_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_hyphenation_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_hyphenation_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_word_frequency'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_word_frequency" onclick="Docs.toggleOperationContent('word_get_word_frequency_content');">get</a></span>
+<span class='path'><a href="#!/word/get_word_frequency" class="path_or_nickname" data-nickname="get_word_frequency" data-path="/word.{format}/{word}/frequency" onclick="Docs.toggleOperationContent('word_get_word_frequency_content');">/word.{format}/{word}/frequency</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_word_frequency" onclick="Docs.toggleOperationContent('word_get_word_frequency_content');">Returns word usage over time</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_word_frequency_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to return; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><input class="" id="parameters_useCanonical" minlength="0" name="parameters[useCanonical]" placeholder="default: false" type="text" /></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+<tr>
+<td class='code'>startYear</td>
+<td><input class="" id="parameters_startYear" minlength="0" name="parameters[startYear]" placeholder="default: 1800" type="text" /></td>
+<td width='500'>Starting Year</td>
+</tr>
+<tr>
+<td class='code'>endYear</td>
+<td><input class="" id="parameters_endYear" minlength="0" name="parameters[endYear]" placeholder="default: 2012" type="text" /></td>
+<td width='500'>Ending Year</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/frequency" />
+<input id="nickname" name="nickname" type="hidden" value="get_word_frequency" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_word_frequency_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_word_frequency_content_sandbox_response_header'>
+<input class="submit" id="word_get_word_frequency_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_word_frequency_content_sandbox_response_hider" onclick="$('#word_get_word_frequency_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_word_frequency_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_word_frequency_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_phrases'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_phrases" onclick="Docs.toggleOperationContent('word_get_phrases_content');">get</a></span>
+<span class='path'><a href="#!/word/get_phrases" class="path_or_nickname" data-nickname="get_phrases" data-path="/word.{format}/{word}/phrases" onclick="Docs.toggleOperationContent('word_get_phrases_content');">/word.{format}/{word}/phrases</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_phrases" onclick="Docs.toggleOperationContent('word_get_phrases_content');">Fetches bi-gram phrases for a word</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_phrases_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to fetch phrases for; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+<tr>
+<td class='code'>wlmi</td>
+<td><input class="" id="parameters_wlmi" minlength="0" name="parameters[wlmi]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Minimum WLMI for the phrase</td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/phrases" />
+<input id="nickname" name="nickname" type="hidden" value="get_phrases" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_phrases_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_phrases_content_sandbox_response_header'>
+<input class="submit" id="word_get_phrases_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_phrases_content_sandbox_response_hider" onclick="$('#word_get_phrases_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_phrases_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_phrases_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_etymologies'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_etymologies" onclick="Docs.toggleOperationContent('word_get_etymologies_content');">get</a></span>
+<span class='path'><a href="#!/word/get_etymologies" class="path_or_nickname" data-nickname="get_etymologies" data-path="/word.{format}/{word}/etymologies" onclick="Docs.toggleOperationContent('word_get_etymologies_content');">/word.{format}/{word}/etymologies</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_etymologies" onclick="Docs.toggleOperationContent('word_get_etymologies_content');">Fetches etymology data</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_etymologies_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to return; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><select class="" id="parameters_useCanonical" name="parameters[useCanonical]"><option value=""></option>
+<option value="false">false</option>
+<option value="true">true</option></select></td>
+<td width='500'>If true will try to return the correct word root ('cats' -> 'cat'). If false returns exactly what was requested.</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/etymologies" />
+<input id="nickname" name="nickname" type="hidden" value="get_etymologies" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_etymologies_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_etymologies_content_sandbox_response_header'>
+<input class="submit" id="word_get_etymologies_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_etymologies_content_sandbox_response_hider" onclick="$('#word_get_etymologies_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_etymologies_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_etymologies_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='word_get_audio'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/word/get_audio" onclick="Docs.toggleOperationContent('word_get_audio_content');">get</a></span>
+<span class='path'><a href="#!/word/get_audio" class="path_or_nickname" data-nickname="get_audio" data-path="/word.{format}/{word}/audio" onclick="Docs.toggleOperationContent('word_get_audio_content');">/word.{format}/{word}/audio</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/word/get_audio" onclick="Docs.toggleOperationContent('word_get_audio_content');">Fetches audio metadata for a word.</a></li>
+</ul>
+</div>
+<div class='content' id='word_get_audio_content' style='display:none'>
+<h4>Implementation Notes</h4>
+<p>The metadata includes a time-expiring fileUrl which allows reading the audio file directly from the API.  Currently only audio pronunciations from the American Heritage Dictionary in mp3 format are supported.</p>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>word</td>
+<td><input class="required" id="parameters_word" minlength="1" name="parameters[word]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Word to get audio for.; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>useCanonical</td>
+<td><input class="" id="parameters_useCanonical" minlength="0" name="parameters[useCanonical]" placeholder="default: false" type="text" /></td>
+<td width='500'>Use the canonical form of the word</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 50" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/word.{format}/{word}/audio" />
+<input id="nickname" name="nickname" type="hidden" value="get_audio" />
+<input id="resource" name="resource" type="hidden" value="word" />
+<input id="positional_args" name="positional_args" type="hidden" value="word" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="word_get_audio_content_sandbox_response" />
+<div class='sandbox_header' id='word_get_audio_content_sandbox_response_header'>
+<input class="submit" id="word_get_audio_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="word_get_audio_content_sandbox_response_hider" onclick="$('#word_get_audio_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="word_get_audio_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='word_get_audio_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class='active resource' id='resource_words'>
+<div class='heading'>
+<h2>
+<a href="#!/words" onclick="Docs.toggleEndpointListForResource('words');">/words</a>
+</h2>
+<ul class='options'>
+<li><a href="#!/words" id="endpointListTogger_words" onclick="Docs.toggleEndpointListForResource('words');">Show/Hide</a></li>
+<li><a href="#" onclick="Docs.collapseOperationsForResource('words'); return false;">List Operations</a></li>
+<li><a href="#" onclick="Docs.expandOperationsForResource('words'); return false;">Expand Operations</a></li>
+<li><a href="http://api.wordnik.com//v4/words.json">Raw</a></li>
+</ul>
+</div>
+<ul class='endpoints' id='words_endpoint_list'>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='words_search_words'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/words/search_words" onclick="Docs.toggleOperationContent('words_search_words_content');">get</a></span>
+<span class='path'><a href="#!/words/search_words" class="path_or_nickname" data-nickname="search_words" data-path="/words.{format}/search/{query}" onclick="Docs.toggleOperationContent('words_search_words_content');">/words.{format}/search/{query}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/words/search_words" onclick="Docs.toggleOperationContent('words_search_words_content');">Searches words</a></li>
+</ul>
+</div>
+<div class='content' id='words_search_words_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>query</td>
+<td><input class="required" id="parameters_query" minlength="1" name="parameters[query]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Search query; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>caseSensitive</td>
+<td><select class="" id="parameters_caseSensitive" name="parameters[caseSensitive]"><option value="true" selected="selected">true (default)</option>
+<option value="false">false</option></select></td>
+<td width='500'>Search case sensitive</td>
+</tr>
+<tr>
+<td class='code'>includePartOfSpeech</td>
+<td><select class="" id="parameters_includePartOfSpeech" name="parameters[includePartOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>Only include these comma-delimited parts of speech</td>
+</tr>
+<tr>
+<td class='code'>excludePartOfSpeech</td>
+<td><input class="" id="parameters_excludePartOfSpeech" minlength="0" name="parameters[excludePartOfSpeech]" placeholder="" type="text" /></td>
+<td width='500'>Exclude these comma-delimited parts of speech</td>
+</tr>
+<tr>
+<td class='code'>minCorpusCount</td>
+<td><input class="" id="parameters_minCorpusCount" minlength="0" name="parameters[minCorpusCount]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Minimum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>maxCorpusCount</td>
+<td><input class="" id="parameters_maxCorpusCount" minlength="0" name="parameters[maxCorpusCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>minDictionaryCount</td>
+<td><input class="" id="parameters_minDictionaryCount" minlength="0" name="parameters[minDictionaryCount]" placeholder="default: 1" type="text" /></td>
+<td width='500'>Minimum number of dictionary entries for words returned</td>
+</tr>
+<tr>
+<td class='code'>maxDictionaryCount</td>
+<td><input class="" id="parameters_maxDictionaryCount" minlength="0" name="parameters[maxDictionaryCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum dictionary definition count</td>
+</tr>
+<tr>
+<td class='code'>minLength</td>
+<td><input class="" id="parameters_minLength" minlength="0" name="parameters[minLength]" placeholder="default: 1" type="text" /></td>
+<td width='500'>Minimum word length</td>
+</tr>
+<tr>
+<td class='code'>maxLength</td>
+<td><input class="" id="parameters_maxLength" minlength="0" name="parameters[maxLength]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum word length</td>
+</tr>
+<tr>
+<td class='code'>skip</td>
+<td><select class="" id="parameters_skip" name="parameters[skip]"><option value="0" selected="selected">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<td width='500'>Results to skip</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><select class="" id="parameters_limit" name="parameters[limit]"><option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10" selected="selected">10</option>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/words.{format}/search/{query}" />
+<input id="nickname" name="nickname" type="hidden" value="search_words" />
+<input id="resource" name="resource" type="hidden" value="words" />
+<input id="positional_args" name="positional_args" type="hidden" value="query" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="words_search_words_content_sandbox_response" />
+<div class='sandbox_header' id='words_search_words_content_sandbox_response_header'>
+<input class="submit" id="words_search_words_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="words_search_words_content_sandbox_response_hider" onclick="$('#words_search_words_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="words_search_words_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='words_search_words_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='words_get_word_of_the_day'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/words/get_word_of_the_day" onclick="Docs.toggleOperationContent('words_get_word_of_the_day_content');">get</a></span>
+<span class='path'><a href="#!/words/get_word_of_the_day" class="path_or_nickname" data-nickname="get_word_of_the_day" data-path="/words.{format}/wordOfTheDay" onclick="Docs.toggleOperationContent('words_get_word_of_the_day_content');">/words.{format}/wordOfTheDay</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/words/get_word_of_the_day" onclick="Docs.toggleOperationContent('words_get_word_of_the_day_content');">Returns a specific WordOfTheDay</a></li>
+</ul>
+</div>
+<div class='content' id='words_get_word_of_the_day_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code'>date</td>
+<td><input class="" id="parameters_date" minlength="0" name="parameters[date]" placeholder="" type="text" /></td>
+<td width='500'>Fetches by date in yyyy-MM-dd</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/words.{format}/wordOfTheDay" />
+<input id="nickname" name="nickname" type="hidden" value="get_word_of_the_day" />
+<input id="resource" name="resource" type="hidden" value="words" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="words_get_word_of_the_day_content_sandbox_response" />
+<div class='sandbox_header' id='words_get_word_of_the_day_content_sandbox_response_header'>
+<input class="submit" id="words_get_word_of_the_day_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="words_get_word_of_the_day_content_sandbox_response_hider" onclick="$('#words_get_word_of_the_day_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="words_get_word_of_the_day_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='words_get_word_of_the_day_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='words_reverse_dictionary'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/words/reverse_dictionary" onclick="Docs.toggleOperationContent('words_reverse_dictionary_content');">get</a></span>
+<span class='path'><a href="#!/words/reverse_dictionary" class="path_or_nickname" data-nickname="reverse_dictionary" data-path="/words.{format}/reverseDictionary" onclick="Docs.toggleOperationContent('words_reverse_dictionary_content');">/words.{format}/reverseDictionary</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/words/reverse_dictionary" onclick="Docs.toggleOperationContent('words_reverse_dictionary_content');">Reverse dictionary search</a></li>
+</ul>
+</div>
+<div class='content' id='words_reverse_dictionary_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>query</td>
+<td><input class="required" id="parameters_query" minlength="1" name="parameters[query]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>Search term</strong></td>
+</tr>
+<tr>
+<td class='code'>findSenseForWord</td>
+<td><input class="" id="parameters_findSenseForWord" minlength="0" name="parameters[findSenseForWord]" placeholder="" type="text" /></td>
+<td width='500'>Restricts words and finds closest sense</td>
+</tr>
+<tr>
+<td class='code'>includeSourceDictionaries</td>
+<td><select class="" id="parameters_includeSourceDictionaries" name="parameters[includeSourceDictionaries]"><option value=""></option>
+<option value="ahd">ahd</option>
+<option value=" century"> century</option>
+<option value=" wiktionary"> wiktionary</option>
+<option value=" webster"> webster</option>
+<option value=" wordnet"> wordnet</option></select></td>
+<td width='500'>Only include these comma-delimited source dictionaries</td>
+</tr>
+<tr>
+<td class='code'>excludeSourceDictionaries</td>
+<td><select class="" id="parameters_excludeSourceDictionaries" name="parameters[excludeSourceDictionaries]"><option value=""></option>
+<option value="ahd">ahd</option>
+<option value=" century"> century</option>
+<option value=" wiktionary"> wiktionary</option>
+<option value=" webster"> webster</option>
+<option value=" wordnet"> wordnet</option></select></td>
+<td width='500'>Exclude these comma-delimited source dictionaries</td>
+</tr>
+<tr>
+<td class='code'>includePartOfSpeech</td>
+<td><input class="" id="parameters_includePartOfSpeech" minlength="0" name="parameters[includePartOfSpeech]" placeholder="" type="text" /></td>
+<td width='500'>Only include these comma-delimited parts of speech</td>
+</tr>
+<tr>
+<td class='code'>excludePartOfSpeech</td>
+<td><input class="" id="parameters_excludePartOfSpeech" minlength="0" name="parameters[excludePartOfSpeech]" placeholder="" type="text" /></td>
+<td width='500'>Exclude these comma-delimited parts of speech</td>
+</tr>
+<tr>
+<td class='code'>minCorpusCount</td>
+<td><input class="" id="parameters_minCorpusCount" minlength="0" name="parameters[minCorpusCount]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Minimum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>maxCorpusCount</td>
+<td><input class="" id="parameters_maxCorpusCount" minlength="0" name="parameters[maxCorpusCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>minLength</td>
+<td><input class="" id="parameters_minLength" minlength="0" name="parameters[minLength]" placeholder="default: 1" type="text" /></td>
+<td width='500'>Minimum word length</td>
+</tr>
+<tr>
+<td class='code'>maxLength</td>
+<td><input class="" id="parameters_maxLength" minlength="0" name="parameters[maxLength]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum word length</td>
+</tr>
+<tr>
+<td class='code'>expandTerms</td>
+<td><select class="" id="parameters_expandTerms" name="parameters[expandTerms]"><option value=""></option>
+<option value="synonym">synonym</option>
+<option value="hypernym">hypernym</option></select></td>
+<td width='500'>Expand terms</td>
+</tr>
+<tr>
+<td class='code'>includeTags</td>
+<td><select class="" id="parameters_includeTags" name="parameters[includeTags]"><option value="false" selected="selected">false (default)</option>
+<option value="true">true</option></select></td>
+<td width='500'>Return a closed set of XML tags in response</td>
+</tr>
+<tr>
+<td class='code'>sortBy</td>
+<td><select class="" id="parameters_sortBy" name="parameters[sortBy]"><option value=""></option>
+<option value="alpha">alpha</option>
+<option value="count">count</option>
+<option value="length">length</option></select></td>
+<td width='500'>Attribute to sort by</td>
+</tr>
+<tr>
+<td class='code'>sortOrder</td>
+<td><select class="" id="parameters_sortOrder" name="parameters[sortOrder]"><option value=""></option>
+<option value="asc">asc</option>
+<option value="desc">desc</option></select></td>
+<td width='500'>Sort direction</td>
+</tr>
+<tr>
+<td class='code'>skip</td>
+<td><select class="" id="parameters_skip" name="parameters[skip]"><option value="0" selected="selected">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/words.{format}/reverseDictionary" />
+<input id="nickname" name="nickname" type="hidden" value="reverse_dictionary" />
+<input id="resource" name="resource" type="hidden" value="words" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="words_reverse_dictionary_content_sandbox_response" />
+<div class='sandbox_header' id='words_reverse_dictionary_content_sandbox_response_header'>
+<input class="submit" id="words_reverse_dictionary_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="words_reverse_dictionary_content_sandbox_response_hider" onclick="$('#words_reverse_dictionary_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="words_reverse_dictionary_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='words_reverse_dictionary_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='words_get_random_words'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/words/get_random_words" onclick="Docs.toggleOperationContent('words_get_random_words_content');">get</a></span>
+<span class='path'><a href="#!/words/get_random_words" class="path_or_nickname" data-nickname="get_random_words" data-path="/words.{format}/randomWords" onclick="Docs.toggleOperationContent('words_get_random_words_content');">/words.{format}/randomWords</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/words/get_random_words" onclick="Docs.toggleOperationContent('words_get_random_words_content');">Returns an array of random WordObjects</a></li>
+</ul>
+</div>
+<div class='content' id='words_get_random_words_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code'>hasDictionaryDef</td>
+<td><select class="" id="parameters_hasDictionaryDef" name="parameters[hasDictionaryDef]"><option value="false">false</option>
+<option value="true" selected="selected">true (default)</option></select></td>
+<td width='500'>Only return words with dictionary definitions</td>
+</tr>
+<tr>
+<td class='code'>includePartOfSpeech</td>
+<td><select class="" id="parameters_includePartOfSpeech" name="parameters[includePartOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>CSV part-of-speech values to include</td>
+</tr>
+<tr>
+<td class='code'>excludePartOfSpeech</td>
+<td><select class="" id="parameters_excludePartOfSpeech" name="parameters[excludePartOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>CSV part-of-speech values to exclude</td>
+</tr>
+<tr>
+<td class='code'>minCorpusCount</td>
+<td><input class="" id="parameters_minCorpusCount" minlength="0" name="parameters[minCorpusCount]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Minimum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>maxCorpusCount</td>
+<td><input class="" id="parameters_maxCorpusCount" minlength="0" name="parameters[maxCorpusCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>minDictionaryCount</td>
+<td><input class="" id="parameters_minDictionaryCount" minlength="0" name="parameters[minDictionaryCount]" placeholder="default: 1" type="text" /></td>
+<td width='500'>Minimum dictionary count</td>
+</tr>
+<tr>
+<td class='code'>maxDictionaryCount</td>
+<td><input class="" id="parameters_maxDictionaryCount" minlength="0" name="parameters[maxDictionaryCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum dictionary count</td>
+</tr>
+<tr>
+<td class='code'>minLength</td>
+<td><input class="" id="parameters_minLength" minlength="0" name="parameters[minLength]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Minimum word length</td>
+</tr>
+<tr>
+<td class='code'>maxLength</td>
+<td><input class="" id="parameters_maxLength" minlength="0" name="parameters[maxLength]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum word length</td>
+</tr>
+<tr>
+<td class='code'>sortBy</td>
+<td><select class="" id="parameters_sortBy" name="parameters[sortBy]"><option value=""></option>
+<option value="alpha">alpha</option>
+<option value="count">count</option></select></td>
+<td width='500'>Attribute to sort by</td>
+</tr>
+<tr>
+<td class='code'>sortOrder</td>
+<td><select class="" id="parameters_sortOrder" name="parameters[sortOrder]"><option value=""></option>
+<option value="asc">asc</option>
+<option value="desc">desc</option></select></td>
+<td width='500'>Sort direction</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 10" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/words.{format}/randomWords" />
+<input id="nickname" name="nickname" type="hidden" value="get_random_words" />
+<input id="resource" name="resource" type="hidden" value="words" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="words_get_random_words_content_sandbox_response" />
+<div class='sandbox_header' id='words_get_random_words_content_sandbox_response_header'>
+<input class="submit" id="words_get_random_words_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="words_get_random_words_content_sandbox_response_hider" onclick="$('#words_get_random_words_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="words_get_random_words_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='words_get_random_words_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='words_get_random_word'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/words/get_random_word" onclick="Docs.toggleOperationContent('words_get_random_word_content');">get</a></span>
+<span class='path'><a href="#!/words/get_random_word" class="path_or_nickname" data-nickname="get_random_word" data-path="/words.{format}/randomWord" onclick="Docs.toggleOperationContent('words_get_random_word_content');">/words.{format}/randomWord</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/words/get_random_word" onclick="Docs.toggleOperationContent('words_get_random_word_content');">Returns a single random WordObject</a></li>
+</ul>
+</div>
+<div class='content' id='words_get_random_word_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code'>hasDictionaryDef</td>
+<td><select class="" id="parameters_hasDictionaryDef" name="parameters[hasDictionaryDef]"><option value="false">false</option>
+<option value="true" selected="selected">true (default)</option></select></td>
+<td width='500'>Only return words with dictionary definitions</td>
+</tr>
+<tr>
+<td class='code'>includePartOfSpeech</td>
+<td><select class="" id="parameters_includePartOfSpeech" name="parameters[includePartOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>CSV part-of-speech values to include</td>
+</tr>
+<tr>
+<td class='code'>excludePartOfSpeech</td>
+<td><select class="" id="parameters_excludePartOfSpeech" name="parameters[excludePartOfSpeech]"><option value=""></option>
+<option value="noun">noun</option>
+<option value="adjective">adjective</option>
+<option value="verb">verb</option>
+<option value="adverb">adverb</option>
+<option value="interjection">interjection</option>
+<option value="pronoun">pronoun</option>
+<option value="preposition">preposition</option>
+<option value="abbreviation">abbreviation</option>
+<option value="affix">affix</option>
+<option value="article">article</option>
+<option value="auxiliary-verb">auxiliary-verb</option>
+<option value="conjunction">conjunction</option>
+<option value="definite-article">definite-article</option>
+<option value="family-name">family-name</option>
+<option value="given-name">given-name</option>
+<option value="idiom">idiom</option>
+<option value="imperative">imperative</option>
+<option value="noun-plural">noun-plural</option>
+<option value="noun-posessive">noun-posessive</option>
+<option value="past-participle">past-participle</option>
+<option value="phrasal-prefix">phrasal-prefix</option>
+<option value="proper-noun">proper-noun</option>
+<option value="proper-noun-plural">proper-noun-plural</option>
+<option value="proper-noun-posessive">proper-noun-posessive</option>
+<option value="suffix">suffix</option>
+<option value="verb-intransitive">verb-intransitive</option>
+<option value="verb-transitive">verb-transitive</option></select></td>
+<td width='500'>CSV part-of-speech values to exclude</td>
+</tr>
+<tr>
+<td class='code'>minCorpusCount</td>
+<td><input class="" id="parameters_minCorpusCount" minlength="0" name="parameters[minCorpusCount]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Minimum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>maxCorpusCount</td>
+<td><input class="" id="parameters_maxCorpusCount" minlength="0" name="parameters[maxCorpusCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum corpus frequency for terms</td>
+</tr>
+<tr>
+<td class='code'>minDictionaryCount</td>
+<td><input class="" id="parameters_minDictionaryCount" minlength="0" name="parameters[minDictionaryCount]" placeholder="default: 1" type="text" /></td>
+<td width='500'>Minimum dictionary count</td>
+</tr>
+<tr>
+<td class='code'>maxDictionaryCount</td>
+<td><input class="" id="parameters_maxDictionaryCount" minlength="0" name="parameters[maxDictionaryCount]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum dictionary count</td>
+</tr>
+<tr>
+<td class='code'>minLength</td>
+<td><input class="" id="parameters_minLength" minlength="0" name="parameters[minLength]" placeholder="default: 5" type="text" /></td>
+<td width='500'>Minimum word length</td>
+</tr>
+<tr>
+<td class='code'>maxLength</td>
+<td><input class="" id="parameters_maxLength" minlength="0" name="parameters[maxLength]" placeholder="default: -1" type="text" /></td>
+<td width='500'>Maximum word length</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/words.{format}/randomWord" />
+<input id="nickname" name="nickname" type="hidden" value="get_random_word" />
+<input id="resource" name="resource" type="hidden" value="words" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="words_get_random_word_content_sandbox_response" />
+<div class='sandbox_header' id='words_get_random_word_content_sandbox_response_header'>
+<input class="submit" id="words_get_random_word_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="words_get_random_word_content_sandbox_response_hider" onclick="$('#words_get_random_word_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="words_get_random_word_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='words_get_random_word_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class='active resource' id='resource_wordList'>
+<div class='heading'>
+<h2>
+<a href="#!/wordList" onclick="Docs.toggleEndpointListForResource('wordList');">/wordList</a>
+</h2>
+<ul class='options'>
+<li><a href="#!/wordList" id="endpointListTogger_wordList" onclick="Docs.toggleEndpointListForResource('wordList');">Show/Hide</a></li>
+<li><a href="#" onclick="Docs.collapseOperationsForResource('wordList'); return false;">List Operations</a></li>
+<li><a href="#" onclick="Docs.expandOperationsForResource('wordList'); return false;">Expand Operations</a></li>
+<li><a href="http://api.wordnik.com//v4/wordList.json">Raw</a></li>
+</ul>
+</div>
+<ul class='endpoints' id='wordList_endpoint_list'>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='operation put' id='wordList_update_word_list'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/update_word_list" onclick="Docs.toggleOperationContent('wordList_update_word_list_content');">put</a></span>
+<span class='path'><a href="#!/wordList/update_word_list" class="path_or_nickname" data-nickname="update_word_list" data-path="/wordList.{format}/{permalink}" onclick="Docs.toggleOperationContent('wordList_update_word_list_content');">/wordList.{format}/{permalink}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/update_word_list" onclick="Docs.toggleOperationContent('wordList_update_word_list_content');">Updates an existing WordList</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_update_word_list_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td></td>
+<td width='500'><strong>permalink of WordList to update; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>request body</td>
+<td></td>
+<td width='500'>Updated WordList; The body of the request</td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="put" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}" />
+<input id="nickname" name="nickname" type="hidden" value="update_word_list" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink,body" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_update_word_list_content_sandbox_response" />
+</form>
+
+<div class='response' id='wordList_update_word_list_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+<li class='delete operation' id='wordList_delete_word_list'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/delete_word_list" onclick="Docs.toggleOperationContent('wordList_delete_word_list_content');">delete</a></span>
+<span class='path'><a href="#!/wordList/delete_word_list" class="path_or_nickname" data-nickname="delete_word_list" data-path="/wordList.{format}/{permalink}" onclick="Docs.toggleOperationContent('wordList_delete_word_list_content');">/wordList.{format}/{permalink}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/delete_word_list" onclick="Docs.toggleOperationContent('wordList_delete_word_list_content');">Deletes an existing WordList</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_delete_word_list_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td></td>
+<td width='500'><strong>ID of WordList to delete; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="delete" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}" />
+<input id="nickname" name="nickname" type="hidden" value="delete_word_list" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_delete_word_list_content_sandbox_response" />
+</form>
+
+<div class='response' id='wordList_delete_word_list_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+<li class='get operation' id='wordList_get_word_list_by_permalink'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/get_word_list_by_permalink" onclick="Docs.toggleOperationContent('wordList_get_word_list_by_permalink_content');">get</a></span>
+<span class='path'><a href="#!/wordList/get_word_list_by_permalink" class="path_or_nickname" data-nickname="get_word_list_by_permalink" data-path="/wordList.{format}/{permalink}" onclick="Docs.toggleOperationContent('wordList_get_word_list_by_permalink_content');">/wordList.{format}/{permalink}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/get_word_list_by_permalink" onclick="Docs.toggleOperationContent('wordList_get_word_list_by_permalink_content');">Fetches a WordList by ID</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_get_word_list_by_permalink_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td><input class="required" id="parameters_permalink" minlength="1" name="parameters[permalink]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>permalink of WordList to fetch; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td><input class="required" id="parameters_auth_token" minlength="1" name="parameters[auth_token]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}" />
+<input id="nickname" name="nickname" type="hidden" value="get_word_list_by_permalink" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_get_word_list_by_permalink_content_sandbox_response" />
+<div class='sandbox_header' id='wordList_get_word_list_by_permalink_content_sandbox_response_header'>
+<input class="submit" id="wordList_get_word_list_by_permalink_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="wordList_get_word_list_by_permalink_content_sandbox_response_hider" onclick="$('#wordList_get_word_list_by_permalink_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="wordList_get_word_list_by_permalink_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='wordList_get_word_list_by_permalink_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='operation post' id='wordList_add_words_to_word_list'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/add_words_to_word_list" onclick="Docs.toggleOperationContent('wordList_add_words_to_word_list_content');">post</a></span>
+<span class='path'><a href="#!/wordList/add_words_to_word_list" class="path_or_nickname" data-nickname="add_words_to_word_list" data-path="/wordList.{format}/{permalink}/words" onclick="Docs.toggleOperationContent('wordList_add_words_to_word_list_content');">/wordList.{format}/{permalink}/words</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/add_words_to_word_list" onclick="Docs.toggleOperationContent('wordList_add_words_to_word_list_content');">Adds words to a WordList</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_add_words_to_word_list_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td></td>
+<td width='500'><strong>permalink of WordList to user; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>request body</td>
+<td></td>
+<td width='500'>Array of words to add to WordList; The body of the request</td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="post" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}/words" />
+<input id="nickname" name="nickname" type="hidden" value="add_words_to_word_list" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink,body" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_add_words_to_word_list_content_sandbox_response" />
+</form>
+
+<div class='response' id='wordList_add_words_to_word_list_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+<li class='get operation' id='wordList_get_word_list_words'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/get_word_list_words" onclick="Docs.toggleOperationContent('wordList_get_word_list_words_content');">get</a></span>
+<span class='path'><a href="#!/wordList/get_word_list_words" class="path_or_nickname" data-nickname="get_word_list_words" data-path="/wordList.{format}/{permalink}/words" onclick="Docs.toggleOperationContent('wordList_get_word_list_words_content');">/wordList.{format}/{permalink}/words</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/get_word_list_words" onclick="Docs.toggleOperationContent('wordList_get_word_list_words_content');">Fetches words in a WordList</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_get_word_list_words_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td><input class="required" id="parameters_permalink" minlength="1" name="parameters[permalink]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>ID of WordList to use; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>sortBy</td>
+<td><select class="" id="parameters_sortBy" name="parameters[sortBy]"><option value="createDate" selected="selected">createDate (default)</option>
+<option value="alpha">alpha</option></select></td>
+<td width='500'>Field to sort by</td>
+</tr>
+<tr>
+<td class='code'>sortOrder</td>
+<td><select class="" id="parameters_sortOrder" name="parameters[sortOrder]"><option value="asc">asc</option>
+<option value="desc" selected="selected">desc (default)</option></select></td>
+<td width='500'>Direction to sort</td>
+</tr>
+<tr>
+<td class='code'>skip</td>
+<td><input class="" id="parameters_skip" minlength="0" name="parameters[skip]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Results to skip</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 100" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td><input class="required" id="parameters_auth_token" minlength="1" name="parameters[auth_token]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}/words" />
+<input id="nickname" name="nickname" type="hidden" value="get_word_list_words" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_get_word_list_words_content_sandbox_response" />
+<div class='sandbox_header' id='wordList_get_word_list_words_content_sandbox_response_header'>
+<input class="submit" id="wordList_get_word_list_words_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="wordList_get_word_list_words_content_sandbox_response_hider" onclick="$('#wordList_get_word_list_words_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="wordList_get_word_list_words_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='wordList_get_word_list_words_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='operation post' id='wordList_delete_words_from_word_list'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordList/delete_words_from_word_list" onclick="Docs.toggleOperationContent('wordList_delete_words_from_word_list_content');">post</a></span>
+<span class='path'><a href="#!/wordList/delete_words_from_word_list" class="path_or_nickname" data-nickname="delete_words_from_word_list" data-path="/wordList.{format}/{permalink}/deleteWords" onclick="Docs.toggleOperationContent('wordList_delete_words_from_word_list_content');">/wordList.{format}/{permalink}/deleteWords</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordList/delete_words_from_word_list" onclick="Docs.toggleOperationContent('wordList_delete_words_from_word_list_content');">Removes words from a WordList</a></li>
+</ul>
+</div>
+<div class='content' id='wordList_delete_words_from_word_list_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>permalink</td>
+<td></td>
+<td width='500'><strong>permalink of WordList to use; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code'>request body</td>
+<td></td>
+<td width='500'>Words to remove from WordList; The body of the request</td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="post" />
+<input id="path" name="path" type="hidden" value="/wordList.{format}/{permalink}/deleteWords" />
+<input id="nickname" name="nickname" type="hidden" value="delete_words_from_word_list" />
+<input id="resource" name="resource" type="hidden" value="wordList" />
+<input id="positional_args" name="positional_args" type="hidden" value="permalink,body" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordList_delete_words_from_word_list_content_sandbox_response" />
+</form>
+
+<div class='response' id='wordList_delete_words_from_word_list_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class='active resource' id='resource_wordLists'>
+<div class='heading'>
+<h2>
+<a href="#!/wordLists" onclick="Docs.toggleEndpointListForResource('wordLists');">/wordLists</a>
+</h2>
+<ul class='options'>
+<li><a href="#!/wordLists" id="endpointListTogger_wordLists" onclick="Docs.toggleEndpointListForResource('wordLists');">Show/Hide</a></li>
+<li><a href="#" onclick="Docs.collapseOperationsForResource('wordLists'); return false;">List Operations</a></li>
+<li><a href="#" onclick="Docs.expandOperationsForResource('wordLists'); return false;">Expand Operations</a></li>
+<li><a href="http://api.wordnik.com//v4/wordLists.json">Raw</a></li>
+</ul>
+</div>
+<ul class='endpoints' id='wordLists_endpoint_list'>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='operation post' id='wordLists_create_word_list'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/wordLists/create_word_list" onclick="Docs.toggleOperationContent('wordLists_create_word_list_content');">post</a></span>
+<span class='path'><a href="#!/wordLists/create_word_list" class="path_or_nickname" data-nickname="create_word_list" data-path="/wordLists.{format}" onclick="Docs.toggleOperationContent('wordLists_create_word_list_content');">/wordLists.{format}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/wordLists/create_word_list" onclick="Docs.toggleOperationContent('wordLists_create_word_list_content');">Creates a WordList.</a></li>
+</ul>
+</div>
+<div class='content' id='wordLists_create_word_list_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code'>request body</td>
+<td></td>
+<td width='500'>WordList to create; The body of the request</td>
+</tr>
+<tr>
+<td class='code required'>auth_token</td>
+<td></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="post" />
+<input id="path" name="path" type="hidden" value="/wordLists.{format}" />
+<input id="nickname" name="nickname" type="hidden" value="create_word_list" />
+<input id="resource" name="resource" type="hidden" value="wordLists" />
+<input id="positional_args" name="positional_args" type="hidden" value="body" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="wordLists_create_word_list_content_sandbox_response" />
+</form>
+
+<div class='response' id='wordLists_create_word_list_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class='active resource' id='resource_account'>
+<div class='heading'>
+<h2>
+<a href="#!/account" onclick="Docs.toggleEndpointListForResource('account');">/account</a>
+</h2>
+<ul class='options'>
+<li><a href="#!/account" id="endpointListTogger_account" onclick="Docs.toggleEndpointListForResource('account');">Show/Hide</a></li>
+<li><a href="#" onclick="Docs.collapseOperationsForResource('account'); return false;">List Operations</a></li>
+<li><a href="#" onclick="Docs.expandOperationsForResource('account'); return false;">Expand Operations</a></li>
+<li><a href="http://api.wordnik.com//v4/account.json">Raw</a></li>
+</ul>
+</div>
+<ul class='endpoints' id='account_endpoint_list'>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='account_authenticate'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/account/authenticate" onclick="Docs.toggleOperationContent('account_authenticate_content');">get</a></span>
+<span class='path'><a href="#!/account/authenticate" class="path_or_nickname" data-nickname="authenticate" data-path="/account.{format}/authenticate/{username}" onclick="Docs.toggleOperationContent('account_authenticate_content');">/account.{format}/authenticate/{username}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/account/authenticate" onclick="Docs.toggleOperationContent('account_authenticate_content');">Authenticates a User</a></li>
+</ul>
+</div>
+<div class='content' id='account_authenticate_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>username</td>
+<td><input class="required" id="parameters_username" minlength="1" name="parameters[username]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>A confirmed Wordnik username; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code required'>password</td>
+<td><input class="required" id="parameters_password" minlength="1" name="parameters[password]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>The user's password</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/account.{format}/authenticate/{username}" />
+<input id="nickname" name="nickname" type="hidden" value="authenticate" />
+<input id="resource" name="resource" type="hidden" value="account" />
+<input id="positional_args" name="positional_args" type="hidden" value="username" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="account_authenticate_content_sandbox_response" />
+<div class='sandbox_header' id='account_authenticate_content_sandbox_response_header'>
+<input class="submit" id="account_authenticate_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="account_authenticate_content_sandbox_response_hider" onclick="$('#account_authenticate_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="account_authenticate_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='account_authenticate_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+<li class='operation post' id='account_authenticate_post'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/account/authenticate_post" onclick="Docs.toggleOperationContent('account_authenticate_post_content');">post</a></span>
+<span class='path'><a href="#!/account/authenticate_post" class="path_or_nickname" data-nickname="authenticate_post" data-path="/account.{format}/authenticate/{username}" onclick="Docs.toggleOperationContent('account_authenticate_post_content');">/account.{format}/authenticate/{username}</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/account/authenticate_post" onclick="Docs.toggleOperationContent('account_authenticate_post_content');">Authenticates a user</a></li>
+</ul>
+</div>
+<div class='content' id='account_authenticate_post_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>username</td>
+<td></td>
+<td width='500'><strong>A confirmed Wordnik username; Part of the URL string itself</strong></td>
+</tr>
+<tr>
+<td class='code required'>request body</td>
+<td></td>
+<td width='500'><strong>The user's password; The body of the request</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="post" />
+<input id="path" name="path" type="hidden" value="/account.{format}/authenticate/{username}" />
+<input id="nickname" name="nickname" type="hidden" value="authenticate_post" />
+<input id="resource" name="resource" type="hidden" value="account" />
+<input id="positional_args" name="positional_args" type="hidden" value="username,body" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="account_authenticate_post_content_sandbox_response" />
+</form>
+
+<div class='response' id='account_authenticate_post_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='account_get_word_lists_for_logged_in_user'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/account/get_word_lists_for_logged_in_user" onclick="Docs.toggleOperationContent('account_get_word_lists_for_logged_in_user_content');">get</a></span>
+<span class='path'><a href="#!/account/get_word_lists_for_logged_in_user" class="path_or_nickname" data-nickname="get_word_lists_for_logged_in_user" data-path="/account.{format}/wordLists" onclick="Docs.toggleOperationContent('account_get_word_lists_for_logged_in_user_content');">/account.{format}/wordLists</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/account/get_word_lists_for_logged_in_user" onclick="Docs.toggleOperationContent('account_get_word_lists_for_logged_in_user_content');">Fetches WordList objects for the logged-in user.</a></li>
+</ul>
+</div>
+<div class='content' id='account_get_word_lists_for_logged_in_user_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>auth_token</td>
+<td><input class="required" id="parameters_auth_token" minlength="1" name="parameters[auth_token]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>auth_token of logged-in user</strong></td>
+</tr>
+<tr>
+<td class='code'>skip</td>
+<td><input class="" id="parameters_skip" minlength="0" name="parameters[skip]" placeholder="default: 0" type="text" /></td>
+<td width='500'>Results to skip</td>
+</tr>
+<tr>
+<td class='code'>limit</td>
+<td><input class="" id="parameters_limit" minlength="0" name="parameters[limit]" placeholder="default: 50" type="text" /></td>
+<td width='500'>Maximum number of results to return</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/account.{format}/wordLists" />
+<input id="nickname" name="nickname" type="hidden" value="get_word_lists_for_logged_in_user" />
+<input id="resource" name="resource" type="hidden" value="account" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="account_get_word_lists_for_logged_in_user_content_sandbox_response" />
+<div class='sandbox_header' id='account_get_word_lists_for_logged_in_user_content_sandbox_response_header'>
+<input class="submit" id="account_get_word_lists_for_logged_in_user_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="account_get_word_lists_for_logged_in_user_content_sandbox_response_hider" onclick="$('#account_get_word_lists_for_logged_in_user_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="account_get_word_lists_for_logged_in_user_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='account_get_word_lists_for_logged_in_user_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='account_get_api_token_status'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/account/get_api_token_status" onclick="Docs.toggleOperationContent('account_get_api_token_status_content');">get</a></span>
+<span class='path'><a href="#!/account/get_api_token_status" class="path_or_nickname" data-nickname="get_api_token_status" data-path="/account.{format}/apiTokenStatus" onclick="Docs.toggleOperationContent('account_get_api_token_status_content');">/account.{format}/apiTokenStatus</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/account/get_api_token_status" onclick="Docs.toggleOperationContent('account_get_api_token_status_content');">Returns usage statistics for the API account.</a></li>
+</ul>
+</div>
+<div class='content' id='account_get_api_token_status_content' style='display:none'>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code'>api_key</td>
+<td><input class="" id="parameters_api_key" minlength="0" name="parameters[api_key]" placeholder="" type="text" /></td>
+<td width='500'>Wordnik authentication token</td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/account.{format}/apiTokenStatus" />
+<input id="nickname" name="nickname" type="hidden" value="get_api_token_status" />
+<input id="resource" name="resource" type="hidden" value="account" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="account_get_api_token_status_content_sandbox_response" />
+<div class='sandbox_header' id='account_get_api_token_status_content_sandbox_response_header'>
+<input class="submit" id="account_get_api_token_status_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="account_get_api_token_status_content_sandbox_response_hider" onclick="$('#account_get_api_token_status_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="account_get_api_token_status_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='account_get_api_token_status_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+<li class='endpoint'>
+<ul class='operations'>
+<li class='get operation' id='account_get_logged_in_user'>
+<div class='heading'>
+<h3>
+<span class='http_method'><a href="#!/account/get_logged_in_user" onclick="Docs.toggleOperationContent('account_get_logged_in_user_content');">get</a></span>
+<span class='path'><a href="#!/account/get_logged_in_user" class="path_or_nickname" data-nickname="get_logged_in_user" data-path="/account.{format}/user" onclick="Docs.toggleOperationContent('account_get_logged_in_user_content');">/account.{format}/user</a></span>
+</h3>
+<ul class='options'>
+<li><a href="#!/account/get_logged_in_user" onclick="Docs.toggleOperationContent('account_get_logged_in_user_content');">Returns the logged-in User</a></li>
+</ul>
+</div>
+<div class='content' id='account_get_logged_in_user_content' style='display:none'>
+<h4>Implementation Notes</h4>
+<p>Requires a valid auth_token to be set.</p>
+<form accept-charset="UTF-8" action="/sandbox" class="sandbox" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="O0fZ0ryY7HS6Srf9RYmkCi+f0gQEp8denCV37aEyQZs=" /></div>
+<h4>Parameters</h4>
+<table class='fullwidth'>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class='code required'>auth_token</td>
+<td><input class="required" id="parameters_auth_token" minlength="1" name="parameters[auth_token]" placeholder="(required)" type="text" /></td>
+<td width='500'><strong>The auth token of the logged-in user, obtained by calling /account.{format}/authenticate/{username} (described above)</strong></td>
+</tr>
+</tbody>
+</table>
+<input id="http_method" name="http_method" type="hidden" value="get" />
+<input id="path" name="path" type="hidden" value="/account.{format}/user" />
+<input id="nickname" name="nickname" type="hidden" value="get_logged_in_user" />
+<input id="resource" name="resource" type="hidden" value="account" />
+<input id="positional_args" name="positional_args" type="hidden" value="" />
+
+
+<input id="operation_sandbox_response_dom_id" name="operation_sandbox_response_dom_id" type="hidden" value="account_get_logged_in_user_content_sandbox_response" />
+<div class='sandbox_header' id='account_get_logged_in_user_content_sandbox_response_header'>
+<input class="submit" id="account_get_logged_in_user_content_sandbox_response_button" name="commit" type="submit" value="Try it out!" />
+<a href="#" id="account_get_logged_in_user_content_sandbox_response_hider" onclick="$('#account_get_logged_in_user_content_sandbox_response').slideUp();$(this).fadeOut();; return false;" style="display:none">Hide Response</a>
+<img alt="Throbber" id="account_get_logged_in_user_content_sandbox_response_throbber" src="/images/throbber.gif?1333667828" style="display:none" />
+</div>
+</form>
+
+<div class='response' id='account_get_logged_in_user_content_sandbox_response' style='display:none'>
+<h4>Request URL</h4>
+<div class='block request_url'></div>
+<h4>Response Body</h4>
+<div class='block response_body'></div>
+<h4>Response Code</h4>
+<div class='block response_code'></div>
+<h4>Response Headers</h4>
+<div class='block response_headers'></div>
+<h4>Example Ruby Request</h4>
+<div class='block response_ruby_example'></div>
+</div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>
+The latest API base URL is
+<span class='code'>
+http://api.wordnik.com/v4
+</span>
+</p>
+</div>
+
+</div>
+</div>
+<div id='footer'>
+<div class='container'>
+<ul>
+<li><a href="http://www.wordnik.com" class="strong">wordnik.com</a></li>
+<li><a href="http://twitter.com/wordnik">@wordnik</a></li>
+<li><a href="http://twitter.com/wordnikapi">@wordnikapi</a></li>
+<li><a href="http://github.com/wordnik">github.com/wordnik</a></li>
+<li><a href="irc://irc.freenode.net/wordnik">#wordnik on IRC</a></li>
+<li><a href="http://www.wordnik.com/about">about</a></li>
+<li><a href="http://smartwords.wordnik.com/">smartwords</a></li>
+<li><a href="http://blog.wordnik.com">blog</a></li>
+<li><a href="/terms">terms</a></li>
+<li><a href="/faq">FAQ</a></li>
+</ul>
+</div>
+</div>
+</body>
+</html>

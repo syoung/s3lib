@@ -1,0 +1,1001 @@
+Notes-apps-mira.txt
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Jun 27 18:47:58 EDT 2008
+TEST convertelandqual.pl WHICH CONVERTS symbolic QUALITY VALUES TO numeric QUALITY VALUES PRIOR TO RUN OF mira
+
+GET symbolic AND numeric QUALITY VALUE OUTPUTS FROM GERARD
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Fri Jun 27 15:32:34 EDT 2008
+CREATE numeric AND symbolic QUALITY VALUE OUTPUTS USING GERARD TO USE TO TEST convertelandqual.pl
+
+**** numeric QUALITY VALUES ****
+
+1. CREATE A config.txt FILE
+===========================
+emacs /home/syoung/pipeline/phix1/data/eland.format/noAlignment_config.txt
+
+>>>
+ANALYSIS sequence
+
+SEQUENCE_FORMAT --fastq
+
+QUALITY_FORMAT --numeric
+<<<
+
+
+2. CREATE A .format.params FILE
+===============================
+
+emacs /home/syoung/pipeline/phix1/data/eland.format/eland.format.params
+>>>
+<?xml version="1.0"?>
+<experiment>
+  <run>
+    <instrument>HWI-EAS185</instrument>
+    <cycleExposures />
+  </run>
+<<<
+
+
+3. DO SYMBOLIC LINK TO Images DIRECTORY
+=======================================
+
+cd /home/syoung/pipeline/phix1/data/eland.format
+ln -s /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Images/ `pwd`/Images
+
+
+4. RUN make TO CREATE DIRECTORIES
+=================================
+
+/usr/local/Pipeline/Goat/goat_pipeline.py --GERALD=/home/syoung/pipeline/phix1/data/eland.format/noAlignment_config.txt --tiles=s_4 /home/syoung/pipeline/phix1/data/eland.format --make
+
+    ...
+    PRB_FILE_SUFFIX              _prb.txt
+    PURE_BASES                   12
+    QF_PARAMS                    '((CHASTITY>=0.6))'
+    QHG_FILE_SUFFIX              _qhg.txt
+    QUALITY_FORMAT               --numeric
+    READ_LENGTH                  36
+    READ_LENGTH1                 36
+    READ_LENGTH2                 0
+    SEQUENCE_FORMAT              --fastq
+    SEQ_FILE_SUFFIX              _seq.txt
+    SIG_FILE_SUFFIX_DEPHASED     _sig2.txt
+    SIG_FILE_SUFFIX_NOT_DEPHASED _sig.txt
+    SOFTWARE_VERSION             @(#) Id: GERALD.pl,v 1.131 2007/12/04 11:14:32 rshaw Exp
+    TILE_REGEX                   s_[1-8]_[0-9][0-9][0-9][0-9]
+    TILE_ROOT                    s
+    TIME_STAMP                   Fri Jun 27 15:18:49 2008
+    TOOLS_DIR                    /usr/local/Pipeline/Goat/../Gerald
+    USE_BASES                    YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+    WEB_DIR_ROOT                 http://host.domain.com/yourshare/
+    1:ANALYSIS                   sequence
+    2:ANALYSIS                   sequence
+    3:ANALYSIS                   sequence
+    4:ANALYSIS                   sequence
+    5:ANALYSIS                   sequence
+    6:ANALYSIS                   sequence
+    7:ANALYSIS                   sequence
+    8:ANALYSIS                   sequence
+    Created directory /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung
+    want to make /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    Successfully created /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    Copying config file /tmp/tmp-GERALD-511-12476.txt to /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/config.txt
+    Dumping config parameters into /tmp/tmp-GERALD-511-12476.txt to /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/config.xml
+    Running 'make self_test' on /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    make: Nothing to be done for `self_test'.
+    Run 'make self_test' on /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-12476.txt
+
+
+5. RUN THE ASSEMBER (WITH make recursive)
+=========================================
+
+cd /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung
+make -j 8 recursive
+
+    ...
+    find . -maxdepth 1 -name "*_qval.txt" | xargs rm -f
+    echo Gerald analysis finished successfully. ;
+    Gerald analysis finished successfully.
+    make[2]: Leaving directory `/store/home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung'
+    make[1]: Leaving directory `/store/home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung'
+    You have mail in /var/spool/mail/syoung
+
+
+
+6. CHECK NUMBER OF READS (4,975,670)
+====================================
+
+cd /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung
+
+ls -alh s_4_sequence.txt 
+-rw-r--r-- 1 syoung users 937M Jun 27 18:13 s_4_sequence.txt
+
+/home/syoung/bin/utils/records.pl /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt "@"
+
+    Filename: /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt
+    Separator: @
+    Records: 4975670
+
+
+7. CHECK OUTPUT 
+===============
+
+head -n 50 /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt
+
+@eland.format:4:1:545:94
+GTTATTTCCTAGACAAATTAGAGCCAATACCATCAG
++eland.format:4:1:545:94
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 33 40 40 40 36
+@eland.format:4:1:373:83
+GTTGATGCTAAAGGTGAGCCGCTTAAAGCTACCAGT
++eland.format:4:1:373:83
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 17 40 40 40 40 40 25 24 40 40 40 40 21 27 11 40 32
+@eland.format:4:1:727:152
+GTAATAAGAACGAACCATAAAAAAGCCTCCAAGATT
++eland.format:4:1:727:152
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 31 40 40 40 40 22 40 40 40 29 20 40 13 9 40 29 19 11 34 24 40 40
+@eland.format:4:1:164:200
+GATAAAAATGATTGGCGTATCCAACCTGCAGAGTTT
++eland.format:4:1:164:200
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 34 40 40 40 40 40 40 38 40 40 40 40
+@eland.format:4:1:329:100
+GAAACAACCTGATTAGCGGCGTTGACAGATGTATCC
++eland.format:4:1:329:100
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 31 40 40 40 40 40 40 36 40 22 34
+@eland.format:4:1:615:109
+GGTCAATATAACCAGTAGTGTTAACAGTCGGGAGTG
++eland.format:4:1:615:109
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 12 40 40 8 37 40 40 40 1 13 3 40
+@eland.format:4:1:200:231
+GATATTTTTCATGGTATTGATAAAGCTGTTGCCGAT
++eland.format:4:1:200:231
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 28 27 40 9 40
+@eland.format:4:1:479:85
+GTTTTCCATAATAGACGCAACGCGAGCAGTAGACTC
++eland.format:4:1:479:85
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 39 40 28 23 40 39
+@eland.format:4:1:641:174
+GTTTAAGATTGCTGAGGGTCAGTGGTATCGTTATGC
++eland.format:4:1:641:174
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 29 40 40 40 40 40 40 40 14 40 23 4
+@eland.format:4:1:673:234
+GGAGCTAAAGAATGGAACAACTCACTAAAAACCAAG
++eland.format:4:1:673:234
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 37 40 40 22 40 40 35 39 31 37 35 30 23
+@eland.format:4:1:556:116
+GGGTCTGCAAGCTGCTTATGCTAATTTGCATACTGA
++eland.format:4:1:556:116
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 27 40 37 27 40 25 40
+@eland.format:4:1:192:206
+GATAAGCTGGTTCTCACTTCTGTTACTCCAGCTTCT
++eland.format:4:1:192:206
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 38 38 40 40 40 40 25 39 40 40 11 40
+@eland.format:4:1:443:204
+GACATTATGGGTCTGCAAGCTGCTTATGCTAATTTG
+
+
+
+
+**** symbolic QUALITY VALUES ****
+
+
+
+1. CREATE A config.txt FILE
+===========================
+
+mkdir -p /home/syoung/pipeline/phix1/data/numeric.format
+emacs /home/syoung/pipeline/phix1/data/numeric.format/noAlignment_config.txt
+
+>>>
+ANALYSIS sequence
+
+SEQUENCE_FORMAT --fastq
+
+QUALITY_FORMAT --symbolic
+<<<
+
+
+2. CREATE A .format.params FILE
+===============================
+
+emacs /home/syoung/pipeline/phix1/data/numeric.format/numeric.format.params
+>>>
+<?xml version="1.0"?>
+<experiment>
+  <run>
+    <instrument>HWI-EAS185</instrument>
+    <cycleExposures />
+  </run>
+<<<
+
+
+3. DO SYMBOLIC LINK TO Images DIRECTORY
+=======================================
+
+cd /home/syoung/pipeline/phix1/data/numeric.format
+ln -s /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Images/ `pwd`/Images
+
+
+4. RUN make TO CREATE DIRECTORIES
+=================================
+
+/usr/local/Pipeline/Goat/goat_pipeline.py --GERALD=/home/syoung/pipeline/phix1/data/numeric.format/noAlignment_config.txt --tiles=s_4 /home/syoung/pipeline/phix1/data/numeric.format --make
+
+    Run 'make self_test' on /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-16319.txt
+
+
+5. RUN THE ASSEMBER (WITH make recursive)
+=========================================
+
+cd /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung
+make -j 8 recursive
+
+    ...
+    find . -maxdepth 1 -name "*_qval.txt" | xargs rm -f
+    echo Gerald analysis finished successfully. ;
+    Gerald analysis finished successfully.
+    make[2]: Leaving directory `/store/home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung'
+    make[1]: Leaving directory `/store/home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung'
+    You have mail in /var/spool/mail/syoung
+
+
+
+6. CHECK NUMBER OF READS (4,975,670)
+====================================
+
+cd /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung
+
+ls -alh s_4_sequence.txt 
+-rw-r--r-- 1 syoung users 937M Jun 27 18:13 s_4_sequence.txt
+
+/home/syoung/bin/utils/records.pl /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt "@"
+
+    Filename: /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt
+    Separator: @
+    Records: 4975670
+
+
+7. CHECK OUTPUT 
+===============
+
+head -n 50 /home/syoung/pipeline/phix1/data/numeric.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/s_4_sequence.txt
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Thu Jun 19 16:33:12 EDT 2008
+RUN SOLEXA SEQUENCE PREDICTION TO PRODUCE phred QUALITY VALUES
+
+1. CONTENTS OF Config.txt FILE
+==============================
+ANALYSIS sequence
+ 
+SEQUENCE_FORMAT --fastq
+ 
+QUALITY_FORMAT –numeric
+
+
+2. TEST CONFIG PARAMS
+=====================
+
+/usr/local/Pipeline/Goat/goat_pipeline.py --GERALD=/home/jhoffman/aphidGenome/noAlignment_config.txt --tiles=s_4_0150 /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH 
+
+ORIGINAL NUMERIC QUALITY VALUE OUTPUT FILE:
+
+/store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data/C1-36_Firecrest1.9.2_16-06-2008_jhoffman/Bustard1.9.2_16-06-2008_jhoffman/GERALD_16-06-2008_jhoffman/s_4_sequence.txt
+
+
+3. MAKE A DATA FOLDER (ADD --make)
+==================================
+/usr/local/Pipeline/Goat/goat_pipeline.py --GERALD=/home/jhoffman/aphidGenome/noAlignment_config.txt --tiles=s_4 /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH --make
+
+
+cat /home/syoung/pipeline/phix1/data/eland.format/noAlignment_config.txt
+
+>>>
+
+ANALYSIS sequence
+
+SEQUENCE_FORMAT --fastq
+
+QUALITY_FORMAT --numeric
+
+<<<
+
+cat /home/syoung/pipeline/phix1/data/eland.format/eland.format.params
+>>>
+<?xml version="1.0"?>
+<experiment>
+  <run>
+    <instrument>HWI-EAS185</instrument>
+    <cycleExposures />
+  </run>
+<<<
+
+
+
+/usr/local/Pipeline/Goat/goat_pipeline.py --GERALD=/home/syoung/pipeline/phix1/data/eland.format/noAlignment_config.txt --tiles=s_4 /home/syoung/pipeline/phix1/data/eland.format --make
+
+    ...
+    PRB_FILE_SUFFIX              _prb.txt
+    PURE_BASES                   12
+    QF_PARAMS                    '((CHASTITY>=0.6))'
+    QHG_FILE_SUFFIX              _qhg.txt
+    QUALITY_FORMAT               --numeric
+    READ_LENGTH                  36
+    READ_LENGTH1                 36
+    READ_LENGTH2                 0
+    SEQUENCE_FORMAT              --fastq
+    SEQ_FILE_SUFFIX              _seq.txt
+    SIG_FILE_SUFFIX_DEPHASED     _sig2.txt
+    SIG_FILE_SUFFIX_NOT_DEPHASED _sig.txt
+    SOFTWARE_VERSION             @(#) Id: GERALD.pl,v 1.131 2007/12/04 11:14:32 rshaw Exp
+    TILE_REGEX                   s_[1-8]_[0-9][0-9][0-9][0-9]
+    TILE_ROOT                    s
+    TIME_STAMP                   Fri Jun 27 15:18:49 2008
+    TOOLS_DIR                    /usr/local/Pipeline/Goat/../Gerald
+    USE_BASES                    YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+    WEB_DIR_ROOT                 http://host.domain.com/yourshare/
+    1:ANALYSIS                   sequence
+    2:ANALYSIS                   sequence
+    3:ANALYSIS                   sequence
+    4:ANALYSIS                   sequence
+    5:ANALYSIS                   sequence
+    6:ANALYSIS                   sequence
+    7:ANALYSIS                   sequence
+    8:ANALYSIS                   sequence
+    Created directory /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung
+    want to make /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    Successfully created /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    Copying config file /tmp/tmp-GERALD-511-12476.txt to /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/config.txt
+    Dumping config parameters into /tmp/tmp-GERALD-511-12476.txt to /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/config.xml
+    Running 'make self_test' on /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile
+    make: Nothing to be done for `self_test'.
+    Run 'make self_test' on /home/syoung/pipeline/phix1/data/eland.format/Data/C1-36_Firecrest1.9.2_27-06-2008_syoung/Bustard1.9.2_27-06-2008_syoung/GERALD_27-06-2008_syoung/Makefile completed with no problems
+    Task complete, exiting
+    Removing temporary file /tmp/tmp-GERALD-511-12476.txt
+
+
+
+
+
+4. RUN THE ASSEMBER (WITH make recursive)
+=========================================
+cd /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH
+make -j 8 recursive
+
+
+
+
+5. OUTPUT SEQUENCE FILE WITH QUALITY VALUES
+===========================================
+
+/store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data/C1-36_Firecrest1.9.2_16-06-2008_jhoffman/Bustard1.9.2_16-06-2008_jhoffman/GERALD_16-06-2008_jhoffman/s_4_sequence.txt
+
+6. CONTENTS OF FILE
+===================
+
+[syoung@solexa01 GERALD_16-06-2008_jhoffman]$ head s_4_sequence.txt
+@HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:545:94
+GTTATTTCCTAGACAAATTAGAGCCAATACCATCAG
++HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:545:94
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 33 40 17 40 36
+@HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:373:83
+GTTGATGCTAAAGGTGAGCCGCTTAAAGCTACCAGT
++HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:373:83
+40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 16 40 40 40 40 40 24 24 40 40 40 40 21 26 36 34 31
+@HWI-EAS185_1_201UPAAXX_Aphid_JH:4:1:727:152
+GTAATAAGAACGAACCATAAAAAAGCCTCCAAGATT
+
+7. COPY SOLEXA SEQUENCE FILE TO ASSEMBLY FOLDER
+===============================================
+
+mkdir -p /home/syoung/pipeline/phix1/data
+cp /store/data/pipeline_in/080509_HWI-EAS185_0001_201UPAAXX_Aphid_JH/Data/C1-36_Firecrest1.9.2_16-06-2008_jhoffman/Bustard1.9.2_16-06-2008_jhoffman/GERALD_16-06-2008_jhoffman/s_4_sequence.txt /home/syoung/pipeline/phix1/data
+
+FILE HAS 4,974,040 READS:
+
+[syoung@solexa01 utils]$ /home/syoung/bin/utils/records.pl /home/syoung/pipeline/phix1/data/s_4_sequence.txt "@"
+Filename: /home/syoung/pipeline/phix1/data/s_4_sequence.txt
+Separator: @
+Records: 4974040
+
+
+8. CONVERT TO A .fasta FILE AND A .qual FILE
+============================================
+/home/syoung/bin/mira/createfastaqual.pl -i /home/syoung/pipeline/phix1/data/s_4_sequence.txt
+
+    ...
+    4973800
+    4973900
+    4974000
+    Output files printed.
+    fasta file: /home/syoung/pipeline/phix1/data/s_4_sequence.fasta
+    qual file: /home/syoung/pipeline/phix1/data/s_4_sequence.fasta.qual    
+    
+    Run time: 00:01:15
+    Completed /home/syoung/bin/mira/createfastaqual.pl
+    5:20PM, 19 June 2008
+    ****************************************
+
+mv s_4_sequence.fasta s_4_sequence_in.solexa.fasta
+mv s_4_sequence.fasta.qual s_4_sequence_in.solexa.fasta.qual
+
+
+9. ADD BACKBONE REFERENCE SEQUENCE
+==================================
+
+DOWNLOAD APHID LINEAR SCAFFOLDS FROM:
+
+cd /home/syoung/pipeline/phix1/data
+wget ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/linear_scaffolds/Acyr20071212-genome.fa
+wget ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/linear_scaffolds/Acyr20071212-genome.fa.qual
+
+CHANGE FILENAMES:
+
+mv Acyr20071212-genome.fa s_4_sequence_backbone_in.fasta
+mv Acyr20071212-genome.fa.qual s_4_sequence_backbone_in.fasta.qual
+
+
+ALSO DOWNLOADED FOR FUTURE REFERENCE:
+
+GENOME
+ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/blast/Acyr20071212-genome.fa
+
+UNASSEMBLED READS 
+ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/blast/Acyr20071212-unassembled_reads.fa
+
+CONTIGS WITH QUALITY VALUES:
+wget ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/contigs/Acyr20071212-contigs.fa
+wget ftp://ftp.hgsc.bcm.tmc.edu/pub/data/Acyr/contigs/Acyr20071212-contigs.fa.qual
+
+
+10. RUN MIRA
+============
+
+(NB: SAMPLE PROJECT
+
+-rw-r--r-- 1 bach users   6543511 2008-04-08 23:53 bchocse_backbone_in.gbf
+-rw-r--r-- 1 bach users 134822451 2008-04-08 23:51 bchocse_straindata_in.txt
+-rw-r--r-- 1 bach users 263985896 2008-03-28 21:49 bchocse_in.solexa.fasta
+-rw-r--r-- 1 bach users 517905709 2008-03-28 21:24 bchocse_in.solexa.fasta.qual
+
+tsunami:/path/to/myProject> mira 
+  --project=bchocse --job=mapping,genome,normal,solexa
+  -SB:lsd=yes:bsn=bchoc_wt:bft=gbf:bbq=30
+  >&log_assembly.txt 
+)
+
+cd /home/syoung/pipeline/phix1/data
+drwxr-xr-x 2 syoung users       4096 Jun 20 16:46 archive
+drwxr-xr-x 8 syoung users       4096 Jun 20 13:57 resources
+-rw-r--r-- 1 syoung users  472386966 Jun 20 15:14 s_4_sequence_backbone_in.fasta
+-rw-r--r-- 1 syoung users 1372558404 Jun 20 15:46 s_4_sequence_backbone_in.fasta.qual
+-rw-rw-rw- 1 syoung users  415049821 Jun 19 17:20 s_4_sequence_in.solexa.fasta
+-rw-rw-rw- 1 syoung users  760359230 Jun 19 17:20 s_4_sequence_in.solexa.fasta.qual
+
+/home/syoung/mira/mira_2.9.26x3_dev_linux-gnu_x86_64/bin/mira --project=s_4_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+
+OUT OF MEMORY BECAUSE OF TOO MANY SCAFFOLDS IN APHID GENOME:
+
+    SCAFFOLD22800_bb        107
+    SCAFFOLD22801_bb        106
+    Localtime: Fri Jun 20 18:06:43 2008
+    
+    Generated 0 unique strain ids for 22801 reads.
+    Strain "default" has 22801 reads.
+    Adding rails to 22801 contigs (this may take a while).
+    Out of memory detected, exception message is: St9bad_alloc
+
+
+TRANSFERRED TO ra:
+
+/nethome/syoung/base/pipeline/phix1/data
+
+/nethome/syoung/base/apps/mira/bin
+
+    cd ~/base/pipeline/phix1/data
+    nohup /nethome/syoung/base/apps/mira/bin/mira --project=s_4_sequence --job=mapping,genome,normal,solexa -LR:ssiqf=no &> log_assembly.txt
+
+
+
+COMPILE mira ON poseidon
+========================
+
+COULDN'T RUN mira ON ra BECAUSE IT'S SOLARIS NOT LINUX SO COMPILED mira ON poseidon FIRST:
+
+cd /nethome/syoung/base/apps/mira-2.8.3
+./configure 
+
+    Could not find expat header. Please install the Expat library.
+    See http://sourceforge.net/projects/expat/
+    
+    Your 'flex' is version 2.5.4 which is known NOT to work with MIRA
+    Please install newer GNU flex (2.5.33 is known to work).
+    See http://flex.sourceforge.net/
+    
+
+INSTALLED EXPAT:
+
+[syoung@poseidon:/nethome/syoung/base/apps/expat/expat-2.0.1]:>./configure --prefix=/nethome/syoung/base/apps/expat/expat-2.0.1
+make
+make install
+ 
+OK
+
+
+INSTALL mira WITH EXPAT FLAG
+============================
+
+LDFLAGS=-L/nethome/syoung/base/apps/expat/expat-2.0.1/lib
+export LDFLAGS
+CPPFLAGS=-I/nethome/syoung/base/apps/expat/expat-2.0.1/lib
+export CPPFLAGS
+echo $CPPFLAGS
+cd /nethome/syoung/base/apps/mira-2.8.3
+
+./configure --prefix=/nethome/syoung/base/apps/mira
+
+OK, ONLY flex TO GO:
+
+    Your 'flex' is version 2.5.4 which is known NOT to work with MIRA
+    Please install newer GNU flex (2.5.33 is known to work).
+    See http://flex.sourceforge.net/
+    
+    Packages/programs needed for the compilation were not found.
+    Please install these first and then try again.
+
+
+INSTALL m4 FOR flex
+===================
+
+http://ftp.gnu.org/gnu/m4/m4-1.4.1.tar.gz
+
+cd /nethome/syoung/base/apps/m4-1.4.1
+./configure --prefix=/nethome/syoung/base/apps/m4
+make
+make install
+
+OK
+
+
+
+INSTALL flex
+============
+
+SET PATH:
+
+echo $PATH 
+/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin:/usr/java14/jre/bin:/usr/java14/bin:/usr/vac/bin:/usr/vacpp/bin/:/nethome/syoung/bin
+
+export PATH=/nethome/syoung/base/apps/m4/bin:$PATH
+
+echo $PATH 
+/nethome/syoung/base/apps/m4/bin:/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin:/usr/java14/jre/bin:/usr/java14/bin:/usr/vac/bin:/usr/vacpp/bin/:/nethome/syoung/bin
+
+cd /nethome/syoung/base/apps/flex-2.5.33
+./configure --prefix=/nethome/syoung/base/apps/flex 
+make
+make install 
+
+OK
+
+RESET PATH BACK TO ORIGINAL
+
+export PATH=/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin:/usr/java14/jre/bin:/usr/java14/bin:/usr/vac/bin:/usr/vacpp/bin/:/nethome/syoung/bin
+
+
+TEST flex
+=========
+
+cd /nethome/syoung/base/apps/flex/bin
+./flex --help
+>>>
+Usage: flex [OPTIONS] [FILE]...
+Generates programs that perform pattern-matching on text.
+...<<<
+
+
+COMPILE mira
+============
+
+SET CPPFLAGS FOR EXPAT 
+
+CPPFLAGS=-I/nethome/syoung/base/apps/expat/expat-2.0.1/lib
+export CPPFLAGS
+
+SET flex BINARY AT HEAD OF PATH
+
+export PATH=/nethome/syoung/base/apps/flex/bin:$PATH
+echo $PATH
+
+/nethome/syoung/base/apps/flex/bin:/usr/bin:/etc:/usr/sbin:/usr/ucb:/usr/bin/X11:/sbin:/usr/java14/jre/bin:/usr/java14/bin:/usr/vac/bin:/usr/vacpp/bin/:/nethome/syoung/bin
+
+
+NB: THIS IS BECAUSE mira's CONFIGURE SCRIPT LOOKS FOR flex AT /usr/bin/flex
+
+emacs config.log
+>>>...
+configure:4233: checking for flex
+configure:4249: found /usr/bin/flex
+...<<<
+
+
+#LDFLAGS=-L/nethome/syoung/base/apps/flex/lib:/nethome/syoung/base/apps/expat/expat-2.0.1/lib
+#export LDFLAGS
+
+#CFLAGS=-I/nethome/syoung/base/apps/flex/lib:/nethome/syoung/base/apps/expat/expat-2.0.1/lib
+#export CFLAGS
+
+echo $LDFLAGS
+echo $CPPFLAGS
+echo $CFLAGS
+
+cd /nethome/syoung/base/apps/mira-2.8.3
+./configure --prefix=/nethome/syoung/base/apps/mira
+
+    >>>...
+    System: AIX poseidon 3 5 0023905B4C00
+    Compiler: 'gcc -v' output:
+    Using built-in specs.
+    Target: powerpc-ibm-aix5.3.0.0
+    Configured with: ../configure --with-as=/usr/bin/as --with-ld=/usr/bin/ld --disable-nls --enable-languages=c,c++ --prefix=/opt/freeware --enable-threads --enable-version-specific-runtime-libs --host=powerpc-ibm-aix5.3.0.0
+    Thread model: aix
+    gcc version 4.0.0
+    
+    Ooops, we might encounter some problems in compilation/linking. Please give 
+    it a try and report success or failure.
+    In case of failure, please help to fix if you can.
+    ----------------------------------------------------------------------------
+    If no error occured, type 'make' to make the binaries
+    and then 'make install' to install them.
+    <<<
+
+
+
+
+[syoung@poseidon:/nethome/syoung/base/apps/mira-2.8.3]:>make
+Making all in src
+Making all in lec
+Target "all" is up to date.
+Making all in io
+        if g++ -DPACKAGE_NAME=\"mira\" -DPACKAGE_TARNAME=\"mira\" -DPACKAGE_VERSION=\"2.8.3\" -DPACKAGE_STRING=\"mira\ 2.8.3\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"mira\" -DVERSION=\"2.8.3\" -DYYTEXT_POINTER=1 -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE__BOOL=1 -DHAVE_STDBOOL_H=1 -Drestrict=__restrict -DHAVE_STDLIB_H=1 -DHAVE_MALLOC=0 -Dmalloc=rpl_malloc -DHAVE_STDLIB_H=1 -DHAVE_REALLOC=0 -Drealloc=rpl_realloc -DHAVE_STRFTIME=1 -DHAVE_MEMSET=1 -DDEVELOPMENTVERSION=0 -DBOUNDTRACKFLAG=1 -DBUGTRACKFLAG=1 -I. -I. -I../   -I/nethome/syoung/base/apps/expat/expat-2.0.1/lib  -DPUBLICQUIET   -O2 -MT gbf.o -MD -MP -MF ".deps/gbf.Tpo" -c -o gbf.o gbf.C;  then mv -f ".deps/gbf.Tpo" ".deps/gbf.Po"; else rm -f ".deps/gbf.Tpo"; exit 1; fi
+In file included from /opt/freeware/lib/gcc/powerpc-ibm-aix5.3.0.0/4.0.0/include/c++/backward/iostream.h:31,
+                 from /opt/freeware/include/FlexLexer.h:47,
+                 from ../io/exp.H:47,
+                 from ../io/gbf.H:35,
+                 from gbf.C:28:
+/opt/freeware/lib/gcc/powerpc-ibm-aix5.3.0.0/4.0.0/include/c++/backward/backward_warning.h:32:2: warning: #warning This file includes at least one deprecated or antiquated header. Please consider using one of the 32 headers found in section 17.4.1.2 of the C++ standard. Examples include substituting the <X> header for the <X.h> header for C++ includes, or <iostream> instead of the deprecated header <iostream.h>. To disable this warning use -Wno-deprecated.
+/opt/freeware/lib/gcc/powerpc-ibm-aix5.3.0.0/4.0.0/include/c++/cstdlib:110: error: '::malloc' has not been declared
+/opt/freeware/lib/gcc/powerpc-ibm-aix5.3.0.0/4.0.0/include/c++/cstdlib:118: error: '::realloc' has not been declared
+make: 1254-004 The error code from the last command is 1.
+
+
+Stop.
+make: 1254-004 The error code from the last command is 1.
+
+
+Stop.
+make: 1254-004 The error code from the last command is 1.
+
+
+Stop.
+
+
+DIAGNOSIS:
+
+CURRENT VERSION OF mira NOT COMPILABLE ON SOLARIS
+
+
+SOLUTION:
+
+DOWNLOAD RAW DATA FOR E.COLI FROM CLC.BIO WEBSITE AND USE AS BENCHMARK:
+
+
+solexa01
+cd base/pipeline/
+wget http://download.clcbio.com/testdata/raw_data/454.zip
+wget http://download.clcbio.com/testdata/raw_data/solexa.zip
+wget http://download.clcbio.com/testdata/raw_data/solid.zip
+
+
+unzip solexa.zip
+
+
+ll solexa
+total 658M
+drwxr-xr-x 2 syoung users 4.0K Jun 26 19:08 .
+drwxr-xr-x 4 syoung users 4.0K Jun 26 19:08 ..
+-rw-r--r-- 1 syoung users 4.5M Dec  5  2007 E. coli K-12 genome.fa
+-rw-r--r-- 1 syoung users 327M Dec  5  2007 s_1_1_sequence.txt
+-rw-r--r-- 1 syoung users 327M Dec  5  2007 s_1_2_sequence.txt
+
+
+12. CONVERT ELAND QUALITY VALUES INTO NUMERICAL QUALITY VALUES
+==============================================================
+
+em convertQuality.pl
+>>>...
+# Takes a prb file and converts each line to a quality string
+# Conversion factor is chr=ASCII(64+QV) (NB that's 64 decimal)
+# so smallest possible QV of -5 gets called ASCII 59=';'
+# QV = 0  gets ASCII 64 = '@'
+# QV = 30 gets ASCII 94 = '^'
+...<<<
+
+cd /usr/local/SolexaPipeline-0.2.2.6-001/Gerald
+./convertQuality.pl [--useBases useBases] [--numeric|--symbolic] readLength prbFile[s]
+ 
+./convertQuality.pl --numeric 36 /home/syoung/pipeline/ecoli/data/solexa/s_1_1_sequence.txt
+
+[syoung@solexa01 Goat]$ locate GERALD.pl
+/usr/local/GAPipeline-0.3.0/Gerald/GERALD.pl
+/usr/local/SolexaPipeline-0.2.2.6-001/Gerald/GERALD.pl
+
+
+/usr/local/SolexaPipeline-0.2.2.6-001/Gerald/convertFromELAND.pl
+# Simple script to convert output of ELAND to output
+# as produced by phageAlign
+
+# Usage:
+# cat impala_output.txt | ./convertFromELAND.pl [fileName]
+
+# Optional parameter fileName prints only those lines from
+# with sequence name >fileName - compatible with queries generated
+# from Solexa-style sequence files by convertToFasta.pl
+
+
+cd /usr/local/SolexaPipeline-0.2.2.6-001/Gerald
+emacs  /usr/local/Pipeline/Gerald/convertToFasta.pl
+
+>>>...
+ $0 [-useBases (all|odd|YNYN...)] seq1.txt seq2.txt ..."
+    unless (@ARGV>0);
+...<<<
+
+
+convertToFasta.pl -useBases all /home/syoung/pipeline/ecoli/data/solexa/s_1_1_sequence.txt
+
+
+
++++</entry>
+
+
+
+<entry [Thu Jun 19 16:31:47 EDT 2008] Solexa sequence assembly with MIRA2 (FROM mira_solexadev.html FILE IN docs DIRECTORY)>
+
+
+
+Bastien Chevreux
+12 May 2008
+Version 2.9.25
+
+   1. using Solexa data is quite new to mira and still is under heavy development. Albeit it works for me on my projects, it may not necessarily for yours.
+   2. you need lots of memory ... ~1.5GB per million Solexa 1g reads. Using mira for anything more than a plate of Solexa (~30 to 35 million reads) is probably not a good idea (I used it with projects up to 6.5 million reads).
+
+Introduction
+Starting with version 2.9.20x2, mira can perform mapping assemblies of data from the Illumina/Solexa sequencing machines, either on its own or together with Sanger and/or 454 type sequencing data (hybrid mapping assemblies). Using paired-end should also be possible if you rework the data (I haven't had any paired-end Solexa project yet).
+
+This guide assumes that you have basic working knowledge of Unix systems, know the basic principles of sequencing (and sequence assembly) and what assemblers do.
+
+While there are step by step instructions on how to setup your Solexa data and then perform an assembly, this guide expects you to read at some point in time
+
+    * the mira_usage introductory help file so that you have a basic knowledge on how to set up projects in mira for Sanger sequencing projects.
+    * the mira_manual help file to look up some command line options.
+
+Caveats when using assembling Solexa data
+From an assembler's point of view, short reads are a catastrophe. Be they Helicos (currently 25bp), ABI SOLiD (currently 25-30bp) or Solexa (some 36 bases for the 1G now, the length for the 2G is rumoured to be in the 50bp area). This has two reasons:
+
+   1. Repeats. The problem of repetitve sequences (e.g. rRNA stretches in bacteria) gets worse the shorter the read lengths get.
+   2. Amount of data. As mira is by heart an assembler to resolve difficult repetitive problems as they occur in Sanger and 454 reads, it drags along quite a lot of ancillary ionformation which are useless in Solexa assemblies but still eat away memory
+
+On the other hand, you already can get really nifty things out of a correctly performed mapping assembly.
+
+A 454 mapping assembly walkthrough
+
+This part will introduce you step by step how to get your data together for a simple mapping assembly.
+
+I'll make up an example using an imaginary bacterium: Bacillus chocorafoliensis (or short: Bchoc).
+
+In this example, we assume you have two strains: a wild type strain of Bchoc_wt and a mutant which you perhaps got from mutagenesis or other means. Let's imagine that this mutant needs more time to eliminate a given amount of chocolate, so we call the mutant Bchoc_se ... SE for slow eater
+
+You wanted to know which mutations might be responsible for the observed behaviour. Assume the genome of Bchoc_wt is available to you as it was published, so you resequenced Bchoc_se with Solexa to examine mutations.
+
+Copying and naming the sequence data
+You need to create (or get from your sequencing provider) exactly two data files: a FASTA file and a FASTA quality file. Put them into an empty directory and rename them so that they look like this:
+
+tsunami:/path/to/myProject> ls -l
+total 764313
+-rw-r--r-- 1 bach users 263985896 2008-03-28 21:49 bchocse_in.solexa.fasta
+-rw-r--r-- 1 bach users 517905709 2008-03-28 21:24 bchocse_in.solexa.fasta.qual
+
+Note 1: mira expects the quality file to contain Solexa scores (but only one per base), not phred style quality scores. Should you have already the scores already converted to phred style, you will need to set -LR:ssiqf=no.
+
+Note 2: Should your quality file contain negative values, you have Solexa scores. Else you probably have phred scores.
+
+Generating the strain name data
+MIRA will make use of ancillary information when present. The strain name is such an ancillary information. That is, we can tell MIRA the strain of each read we use in the assembly. We could generate a TRACEINFO XML file, but for strain information there is an easier way: the straindata file. It's a simple key-value file, one line per entry, with the name of the read as key and the name of the strain as value. E.g.:
+
+1_1_207_113 bchocse
+1_1_61_711  bchocse
+1_1_182_374 bchocse
+...
+
+Etcetera.
+
+This file can be quickly generated automatically, using the extracted names from the FASTA file and rewritten a little bit. Here's how:
+
+tsunami:/path/to/myProject> grep ">" bchocse_in.solexa.fasta 
+   | sed -e 's/>//' 
+   | cut -f 1
+   | cut -f 1 -d ' '
+   | sed -e 's/$/ bchocse/'
+   > bchocse_straindata_in.txt
+
+Note 1: the above command has been splitted in multiple lines for better overview but should be entered in one line.
+
+Note 2: for larger files, this can run a minute or two.
+
+Note 3: as you can also assemble sequences from more that one strain, the read names in bchocse_straindata_in.txt can have different strain names attached to them.
+
+This creates the needed data in the file bchocse_straindata_in.txt (well, it's one way to do it, feel free to use whatever suits you best).
+
+The directory now looks like this:
+
+tsunami:/path/to/myProject> ls -l
+total 896106
+-rw-r--r-- 1 bach users 134822451 2008-04-08 23:51 bchocse_straindata_in.txt
+-rw-r--r-- 1 bach users 263985896 2008-03-28 21:49 bchocse_in.solexa.fasta
+-rw-r--r-- 1 bach users 517905709 2008-03-28 21:24 bchocse_in.solexa.fasta.qual
+
+Copying and naming the reference sequence
+The reference sequence (the backbone) can be in a number of different formats: FASTA, GenBank, CAF. The later two have the advantage of being able to carry additional information like, e.g., annotation. In this example, we will use a GenBank file like the ones one can download from the NCBI. So, let's assume that our wild type strain is in the following file: bchocwt.gbf. Copy this file to the directory, renaming it as bchocse_backbone_in.gbf.
+
+tsunami:/path/to/myProject> cp /somewhere/bchocwt.gbf bchocse_backbone_in.gbf
+tsunami:/path/to/myProject> ls -l
+total 902504
+-rw-r--r-- 1 bach users   6543511 2008-04-08 23:53 bchocse_backbone_in.gbf
+-rw-r--r-- 1 bach users 134822451 2008-04-08 23:51 bchocse_straindata_in.txt
+-rw-r--r-- 1 bach users 263985896 2008-03-28 21:49 bchocse_in.solexa.fasta
+-rw-r--r-- 1 bach users 517905709 2008-03-28 21:24 bchocse_in.solexa.fasta.qual
+
+Starting the assembly
+Starting the assembly is now just a matter of a command line with some parameters set correctly:
+
+tsunami:/path/to/myProject> mira 
+  --project=bchocse --job=mapping,genome,normal,solexa
+  -SB:lsd=yes:bsn=bchoc_wt:bft=gbf:bbq=30
+  >&log_assembly.txt 
+
+Note 1: the above command has been splitted in multiple lines for better overview but should be entered in one line.
+
+Note 2: for a bacterial project having a backbone of ~4 megabases and with ~3.5 million Solexa reads, mira needs some ~5 hours on machines I have seen.
+
+For this example - if you followed the walkthrough on how to prepare the data - everything you might want to adapt in the first time are the following options:
+
+    * -project (for naming your assembly project)
+    * -job (perhaps to change the quality of the assembly to 'accurate'
+    * -SB:bsn to give the backbone strain (your reference strain) another name
+    * -SB:bft to load the backbone sequence from another file type, say, a FASTA
+
+Of course, you are free to change any option via the extended parameters, but this will be the topic of another FAQ.
+
+What to do with the MIRA result files?
+This section just give a short overview on the tags you might find interesting. For more information, especially on how to configure gap4 or consed, please consult the mira usage document.and the mira manual.
+
+Where are SNPs?
+In file type that allow tags (CAF, ACE), SNPs and other interesting features will be marked by MIRA with a number of tags:
+
+    * the SROc tag. Should you assemble sequences of more than one strain, you also might encounter SIOc and SAOc tags.
+    * the WRMc tags might sometimes point SNPs to indels in long homopolymers (>= 8 bases). Fro what I have seen so far (data from several 1G runs) , Solexa also seems to have some difficulties to get the exact amount of bases in long homopolymers, albeit this problem is much less pronounced than in 454 data.
+
+Other tags of interest
+
+    * the UNSc tag points to areas where the consensus algorithm hat trouble choosing a base. This happens in low coverage areas or sometimes also in places where repeats with a few bases difference are present.
+    * the SRMc tag points to places where repeats with a few bases difference are present.
+
+A Solexa hybrid assembly: using Sanger or 454 data with Solexa
+(needs to be expanded)
+Step 1: assemble the 'long' reads (454 or Sanger or both)
+Step 2: filter the results
+
+convert_project -f caf -t caf -x 500 assemblyresult.caf hybrid_backbone_in.caf
+
+Step 3: map the Solexa data
+
+Known bugs / problems
+These relate to the current 2.9.25 version:
+
+Bugs:
+
+   1. the backbone current should consist of only one contig. mira currently tries to map reads to the contigs early in the list, even if better matches would be present in later contigs.
+   2. the SRMc/WRMc tagging routines are a bit trigger happy with Solexa data ... there's a bug somewhere that I need eradicate to make it behave as efficiently as for Sanger or 454 data
+
+Problems:
+
+   1. currently mira will map reads with up to two errors (either base changes or indels). The option to allow for more has not been implemented yet.
+   2. no de-novo assembly of Solexa data possible (needs a bit of additional code)
+   3. the textual output of results is really slow with such massive amounts of data as with Solexa projects. If Solexa data is present, it's turned off by default at the moment.
+   4. for 1G Solexa reads (~36 bases length), you need ~ 1.5 GB of RAM per million reads.
+
+
++++++</entry>
+
+
+
+<entry [Thu Jun 19 13:12:52 EDT 2008] Running a Standard Analysis on SOLEXA>
+
+
+
+Genome Analyzer Pipeline Software v0.3 User Guide
+Running a Standard Analysis
+
+A standard analysis consists of calling the “goat_pipeline.py ” script to
+generate an analysis directory using the “make ”command,and then
+executing the “make ” command.
+
+Start a standard analysis run using the following command format:
+Pipeline/Goat/goat_pipeline.py [--GERALD=<configfile>] [--make] <run-folder>
+
+1.Type the following command to run a check on the Run Folder,report all
+detected folders and parameters files,and fill in any missing
+configuration options.
+Pipeline/Goat/goat_pipeline.py --GERALD=/data/070813_ILMN-1_0217_FC1234/config.txt /data/070813_ILMN-1_0217_FC1234
+Illumina recommends running this script before generating the Makefile
+to check for data integrity and consistency.It scans all the images folders
+and prints diagnostic output about the images and parameters files.No
+files or directories are modified on the data drive as a result of this
+command.
+
+2.Add --make to the command listed above to create an analysis directory
+in the Run Folder.If you specify the --GERALD option,you will create the
+GERALD analysis folder and the corresponding Makefile.
+Pipeline/Goat/goat_pipeline.py --GERALD=/data/070813_ILMN-1_0217_FC1234/config.txt --make /data/070813_ILMN-1_0217_FC1234
+
+3.Change to the newly generated directory (for example,/data/
+070813_ILMN-1_0217_FC1234/Data/C1-26_Firecrest)and type the
+“make recursive ” command.This command starts the actual analysis.
+make recursive
+
+The primary outputs are the sequences read with per-base quality values
+and,if alignment was performed,the alignments.These files can be found in
+the GERALD folder.The output files containing data statistics and
+histograms,used for quality control,can also be found in the GERALD folder.
+A new output directory is created each time you rerun the analysis,so there is
+no need to remove any previous analysis files.
+
+Parallelization Switch
+
+If your system supports automatic load-sharing to multiple CPUs,you can
+parallelize the analysis run to <n>different processes by using the “make ”
+utility parallelization switch.
+make recursive -j n
+
+For more information on parallelization,see Using Parallelization on page 87.
+
+
+Nohup Command
+
+You can use the Unix nohup command to redirect the standard output and
+keep the “make ” process running even if your terminal is interrupted or if
+you log out.The standard output will be saved in a nohup.out file and stored
+in the location where you are executing the Makefile.
+nohup make recursive -j n &
+The optional “&”tells the system to run the analysis in the background,
+leaving you free to enter more commands.
+
+

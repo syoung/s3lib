@@ -1,0 +1,1312 @@
+Notes-apps-tophat.txt
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CHECKED INSTALLATION OF VERSION 1.0.13beta ON PEGASUS AT ~/base/apps
+
+cd /nethome/syoung/base/apps/tophat
+cat RELEASE.txt 
+    
+    DOWNLOADED
+    Thu Feb 11 03:41:42 EST 2010
+    http://tophat.cbcb.umd.edu/
+    
+    
+    TopHat 1.0.13 (BETA) release 2/5/2010
+    This is a fix release that addresses several bugs. Notably:
+    SAM quality strings are now reported on the Phred scale, regardless of whether the input reads were in Phred or Solexa scaling, as require by the SAM spec. The conversion code in qual.h/.cpp was written by Ben Langmead and is borrowed from Bowtie.
+    
+    
+
+
+</entry>
+
+
+
+<entry [Tue Oct  5 14:09:31 EDT 2010] TROUBLESHOOTING LEMMON LAB RUNNING TOPHAT 1.0.14 WITH BOWTIE 0.12.7>
+
+
+
+TEST DATA:
+
+outdir:
+
+/scratch/syoung/base/pipeline/lemmon/drg0
+
+inputfile:
+
+ll /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+    -rw-rw-rw- 1 syoung root 149M Oct  3 01:53 /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+TOPHAT 0.12.2
+-------------
+
+MAKE DIRECTORY:
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/drg0/tophat/0.1.12
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/0.1.12
+
+
+RUN:
+
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/0.1.12
+
+screen -S tophat-0.12.2
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.2:$PATH
+export PATH=/nethome/bioinfo/apps/TOPHAT/0.1.12/bin:$PATH
+
+time /nethome/bioinfo/apps/TOPHAT/0.1.12/bin/tophat \
+--num-threads 1 \
+--output-dir /scratch/syoung/base/pipeline/lemmon/drg0/tophat/0.1.12 \
+/nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie/chr19 \
+/scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+    [Fri Oct  8 11:22:30 2010] Beginning TopHat run (v1.0.12)
+    -----------------------------------------------
+    [Fri Oct  8 11:22:30 2010] Preparing output location /scratch/syoung/base/pipeline/lemmon/drg0/tophat/0.1.12/
+    [Fri Oct  8 11:22:30 2010] Checking for Bowtie index files
+    [Fri Oct  8 11:22:30 2010] Checking for reference FASTA file
+    [Fri Oct  8 11:22:30 2010] Checking for Bowtie
+            Bowtie version:          0.12.2.0
+    [Fri Oct  8 11:22:30 2010] Checking reads
+            seed length:     50bp
+            format:          fastq
+            quality scale:   --phred33-quals
+    [Fri Oct  8 11:23:00 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 11:24:56 2010] Joining segment hits
+            Splitting reads into 2 segments
+    [Fri Oct  8 11:25:21 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 11:28:37 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 11:31:50 2010] Searching for junctions via segment mapping
+    [Fri Oct  8 11:32:22 2010] Retrieving sequences for splices
+    [Fri Oct  8 11:32:26 2010] Indexing splices
+    [Fri Oct  8 11:32:28 2010] Mapping reads against segment_juncs with Bowtie
+    [Fri Oct  8 11:32:54 2010] Mapping reads against segment_juncs with Bowtie
+    [Fri Oct  8 11:33:21 2010] Joining segment hits
+    [Fri Oct  8 11:33:24 2010] Reporting output tracks
+    -----------------------------------------------
+    Run complete [00:11:00 elapsed]
+    
+    real    11m0.242s
+    user    10m31.478s
+    sys     0m11.449s
+
+
+
+TOPHAT 1.0.14
+-------------
+
+MAKE DIRECTORY:
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.0.14
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.0.14
+
+RUN:
+
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.0.14
+
+screen -S tophat-1.0.14
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.2:$PATH
+export PATH=/nethome/apps/ccsngs/apps/tophat/1.0.14/tophat:$PATH
+
+time /nethome/apps/ccsngs/apps/tophat/1.0.14/tophat \
+--num-threads 1 \
+--output-dir /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.0.14 \
+/nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie/chr19 \
+/scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+
+    [Fri Oct  8 12:34:17 2010] Beginning TopHat run (v1.0.14)
+    -----------------------------------------------
+    [Fri Oct  8 12:34:17 2010] Preparing output location /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.0.14/
+    [Fri Oct  8 12:34:17 2010] Checking for Bowtie index files
+    [Fri Oct  8 12:34:17 2010] Checking for reference FASTA file
+    [Fri Oct  8 12:34:17 2010] Checking for Bowtie
+            Bowtie version:          0.12.2.0
+    [Fri Oct  8 12:34:18 2010] Checking reads
+            seed length:     50bp
+            format:          fastq
+            quality scale:   phred33 (default)
+    [Fri Oct  8 12:34:54 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 12:36:36 2010] Joining segment hits
+            Splitting reads into 2 segments
+    [Fri Oct  8 12:37:00 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 12:39:53 2010] Mapping reads against chr19 with Bowtie
+    [Fri Oct  8 12:42:43 2010] Searching for junctions via segment mapping
+    [Fri Oct  8 12:43:13 2010] Retrieving sequences for splices
+    [Fri Oct  8 12:43:16 2010] Indexing splices
+    [Fri Oct  8 12:43:19 2010] Mapping reads against segment_juncs with Bowtie
+    [Fri Oct  8 12:43:45 2010] Mapping reads against segment_juncs with Bowtie
+    [Fri Oct  8 12:44:12 2010] Joining segment hits
+    [Fri Oct  8 12:44:15 2010] Reporting output tracks
+    -----------------------------------------------
+    Run complete [00:10:03 elapsed]
+    
+    real    10m3.562s
+    user    9m42.077s
+    sys     0m9.971s
+
+
+
+
+
+TOPHAT 1.1.0
+-------------
+
+MAKE DIRECTORY:
+
+mkdir -p /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.1.0
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.1.0
+
+RUN:
+
+cd /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.1.0
+
+screen -S tophat-1.1.0
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.7:$PATH
+export PATH=/nethome/apps/ccsngs/apps/samtools/0.1.8:$PATH
+export PATH=/nethome/apps/ccsngs/apps/tophat/1.1.0/tophat:$PATH
+
+time /nethome/apps/ccsngs/apps/tophat/1.1.0/tophat \
+--num-threads 1 \
+--output-dir /scratch/syoung/base/pipeline/lemmon/drg0/tophat/1.1.0 \
+/nethome/bioinfo/data/sequence/chromosomes/mouse/mm9/bowtie/chr19 \
+/scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+
+
+
+
+
+TEST CUFFLINKS:
+
+cd /scratch/syoung/base/pipeline/lemmon/drg0
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.2:$PATH
+export PATH=/nethome/bioinfo/apps/TOPHAT/0.1.12/bin:$PATH
+
+time /nethome/bioinfo/apps/CUFFLINKS/0.8.2/cufflinks \
+--num-threads 1 \
+/scratch/syoung/base/pipeline/lemmon/drg0/out.sam
+
+
+OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1
+ll 
+    -rw-rw-rw-   1 syoung root 6.5M Oct  3 06:09 accepted_hits.sam
+    -rw-rw-rw-   1 syoung root 993K Oct  3 06:09 coverage.wig
+    -rw-rw-rw-   1 syoung root 2.9K Sep 29 01:05 doBatchAlignment-chr1-stdout.txt
+    -rw-rw-rw-   1 syoung root 7.6K Oct  3 06:08 junctions.bed
+    drwxrwxrwx   2 syoung root  197 Oct  3 00:15 logs
+
+
+
+
+
+outdir:  /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1
+
+inputfile:  /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+time /nethome/bioinfo/apps/TOPHAT/0.1.12/bin/tophat --num-threads 4 --output-dir /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1 /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr1 /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+time /nethome/bioinfo/apps/CUFFLINKS/0.8.2/cufflinks \
+--inner-dist-mean  \
+--num-threads 4 \
+/scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/out.sam
+
+
+
+TOPHAT COMMAND:
+
+#!/bin/bash
+
+PATH=$PATH\:/nethome/apps/ccsngs/apps/bowtie/0.12.7/   ; export PATH 
+
+#BSUB -J topcuff_drg0
+#BSUB -o tophat_cufflinks_drg0.out 
+#BSUB -e tophat_cufflinks_drg0.err
+#BSUB -W 48:00
+#BSUB -q medium
+#BSUB -n 4 
+#BSUB -B 
+#BSUB -N 
+#
+#
+cd /nethome/fkuo/cufflinks_0.9.1/drg0
+/nethome/apps/ccsngs/apps/tophat/1.0.14/tophat -o /nethome/fkuo/cufflinks_0.9.1/drg0 --solexa1.3-quals /nethome/fkuo/indexes/mm9_index/mm9 /nethome/fkuo/cufflinks_0.9.1/drg0/DRG_0_sequence_1.txt,/nethome/fkuo/cufflinks_0.9.1/drg0/DRG_0_sequence_2.txt
+
+/share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks -L drg0 /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam -r /nethome/fkuo/cufflinks_0.9.1/mm9.fa
+
+
+
+ERROR OUTPUT:
+
+[Wed Oct  6 21:38:42 2010] Beginning TopHat run (v1.1.0)
+-----------------------------------------------
+[Wed Oct  6 21:38:42 2010] Preparing output location /nethome/fkuo/cufflinks_0.9.1/drg0/
+[Wed Oct  6 21:38:42 2010] Checking for Bowtie index files
+[Wed Oct  6 21:38:42 2010] Checking for reference FASTA file
+[Wed Oct  6 21:38:42 2010] Checking for Bowtie
+	Bowtie version:			 0.12.5.0
+[Wed Oct  6 21:38:42 2010] Checking for Samtools
+	[FAILED]
+Error: bowtie not found on this system
+/share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks: /usr/lib64/libz.so.1: no version information available (required by /share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks)
+open: No such file or directory
+File /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam doesn't appear to be a valid BAM file, trying SAM...
+Error: cannot open alignment file /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam for reading
+
+[Wed Oct  6 21:42:13 2010] Beginning TopHat run (v1.1.0)
+-----------------------------------------------
+[Wed Oct  6 21:42:13 2010] Preparing output location /nethome/fkuo/cufflinks_0.9.1/drg0/
+[Wed Oct  6 21:42:13 2010] Checking for Bowtie index files
+[Wed Oct  6 21:42:13 2010] Checking for reference FASTA file
+[Wed Oct  6 21:42:13 2010] Checking for Bowtie
+	Bowtie version:			 0.12.5.0
+[Wed Oct  6 21:42:13 2010] Checking for Samtools
+	[FAILED]
+Error: bowtie not found on this system
+/share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks: /usr/lib64/libz.so.1: no version information available (required by /share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks)
+open: No such file or directory
+File /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam doesn't appear to be a valid BAM file, trying SAM...
+Error: cannot open alignment file /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam for reading
+
+[Wed Oct  6 21:45:19 2010] Beginning TopHat run (v1.1.0)
+-----------------------------------------------
+[Wed Oct  6 21:45:19 2010] Preparing output location /nethome/fkuo/cufflinks_0.9.1/drg0/
+[Wed Oct  6 21:45:19 2010] Checking for Bowtie index files
+[Wed Oct  6 21:45:19 2010] Checking for reference FASTA file
+[Wed Oct  6 21:45:19 2010] Checking for Bowtie
+	Bowtie version:			 0.12.7.0
+[Wed Oct  6 21:45:19 2010] Checking for Samtools
+	[FAILED]
+Error: bowtie not found on this system
+/share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks: /usr/lib64/libz.so.1: no version information available (required by /share/apps/ccsngs/apps/cufflinks/0.9.1/cufflinks)
+open: No such file or directory
+File /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam doesn't appear to be a valid BAM file, trying SAM...
+Error: cannot open alignment file /nethome/fkuo/cufflinks_0.9.1/drg0/accepted_hits.sam for reading
+
+
+
+
+NOTES
+-----
+
+WORKING COMMAND:
+outdir:  /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1
+inputfile:  /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+export PATH=/nethome/bioinfo/apps/BOWTIE/0.12.2:$PATH
+export PATH=/nethome/bioinfo/apps/TOPHAT/0.1.12/bin:$PATH
+export PATH=/nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr1/$LSB_JOBINDEX:$PATH
+
+cd /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/$LSB_JOBINDEX
+
+
+time /nethome/bioinfo/apps/TOPHAT/0.1.12/bin/tophat --num-threads 4 --output-dir /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1 /nethome/bioinfo/data/sequence/chromosomes/human/hg19/bowtie/chr1 /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/1/control2_1.1.txt
+
+
+time /nethome/bioinfo/apps/CUFFLINKS/0.8.2/cufflinks \
+--inner-dist-mean  \
+--num-threads 4 \
+/scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/out.sam
+
+
+OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/jvance/pdx/control/2/tophat/chr1/1
+ll 
+    -rw-rw-rw-   1 syoung root 6.5M Oct  3 06:09 accepted_hits.sam
+    -rw-rw-rw-   1 syoung root 993K Oct  3 06:09 coverage.wig
+    -rw-rw-rw-   1 syoung root 2.9K Sep 29 01:05 doBatchAlignment-chr1-stdout.txt
+    -rw-rw-rw-   1 syoung root 7.6K Oct  3 06:08 junctions.bed
+    drwxrwxrwx   2 syoung root  197 Oct  3 00:15 logs
+
+
+
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Oct  5 14:09:31 EDT 2010] INSTALLED PATCHED CUFFLINKS 0.9.0>
+
+
+
+
+cd /share/apps/ccsngs/apps/tophat
+wget http://tophat.cbcb.umd.edu/downloads/tophat-1.1.0.Linux_x86_64.tar.gz
+tar xvfz tophat-1.1.0.Linux_x86_64.tar.gz
+mv tophat-1.1.0.Linux_x86_64 1.1.0
+cd 1.1.0
+./tophat
+
+    OK
+
+
+cd /share/apps/ccsngs/apps/cufflinks
+wget http://cufflinks.cbcb.umd.edu/downloads/cufflinks-0.9.1.Linux_x86_64.tar.gz        
+cd 0.9.1
+
+    OK
+
+
+
+</entry>
+
+
+
+<entry [Wed Sep 29 23:46:52 EDT 2010] INSTALLED PATCHED CUFFLINKS 0.9.0>
+
+
+
+
+su bioinfo
+cd /share/apps/ccsngs/apps/cufflinks
+mkdir /share/apps/ccsngs/apps/cufflinks/0.9.0
+cd /share/apps/ccsngs/apps/cufflinks/0.9.0
+wget http://cufflinks.cbcb.umd.edu/downloads/cufflinks-0.9.0.Linux_x86_64.tar.gz
+
+
+
+
+
+
+</entry>
+
+
+
+<entry [Tue Sep 28 16:47:56 EDT 2010] INSTALLED CUFFLINKS 0.9.0>
+
+
+
+su bioinfo
+cd /share/apps/ccsngs/apps/cufflinks
+mkdir /share/apps/ccsngs/apps/cufflinks/0.9.0
+cd /share/apps/ccsngs/apps/cufflinks/0.9.0
+wget http://cufflinks.cbcb.umd.edu/downloads/cufflinks-0.9.0.Linux_x86_64.tar.gz
+
+
+wget http://cufflinks.cbcb.umd.edu/downloads/cufflinks-0.9.0.Linux_x86_64.tar.gz
+
+
+The installation instructions are at 
+http://cufflinks.cbcb.umd.edu/tutorial.html
+http://cufflinks.cbcb.umd.edu/
+
+
+Hi Dario,
+
+How’re you doing? I hope you had a nice summer. I was in the UK for a conference and some RnR, which was nice for a change.
+
+I saw Frank’s earlier message about the latest version of Cufflinks. I’ll try installing it for you guys and let you know when it’s done.
+
+Cheers,
+
+Stuart
+
+
+From: Motti, Dario 
+Sent: Tuesday, September 28, 2010 4:14 PM
+To: Young, Stuart
+Cc: Kuo, Frank; Lerch-Haner, Jessica
+Subject: FW: Cufflinks 0.9.0 update
+
+Hey Stuart,
+
+Here’s Dario from the Lembix lab. It’s been a long time since I last heard from you. How’re you doing? Hope everything’s fine.
+As you might already know, we asked for the installation of the recently released new version of Cufflinks and Cuffdiff (version 0.9.0). We’re particularly interested in the Cuffdiff upgrades.
+We were told by Xinglong we should talk to the people of the Bioinfo group. Do you know who we should talk to?
+
+Thanks, 
+
+Dario.
+
+
+From: frankuo412@gmail.com [mailto:frankuo412@gmail.com] On Behalf Of Frank Kuo
+Sent: Tuesday, September 28, 2010 11:53 AM
+To: CCS HPC (High Performance Computing - RT)
+Cc: Motti, Dario; Lerch-Haner, Jessica
+Subject: Cufflinks 0.9.0 update
+
+Dear HPC,
+Sorry for bothering. People and others in the Lembix lab are working on RNA-Seq analysis and found out that a new version of Cufflinks has been released and that it could be useful for people doing RNA-Seq analysis. The developers of the software fixed some bugs and added additional options that will assist the analysis. Is it possible to install this new version?
+
+Also, is it possible to install it on Pegasus where the other versions are at also since I've been using Pegasus to submit my jobs, etc
+
+/share/apps/ccsngs/apps/cufflinks/0.8.3/cufflinks is where the 0.8.3 version is at so it'd be nice if the newer version was in a folder like
+/share/apps/ccsngs/apps/cufflinks/0.9.0/cufflinks
+along with it's other programs such as Cuffdiff, Cuffcompare, etc.
+ 
+The installation instructions are at 
+http://cufflinks.cbcb.umd.edu/tutorial.html
+http://cufflinks.cbcb.umd.edu/
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 05:51:06 EST 2010] RUN TOPHAT ON bixby DATA>
+
+
+
+VERSIONS
+/nethome/syoung/base/apps/bowtie/0.9.4
+/nethome/syoung/base/apps/tophat/1.0.12
+
+SEE TOPHAT MANUAL
+http://tophat.cbcb.umd.edu/manual.html
+
+
+1. CREATED REFERENCE INDEX FILE
+==============================
+
+1.1 DOWNLOAD HG19 FROM BOWTIE SITE
+
+cd /nethome/syoung/base/pipeline/tophat
+ftp://ftp.cbcb.umd.edu/pub/data/bowtie_indexes/hg19.ebwt.zip
+
+
+cd /nethome/syoung/base/apps/bowtie/indexes
+
+unzip hg19.ebwt.zip
+
+    Archive:  hg19.ebwt.zip
+      inflating: hg19.1.ebwt
+      inflating: hg19.2.ebwt
+      inflating: hg19.3.ebwt
+      inflating: hg19.4.ebwt
+      inflating: hg19.rev.1.ebwt
+      inflating: hg19.rev.2.ebwt
+      inflating: make_hg19.sh
+
+
+NB: ALSO USED make TO GENERATE WITH DOWNLOADED UCSC CHROMOSOMES IN tophat DIR IN pipeline
+
+/nethome/syoung/base/pipeline/tophat/indexes/hg19
+
+cd /nethome/syoung/base/pipeline/tophat/indexes/hg19
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+./make_hg19.sh
+
+    /nethome/syoung/base/apps/bowtie/0.9.4/bowtie-build
+    Running /nethome/syoung/base/apps/bowtie/0.9.4/bowtie-build chr1.fa,chr2.fa,chr3.fa,chr4.fa,chr5.fa,chr6.fa,chr7.fa,chr8.fa,chr9.fa,chr10.fa,chr11.fa,chr12.fa,chr13.fa,chr14.fa,chr15.fa,chr16.fa,chr17.fa,chr18.fa,chr19.fa,chr20.fa,chr21.fa,chr22.fa,chrX.fa,chrY.fa,chrM.fa hg19
+
+    hg19 index built; you may remove fasta files
+
+
+
+1.2 CREATED hg19.fa FROM hg19.2bit
+
+cd /nethome/syoung/base/apps/bowtie/indexes
+/nethome/syoung/bin/x86_64/twoBitToFa hg19.2bit hg19.fa
+ll /nethome/syoung/base/apps/bowtie/indexes
+
+    -rw-r--r-- 1 syoung bioinfo 2.7G Jan 15 04:27 hg18.ebwt.zip
+    -rw-r--r-- 1 syoung bioinfo 784M Nov 13 16:20 hg19.1.ebwt
+    -rw-r--r-- 1 syoung bioinfo 779M Mar  8  2009 hg19.2bit
+    -rw-r--r-- 1 syoung bioinfo 342M Nov 13 16:20 hg19.2.ebwt
+    -rw-r--r-- 1 syoung bioinfo 3.3K Nov 13 13:49 hg19.3.ebwt
+    -rw-r--r-- 1 syoung bioinfo 683M Nov 13 13:49 hg19.4.ebwt
+    -rw-r--r-- 1 syoung bioinfo 2.7G Jan 15 04:31 hg19.ebwt.zip
+    -rw-r--r-- 1 syoung bioinfo 3.0G Feb 11 02:43 hg19.fa
+    -rw-r--r-- 1 syoung bioinfo 784M Nov 13 18:42 hg19.rev.1.ebwt
+    -rw-r--r-- 1 syoung bioinfo 342M Nov 13 18:42 hg19.rev.2.ebwt
+    -rw-r--r-- 1 syoung bioinfo 3.1K Nov 13 20:55 make_hg19.sh
+    -rw-r--r-- 1 syoung bioinfo  457 Jul 29  2009 md5sum.txt
+    -rw-r--r-- 1 syoung bioinfo 2.4G Jan 15 04:27 mm9.ebwt.zip
+
+
+
+1.3 CREATED MOUSE mm9.fa FROM mm9.2bit
+
+cd /nethome/syoung/base/apps/bowtie/indexes/
+wget http://hgdownload.cse.ucsc.edu/goldenPath/mm9/bigZips/mm9.2bit
+/nethome/syoung/bin/x86_64/twoBitToFa mm9.2bit mm9.fa
+
+
+
+1.4 CREATED MOUSE hg18.fa FROM hg18.2bit
+
+llwget http://hgdownload.cse.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit
+/nethome/syoung/bin/x86_64/twoBitToFa hg18.2bit hg18.fa
+
+
+
+
+2. GOT bixby DATA
+============================================
+
+NB: MISSING LAST LANE OF CSPG SAMPLE - BASE CALLING, SEQUENCE AND ALIGNMENT REQUESTED BY BILL
+
+Sample          Lane        
+CGN LN          1,2,3,4
+CGN CSPG        6,7,8
+
+
+ll /nethome/syoung/base/pipeline/bixby/run1
+
+    -rw-r----- 1 syoung bioinfo 2.9G Jan 15 15:14 s_1_eland_extended.txt
+    -rw-r----- 1 syoung bioinfo 2.8G Jan 15 15:29 s_1_eland_multi.txt
+    -rw-r----- 1 syoung bioinfo 4.2G Jan 15 15:44 s_1_export.txt
+    -rw-r----- 1 syoung bioinfo 1.4G Jan 15 14:56 s_1_sequence.txt
+    -rw-r----- 1 syoung bioinfo 3.1G Jan 15 15:16 s_2_eland_extended.txt
+    -rw-r----- 1 syoung bioinfo 2.9G Jan 15 15:31 s_2_eland_multi.txt
+    -rw-r----- 1 syoung bioinfo 4.4G Jan 15 15:47 s_2_export.txt
+    -rw-r----- 1 syoung bioinfo 3.4G Jan 15 15:18 s_3_eland_extended.txt
+    ...
+    -rw-r----- 1 syoung bioinfo 3.0G Jan 15 15:42 s_8_eland_multi.txt
+    -rw-r----- 1 syoung bioinfo 4.6G Jan 15 16:04 s_8_export.txt
+
+
+mkdir -p /nethome/syoung/base/pipeline/tophat/bixby/reads
+cd /nethome/syoung/base/pipeline/tophat/bixby/reads
+
+cp ll ./
+cp /q/nextGen/GA/EXTERNAL/Bixby/mRNAseq_1x50/091029_HWI-EAS185_0005_42BNYAAXX/Data/C1-54_Firecrest1.4.0_15-12-2009_jcabrera1/Bustard1.4.0_15-12-2009_jcabrera1/GERALD_15-12-2009_jcabrera1/s_2_sequence.txt ./
+...
+cp /q/nextGen/GA/EXTERNAL/Bixby/mRNAseq_1x50/091029_HWI-EAS185_0005_42BNYAAXX/Data/C1-54_Firecrest1.4.0_15-12-2009_jcabrera1/Bustard1.4.0_15-12-2009_jcabrera1/GERALD_15-12-2009_jcabrera1/s_8_sequence.txt ./
+
+ll /nethome/syoung/base/pipeline/tophat/bixby/reads
+
+    drwxr-xr-x 2 syoung bioinfo  16K Feb 10 20:14 .
+    drwxr-xr-x 3 syoung bioinfo  16K Feb 10 19:57 ..
+    -rw-r--r-- 1 syoung bioinfo 3.9M Feb 10 20:14 s_1_sequence-100K.txt
+    -rw-r----- 1 syoung bioinfo 3.1G Feb 10 20:11 s_1_sequence.txt
+    -rw-r----- 1 syoung bioinfo 3.4G Feb 10 18:18 s_2_sequence.txt
+    ...
+    -rw-r----- 1 syoung bioinfo 3.2G Feb 10 18:28 s_8_sequence.txt
+
+
+
+3. RAN TOPHAT
+======================================
+
+
+
+
+SEE ALSO BOWTIE MANUAL
+http://bowtie-bio.sourceforge.net/manual.shtml
+
+
+    TopHat maps short sequences from spliced transcripts to whole genomes.
+    
+    Usage:
+        tophat [options] <bowtie_index> <reads1[,reads2,...,readsN]> [reads1[,reads2,...,readsN]]
+        
+    Options:
+        -o/--output-dir                <string>    [ default: ./tophat_out ]
+        -a/--min-anchor                <int>       [ default: 8            ]
+        -m/--splice-mismatches         <0-2>       [ default: 0            ]
+        -i/--min-intron                <int>       [ default: 50           ]
+        -I/--max-intron                <int>       [ default: 500000       ]
+        -g/--max-multihits             <int>       [ default: 40           ]
+        -F/--min-isoform-fraction      <float>     [ default: 0.15         ]
+        --solexa-quals                          
+        --solexa1.3-quals
+        -p/--num-threads               <int>       [ default: 1            ]
+        -G/--GFF                       <filename>
+        -j/--raw-juncs                 <filename>
+        -r/--mate-inner-dist           <int>       
+        --mate-std-dev                 <int>       [ default: 20           ]
+        --no-novel-juncs                           
+        --no-gff-juncs                             
+        --no-coverage-search
+        --coverage-search                                              
+        --no-closure-search
+        --closure-search
+        --fill-gaps        
+        --microexon-search
+        --butterfly-search
+        --no-butterfly-search
+        --keep-tmp
+        
+    Advanced Options:
+    
+        --segment-mismatches           <int>       [ default: 2            ]
+        --segment-length               <int>       [ default: 25           ]
+        --min-closure-exon             <int>       [ default: 100          ]
+        --min-closure-intron           <int>       [ default: 50           ]
+        --max-closure-intron           <int>       [ default: 5000         ]
+        --min-coverage-intron          <int>       [ default: 50           ]
+        --max-coverage-intron          <int>       [ default: 20000        ]
+        --min-segment-intron           <int>       [ default: 50           ]
+        --max-segment-intron           <int>       [ default: 500000       ]    
+
+
+    TopHat Output
+
+    The tophat script produces a number of files in the directory in which it was invoked. Most of these files are internal, intermediate files that are generated for use within the pipeline. The output files you will likely want to look at are:
+    
+    accepted_hits.sam
+    A list of read alignments in SAM format. SAM is a compact short read alignment format that is increasingly being adopted. The formal specification is here.
+    
+    coverage.wig
+    A UCSC BedGraph wigglegram track, showing the depth of coverage at each position, including the spliced read alignments.
+    
+    junctions.bed
+    A UCSC BED track of junctions reported by TopHat. Each junction consists of two connected BED blocks, where each block is as long as the maximal overhang of any read spanning the junction. The score is the number of alignments spanning the junction.
+
+
+
+SAMPLE 0: 100,000 LINES FROM LANE 1
+===================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample0
+cd /nethome/syoung/base/pipeline/tophat/sample0
+cp /nethome/syoung/base/pipeline/tophat/bixby/reads/s_1_sequence-100K.txt ./
+ll
+    -rw-r--r-- 1 syoung bioinfo 3.9M Feb 10  2010 s_1_sequence-100K.txt
+
+
+emacs /nethome/syoung/base/pipeline/tophat/sample0/sample0.sh
+
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp0                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+cd /nethome/syoung/base/pipeline/tophat/sample0
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample0 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_1_sequence-100K.txt 
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample0/qstat-$PBS_JOBID.txt;
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample0/sample0.sh
+
+
+
+    [Thu Feb 11 03:14:31 2010] Beginning TopHat run (v1.0.12)
+    -----------------------------------------------
+    [Thu Feb 11 03:14:31 2010] Preparing output location /nethome/syoung/base/pipeline/tophat/sample1/
+    [Thu Feb 11 03:14:31 2010] Checking for Bowtie index files
+    [Thu Feb 11 03:14:31 2010] Checking for reference FASTA file
+    [Thu Feb 11 03:14:31 2010] Checking for Bowtie
+            Bowtie version:          0.12.2.0
+    [Thu Feb 11 03:14:31 2010] Checking reads
+            seed length:     52bp
+            format:          fastq
+            quality scale:   --solexa1.3-quals
+    [Thu Feb 11 03:14:33 2010] Mapping reads against hg19 with Bowtie
+    ...
+
+
+
+
+SAMPLE 1: LANE 1
+===================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample1
+cd /nethome/syoung/base/pipeline/tophat/sample1
+cp /nethome/syoung/base/pipeline/tophat/bixby/reads/s_1_sequence-100K.txt ./
+ll
+    -rw-r--r-- 1 syoung bioinfo 3.9M Feb 10  2010 s_1_sequence-100K.txt
+
+
+emacs /nethome/syoung/base/pipeline/tophat/sample1/sample1.sh
+
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp1                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+cd /nethome/syoung/base/pipeline/tophat/sample1
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample1 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_1_sequence-100K.txt 
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample1/qstat-$PBS_JOBID.txt;
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample1/sample1.sh
+
+
+
+SAMPLE 2: LANES 1 AND 2
+=======================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample2
+cd /nethome/syoung/base/pipeline/tophat/sample2
+
+emacs /nethome/syoung/base/pipeline/tophat/sample2/sample2.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp2                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample2 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_1_sequence.txt,../bixby/reads/s_2_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample2/qstat-$PBS_JOBID.txt;
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample2/sample2.sh
+
+
+SAMPLE 3: USE LANES 1, 2, 3 AND 4
+==================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample3
+cd /nethome/syoung/base/pipeline/tophat/sample3
+
+rm -fr /nethome/syoung/base/pipeline/tophat/sample3/sample3.sh
+emacs /nethome/syoung/base/pipeline/tophat/sample3/sample3.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp3                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample3 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_1_sequence.txt,../bixby/reads/s_2_sequence.txt,../bixby/reads/s_3_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample3/qstat-$PBS_JOBID.txt;
+
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample3/sample3.sh
+
+
+
+sample4: USE LANES 1, 2, 3 AND 4
+==================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample4
+cd /nethome/syoung/base/pipeline/tophat/sample4
+
+rm -fr /nethome/syoung/base/pipeline/tophat/sample4/sample4.sh
+emacs /nethome/syoung/base/pipeline/tophat/sample4/sample4.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp4                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample4 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_1_sequence.txt,../bixby/reads/s_2_sequence.txt,../bixby/reads/s_3_sequence.txt,../bixby/reads/s_4_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample4/qstat-$PBS_JOBID.txt;
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample4/sample4.sh
+
+
+sample5: USE LANE 6
+==================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample5
+cd /nethome/syoung/base/pipeline/tophat/sample5
+
+emacs /nethome/syoung/base/pipeline/tophat/sample5/sample5.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp5                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample4 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_6_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample5/qstat-$PBS_JOBID.txt;
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample5/sample5.sh
+
+
+
+sample6: USE LANES 6 AND 7
+==================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample6
+cd /nethome/syoung/base/pipeline/tophat/sample6
+
+rm -fr /nethome/syoung/base/pipeline/tophat/sample6/sample6.sh
+emacs /nethome/syoung/base/pipeline/tophat/sample6/sample6.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp6                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample4 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_6_sequence.txt,../bixby/reads/s_7_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample6/qstat-$PBS_JOBID.txt;
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample6/sample6.sh
+
+
+
+sample7: USE LANES 6, 7 AND 8
+==================================
+
+mkdir /nethome/syoung/base/pipeline/tophat/sample7
+cd /nethome/syoung/base/pipeline/tophat/sample7
+
+rm -fr /nethome/syoung/base/pipeline/tophat/sample7/sample7.sh
+emacs /nethome/syoung/base/pipeline/tophat/sample7/sample7.sh
+
+#!/bin/sh
+
+#PBS -r y                       # The job is rerunnable
+#PBS -q gsmall                   # The queue to submit to    
+#PBS -N th-bix-smp7                 # The name of the job
+#PBS -j oe                      # Join output and error
+#PBS -l ncpus=4                 # Bowtie can use 4 CPUs
+
+export PATH=/nethome/syoung/base/apps/bowtie/0.12.2:$PATH
+
+time /nethome/syoung/base/apps/tophat/1.0.12/bin/tophat \
+--num-threads 4 \
+--mate-inner-dist 200 \
+--keep-tmp \
+--solexa1.3-quals \
+--output-dir /nethome/syoung/base/pipeline/tophat/sample4 \
+/nethome/syoung/base/apps/bowtie/indexes/hg19 \
+../bixby/reads/s_6_sequence.txt,../bixby/reads/s_7_sequence.txt,../bixby/reads/s_8_sequence.txt
+
+echo "printenv"
+/usr/bin/printenv
+
+/usr/local/bin/qstat -f $PBS_JOBID &> /nethome/syoung/base/pipeline/tophat/sample7/qstat-$PBS_JOBID.txt;
+
+
+
+
+
+msub -q gsmall /nethome/syoung/base/pipeline/tophat/sample7/sample7.sh
+
+
+
+
+(SINCE IT WORKED, DIDN'T NEED TO DO THIS)
+
+MAKE THE INDEX FILE WITH BOWTIE ON BIGMEM NODE:
+
+### QUEUED FOR AN HOUR BUT DID NOT RUN EVEN THOUGH THE BIGMEM NODES WERE IDLE...
+
+cd /nethome/syoung/base/pipeline/tophat
+emacs run-make-hg19.sh
+
+#!/bin/sh
+
+#PBS -N bindex
+
+#PBS -j oe
+
+# SET ENVIRONMENT VARIABLES
+export PATH=/nethome/syoung/base/apps/bowtie/0.9.4:$PATH
+
+cd /nethome/syoung/base/pipeline/tophat
+
+/nethome/syoung/base/pipeline/tophat/make_hg19.sh
+
+#### END OF FILE
+
+
+
+
+    Tue Feb  9 20:59:59 EST 2010
+    
+    [syoung@u01 tophat]$ msub -q pbigmem run-make-hg19.sh 
+    
+    228503
+    [syoung@u01 tophat]$ qstat
+    Job id                    Name             User            Time Use S Queue
+    ------------------------- ---------------- --------------- -------- - -----
+    228503.kronos             bindex           syoung                 0 Q pbigmem        
+    [syoung@u01 tophat]$ 
+
+
+QUEUED FOR AN HOUR BUT NOT SUBMITTED WHILE THE BIGMEM NODES ARE IDLE
+
+Tue Feb  9 22:42:24 EST 2010
+
+
+[syoung@u01 tophat]$ canceljob 228503
+
+job '228503' cancelled
+
+
+
+
+
+NOTES
+=====
+
+NB: RAN OUT OF MEMORY ON KRONOS-x
+
+screen -S make-hg19
+cd /nethome/syoung/base/pipeline/tophat
+export PATH=/nethome/syoung/base/apps/bowtie/0.9.4:$PATH
+./make_hg19.sh
+
+    Out of memory creating joined string in Ebwt::initFromVector() at ebwt.h:529
+    terminate called after throwing an instance of 'std::bad_alloc'
+      what():  St9bad_alloc
+    ./make_hg19.sh: line 165: 18915 Aborted                 $CMD
+    
+    
+    top - 20:54:28 up 137 days,  6:01,  3 users,  load average: 1.00, 0.97, 0.54
+    Tasks: 233 total,   2 running, 198 sleeping,  27 stopped,   6 zombie
+    Cpu(s): 12.6%us,  0.0%sy,  0.0%ni, 87.4%id,  0.0%wa,  0.0%hi,  0.0%si,  0.0%st
+    Mem:  32967512k total, 32431784k used,   535728k free,   156028k buffers
+    Swap:  1052248k total,      112k used,  1052136k free, 27194476k cached
+    
+      PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND                                               31322 syoung    25   0 3660m 3.5g  972 R  100 11.1   8:22.47 bowtie-build     
+
+
+NB: RAN OUT OF MEMORY ON KRONOS
+
+screen -S make-hg19
+cd /nethome/syoung/base/pipeline/tophat
+export PATH=/nethome/syoung/base/apps/bowtie/0.9.4:$PATH
+./make_hg19.sh
+
+    Running /nethome/syoung/base/apps/bowtie/0.9.4/bowtie-build chr1.fa,chr2.fa,chr3.fa,chr4.fa,chr5.fa,chr6.fa,chr7.fa,chr8.fa,chr9.fa,chr10.fa,chr11.fa,chr12.fa,chr13.fa,chr14.fa,chr15.fa,chr16.fa,chr17.fa,chr18.fa,chr19.fa,chr20.fa,chr21.fa,chr22.fa,chrX.fa,chrY.fa,chrM.fa hg19
+    Out of memory creating joined string in Ebwt::initFromVector() at ebwt.h:529
+    terminate called after throwing an instance of 'std::bad_alloc'
+      what():  St9bad_alloc
+    ./make_hg19.sh: line 165: 18915 Aborted                 $CMD
+    Index building failed; see error messag
+
+
+NB: USE export PATH=/nethome/syoung/base/apps/bowtie/0.9.4:$PATH TO AVOID THIS ERROR:
+
+    which: no bowtie-build in (/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/syoung/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/apps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/external.programs/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/apps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi/auto:/home/apps/alta-cyclic/0.1.0/perlexternal:/home/bioinfo/apps/ngs/bin/nextgen:/home/bioinfo/apps/ngs/bin/exome:/home/bioinfo/apps/ngs/bin/utils:/home/bioinfo/apps/ngs/bin:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/opt/xcat/bin:/opt/xcat/sbin:/opt/xcat/x86_64/bin:/opt/xcat/x86_64/sbin:/opt/xcat/bin:/opt/xcat/sbin:/opt/xcat/x86_64/bin:/opt/xcat/x86_64/sbin)
+    Could not find bowtie-build in current directory or in PATH
+
+
+
+
+
+
+ERROR: bowtie-inspect COULDN'T FIND THE hg19.fa FILE
+
+SOLUTION:
+
+DOWNLOADED hg19.2bit FROM UCSC AND CONVERTED TO hg19.fa WITH UCSC'S kent:
+
+
+ll /nethome/syoung/base/apps/bowtie/indexes
+
+    ll
+    total 8752896
+
+    -rw-r--r-- 1 syoung bioinfo 2819582132 Jan 15 04:27 hg18.ebwt.zip
+    -rw-r--r-- 1 syoung bioinfo  816241703 Mar  8  2009 hg19.2bit
+    -rw-r--r-- 1 syoung bioinfo 2822736839 Jan 15 04:31 hg19.ebwt.zip
+    -rw-r--r-- 1 syoung bioinfo        457 Jul 29  2009 md5sum.txt
+    -rw-r--r-- 1 syoung bioinfo 2504347192 Jan 15 04:27 mm9.ebwt.zip
+
+
+cd /nethome/syoung/base/apps/bowtie/indexes
+
+/nethome/syoung/bin/x86_64/twoBitToFa hg19.2bit hg19.fa
+
+
+
+
+wget http://hgdownload.cse.ucsc.edu/admin/jksrc.zip
+SEE Notes-apps-kent.txt
+
+
+
+
+INSTALLED twoBitToFa
+
+/nethome/syoung/bin/x86_64/twoBitToFa
+
+    twoBitToFa - Convert all or part of .2bit file to fasta
+    usage:
+       twoBitToFa input.2bit output.fa
+    options:
+       -seq=name - restrict this to just one sequence
+       -start=X  - start at given position in sequence (zero-based)
+       -end=X - end at given position in sequence (non-inclusive)
+       -seqList=file - file containing list of the desired sequence names 
+                        in the format seqSpec[:start-end], e.g. chr1 or chr1:0-189
+                        where coordinates are half-open zero-based, i.e. [start,end)
+       -noMask - convert sequence to all upper case
+       -bpt=index.bpt - use bpt index instead of built in one
+       -bed=input.bed - grab sequences specified by input.bed. Will exclude introns
+    
+    Sequence and range may also be specified as part of the input
+    file name using the syntax:
+          /path/input.2bit:name
+       or
+          /path/input.2bit:name
+       or
+          /path/input.2bit:name:start-end
+
+
+/nethome/syoung/bin/x86_64/faToTwoBit
+
+    faToTwoBit - Convert DNA from fasta to 2bit format
+    usage:
+       faToTwoBit in.fa [in2.fa in3.fa ...] out.2bit
+    options:
+       -noMask       - Ignore lower-case masking in fa file.
+       -stripVersion - Strip off version number after . for genbank accessions.
+       -ignoreDups   - only convert first sequence if there are duplicates
+
+
+
+
+
+
+
+ERROR: bowtie-inspect not found on this system
+
+    [Wed Feb 10 20:38:00 2010] Beginning TopHat run (v1.0.12)
+    -----------------------------------------------
+    [Wed Feb 10 20:38:00 2010] Preparing output location /nethome/syoung/base/pipeline/tophat/sample3/
+    [Wed Feb 10 20:38:00 2010] Checking for Bowtie index files
+    [Wed Feb 10 20:38:00 2010] Checking for reference FASTA file
+            Warning: Could not find FASTA file /nethome/syoung/base/pipeline/tophat/indexes/hg19/hg19.fa
+    [Wed Feb 10 20:38:00 2010] Reconstituting reference FASTA file from Bowtie index
+            [FAILED]
+    Error: bowtie-inspect not found on this system.  Did you forget to include it in your PATH?
+    [Wed Feb 10 20:38:00 2010] Checking for Bowtie
+            [FAILED]
+    Error: bowtie not found on this system
+    Traceback (most recent call last):
+
+
+
+
+SOLUTION:
+
+    ADD BOWTIE INSTALL DIR TO PATH
+    
+    export PATH=/nethome/syoung/base/apps/bowtie/0.9.4:$PATH
+
+
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 15 05:51:06 EST 2010] INSTALLED tophat FOR RUNNING bowtie AS PART OF cufflinks>
+
+
+
+
+INSTALLED HERE:
+/nethome/syoung/base/apps/tophat/1.0.12/bin
+
+-rwxr-xr-x 1 syoung bioinfo    1814 Jan 15 04:47 bed_to_juncs
+-rwxr-xr-x 1 syoung bioinfo 1337491 Jan 15 04:47 closure_juncs
+-rwxr-xr-x 1 syoung bioinfo    4628 Jan 15 04:47 contig_to_chr_coords
+-rwxr-xr-x 1 syoung bioinfo  206540 Jan 15 04:47 extract_reads
+-rwxr-xr-x 1 syoung bioinfo  132785 Jan 15 04:47 fix_map_ordering
+-rwxr-xr-x 1 syoung bioinfo  768791 Jan 15 04:47 gff_juncs
+-rwxr-xr-x 1 syoung bioinfo  320242 Jan 15 04:47 juncs_db
+-rwxr-xr-x 1 syoung bioinfo  817262 Jan 15 04:47 library_stats
+-rwxr-xr-x 1 syoung bioinfo 1030577 Jan 15 04:47 long_spanning_reads
+-rwxr-xr-x 1 syoung bioinfo  630186 Jan 15 04:47 mask_sam
+-rwxr-xr-x 1 syoung bioinfo  189685 Jan 15 04:47 prep_reads
+-rwxr-xr-x 1 syoung bioinfo 2036939 Jan 15 04:47 segment_juncs
+-rwxr-xr-x 1 syoung bioinfo   61659 Jan 15 04:47 tophat
+-rwxr-xr-x 1 syoung bioinfo 1055626 Jan 15 04:47 tophat_reports
+-rwxr-xr-x 1 syoung bioinfo  598261 Jan 15 04:47 wiggles
+
+
+Usage:
+    tophat [options] <bowtie_index> <reads1[,reads2,...,readsN]> [reads1[,reads2,...,readsN]]
+
+Options:
+    -o/--output-dir                <string>    [ default: ./tophat_out ]
+    -a/--min-anchor                <int>       [ default: 8            ]
+    -m/--splice-mismatches         <0-2>       [ default: 0            ]
+    -i/--min-intron                <int>       [ default: 50           ]
+    -I/--max-intron                <int>       [ default: 500000       ]
+    -g/--max-multihits             <int>       [ default: 40           ]
+    -F/--min-isoform-fraction      <float>     [ default: 0.15         ]
+    --solexa-quals
+    --solexa1.3-quals
+    -p/--num-threads               <int>       [ default: 1            ]
+    -G/--GFF                       <filename>
+    -j/--raw-juncs                 <filename>
+    -r/--mate-inner-dist           <int>
+    --mate-std-dev                 <int>       [ default: 20           ]
+    --no-novel-juncs
+    --no-gff-juncs
+    --no-coverage-search
+    --coverage-search
+    --no-closure-search
+    --closure-search
+    --fill-gaps
+    --microexon-search
+    --butterfly-search
+    --no-butterfly-search
+    --keep-tmp
+
+Advanced Options:
+
+    --segment-mismatches           <int>       [ default: 2            ]
+    --segment-length               <int>       [ default: 25           ]
+    --min-closure-exon             <int>       [ default: 100          ]
+    --min-closure-intron           <int>       [ default: 50           ]
+    --max-closure-intron           <int>       [ default: 5000         ]
+    --min-coverage-intron          <int>       [ default: 50           ]
+    --max-coverage-intron          <int>       [ default: 20000        ]
+    --min-segment-intron           <int>       [ default: 50           ]
+    --max-segment-intron           <int>       [ default: 500000       ]
+
+    for detailed help see http://tophat.cbcb.umd.edu/manual.html
+
+
+
+
+tophat
+
+/home/syoung/base/apps/tophat/1.0.12/bin
+
+-rwxr-xr-x 1 syoung bioinfo    1814 Jan 15 04:47 bed_to_juncs
+-rwxr-xr-x 1 syoung bioinfo 1337491 Jan 15 04:47 closure_juncs
+-rwxr-xr-x 1 syoung bioinfo    4628 Jan 15 04:47 contig_to_chr_coords
+-rwxr-xr-x 1 syoung bioinfo  206540 Jan 15 04:47 extract_reads
+-rwxr-xr-x 1 syoung bioinfo  132785 Jan 15 04:47 fix_map_ordering
+-rwxr-xr-x 1 syoung bioinfo  768791 Jan 15 04:47 gff_juncs
+-rwxr-xr-x 1 syoung bioinfo  320242 Jan 15 04:47 juncs_db
+-rwxr-xr-x 1 syoung bioinfo  817262 Jan 15 04:47 library_stats
+-rwxr-xr-x 1 syoung bioinfo 1030577 Jan 15 04:47 long_spanning_reads
+-rwxr-xr-x 1 syoung bioinfo  630186 Jan 15 04:47 mask_sam
+-rwxr-xr-x 1 syoung bioinfo  189685 Jan 15 04:47 prep_reads
+-rwxr-xr-x 1 syoung bioinfo 2036939 Jan 15 04:47 segment_juncs
+-rwxr-xr-x 1 syoung bioinfo   61659 Jan 15 04:47 tophat
+-rwxr-xr-x 1 syoung bioinfo 1055626 Jan 15 04:47 tophat_reports
+-rwxr-xr-x 1 syoung bioinfo  598261 Jan 15 04:47 wiggles
+
+

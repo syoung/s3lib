@@ -1,0 +1,1203 @@
+Notes-apps-polybayes.txt
+
+
+</entry>
+
+
+
+<entry [Fri Jan 23 20:28:12 EST 2009] RAN polybayes USING CCDS REFERENCE>
+
+
+
+1. CREATED DIRECTORY AND COPIED FILES
+
+cd /nethome/syoung/base/pipeline/nimblegen-sff/ccds
+cp ../hd2-demo.sff.fasta* ./
+cp  ../../nimblegen-gsmapper/CCDS_nucleotide.20080430.fa ccds.fasta
+ll
+    -rw-r--r-- 1 syoung bioinfo  33M Jan 23 20:25 ccds.fasta
+    -rw-r--r-- 1 syoung bioinfo 780M Jan 23 20:24 hd2-demo.sff.fasta
+    -rw-r--r-- 1 syoung bioinfo 2.2G Jan 23 20:24 hd2-demo.sff.fasta.qual
+
+
+2. CREATED SHELL SCRIPT
+
+emacs /nethome/syoung/base/pipeline/nimblegen-sff/ccds/run-polybayes.sh
+
+#/bin/sh
+
+/nethome/syoung/base/bin/nextgen/run-polybayes.pl \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/ccds/hd2-demo.sff.fasta \
+--reference ccds \
+--name hd2-demo \
+--outputdir /nethome/syoung/base/pipeline/nimblegen-sff/ccds \
+&> /nethome/syoung/base/pipeline/nimblegen-sff/ccds/run-polybayes.sh
+
+
+3. RAN qsub ON SHELL SCRIPT
+
+qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/ccds/run-polybayes.sh
+
+    *********** RUNNING
+    6628.kronos.ccs.miami.edu
+    Fri Jan 23 20:38:06 EST 2009
+
+
+
+</entry>
+
+
+
+<entry [Fri Jan 23 12:09:12 EST 2009] RUN polybayes ON HIGH MEM NODE>
+
+
+
+--- BUT FAILED DUE TO LACK OF MEMORY...!!
+
+1. CREATE genome DIRECTORY
+
+mkdir /nethome/syoung/base/pipeline/nimblegen-sff/genome
+cd /nethome/syoung/base/pipeline/nimblegen-sff/genome
+cp ../human-genome.fasta ./
+cp ../chromosomes/hd2-demo.sff.fasta ./
+cp ../chromosomes/hd2-demo.sff.fasta.qual ./
+
+
+
+2. RUN run-polybayes.pl BUT DO NOT EXECUTE qsub
+
+/nethome/syoung/base/bin/nextgen/run-polybayes.pl \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/genome/hd2-demo.sff.fasta \
+--reference human-genome \
+--name hd2-demo \
+--outputdir /nethome/syoung/base/pipeline/nimblegen-sff/genome \
+&> /nethome/syoung/base/pipeline/nimblegen-sff/genome/run-polybayes.sh
+
+/nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAligner -in /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.dat -out /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.aligned.dat -anchors /nethome/syoung/base/pipeline/nimblegen-sff/human-genome.fasta -oa /nethome/syoung/base/pipeline/nimblegen-sff/human-genome.dat -hs 30 -mmp .02 >  -minp 0.95
+
+
+
+3. ADD pvmem TO SHELL SCRIPT
+
+#PBS -l pvmem=40gb
+
+    6601.kronos.ccs.miami.edu
+    
+    Reading anchors FASTA file... 24 anchors loaded.
+    Hashing unified anchor... ERROR: Unable to allocate enough memory during resizing of the DNA hash table.
+           Tried to allocate an additional 16.00 GB RAM.
+
+#PBS -l pvmem=60gb
+
+    6610.kronos.ccs.miami.edu
+
+
+
+4. EXECUTE qsub MANUALLY
+
+qsub -q pbigmem /nethome/syoung/base/pipeline/nimblegen-sff/genome/run-polybayes.sh
+
+
+BUT FAILED AGAIN DUE TO LACK OF MEMORY, EVEN USING 60GB IT WANTED AN ADDITIONAL 36GB!!:
+
+    Align the base called reads to the E. coli K12 reference genome
+    ---------------------------------------------------------------
+    MosaikAligner beta                                   2007-06-08
+    Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+    ---------------------------------------------------------------
+    
+    - Using a maximum mismatch percent threshold of 0.02
+    - Using a minimum percent alignment threshold of 0.95
+    - Using a hash size of 30
+    - Parsing /nethome/syoung/base/pipeline/nimblegen-sff/genome/human-genome.fasta
+    Reading anchors FASTA file... 24 anchors loaded.
+    Hashing unified anchor... ERROR: Unable to allocate enough memory during resizing of the DNA hash table.
+           Tried to allocate an additional 36.00 GB RAM.
+
+
+
+
+
+ qstat -f
+Job Id: 6601.kronos.ccs.miami.edu
+    Job_Name = run-polybayes.sh
+    Job_Owner = syoung@kronos.ccs.miami.edu
+    job_state = R
+    queue = pbigmem
+    server = kronos.ccs.miami.edu
+    Checkpoint = u
+    ctime = Fri Jan 23 15:38:38 2009
+    Error_Path = kronos.ccs.miami.edu:/nethome/syoung/base/pipeline/nimblegen-
+        sff/genome/run-polybayes.sh.e6601
+    exec_host = n30/0
+    Hold_Types = n
+    Join_Path = n
+    Keep_Files = n
+    Mail_Points = a
+    mtime = Fri Jan 23 15:38:41 2009
+    Output_Path = kronos.ccs.miami.edu:/nethome/syoung/base/pipeline/nimblegen
+        -sff/genome/run-polybayes.sh.o6601
+    Priority = 0
+    qtime = Fri Jan 23 15:38:38 2009
+    Rerunable = True
+    Resource_List.pvmem = 40gb
+    session_id = 7037
+    Variable_List = PBS_O_HOME=/nethome/syoung,PBS_O_LANG=en_US.UTF-8,
+        PBS_O_LOGNAME=syoung,
+        PBS_O_PATH=/sw/bin:/nethome/syoung/base/bin:/usr/X11R6/bin:/nethome/s
+        young/base/bin/utils:/home/syoung/base/bin/nextgen:/home/syoung/base/a
+        pps/amos/bin:/usr/local/qt/bin:/home/apps/alta-cyclic/0.1.0/external.p
+        rograms/libsvm-2.86:/home/apps/alta-cyclic/0.1.0/blat/bin/i386:/home/a
+        pps/alta-cyclic/0.1.0/perlmods/lib64/perl5/site_perl/5.8.8/x86_64-linu
+        x-thread-multi/auto:/home/apps/alta-cyclic/0.1.0/perlexternal:/usr/loc
+        al/bin:/bin:/usr/bin,PBS_O_MAIL=/var/spool/mail/syoung,
+        PBS_O_SHELL=/bin/bash,PBS_SERVER=kronos.ccs.miami.edu,
+        PBS_O_HOST=kronos.ccs.miami.edu,
+        PBS_O_WORKDIR=/nethome/syoung/base/pipeline/nimblegen-sff/genome,
+        PBS_O_QUEUE=pbigmem
+    etime = Fri Jan 23 15:38:38 2009
+    submit_args = -q pbigmem /nethome/syoung/base/pipeline/nimblegen-sff/genom
+        e/run-polybayes.sh 
+
+
+
+
+
+
+
+    -----Original Message-----
+    From: Zongjun Hu via RT [mailto:hpc@ccs.miami.edu] 
+    Sent: Friday, January 23, 2009 10:53 AM
+    To: Young, Stuart
+    Cc: Zysman, Joel
+    Subject: [ccstkt #790] Reserve kronos high memory nodes 
+    
+    Hi, Stuart.
+    
+    I think you have already include the job flag in your job file. Please also
+    specify your memory requirement for your job before it is submitted. This will
+    prevent it from running on regular compute nodes.
+    
+    You can use 'pvmem' or 'vmem' depends on your needs,
+    
+    pvmem: Maximum amount of virtual memory used by any single process in the job.
+    (Ignored on Unicos.)
+    
+    vmem: Maximum amount of virtual memory used by all concurrent processes in the
+    job. (Ignored on Unicos.)
+    
+    For example, for a job, each of its process needs 40GB memory, you can use
+    
+    #PBS -l pvmem=40gb
+
+
+
+
+</entry>
+
+
+
+<entry [Tues Jan 20 18:43:12 EST 2009] MEMORY TOO SMALL FOR HUMAN GENOME HASH TABLE - RUN PER CHROMOSOME>
+
+
+
+
+[syoung@kronos nimblegen-sff]$ /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAligner -in /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.dat -out /nethome/syoung/base/pipeline/nimblegen-\
+> sff/hd2-demo.aligned.dat -anchors /nethome/syoung/base/pipeline/nimblegen-sff/human-genome.fasta -oa /nethome/syoung/base/pipeline/nimblegen-sff/human-genome.dat -hs 30 -mmp .02\
+>  -minp 0.95
+---------------------------------------------------------------
+MosaikAligner beta                                   2007-06-08
+Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+---------------------------------------------------------------
+
+- Using a maximum mismatch percent threshold of 0.02
+- Using a minimum percent alignment threshold of 0.95
+- Using a hash size of 30
+- Parsing /nethome/syoung/base/pipeline/nimblegen-sff/human-genome.fasta
+Reading anchors FASTA file... 24 anchors loaded.
+Hashing unified anchor... ERROR: Unable to allocate enough memory during resizing of the DNA hash table.
+       Tried to allocate an additional 6.00 GB RAM.
+
+
+
+SOLUTION:
+
+    1. BOOK HIGH MEM NODES 29 AND 30 ON CLUSTER - DONE
+
+    2. RUN CHROMOSOMES IN MEANTIME USING run-polybayes-multi.pl
+
+
+1. CREATE FOLDERS FOR CHROMOSOME REFERENCE FILES
+
+mkdir chr1 chr2 chr3 chr4 chr5 chr6 chr7 chr8 chr9 chr10 chr11 chr12 chr13 chr14 chr15 chr16 chr17 chr18 chr19 chr20 chr21 chr22 chrX chrY
+mv chr1.fa chr1/chr1.fasta
+mv chr2.fa chr2/chr2.fasta
+mv chr3.fa chr3/chr3.fasta
+mv chr4.fa chr4/chr4.fasta
+mv chr5.fa chr5/chr5.fasta
+mv chr6.fa chr6/chr6.fasta
+mv chr7.fa chr7/chr7.fasta
+mv chr8.fa chr8/chr8.fasta
+mv chr9.fa chr9/chr9.fasta
+mv chr10.fa chr10/chr10.fasta
+mv chr11.fa chr11/chr11.fasta
+mv chr12.fa chr12/chr12.fasta
+mv chr13.fa chr13/chr13.fasta
+mv chr14.fa chr14/chr14.fasta
+mv chr15.fa chr15/chr15.fasta
+mv chr16.fa chr16/chr16.fasta
+mv chr17.fa chr17/chr17.fasta
+mv chr18.fa chr18/chr18.fasta
+mv chr19.fa chr19/chr19.fasta
+mv chr20.fa chr20/chr20.fasta
+mv chr21.fa chr21/chr21.fasta
+mv chr22.fa chr22/chr22.fasta
+mv chrX.fa chrX/chrX.fasta
+mv chrY.fa chrY/chrY.fasta
+
+[syoung@kronos chromosomes]$ ls
+chr1  chr10  chr11  chr12  chr13  chr14  chr15  chr16  chr17  chr18  chr19  chr2  chr20  chr21  chr22  chr3  chr4  chr5  chr6  chr7  chr8  chr9  chrX  chrY
+
+
+2. CREATE SINGLE .fasta AND .fasta.qual FILES FROM CONCATENATION OF MULTIPLE .fasta AND .fasta.qual FILES:
+
+cat /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff.fasta /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff.fasta /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff.fasta /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff.fasta > /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.sff.fasta
+
+cat /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff.fasta.qual /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff.fasta.qual /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff.fasta.qual /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff.fasta.qual > /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.sff.fasta.qual
+
+
+3. RUN run-polybayes-multi.pl:
+
+/nethome/syoung/base/bin/nextgen/run-polybayes-multi.pl \
+--refdir /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/hd2-demo.sff.fasta \
+--name hd2-demo
+    
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr1/run-polybayes-multi.sh
+    6529.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr10/run-polybayes-multi.sh
+    6530.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr11/run-polybayes-multi.sh
+    6531.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr12/run-polybayes-multi.sh
+    6532.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr13/run-polybayes-multi.sh
+    6533.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr14/run-polybayes-multi.sh
+    6534.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr15/run-polybayes-multi.sh
+    6535.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr16/run-polybayes-multi.sh
+    6536.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr17/run-polybayes-multi.sh
+    6537.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr18/run-polybayes-multi.sh
+    6538.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr19/run-polybayes-multi.sh
+
+    6539.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr2/run-polybayes-multi.sh
+    6540.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr20/run-polybayes-multi.sh
+    6541.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr21/run-polybayes-multi.sh
+
+    6542.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr22/run-polybayes-multi.sh
+    6543.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/run-polybayes-multi.sh
+
+    6544.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/run-polybayes-multi.sh
+
+    6545.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr5/run-polybayes-multi.sh
+
+    6546.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr6/run-polybayes-multi.sh
+    6547.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr7/run-polybayes-multi.sh
+    6548.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr8/run-polybayes-multi.sh
+
+    6549.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr9/run-polybayes-multi.sh
+    6550.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chrX/run-polybayes-multi.sh
+    6551.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chrY/run-polybayes-multi.sh
+    6552.kronos.ccs.miami.edu
+    
+    Run time: 00:00:01
+    Completed /nethome/syoung/base/bin/nextgen/run-polybayes-multi.pl
+    1:34AM, 23 January 2009
+    ****************************************
+
+
+RERAN FAILED RUNS BECAUSE n28 CRASHED:
+--------------------------------------
+
+1. CANCELLED JOBS ON n28
+
+canceljob 5339 6542 6549 6544 6545 6546 6539
+ 
+    job '6539' cancelled
+    job '6542' cancelled
+    job '6544' cancelled
+    job '6545' cancelled
+    job '6546' cancelled
+    job '6549' cancelled
+
+
+2. GET QSUB EXECUTION LINES FOR CANCELLED JOBS SHOWING CHROMOSOME NAME:
+
+6539.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr2/run-polybayes-multi.sh
+
+6542.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr22/run-polybayes-multi.sh
+
+6544.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/run-polybayes-multi.sh
+
+6545.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr5/run-polybayes-multi.sh
+
+6546.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr6/run-polybayes-multi.sh
+
+6549.kronos.ccs.miami.edu
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr9/run-polybayes-multi.sh
+
+
+
+3. COPY CHROMOSOME DIRECTORIES INTO NEW nimblegen-sff/chromosome/rerun FOLDER TO RERUN
+
+mkdir /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1 
+cd /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/ 
+cp -r chr2 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+cp -r chr22 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+cp -r chr4 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+cp -r chr5 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+cp -r chr6 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+cp -r chr9 /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1
+
+ll
+    drwxr-xr-x  8 syoung bioinfo 16K Jan 23 15:49 .
+    drwxr-xr-x 28 syoung bioinfo 16K Jan 23 15:36 ..
+    drwxr-xr-x  4 syoung bioinfo 16K Jan 23 12:14 chr2
+    drwxr-xr-x  4 syoung bioinfo 16K Jan 23 12:17 chr22
+    drwxr-xr-x  4 syoung bioinfo 16K Jan 23 12:21 chr4
+    drwxr-xr-x  2 syoung bioinfo 16K Jan 23 15:45 chr5
+    drwxr-xr-x  4 syoung bioinfo 16K Jan 23 15:49 chr6
+    drwxr-xr-x  4 syoung bioinfo 16K Jan 23 15:52 chr9
+
+
+4. COPY .fasta AND .fasta.qual FILES TO rerun1 DIRECTORY
+
+cp /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.sff.fasta /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/hd2-demo.sff.fasta
+cp /nethome/syoung/base/pipeline/nimblegen-sff/hd2-demo.sff.fasta.qual /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/hd2-demo.sff.fasta.qual
+
+
+5. RERUN run-polybayes-multi.pl:
+
+/nethome/syoung/base/bin/nextgen/run-polybayes-multi.pl \
+--refdir /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1 \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/hd2-demo.sff.fasta \
+--name hd2-demo
+
+
+    Skipping copy to .fasta and .qual files because they are the same as the input files
+    
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr2/run-polybayes-multi.sh
+    6621.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr22/run-polybayes-multi.sh
+    6622.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr4/run-polybayes-multi.sh
+    6623.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr5/run-polybayes-multi.sh
+    6624.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/run-polybayes-multi.sh
+    6625.kronos.ccs.miami.edu
+    /usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr9/run-polybayes-multi.sh
+    6626.kronos.ccs.miami.edu
+    
+    Run time: 00:00:00
+    Completed /nethome/syoung/base/bin/nextgen/run-polybayes-multi.pl
+    5:32PM, 23 January 2009
+    ****************************************
+
+
+    run-polybayes.pl RAN TO COMPLETION, E.G.:
+
+        ...
+        /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/ace2Baa --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/edit_dir/hd2-demo_am2.ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.baa
+        /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/pbShort --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.baa --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.bas --tam /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.tam --ts single --anchor --Q1 15 --Q2 40 --cache
+        /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/baa2Ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.baa --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.bas --tam /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/hd2-demo.tam --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/rerun1/chr6/edit_dir/hd2-demo_am2_snp.ace
+        
+        Run time: 02:26:34
+        Completed /nethome/syoung/base/bin/nextgen/run-polybayes.pl
+        8:04PM, 23 January 2009
+        ****************************************
+
+    ...AND THE .ace FILES WERE THE SAME AS THE 'FAILED' RUN, SUGGESTING THAT THE RUNS COMPLETED BUT THE NODE FAILED TO RESPOND TO THE MOAB SCHEDULER SO IT APPEARED AS IF IT HAD CRASHED...
+
+    cd /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes
+    ls -al chr6/edit_dir/
+
+        -rw-rw-rw- 1 syoung bioinfo 873262733 Jan 23 04:19 hd2-demo_am2.ace
+        -rw-rw-rw- 1 syoung bioinfo 869398717 Jan 23 05:31 hd2-demo_am2_snp.ace
+
+    cd /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes
+    ls -al rerun1/chr6/edit_dir/
+
+        -rw-r--r-- 1 syoung bioinfo 873275834 Jan 23 18:45 hd2-demo_am2.ace
+        -rw-r--r-- 1 syoung bioinfo 869398717 Jan 23 20:04 hd2-demo_am2_snp.ace
+
+
+
+
+TESTING:
+
+
+TEST ON chr4
+
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/run-polybayes-multi.sh
+
+
+    ************** RUNNING Thu Jan 22 18:49:29 EST 2009
+    6528.kronos.ccs.miami.edu
+
+OKAY!!!
+
+
+
+run-polybayes-multi CALLS run-polybayes.pl
+------------------------------------------
+
+
+Script file: /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/run-polybayes-multi.sh
+********************** SHELL SCRIPT *********************
+#/bin/sh
+
+cp /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/hd2-demo.sff.fasta /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/hd2-demo.sff.fasta
+cp /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/hd2-demo.sff.fasta.qual /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/hd2-demo.sff.fasta.qual
+        
+/nethome/syoung/base/bin/nextgen/run-polybayes.pl \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4/hd2-demo.sff.fasta \
+--reference chr4 \
+--name hd2-demo \
+--outputdir /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr4
+
+*********************************************************
+
+
+FIXED ERROR DUE TO 'R's IN REFERENCE SEQUENCE
+---------------------------------------------
+
+ERROR:
+
+    ---------------------------------------------------------------
+    MosaikAligner beta                                   2007-06-08
+    Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+    ---------------------------------------------------------------
+    
+    - Using a maximum mismatch percent threshold of 0.02
+    - Using a minimum percent alignment threshold of 0.95
+    - Using a hash size of 30
+    - Parsing /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.fasta
+    Reading anchors FASTA file... 1 anchors loaded.
+    Hashing unified anchor... finished.
+    
+    Aligning sequence library:
+    [==================>                        ] (43 %) 00:26:51 (1038407 - 644.6) |
+    ERROR: Unknown nucleotide (R) in when converting bases during Smith-Waterman alignment.
+
+SOLUTION:
+
+    REMOVE ALL R's FROM chr3.fasta FILE
+    
+
+STEP-BY-STEP THROUGH EACH CALL IN run-polybayes
+-----------------------------------------------
+
+
+    [syoung@kronos chromosomes]$ /nethome/syoung/base/bin/nextgen/run-polybayes.pl \
+    > --inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.sff.fasta \
+    > --reference chr3 \
+    > --name hd2-demo \
+    > --outputdir /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3
+
+    
+    Skipping copy to .fasta and .qual files because they are the same as the input files
+
+
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikBuild -seq /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.sff.fasta -qual /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.sff.fasta.qual -out /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.dat
+    ---------------------------------------------------------------
+    MosaikBuild beta                                     2007-06-08
+    Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+    ---------------------------------------------------------------
+    
+    WARNING: No FASTA base positions file specified: -pos parameter
+             Chromatogram viewing will be disabled in the final assembly.
+    
+    Simultaneously reading FASTA files while creating sequence archive.
+    MosaikBuild (total time): 114.660 s (20986.6 sequences / s)
+
+
+
+
+************    RERAN Wed Jan 21 20:38:45 EST 2009 -- OK!!
+
+
+
+        [syoung@kronos chromosomes]$     /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAligner -in /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.dat -out /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.aligned.dat -anchors /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.fasta -oa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.dat -hs 30 -mmp .02 -minp 0.95
+        ---------------------------------------------------------------
+        MosaikAligner beta                                   2007-06-08
+        Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+        ---------------------------------------------------------------
+        
+        - Using a maximum mismatch percent threshold of 0.02
+        - Using a minimum percent alignment threshold of 0.95
+        - Using a hash size of 30
+        - Parsing /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.fasta
+        Reading anchors FASTA file... 1 anchors loaded.
+        Hashing unified anchor... finished.
+        
+        Aligning sequence library:
+        [===========================================] (100 %) 00:56:17 (2406322 - 712.6) 713 reads/s
+        - total alignment algorithm time: 3375.060 s (713.0 alignments / s)
+        - average sequence length: 308 bases
+        
+        Alignment statistics:
+        =============================================
+        # too short:         354 ( 0.0 %)
+        # failed hash:   2100741 (87.3 %)
+        # unique:         305227 (12.7 %)
+        ---------------------------------------------
+        total:           2406322
+        total aligned:    305227 (12.7 %)
+        
+        Filtering statistics:
+        (NOTE: more than one filter can affect a read)
+        =============================================
+        # failed paralog filter:             163848 ( 6.8 %)
+        # failed min align filter:           153063 ( 6.4 %)
+        # failed mismatch filter (%):        269187 (11.2 %)
+        ---------------------------------------------
+        total aligned:                        14121 ( 0.6 %)
+        
+        Saving anchor information... finished.
+        MosaikAligner (total time): 3534.890 s.
+        
+        
+
+NEXT, RAN MosaikAssembler 
+    
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAssembler -in /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.aligned.dat -af hd2-demo_am2.ace -od /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3 -am 2 -ia /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.dat &> mosaikassembler-runlog.txt
+
+
+PROBLEM:
+
+GOT bad_alloc ERROR
+
+A bad_alloc() us an an exception thrown by C++ when it runs out of heap memory.
+
+    ---------------------------------------------------------------
+    MosaikAssembler beta                                 2007-06-08
+    Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+    ---------------------------------------------------------------
+    
+    Reading anchor library... finished.
+    Creating multiple sequence alignment.
+    - reading anchor endpoints
+    - locating natural contig boundaries
+      using maximum inter-contig distance of 160 bases.
+    - entire contig 1: begin: 0, end: 199501826
+    - creating 1 contig.
+    - reading sequences belonging to contig region: begin: 0, end: 199501826
+      sequences in alignment vector: 14121
+    - aligning sequences... finished.
+    Writing contig: CHR3.C1
+    contig start: 0, contig end: 199501826
+    terminate called after throwing an instance of 'std::bad_alloc'
+      what():  St9bad_alloc
+
+
+SOLUTION:
+
+    WAS GOING TO REPORT AS A BUG BUT FOUND THAT WHEN RUN ON CLUSTER NODE IT WORKED:
+    
+    BUG REPORTING
+    http://bioinformatics.bc.edu/bugs/enter_bug.cgi?product=Mosaik
+    syoung@med.miami.edu
+    stuart
+    
+    RUN ON CLUSTER NODE
+    
+    
+    emads mosaikassembler.sh
+    
+        #/bin/sh                                                                                                                                                                          
+        /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAssembler -in /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.aligned.dat -af hd2-demo_am2.ace -od /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3 -am 2 -ia /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/chr3.dat &> /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/mosaikassembler-runlog.txt
+
+    qsub -q psmall mosaikassembler.sh
+
+        ---------------------------------------------------------------
+        MosaikAssembler beta                                 2007-06-08
+        Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+        ---------------------------------------------------------------
+        
+        Reading anchor library... finished.
+        Creating multiple sequence alignment.
+        - reading anchor endpoints
+        - locating natural contig boundaries
+          using maximum inter-contig distance of 160 bases.
+        - entire contig 1: begin: 0, end: 199501826
+        - creating 1 contig.
+        - reading sequences belonging to contig region: begin: 0, end: 199501826
+          sequences in alignment vector: 14121
+        - aligning sequences... finished.
+        Writing contig: CHR3.C1
+        contig start: 0, contig end: 199501826
+        - creating anchor phred file.
+        - total assembly algorithm time: 8.930 s (1581.299 sequences / s)
+        - total sequences: 14121
+        MosaikAssembler (total time): 176.590 s.
+
+
+GENERATED .ace FILE AND .phd FILE:
+
+    edit_dir/hd2-demo_am2.ace
+    phd_dir/MosaikAnchor.C1.scf.phd.1
+
+
+RAN SNP CALLING TO GENERATE .bas FILE:   
+# Look for SNPs.
+# convert fasta sequence files into binary sequence archive (BAS) file
+    
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/fasta2Bas --fastaDna /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.sff.fasta --fastaQual /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.sff.fasta.qual --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.bas
+
+OK
+
+
+# CONVERTED THE .ace FILE INTO A .baa FILE
+# convert ace assembly file into binary assembly archive (BAA) file
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/ace2Baa --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/edit_dir/hd2-demo_am2.ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.baa
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/ace2Baa --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/edit_dir/hd2-demo_am2.ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.baa
+contigBlockOffset=46
+numberContigReads=14122 was written at 46
+readIndexOffset=600240821 written at 50
+contigIndexOffset=600819811
+
+real    3m55.913s
+user    3m42.059s
+sys     0m10.677s
+
+GENERATED THE .baa FILE
+
+-rw-r--r-- 1 syoung bioinfo  600819831 Jan 22 02:52 hd2-demo.baa
+
+
+# RUN PolyBayes
+# run short-read polybayes to search SNPs
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/pbShort --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.baa --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.bas --tam /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.tam --ts single --anchor --Q1 15 --Q2 40 --cache
+
+**************    RUNNING Thu Jan 22 17:42:16 EST 2009
+
+    conBlockOffset=46 assBlockOffset=9 conIndexOffset=600819811
+     numberAssemblyReads=14122
+     assemblyNameCstyleLength=8
+     assemblyNameCstyle=ASSEMBLY
+    reading 1 contigs from contig index offset:600819811
+    READ contig:CHR3.C1
+    contigs:
+      contig=CHR3.C1
+    ...
+        template=CHR3.C1 A(0.9999) C(3.33333e-05) G(3.33333e-05) T(3.33333e-05)
+        template=single A(3.33333e-06) C(3.33333e-06) G(3.33333e-06) T(0.99999)
+        template=CHR3.C1 A(3.33333e-05) C(3.33333e-05) G(0.9999) T(3.33333e-05)
+        template=single A(0.9999) C(3.33333e-05) G(3.33333e-05) T(3.33333e-05)
+    
+    real    9m7.668s
+    user    8m34.624s
+    sys     0m24.673s
+
+
+
+# ADD PolyBayes PREDICTIONS TO A NEW .ace FILE
+# convert assembly archive plus read archvie plus SNP markups to ace format assembly file with SNP tags
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/baa2Ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.baa --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.bas --tam /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.tam --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/edit_dir/hd2-demo_am2_snp.ace &> baa2Ace-runlog.txt
+
+
+[syoung@kronos chr3]$ time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/baa2Ace --baa /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.baa --bas /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.bas --tam /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/hd2-demo.tam --ace /nethome/syoung/base/pipeline/nimblegen-sff/chromosomes/chr3/edit_dir/hd2-demo_am2_snp.ace &> baa2Ace-runlog.txt
+
+real    9m34.110s
+user    2m8.735s
+sys     1m2.484s
+
+WHICH GENERATED THE NEW .ace FILE:
+
+edit_dir/hd2-demo_am2_snp.ace
+
+-rw-r--r-- 1 syoung bioinfo 968M Jan 22 18:02 hd2-demo_am2_snp.ace
+
+
+
+</entry>
+
+
+
+<entry [Mon Jan 19 23:32:12 EST 2009] RAN pyrobayes/mosaik/polybayes PIPELINE WITH NIMBLEGEN SFF DATA ON solexa>
+
+
+
+
+1. RUN pyrobayes ON EACH .SFF FILE 
+
+INPUT FILES:
+/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff
+/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff
+/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff
+/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff 
+
+FILE 1. GENERATE AND RUN SHELL SCRIPT
+-------------------------------------
+cd /nethome/syoung/base/pipeline/nimblegen-sff
+emacs pyrobayes-1.sh
+
+#/bin/sh    
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff -r hd2-FLR2L3301-
+    
+RUN SHELL SCRIPT
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/pyrobayes-1.sh
+
+
+FILE 2. GENERATE AND RUN SHELL SCRIPT
+-------------------------------------
+emacs pyrobayes-2.sh
+
+#/bin/sh    
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff -r hd2-FLR2L3302-
+
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/pyrobayes-2.sh
+
+FILE 3. GENERATE AND RUN SHELL SCRIPT
+-------------------------------------
+emacs pyrobayes-3.sh
+
+#/bin/sh    
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff -r hd2-FLTZPLR01-
+
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/pyrobayes-3.sh
+
+FILE 4. GENERATE AND RUN SHELL SCRIPT
+-------------------------------------
+emacs pyrobayes-4.sh
+
+#/bin/sh    
+
+time /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff -r hd2-FLTZPLR02-
+
+/usr/local/bin/qsub -q psmall /nethome/syoung/base/pipeline/nimblegen-sff/pyrobayes-4.sh
+
+
+
+1. USE run-polybayes.pl TO RUN pyrobayes/mosaik/polybayes
+
+cd /nethome/syoung/base/pipeline/nimblegen-sff
+
+
+emacs run-polybayes.sh
+
+#/bin/sh
+
+/nethome/syoung/base/bin/nextgen/run-polybayes.pl \
+--inputfiles /nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3301.sff.fasta,/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_1/sff/FLR2L3302.sff.fasta,/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR01.sff.fasta,/nethome/syoung/base/pipeline/nimblegen-sff/hd2_demo_data_sff/run_2/sff/FLTZPLR02.sff.fasta \
+--reference human-genome \
+--name hd2-demo \
+--outputdir /nethome/syoung/base/pipeline/nimblegen-sff
+
+
+
+qsub -q psmall run-polybayes.sh
+
+************** RUNNING Tue Jan 20 14:02:45 EST 2009
+6368.kronos.ccs.miami.edu
+
+
+
+
+
+
+DEMO ARGUMENTS CONVERTED INTO VARIABLE NAMES:
+
+    # Base call the 454 reads using PyroBayes
+    # Note: just call 50000 reads for now
+    $polybayes_bindir/PyroBayes -i $outputdir/$name.sff -n 50000 -r EColi-
+    
+    # Build a Mosaik Read Archive frome the fasta/qual files
+    $polybayes_bindir/MosaikBuild -seq $outputdir/$name.sff.fasta -qual $outputdir/$name.sff.fasta.qual -out $outputdir/$name.dat
+    
+    # Align the base called reads to the E. coli K12 reference genome
+    # Require that 95% of each read aligns
+    # Require that each read has only 2% mismatches
+    $polybayes_bindir/MosaikAligner -in $outputdir/$name.dat -out $outputdir/$name.aligned.dat -anchors $outputdir/$reference.fasta -oa $outputdir/$reference.dat -hs 30 -mmp .02 -minp 0.95
+    
+    # Assemble the reads
+    $polybayes_bindir/MosaikAssembler -in $outputdir/$name.aligned.dat -af $name_am2.ace -od $outputdir -am 2 -ia $outputdir/$reference.dat
+    
+    # Look for SNPs.
+    # convert fasta sequence files into binary sequence archive (BAS) file
+    $polybayes_bindir/fasta2Bas --fastaDna $outputdir/$name.sff.fasta --fastaQual $outputdir/$name.sff.fasta.qual --bas $outputdir/$name.bas
+    
+    # convert ace assembly file into binary assembly archive (BAA) file
+    $polybayes_bindir/ace2Baa --ace $outputdir/edit_dir/$name_am2.ace --baa $outputdir/$name.baa
+    
+    # run short-read polybayes to search SNPs
+    $polybayes_bindir/pbShort --baa $outputdir/$name.baa --bas $outputdir/$name.bas --tam $outputdir/$name.tam --ts single --anchor --Q1 15 --Q2 40 --cache
+    
+    # convert assembly archive plus read archvie plus SNP markups to ace format assembly file with SNP tags
+    $polybayes_bindir/baa2Ace --baa $outputdir/$name.baa --bas $outputdir/$name.bas --tam $outputdir/$name.tam --ace $outputdir/edit_dir/$name_am2_snp.ace
+    
+
+
+
+
+
+
+NB: BASED ON ~/base/apps/polybayes/BetaRelease64Bit/scripts/Run454
+
+    # Base call the 454 reads using PyroBayes
+    # Note: just call 50000 reads for now
+    ../bin/PyroBayes -i ../data/454/E.coli.sff -n 50000 -r EColi-
+    
+    # Build a Mosaik Read Archive frome the fasta/qual files
+    ../bin/MosaikBuild -seq ../data/454/E.coli.sff.fasta -qual ../data/454/E.coli.sff.fasta.qual -out ../data/454/E.coli.dat
+    
+    # Align the base called reads to the E. coli K12 reference genome
+    # Require that 95% of each read aligns
+    # Require that each read has only 2% mismatches
+    ../bin/MosaikAligner -in ../data/454/E.coli.dat -out ../data/454/E.coli.aligned.dat -anchors ../data/454/E.coli.genome.fasta -oa ../data/454/E.coli.genome.dat -hs 30 -mmp .02 -minp 0.95
+    
+    # Assemble the reads
+    ../bin/MosaikAssembler -in ../data/454/E.coli.aligned.dat -af E.coli_am2.ace -od ../data/454 -am 2 -ia ../data/454/E.coli.genome.dat
+    
+    # Look for SNPs.
+    # convert fasta sequence files into binary sequence archive (BAS) file
+    ../bin/fasta2Bas --fastaDna ../data/454/E.coli.sff.fasta --fastaQual ../data/454/E.coli.sff.fasta.qual --bas ../data/454/E.coli.bas
+    
+    # convert ace assembly file into binary assembly archive (BAA) file
+    ../bin/ace2Baa --ace ../data/454/edit_dir/E.coli_am2.ace --baa ../data/454/E.coli.baa
+    
+    # run short-read polybayes to search SNPs
+    ../bin/pbShort --baa ../data/454/E.coli.baa --bas ../data/454/E.coli.bas --tam ../data/454/E.coli.tam --ts single --anchor --Q1 15 --Q2 40 --cache
+    
+    # convert assembly archive plus read archvie plus SNP markups to ace format assembly file with SNP tags
+    ../bin/baa2Ace --baa ../data/454/E.coli.baa --bas ../data/454/E.coli.bas --tam ../data/454/E.coli.tam --ace ../data/454/edit_dir/E.coli_am2_snp.ace
+    
+
+[syoung@kronos bin]$ ./PyroBayes --help
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+PyroBayes beta (v0.9)                                  07-16-2007
+Aaron R. Quinlan (quinlaaa@bc.edu)                               
+Marth Laboratory (http://bioinformatics.bc.edu/marthlab)         
+Department of Biology                                            
+Boston College                                                   
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+USAGE: 
+
+   ./PyroBayes  [-r <string>] [-m <int>] [-n <int>] [-o <string>] -i
+                <string> [--] [-v] [-h]
+
+
+Where: 
+
+   -r <string>,  --readPrefix <string>
+     (value required)  Prefix to add to each read from the sff file.  Helps
+     to identify reads in an assembly
+
+   -m <int>,  --mapFile <int>
+     (value required)  Flag Determining Whether or Not the Flow to Base Map
+     File Should Be Written
+
+   -n <int>,  --numTraces <int>
+     (value required)  Number of Traces to Process in this file
+
+   -o <string>,  --outStub <string>
+     (value required)  The Stub for the output filenames
+
+   -i <string>,  --sffFile <string>
+     (required)  (value required)  SFF File To Process
+
+   --,  --ignore_rest
+     Ignores the rest of the labeled arguments following this flag.
+
+   -v,  --version
+     Displays version information and exits.
+
+   -h,  --help
+     Displays usage information and exits.
+
+
+   PyroBayes Base Caller Command Line Options
+
+[syoung@kronos bin]$ ./MosaikBuild --help
+---------------------------------------------------------------
+MosaikBuild beta                                     2007-06-08
+Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+---------------------------------------------------------------
+
+Description: builds a Mosaik sequence library from FASTA files.
+
+Usage: MosaikBuild [OPTIONS] -out <sequence library filename>
+
+Conversion:
+  -seq <FASTA sequence filename>        specifies the FASTA sequence file (req)
+  -qual <FASTA quality filename>        specifies the FASTA quality file
+  -assignQual <base quality>            specifies an assigned BQ for each base
+  -pos <FASTA base positions filename>  specifies the FASTA base positions file
+  -out <sequence library filename>      specifies the output filename (req)
+
+Help:
+  --help, -h                            shows this help text
+[syoung@kronos bin]$ ./MosaikAligner --help
+---------------------------------------------------------------
+MosaikAligner beta                                   2007-06-08
+Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+---------------------------------------------------------------
+
+Description: aligns a Mosaik sequence library.
+
+Usage: MosaikAligner -in <file> -out <file> -anchors <file> -oa <file>
+
+Alignment:
+  -in <Mosaik sequence library>     specifies the input sequence library (req)
+  -out <Mosaik sequence library>    specifies the output sequence library (req)
+  -anchors <FASTA anchor filename>  specifies the FASTA anchors file (req)
+  -oa <Mosaik anchor library>       specifies the anchor sequence library (req)
+  -hs <hash size>                   specifies the hash size, def: 20 [10 - 32]
+
+Filtering:
+  -mm <mismatches>                  specifies the # of mismatches allowed
+  -mmp <percent>                    specifies the max mismatch percentage
+                                        default: 1 [0.0 - 1.0]
+  -minp <percent>                   specifies the min alignment percentage
+                                        default: 0 [0.0 - 1.0]
+  -dp                               disables the paralog filter
+  -spt <threshold>                  specifies the paralog filter threshold
+                                        range: [0.0 - 1.0]
+Reporting:
+  -rur <filename>                   stores the unaligned reads in the specified
+                                        tab delimited file.
+Help:
+  --help, -h                        shows this help text
+
+
+
+
+[syoung@kronos bin]$ ./MosaikAssembler --help
+---------------------------------------------------------------
+MosaikAssembler beta                                 2007-06-08
+Michael Stromberg - Marth Lab, Dept. of Biology, Boston College
+---------------------------------------------------------------
+
+Description: assembles one or more Mosaik sequence libraries.
+
+Usage: MosaikAssembler [options]
+
+Assembly:
+  -in <Mosaik sequence library>      specifies the input sequence library (req)
+  -ia <Mosaik anchor library>        specifies the input anchor library (req)
+  -af <ace filename>                 specifies the ace output filename (req)
+  -od <output directory>             specifies the output assembly dir (req)
+  -micd <distance>                   specifies the max inter-contig distance
+  -ep                                enable phred file creation
+  -oc                                specifies one contig per ace file
+
+Partitioning:
+  -ps <partition size>               specifies the max contig length before
+                                         being partitioned into a new contig
+  -po <partition overlap>            specifies the amount of overlap between
+                                         two partitioned contigs
+
+  -fp                                specifies that only the first partition
+                                         should be processed
+
+Anchor Modes:
+  -am [0..2]                         enables different anchor modes
+                                     0: natural contigs 
+                                     1: cropped original anchor
+                                     2: entire original anchor (default)
+
+Help:
+  --help, -h                         shows this help text
+
+
+
+
+
+</entry>
+
+
+
+<entry [Sat Jan 19 23:32:12 EST 2009] TEST RAN WITH E.COLI DATA USING msub>
+
+
+
+1. COPY BASIC RUN SCRIPT
+
+cd /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/scripts
+cp Run454 Run454-qsub
+
+2. EDIT Run454-qsub TO ADD FULL PATHS TO BINARIES:
+
+    # Base call the 454 reads using PyroBayes
+    # Note: just call 50000 reads for now
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/PyroBayes -i /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.sff -n 50000 -r EColi-
+    
+    # Build a Mosaik Read Archive frome the fasta/qual files
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikBuild -seq /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.sff.fasta -qual /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.sff.fasta.qual -out /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.dat
+    
+    # Align the base called reads to the E. coli K12 reference genome
+    # Require that 95% of each read aligns
+    # Require that each read has only 2% mismatches
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAligner -in /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.dat -out /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.aligned.dat -anchors /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.genome.fasta -oa /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.genome.dat -hs 30 -mmp .02 -minp 0.95
+    
+    # Assemble the reads
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/MosaikAssembler -in /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.aligned.dat -af E.coli_am2.ace -od /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454 -am 2 -ia /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.genome.dat
+    
+    # Look for SNPs.
+    # convert fasta sequence files into binary sequence archive (BAS) file
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/fasta2Bas --fastaDna /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.sff.fasta --fastaQual /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.sff.fasta.qual --bas /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.bas
+    
+    # convert ace assembly file into binary assembly archive (BAA) file
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/ace2Baa --ace /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/edit_dir/E.coli_am2.ace --baa /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.baa
+    
+    # run short-read polybayes to search SNPs
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/pbShort --baa /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.baa --bas /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.bas --tam /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.tam --ts single --anchor --Q1 15 --Q2 40 --cache
+    
+    # convert assembly archive plus read archvie plus SNP markups to ace format assembly file with SNP tags
+    /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/bin/baa2Ace --baa /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.baa --bas /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.bas --tam /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/E.coli.tam --ace /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/edit_dir/E.coli_am2_snp.ace
+
+3. RAN USING qsub
+
+screen -S ecoli-polybayes
+time msub -q psmall /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/scripts/Run454-qsub
+
+# NOT NEEDED (DO OUTPUT TO STDIN.* FILES): &> /nethome/syoung/base/apps/polybayes/BetaRelease64Bit/scripts/Run454-qsub.out 
+
+
+********** RUNNING OKAY Tue Jan 20 00:15:26 EST 2009
+
+
+</entry>
+
+
+
+<entry [Sat Jan 10 11:50:12 EST 2009] DOWNLOADED PolyBayes AND RAN DEMO>
+
+
+
+1. DOWNLOADED 64BIT Beta VERSION (INCLUDES PyroBayes, Mosaik AND PolyBayes)
+
+cd /store/home/syoung/base/apps/polybayes
+
+tar xvfz marthLabBeta64bit.tar.gz 
+    BetaRelease64Bit/
+    BetaRelease64Bit/data/
+    BetaRelease64Bit/data/454/
+    BetaRelease64Bit/data/454/E.coli.genome.fasta
+    BetaRelease64Bit/data/454/E.coli.sff
+    BetaRelease64Bit/data/Illumina/
+    BetaRelease64Bit/data/Illumina/pombe_solexa.fasta.qual
+    BetaRelease64Bit/data/Illumina/pombe_solexa.fasta
+    BetaRelease64Bit/data/Illumina/pombe_chr02_region.fasta
+    BetaRelease64Bit/docs/
+    BetaRelease64Bit/docs/MosaikBetaDocumentation.pdf
+    BetaRelease64Bit/docs/PyroBayesBetaDocumentation.pdf
+    BetaRelease64Bit/docs/BetaReleaseDocumentation.pdf
+    BetaRelease64Bit/docs/PBShortBetaDocumentation.pdf
+    BetaRelease64Bit/bin/
+    BetaRelease64Bit/bin/fasta2Bas
+    BetaRelease64Bit/bin/MosaikAligner
+    BetaRelease64Bit/bin/MosaikAssembler
+    BetaRelease64Bit/bin/MosaikBuild
+    BetaRelease64Bit/bin/PyroBayes
+    BetaRelease64Bit/bin/bas2Fasta
+    BetaRelease64Bit/bin/ace2Baa
+    BetaRelease64Bit/bin/baa2Ace
+    BetaRelease64Bit/bin/pbShort
+    BetaRelease64Bit/scripts/
+    BetaRelease64Bit/scripts/Run454
+    BetaRelease64Bit/scripts/RunIllumina
+    
+
+2. RAN DEMO
+
+cd /store/home/syoung/base/apps/polybayes/BetaRelease64Bit/scripts
+time ./Run454 
+
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    PyroBayes beta (v0.9)                                  07-16-2007
+    Aaron R. Quinlan (quinlaaa@bc.edu)                               
+    Marth Laboratory (http://bioinformatics.bc.edu/marthlab)         
+    Department of Biology                                            
+    Boston College                                                   
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    Creating fasta and fasta.qual files for: ../data/454/E.coli.sff
+
+    ...
+    
+        tagObjectMode=coord
+        tagObjectType=contig
+        tagObjectName=GI|49175990|REF|NC_000913.2|.C1
+        tagType=comment
+        tagSource=PB++
+        tagLeftP=4640436
+        tagRightP=4640436
+        tagLeftU=4631817
+        tagRightU=4631817
+  
+  
+    real    7m40.185s
+    user    7m26.186s
+    sys     0m13.003s
+
+
+3. OUTPUT FILES
+
+ll -R /store/home/syoung/base/apps/polybayes/BetaRelease64Bit/data/454
+
+    total 491976
+    -rw-r--r-- 1 syoung users  22488097 Jan 10 11:56 E.coli.aligned.dat
+    -rw-r--r-- 1 syoung users  18383849 Jan 10 11:56 E.coli.baa
+    -rw-r--r-- 1 syoung users  42910392 Jan 10 11:56 E.coli.bas
+    -rw-r--r-- 1 syoung users  23517701 Jan 10 11:52 E.coli.dat
+    -rw-r--r-- 1 syoung users   2319893 Jan 10 11:56 E.coli.genome.dat
+    -rwxr-xr-x 1 syoung users   4706025 Jul 24  2007 E.coli.genome.fasta
+    -rwxr-xr-x 1 syoung users 337931556 Jul 24  2007 E.coli.sff
+    -rw-r--r-- 1 syoung users  13320119 Jan 10 11:52 E.coli.sff.fasta
+    -rw-r--r-- 1 syoung users  37572719 Jan 10 11:52 E.coli.sff.fasta.qual
+    -rw-r--r-- 1 syoung users      9275 Jan 10 11:59 E.coli.tam
+    drwxr-x--- 2 syoung users      4096 Jan 10 11:59 edit_dir
+    drwxr-x--- 2 syoung users      4096 Jan 10 11:56 phd_dir
+    
+    /store/home/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/edit_dir:
+    total 84856
+    -rw-r--r-- 1 syoung users 44362223 Jan 10 11:56 E.coli_am2.ace
+    -rw-r--r-- 1 syoung users 42421568 Jan 10 11:59 E.coli_am2_snp.ace
+    
+    /store/home/syoung/base/apps/polybayes/BetaRelease64Bit/data/454/phd_dir:
+    total 62964
+    -rw-r--r-- 1 syoung users 64400118 Jan 10 11:56 MosaikAnchor.C1.scf.phd.1
+

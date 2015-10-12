@@ -1,0 +1,77 @@
+// Copyright � The RightThing Inc. 2010. All Rights Reserved.
+
+//
+// Multi-checkbox semantics.
+//
+// @see Cel.java
+//
+// $Author: jtrow $
+// $Date: 2011-01-25 14:44:15 $
+// $Revision: 1.6 $
+//
+
+MultiCheckbox_click = function(obj, event) {
+  if (!obj.getAttribute("_disabled")) {
+    // locate dependant objects
+    var nm = obj.getAttribute("_nm");
+    var uid = obj.getAttribute("_uid");
+    var hidden = $('h' + nm + uid);
+    var altList = eval(nm + '_altList' + uid);
+    var srcList = eval(nm + '_srcList' + uid);
+    var valueList = eval(nm + '_valueList' + uid);
+    // find the next value
+    var value = hidden.value;
+    var index = -1;
+    for (var i = 0; i < valueList.length; i++) {
+      if (value == valueList[i]) {
+        index = i;
+        break;
+      }
+    }
+    index = index + 1;
+    if (index == valueList.length)
+      index = 0;
+    obj.setAttribute("_index",index);
+    // update alt, src, value
+    obj.setAttribute("title", altList[index]);
+    obj.setAttribute("src", srcList[index]);
+    hidden.value = valueList[index];
+    // fire up click handler -- but no more often than ~ once per second
+    if (event && obj.getAttribute("_onSelect")) {
+      if (obj.getAttribute("_onSelectTimeout"))
+        clearTimeout(obj._onSelectTimeout);
+      obj.setAttribute("_onSelectTimeout", setTimeout(obj.getAttribute("_onSelect") + "('" + nm + "','" + hidden.value + "', $('i" + nm + uid + "'))", 750));
+    }
+  }
+}
+
+MultiCheckbox_disable = function(obj, disabled) {
+  if (disabled)
+    obj.setAttribute("_disabled", disabled);
+  else {
+	try{
+	  obj.removeAttribute("_disabled");
+	} catch (e) {
+	  obj.setAttribute("_disabled", disabled);
+	}
+  }
+  obj.style.backgroundColor = disabled? "#E0E0E0" : "#FFFFFF"
+}
+
+MultiCheckbox_getByName = function(nm) {
+  var objs = new Array();
+  var hiddens = document.getElementsByName(nm);
+  if (hiddens) {
+    for (var i = 0; i < hiddens.length; i++) {
+      var hidden = hiddens[i];
+      if (hidden.tagName == "INPUT") {
+        var uid = hidden._uid;
+        if (typeof uid === "undefined")
+          uid = hidden.getAttribute("_uid");
+        var obj = $('i' + nm + uid);
+        objs[objs.length] = obj;
+      }
+    }
+  }
+  return objs;
+}

@@ -1,0 +1,943 @@
+agua.version.archive.1
+
+
+<entry [Fri 2012:06:01 23:43:18 EST] SHIFTED /repos/public/agua/aguadev TO /repos/private/syoung/agua>
+    
+NEW STAGING SCHEMA:
+
+syoung:aguadev  commits                         PRIVATE
+syoung:agua     builds (testing)                PRIVATE
+agua:aguadev    major,minor,patches (testing)   
+agua:agua       major,minor,patches (release)   PUBLIC
+
+SEE [Wed 2012:02:08 23:43:49 EST] BLUEPRINT: IMPLEMENTED DEVELOPMENT/PRODUCTION REPOSITORY PLAN (CHANGED)
+
+    
+</entry>
+<entry [Thu 2012:05:31 14:33:32 EST] AGUA 0.8.0-alpha+build7: +Fix: Add/remove view(feature) post-filecache>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/aguadev \
+--description "+Fix: Add/remove view(feature) post-filecache"
+
+    Created new version: 0.8.0-alpha.1+build7
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build7-6dec393.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1+build7
+
+UPLOAD agua:aguadev TO GITHUB:
+
+
+REMOVE OLD REMOTES:
+cd /repos/public/agua/aguadev
+git remote -v
+    github	git@github.com:agua/agua (fetch)
+    github	git@github.com:agua/agua (push)
+    linode	ssh://root@173.230.142.248/srv/git/public/agua/agua (fetch)
+    linode	ssh://root@173.230.142.248/srv/git/public/agua/agua (push)
+
+git remote rm github
+git remote rm linode
+
+ADD NEW REMOTES:
+
+git remote add github git@github.com:agua/aguadev
+git remote add linode ssh://root@173.230.142.248/srv/git/public/agua/aguadev
+
+
+
+</entry>
+<entry [Thu 2012:05:31 14:33:32 EST] NEW: AGUA STAGING IN public/syoung/agua>
+    
+SEE [Wed 2012:02:08 23:43:49 EST] BLUEPRINT: IMPLEMENTED DEVELOPMENT/PRODUCTION REPOSITORY PLAN
+
+RATIONALE: SEPARATE SSH KEYS FOR aguadev AND agua BECAUSE NEED TO PUT KEYFILE ON REMOTE TESTING INSTANCE
+
+NB: .gitattribute DOES WORK IF YOU CLONE A REPO
+
+I.E., THE CLONED REPO CONTAINS THE FILES EXCLUDED BY .gitattribute WHICH ARE STILL PRESENT IN YOUR SOURCE FILE SYSTEM
+
+
+        (Increment build with each iteration. When ready for patch increment, transfer to public repo /repose/public/agua/agua, I.E., agua:agua, for release)
+
+
+INSERTED NEW STAGING REPO INTO AGUA PRODUCTION LINE:
+
+0. syoung:aguadev   PRIVATE     /repos/private/syoung/agua --> /agua
+1. syoung:agua      PRIVATE     /repos/public/agua/aguadev ***** NEW ******* 
+2. agua:agua        PUBLIC      /repos/public/agua/agua
+
+PROCESS:
+
+1. DEVELOP IN syoung:aguadev (PRIVATE) AND INCREMENT BUILD
+
+2. TRANSFER BUILDS TO agua:aguadev (PUBLIC)
+    
+3. TEST BUILDS BY INSTALLING FROM syoung:agua (PRIVATE)
+
+4. ITERATE 1-3 UNTIL COMPLETE, THEN CREATE PATCH INCREMENT IN syoung:aguadev
+
+5. TRANSFER TO syoung:agua (PRIVATE)
+
+6. TRANSFER TO agua:agua (PUBLIC)
+
+</entry>
+<entry [Mon 2012:04:30 04:30:33 EST] AGUA 0.8.0-alpha+build6: +Fix: Folders delete and refresh>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Fix: Folders delete and refresh"
+
+    Created new version: 0.8.0-alpha.1+build6
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build6-a3f87ed.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1+build6
+    
+</entry>
+<entry [Tue 2012:04:17 12:59:46 EST] AGUA 0.8.0-alpha+build5: +Add: Autoload Folders pane sources>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Add: Autoload Folders pane sources"
+
+    Created new version: 0.8.0-alpha.1+build5
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build5-c66c53f.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1+build5
+
+</entry>
+<entry [Tue 2012:04:17 12:59:46 EST] AGUA 0.8.0-alpha+build4: +Add: agua.dump, RunStatus delay, Folders fileCache>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Add: agua.dump, RunStatus delay, Folders fileCache"    
+
+    Created new version: 0.8.0-alpha.1+build4
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build4-13559e8.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1+build4
+
+
+</entry>
+<entry [Tue 2012:04:17 00:23:08 EST] REINITIALISED /repos/public/agua/agua AT 0.8.0-alpha.1+build.3>
+
+DUE TO PRESENCE OF SENSITIVE FILES IN EARLIER 0.8.0 BUILDS
+
+conf/.https
+bin/sql/dump/*
+
+NOW FIRST BUILD IS 0.8.0-alpha.1+build3
+
+cd /repos/public/agua/agua
+gitlog
+    * 5e47f67 (HEAD, tag: 0.8.0-alpha.1+build3, master) First public release of Agua alpha
+
+    
+REMOTES:
+
+cd /repos/public/agua/agua
+git remote -v
+
+    github	git@github.com:agua/agua (fetch)
+    github	git@github.com:agua/agua (push)
+    linode	ssh://root@173.230.142.248/srv/git/public/agua/agua (fetch)
+    linode	ssh://root@173.230.142.248/srv/git/public/agua/agua (push)
+
+    
+</entry>
+<entry [Tue 2012:04:17 00:18:14 EST] AGUA 0.8.0-alpha.1+build.3: +Fix: Removed conf/.https>
+    
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Fix: Removed conf/.https"
+
+transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build3-9b8907b.tar.gz
+transfer.pl    version: 0.8.0-alpha.1+build3
+    
+</entry>
+
+<entry [Mon 2012:04:16 22:51:23 EST] AGUA 0.8.0-alpha.1+build.2: +Fix: Workflow status timer and index.html popup>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Fix: Workflow status timer and index.html popup"
+
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1+build2-3e090da.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1+build2
+    
+</entry>
+<entry [Thu 2012:04:12 16:54:48 EST] AGUA 0.8.0-alpha.1+build.1 REINITIALIZED : First public release of Agua alpha>
+
+SAVED OLD DIR AS
+/repos/public/agua/agua.ok
+
+
+REPOPULATED REMOTES:
+
+cd /repos/public/agua/agua
+rm -fr .git
+git init
+git remote add github git@github.com:agua/agua
+git remote add linode ssh://root@173.230.142.248/srv/git/public/agua/agua
+
+
+git add .
+git commit -a
+
+    
+    
+    
+</entry>
+<entry [Thu 2012:04:12 08:52:17 EST] AGUA 0.8.0-alpha.1+build.1: +Fix: Workflow drag-n-drop multiple fire>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Fix: Workflow drag-n-drop multiple fire"
+
+    
+</entry>
+<entry [Sat 2012:04:07 21:04:55 EST] AGUA agua.0.8.0-alpha.1: -Fix: FileManager auto-load and folders integration>
+
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--version 0.8.0-alpha.1 \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "+Ver: Alpha build zero"
+
+    Created new version: 0.8.0-alpha.1
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.8.0-alpha.1-d4001d0.tar.gz
+    transfer.pl    version: 0.8.0-alpha.1
+    
+    
+</entry>
+<entry [Wed 2012:03:21 03:23:41 EST] AGUA 0.7.5+build18: -Fix: Rename workflow missing rename stages, etc.>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "-Fix: Rename workflow missing rename stages, etc."
+
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build18-406f700.tar.gz
+    transfer.pl    version: 0.7.5+build18
+
+</entry>
+<entry [Fri 2012:03:16 02:24:29 EST] AGUA 0.7.5+build17: -Fix: Updated and fixed StarCluster plugins>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--description "-Fix: Updated and fixed StarCluster plugins"
+
+    Created new version: 0.7.5+build17
+
+</entry>
+<entry [Sun 2012:03:11 10:04:06 EST] AGUA 0.7.5+build16: -Fix: Order of current versions reversed>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Order of current versions reversed"
+    OK
+
+</entry>
+<entry [Sun 2012:03:11 09:39:05 EST] AGUA 0.7.5+build15: -Fix: Latest version not shown after install>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "-Fix: Latest version not shown after install"
+
+
+</entry>
+<entry [Sun 2012:03:11 08:54:27 EST] AGUA 0.7.5+build14: Home.setVersion parses new version from upgrade output>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Fix: Parse new version from Home.upgrade output"
+
+    Created new version: 0.7.5+build14        
+
+cd /repos/public/agua/agua
+git push
+git push --tags
+
+    OK
+</entry>
+<entry [Sun 2012:03:11 05:53:53 EST] AGUA PROD 0.7.5+build13: Added changes to history panel>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Added changes to history panel"
+    
+    Created new version: 0.7.5+build13
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build13-a5e06da.tar.gz
+    transfer.pl    version: 0.7.5+build13
+
+</entry>
+<entry [Sun 2012:03:11 05:32:37 EST] AGUA PROD 0.7.5+build12: Fixed history panel format>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Fixed history panel format"
+    
+    Created new version: 0.7.5+build12
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build12-a4a4905.tar.gz
+    transfer.pl    version: 0.7.5+build12    
+
+</entry>
+<entry [Fri 2012:03:09 13:22:59 EST] AGUA PRODUCTION 0.7.5+build11: Enabled load agua workflows in biorepository and fixed Workflow slow loading on pane open>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Enabled load agua workflows in biorepository and fixed Workflow slow loading on pane open"
+
+    Created new version: 0.7.5+build11
+    
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build11-58f8a4a.tar.gz
+    transfer.pl    version: 0.7.5+build11
+
+cd /repos/public/agua/agua
+gitlog
+    * 201d8c7 (HEAD, tag: 0.7.5+build11, master) Enabled load agua workflows in biorepository and fixed Workflow slow loading on pane open
+    * 36de16a (linode/master) Test commit.
+    * dec0d22 (tag: 0.7.5+build10, github/master) Removed 'installPerlMods' from Installer::upgrade, fixed 'locale' in agua.html
+    * c33e23e (tag: 0.7.5+build9) Added NO-CACHE pragma to agua.html
+
+COMMITTED AND PUSHED:
+
+cd /repos/public/agua/agua
+git push
+git push --tags
+
+    
+</entry>
+<entry [Thu 2012:02:23 17:35:46 EST] TRANSFERRED biorepository DEVELOPMENT TO PRODUCTION>
+
+COPIED FROM
+
+/agua/repos/public/agua/biorepository
+
+TO
+
+/repos/public/syoung/biorepository
+
+
+/agua/bin/scripts/transfer.pl \
+--repository bioapps \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua/repos/public/agua/biorepository \
+--targetrepo /repos/public/syoung/biorepository \
+--desc "Fixed bioapps.pm print to logfile (post-reboot)"
+    
+    
+COPY TO /repos/public/agua/biorepository AND PUSH:
+
+
+    
+    
+</entry>
+<entry [Thu 2012:02:23 14:20:11 EST] AGUA PRODUCTION 0.7.5+build10: Removed 'installPerlMods' from Installer::upgrade, fixed 'locale' in agua.html>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Removed 'installPerlMods' from Installer::upgrade, fixed 'locale' in agua.html"
+
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build10-0c16a0f.tar.gz
+    transfer.pl    version: 0.7.5+build10
+
+
+</entry>
+<entry [Thu 2012:02:23 05:58:37 EST] AGUA PRODUCTION 0.7.5+build9: Added NO-CACHE pragma to agua.html>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Added NO-CACHE pragma to agua.html"
+
+    transfer.pl    repofile: /home/syoung/RELEASE/agua.0.7.5+build9-57de704.tar.gz
+    transfer.pl    version: 0.7.5+build9
+    
+</entry>
+<entry [Wed 2012:02:22 16:45:09 EST] AGUA PRODUCTION 0.7.5+build8: Fixed Home Pane progress panel CSS WIDTH AND HEIGHT>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Fixed Home Pane progress panel CSS WIDTH AND HEIGHT"
+
+    Created new version: 0.7.5+build8
+    
+</entry>
+<entry [Wed 2012:02:22 13:15:59 EST] AGUA PRODUCTION 0.7.5+build6: Fixed Home Pane progress panel>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Fixed Home Pane progress panel"
+
+    New version: 0.7.5+build6
+    
+    
+    
+</entry>
+<entry [Tue 2012:02:21 22:55:56 EST] REWIND OF AGUA PRODUCTION 0.7.5+build5: REMOVED DBI, ETC. FROM PERL MODULES LIST>
+
+1. CREATE VERSION AND RELEASE
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Removed DBI, etc. from perl mods list"
+       
+    Created new version: 0.7.5+build5
+
+
+2. PUSH TO REMOTE
+
+cd /repos/public/agua/agua
+git push
+git push --tags
+
+    
+</entry>
+<entry [Tue 2012:02:21 14:22:02 EST] AGUA PRODUCTION 0.7.5+build6: FIXED install.log FILE>
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Moved install.log to /tmp to unblock checkout"
+       
+    Created new version: 0.7.5+build7
+
+
+PUSH TO REMOTE:
+
+cd /repos/public/agua/agua
+git push
+git push --tags
+
+    
+</entry>
+<entry [Tue 2012:02:21 10:23:00 EST] CREATED agua.pm BUILD 0.7.5+build5 "Completed fix automated upgrade of agua">
+
+SHADOWS agua BUILD OF SAME NAME
+
+1. COPIED FROM DEV TO PROD
+
+rm -fr /repos/public/agua/biorepository/agua/agua
+cp -r /agua/repos/public/agua/biorepository/agua/agua /repos/public/agua/biorepository/agua
+
+
+2. CREATED VERSION AND PUSHED
+
+/agua/bin/scripts/version.pl \
+--version 0.7.5+build5 \
+--repodir /repos/public/agua/biorepository \
+--description "Completed fix automated upgrade of agua"
+
+    Created new version: 0.7.5+build5
+
+cd /repos/public/agua/biorepository
+sudo su
+git push
+git push --tags
+    
+    
+</entry>
+<entry [Tue 2012:02:21 13:20:33 EST] CREATED auga PRODUCTION 0.7.5+build5 "Completed fix automated upgrade of agua" WITH transfer.pl>
+
+TRANSFER COMPLETED agua AUTOMATED UPGRADE TO PRODUCTION
+
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Completed fix automated upgrade of agua"
+    
+    Created new version: 0.7.5+build5
+
+PUSH TO REMOTE:
+
+cd /repos/public/agua/agua
+    Everything up-to-date
+
+git push --tags
+Username: 
+Password: 
+Counting objects: 1, done.
+Writing objects: 100% (1/1), 189 bytes, done.
+Total 1 (delta 0), reused 0 (delta 0)
+To https://github.com/agua/agua.git
+ * [new tag]         0.7.5+build5 -> 0.7.5+build5
+
+    
+</entry>
+<entry [Tue 2012:02:21 12:46:17 EST] CREATED transfer.pl TO AUTOMATE DEV-TO-PROD VERSION TRANSFER>
+    
+/agua/bin/scripts/transfer.pl \
+--repository agua \
+--outputdir /home/syoung/RELEASE \
+--versiontype build \
+--sourcerepo /agua \
+--targetrepo /repos/public/agua/agua \
+--desc "Uncommented clone/push, perlmods, etc."
+
+
+    
+</entry>
+<entry [Tue 2012:02:21 10:16:36 EST] CREATED 0.7.5+build4 UNCOMMENTED Install::install CLONE/PUSH, ETC.>
+
+1. CREATE VERSION AND RELEASE
+
+/agua/bin/scripts/version.pl --versiontype build --repodir /agua --desc "Uncommented clone/push, perlmods, etc."
+
+    New version: 0.7.5+build4
+
+/agua/bin/scripts/archive.pl \
+ --name agua \
+ --repodir /agua \
+ --outputdir /home/syoung/RELEASE
+
+   -rw-rw-r-- 1 syoung syoung 40M 2012-02-21 10:30 /home/syoung/RELEASE/agua.0.7.5+build4-46f90a7.tar.gz
+
+
+2. EXPANDED ARCHIVE TO PRODUCTION REPO
+
+EXPAND ARCHIVE
+
+cp /home/syoung/RELEASE/agua.0.7.5+build4-46f90a7.tar.gz /tmp
+cd /tmp
+rm -fr /tmp/agua
+tar xvfz agua.*.tar.gz
+rm -fr agua.*.tar.gz
+cd /tmp/agua
+
+COPIED TO PRODUCTION
+
+sudo su
+cd /repos/public/agua/agua
+rm -fr /repos/public/agua/agua/*
+cp -pr /tmp/agua/* /repos/public/agua/agua
+
+
+3. CREATE NEW PRODUCTION VERSION AND PUSH
+
+/agua/bin/scripts/version.pl \
+--version 0.7.5+build4 \
+--repodir /repos/public/agua/agua \
+--description "Uncommented clone/push, perlmods, etc."
+
+git push
+git push --tags
+    
+    
+</entry>
+<entry [Tue 2012:02:21 09:59:19 EST] CREATED 0.7.5+build3 AFTER ADD CONF FILE SHIFT TO agua.pm>
+
+1. CREATE VERSION AND RELEASE
+
+/agua/bin/scripts/version.pl --version 0.7.5+build3 --repodir /agua --desc "Added conf file shift to agua.pm"
+
+    version: 0.7.5+build3
+
+/agua/bin/scripts/archive.pl \
+ --name agua \
+ --repodir /agua \
+ --outputdir /home/syoung/RELEASE
+
+    -rw-rw-r-- 1 syoung syoung 40M 2012-02-21 10:02 /home/syoung/RELEASE/agua.0.7.5+build3-eaf6245.tar.gz
+
+
+2. EXPANDED ARCHIVE TO PRODUCTION REPO
+
+EXPAND ARCHIVE
+cp /home/syoung/RELEASE/agua.0.7.5+build3-eaf6245.tar.gz /tmp
+cd /tmp
+rm -fr /tmp/agua
+tar xvfz agua.*.tar.gz
+rm -fr agua.*.tar.gz
+cd /tmp/agua
+
+COPIED TO PRODUCTION
+
+sudo su
+cd /repos/public/agua/agua
+rm -fr /repos/public/agua/agua/*
+cp -pr /tmp/agua/* /repos/public/agua/agua
+
+
+3. CREATE NEW PRODUCTION VERSION AND PUSH
+
+/agua/bin/scripts/version.pl \
+--version 0.7.5+build3 \
+--repodir /repos/public/agua/agua \
+--description "Added conf file shift to agua.pm"
+
+git push
+    OK
+git push --tags
+    OK
+git describe --abbrev=0 --tags
+    0.7.5+build3
+cd /repos/public/agua/agua
+gitlog
+    * a43ae4e (HEAD, origin/master, origin/HEAD, master) [0.7.5+build3] Added conf file shift to agua.pm
+    * ae3e8b0 (tag: 0.7.5+build3) [0.7.5+build2] After merge branch
+    *   b2b82df (tag: 0.7.5+build2, linode/master) Merge branch 'master' of ssh://173.230.142.248/srv/git/agua
+    |\  
+    | * 7170238 empty first commit
+    * c4680b1 [0.7.5+build1] Fixed workflow stages insert and parameter checking (Stages.checkStages and ParameterRow.checkFile)
+    * a624b9a (tag: 0.7.5+build1) [0.7.3] Completed bioapps.pm installer
+    * 7d7ca91 (tag: 0.7.3) First commit.
+
+
+</entry>
+<entry [Sun 2012:02:19 21:34:45 EST] CREATED 0.7.5+build2 AFTER FIX Stages.checkStages AND ParameterRow.checkFile>
+
+1. CREATED VERSION AND ARCHIVE
+
+/agua/bin/scripts/version.pl --versiontype patch --repodir /agua --desc "Fixed workflow stages insert and parameter checking (Stages.checkStages and ParameterRow.checkFile)"
+
+    New version: 0.7.5
+
+/agua/bin/scripts/archive.pl \
+ --name agua \
+ --repodir /agua \
+ --outputdir /home/syoung/RELEASE
+
+    git archive --format=tar --prefix=agua/ HEAD | gzip > /home/syoung/RELEASE/agua.0.7.5-9fe32a3.tar.gz
+    
+    -rw-rw-r-- 1 syoung syoung 40M 2012-02-19 22:06 /home/syoung/RELEASE/agua.0.7.5-9fe32a3.tar.gz
+
+
+2. ADDED A BUILD AFTER REMOVING UNNECCESSARY FILES
+
+/agua/bin/scripts/version.pl --versiontype build --repodir /agua --desc "Cleaned up unnecessary files"
+
+    version: 0.7.5+build1
+
+/agua/bin/scripts/archive.pl \
+ --name agua \
+ --repodir /agua \
+ --outputdir /home/syoung/RELEASE
+
+    /home/syoung/RELEASE/agua.0.7.5+build1-8a98c09.tar.gz
+
+
+3. COPIED FILES ONLY TO TEMP DIR
+
+cp /home/syoung/RELEASE/agua.0.7.5+build1-8a98c09.tar.gz /tmp
+cd /tmp
+tar xvfz agua.0.7.5+build1-8a98c09.tar.gz
+cd /tmp/agua
+
+
+4. REMOVED EXISTING FILES AND COPIED OVER CLONE
+
+sudo su
+cd /repos/public/agua
+rm -fr *
+cp -pr /tmp/agua
+
+
+5. CREATED VERSION
+
+
+/agua/bin/scripts/version.pl \
+--version 0.7.5+build1 \
+--repodir /repos/public/agua/agua \
+--description "Fixed workflow stages insert and parameter checking (Stages.checkStages and ParameterRow.checkFile)"
+
+    Created new version: 0.7.5+build1
+
+6. CLEANED UP 'MERGED' TAGS ON REMOTE
+
+cd /repos/public/agua/agua
+git tag -d 0.6.0
+git push origin :refs/tags/0.6.0
+
+    To https://github.com/agua/agua.git
+     - [deleted]         0.6.0
+
+git tag -d 0.7.0
+git push origin :refs/tags/0.7.0
+    OK
+
+git tag -d 0.7.1
+git push origin :refs/tags/0.7.1
+    OK
+
+
+7. ADDED BUILD AFTER MERGE WITH REMOTE
+
+gitlog
+*   b2b82df (HEAD, origin/master, origin/HEAD, linode/master, master) Merge bran
+|\  
+| * 7170238 empty first commit
+* c4680b1 [0.7.5+build1] Fixed workflow stages insert and parameter checking (St
+* a624b9a (tag: 0.7.5+build1) [0.7.3] Completed bioapps.pm installer
+* 7d7ca91 (tag: 0.7.3) First commit.
+
+/agua/bin/scripts/version.pl --versiontype build --repodir /repos/public/agua/agua --desc "After merge branch"
+
+    New version: 0.7.5+build2
+
+git push
+    Username: 
+    Password: 
+    Counting objects: 5, done.
+    Compressing objects: 100% (2/2), done.
+    Writing objects: 100% (3/3), 290 bytes, done.
+    Total 3 (delta 1), reused 0 (delta 0)
+    To https://github.com/agua/agua.git
+       b2b82df..ae3e8b0  master -> master
+
+git push --tags
+    Counting objects: 1, done.
+    Writing objects: 100% (1/1), 176 bytes, done.
+    Total 1 (delta 0), reused 0 (delta 0)
+    To https://github.com/agua/agua.git
+     * [new tag]         0.7.5+build2 -> 0.7.5+build2
+
+8. PUSHED TO GITHUB
+    OK
+
+
+</entry>
+<entry [Sun 2012:02:08 21:34:45 EST] CLONED 0.7.4 TO A HOLDING AREA>
+
+
+ON AQUARIUS-8F2:
+
+mkdir /agua/0.7.4
+cd /agua/0.7.4
+git clone https://github.com/agua/agua.git
+    VERY FAST
+    Initialized empty Git repository in /agua/0.7.4/agua/.git/
+    remote: Counting objects: 9705, done.
+    remote: Compressing objects: 100% (7757/7757), done.
+    remote: Total 9705 (delta 1499), reused 9671 (delta 1465)
+    Receiving objects: 100% (9705/9705), 40.39 MiB | 17.19 MiB/s, done.
+    Resolving deltas: 100% (1499/1499), done.
+    Checking out files: 100% (8614/8614), done.
+
+root@ip-10-90-238-23:/agua/0.7.4/agua# ll
+    drwxr-xr-x 8 root root 4.0K 2012-02-08 22:08 bin
+    drwxr-xr-x 2 root root 4.0K 2012-02-08 22:08 cgi-bin
+    drwxr-xr-x 2 root root 4.0K 2012-02-08 22:08 conf
+    drwxr-xr-x 8 root root 4.0K 2012-02-08 22:08 .git
+    drwxr-xr-x 5 root root 4.0K 2012-02-08 22:08 html
+    drwxr-xr-x 6 root root 4.0K 2012-02-08 22:08 lib
+    -rw-r--r-- 1 root root 1.1K 2012-02-08 22:08 LICENSE
+    -rw-r--r-- 1 root root 4.8K 2012-02-08 22:08 README
+    -rw-r--r-- 1 root root    5 2012-02-08 22:08 VERSION
+
+
+
+
+/agua/0.6-241-d4878b2/bin/scripts/../logic/ops.pl \
+bioapps install \
+--owner syoung \
+--installdir /agua/0.7.4/bioapps \
+--repository bioapps \
+--logfile /tmp/agua-bioapps. install.log \
+--opsdir /agua/0.7.4/repos/public/biorepository/syoung/bioapps
+
+ll /agua/0.6
+
+
+    
+</entry>
+<entry [Wed 2012:02:08 14:30:02 EST] agua VERSION 0.7.3 AND VERSION 0.7.4: TESTING AUTOINSTALL bioapps AND biorepository>
+
+1. CREATED ARCHIVE FILE FOR VERSION 0.7.4    
+    
+/agua/0.6/bin/scripts/archive.pl \
+--name agua \
+--repodir /agua/0.6 \
+--outputdir /home/syoung/RELEASE
+
+
+2. UNZIPPED ARCHIVE TO temp AND CONFIRMED FILES
+
+cd /home/syoung/RELEASE/0.6/temp/0.6
+ll
+    drwxrwxr-x 8 syoung syoung 4096 2012-02-08 13:44 bin/
+    drwxrwxr-x 2 syoung syoung 4096 2012-02-08 13:44 cgi-bin/
+    drwxrwxr-x 2 syoung syoung 4096 2012-02-08 13:44 conf/
+    drwxrwxr-x 6 syoung syoung 4096 2012-02-08 13:44 html/
+    drwxrwxr-x 6 syoung syoung 4096 2012-02-08 13:44 lib/
+    -rw-rw-r-- 1 syoung syoung 1090 2012-02-08 13:44 LICENSE
+    -rw-rw-r-- 1 syoung syoung 4845 2012-02-08 13:44 README
+    -rw-rw-r-- 1 syoung syoung    3 2012-02-08 13:44 VERSION
+
+
+
+3. TRANSFERRED FILES TO /repose STAGING AREA:
+
+cd /repos/public/agua
+rm -fr *
+cp -pr /home/syoung/RELEASE/0.6/temp/0.6/* .
+
+... REMOVED PASSWORDS, TOKENS, ETC.
+
+
+
+4. CREATED VERSION 0.7.3
+
+/agua/0.6/bin/scripts/version.pl \
+--repodir /repos/public/agua \
+--versiontype patch \
+--description "Third patch increment"
+
+    New version: 0.7.3
+
+
+5. VERIFIED NEW TAG
+
+git log --oneline --decorate --graph
+
+    * 8a88e7d (HEAD, master) [0.7.3] Third patch increment
+    * 1ad6650 (tag: 0.7.3, github/master) [0.7.2] Second patch increment
+    * 5c6fd28 (tag: 0.7.2, tag: 0.7.1) [0.7.1] First patch increment
+    ...
+
+
+... AND CONTENTS OF VERSION FILE:
+
+cat /repos/public/agua/VERSION
+    0.7.3
+
+    
+6. PUSHED REPO AND TAGS TO GITHUB agua USER agua REPO
+
+cd /repos/public/agua
+git push github master
+    Counting objects: 107, done.
+    Compressing objects: 100% (39/39), done.
+    Writing objects: 100% (55/55), 97.95 KiB, done.
+    Total 55 (delta 16), reused 47 (delta 12)
+    To git@github.com:agua/agua
+       1ad6650..8a88e7d  master -> master
+
+git push github master --tags
+
+    Counting objects: 1, done.
+    Writing objects: 100% (1/1), 176 bytes, done.
+    Total 1 (delta 0), reused 0 (delta 0)
+    To git@github.com:agua/agua
+     * [new tag]         0.7.3 -> 0.7.3
+   
+
+7. CREATED VERSION 0.7.4
+
+/agua/0.6/bin/scripts/version.pl \
+--repodir /repos/public/agua \
+--versiontype patch \
+--description "Fourth patch increment"
+
+    New version: 0.7.4
+
+
+8. VERIFIED NEW TAG
+
+git log --oneline --decorate --graph
+
+
+cat /repos/public/agua/VERSION
+    0.7.4
+
+    
+9. PUSHED REPO AND TAGS TO GITHUB agua USER agua REPO
+
+cd /repos/public/agua
+git push github master
+git push github master --tags
+
+
+</entry>

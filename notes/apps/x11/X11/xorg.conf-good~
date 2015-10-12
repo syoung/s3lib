@@ -1,0 +1,60 @@
+
+Section "Screen"
+	Identifier	"Default Screen"
+	DefaultDepth	24
+	SubSection "Display"
+		Virtual	2517 1950
+	EndSubSection
+EndSection
+
+Section "Module"
+	Load	"glx"
+EndSection
+
+Section "Device"
+	Identifier	"Default Device"
+	Driver	"fglrx"
+EndSection
+
+
+Section "Device"
+ Identifier "Device[SISUSBVGA]"
+ VendorName "SiS" # Value does not matter
+ BoardName "SiS" # Value does not matter
+ Driver "sisusb"
+EndSection
+-
+Section "Monitor"
+ Identifier "Monitor[SISUSBVGA]"
+ VendorName "Monitor Vendor" # value does not matter
+ ModelName "Monitor Model" # value does not matter
+ VertRefresh 50-75
+ HorizSync 30-90
+EndSection
+
+Section "Screen"
+ Identifier "Screen[SISUSBVGA]"
+ Device "Device[SISUSBVGA]"
+ Monitor "Monitor[SISUSBVGA]"
+ DefaultDepth 16
+ SubSection "Display"
+  Depth 16
+  Modes "1024x768" "800x600" "640x480"
+ EndSubSection
+ SubSection "Display"
+  Depth 8
+  Modes "1024x768" "800x600" "640x480"
+ EndSubSection
+ SubSection "Display"
+  Depth 24
+  Modes "1024x768" "800x600" "640x480"
+ EndSubSection
+EndSection
+
+Section "ServerLayout"
+        Identifier      "Default Layout"
+        Screen 0 "Default Screen"
+        Screen 1 "Screen[SISUSBVGA]" RightOf "Default Screen"
+        InputDevice     "Generic Keyboard"
+        InputDevice     "Configured Mouse"
+EndSection

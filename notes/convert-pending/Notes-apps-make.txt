@@ -1,0 +1,78 @@
+Notes-apps-make.txt
+
+
+</entry>
+
+
+
+<entry [Sun Jan  2 02:38:31 EST 2011] EXAMPLE USING perl Build.PL>
+
+
+
+
+perl Build.PL
+    Creating new 'MYMETA.yml' with configuration results
+    Creating new 'Build' script for 'Algorithm-C3' version '0.08'
+
+[root@ip-10-127-158-202 Algorithm-C3-0.08]# ./Build
+    Building Algorithm-C3
+
+[root@ip-10-127-158-202 Algorithm-C3-0.08]# ./Build test
+    t/000_load.t ..................... ok   
+    t/001_merge.t .................... ok   
+    t/002_merge.t .................... ok   
+    t/003_merge.t .................... ok   
+    t/004_merge.t .................... ok   
+    t/005_order_disagreement.t ....... ok   
+    t/006_complex_merge.t ............ ok     
+    t/007_cached_merge.t ............. ok     
+    t/008_cached_merge_unordered.t ... ok     
+    t/009_dbic_merge.t ............... ok   
+    t/010_complex_merge_classless.t .. ok     
+    t/011_infinite_loop.t ............ ok   
+    t/pod.t .......................... skipped: Test::Pod 1.14 required for testing POD
+    t/pod_coverage.t ................. skipped: Test::Pod::Coverage 1.04 required for testing POD coverage
+    All tests successful.
+    Files=14, Tests=77,  1 wallclock secs ( 0.00 usr +  0.00 sys =  0.00 CPU)
+    Result: PASS
+
+[root@ip-10-127-158-202 Algorithm-C3-0.08]# ./Build install
+    Building Algorithm-C3
+    Installing /usr/local/lib/perl5/site_perl/5.8.9/Algorithm/C3.pm
+    Installing /usr/local/share/man/man3/Algorithm::C3.3
+
+
+
+</entry>
+
+
+
+<entry [Thu Mar  4 12:42:07 EST 2010] USE 'perl Makefile.PL PREFIX=LOCALPATH' TO make TO A LOCAL DIRECTORY>
+
+
+
+SEE
+http://search.cpan.org/~kwilliams/Module-Build-0.2806/lib/Module/Build/Cookbook.pm
+
+
+cd /nethome/syoung/base/pipeline/perlmods/IPC-Run-0.84/IPC-Run-0.84
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+make install
+
+cd /nethome/syoung/base/pipeline/perlmods/Date-Manip-5.56
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+#make install # --didn't work properly so copied manually
+
+cp -r /nethome/syoung/base/pipeline/perlmods/Date-Manip-5.56/blib/lib/Date /nethome/bioinfo/apps/agua/0.4/lib/external
+
+# OK
+
+
+cd /nethome/syoung/base/pipeline/perlmods/LSF-0.9/LSF-0.9
+perl Makefile.PL PREFIX=/nethome/bioinfo/apps/agua/0.4/lib/external
+make
+make install
+
+

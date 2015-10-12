@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0036)http://mad-scientist.us/juniper.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  
+  <title>Juniper Network Connect on Ubuntu</title>
+  <link rel="stylesheet" href="./Juniper Network Connect on Ubuntu_files/mad.css" type="text/css">
+</head>
+<body>
+
+<div class="headbox">
+ <div class="headboxtop"><div></div></div>
+  <div class="headboxcontent">
+   mad scientist<br>
+   <em style="font-size: 25%">Please remain calm--I may be mad, but I <strong>am</strong> a professional.</em>
+  </div>
+ <div class="headboxbottom"><div></div></div>
+</div>
+
+
+<div class="main">
+<h2>Using Juniper Network Connect on Ubuntu</h2>
+
+<h2>What is Network Connect?</h2>
+
+<p><em>Network Connect</em> is a software package from Juniper Networks that
+interfaces with its <a href="http://www.juniper.net/products_and_services/ssl_vpn_secure_access/">Secure
+Access</a> hardware and provides a Virtual Private Network (VPN) solution.
+There are two software products that connect to Secure Access servers:
+<em>Windows Secure Application Manager</em> which, as you might guess, runs on
+Microsoft Windows; and <em>Network Connect</em> which runs on other platforms,
+in particular GNU/Linux.</p>
+
+<p>So, GNU/Linux is supported!  Great!  Well, sort of.  Juniper has fallen
+into the common trap of supporting Red Hat Enterprise Linux and calling it
+good enough.  It's quite frustrating, since with an extra hour or two of
+effort these companies could create a portable solution.  I realize that
+support costs money, but even if they only officially supported Red Hat
+Enterprise, it wouldn't hurt them to go the extra couple of centimeters
+necessary to provide a more generic implementation.</p>
+
+<p>Luckily, the actual VPN software works fine on Ubuntu; it's the invocation
+script and especially the installer that are utterly broken.  However, it's a
+relatively straightforward proposition to simply avoid using them; I've
+created a shell script which will allow you to connect and disconnect without
+needing to go through the broken scripting that comes with Network Connect.
+Here's how you use it.</p>
+
+<h2>Making It Work</h2>
+
+<h3>Environmental Requirements</h3>
+
+<p>I have tested this on every Ubuntu release starting with 6.06, up to and
+including the current Karmic Koala (9.10) beta release.  I have used on both
+32-bit and 64-bit systems.</p>
+
+<p>Although I haven't tried this on Kubuntu, there is support for KDE that
+I've put together from suggestions emailed to me, plus information I found in
+web documentation.  I haven't tested it myself but hopefully it works.</p>
+
+<p>In fact, there's nothing about this solution that requires Ubuntu per se.
+You should be able to use it with little adaptation on almost any GNU/Linux
+distribution.</p>
+
+<p>The version of Network Connect I have is:
+
+</p><pre style="margin-left: 4em">$ ~/.juniper_networks/network_connect/ncsvc --version
+Juniper Network Connect Server for Linux.
+Version         : 1.2
+Release Version : 6.1-0-Build13103
+Build Date/time : May  6 2008 21:34:46
+Copyright 2001-2008 Juniper Networks
+</pre>
+
+<p>I know that some older versions require extra steps (for example, 1.0
+versions require the installation of Motif libraries).  I can no longer test
+with these older versions so I can't say how well they work.  If you have
+versions prior to 1.2 I strongly suggest you request that your IT department
+upgrade you to a newer release.</p>
+
+<h3>Package Requirements</h3>
+
+<p>In order to install the package and to run the graphical VPN control
+utility, you will need a 32-bit Java runtime environment and a browser plugin.
+Personally I need this for other reasons as well and I've been using the Sun
+JRE, but I suppose others might work as well.  I've heard that people have
+had issues with OpenJDK, but YMMV.</p>
+
+<p>On 32-bit Ubuntu I use:</p>
+<pre style="margin-left: 4em">sudo aptitude install sun-java6-plugin sun-java6-jdk sun-java6-jre
+</pre>
+
+<p>On 64-bit Ubuntu I use the above <em>plus</em> this:</p>
+<pre style="margin-left: 4em">sudo aptitude install ia32-sun-java6-bin
+</pre>
+
+<p>Note that older versions of Ubuntu might not support Java 6; in that case it
+works fine to replace <code>java6</code> with <code>java5</code> in the above
+package names.</p>
+
+<p>After you install the browser plugin, you'll need to restart FireFox.</p>
+
+<p>A critical aspect of the VPN is that your DNS resolution information is
+reset to point to the DNS server of the VPN; this allows you to resolve
+internal hostnames that aren't registered outside the VPN.  Usually, when you
+exit the VPN tool it will restore your original DNS settings.  However, I have
+seen this fail; when that happens your system can no longer resolve any
+hostnames.  It seems like the network is broken but it's actually a trivial
+fix... if you know what your original DNS server was.  I recommend making a
+copy of the <code>/etc/resolv.conf</code> file on your system so you can copy
+it back later if necessary.</p>
+
+<h3>Step 1: Install My Script</h3>
+
+<p>I wrote a shell script to simplify the install and invocation of the
+Network Connect VPN; using the web interface to connect and the broken install
+script is too annoying.</p>
+
+<p>First you need to install my script onto your system:</p>
+
+<font size="+2"><a href="http://mad-scientist.net/junipernc">Download the junipernc script</a></font>
+
+<p>Put it somewhere on your PATH; I typically create <code>~/bin</code> and
+add that to my PATH for these sorts of things.  Don't forget to ensure the
+script is executable after you download it.</p>
+
+<p>If you didn't understand the previous paragraph, then open up a terminal
+(use Applications -&gt; Accessories -&gt; Terminal) and enter these commands; none
+of them should give you any error message.  You will need to type your
+password when prompted (after the <code>sudo</code> command)</p>
+
+<pre style="margin-left: 4em">wget -q -O /tmp/junipernc http://mad-scientist.net/junipernc
+chmod 755 /tmp/junipernc
+sudo cp /tmp/junipernc /usr/bin
+</pre>
+
+<p></p>
+
+<h3>Step 2: Install Network Connect Software</h3>
+
+<p>The Network Connect software is installed automatically when you first
+connect to the server.  Although this install will fail on Ubuntu due to the
+fairly stupid scripting Juniper provides, it's still necessary to go through
+this step to obtain the software.</p>
+
+<p>So, connect to your Juniper VPN server with FireFox and log into the VPN.
+You should have received instructions from your IT department or whomever
+manages the server on how to do this.</p>
+
+<p>Once it's done you'll see something like this (maybe after some other
+links); Click the "Start" button next to "Network Connect":
+<br><img style="margin-left: 4em" src="./Juniper Network Connect on Ubuntu_files/jnc-start.png"></p>
+
+<p>The Network Connect software will download:<br>
+<img style="margin-left: 4em" src="./Juniper Network Connect on Ubuntu_files/jnc-download.png"></p>
+
+<p>The software will pop up a terminal window asking for the root password:<br>
+<img style="margin-left: 4em" src="./Juniper Network Connect on Ubuntu_files/jnc-terminal.png"></p>
+
+<p>Of course, on Ubuntu root doesn't have a password and the script is not
+smart enough to consider using sudo.  So ignore this: hit ENTER and when it
+asks if you'd like to try again, hit ENTER again.  You will get an error
+message about SSL; click OK.  This will cause the startup to fail, but that's
+fine because it's left behind the downloaded software which we can then use
+with a more portable installer.</p>
+
+<p>Before continuing, log out from the VPN connection in the browser.  There
+should be some kind of exit button on the page.  If you can't find it, exiting
+your browser should do it.  We won't be needing it anymore anyway.</p>
+
+<h3>Step 3: Run My Script</h3>
+
+<p>To complete the installation, you should invoke my <code>junipernc</code>
+script.  To do this, open a terminal window (Applications -&gt; Accessories -&gt;
+Terminal) and type <code>junipernc</code>.  Whenever the script runs it checks
+to be sure everything is set up and, if not, will do it for you.</p>
+
+<p>The first time you run it, you will need to enter your GNU/Linux account
+password to allow root privileges to be assigned to the Network Connect
+utility.</p>
+
+<p>Next, you will be asked for a server name; this should be the same server
+you browsed to in the previous step.</p>
+
+<p>Next, you will be asked for a user name; enter the username you used to log
+into the Juniper connect web site.</p>
+
+<p>Finally, you will be asked for a VPN service realm.  If there is a default
+value that is almost certainly the value you should use: the script obtains
+this value by querying your server.  If there is no default given you will
+need to contact your IT department for help with this.</p>
+
+<p>At this point, the software should be installed and configured.  These
+values will be saved and you won't need to go through these steps again.  Now
+the script will automatically try to start the VPN, as described in the next
+section.</p>
+
+<h3>Startup</h3>
+
+<p>Whenever you run the <code>junipernc</code> script it will prompt you for
+your password; my company uses SecurID so we enter a personal PIN plus the
+value provided by the SecurID fob.  So, that's what the script asks for.
+However if your company uses just a simple password it should work fine to
+provide it here as well.</p>
+
+<p>The GUI Network Connect tool will start and you should get a connection.
+Yay!!</p>
+
+<p>My company limits the amount of consecutive time you can be connected so I
+need to restart my connection every so often.  I arrange for this in my script
+by having it detect when the Network Connect applet has exited, and asking if
+you want to restart the VPN.  If you say yes, it will ask for your password
+information again and restart the VPN.  As long as I'm there when the timeout
+happens I can almost always restart the connection without losing any of my
+sessions (my server is configured to give me back the same IP address, as
+long as someone else didn't take it).</p>
+
+<h3>Command-line Options</h3>
+
+<h4>No-Java Mode</h4>
+
+<p>If you can't get a 32-bit Java installed on your system, or don't want to
+install Java for some reason, the <code>junipernc</code> script supports this
+although with missing functionality.  Invoking the script with the
+<code>-nojava</code> flag will avoid the need for Java at all.  The problem is
+you won't have any way to track the status of your connection, including when
+it's active or not.  You can use ^C to kill the script, and thus the
+connection.</p>
+
+<h4>Non-GUI Mode</h4>
+
+<p>You can run the <code>junipernc</code> script without any GUI at all, by
+using the <code>-nogui</code> flag.  This also automatically sets
+the <code>-nojava</code> flag.  When set, the script will not use any
+graphical dialogs.  As with the <code>-nojava</code> flag, the problem here
+is you can't track the status of your connection.  You can ^C the script to
+kill the connection.</p>
+
+<h4>Deconfigure</h4>
+
+<p>The script remembers information about your connection such as username and
+the security certificate it obtained from your server.  If these are bad (you
+typed the wrong username or your server has changed its certificate) you can
+delete the configuration by calling <code>junipernc</code> with the
+<code>-deconfig</code> option.  This will delete all the configuration but
+leave the installed version of Network Connect so you don't have to download
+it again.  You can start over with Step 3 above to re-configure.</p>
+
+<h4>Uninstall</h4>
+
+<p>The script also can perform an "uninstall"; invoke it with the
+<code>-uninstall</code> option.  This will delete all the configuration AND
+the complete installed version of Network Connect.  You'll have to start over
+with Step 1 of the installation to re-install.</p>
+
+<h2>Troubleshooting</h2>
+
+<p>Unfortunately I don't have a lot to say here.  If things don't work for you
+you might try asking on one of the <a href="http://ubuntuforums.org/showthread.php?t=232607">Ubuntu forum
+threads</a> dedicated to this subject.</p>
+
+<p>If you can't access any network hosts after bringing down the VPN, it's
+probably because your DNS server was not reset properly.  You <em>did</em>
+take my advice above and make a backup copy, right?  Suppose you called the
+backup <code>~/resolv.bak</code>; then you'd run this command to restore your
+network:</p>
+
+<pre style="margin-left: 4em">$ sudo cp $HOME/resolv.bak /etc/resolv.conf
+</pre>
+
+</div>
+<div class="footer">
+  <table width="100%"><tbody><tr>
+    <td align="left" valign="middle">
+      <img src="./Juniper Network Connect on Ubuntu_files/Count.cgi">
+    </td>
+    <td align="center" valign="middle">
+      <a href="http://mad-scientist.net/">[Home]</a>&nbsp;&nbsp;
+      <a href="http://make.mad-scientist.net/">[Make]</a>&nbsp;&nbsp;
+      <a href="http://mad-scientist.net/evolution.html">[Evolution]</a>&nbsp;&nbsp;
+      [JuniperVPN]&nbsp;&nbsp;
+      <a href="http://mad-scientist.net/amazon.html">[AmazonMP3]</a>&nbsp;&nbsp;
+      <a href="http://mad-scientist.net/photos">[Family]</a>
+    </td>
+    <td align="right" valign="middle">
+      <a href="mailto:psmith@gnu.org">Paul D. Smith</a>
+    </td>
+  </tr></tbody></table>
+</div>
+<div class="copyright">
+Copyright © 2008-2009 Paul D. Smith
+</div>
+
+
+</body></html>

@@ -1,0 +1,15 @@
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop distributed \
+--looplabel eland-copysplit \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland \
+--maxjobs 2000 \
+--walltime 24 \
+--queue small \
+--cluster LSF \
+--cpus 1 \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/loop-copysplit.out \
+--executable /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl \
+--source /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE% \
+--target /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/%REPLICATE% \
+--mode link

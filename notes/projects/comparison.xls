@@ -1,0 +1,2979 @@
+project.comparison
+
+
+<entry [Tue 2011:03:08 17:26:36 EST] CREATED CHUNKS/MERGE IN SAV.pm TO PROVIDE COMPLETE CONTROL OVER JOB SIZE>
+    
+    1. SPLITS UP EACH (BINNED) INPUT FILE (SEQUENCES/SNPS, ETC.) INTO CHUNKS
+    
+    OF EQUAL SIZE (USER-DEFINED)
+    
+    2. ADDED TO $jobs ARRAY AND RUN WITH USUAL JOB-CHECKING (CHECKFILE: *.sav)
+    
+    3. STORE CHUNK INFO IN check DIRECTORY TO ENABLE REASSEMBLY INTO COMPLETE
+    
+        OUTPUT FILE IN CASE OF FAILURE OF ONE OR MORE CHUNKS
+        
+    4. MERGE CHUNKS IN ORDER USING SIMPLE CONCAT
+    
+    
+    
+`
+    
+    
+</entry>
+
+<entry [Thu 2011:03:03 20:55:36 EST] VENN DIAGRAM PLOTTER>
+    
+GOOGLE CHARTS
+http://code.google.com/apis/chart/docs/gallery/venn_charts.html
+
+VEN DIAGRAM PLOTTER
+http://omics.pnl.gov/software/VennDiagramPlotter.php
+
+WIKIPEDIA
+http://en.wikipedia.org/wiki/Venn_diagram
+
+
+
+Why you can't create a Venn diagram with four circles. 
+
+Two circles intersect in at most two points, and each intersection creates one new region. (Going clockwise around the circle, the curve from each intersection to the next divides an existing region into two.) 
+
+Since the fourth circle intersects the first three in at most 6 places, it creates at most 6 new regions; that's 14 total, but you need 2^4 = 16 regions to represent all possible relationships between four sets. 
+
+But you can create a Venn diagram for four sets with four ellipses, because two ellipses can intersect in more than two points.
+
+
+</entry>
+
+
+<entry [Wed Dec  8 13:58:50 EST 2010] TO DO LIST>
+
+
+##############
+#### ONWORKING
+##############
+
+dbSnp.pl            FILTER dbSNP-ONLY SNPs INTO NEW FILES AND DO snpVenn.pl
+
+** MAQ: RUN indexReads.pl --> numberReads.pl ON MAQ ALIGNMENT FILES
+    TO VERIFY MAQ PRODUCES A SINGLE UNIQUE READ FOR EACH HIT
+
+** RUN WORKFLOW ON chrX
+
+** RUN MAQ ON BOWTIE PAPER DATA SET (ELAND WORKED OKAY) TO VERIFY ALIGNMENTS
+
+** DOCUMENT SCRIPTS ** on Wiki
+
+** RUN SAV.pl ON ALL REALIGNED SAMPLES
+
+indexVenn.pl        COMPARE DB FILES GENERATED FROM *bam FILES
+
+snpReadVenn.pl      COMPARE READS IN SNP REGIONS
+
+mergeIndexes.pl     MERGE ALL INDEX DB FILES INTO A SINGLE FILE
+
+
+
+##############
+#### COMPLETED
+##############
+
+VENN.pl    VENN ANALYSIS OF BINNED SNP DATA
+
+ELANDcheck.pl       |   CHECK ALIGNMENT OUTPUT FILES - SIGNAL 'completed: 0' IF MISSING
+BOWTIEcheck.pl      |   OR OUTSIDE GIVEN DEVIATION RANGE
+NOVOALIGNcheck.pl   |
+MAQcheck.pl         |
+
+
+#### DONE Wed Dec  8 12:25:28 EST 2010
+collateVenn.pl      COLLATE RESULTS OF snpVenn.pl INTO REPORT
+
+#### DONE Fri Dec  3 13:58:18 EST 2010
+createIntervals.pl CREATE INTERVALS AROUND SNPS AS INPUT FOR GATK Realign
+
+#### DONE Fri Dec  3 13:58:18 EST 2010
+realignBam.pl      LOCAL REALIGNMENT AROUND SNPS USING GATK     
+
+    DE NOVO SNPS (VELVET, LOCAL REALIGNMENT) vs 3.3 billion read-depth SNPs
+    http://www.broadinstitute.org/gsa/wiki/index.php/Local_realignment_around_indels
+    
+    LOCAL REALIGNMENT WITH GATK
+    http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_protocol#Support_Protocol_2:_Local_Realignment    
+
+#### FAST READ HIT LOOKUP TOOL
+#### DONE Fri Nov 12 11:22:11 EDT 2010
+indexReads.pl       LOAD hit.sam FILES INTO B-TREE DB FILES (QUICK LOOKUP)
+lookupRead.pl       TEST lookupRead SUBROUTINE OF IndexRead.pm
+numberReads.pl      COUNT THE NUMBER OF UNIQUE READS IN A DB FILE
+numberHits.pl       COUNT THE NUMBER OF UNIQUE HITS (I.E., ENTRIES) IN A DB FILE
+
+#### DONE Mon Oct 25 16:49:50 EDT 2010
+#### COVERAGE (C or pl SCRIPT)  
+CREATED bamCoverage.pl
+http://picard.sourceforge.net/command-line-overview.shtml#CompareSAMs
+http://www.broadinstitute.org/gsa/wiki/index.php/Running_the_GATK_for_the_first_time
+pysam
+http://wwwfgu.anat.ox.ac.uk/~andreas/documentation/samtools/api.html
+
+#### DONE  Fri Oct 22 11:22:11 EDT 2010
+#### DISTRIBUTED SAV.pl     
+(threaded Loop.pm, copy sqlite db file to outdir):
+    - including dbSNP with 3.3 billion-read SNPs
+
+#### DONE Wed Oct 20 12:54:25 EDT 2010
+#### FIX NOVOALIGN.pl USAGE  
+
+
+
+</entry>
+
+
+
+<entry [Tue Feb  1 09:58:46 EST 2011] REMOVE autochr22 ALIGNMENT DIRS ON /ngs/bioinfo AND ROTATE IN RECENT RUNS IN /scratch>
+
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl \
+--mode subdirs,splitfiles \
+--directory /ngs/bioinfo/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/autochr22/eland \
+--references chr22
+
+</entry>
+
+
+
+
+
+<entry [Thu Jan 27 12:11:09 EST 2011] NOVOALIGN SETTINGS>
+
+NOVOALIGN COMMAND LINE OPTIONS
+http://www.novocraft.com/wiki/tiki-index.php?page=Novoalign+Command+Line+Options&structure=Novocraft+Technologies&page_ref_id=40
+
+MANUAL 2.07
+
+PAGE 7
+
+Alignment Scoring Options:
+­t 99 Sets the threshold or highest alignment score acceptable for the best 
+    alignment. A default threshold is calculated from read length and 
+    genome size such that an alignment to a non­repeat should have a 
+    quality higher than 30.
+­   g 99 Sets the gap opening penalty. Default 40
+­x 99 Sets the gap extend penalty. Default 15
+
+
+
+
+MISMATCH PARAMETER
+The alignment score has to do with maximum mismatches and indels allowed. If you think of a mismatch as scoring 30 then a threshold of 90 allows 3 mismatches. But it's not exactly that way as mismatch for a base in the read with low phred quality will be penalised less than 30.
+
+3 mismatches
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ 90
+2 mismatches
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ 60
+1 mismatches
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ 30
+
+
+
+Generally you can use Novoalign without setting very many options:
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ
+
+should do for what you want.
+
+If you'd like a slightly faster run and allowing less mismatches than default you might try
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ -t 180
+
+and if you have sufficient reads that you can afford to throw away some of the low quality ones then try
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ -t 180 -p 7,10 0.33,25
+
+QUALITY FILTER
+In latest versions there's also the -p option for filtering reads. -p 7,10 0.33,25 would filter (QC status) reads where 7 of first 20bp have quality < 10 and 1/3rd of all bases have quality < 25.
+
+
+
+http://www.novocraft.com/wiki/tiki-view_forum_thread.php?forumId=1&comments_parentId=316&topics_offset=9&topics_sort_mode=lastPost_desc
+
+
+> 1. Alignment scoring options
+> -t 99: Does this alignment score has something to do with the Phred Scores? Or how do I specify its value?
+
+The alignment score has more to do with maximum mismatches and indels allowed. If you think of a mismatch as scoring 30 then a threshold of 90 allows 3 mismatches. But it's not exactly that way as mismatch for a base in the read with low phred quality will be penalised less than 30.
+The penalties are all 10log10(P) where P is probability of mismatch or indel event. The total alignment score is 10log10(P) where P is probability that the fragment that was sequenced matches the reference genome so it's basically a phred score for probability of a match. But note that this is different to the probability that the alignment location is correct. This is given by the alignment quality and is the posterior probability of the alignment location taking into account all the alignment locations found. For example we could find two alignment locations for a read both identical to the reference with a score of zero and a probability of 1 that the reference sequence is the same as the fragment. But each location has a probability of 0.5 (quality = 3) of being the correct alignment location or source of the DNA fragment.
+
+> -g and -x: since my reads are relatively short and since I have a lot of reads per individuals (lots of loci), I don't mind if some are rejected due to too big indels compared to the reference. Therefore I'd like to allow only small indels in the alignment (max. 5 nucleotides). Can I set this restriction with these 2 values? How would I have to set these?
+
+At default a 5bp indel will score 40+5*15 or 115 so close to what 4 SNPs would score.
+The defaults are probably OK and will be good at finding indels from 1-5bp. If you set -x6 you can get longer indels.
+
+>
+> 2. Quality Control and Read filtering
+> -l 99: By default, a "good quality" is determined by the length of the reference sequences. This I don't really understand... Can't I just say, I'd like to have at least 50 nucleotides with a phred score of at least 25?
+
+We use Shannons Entropy to calculate information content of read and hence effective length. We'd usually set -l at around 1/2 to 2/3 of read length or we just let it default.
+In latest versions there's also the -p option for filtering reads. -p 7,10 0.33,25 would filter (QC status) reads where 7 of first 20bp have quality < 10 and 1/3rd of all bases have quality < 25.
+
+> 4. Reporting options
+> -r: I'd like to get only these reads, which have a single location hit within the reference genome. So I would have to set -r to 1? So I guess, if the aligner finds more than one location, both locations need to be supported well, otherwise it would find only 1 "true" location, or do I have to specify this additonally, what I believe is a "true multiple location alignment" and what is a "false-positive multiple location alignment"? If so, do I have to specify this with the -Q option?
+
+It depends on what we call a "single location hit". Basically any read can align to multiple locations if we allow enough mismatches.
+By default Novoalign will not report alignment location for a read with multiple mappings of nearly identical score (alignment score difference Is there something like the "seed" option in Bowtie, where I can specifiy what my max.number of SNPs are in a predefined subsequence (seed) of my reads?
+Novoaligns algorithm is very different to Bowties and we don't have this restriction, instead you just use threshold -t to set an upper limit on the maximum alignment score which is related to mismatches in entire read.
+
+
+Generally you can use Novoalign without setting very many options:
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ
+
+should do for what you want.
+
+If you'd like a slightly faster run and allowing less mismatches than default you might try
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ -t 180
+
+and if you have sufficient reads that you can afford to throw away some of the low quality ones then try
+
+novoalign -d ref.idx -f reads_sequence.txt -F ILMFQ -t 180 -p 7,10 0.33,25
+
+
+
+
+
+</entry>
+
+<entry [Thu Jan 27 12:10:09 EST 2011] REFACTORED collate IN Venn::Snp TO USE BINNED FILES IF binlevel IS SUPPLIED>
+
+ELAND V BOWTIE
+
+/nethome/syoung/0.5/bin/apps/venn/collateVenn.pl \
+--replicates 1-33 \
+--bamfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1/chr22/hit.bam \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--querydir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22 \
+--targetdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22 \
+--queryindex  %REPLICATE% \
+--targetindex %REPLICATE% \
+--suffix sav \
+--binlevel 500000 \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/sav/elandbowtie/eland-dbsnp-vs-bowtie-dbsnp.tsv
+
+    OK!
+
+
+
+
+</entry>
+
+<entry [Sun Jan 23 12:46:23 EST 2011] REFACTORED Venn::Snp TO USE BINNED FILES>
+
+
+SOLUTION: RERUN binbam->cumulativebam->bamtosnp->snptosav ON bowtie (eland AND novoalign ARE FINE)
+
+    X::App::run    started: 2011-01-27 12:33:47
+
+
+PROBLEM: BOWTIE CUMULATIVE BAM FILES DISAPPEAR AS ITERATIONS PROGRESS
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/
+
+
+ll *33.bam
+    -rw-rw-rw- 1 syoung root 413M Jan 14 10:02 hit.binlevel500000.num33-33.bam
+    -rw-rw-rw- 1 syoung root 599M Jan 14 10:04 hit.binlevel500000.num34-33.bam
+ll *14.bam
+    -rw-rw-rw- 1 syoung root 179M Jan 14 08:28 hit.binlevel500000.num33-14.bam
+    -rw-rw-rw- 1 syoung root 258M Jan 14 08:30 hit.binlevel500000.num34-14.bam
+    -rw-rw-rw- 1 syoung root 186M Jan 14 08:29 hit.binlevel500000.num35-14.bam
+    -rw-rw-rw- 1 syoung root  96M Jan 14 08:28 hit.binlevel500000.num36-14.bam
+    -rw-rw-rw- 1 syoung root  57M Jan 14 08:27 hit.binlevel500000.num37-14.bam
+    -rw-rw-rw- 1 syoung root  43M Jan 14 08:27 hit.binlevel500000.num38-14.bam
+    -rw-rw-rw- 1 syoung root  29M Jan 14 08:27 hit.binlevel500000.num39-14.bam
+    -rw-rw-rw- 1 syoung root  25M Jan 14 08:27 hit.binlevel500000.num40-14.bam
+    -rw-rw-rw- 1 syoung root  19M Jan 14 08:27 hit.binlevel500000.num41-14.bam
+    -rw-rw-rw- 1 syoung root  30M Jan 14 08:27 hit.binlevel500000.num42-14.bam
+    -rw-rw-rw- 1 syoung root  33M Jan 14 08:27 hit.binlevel500000.num43-14.bam
+    -rw-rw-rw- 1 syoung root  29M Jan 14 08:27 hit.binlevel500000.num44-14.bam
+ll *12.bam
+    -rw-rw-rw- 1 syoung root 154M Jan 14 08:23 hit.binlevel500000.num33-12.bam
+    -rw-rw-rw- 1 syoung root 222M Jan 14 08:24 hit.binlevel500000.num34-12.bam
+    -rw-rw-rw- 1 syoung root 160M Jan 14 08:23 hit.binlevel500000.num35-12.bam
+    -rw-rw-rw- 1 syoung root  83M Jan 14 08:22 hit.binlevel500000.num36-12.bam
+    -rw-rw-rw- 1 syoung root  49M Jan 14 08:22 hit.binlevel500000.num37-12.bam
+    -rw-rw-rw- 1 syoung root  37M Jan 14 08:22 hit.binlevel500000.num38-12.bam
+    -rw-rw-rw- 1 syoung root  25M Jan 14 08:22 hit.binlevel500000.num39-12.bam
+    -rw-rw-rw- 1 syoung root  22M Jan 14 08:22 hit.binlevel500000.num40-12.bam
+    -rw-rw-rw- 1 syoung root  16M Jan 14 08:22 hit.binlevel500000.num41-12.bam
+    -rw-rw-rw- 1 syoung root  26M Jan 14 08:22 hit.binlevel500000.num42-12.bam
+    -rw-rw-rw- 1 syoung root  28M Jan 14 08:22 hit.binlevel500000.num43-12.bam
+    -rw-rw-rw- 1 syoung root  25M Jan 14 08:22 hit.binlevel500000.num44-12.bam
+    -rw-rw-rw- 1 syoung root  46M Jan 14 08:22 hit.binlevel500000.num45-12.bam
+    -rw-rw-rw- 1 syoung root 124M Jan 14 08:23 hit.binlevel500000.num46-12.bam
+    -rw-rw-rw- 1 syoung root  38M Jan 14 08:22 hit.binlevel500000.num47-12.bam
+    -rw-rw-rw- 1 syoung root  21M Jan 14 08:22 hit.binlevel500000.num48-12.bam
+    -rw-rw-rw- 1 syoung root  51M Jan 14 08:22 hit.binlevel500000.num49-12.bam
+    -rw-rw-rw- 1 syoung root  53M Jan 14 08:22 hit.binlevel500000.num50-12.bam
+    -rw-rw-rw- 1 syoung root  31M Jan 14 08:22 hit.binlevel500000.num51-12.bam
+    -rw-rw-rw- 1 syoung root  48M Jan 14 08:22 hit.binlevel500000.num52-12.bam
+    -rw-rw-rw- 1 syoung root  21M Jan 14 08:22 hit.binlevel500000.num53-12.bam
+    -rw-rw-rw- 1 syoung root  30M Jan 14 08:22 hit.binlevel500000.num54-12.bam
+    -rw-rw-rw- 1 syoung root  21M Jan 14 08:22 hit.binlevel500000.num55-12.bam
+    -rw-rw-rw- 1 syoung root  27M Jan 14 08:22 hit.binlevel500000.num56-12.bam
+    -rw-rw-rw- 1 syoung root  81M Jan 14 08:22 hit.binlevel500000.num57-12.bam
+    -rw-rw-rw- 1 syoung root 168M Jan 14 08:23 hit.binlevel500000.num58-12.bam
+    -rw-rw-rw- 1 syoung root 125M Jan 14 08:23 hit.binlevel500000.num59-12.bam
+    -rw-rw-rw- 1 syoung root  30M Jan 14 08:22 hit.binlevel500000.num60-12.bam
+    -rw-rw-rw- 1 syoung root  32M Jan 14 08:22 hit.binlevel500000.num61-12.bam
+    -rw-rw-rw- 1 syoung root  21M Jan 14 08:22 hit.binlevel500000.num62-12.bam
+    -rw-rw-rw- 1 syoung root  48M Jan 14 08:22 hit.binlevel500000.num63-12.bam
+    -rw-rw-rw- 1 syoung root  34M Jan 14 08:22 hit.binlevel500000.num64-12.bam
+    -rw-rw-rw- 1 syoung root  36M Jan 14 08:22 hit.binlevel500000.num65-12.bam
+    -rw-rw-rw- 1 syoung root  94M Jan 14 08:22 hit.binlevel500000.num66-12.bam
+    -rw-rw-rw- 1 syoung root  45M Jan 14 08:22 hit.binlevel500000.num67-12.bam
+    -rw-rw-rw- 1 syoung root  40M Jan 14 08:22 hit.binlevel500000.num68-12.bam
+    -rw-rw-rw- 1 syoung root  37M Jan 14 08:22 hit.binlevel500000.num69-12.bam
+    -rw-rw-rw- 1 syoung root  95M Jan 14 08:22 hit.binlevel500000.num70-12.bam
+    -rw-rw-rw- 1 syoung root 179M Jan 14 08:23 hit.binlevel500000.num71-12.bam
+    -rw-rw-rw- 1 syoung root  46M Jan 14 08:22 hit.binlevel500000.num72-12.bam
+    -rw-rw-rw- 1 syoung root  59M Jan 14 08:22 hit.binlevel500000.num73-12.bam
+
+
+
+AFTER FIXED RERUN:
+
+INPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie
+ll */chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 10/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 11/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 12/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 13/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 14/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 15/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 16/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 17/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 18/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 19/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 1/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 20/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 21/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 22/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 23/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 24/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 300M Jan 27 12:37 25/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:37 26/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 27/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 28/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 29/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 2/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 30/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 31/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 32/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 33/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 3/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 4/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 5/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 6/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 7/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 8/chr22/hit.bam
+-rw-rw-rw- 1 syoung root 299M Jan 27 12:36 9/chr22/hit.bam
+
+
+
+OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/
+ll *33.bam
+
+    -rw-rw-rw- 1 syoung root  40M Jan 27 15:36 hit.binlevel500000.num100-33.bam
+    -rw-rw-rw- 1 syoung root  58M Jan 27 15:36 hit.binlevel500000.num101-33.bam
+    -rw-rw-rw- 1 syoung root  65M Jan 27 15:36 hit.binlevel500000.num102-33.bam
+    -rw-rw-rw- 1 syoung root 152M Jan 27 15:37 hit.binlevel500000.num103-33.bam
+    -rw-rw-rw- 1 syoung root 413M Jan 27 15:40 hit.binlevel500000.num33-33.bam
+    -rw-rw-rw- 1 syoung root 599M Jan 27 15:42 hit.binlevel500000.num34-33.bam
+    -rw-rw-rw- 1 syoung root 430M Jan 27 15:40 hit.binlevel500000.num35-33.bam
+    -rw-rw-rw- 1 syoung root 223M Jan 27 15:38 hit.binlevel500000.num36-33.bam
+    -rw-rw-rw- 1 syoung root 132M Jan 27 15:36 hit.binlevel500000.num37-33.bam
+    -rw-rw-rw- 1 syoung root  98M Jan 27 15:36 hit.binlevel500000.num38-33.bam
+    -rw-rw-rw- 1 syoung root  66M Jan 27 15:36 hit.binlevel500000.num39-33.bam
+    -rw-rw-rw- 1 syoung root  57M Jan 27 15:36 hit.binlevel500000.num40-33.bam
+    -rw-rw-rw- 1 syoung root  43M Jan 27 15:36 hit.binlevel500000.num41-33.bam
+    -rw-rw-rw- 1 syoung root  69M Jan 27 15:36 hit.binlevel500000.num42-33.bam
+    -rw-rw-rw- 1 syoung root  75M Jan 27 15:36 hit.binlevel500000.num43-33.bam
+    -rw-rw-rw- 1 syoung root  68M Jan 27 15:36 hit.binlevel500000.num44-33.bam
+    -rw-rw-rw- 1 syoung root 124M Jan 27 15:36 hit.binlevel500000.num45-33.bam
+    -rw-rw-rw- 1 syoung root 332M Jan 27 15:39 hit.binlevel500000.num46-33.bam
+    -rw-rw-rw- 1 syoung root 100M Jan 27 15:36 hit.binlevel500000.num47-33.bam
+    -rw-rw-rw- 1 syoung root  55M Jan 27 15:36 hit.binlevel500000.num48-33.bam
+    -rw-rw-rw- 1 syoung root 137M Jan 27 15:37 hit.binlevel500000.num49-33.bam
+    -rw-rw-rw- 1 syoung root 143M Jan 27 15:37 hit.binlevel500000.num50-33.bam
+    -rw-rw-rw- 1 syoung root  83M Jan 27 15:36 hit.binlevel500000.num51-33.bam
+    -rw-rw-rw- 1 syoung root 131M Jan 27 15:37 hit.binlevel500000.num52-33.bam
+    -rw-rw-rw- 1 syoung root  55M Jan 27 15:36 hit.binlevel500000.num53-33.bam
+    -rw-rw-rw- 1 syoung root  79M Jan 27 15:36 hit.binlevel500000.num54-33.bam
+    -rw-rw-rw- 1 syoung root  57M Jan 27 15:36 hit.binlevel500000.num55-33.bam
+    -rw-rw-rw- 1 syoung root  73M Jan 27 15:36 hit.binlevel500000.num56-33.bam
+    -rw-rw-rw- 1 syoung root 217M Jan 27 15:38 hit.binlevel500000.num57-33.bam
+    -rw-rw-rw- 1 syoung root 453M Jan 27 15:40 hit.binlevel500000.num58-33.bam
+    -rw-rw-rw- 1 syoung root 338M Jan 27 15:39 hit.binlevel500000.num59-33.bam
+    -rw-rw-rw- 1 syoung root  81M Jan 27 15:37 hit.binlevel500000.num60-33.bam
+    -rw-rw-rw- 1 syoung root  87M Jan 27 15:37 hit.binlevel500000.num61-33.bam
+    -rw-rw-rw- 1 syoung root  56M Jan 27 15:36 hit.binlevel500000.num62-33.bam
+    -rw-rw-rw- 1 syoung root 130M Jan 27 15:37 hit.binlevel500000.num63-33.bam
+    -rw-rw-rw- 1 syoung root  91M Jan 27 15:37 hit.binlevel500000.num64-33.bam
+    -rw-rw-rw- 1 syoung root  95M Jan 27 15:37 hit.binlevel500000.num65-33.bam
+    -rw-rw-rw- 1 syoung root 252M Jan 27 15:39 hit.binlevel500000.num66-33.bam
+    -rw-rw-rw- 1 syoung root 122M Jan 27 15:37 hit.binlevel500000.num67-33.bam
+    -rw-rw-rw- 1 syoung root 108M Jan 27 15:37 hit.binlevel500000.num68-33.bam
+    -rw-rw-rw- 1 syoung root 100M Jan 27 15:37 hit.binlevel500000.num69-33.bam
+    -rw-rw-rw- 1 syoung root 255M Jan 27 15:39 hit.binlevel500000.num70-33.bam
+    -rw-rw-rw- 1 syoung root 483M Jan 27 15:41 hit.binlevel500000.num71-33.bam
+    -rw-rw-rw- 1 syoung root 123M Jan 27 15:37 hit.binlevel500000.num72-33.bam
+    -rw-rw-rw- 1 syoung root 158M Jan 27 15:37 hit.binlevel500000.num73-33.bam
+    -rw-rw-rw- 1 syoung root  87M Jan 27 15:37 hit.binlevel500000.num74-33.bam
+    -rw-rw-rw- 1 syoung root  49M Jan 27 15:36 hit.binlevel500000.num75-33.bam
+    -rw-rw-rw- 1 syoung root  49M Jan 27 15:36 hit.binlevel500000.num76-33.bam
+    -rw-rw-rw- 1 syoung root  84M Jan 27 15:37 hit.binlevel500000.num77-33.bam
+    -rw-rw-rw- 1 syoung root 140M Jan 27 15:37 hit.binlevel500000.num78-33.bam
+    -rw-rw-rw- 1 syoung root  79M Jan 27 15:37 hit.binlevel500000.num79-33.bam
+    -rw-rw-rw- 1 syoung root  97M Jan 27 15:37 hit.binlevel500000.num80-33.bam
+    -rw-rw-rw- 1 syoung root 109M Jan 27 15:37 hit.binlevel500000.num81-33.bam
+    -rw-rw-rw- 1 syoung root  73M Jan 27 15:36 hit.binlevel500000.num82-33.bam
+    -rw-rw-rw- 1 syoung root  92M Jan 27 15:37 hit.binlevel500000.num83-33.bam
+    -rw-rw-rw- 1 syoung root  88M Jan 27 15:37 hit.binlevel500000.num84-33.bam
+    -rw-rw-rw- 1 syoung root  92M Jan 27 15:37 hit.binlevel500000.num85-33.bam
+    -rw-rw-rw- 1 syoung root  63M Jan 27 15:36 hit.binlevel500000.num86-33.bam
+    -rw-rw-rw- 1 syoung root  85M Jan 27 15:37 hit.binlevel500000.num87-33.bam
+    -rw-rw-rw- 1 syoung root  56M Jan 27 15:36 hit.binlevel500000.num88-33.bam
+    -rw-rw-rw- 1 syoung root  76M Jan 27 15:37 hit.binlevel500000.num89-33.bam
+    -rw-rw-rw- 1 syoung root  49M Jan 27 15:36 hit.binlevel500000.num90-33.bam
+    -rw-rw-rw- 1 syoung root  70M Jan 27 15:37 hit.binlevel500000.num91-33.bam
+    -rw-rw-rw- 1 syoung root  76M Jan 27 15:37 hit.binlevel500000.num92-33.bam
+    -rw-rw-rw- 1 syoung root  43M Jan 27 15:36 hit.binlevel500000.num93-33.bam
+    -rw-rw-rw- 1 syoung root  71M Jan 27 15:37 hit.binlevel500000.num94-33.bam
+    -rw-rw-rw- 1 syoung root  68M Jan 27 15:37 hit.binlevel500000.num95-33.bam
+    -rw-rw-rw- 1 syoung root 146M Jan 27 15:37 hit.binlevel500000.num96-33.bam
+    -rw-rw-rw- 1 syoung root  52M Jan 27 15:36 hit.binlevel500000.num97-33.bam
+    -rw-rw-rw- 1 syoung root  38M Jan 27 15:36 hit.binlevel500000.num98-33.bam
+    -rw-rw-rw- 1 syoung root 186M Jan 27 15:38 hit.binlevel500000.num99-33.bam
+
+
+
+
+
+ELAND V BOWTIE
+--------------
+
+INPUT FILES TO SNPVENN.pl
+
+ll /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit.binlevel500000.num44-33.sav
+
+    -rw-rw-rw- 1 syoung root 14K Jan 20 15:59 /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit.binlevel500000.num44-33.sav
+
+ll /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit.binlevel500000.num44-1.sav
+
+    -rw-rw-rw- 1 syoung root 101K Jan 17 04:29 /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/hit.binlevel500000.num44-1.sav
+
+
+RUN LOOP:
+
+/nethome/syoung/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/syoung/0.5/bin/apps/venn/SNPVENN.pl \
+--bamfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1/chr22/hit.bam \
+--querydir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22 \
+--targetdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/sav/elandbowtie \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--binlevel 500000 \
+--suffix sav \
+--queryindex %REPLICATE% \
+--targetindex %REPLICATE% \
+--filename hit.bam \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24
+
+
+LOOP REPLICATE 1:
+
+/nethome/syoung/0.5/bin/apps/venn/SNPVENN.pl \
+--bamfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1/chr22/hit.bam \
+--querydir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22 \
+--targetdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/sav/elandbowtie \
+--querylabel eland-1-dbsnp \
+--targetlabel bowtie-1-dbsnp \
+--binlevel 500000 \
+--suffix sav \
+--queryindex 1 \
+--targetindex 1 \
+--filename hit.bam \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24
+
+
+
+WHICH RUNS:
+
+/nethome/syoung/0.5/bin/apps/venn/snpToVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit.binlevel500000.num44-1.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative/chr22/hit.binlevel500000.num44-33.sav \
+--querylabel eland-1-dbsnp \
+--targetlabel eland-33-dbsnp \
+--prefix hit.binlevel500000.num44. \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/savvenn
+
+
+OUTPUT:
+
+    
+    Venn::Snp::compare    /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/savvenn/hit.binlevel500000.num44.eland-1-dbsnp-NOT-eland-33-dbsnp.sav
+    Venn::Snp::compare    /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/savvenn/hit.binlevel500000.num44.eland-33-dbsnp-NOT-eland-1-dbsnp.sav
+    Venn::Snp::compare    /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/savvenn/hit.binlevel500000.num44.eland-1-dbsnp-AND-eland-33-dbsnp.sav
+
+    OK!!!
+    
+
+
+</entry>
+
+<entry [Sun Jan 23 12:46:23 EST 2011] CREATED ELANDcheck.pl, MAQcheck.pl, BOWTIEcheck.pl AND NOVOALIGNcheck.pl TO CHECK FOR MISSING OR DUBIOUS OUTPUT FILES>
+
+/nethome/syoung/0.5/bin/apps/aligners/ELANDcheck.pl \
+--replicates 1-33 \
+--inputtype fastq \
+--label eland \
+--cluster LSF \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland \
+--min 0.5 \
+--max 2
+
+    ------------------------------------------------------------
+    ---[completed eland: 1 ]---
+    32 dubious files:
+    lowerbound      upperbound      sizemultiple    averagesize     filesize        location
+    62704655(3 SDs) 64212360 (3 SDs)        1.01325751962898        63458507        64299810        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/2/chr22/42/out.sam
+    62704798(3 SDs) 64211514 (3 SDs)        1.01319286987336        63458156        64295352        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/3/chr22/42/out.sam
+    ...
+    62705141(3 SDs) 64213752 (3 SDs)        1.01345594666347        63459447        64313354        /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/33/chr22/42/out.sam
+    
+    ------------------------------------------------------------
+    
+
+
+</entry>
+
+<entry [Mon Jan 17 00:26:47 EST 2011] FIXED ERROR RUNNING bamToSav.pl ERROR DUE TO VERSION MISMATCH BETWEEN DBI AND DBD::SQLite>
+
+
+PROBLEM: 'Can't locate loadable object for module DBD::SQLite' ERROR WHEN DOING use DBD::SQLite ON PEGASUS
+
+
+SOLUTION:
+
+1. use lib IN bamToSav.pl WITH PATH TO DBI v1.609
+
+use lib "$Bin/../../../lib/external/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi";
+
+***AND*** INSERT BEGIN BLOCK INTO bamToSav.pl WITH PATH TO DBI v1.609 
+
+BEGIN {    
+    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi";
+}
+
+
+2. RUN bamToSav.pl
+
+/nethome/syoung/0.5/bin/apps/snp/SAV.pl "--binlevel" "500000" "--filename" "hit.bam" "--inputdirs" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/1" "--outputdir" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative" "--tempfile" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/snp130" "--referencedir" "/nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22" "--dbsnp" "snp130" "--species" "human" "--maxjobs" "2000" "--queue" "small" "--cluster" "LSF" "--walltime" "24" "--stdout" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/sav-1.out"
+
+	OK
+
+
+PROCESSES 100 SNPs PER MINUTE:
+
+tail -f /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative/chr22/stdout/hit.binlevel500000.num35-1.sav-stdout.txt
+
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	Filter::SNP::annotate    dbsnp: snp130
+	800 [total 4236] 11-01-17 01:50:09
+	900 [total 4236] 11-01-17 01:51:08
+	1000 [total 4236] 11-01-17 01:52:04
+	1100 [total 4236] 11-01-17 01:52:55
+
+
+	
+
+NOTES
+-----
+
+
+TEST SCRIPT: testSQLite.pl
+
+	use strict;
+	
+	use FindBin qw($Bin);
+	use lib "$Bin/../../../lib/external/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi";
+	
+	#### USE LIBS                                                                                   
+	use lib "$Bin/../../../lib";use lib "$Bin/../../../lib/external";
+	use lib "$Bin/../../../lib/external/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi";
+	
+	BEGIN {
+	#    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-32/site_perl/5.8.8";                 
+	unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-mu\
+	lti";
+	#    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-32/5.8.8";                           
+	}
+	
+	use DBD::SQLite;
+	
+	print "Completed $0\n";
+
+
+./testSQLite.pl 
+
+	Completed ./testSQLite.pl
+
+
+
+
+USED DBI v1.609 IN COPY OF /usr/lib64/perl5/site_perl WITH WORKING INSTALLATION OF DBD::SQLite
+
+
+ON AQ-7:
+
+cd /usr/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi
+perl -e 'use DBD::SQLite'
+
+
+ON PEGASUS:
+
+cd /nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi
+perl -e 'use DBD::SQLite'
+
+	DBI version 1.57 required--this is only version 1.52 at DBD/SQLite.pm line 5.
+	BEGIN failed--compilation aborted at DBD/SQLite.pm line 5.
+	Compilation failed in require at -e line 1.
+	BEGIN failed--compilation aborted at -e line 1.
+
+
+
+ADDED PATH TO v1.609 IN lib64/site_perl AND CHECKED DBI VERSION:
+
+cd /nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi
+
+perl -e 'unshift @INC, "/nethome/syoung/0.5/lib/exte/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi"; require DBI; print DBI->VERSION'
+1.609
+
+
+BUT WHEN DO use DBD::SQLite **FOLLOWING** DBI->VERSION, GET DBI VERSION IS 1.52;
+
+cd /nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi
+
+perl -e 'unshift @INC, "/nethome/syoung/0.5/lib/ext/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi"; use DBI; print DBI->VERSION; use DBD::SQLite'
+
+	1.52
+
+
+
+CHECKED VERSION OF DBI INSIDE external/perl5-64/site_perl
+
+perl -e 'require DBI; print DBI->VERSION'
+
+	1.52
+
+
+
+ADDED PATH TO *-64/site_perl IN BEGIN BLOCK IN snpToSav.pl IN ORDER TO MAKE IT READ v1.609 OF DBI
+
+BEGIN {    
+#    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-32/site_perl/5.8.8";
+    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi";
+#    unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-32/5.8.8";   
+}
+
+
+BUT STILL GOT ERROR
+
+
+
+perl -e 'unshift @INC, "/nethome/syoung/0.5/lib/ext/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi"; require DBI; print DBI->VERSION'
+
+	1.609
+	
+
+
+BUT WHEN ALSO ADDED use lib OF THIS PATH, IT WORKED!!
+
+
+
+TEST ON COMMAND LINE
+--------------------
+
+ADDING JUST THE use lib OR ADDED PATH TO THE FRONT OF @INC GIVES THE SAME ERROR:
+
+cd /nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi
+
+perl -e 'unshift @INC, "/nethome/syoung/0.5/lib/ext/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi"; require DBI; print DBI->VERSION; use DBD::SQLite'
+
+	DBI version 1.57 required--this is only version 1.52 at DBD/SQLite.pm line 5.
+	BEGIN failed--compilation aborted at DBD/SQLite.pm line 5.
+	Compilation failed in require at -e line 1.
+	BEGIN failed--compilation aborted at -e line 1.
+
+
+BUT WHEN USE BEGIN BLOCK, THE RIGHT VERSION 1.609 OF DBI IS FOUND:
+
+perl -e 'use lib "$Bin/../../../lib/external/lib64/perl5/site_perl/5.8.8/x86_64-linux-thread-multi";
+BEGIN {  unshift @INC, "/nethome/syoung/0.5/lib/external/perl5-64/site_perl/5.8.8/x86_64-linux-thread-multi"; } require DBI; print DBI->VERSION; use DBD::SQLite'
+
+1.609
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+<entry [Fri Jan 14 09:06:13 EST 2011] CREATED copySplitfiles.pl TO COPY/LINK TO EXISTING SPLITFILES>
+
+GENERATES splitfile.txt AND SPLIT FILE SUBDIRS IN TARGET DIRECTORY
+
+/nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl \
+--source /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie \
+--target /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign \
+--mode link
+
+    Cluster.pl    Run time: 00:04:39
+    Cluster.pl    Completed /nethome/syoung/0.5/bin/apps/aligners/copySplitfiles.pl
+    Cluster.pl    11-01-14 11:03:10
+    Cluster.pl    ****************************************
+
+
+NOTE: WHEN YOU RUN ALIGNMENTS USING THIS YOU HAVE TO MAKE SURE THAT THE --label ARGUMENT
+IS THE SAME.
+
+I.E., IF THE SOURCE USES:
+
+--label bowtie-%REPLICATE% \
+
+THEN THE TARGET MUST USE:
+
+--label novoalign-%REPLICATE% \
+
+
+
+
+
+</entry>
+
+<entry [Fri Jan 14 09:06:13 EST 2011] LOCK FILES TO HANDLE PROBLEM OF MISSING OUTPUT FILES (EMPTY ALIGNMENT DIRECTORIES) >
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/ELAND.pl \
+--check \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-1.reads_1.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-1.reads_2.sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chrX \
+--outputdir /ngs/bioinfo/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1 \
+--inputtype fastq \
+--species human \
+--label eland-200bp-1 \
+--maxjobs 1000 \
+--walltime 24 \
+--queue small \
+--cluster LSF \
+--cpus 1 \
+--reads 1000000
+
+
+
+SOLUTION:
+
+    1) USE LOCKFILES TO DETERMINE WHETHER FILES ARE STILL BEING WRITTEN TO
+
+    2) GET bacct FOR FAILED JOBS WHERE NO OUTPUT FILES ARE FOUND
+
+
+
+
+1. LOCK FILES
+-------------
+
+ADD A LOCK FILE IN *sh SCRIPT BEFORE JOB PROCESSING AND REMOVE AFTER COMPLETED
+
+NB: THIS DOES NOT GUARANTEE THAT THE JOB ACTUALLY FULLY COMPLETED PROCESSING, ONLY THAT IT STOPPED
+
+
+
+2. JOB ACCOUNTING FOR MISSING FILES
+-----------------------------------
+
+
+GET INFO ON ALL JOBS THAT EXITED (DID NOT COMPLETE NORMALLY) AND PARSE:
+
+bacct -e -l > exited-jobs.txt
+
+
+
+OR JUST LOOK UP bacct INFO FOR A PARTICULAR JOB:
+<!--
+
+    Accounting information about this job:
+         Share group charged </syoung>
+         CPU_T     WAIT     TURNAROUND   STATUS     HOG_FACTOR    MEM    SWAP
+          0.01        7              8     exit         0.0011     2M     23M
+    ------------------------------------------------------------------------------
+    
+    Job <2342851[24]>, Job Name <ELAND-chrX[24]>, User <syoung>, Project <default>,
+                         Status <EXIT>, Queue <small>, Command </scratch/syoung/bas
+                         e/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland
+                         X/19/chrX/ELAND-chrX.sh>, Share group charged </syoung>
+    Fri Dec 10 14:55:51: Submitted from host <u01>, CWD </scratch/syoung/base/pipel
+                         ine/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19/ch
+                         rX>, Output File </scratch/syoung/base/pipeline/SRA/NA1850
+                         7/SRP000239/sampled/200bp/chr22/elandX/19/chrX/%I/ELAND-ch
+                         rX-stdout.txt>;
+    Fri Dec 10 14:55:54:  [24] dispatched to <n0081>;
+    Sat Dec 11 15:06:15: Completed <exit>; TERM_RUNLIMIT: job killed after reaching
+                          LSF run time limit.
+
+
+
+-->
+
+3. CHECK IF FILE IS BEING WRITTEN TO
+------------------------------------
+
+flock DOESN'T WORK, NO OTHER PORTABLE WAYS
+
+
+http://www.perlmonks.org/?node_id=457440
+
+QUESTION: Are there any modules or else that can check if a file is being written to, without using flock ?
+
+ANSWER: There's no good portable way to check if a file is being modified by someone else, especially if you're dealing with network mounted filesystems of any flavor. (And no, lsof isn't a good portable way, but you might check its man page if it's available anyway.)
+
+The most secure method would be to centralize all read-write responsibilities to one process, such as a daemon. That's what databases are: one process that can manipulate the files in a centralized way.
+
+Barring that, you'll have to erect some systems involving baling wire and twine. Er, I mean chmod, rename and/or creating/unlinking auxiliary files. The only benefit to these operations is that they are, for the most part, atomic on all useful filesystems.
+
+As for flock(), it's not even guaranteed to work. It's a "suggestion" or "advisory" and not a stable effective lock. If it works, great, but don't count on it working in all situations.
+
+
+
+4. stat
+-------
+
+http://www.perlmonks.org/bare/?node_id=70173
+
+If you think the file is being written to as you work with it, you can always use stat to get the modify time of a file before and after some point in time; if it's different, you know the file's been written to.
+
+But if the other program has the file opened, but is idling and not writing anything, you won't be able to detect this.
+
+
+5. lsof
+-------
+
+CAN'T USE lsof TO DETERMINE OPEN FILES OVER NFS
+
+lsof MAN PAGE
+http://www.netadmintools.com/html/lsof.man.html
+
+Generally lsof can only report on locks held by local processes on local files. When a local process sets a lock on a remotely mounted (e.g., NFS) file, the remote server host usually records the lock state. 
+
+
+
+
+
+
+
+MAQ MANUAL GIVES TIMINGS FOR 1 MILLION PAIRS OF READS (2 MILLION READS)
+----------------------------------------------------------------------
+
+http://maq.sourceforge.net/maq-manpage.shtml
+
+    Fast align Illumina/SOLiD reads to the reference genome.
+    With the default options, one million pairs of reads can be mapped to the
+    human genome in about 10 CPU hours with less than 1G memory.
+
+
+DESCRIPTION
+
+Maq is a software that builds mapping assemblies from short reads generated by the next-generation sequencing machines. It is particularly designed for Illumina-Solexa 1G Genetic Analyzer, and has a preliminary functionality to handle AB SOLiD data.
+With Maq you can:
+o	 Fast align Illumina/SOLiD reads to the reference genome. With the default options, one million pairs of reads can be mapped to the human genome in about 10 CPU hours with less than 1G memory.
+o	 Accurately measure the error probability of the alignment of each individual read.
+o	 Call the consensus genotypes, including homozygous and heterozygous polymorphisms, with a Phred probabilistic quality assigned to each base.
+o	 Find short indels with paired end reads.
+o	 Accurately find large scale genomic deletions and translocations with paired end reads.
+o	 Discover potential CNVs by checking read depth.
+o	 Evaluate the accuracy of raw base qualities from sequencers and help to check the systematic errors.
+However, Maq can NOT:
+o	 Do de novo assembly. (Maq can only call the consensus by mapping reads to a known reference.)
+o	 Map shorts reads against themselves. (Maq can only find complete overlap between reads.)
+o	 Align capillary reads or 454 reads to the reference. (Maq cannot align reads longer than 63bp.)
+
+
+MAQ MANUAL ALSO MENTIONS NEED 40X COVERAGE TO USE RECOMMENDED INDEL FILTER:
+
+indelsoa	maq indelsoa in.ref.bfa in.aln.map > out.indelsoa
+
+Call potential homozygous indels and break points by detecting the abnormal alignment pattern around indels and break points. The output is also TAB delimited with each line consisting of chromosome, approximate coordinate, length of the abnormal region, number of reads mapped across the position, number of reads on the left-hand side of the position and number of reads on the right-hand side. The last column can be ignored.
+
+The output contains many false positives. A recommended filter could be:
+
+  awk $5+$6-$4 >= 3 && $4 <= 1 in.indelsoa
+
+Note that this command does not aim to be an accurate indel detector, but mainly helps to avoid some false positives in substitution calling. In addition, it only works well given deep depth (~40X for example); otherwise the false negative rate would be very high.
+
+
+
+
+</entry>
+
+<entry [Thu Jan 13 13:09:44 EST 2011] PROBLEM: LSF::Job MODULE GAVE THIS ERROR>
+
+[Thu Jan 13 13:03:58 2011] BOWTIE.pl: Use of uninitialized value in print at /nethome/syoung/0.5/bin/apps/aligners/../../../lib/external/LSF/Job.pm line 68, <FILE> line 20.
+
+SOLUTION:
+
+EDIT AS FOLLOWS:
+
+emacs /nethome/syoung/0.5/bin/apps/aligners/../../../lib/external/LSF/Job.pm
+
+    #$idx = 1 if $self->LSF =~ /^4/;   
+    $idx = 1 if defined $self->LSF and $self->LSF =~ /^4/;
+
+
+ALSO, FOR REFACTORING OF Monitor::LSF (PUT PBS-RELATED CODE INTO Monitor::PBS), CHECK USE OF JOB ENVIRONMENT VARIABLES (FOR JOB NUMBER AND NUMBER OF TASKS) ON COMMAND LINE:
+
+PBS_TASKNUM
+PBS_ARRAYID
+
+
+NB: NOT SURE IF PBS_ARRAYID WORKED ON KRONOS!!!
+
+
+
+LATER: DO SOMETHING ABOUT USAGE - JUST IN CASE CAN'T RELY
+UPON SYSTEM SETTINGS TO OUTPUT USAGE STATS AT END OF RUN
+
+print SHFILE qq{
+	/usr/bin/printenv
+};
+
+   # NB: bhist OUTPUT TOO BASIC:
+   #print SHFILE qq{`bhist \$LSB_JOBID > $usagefile`;
+
+
+NOTES
+-----
+
+PBS ARRAY JOB ENVIRONMENT VARIABLES
+http://www.clusterresources.com/torquedocs21/2.1jobsubmission.shtml
+
+2.1.6 Exported Batch Environment Variables
+When a batch job is started, a number of variables are introduced into the job's environment that can be used by the batch script in making decisions, creating output files, and so forth. These variables are listed in the following table:
+
+Variable	Description
+PBS_JOBNAME	user specified jobname
+PBS_ARRAYID	zero-based value of job array index for this job (in version 2.2.0 and later)
+PBS_O_WORKDIR	job's submission directory
+PBS_ENVIRONMENT	N/A
+PBS_TASKNUM	number of tasks requested
+PBS_O_HOME	home directory of submitting user
+PBS_MOMPORT	active port for mom daemon
+PBS_O_LOGNAME	name of submitting user
+PBS_O_LANG	language variable for job
+PBS_JOBCOOKIE	job cookie
+PBS_NODENUM	node offset number
+PBS_O_SHELL	script shell
+PBS_O_JOBID	unique pbs job id
+PBS_O_HOST	host on which job script is currently running
+PBS_QUEUE	job queue
+PBS_NODEFILE	file containing line delimited list on nodes allocated to the job
+PBS_O_PATH	path variable used to locate executables within job script
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 21:49:32 EST 2010] RUN MISSING FILES IN BOWTIE-NOVOALIGN AND BOWTIE-ELAND snpVenn.pl>
+
+RERUNNING ELAND-BOWTIE snpVenn.pl
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-2.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-2.sav \
+--querylabel eland-2 \
+--targetlabel bowtie-2 \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/eland-bowtie
+    
+    snpVenn.pl    Run time: 01:20:07
+    snpVenn.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    snpVenn.pl    0:43AM, 14 December 2010
+    snpVenn.pl    ****************************************
+
+
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn/snp/bowtie-novoalign
+
+
+CLEANUP ELAND X:
+
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl \
+--mode subdirs,splitfiles \
+--directory /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX \
+--references chrX
+
+
+
+MOVING FOLDERS TO /ngs/bioinfo
+
+ON u03
+
+FOLDER      RUNNING
+maq         Wed Dec 15 15:18:52 EST 2010
+bowtie-rf   Wed Dec 15 15:18:52 EST 2010
+eland(cum4) DONE 
+elandX      DONE
+
+
+
+</entry>
+
+<entry [Mon Dec 13 11:25:35 EST 2010] RUN SAV.pl AND unbin.pl ON ELAND FILE 2>
+
+
+screen -S eland-sav-2
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/snp/SAV.pl \
+--binlevel 2 \
+--filename hit.bam \
+--inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/2 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3 \
+--tempfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/snp130-2 \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22 \
+--dbsnp snp130 \
+--species human \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24
+
+    SAV.pl    Run time: 00:19:29
+    SAV.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/SAV.pl
+    SAV.pl    10-12-13 12:38:44
+    SAV.pl    ****************************************
+
+
+
+perl /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/unbin.pl \
+--binlevel 2 \
+--suffix sav \
+--filename hit.bam \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3 \
+--inputdirs \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/2 \
+--walltime 48 \
+--cluster LSF \
+--queue small \
+--cpus 1 \
+--maxjobs 1000
+
+    unbin.pl    Run time: 00:00:34
+    unbin.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/unbin.pl
+    unbin.pl    8:21PM, 13 December 2010
+    unbin.pl    ****************************************
+
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22
+
+    -rw-rw-rw- 1 syoung root  1.9M Dec 13 20:20 hit-2.sav
+
+
+WHICH ARE MUCH LARGER THAN THE PREVIOUS hit-2.sav FILE:
+
+ll -tr *sav.bkp
+
+    -rw-rw-r-- 1 syoung root 212K Dec 13 11:18 hit-2.sav.bkp
+
+
+
+
+NOTES
+-----
+
+CUMULATIVE hit-2.sav FILE MUCH SMALLER THAN EXPECTED SO PROBABLY TRUNCATED DUE TO FORMAT ERROF IN hit*-2.snp FILE (DUE TO MULTIPLE PROCESSES WRITING TO FILE AT ONCE?)
+
+c
+-rw-rw-rw- 1 syoung root 1.1M Dec  7 01:41 hit-1.sav
+-rw-rw-rw- 1 syoung root 212K Dec  7 01:41 hit-2.sav
+-rw-rw-rw- 1 syoung root 2.4M Dec  7 01:41 hit-3.sav
+
+
+NB: CUMULATIVE hit*-2.snp FILE APPEARS NORMAL:
+
+    -rw-rw-r-- 1 syoung root  13K Dec  5 19:09 hit.binlevel2.num15-1.snp
+    -rw-rw-rw- 1 syoung root  24K Dec  5 19:09 hit.binlevel2.num15-2.snp
+    -rw-rw-rw- 1 syoung root  34K Nov 29 14:35 hit.binlevel2.num15-3.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 14:37 hit.binlevel2.num15-4.snp
+    -rw-rw-rw- 1 syoung root  44K Nov 29 14:39 hit.binlevel2.num15-5.snp
+    -rw-rw-rw- 1 syoung root  44K Nov 29 14:41 hit.binlevel2.num15-6.snp
+    -rw-rw-rw- 1 syoung root  42K Nov 29 14:44 hit.binlevel2.num15-7.snp
+    -rw-rw-rw- 1 syoung root  43K Nov 29 14:48 hit.binlevel2.num15-8.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 14:53 hit.binlevel2.num15-9.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 14:58 hit.binlevel2.num15-10.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 15:03 hit.binlevel2.num15-11.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 15:09 hit.binlevel2.num15-12.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 15:18 hit.binlevel2.num15-13.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 15:26 hit.binlevel2.num15-14.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 15:35 hit.binlevel2.num15-15.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 15:42 hit.binlevel2.num15-16.snp
+    -rw-rw-rw- 1 syoung root  43K Nov 29 15:50 hit.binlevel2.num15-17.snp
+    -rw-rw-rw- 1 syoung root  44K Nov 29 15:59 hit.binlevel2.num15-18.snp
+    -rw-rw-rw- 1 syoung root  43K Nov 29 16:08 hit.binlevel2.num15-19.snp
+    -rw-rw-rw- 1 syoung root  42K Nov 29 16:18 hit.binlevel2.num15-20.snp
+    -rw-rw-rw- 1 syoung root  42K Nov 29 16:28 hit.binlevel2.num15-21.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 16:39 hit.binlevel2.num15-22.snp
+    -rw-rw-rw- 1 syoung root  39K Nov 29 16:50 hit.binlevel2.num15-23.snp
+    -rw-rw-rw- 1 syoung root  37K Nov 29 17:02 hit.binlevel2.num15-24.snp
+    -rw-rw-rw- 1 syoung root  38K Nov 29 17:14 hit.binlevel2.num15-25.snp
+    -rw-rw-rw- 1 syoung root  38K Nov 29 17:26 hit.binlevel2.num15-26.snp
+    -rw-rw-rw- 1 syoung root  37K Nov 29 17:39 hit.binlevel2.num15-27.snp
+    -rw-rw-rw- 1 syoung root  37K Nov 29 17:53 hit.binlevel2.num15-28.snp
+    -rw-rw-rw- 1 syoung root  38K Nov 29 18:06 hit.binlevel2.num15-29.snp
+    -rw-rw-rw- 1 syoung root  38K Nov 29 18:22 hit.binlevel2.num15-30.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 18:37 hit.binlevel2.num15-31.snp
+    -rw-rw-rw- 1 syoung root  40K Nov 29 18:52 hit.binlevel2.num15-32.snp
+    -rw-rw-rw- 1 syoung root  41K Nov 29 19:08 hit.binlevel2.num15-33.snp
+
+
+NB: CUMULATIVE hit*-2.bam FILE APPEARS NORMAL:
+
+    -rw-rw-r-- 1 syoung root 2.0M Nov 29 14:33 hit.binlevel2.num15-1.bam
+    -rw-rw-rw- 1 syoung root 3.8M Nov 29 14:34 hit.binlevel2.num15-2.bam
+    -rw-rw-rw- 1 syoung root 5.6M Nov 29 14:35 hit.binlevel2.num15-3.bam
+    -rw-rw-rw- 1 syoung root 7.3M Nov 29 14:37 hit.binlevel2.num15-4.bam
+    -rw-rw-rw- 1 syoung root 9.1M Nov 29 14:39 hit.binlevel2.num15-5.bam
+    -rw-rw-rw- 1 syoung root  11M Nov 29 14:41 hit.binlevel2.num15-6.bam
+    -rw-rw-rw- 1 syoung root  13M Nov 29 14:44 hit.binlevel2.num15-7.bam
+    -rw-rw-rw- 1 syoung root  15M Nov 29 14:48 hit.binlevel2.num15-8.bam
+    -rw-rw-rw- 1 syoung root  16M Nov 29 14:53 hit.binlevel2.num15-9.bam
+    -rw-rw-rw- 1 syoung root  18M Nov 29 14:58 hit.binlevel2.num15-10.bam
+    -rw-rw-rw- 1 syoung root  19M Nov 29 15:03 hit.binlevel2.num15-11.bam
+    -rw-rw-rw- 1 syoung root  21M Nov 29 15:09 hit.binlevel2.num15-12.bam
+    -rw-rw-rw- 1 syoung root  23M Nov 29 15:17 hit.binlevel2.num15-13.bam
+    -rw-rw-rw- 1 syoung root  25M Nov 29 15:26 hit.binlevel2.num15-14.bam
+    -rw-rw-rw- 1 syoung root  26M Nov 29 15:34 hit.binlevel2.num15-15.bam
+    -rw-rw-rw- 1 syoung root  28M Nov 29 15:42 hit.binlevel2.num15-16.bam
+    -rw-rw-rw- 1 syoung root  30M Nov 29 15:50 hit.binlevel2.num15-17.bam
+    -rw-rw-rw- 1 syoung root  31M Nov 29 15:59 hit.binlevel2.num15-18.bam
+    -rw-rw-rw- 1 syoung root  33M Nov 29 16:08 hit.binlevel2.num15-19.bam
+    -rw-rw-rw- 1 syoung root  34M Nov 29 16:18 hit.binlevel2.num15-20.bam
+    -rw-rw-rw- 1 syoung root  36M Nov 29 16:28 hit.binlevel2.num15-21.bam
+    -rw-rw-rw- 1 syoung root  38M Nov 29 16:38 hit.binlevel2.num15-22.bam
+    -rw-rw-rw- 1 syoung root  39M Nov 29 16:50 hit.binlevel2.num15-23.bam
+    -rw-rw-rw- 1 syoung root  41M Nov 29 17:02 hit.binlevel2.num15-24.bam
+    -rw-rw-rw- 1 syoung root  43M Nov 29 17:14 hit.binlevel2.num15-25.bam
+    -rw-rw-rw- 1 syoung root  44M Nov 29 17:26 hit.binlevel2.num15-26.bam
+    -rw-rw-rw- 1 syoung root  46M Nov 29 17:39 hit.binlevel2.num15-27.bam
+    -rw-rw-rw- 1 syoung root  47M Nov 29 17:52 hit.binlevel2.num15-28.bam
+    -rw-rw-rw- 1 syoung root  49M Nov 29 18:06 hit.binlevel2.num15-29.bam
+    -rw-rw-rw- 1 syoung root  51M Nov 29 18:22 hit.binlevel2.num15-30.bam
+    -rw-rw-rw- 1 syoung root  52M Nov 29 18:37 hit.binlevel2.num15-31.bam
+    -rw-rw-rw- 1 syoung root  54M Nov 29 18:52 hit.binlevel2.num15-32.bam
+    -rw-rw-rw- 1 syoung root  55M Nov 29 19:08 hit.binlevel2.num15-33.bam
+
+
+
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 01:57:14 EST 2010] RUN collateVenn.pl ON ALL SAMPLES AGAINST CORRESPONDING dbSNP SAMPLES>
+
+
+ELAND
+-----
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp-v-all/eland-dbsnp-vs-eland.tsv \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel eland-%REPLICATE% \
+--suffix sav \
+--replicates 1-%REPLICATE%
+
+
+BOWTIE
+------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp-v-all/bowtie-dbsnp-vs-bowtie.tsv \
+--querylabel bowtie-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE% \
+--suffix sav \
+--replicates 1-%REPLICATE%
+
+
+BOWTIE-RF
+---------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-rf/cumulative3/chr22/venn/sav-dbsnp-v-all/bowtie-rf-dbsnp-vs-bowtie-rf.tsv \
+--querylabel bowtie-rf-%REPLICATE%-dbsnp \
+--targetlabel bowtie-rf-%REPLICATE% \
+--suffix sav \
+--replicates 1-%REPLICATE%
+
+
+NOVOALIGN
+---------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp-v-all/novoalign-dbsnp-vs-novoalign.tsv \
+--querylabel novoalign-%REPLICATE%-dbsnp \
+--targetlabel novoalign-%REPLICATE% \
+--suffix sav \
+--replicates 1-%REPLICATE%
+
+
+MAQ
+---
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/cumulative3/chr22/venn/sav-dbsnp-v-all/maq-dbsnp-vs-maq.tsv \
+--querylabel maq-%REPLICATE%-dbsnp \
+--targetlabel maq-%REPLICATE% \
+--suffix sav \
+--replicates 1-%REPLICATE%
+
+
+
+
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 01:57:14 EST 2010] RUN collateVenn.pl ON ALL dbSNP SAMPLES>
+
+
+ELAND V MAQ
+-----------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-maq/eland-dbsnp-vs-maq-dbsnp.tsv \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel --%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+
+ELAND v BOWTIE
+--------------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie/eland-dbsnp-vs-bowtie-dbsnp.tsv \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+    
+    collateVenn.pl    Run time: 00:00:02
+    collateVenn.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl --outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie/eland-vs-bowtie.tsv --querylabel eland-%REPLICATE%-dbsnp --targetlabel bowtie-%REPLICATE%-dbsnp --suffix sav --replicates 1-33
+    collateVenn.pl    1:01PM, 13 December 2010
+    collateVenn.pl    ****************************************
+
+
+ELAND v BOWTIE-RF
+-----------------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie-rf/eland-dbsnp-vs-bowtie-rf-dbsnp.tsv \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-rf-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+    
+
+ELAND v NOVOALIGN
+-----------------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign/eland-dbsnp-vs-novoalign-dbsnp.tsv \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel novoalign-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+    collateVenn.pl    Run time: 00:00:01
+    collateVenn.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl --outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign/eland-dbsnp-vs-novoalign-dbsnp.tsv --querylabel eland-%REPLICATE%-dbsnp --targetlabel novoalign-%REPLICATE%-dbsnp --suffix sav --replicates 1-33
+    collateVenn.pl    1:03PM, 13 December 2010
+    collateVenn.pl    ****************************************
+
+
+ELAND
+-----
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn-dbsnp/sav-dbsnp/eland-dbsnp-vs-eland-33-dbsnp.tsv \
+--querylabel eland-33-dbsnp \
+--targetlabel eland-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+BOWTIE
+------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn-dbsnp/sav-dbsnp/bowtie-dbsnp-vs-bowtie-33-dbsnp.tsv \
+--querylabel bowtie-33-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+BOWTIE-RF
+---------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-rf/cumulative3/chr22/venn-dbsnp/sav-dbsnp/bowtie-rf-dbsnp-vs-bowtie-rf-33-dbsnp.tsv \
+--querylabel bowtie-rf-33-dbsnp \
+--targetlabel bowtie-rf-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+NOVOALIGN
+---------
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn-dbsnp/sav-dbsnp/novoalign-dbsnp-vs-novoalign-33-dbsnp.tsv \
+--querylabel novoalign-33-dbsnp \
+--targetlabel novoalign-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+MAQ
+---
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/venn/collateVenn.pl \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/cumulative3/chr22/venn-dbsnp/sav-dbsnp/maq-dbsnp-vs-maq-33-dbsnp.tsv \
+--querylabel maq-33-dbsnp \
+--targetlabel maq-%REPLICATE%-dbsnp \
+--suffix sav \
+--replicates 1-33
+
+
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 01:57:14 EST 2010] RUN snpVenn.pl ON ALL SAMPLES AGAINST CORRESPONDING dbSNP SAMPLES>
+
+
+ELAND
+-----
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp-v-all
+
+screen -S eland-dbsnp-v-all
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--replicates 1-33 \
+--loop distributed \
+--label eland-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel eland-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp-v-all/vennsav.out
+
+    Run time: 00:18:13
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    11:18AM, 13 December 2010
+    ****************************************
+
+
+BOWTIE
+------
+
+u03
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp-v-all
+
+screen -S bowtie-dbsnp-v-all
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--replicates 1-33 \
+--loop distributed \
+--label bowtie-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--querylabel bowtie-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp-v-all/vennsav.out
+
+    Run time: 04:05:07
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    3:05PM, 13 December 2010
+    ****************************************
+
+
+
+NOVOALIGN
+---------
+
+u03
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp-v-all
+
+screen -S novo-dbsnp-v-all
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--replicates 1-33 \
+--loop distributed \
+--label novoalign-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp-v-all \
+--querylabel novoalign-%REPLICATE%-dbsnp \
+--targetlabel novoalign-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp-v-all/vennsav.out
+    
+    Run time: 01:49:17
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    12:50AM, 13 December 2010
+    ****************************************
+
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 01:57:14 EST 2010] RUN snpVenn.pl ON ALL dbSNP SAMPLES>
+
+
+ELAND vs MAQ
+------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-maq
+
+screen -S elandmaq-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-maq \
+--replicates 1-33 \
+--loop distributed \
+--label elandmaq-vennsnp \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel maq-%REPLICATE%-dbsnp \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-maq \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-maq/elandmaq-snpvenn.out
+    
+
+ELAND vs BOWTIE
+---------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie
+
+screen -S elandbowtie-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie \
+--replicates 1-33 \
+--loop distributed \
+--label elandbowtie-vennsnp \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie/elandbowtie-snpvenn.out
+
+    Run time: 00:37:40
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    11:48AM, 13 December 2010
+    ****************************************
+
+
+
+ELAND vs BOWTIE-RF
+------------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie-rf
+
+screen -S elandbowtie-rf-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie-rf \
+--replicates 1-33 \
+--loop distributed \
+--label elandbowtie-rf-vennsnp \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/eland-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-rf/cumulative3/chr22/bowtie-%REPLICATE%-dbsnp.sav \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel bowtie-rf-%REPLICATE%-dbsnp \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie-rf \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-bowtie-rf/elandbowtie-rf-snpvenn.out
+
+
+
+ELAND v NOVOALIGN
+-----------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign
+
+screen -S elandnovo-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign \
+--replicates 1-33 \
+--loop distributed \
+--label elandnovoalign-vennsnp \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--querylabel eland-%REPLICATE%-dbsnp \
+--targetlabel novoalign-%REPLICATE%-dbsnp \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/eland-novoalign/elandnovoalign-snpvenn.out
+    
+    Run time: 00:19:44
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    11:31AM, 13 December 2010
+    ****************************************
+    
+
+BOWTIE v NOVOALIGN
+------------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/bowtie-novoalign
+
+screen -S bowtienovo-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/bowtie-novoalign \
+--replicates 1-33 \
+--loop distributed \
+--label bowtienovoalign-vennsnp \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--querylabel bowtie-%REPLICATE%-dbsnp \
+--targetlabel novoalign-%REPLICATE%-dbsnp \
+--suffix sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/bowtie-novoalign \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/venn-dbsnp/bowtie-novoalign/bowtienovoalign-snpvenn.out
+
+    Run time: 01:01:43
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    12:13AM, 13 December 2010
+    ****************************************
+
+
+ELAND
+-----
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp \
+--replicates 1-33 \
+--loop distributed \
+--label eland-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-33-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp \
+--querylabel eland-33-dbsnp \
+--targetlabel eland-%REPLICATE%-dbsnp \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/venn/sav-dbsnp/vennsav.out
+
+    Run time: 00:09:53
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    2:06AM, 13 December 2010
+    ****************************************
+    
+
+BOWTIE
+------
+
+u03
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp
+
+screen -S bowtie-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp \
+--replicates 1-33 \
+--loop distributed \
+--label bowtie-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-33-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp \
+--querylabel bowtie-33-dbsnp \
+--targetlabel bowtie-%REPLICATE%-dbsnp \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/venn/sav-dbsnp/vennsav.out
+
+    Run time: 01:41:38
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    11:48AM, 13 December 2010
+    ****************************************
+    
+    #snpVenn.pl    Run time: 01:04:13
+    #snpVenn.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl
+    #snpVenn.pl    11:11AM, 13 December 2010
+    #snpVenn.pl    ****************************************
+
+
+
+NOVOALIGN
+---------
+uo3
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp
+
+screen -S novo-venn
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp \
+--replicates 1-33 \
+--loop distributed \
+--label novoalign-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-33-dbsnp.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp \
+--querylabel novoalign-33-dbsnp \
+--targetlabel novoalign-%REPLICATE%-dbsnp \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/venn/sav-dbsnp/vennsav.out
+    
+    Run time: 00:34:47
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    10:41AM, 13 December 2010
+    ****************************************
+
+
+
+
+</entry>
+
+<entry [Mon Dec 13 01:24:22 EST 2010] CONVERT *sav FILES TO *dbsnp.sav FOR ALL SAMPLES>
+
+
+ELAND
+-----
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/utils/columnFilter.pl \
+--inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--column 11 \
+--operator regex \
+--threshold "^rs"
+    
+    Run time: 00:00:34
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    1:48AM, 13 December 2010
+    ****************************************
+
+BOWTIE
+------
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/utils/columnFilter.pl \
+--inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--column 11 \
+--operator regex \
+--threshold "^rs"
+
+    Run time: 00:00:34
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    1:49AM, 13 December 2010
+    ****************************************
+
+
+BOWTIE
+------
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/utils/columnFilter.pl \
+--inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--column 11 \
+--operator regex \
+--threshold "^rs"
+
+    Run time: 00:00:34
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    1:49AM, 13 December 2010
+    ****************************************
+
+
+BOWTIE-RF
+---------
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/utils/columnFilter.pl \
+--inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-rf/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/bowtie-rf/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--column 11 \
+--operator regex \
+--threshold "^rs"
+    
+    Run time: 00:00:34
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    12:40AM, 13 December 2010
+    ****************************************
+
+
+NOVOALIGN
+---------
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/utils/columnFilter.pl \
+--inputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/novoalign/cumulative3/chr22/hit-%REPLICATE%-dbsnp.sav \
+--column 11 \
+--operator regex \
+--threshold "^rs"
+
+    Run time: 00:00:34
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    1:54AM, 13 December 2010
+    ****************************************
+
+
+
+
+
+</entry>
+
+<entry [Wed Dec  8 14:37:12 EST 2010] RERUN ELAND ON chrX AND COMPARE SNPS WITH Bentley PAPER>
+
+
+Bentley et al. PREDICTED 92,500 SNPs:
+
+    We identified 92,485 candidate SNPs in the X chromosome using
+    ELAND (Supplementary Fig. 6). Most calls (85%) match previous
+    entries in the public database dbSNP. Heterozygosity (p) in this data
+    set is 4.331024 (that is, one substitution per 2.3 kb), close to a
+    previously published X chromosome estimate (4.731024)12. Using
+    MAQwe obtained 104,567 SNPs, most of which were common to the
+    results of the ELAND analysis. The differences between the two sets of
+    SNP calls are largely the consequence of different properties of the
+    alignments as described earlier. For example, most of the SNPs found
+    only by the MAQ-based analysis were at positions of low or zero
+    sequence depth in the ELAND alignment (Supplementary Fig. 6c).
+
+
+Bentley et al. AVERAGE READ DEPTH IS 43X
+
+    We obtained comprehensive coverage of the X chromosome from
+    both analyses. With MAQ, 204 million reads aligned to 99.94% of the
+    X chromosome at an average depth of 43X. With ELAND, 192 million
+    reads covered 91% of the reference sequence, showing what can
+    be covered by unique best alignments. These results were obtained
+    after excluding reads aligning to non-X sequence (impurities of flow
+    sorting) and apparently duplicated read pairs (Supplementary Table 2).
+    We reasoned that these duplicates (,10% of the total) arose during
+    initial sample amplification.
+
+    The sampling of sequence fragments from the X chromosome is
+    close to random. This is evident from the distribution of mapped
+    read depth in the MAQ alignment in regions where the reference is
+    unique (Fig. 2a): the variance of this distribution is only 2.26 times
+    that of a Poisson distribution (the theoretical minimum). Half of this
+    excess variance can be accounted for by a dependence on GC content.
+    However, the average mapped read depth only falls below 10X
+    in regions with G1C content less than 4% or greater than 76%,
+    comprising in total just 1% of unique chromosome sequence and
+    3% of coding sequence (Fig. 2b).
+
+
+ELAND.pl
+------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX
+
+screen -S elandX
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/ELAND.pl \
+--replicates 1-33 \
+--loop parallel \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chrX \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/%REPLICATE% \
+--inputtype fastq \
+--species human \
+--label elandX-200bp-%REPLICATE% \
+--maxjobs 1000 \
+--walltime 24 \
+--queue small \
+--cluster LSF \
+--cpus 1 \
+--reads 1000000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/%REPLICATE%/elandX-200bp-%REPLICATE%.out \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/elandX.1-33.loop.out
+        
+    Run time: 28:11:29
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    3:40PM, 11 December 2010
+    ****************************************
+    
+    
+u01 screen MOVING TO  /ngs/bioinfo
+Mon Dec 13 15:50:44 EST 2010
+
+
+
+[syoung@u01 ~]$ date
+Fri Dec 10 20:08:30 EST 201
+    
+tail /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/elandX.1-33.loop.out
+
+    Loop::run    CONCURRENT: /nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/ELAND.pl "--inputfiles" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-33.reads_1.sequence.txt" "--matefiles" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-33.reads_2.sequence.txt" "--referencedir" "/nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chrX" "--outputdir" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33" "--inputtype" "fastq" "--species" "human" "--label" "elandX-200bp-33" "--maxjobs" "1000" "--walltime" "24" "--queue" "small" "--cluster" "LSF" "--cpus" "1" "--reads" "1000000" "--stdout" "/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33/elandX-200bp-33.out"
+    LSF daemon (LIM) not responding ... still trying
+    
+
+
+CHECKED IN FOLDER TO VERIFY THAT THE JOBS ARE INDEED FINISHED (I.E., NO MORE WRITING TO DISK GOING ON):
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX
+ll -tr
+
+    ...
+    drwxrwxrwx  2 syoung root  479 Dec 10 15:49 4
+    drwxrwxrwx  2 syoung root  479 Dec 10 15:49 6
+    drwxrwxrwx  2 syoung root  479 Dec 10 15:49 7
+    drwxrwxrwx  2 syoung root  479 Dec 10 15:49 8
+
+
+MAIN STDOUT FILE LAST WRITTEN TO AT 4:26PM:
+
+
+ll /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/elandX.1-33.loop.out
+
+    -rw-rw-r-- 1 syoung root 28K Dec 10 16:26 /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/elandX.1-33.loop.out
+
+
+CURRENT STATE OF THE QUEUE (TWO HOURS AFTER THE LAST JOB ENDED):
+
+
+QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+debug           200  Open:Active       -    -    -    -     0     0     0     0
+small           100  Open:Active       -    -    -    -   714   128   586     0
+medium           90  Open:Active       -    -    -    -     0     0     0     0
+large            80  Open:Active       -    -    -    -     0     0     0     0
+xlarge           70  Open:Active       -    -    -    -     0     0     0     0
+longrun          60  Open:Active       -    -    -    -     0     0     0     0
+ngs              60  Open:Active       -    -    -    -     0     0     0     0
+amd              60  Open:Active       -    -    -    -   510     0   510     0
+eris             60  Open:Active       -    -    -    -     0     0     0     0
+hermes           60  Open:Active       -    -    -    -     2     0     2     0
+atlas            60  Open:Active       -    -    -    -     0     0     0     0
+resv             60  Open:Active       -    -    -    -     0     0     0     0
+
+Fri Dec 10 19:45:40 EST 2010
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
+
+CHECKED THE STDOUT FILES FOR THE INDIVIDUAL ALIGNMENT JOBS AND FOUND THAT THE STDOUT FILE FOR FILE 19 IS CURTAILED:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19
+[syoung@u01 19]$ em elandX-200bp-19.out
+
+
+    /nethome/syoung/base/apps/casava/1.6.0/bin/ELAND_standalone.pl \
+    --input-type fastq \
+    --eland-genome /nethome/bioinfo/data/sequence/chromosomes/human/hg19/eland/chrX/chrX \
+    --input-file /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/\
+    19/$LSB_JOBINDEX/elandX-200bp-19_1.$LSB_JOBINDEX.txt \
+    --input-file /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/\
+    19/$LSB_JOBINDEX/elandX-200bp-19_2.$LSB_JOBINDEX.txt \
+    
+    
+    Eland::doBatchAlignment    No. jobs: 1
+    Cluster::runJobs    Running 1 jobs
+    Cluster::runJobs    scriptfile: /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/\
+    200bp/chr22/elandX/19/chrX/ELAND-chrX.sh
+    Job <2342851> is submitted to queue <small>.
+
+
+
+NOTE THAT SEVERAL OF THE 50 JOBS FOR INPUT FILE 19 SEEM TO HAVE FAILED:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19/chrX
+
+[syoung@u01 chrX]$ ll
+total 1.2M
+drwxrwxrwx 52 syoung root  614 Dec 10 14:55 .
+drwxrwxrwx 53 syoung root  657 Dec 10 14:55 ..
+drwxrwxrwx  2 syoung root  479 Dec 10 15:25 1
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 10
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 11
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 12
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 13
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 14
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 15
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 16
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 17
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 18
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 19
+drwxrwxrwx  2 syoung root  479 Dec 10 15:39 2
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 20
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 21
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 22
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 23
+drwxrwxrwx  2 syoung root    0 Dec 10 14:55 24
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 25
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 26
+drwxrwxrwx  2 syoung root  479 Dec 10 15:19 27
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 28
+drwxrwxrwx  2 syoung root  479 Dec 10 15:23 29
+drwxrwxrwx  2 syoung root  479 Dec 10 15:39 3
+drwxrwxrwx  2 syoung root  479 Dec 10 15:23 30
+drwxrwxrwx  2 syoung root  479 Dec 10 15:23 31
+drwxrwxrwx  2 syoung root  479 Dec 10 15:23 32
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 33
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 34
+drwxrwxrwx  2 syoung root  479 Dec 10 15:30 35
+drwxrwxrwx  2 syoung root  479 Dec 10 15:25 36
+drwxrwxrwx  2 syoung root  479 Dec 10 15:30 37
+drwxrwxrwx  2 syoung root  479 Dec 10 15:30 38
+drwxrwxrwx  2 syoung root  479 Dec 10 15:30 39
+drwxrwxrwx  2 syoung root  479 Dec 10 15:49 4
+drwxrwxrwx  2 syoung root  479 Dec 10 15:30 40
+drwxrwxrwx  2 syoung root  479 Dec 10 15:14 41
+drwxrwxrwx  2 syoung root  479 Dec 10 15:15 42
+drwxrwxrwx  2 syoung root  479 Dec 10 15:15 43
+drwxrwxrwx  2 syoung root  479 Dec 10 15:15 44
+drwxrwxrwx  2 syoung root  479 Dec 10 15:15 45
+drwxrwxrwx  2 syoung root  479 Dec 10 15:19 46
+drwxrwxrwx  2 syoung root  479 Dec 10 15:20 47
+drwxrwxrwx  2 syoung root  479 Dec 10 15:20 48
+drwxrwxrwx  2 syoung root  479 Dec 10 15:20 49
+drwxrwxrwx  2 syoung root  479 Dec 10 15:39 5
+drwxrwxrwx  2 syoung root  479 Dec 10 15:17 50
+drwxrwxrwx  2 syoung root  479 Dec 10 15:49 6
+drwxrwxrwx  2 syoung root  479 Dec 10 15:49 7
+drwxrwxrwx  2 syoung root  479 Dec 10 15:49 8
+drwxrwxrwx  2 syoung root  479 Dec 10 15:27 9
+-rwxrwxrwx  1 syoung root 2.7K Dec 10 14:55 ELAND-chrX.sh
+
+
+E.G., SUBDIRECTORY 20 IS EMPTY AND THERE IS NO ERROR OUTPUT:
+
+[syoung@u01 chrX]$ ll 20
+total 27K
+drwxrwxrwx  2 syoung root   0 Dec 10 14:55 .
+drwxrwxrwx 52 syoung root 614 Dec 10 14:55 ..
+
+
+... COMPARED TO WHAT IS EXPECTED:
+
+
+[syoung@u01 chrX]$ ll 25
+total 1.2G
+drwxrwxrwx  2 syoung root  479 Dec 10 15:21 .
+drwxrwxrwx 52 syoung root  614 Dec 10 14:55 ..
+-rw-rw-rw-  1 syoung root  33K Dec 10 15:21 ELAND-chrX-stdout.txt
+-rw-rw-rw-  1 syoung root  45M Dec 10 15:18 reanalysis_1_calsaf.txt
+-rw-rw-rw-  1 syoung root  87M Dec 10 15:05 reanalysis_1_eland_extended.txt
+-rw-rw-rw-  1 syoung root  75M Dec 10 14:58 reanalysis_1_eland_query.txt
+-rw-rw-rw-  1 syoung root 122M Dec 10 15:19 reanalysis_1_export.txt
+-rw-rw-rw-  1 syoung root 108M Dec 10 14:56 reanalysis_1_qseq.txt
+-rw-rw-rw-  1 syoung root  44M Dec 10 15:18 reanalysis_2_calsaf.txt
+-rw-rw-rw-  1 syoung root  87M Dec 10 15:14 reanalysis_2_eland_extended.txt
+-rw-rw-rw-  1 syoung root  75M Dec 10 15:08 reanalysis_2_eland_query.txt
+-rw-rw-rw-  1 syoung root 121M Dec 10 15:21 reanalysis_2_export.txt
+-rw-rw-rw-  1 syoung root 108M Dec 10 15:06 reanalysis_2_qseq.txt
+-rw-rw-rw-  1 syoung root 199M Dec 10 15:18 reanalysis_anomaly.txt
+-rw-rw-rw-  1 syoung root   56 Dec 10 15:14 reanalysis_genomesize.xml
+-rw-rw-rw-  1 syoung root 7.5K Dec 10 15:18 reanalysis_pair.xml
+
+
+
+
+
+
+
+
+ALL elandX OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX
+ls -altrh */chrX/hit.bam
+
+    -rw-rw-rw- 1 syoung root 1283434145 Dec  8 19:46 4/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283732283 Dec  8 19:53 23/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1282989784 Dec  8 19:58 31/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283635072 Dec  8 19:58 2/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283391388 Dec  8 19:58 27/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283173265 Dec  8 19:58 22/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283623952 Dec  8 20:00 16/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283441961 Dec  8 20:00 17/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283176319 Dec  8 20:00 14/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283152953 Dec  8 20:00 20/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283319672 Dec  8 20:01 28/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283760526 Dec  8 20:01 9/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283381339 Dec  8 20:02 8/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283209088 Dec  8 20:02 19/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283334106 Dec  8 20:02 11/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1282707213 Dec  8 20:03 1/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283225241 Dec  8 20:03 26/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283062919 Dec  8 20:03 7/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1282820263 Dec  8 20:04 32/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283185403 Dec  8 20:04 3/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283222693 Dec  8 20:05 18/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283481710 Dec  8 20:08 5/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283360674 Dec  8 20:08 21/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283442579 Dec  8 20:08 25/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283508143 Dec  8 20:09 12/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283471769 Dec  8 20:13 13/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283069634 Dec  8 20:15 10/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283418340 Dec  8 20:16 15/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283195293 Dec  8 20:20 6/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283086973 Dec  8 20:21 30/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283915903 Dec  8 20:21 24/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283054222 Dec  8 20:21 29/chrX/hit.bam
+    -rw-rw-rw- 1 syoung root 1283918418 Dec  8 20:22 33/chrX/hit.bam
+
+
+
+
+INDEX 1/chrX/hit.bam AND GET NUMBER OF UNIQUE READS
+---------------------------------------------------
+
+BIN hit.bam INTO 2,500,000 BASE CHUNKS
+
+
+
+screen -S index-eland
+
+
+
+time /nethome/bioinfo/apps/agua/0.5/bin/apps/index/indexReads.pl \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/1/chrX/hit.bam \
+--dbfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/1/chrX/hit.bam.db
+
+
+
+    RUNNING Fri Dec 10 10:49:58 EST 2010
+
+
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chrX/eland/1/chrX/hit.bam
+
+
+
+binBam.pl
+---------
+
+screen -S eland-binbam
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl \
+--inputdirs \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33 \
+--binlevel 2500000 \
+--reference chrX \
+--maxjobs 1000 \
+--walltime 48 \
+--queue small \
+--cluster LSF \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/binbam.out
+
+    binBam.pl    Run time: 00:02:47
+    binBam.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl
+    binBam.pl    0:24AM, 10 December 2010
+    binBam.pl    ****************************************
+
+
+##binBam.pl    Run time: 00:17:27
+##binBam.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl
+##binBam.pl    9:06PM, 9 December 2010
+##binBam.pl    ****************************************
+
+
+OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33/chrX/bins
+
+    -rw-rw-rw-  1 syoung root  73M Dec 10 00:23 hit.binlevel2500000.num10.bam
+    -rw-rw-rw-  1 syoung root 100M Dec 10 00:23 hit.binlevel2500000.num11.bam
+    -rw-rw-rw-  1 syoung root  82M Dec 10 00:23 hit.binlevel2500000.num12.bam
+    -rw-rw-rw-  1 syoung root 102M Dec 10 00:23 hit.binlevel2500000.num13.bam
+    -rw-rw-rw-  1 syoung root 115M Dec 10 00:23 hit.binlevel2500000.num14.bam
+    -rw-rw-rw-  1 syoung root  72M Dec 10 00:23 hit.binlevel2500000.num15.bam
+    -rw-rw-rw-  1 syoung root  83M Dec 10 00:23 hit.binlevel2500000.num16.bam
+    -rw-rw-rw-  1 syoung root  78M Dec 10 00:24 hit.binlevel2500000.num17.bam
+    -rw-rw-rw-  1 syoung root  62M Dec 10 00:23 hit.binlevel2500000.num18.bam
+    -rw-rw-rw-  1 syoung root  52M Dec 10 00:24 hit.binlevel2500000.num19.bam
+    -rw-rw-rw-  1 syoung root  50M Dec 10 00:24 hit.binlevel2500000.num20.bam
+    -rw-rw-rw-  1 syoung root  56M Dec 10 00:23 hit.binlevel2500000.num6.bam
+    -rw-rw-rw-  1 syoung root 163M Dec 10 00:24 hit.binlevel2500000.num7.bam
+    -rw-rw-rw-  1 syoung root  60M Dec 10 00:23 hit.binlevel2500000.num8.bam
+    -rw-rw-rw-  1 syoung root  84M Dec 10 00:24 hit.binlevel2500000.num9.bam
+    -rw-rw-rw-  1 syoung root 198M Dec  9 21:05 hit.binlevel2.num10.bam
+    -rw-rw-rw-  1 syoung root 240M Dec  9 21:05 hit.binlevel2.num11.bam
+    -rw-rw-rw-  1 syoung root 337M Dec  9 21:06 hit.binlevel2.num12.bam
+    -rw-rw-rw-  1 syoung root 275M Dec  9 21:06 hit.binlevel2.num13.bam
+    -rw-rw-rw-  1 syoung root 177M Dec  9 21:05 hit.binlevel2.num14.bam
+
+
+
+cumulativeSnp.pl AND snpVenn.pl                  
+-------------------------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3
+
+screen -S eland-cum
+
+perl /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/cumulativeSnp.pl \
+--binlevel 2500000 \
+--filename hit.bam \
+--inputdirs \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3 \
+--species human \
+--label eland-cumulative3 \
+--walltime 48 \
+--cluster LSF \
+--queue small \
+--cpus 1 \
+--maxjobs 1000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/cumulative3.binlevel2.out
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3
+
+
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--binlevel 2500000 \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/SAV.pl \
+--inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/%REPLICATE% \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative4 \
+--tempfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative4/snp130-%REPLICATE% \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chrX \
+--dbsnp snp130 \
+--species human \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24
+
+
+perl /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/unbin.pl \
+--binlevel 2500000 \
+--suffix sav \
+--filename hit.bam \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3 \
+--inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/33 \
+--walltime 48 \
+--cluster LSF \
+--queue small \
+--cpus 1 \
+--maxjobs 1000 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/unbin.out
+    
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav \
+--replicates 1-33 \
+--loop distributed \
+--label eland-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/hit-33.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav \
+--querylabel eland-33 \
+--targetlabel eland-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/elandX/cumulative3/chrX/venn/sav/vennsav.out
+
+
+
+
+</entry>
+
+<entry [Wed Dec  8 13:58:50 EST 2010] TO DO LIST>
+
+##############
+#### ONWORKING
+##############
+
+dbSnp.pl            FILTER dbSNP-ONLY SNPs INTO NEW FILES AND DO snpVenn.pl
+
+** MAQ: RUN indexReads.pl --> numberReads.pl ON MAQ ALIGNMENT FILES
+    TO VERIFY MAQ PRODUCES A SINGLE UNIQUE READ FOR EACH HIT
+
+** RUN WORKFLOW ON chrX
+
+** RUN MAQ ON BOWTIE PAPER DATA SET (ELAND WORKED OKAY) TO VERIFY ALIGNMENTS
+
+** DOCUMENT SCRIPTS ** on Wiki
+
+** RUN SAV.pl ON ALL REALIGNED SAMPLES
+
+indexVenn.pl        COMPARE DB FILES GENERATED FROM *bam FILES
+
+snpReadVenn.pl      COMPARE READS IN SNP REGIONS
+
+mergeIndexes.pl     MERGE ALL INDEX DB FILES INTO A SINGLE FILE
+
+
+
+##############
+#### COMPLETED
+##############
+
+VENN.pl    VENN ANALYSIS OF BINNED SNP DATA
+
+ELANDcheck.pl       |   CHECK ALIGNMENT OUTPUT FILES - SIGNAL 'completed: 0' IF MISSING
+BOWTIEcheck.pl      |   OR OUTSIDE GIVEN DEVIATION RANGE
+NOVOALIGNcheck.pl   |
+MAQcheck.pl         |
+
+
+#### DONE Wed Dec  8 12:25:28 EST 2010
+collateVenn.pl      COLLATE RESULTS OF snpVenn.pl INTO REPORT
+
+#### DONE Fri Dec  3 13:58:18 EST 2010
+createIntervals.pl CREATE INTERVALS AROUND SNPS AS INPUT FOR GATK Realign
+
+#### DONE Fri Dec  3 13:58:18 EST 2010
+realignBam.pl      LOCAL REALIGNMENT AROUND SNPS USING GATK     
+
+    DE NOVO SNPS (VELVET, LOCAL REALIGNMENT) vs 3.3 billion read-depth SNPs
+    http://www.broadinstitute.org/gsa/wiki/index.php/Local_realignment_around_indels
+    
+    LOCAL REALIGNMENT WITH GATK
+    http://sourceforge.net/apps/mediawiki/samtools/index.php?title=SAM_protocol#Support_Protocol_2:_Local_Realignment    
+
+#### FAST READ HIT LOOKUP TOOL
+#### DONE Fri Nov 12 11:22:11 EDT 2010
+indexReads.pl       LOAD hit.sam FILES INTO B-TREE DB FILES (QUICK LOOKUP)
+lookupRead.pl       TEST lookupRead SUBROUTINE OF IndexRead.pm
+numberReads.pl      COUNT THE NUMBER OF UNIQUE READS IN A DB FILE
+numberHits.pl       COUNT THE NUMBER OF UNIQUE HITS (I.E., ENTRIES) IN A DB FILE
+
+#### DONE Mon Oct 25 16:49:50 EDT 2010
+#### COVERAGE (C or pl SCRIPT)  
+CREATED bamCoverage.pl
+http://picard.sourceforge.net/command-line-overview.shtml#CompareSAMs
+http://www.broadinstitute.org/gsa/wiki/index.php/Running_the_GATK_for_the_first_time
+pysam
+http://wwwfgu.anat.ox.ac.uk/~andreas/documentation/samtools/api.html
+
+#### DONE  Fri Oct 22 11:22:11 EDT 2010
+#### DISTRIBUTED SAV.pl     
+(threaded Loop.pm, copy sqlite db file to outdir):
+    - including dbSNP with 3.3 billion-read SNPs
+
+#### DONE Wed Oct 20 12:54:25 EDT 2010
+#### FIX NOVOALIGN.pl USAGE  
+
+
+
+
+
+</entry>
+
+<entry [Wed Dec  8 14:37:12 EST 2010] RERUN MAQ.pl PIPELINE ONLY (MAQ MATCHES IN THE FIRST 24bp)>
+
+MAQ.pl
+------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2
+
+screen -S maq
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/MAQ.pl \
+--replicates 1-33 \
+--loop parallel \
+--params "-C 1" \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_1.sequence.txt \
+--matefiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/100M/simpleheader/yoruba1-%REPLICATE%.reads_2.sequence.txt \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/maq/chr22 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/%REPLICATE% \
+--species human \
+--label maq-200bp-chr22-%REPLICATE% \
+--maxjobs 1000 \
+--walltime 24 \
+--queue small \
+--cluster LSF \
+--cpus 1 \
+--reads 1000000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/%REPLICATE%/maq-200bp-chr22-%REPLICATE%.out \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/maq.1-33.loop.out
+    
+    Run time: 29:36:11
+    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl
+    8:15PM, 9 December 2010
+    ****************************************
+
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/aligners/cleanup.pl \
+--mode subdirs,splitfiles \
+--directory /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2 \
+--references chr22
+
+
+
+MAQ MATCHES IN THE FIRST 24bp
+http://maq.sourceforge.net/faq.shtml
+
+I am using the default option to run `maq map'. I see hits containing a lot of mismatches. Is this a bug?
+No, it is not. By default, maq guarantees that all hits with up to 2 mismatches in the first 24bp can be found, and can also find part of hits with 3 or 4 mismatches in the first 24bp. There is no explicit cut off on the mismatches across the whole read. Nonetheless, hits with a lot of high-quality mismatches will be discarded.
+
+
+
+CONFIRMED CORRECT SETTINGS USED TO RUN MAQ:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22
+emacs -nw maq-chr22.sh
+
+    ...
+    time /nethome/bioinfo/apps/maq/0.7.1/maq match -C 1 /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/$LSB_JOBINDEX/out.map /nethome/bioinfo/data/sequence/chromosomes/human/hg19/maq/chr22/chr22.bfa /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/$LSB_JOBINDEX/maq-200bp-chr22-1_1.$LSB_JOBINDEX.bfq /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/$LSB_JOBINDEX/maq-200bp-chr22-1_2.$LSB_JOBINDEX.bfq  &> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/$LSB_JOBINDEX/maq-chr22-outerr.txt
+
+
+/nethome/bioinfo/apps/maq/0.7.1/maq match 
+
+Usage:   maq map [options] <out.map> <chr.bfa> <reads_1.bfq> [reads_2.bfq]
+
+Options: -1 INT      length of the first read (<=127) [0]
+         -2 INT      length of the second read (<=127) [0]
+         -m FLOAT    rate of difference between reads and references [0.001]
+         -e INT      maximum allowed sum of qualities of mismatches [70]
+         -d FILE     adapter sequence file [null]
+         -a INT      max distance between two paired reads [250]
+         -A INT      max distance between two RF paired reads [0]
+         -n INT      number of mismatches in the first 24bp [2]
+         -M c|g      methylation alignment mode [null]
+         -u FILE     dump unmapped and poorly aligned reads to FILE [null]
+         -H FILE     dump multiple/all 01-mismatch hits to FILE [null]
+         -C INT      max number of hits to output. >512 for all 01 hits. [250]
+         -s INT      seed for random number generator [random]
+         -W          disable Smith-Waterman alignment
+         -t          trim all reads (usually not recommended)
+         -c          match in the colorspace
+
+
+
+COMPLETED OKAY BUT OUTPUT FILES STILL LARGE LIKE 'maq' RUN:
+
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22
+ll */1/chr22/hit.bam
+
+ll -alS */1/chr22/hit.bam
+
+    -rw-rw-rw- 1 syoung root 1.2G Dec 10 00:13 maq2/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1.2G Nov 30 17:32 maq/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1.2G Dec  8 14:19 remaq/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 299M Nov 30 01:27 bowtie/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 299M Nov  5 18:56 bowtie-fr/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 299M Nov 30 00:09 bowtie-rf/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 299M Dec  8 14:19 rebowtie/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 299M Dec  8 14:19 rebowtie-rf/1/chr22/hit.bam
+    -rw-r--r-- 1 syoung root 285M Nov 29 22:59 novoalign/1/chr22/hit.bam
+    -rw-r--r-- 1 syoung root 285M Dec  8 14:19 renovoalign/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 110M Nov 29 12:34 eland/1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 110M Dec  8 14:17 reeland/1/chr22/hit.bam
+
+
+ALL maq2 OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2
+ls -altr */chr22/hit.bam
+
+    -rw-rw-rw- 1 syoung root 1283434145 Dec  8 19:46 4/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283732283 Dec  8 19:53 23/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1282989784 Dec  8 19:58 31/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283635072 Dec  8 19:58 2/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283391388 Dec  8 19:58 27/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283173265 Dec  8 19:58 22/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283623952 Dec  8 20:00 16/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283441961 Dec  8 20:00 17/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283176319 Dec  8 20:00 14/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283152953 Dec  8 20:00 20/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283319672 Dec  8 20:01 28/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283760526 Dec  8 20:01 9/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283381339 Dec  8 20:02 8/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283209088 Dec  8 20:02 19/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283334106 Dec  8 20:02 11/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1282707213 Dec  8 20:03 1/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283225241 Dec  8 20:03 26/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283062919 Dec  8 20:03 7/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1282820263 Dec  8 20:04 32/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283185403 Dec  8 20:04 3/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283222693 Dec  8 20:05 18/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283481710 Dec  8 20:08 5/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283360674 Dec  8 20:08 21/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283442579 Dec  8 20:08 25/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283508143 Dec  8 20:09 12/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283471769 Dec  8 20:13 13/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283069634 Dec  8 20:15 10/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283418340 Dec  8 20:16 15/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283195293 Dec  8 20:20 6/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283086973 Dec  8 20:21 30/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283915903 Dec  8 20:21 24/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283054222 Dec  8 20:21 29/chr22/hit.bam
+    -rw-rw-rw- 1 syoung root 1283918418 Dec  8 20:22 33/chr22/hit.bam
+
+
+INDEX 1/chr22/hit.bam AND GET NUMBER OF UNIQUE READS:
+
+screen -S index-maq2
+
+time /nethome/bioinfo/apps/agua/0.5/bin/apps/index/indexReads.pl \
+--inputfiles /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/hit.bam \
+--dbfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/hit.bam.db
+
+    23100000
+    23200000
+    IndexRead::buildIndex    Reads loaded: 23235868
+    indexReads.pl    Reads indexed: 23235868
+    indexReads.pl    Run time: 08:17:29
+    indexReads.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/index/indexReads.pl
+    indexReads.pl    7:04PM, 10 December 2010
+    indexReads.pl    ****************************************
+
+
+
+
+time /nethome/bioinfo/apps/agua/0.5/bin/apps/index/numberReads.pl \
+--dbfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/hit.bam.db
+
+memory usage BEFORE tie:
+  RSS    VSZ
+ 9720 102828
+
+Elapsed time (milliseconds): 32.409
+memory usage AFTER tie:
+  RSS    VSZ
+10308 103244
+
+Elapsed time (milliseconds): 22.781
+memory usage AFTER count:
+  RSS    VSZ
+10352 103244
+
+0
+indexVenn.pl    Run time: 00:00:01
+indexVenn.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/index/numberReads.pl
+indexVenn.pl    8:39PM, 10 December 2010
+indexVenn.pl    ****************************************
+
+
+
+
+
+samtools view /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1/chr22/hit.bam
+
+
+
+binBam.pl
+---------
+
+screen -S maq-binbam
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl \
+--inputdirs \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/33 \
+--binlevel 2500000 \
+--reference chr22 \
+--maxjobs 1000 \
+--walltime 48 \
+--queue small \
+--cluster LSF 
+
+    binBam.pl    Run time: 00:02:47
+    binBam.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl
+    binBam.pl    0:24AM, 10 December 2010
+    binBam.pl    ****************************************
+
+
+##binBam.pl    Run time: 00:17:27
+##binBam.pl    Completed /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/binBam.pl
+##binBam.pl    9:06PM, 9 December 2010
+##binBam.pl    ****************************************
+
+
+OUTPUT FILES:
+
+cd /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/33/chr22/bins
+
+    -rw-rw-rw-  1 syoung root  73M Dec 10 00:23 hit.binlevel2500000.num10.bam
+    -rw-rw-rw-  1 syoung root 100M Dec 10 00:23 hit.binlevel2500000.num11.bam
+    -rw-rw-rw-  1 syoung root  82M Dec 10 00:23 hit.binlevel2500000.num12.bam
+    -rw-rw-rw-  1 syoung root 102M Dec 10 00:23 hit.binlevel2500000.num13.bam
+    -rw-rw-rw-  1 syoung root 115M Dec 10 00:23 hit.binlevel2500000.num14.bam
+    -rw-rw-rw-  1 syoung root  72M Dec 10 00:23 hit.binlevel2500000.num15.bam
+    -rw-rw-rw-  1 syoung root  83M Dec 10 00:23 hit.binlevel2500000.num16.bam
+    -rw-rw-rw-  1 syoung root  78M Dec 10 00:24 hit.binlevel2500000.num17.bam
+    -rw-rw-rw-  1 syoung root  62M Dec 10 00:23 hit.binlevel2500000.num18.bam
+    -rw-rw-rw-  1 syoung root  52M Dec 10 00:24 hit.binlevel2500000.num19.bam
+    -rw-rw-rw-  1 syoung root  50M Dec 10 00:24 hit.binlevel2500000.num20.bam
+    -rw-rw-rw-  1 syoung root  56M Dec 10 00:23 hit.binlevel2500000.num6.bam
+    -rw-rw-rw-  1 syoung root 163M Dec 10 00:24 hit.binlevel2500000.num7.bam
+    -rw-rw-rw-  1 syoung root  60M Dec 10 00:23 hit.binlevel2500000.num8.bam
+    -rw-rw-rw-  1 syoung root  84M Dec 10 00:24 hit.binlevel2500000.num9.bam
+    -rw-rw-rw-  1 syoung root 198M Dec  9 21:05 hit.binlevel2.num10.bam
+    -rw-rw-rw-  1 syoung root 240M Dec  9 21:05 hit.binlevel2.num11.bam
+    -rw-rw-rw-  1 syoung root 337M Dec  9 21:06 hit.binlevel2.num12.bam
+    -rw-rw-rw-  1 syoung root 275M Dec  9 21:06 hit.binlevel2.num13.bam
+    -rw-rw-rw-  1 syoung root 177M Dec  9 21:05 hit.binlevel2.num14.bam
+
+
+
+cumulativeSnp.pl AND snpVenn.pl                  
+-------------------------------
+
+mkdir -p /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3
+
+screen -S maq-cum
+
+perl /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/cumulativeSnp.pl \
+--binlevel 2500000 \
+--filename hit.bam \
+--inputdirs \
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/33 \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3 \
+--species human \
+--label maq-cumulative3 \
+--walltime 48 \
+--cluster LSF \
+--queue small \
+--cpus 1 \
+--maxjobs 1000 \
+--stdout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/cumulative3.binlevel2.out
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3
+
+
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--binlevel 2500000 \
+--replicates 1-33 \
+--loop parallel \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/SAV.pl \
+--inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/%REPLICATE% \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative4 \
+--tempfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/eland/cumulative4/snp130-%REPLICATE% \
+--referencedir /nethome/bioinfo/data/sequence/chromosomes/human/hg19/fasta/chr22 \
+--dbsnp snp130 \
+--species human \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24
+
+
+perl /nethome/bioinfo/apps/agua/0.5/bin/apps/snp/unbin.pl \
+--binlevel 2500000 \
+--suffix sav \
+--filename hit.bam \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/cumulative3 \
+--inputdirs /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/2,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/3,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/4,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/5,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/6,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/7,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/8,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/9,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/10,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/11,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/12,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/13,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/14,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/15,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/16,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/17,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/18,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/19,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/20,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/21,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/22,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/23,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/24,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/25,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/26,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/27,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/28,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/29,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/30,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/31,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/32,\
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/33 \
+--walltime 48 \
+--cluster LSF \
+--queue small \
+--cpus 1 \
+--maxjobs 1000 \
+&> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/cumulative3/unbin.out
+    
+
+/nethome/bioinfo/apps/agua/0.5/bin/apps/logic/loop.pl \
+--outdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/chr22/venn/sav \
+--replicates 1-33 \
+--loop distributed \
+--label maq-vennsav \
+--executable /nethome/bioinfo/apps/agua/0.5/bin/apps/venn/snpVenn.pl \
+--queryfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/chr22/hit-33.sav \
+--targetfile /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/chr22/hit-%REPLICATE%.sav \
+--outputdir /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/chr22/venn/sav \
+--querylabel maq-33 \
+--targetlabel maq-%REPLICATE% \
+--suffix sav \
+--maxjobs 1000 \
+--queue small \
+--cluster LSF \
+--walltime 24 \
+--cpus 1 \
+--loopout /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq2/cumulative3/chr22/venn/sav/vennsav.out
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTES
+-----
+
+ERROR IN SHELL SCRIPT: PARAMS PASSED TO echo BUT NOT TO RUN COMMAND:
+
+/scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/chr22
+emacs maq-chr22.sh
+
+    echo "Running MAQ: time /nethome/bioinfo/apps/maq/0.7.1/maq match -C 1 /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/chr22/$LSB_JOBINDEX/out.map /nethome/bioinfo/data/sequence/chromosomes/human/hg19/maq/chr22/chr22.bfa /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/$LSB_JOBINDEX/maq-200bp-chr22-1_1.$LSB_JOBINDEX.bfq /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/$LSB_JOBINDEX/maq-200bp-chr22-1_2.$LSB_JOBINDEX.bfq  &> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/chr22/$LSB_JOBINDEX/maq-chr22-outerr.txt"
+    time /nethome/bioinfo/apps/maq/0.7.1/maq match /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/chr22/$LSB_JOBINDEX/out.map /nethome/bioinfo/data/sequence/chromosomes/human/hg19/maq/chr22/chr22.bfa /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/$LSB_JOBINDEX/maq-200bp-chr22-1_1.$LSB_JOBINDEX.bfq /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/$LSB_JOBINDEX/maq-200bp-chr22-1_2.$LSB_JOBINDEX.bfq  &> /scratch/syoung/base/pipeline/SRA/NA18507/SRP000239/sampled/200bp/chr22/maq/1/chr22/$LSB_JOBINDEX/maq-chr22-outerr.txt
+
+
+
+</entry>
+
+<entry [Wed Dec  8 14:42:03 EST 2010] RUN numberReads.pl TO GET THE MAX NUMBER OF HITS PER READ PRODUCED BY MAQ>
+
+
+
+
+
+
+
+</entry>
+

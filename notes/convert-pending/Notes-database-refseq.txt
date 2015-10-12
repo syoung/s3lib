@@ -1,0 +1,290 @@
+Notes-database-refseq.txt
+
++</entry>
+
+
+
+<entry [Tue Apr 29 22:49:55 EDT 2008] CONVERT REFSEQ FASTA HEADER TO 'COLLECTION' FORMAT>
+
+
+
+REFSEQ HEADER FORMAT:
+
+>gi|10863905|ref|NP_004230.1| thyroid hormone receptor interactor 11 [Homo sapiens]
+
+'COLLECTION' HEADER FORMAT:
+
+>accession id|refseq-human|annotation
+
+WHERE accession IS THE UNIQUE IDENTIFIER FOR THE PROTEIN AND id IS THE SECONDARY IDENTIFIER
+
+
+1. COPY DATA FILE TO WORK DIRECTORY
+
+
+mkdir -p ~/FUNNYBASE/pipeline/refseq/data
+mkdir -p ~/FUNNYBASE/pipeline/refseq/collection
+cp ~/FUNNYBASE/databases/refseq/species/Homo_sapiens.refseq.uniq ~/FUNNYBASE/pipeline/refseq/data/refseq-human.fasta.original
+
+
+2. CONVERT FASTA HEADERS
+
+cd ~/FUNNYBASE/bin/utils
+./formatfasta.pl -i ~/FUNNYBASE/pipeline/refseq/data/refseq-human.fasta.original -o ~/FUNNYBASE/pipeline/refseq/data/refseq-human.fasta -r "^gi\|[^\|]+\|ref\|([^\|^\.]+)" -n "^gi\|([^\|]+)" -a "^gi\|[^\|]+\|ref\|[^\|]+\|\s*([^\[]+)" -s refseq-human
+
+
+3. CHOOSE 1,000 SEED SEQUENCES 
+
+cd ~/FUNNYBASE/bin/orthologues
+./unigeneseed.pl -d refseq -m 1000 -i ~/FUNNYBASE/pipeline/refseq/data/refseq-human.fasta 
+
+    Completed ./unigeneseed.pl
+    Run time: 01:29:03
+    0:30AM, 30 April 2008
+    ****************************************
+
+OUTPUTFILE:
+
+records /Users/young/FUNNYBASE/pipeline/refseq/data/refseq.seed 
+1000
+
+4. LOAD INTO DATABASE
+
+./fasta2collection.pl -d refseq -f /Users/young/FUNNYBASE/pipeline/refseq/data/refseq.seed 
+
+    Completed ./fasta2collection.pl
+    Run time: 00:00:00
+    4:37AM, 1 May 2008
+    ****************************************
+
+5. CREATE BLAST DB FILE
+
+./collectionfasta.pl -d refseq -o /common/data/refseq
+
+    Run time: 00:00:00
+    4:39AM, 1 May 2008
+    ****************************************
+
+
+5. BLAST AGAINST REST OF REFSEQ
+
+NB: THIS GIVES AN ERROR
+cd ~/FUNNYBASE/bin/orthologues
+sudo ./arrayblast.pl -d refseq -q refseq -t refseq-rat,refseq-mouse,refseq-dog -j 28 &> out.blast
+
+    Doing ARRAYBLAST of 'refseq' (total 1000) against refseq-rat
+    qsub command: qsub -sync y -t 1-20 /common/pipeline/refseq/blast/refseq-refseq-rat.sh
+    nfs server gems.rsmas.miami.edu:/Volumes/gemshd3: not responding
+    Completed qsub. Job output:
+
+SO USE THIS:
+
+ON genomics:
+
+sudo ./arrayblast.pl -d refseq -q refseq -t refseq-rat -j 28 &> out.blast
+sudo ./arrayblast.pl -d refseq -q refseq -t refseq-mouse -j 28 &> out.blast
+sudo ./arrayblast.pl -d refseq -q refseq -t refseq-dog -j 28 &> out.blast
+sudo ./arrayblast.pl -d refseq -q refseq -t swissprot -j 28 &> out.blast
+
+ON gems:
+
+sudo qsub -sync y -t 1-28 /common/pipeline/refseq/blast/refseq-refseq-rat.sh
+sudo qsub -sync y -t 1-28 /common/pipeline/refseq/blast/refseq-refseq-mouse.sh
+sudo qsub -sync y -t 1-28 /common/pipeline/refseq/blast/refseq-refseq-dog.sh
+sudo qsub -sync y -t 1-28 /common/pipeline/refseq/blast/refseq-swissprot.sh
+
+cd /common/pipeline/refseq/collection
+cat `echo refseq-refseq-rat.blast.* | sort` > refseq-refseq-rat.blast.tsv
+sudo rm -fr refseq-refseq-rat.blast.*.tsv
+cat `echo refseq-refseq-mouse.blast.* | sort` > refseq-refseq-mouse.blast.tsv
+sudo rm -fr refseq-refseq-mouse.blast.*.tsv
+cat `echo refseq-refseq-dog.blast.* | sort` > refseq-refseq-dog.blast.tsv
+sudo rm -fr refseq-refseq-dog.blast.*.tsv
+cat `echo refseq-swissprot.blast.* | sort` > refseq-swissprot.blast.tsv
+sudo rm -fr refseq-swissprot.blast.*.tsv
+
+
+
+6. LOAD BLAST
+
+cd ~/FUNNYBASE/bin/orthologues
+./arrayblastloaddata.pl -d refseq  -t refseq-rat 
+./arrayblastloaddata.pl -d refseq  -t refseq-mouse 
+./arrayblastloaddata.pl -d refseq  -t refseq-dog 
+./arrayblastloaddata.pl -d refseq  -t swissprot
+
+    Run time: 00:00:08
+    Completed ./arrayblastloaddata.pl
+    2:12AM, 6 May 2008
+    ****************************************
+
+
+select targetsource, count(distinct collectionid) from collectionblast group by targetsource;
++--------------+------------------------------+
+| targetsource | count(distinct collectionid) |
++--------------+------------------------------+
+| refseq-dog   |                          990 |
+| refseq-mouse |                          911 |
+| refseq-rat   |                          987 |
+| swissprot    |                          972 |
++--------------+------------------------------+
+
+
+
+7. GET BEST BLAST HITS BY EVALUE
+
+cd ~/FUNNYBASE/bin/orthologues
+./blastbestevalue.pl -d refseq -t swissprot,refseq-mouse,refseq-rat,refseq-dog
+
+    Run time: 00:00:26
+    Completed ./blastbestevalue.pl
+    2:14AM, 6 May 2008
+    ****************************************
+
+    select targetsource, count(distinct collectionid) from blastbestevalue group by targetsource;
+    +--------------+------------------------------+
+    | targetsource | count(distinct collectionid) |
+    +--------------+------------------------------+
+    | refseq-dog   |                          990 |
+    | refseq-mouse |                          911 |
+    | refseq-rat   |                          987 |
+    | swissprot    |                          972 |
+    +--------------+------------------------------+
+
+5. GET BLAST ANNOTATION
+
+./blastevalueannotation.pl -d refseq
+
+    Run time: 00:00:02
+    Completed ./blastevalueannotation.pl
+    2:15AM, 6 May 2008
+    ****************************************
+
+    select targetsource, count(distinct collectionid) from blastevalueannotation group by targetsource;
+    +--------------+------------------------------+
+    | targetsource | count(distinct collectionid) |
+    +--------------+------------------------------+
+    | refseq-dog   |                          127 |
+    | refseq-mouse |                           67 |
+    | refseq-rat   |                           57 |
+    | swissprot    |                          749 |
+    +--------------+------------------------------+
+
+
+*** figure1_refseq_blast_hits
+=========================
+
+
+6. CREATE BLAST HIT COUNTS BY EVALUE
+
+./blasthits.pl -d refseq -t swissprot,refseq-mouse,refseq-dog,refseq-rat -e -05
+
+    swissprot       25980   972     749
+    refseq-mouse    8208    911     67
+    refseq-dog      12035   990     127
+    refseq-rat      8024    987     57
+    unigene 0       0       0
+    all     54247   1000    1000
+
+Output file printed:
+
+/Users/young/FUNNYBASE/pipeline/refseq/collection/refseq.blasthits.tsv
+
+cp /Users/young/FUNNYBASE/pipeline/refseq/collection/refseq.blasthits.tsv /Users/young/FUNNYBASE/thesis/all/chap1.images/table1_refseq_blast_hits/refseq.blasthits.tsv
+
+
+*** figure1_refseq_blast_quality
+============================
+
+7. GET BLAST QUALITY
+
+./blastquality.pl -d refseq -t swissprot,refseq-mouse,refseq-dog,refseq-rat -e -05
+
+swissprot       25980   1716    0.0661  3159    0.1216
+refseq-mouse    8208    2332    0.2841  2902    0.3536
+refseq-dog      12035   11684   0.9708  11696   0.9718
+refseq-rat      8024    4580    0.5708  4801    0.5983
+All     54247   20312   0.3744  22558   0.4158
+Output .TSV file printed:
+
+/Users/young/FUNNYBASE/pipeline/refseq/collection/refseq.blastquality.tsv
+
+cp /Users/young/FUNNYBASE/pipeline/refseq/collection/refseq.blastquality.tsv /Users/young/FUNNYBASE/thesis/all/chap1.images/table1_refseq_blast_quality/refseq.blastquality.tsv
+
+
+8. BLAST EVALUE ORDINALS DISTRIBUTION
+
+./blastevalueordinalsgraph.pl -d refseq -b 0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95,1.00  -e -05 -l "BLAST E-value ratios between best and next best hits. Human RefSeq sequences (total 1000) were BLAST against three mammalian RefSeq databases (mouse, dog, rat). The E-values of the second, third and fourth best hit are compared to that of the best (lowest E-value) hit. The ratio is the natural log of the next best hit E-value divided by the natural log of the best hit (i.e., ln(Next hit E-value) / ln(Best hit E-value) ). This is shown for the second, third and fourth best hits." > html/refseq.blastevalueordinalsgraph.html
+
+./blastevalueordinalsgraph.pl -d refseq -b 0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90,0.95,1.00  -e -05 -D > html/refseq.blastevalueordinalsgraph.tsv
+
+0.15    0.20    0.25    0.30    0.35    0.40    0.45    0.50    0.55    0.60    0.65    0.70    0.75    0.80    0.85    0.90    0.95    1.00
+23      0       0       0       1       1       1       1       8       7       6       7       8       11      20      44      95      761
+70      5       7       4       8       5       9       13      23      17      17      16      24      27      35      51      118     533
+165     17      32      20      23      32      15      23      34      37      42      37      28      35      35      39      61      263
+
+
+cd ~/FUNNYBASE/bin/orthologues
+mkdir ~/FUNNYBASE/thesis/all/chap1.images/figure1_refseq_ordinals
+cp html/refseq.blastevalueordinalsgraph.tsv ~/FUNNYBASE/thesis/all/chap1.images/figure1_refseq_ordinals/refseq.blastevalueordinalsgraph.tsv
+
+
+
+
+
+
+*** figure1_refseq_blast_counts
+===========================
+
+9. BLAST COUNTS DISTRIBUTION AT E-VALUES 1e-05, 1e-50, 1e-100
+
+REFSEQ ONLY
+===========
+
+./blastcountsevaluecutoff.pl -d refseq -t refseq-mouse,refseq-dog,refseq-rat -e -5
+./blastcountsevaluecutoff.pl -d refseq -t refseq-mouse,refseq-dog,refseq-rat -e -50
+./blastcountsevaluecutoff.pl -d refseq -t refseq-mouse,refseq-dog,refseq-rat -e -100
+
+DATA
+./blastcountsevaluecutoffgraph.pl -D -d refseq -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 -l "" > html/refseq.blastcountsevaluecutoffgraph.refseqs.DATA.tsv
+
+1       2       3       4       5       10      25      50      100     150     200     250     300     350     400     450     500
+5       13      54      42      17      130     169     128     136     61      72      38      134     0       0       0       0
+23      53      130     77      39      187     197     109     63      27      8       13      7       0       0       0       0
+25      63      154     98      41      177     134     55      26      13      2       0       2       0       0       0       0
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/refseq.blastcountsevaluecutoffgraph.refseqs.DATA.tsv /Users/young/FUNNYBASE/thesis/all/chap1.images/figure1_refseq_blast_counts/refseq.blastcountsevaluecutoffgraph.refseqs.DATA.tsv
+
+
+SWISSPROT ONLY
+==============
+
+cd ~/FUNNYBASE/bin/orthologues 
+./blastcountsevaluecutoff.pl -d refseq -t swissprot -e -5
+./blastcountsevaluecutoff.pl -d refseq -t swissprot -e -50
+./blastcountsevaluecutoff.pl -d refseq -t swissprot -e -100
+
+DATA
+./blastcountsevaluecutoffgraph.pl -D -d refseq -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 -l "" > html/refseq.blastcountsevaluecutoffgraph.swissprot.DATA.tsv
+
+1       2       3       4       5       10      25      50      100     150     200     250     300     350     400     450     500
+9       20      15      26      18      98      184     127     475     0       0       0       0       0       0       0       0
+45      83      83      75      42      125     171     118     128     0       0       0       0       0       0       0       0
+66      113     104     81      42      139     126     36      37      0       0       0       0       0       0       0       0
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/refseq.blastcountsevaluecutoffgraph.swissprot.DATA.tsv /Users/young/FUNNYBASE/thesis/all/chap1.images/figure1_refseq_blast_counts/refseq.blastcountsevaluecutoffgraph.swissprot.DATA.tsv
+
+
+REFSEQ + SWISSPROT
+==================
+
+./blastcountsevaluecutoff.pl -d refseq -t swissprot,refseq-mouse,refseq-dog,refseq-rat -e -5
+./blastcountsevaluecutoff.pl -d refseq -t swissprot,refseq-mouse,refseq-dog,refseq-rat -e -50
+./blastcountsevaluecutoff.pl -d refseq -t swissprot,refseq-mouse,refseq-dog,refseq-rat -e -100
+
+DATA
+./blastcountsevaluecutoffgraph.pl -D -d refseq -e -5,-50,-100 -b 1,2,3,4,5,10,25,50,100,150,200,250,300,350,400,450,500 -l "" > html/refseq.blastcountsevaluecutoffgraph.all.DATA.tsv
+
+
+cp /Users/young/FUNNYBASE/bin/orthologues/html/refseq.blastcountsevaluecutoffgraph.all.DATA.tsv /Users/young/FUNNYBASE/thesis/all/chap1.images/figure1_refseq_blast_counts/refseq.blastcountsevaluecutoffgraph.all.DATA.tsv
+

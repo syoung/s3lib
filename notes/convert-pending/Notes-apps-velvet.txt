@@ -1,0 +1,824 @@
+Notes-apps-velvet.txt
+
+
+</entry>
+
+
+
+<entry [Fri Nov  5 11:33:53 EDT 2010] UPDATED VELVET TO VERSION 1.0.14 ON PEGASUS /nethome/apps/ccsngs/apps/velvet>
+
+
+
+cd /nethome/apps/ccsngs/apps/velvet/archive
+wget http://www.ebi.ac.uk/~zerbino/velvet/velvet_1.0.14.tgz
+tar xvfz *
+mv velvet_1.0.14 ../1.0.14
+cd /nethome/apps/ccsngs/apps/velvet/1.0.14
+make
+
+    ...    
+    gcc -Wall -O3 -D MAXKMERLENGTH=31 -D CATEGORIES=2 -c src/kmerOccurenceTable.c -o obj/kmerOccurenceTable.o 
+    gcc -Wall -O3 -D MAXKMERLENGTH=31 -D CATEGORIES=2 -c src/allocArray.c -o obj/allocArray.o 
+    gcc -Wall -O3 -lm -o velveth obj/tightString.o obj/run.o obj/recycleBin.o obj/splay.o obj/splayTable.o obj/readSet.o obj/crc.o obj/utility.o obj/kmer.o obj/kmerOccurenceTable.o third-party/zlib-1.2.3/*.o
+    gcc -Wall -O3 -lm -o velvetg obj/tightString.o obj/graph.o obj/run2.o obj/fibHeap.o obj/fib.o obj/concatenatedGraph.o obj/passageMarker.o obj/graphStats.o obj/correctedGraph.o obj/dfib.o obj/dfibHeap.o obj/recycleBin.o obj/readSet.o obj/shortReadPairs.o obj/scaffold.o obj/locallyCorrectedGraph.o obj/graphReConstruction.o obj/roadMap.o obj/preGraph.o obj/preGraphConstruction.o obj/concatenatedPreGraph.o obj/readCoherentGraph.o obj/utility.o obj/kmer.o obj/kmerOccurenceTable.o obj/allocArray.o third-party/zlib-1.2.3/*.o
+
+
+ll
+
+    drwxr-xr-x  8 syoung bioinfo 2.0K Nov  5 11:36 .
+    drwxrwxr-x  5 syoung bioinfo 2.0K Nov  5 11:35 ..
+    -rw-r--r--  1 syoung bioinfo 9.3K Oct 21 17:28 ChangeLog
+    -rw-r--r--  1 syoung bioinfo  60K Oct 18 14:19 Columbus_manual.pdf
+    drwxr-xr-x 14 syoung bioinfo 2.0K Sep 22 15:08 contrib
+    -rw-r--r--  1 syoung bioinfo 1.9K Jul 16 13:22 CREDITS.txt
+    drwxr-xr-x  2 syoung bioinfo 2.0K Jun 21 14:40 data
+    drwxr-xr-x  3 syoung bioinfo 2.0K Dec  9  2009 doc
+    -rw-r--r--  1 syoung bioinfo  194 Dec 15  2008 For_MAC_or_SPARC_users.txt
+    -rw-r--r--  1 syoung bioinfo  18K Dec 15  2008 LICENSE.txt
+    -rw-r--r--  1 syoung bioinfo 5.6K Jul 30 19:26 Makefile
+    -rw-r--r--  1 syoung bioinfo 417K Oct 18 14:19 Manual.pdf
+    drwxr-xr-x  3 syoung bioinfo 4.0K Nov  5 11:36 obj
+    -rw-r--r--  1 syoung bioinfo 1.1K Jan 22  2010 README.txt
+    -rwxr-xr-x  1 syoung bioinfo  876 Dec  3  2009 shuffleSequences_fasta.pl
+    -rwxr-xr-x  1 syoung bioinfo  479 Apr 17  2009 shuffleSequences_fastq.pl
+    drwxr-xr-x  2 syoung bioinfo 8.0K Oct 21 17:45 src
+    drwxr-xr-x  3 syoung bioinfo 2.0K Jul  1  2009 third-party
+    -rwxr-xr-x  1 syoung bioinfo   26 Dec 15  2008 update_velvet.sh
+    -rwxrwxr-x  1 syoung bioinfo 354K Nov  5 11:36 velvetg
+    -rwxrwxr-x  1 syoung bioinfo 155K Nov  5 11:36 velveth
+
+
+
+
+
+</entry>
+
+
+
+<entry [Mon Aug 18 03:19:02 EDT 2008] VELVET PIPELINE INSTRUCTIONS (PAIRED ENDS)>
+
+
+
+####    Hi Jia,
+####
+####    Here’s a step-by-step for running Velvet on multiple lanes of data (copied below). More pipeline stuff to come soon:	
+####
+####    Notes-apps-velvet.txt
+
+
+1.	Create a data directory for the assembly
+
+mkdir -p ~/base/pipeline/human-run2-velvet/data
+                        <-- any name OK-->
+
+NB: '~' is your home directory (e.g., jhuang1)
+
+
+2.	Copy the paired end files to the data directory
+
+cd /store/data/pipeline_in/080801_HWI-EAS185_0001_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH/Data/C1-72_Firecrest1.9.2_11-08-2008_ddittman/Bustard1.9.2_11-08-2008_ddittman/GERALD_11-08-2008_ddittman
+
+cp s_1_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_1_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_2_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_2_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_3_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_3_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_4_1_sequence.txt ~/base/pipeline/human-run2-velvet/data
+cp s_4_2_sequence.txt ~/base/pipeline/human-run2-velvet/data
+
+
+3. Convert to .fasta
+
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_1_sequence.txt -o s_1_1_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_2_sequence.txt -o s_1_2_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_1_sequence.txt -o s_2_1_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_2_sequence.txt -o s_2_2_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_1_sequence.txt -o s_3_1_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_2_sequence.txt -o s_3_2_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_1_sequence.txt -o s_4_1_sequence.solexa
+~/base/bin/nextgen/fastq2fasta.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_2_sequence.txt -o s_4_2_sequence.solexa
+
+
+4.	Merge the .fasta files together
+
+cd ~/base/pipeline/human-run2-velvet/data
+/store~/base/apps/velvet/shuffleSequences.pl s_1_1_sequence.solexa.fasta s_1_2_sequence.solexa.fasta s_1_paired.solexa.fasta
+
+cd ~/base/pipeline/human-run2-velvet/data
+/store~/base/apps/velvet/shuffleSequences.pl s_2_1_sequence.solexa.fasta s_2_2_sequence.solexa.fasta s_2_paired.solexa.fasta
+
+cd ~/base/pipeline/human-run2-velvet/data
+/store~/base/apps/velvet/shuffleSequences.pl s_3_1_sequence.solexa.fasta s_3_2_sequence.solexa.fasta s_3_paired.solexa.fasta
+
+cd ~/base/pipeline/human-run2-velvet/data
+/store~/base/apps/velvet/shuffleSequences.pl s_4_1_sequence.solexa.fasta s_4_2_sequence.solexa.fasta s_4_paired.solexa.fasta
+
+This is what the file contents look like:
+
+head s_1_paired.solexa.fasta
+
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:527:816/1
+    AGAGTACGGGGGCACTAAATATTATCT
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:527:816/2
+    AGAAAATTTGGACCATTAAACTAGGGG
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:879:875/1
+    TCTCAGATGTGCCTCTCATAGAAGCCC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:879:875/2
+    TTAGTTAAGAGAATTGCAGGATGTGAC
+    >HWI-EAS185_1_20GVYAAXX_Jia_cDNA2_mtDNA_Total_Small_Medium_JH:1:16:895:923/1
+    TTTCATTGATATATCCTCCTTCAGTAG
+
+
+5. Run velvet-paired on each lane
+
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_1_paired.solexa.fasta -l 21 -o assembly-paired-lane1
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_2_paired.solexa.fasta -l 21 -o assembly-paired-lane2
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_3_paired.solexa.fasta -l 21 -o assembly-paired-lane3
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_4_paired.solexa.fasta -l 21 -o assembly-paired-lane4
+
+
+NB: To get information on how to run the application, always use the -h option:
+    
+    ~/base/bin/nextgen/velvet-paired.pl -h
+    
+
+6. Merge the .fasta files into larger fasta files
+
+cd ~/base/pipeline/human-run2-velvet/data
+cat s_1_paired.solexa.fasta s_1_paired.solexa.fasta > s_1-2_paired.solexa.fasta
+
+cd ~/base/pipeline/human-run2-velvet/data
+cat s_3_paired.solexa.fasta s_4_paired.solexa.fasta > s_3-4_paired.solexa.fasta
+
+cd ~/base/pipeline/human-run2-velvet/data
+cat s_1_paired.solexa.fasta s_1_paired.solexa.fasta s_3_paired.solexa.fasta s_4_paired.solexa.fasta > s_1-4_paired.solexa.fasta
+
+
+7. Run velvet on larger fasta files
+
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_1-2_paired.solexa.fasta -l 21 -o assembly-paired-lane1-2
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_3-4_paired.solexa.fasta -l 21 -o assembly-paired-lane3-4
+~/base/bin/nextgen/velvet-paired.pl -i ~/base/pipeline/human-run2-velvet/data/s_1-4_paired.solexa.fasta -l 21 -o assembly-paired-lane1-4
+
+
+8. Analyse the results
+
+'velvet-paired' will also produce the 'assy.afg' file describing all the contigs contained in the contigs.fa file:
+
+You can break it down into individual files for each contig:
+
+/store~/base/apps/velvet/third-party/afg_handling/asmbly_splitter.pl <contig number> <afg file>
+
+
+# HAVE TO CHECK THIS - SEEMS TO BE AN INPUT ERROR OR A BUG
+#And you can view SNPs for a given position on a contig:
+#
+#/store/home/syoung/base/apps/velvet/third-party/afg_handling/snp_view.pl  <afg file> <position>
+#
+#cd ~/base/pipeline/human-run2-velvet/assembly
+# /store/home/syoung/base/apps/velvet/third-party/afg_handling/snp_view.pl velvet_assy.afg  1
+
+
+9. Convert from .afg file to '.ace' file:
+
+amos2ace
+
+
+
+</entry>
+
+
+
+<entry [Thu Jul 8 12:04:55 EDT 2008] INSTALL AND RUN velvet>
+
+
+
+make
+
+cd /home/syoung/base/pipeline/ecoli-velvet
+
+/home/syoung/base/apps/velvet/velveth assembly 21 data/ecoli_in.solexa.fasta
+
+    Reading FastA file data/ecoli_in.solexa.fasta;
+    5244764 sequences found
+    Done
+    5244764 sequences in total.
+    Writing into readset file: assembly/Sequences
+    Done
+    Writing into roadmap file assembly/Roadmaps...
+    Inputting sequences...
+    Inputting sequence 0 / 5244764
+    Inputting sequence 100000 / 5244764
+    ...
+    Inputting sequence 5000000 / 5244764
+    Inputting sequence 5100000 / 5244764
+    Inputting sequence 5200000 / 5244764
+    Done inputting sequences
+    Destroying splay table
+    Splay table destroyed
+
+
+
+/home/syoung/base/apps/velvet/velvetg assembly -cov_cutoff 5
+    
+    (~5 mins)
+    
+    Reading roadmap file assembly/Roadmaps
+    5244764 roadmaps reads
+    Creating insertion markers
+    Ordering insertion markers
+    Counting preNodes
+    4163465 preNodes counted, creating them now
+    Sequence 100000 / 5244764
+    Sequence 200000 / 5244764
+    Sequence 300000 / 5244764
+    ...
+    Connecting 5100000 / 5244764
+    Connecting 5200000 / 5244764
+    Cleaning up memory
+    Concatenating preGraph
+    Concatenation...
+    Renumbering preNodes
+    Initial preNode count 4163465
+    Destroyed 3937875 preNodes
+    Concatenation over!
+    Done creating preGraph
+    Clipping short tips off preGraph
+    Concatenation...
+    Renumbering preNodes
+    Initial preNode count 225590
+    Destroyed 207138 preNodes
+    Concatenation over!
+    113130 tips cut off
+    18452 nodes left
+    Writing into pregraph file assembly/PreGraph...
+    Reading read set file assembly/Sequences;
+    5244764 sequences found
+    Done
+    Reading pre-graph file assembly/PreGraph
+    Graph has 18452 nodes and 5244764 sequences
+    Scanning pre-graph file assembly/PreGraph for k-mers
+    4596204 kmers found
+    Threading through reads 0 / 5244764
+    Threading through reads 100000 / 5244764
+    Threading through reads 200000 / 5244764
+    ...
+    Threading through reads 5100000 / 5244764
+    Threading through reads 5200000 / 5244764
+    Correcting graph with cutoff 0.200000
+    Determining eligible starting points
+    Done listing starting nodes
+    Initializing todo lists
+    Done with initilization
+    Activating arc lookup table
+    Done activating arc lookup table
+    1000 / 36904 nodes visited
+    2000 / 36904 nodes visited
+    3000 / 36904 nodes visited
+    ...
+    26000 / 36904 nodes visited
+    27000 / 36904 nodes visited
+    Concatenation...
+    Renumbering nodes
+    Initial node count 18452
+    Destroyed 2143 nodes
+    Concatenation over!
+    Clipping short tips off graph, drastic
+    Concatenation...
+    Renumbering nodes
+    Initial node count 16309
+    Destroyed 11531 nodes
+    Concatenation over!
+    4778 nodes left
+    Writing into graph file assembly/Graph...
+    Applying a coverage cutoff of 5.000000...
+    Concatenation...
+    Renumbering nodes
+    Initial node count 4778
+    Destroyed 1379 nodes
+    Concatenation over!
+    Clipping short tips off graph, drastic
+    Concatenation...
+    Renumbering nodes
+    Initial node count 3399
+    Destroyed 245 nodes
+    Concatenation over!
+    3154 nodes left
+    Writing into graph file assembly/LastGraph...
+    Writing into stats file assembly/stats.txt...
+    Final graph has 3154 nodes and n50 of 8715 max 43687
+OK
+
+Velvet manual
+=============
+
+1. For impatient people
+
+make
+./velveth
+./velvetg
+./velveth sillyDirectory 21 -shortPaired data/test_reads.fa -long data/test_long.fa
+./velvetg sillyDirectory
+less sillyDirectory/stats.txt
+./velvetg sillyDirectory -cov_cutoff 5 -read_trkg yes -amos_file yes
+less sillyDirectory/velvet_assy.afg
+./velvetg sillyDirectory -ins_length 100
+./velvetg sillyDirectory -exp_cov 19
+
+
+2. Installation
+
+make
+
+
+3. Running instructions
+
+3.1 Running velveth
+Velveth helps you construct the dataset for the following program, velvetg, and
+indicate to the system what each sequence file represents.
+If, on the command line, you forget the syntax, you can print out a short
+help message:
+
+> ./velveth
+
+Velveth takes in a number of sequence files, produces a hashtable, then
+outputs two files in an output directory directory (creating it if necessary),
+Sequences and Roadmaps, which are necessary to velvetg. The syntax is as
+follows:
+
+> ./velveth output_directory hash_length
+[[-file_format][-read_type] filename]
+
+Supported file formats are:
+
+fasta (default)
+fastq
+fasta.gz
+fastq.gz
+eland
+gerald
+
+Read categories are:
+
+short (default)
+shortPaired
+short2 (same as short, but separate, if for some reason you want to keep things
+apart)
+shortPaired2 (see above)
+long (for Sanger, 454 or even reference sequences)
+
+For concision, options are stable. In other words, they are true until contradicted
+by another operator. This allows you to write as many filenames as you
+wish without having to re-type identical descriptors.
+
+For example:
+
+> ./velveth output_directory/ 21 -fasta -short solexa1.fa solexa2.fa solexa3.fa -long
+capillary.fa
+
+
+cd /home/syoung/base/pipeline/ecoli-velvet
+
+/home/syoung/base/apps/velvet/velveth assembly 21 data/ecoli_in.solexa.fasta
+
+    Reading FastA file data/ecoli_in.solexa.fasta;
+    5244764 sequences found
+    Done
+    5244764 sequences in total.
+    Writing into readset file: assembly/Sequences
+    Done
+    Writing into roadmap file assembly/Roadmaps...
+    Inputting sequences...
+    Inputting sequence 0 / 5244764
+    Inputting sequence 100000 / 5244764
+    ...
+    Inputting sequence 5000000 / 5244764
+    Inputting sequence 5100000 / 5244764
+    Inputting sequence 5200000 / 5244764
+    Done inputting sequences
+    Destroying splay table
+    Splay table destroyed
+
+
+In this example, all the files are considered to be in FASTA format, only the
+read category changes. However, the default options are ”fasta” and ”short”,
+so the previous example can also be written as:
+
+> ./velveth output_directory/ 21 solexa*.fa -long capillary.fa
+
+
+3.2 Running velvetg
+
+Velvetg is the core of Velvet where the de Bruijn graph is built then manipulated.
+Note that although velvetg saves some files during the process to avoid
+useless recalculations, the parameters are not saved from one run to the next.
+Therefore:
+
+> ./velvetg output_directory/ -cov_cutoff 4
+> ./velvetg output_directory/ -min_contig_length 100
+. . . is different from:
+> ./velvetg output_directory/ -cov_cutoff 4 -min_contig_length 100
+
+This means you can freely play around with parameters:
+> ./velvetg output_directory/ -cov_cutoff 4
+> ./velvetg output_directory/ -cov_cutoff 3.8
+> ./velvetg output_directory/ -cov_cutoff 7
+> ./velvetg output_directory/ -cov_cutoff 10
+> ./velvetg output_directory/ -cov_cutoff 2
+
+On the other hand, within a single velvetg command, the order of parameters
+is not important.
+
+Finally, if you have any doubt at the command line, you can obtain a short
+help message by typing:
+
+> ./velvetg
+
+3.2.1 Single reads
+
+Initally, you simply run:
+
+> ./velvetg output_directory/
+
+This will produce a fasta file of contigs and output some statistics. Experience
+shows that there are many short, low-coverage nodes left over from the
+intial correction. Determine as you wish a coverage cutoff value (cf. 5.2), say
+5.2x, then type:
+
+> ./velvetg output_directory/ -cov_cutoff 5.2
+
+3.2.2 Paired ends reads
+
+Reminder: you must have flagged your reads as being paired ends when running
+velveth (cf. 3.1).
+
+To activate the use of read pairs, simply add another parameter, the maximum
+insert length (or at least a rough estimate). If you expect your insert
+length to be below 400bp, you would type:
+
+> ./velvetg output_directory/ -ins_length 400 (... other parameters ...)
+
+3.2.3 Adding long reads
+
+Reminder: you must have flagged your long reads as such when running velveth
+(cf. 3.1).
+
+If you have a sufficient coverage of short reads, and any quantity of long
+reads (obviously the more the coverage and the longer the reads, the better),
+you can use the long reads to resolve repeats in a greedy fashion.
+To do this, Velvet needs to have a reasonable estimate of the expected coverage
+in short reads of unique sequence (see 5.1 for a definition of k-mer coverage).
+The simplest way to obtain this value is simply to observe the distribution of
+contig coverages (as described in 5.3), and see around which value the coverages
+of unique nodes seem to cluster. Supposing the expected coverage is 19x, them
+you indicate it with the exp cov marker:
+
+> ./velvetg output_directory/ -exp_cov 19 (... other parameters ...)
+
+3.2.4 Controlling Velvet’s output
+
+Selecting contigs for output By default, Velvet will print out as many
+contigs as possible. This has the drawback of potentially flooding the output
+with lots of unwanted very short contigs, which are hardly useable in a significant
+way. If you wish, you can request that the contigs in the contigs.fa file be longer
+than a certain length, say 100bp:
+
+> ./velvetg -min_contig_length 100 (... other parameters ...)
+
+Using read tracking Velvet’s read tracking can be turned on with the readtracking
+option. This will cost slightly more memory and calculation time, but
+will have the advantage of producing in the end a more detailed description of
+the assembly:
+
+> ./velvetg output_directory/ -read_trkg yes (... other parameters ...)
+
+Producing an .afg file If you turn on the read tracking, you might also want
+to have all the assembly information in one datastructure. For this purpose
+Velvet can produce AMOS files (cf 4.2.3). Because the .afg files tend to be very
+large, they are only produced on demand:
+
+> ./velvetg output_directory/ -amos_file yes (... other parameters ...)
+
+Using multiple categories You can be interested in keeping several kinds of
+short read sets separate. For example, if you have two paired end experiments,
+with different insert lengths, mixing the two together would be a loss of information.
+
+This is why Velvet allows for the use of 2 short read channels (plus the
+long reads, which are yet another category).
+To do so, you simply need to use the appropriate options when hashing the
+reads (see 3.1). Put the shorter inserts in the first category. Supposing your
+first readset has an insert length below 400bp and the second one a insert length
+below 10,000bp, you should type:
+
+> ./velvetg output_directory/ -ins_length 400 -ins_length2 10000
+(... other parameters ...)
+
+Note: Increasing the amount of categories is possible. It’s simply a bit more
+expensive memory-wise.
+
+Note: In the stats.txt file, you will find all three categories (long, short1
+and short2) treated separately.
+
+
+3.3 Advanced parameters: Tour Bus
+
+Caveat Emptor
+
+The following parameters are probably best left untouched. If set
+unwisely, Velvet’s behaviour may be unpredictable.
+Nonetheless, some users are curious to control the way in which
+Tour Bus (cf. 6) decides whether to merge polymorphisms or not.
+
+Before we go into the actual details, it is worth discussing the pros
+and cons of bubble smoothing. The original idea is that a few SNPs,
+in the case of diploid assembly, should not prevent the construction
+of an overall contig. Detecting them post assembly is just a matter
+of scanning the assembly files and detecting discrepancies between
+the consensus sequence and the reads.
+
+On the other hand, if you have two copies of a repeat in a haploid
+genome, you want to reduce the merging to a minimum, so
+that later analysis with paired end reads or long reads may allow
+you to retrieve both individual copies, instead of just one artificial
+“consensus” sequence.
+
+Hopefully, these issues will eventually be resolved by further
+thought and experiment. In the mean time, Velvet allows direct
+access to these parameters for those who want to play around, or
+maybe tailor Velvet to specific needs (e.g. multi-strain sequencing).
+
+Maximum branch length
+
+Partly for engineering issues and partly to avoid
+aberrant transformations, there is a limit as to how long two paths must before
+simplification. By default, it is set a 100bp. This means that Velvet will not
+merge together two sequences which are sufficiently divergent so as not to have
+any common k-mer over 100bp. If you want to allow greater simplifications,
+then you can set this length to, say, 200bp:
+
+> ./velvetg output_directory/ -max_branch_length 200 (...other parameters...)
+
+Maximum indel count Before comparing two sequences, Velvet compares
+their lengths, and, if they are too different, aborts the inspection. By default,
+this parameter is set to 3bp, but you can change it to, for example, 6bp:
+
+> ./velvetg output_directory/ -max_indel_count 6 (...other parameters...)
+
+Maximum divergence rate After aligning the two sequences with a standard
+dynamic alignment, Velvet compares the number of aligned pairs of nucleotides
+to the length of the longest of the two sequences. By default, Velvet
+will not simplify to sequences if they are more than 20% diverged. If you want
+to change that limit to 33%:
+
+> ./velvetg output_directory/ -max_divergence 0.33 (...other parameters...)
+
+Maximum gap count After aligning the two sequences with a standard dynamic
+alignment, Velvet compares the number of aligned pairs of nucleotides
+to the length of the longest of the two sequences. By default, Velvet will not
+simplify to sequences if more than 3bp of the longest sequence are unaligned.
+
+> ./velvetg output_directory/ -max_gap_count 5 (...other parameters...)
+
+
+4 File formats
+
+4.1 Input sequence files
+
+Velvet works mainly with fasta and fastq formats.
+For paired-end reads, the assumption is that each read is next to its mate
+reads. In other words, if the reads are indexed from 0, then reads 0 and 1 are
+paired, 2 and 3, 4 and 5, etc.
+
+If for some reason you have forward and reverse reads in two different FASTA
+files but in corresponding order, the bundled Perl script shuffleSequences.pl will
+merge the two files into one as appropriate. To use it, type:
+
+> ./shuffleSequences.pl forward_reads.fa reverse_reads.fa output.fa
+
+Concerning read orientation, Velvet expects paired end reads to come from
+opposite strands facing each other, as in the traditional Sanger format. If you
+have paired end reads produced from circularisation (i.e. from the same strand),
+it will be necessary to replace the first read in each pair by its reverse complement
+before running velveth.
+
+
+4.2 Output files    
+
+After running Velvet you will find a number of files in the output directory:
+
+4.2.1 The contigs.fa file
+
+This fasta file contains the sequences of the contigs longer than 2k, where k is the
+word-length used in velveth. If you have specified a min contig lgth threshold,
+then the contigs shorter than that value are omitted.
+Note that the length and coverage information provided in the header of
+each contig should therefore be understood in k-mers and in k-mer coverage (cf.
+5.1) respectively.
+
+4.2.2 The stats.txt file
+
+This file is a simple tabbed-delimited description of the nodes. The column
+names are pretty much self-explanatory. Note however that node lengths are
+given in k-mers. To obtain the length in nucleotides of each node you simply
+need to add k ? 1, where k is the word-length used in velveth.
+
+Similarly, coverages are provided in k-mer coverage (5.1).
+
+Also, the difference between *_cov and *_Ocov is the way these values are
+computed. In the first count, slightly divergent sequences are added to the
+coverage tally. However, in the second, stricter count, only the sequences which
+map perfectly onto the consensus sequence are taken into account.
+
+4.2.3 The velvet assy.afg file
+
+This file is mainly designed to be read by the open-source AMOS genome assembly
+package. Nonetheless, a number of programs are available to transform
+this kind of file into other assembly file formats (namely ACE, TIGR, Arachne
+and Celera). See http://amos.sourceforge.net/ for more information.
+
+The file describes all the contigs contained in the contigs.fa file (cf 4.2.1).
+If you are overwhelmed by the size of the file, two bundled scripts provided
+by Simon Gladman can help you out:
+
+• asmbly splitter.pl breaks down the original .afg file into individual files for
+each contig,
+
+• snp view.pl allows you to print out a simple ASCII alignment of reads
+around a given position on a contig.
+
+4.2.4 The LastGraph file
+
+This file describes in its entirety the graph produced by Velvet, in an idiosyncratic
+format which evolved with my PhD project. The format of this file is
+briefly as follows:
+
+• One header line for the graph:
+$NUMBER_OF_NODES $NUMBER_OF_SEQUENCES $HASH_LENGTH
+• One block for each node:
+
+NODE $NODE_ID $COV_SHORT1 $O_COV_SHORT1 $COV_SHORT2 $O_COV_SHORT2
+$ENDS_OF_KMERS_OF_NODE
+$ENDS_OF_KMERS_OF_TWIN_NODE
+
+Note that the ends of k-mers correspond to the last nucleotides of the kmers
+in the node. This means that the two sequences given above are not
+reverse-complements of each other but reverse complements shifted by k
+nucleotides. The common length of these sequences is equal to the length
+of the corresponding contig minus k ? 1.
+
+See 4.2.2 for an explanation of O COV values.
+
+• One line for each arc:
+
+ARC $START_NODE $END_NODE $MULTIPLICITY
+
+Note: this one line implicitly represents an arc from node A to B and
+another, with same multiplicity, from -B to -A.
+
+• For each long sequence, a block containing its path:
+SEQ $SEQ_ID
+$NODE_ID $OFFSET_FROM_START $START_COORD $END_COORD $OFFSET_FROM_END
+$NODE_ID2 etc.
+
+The offset variables are distances from the edges of the nodes whereas the
+start and end coordinates are correspond to coordinates within the read
+sequence.
+
+• If short reads are tracked, for every node a block of read identifiers:
+NR $NODE_ID $NUMBER_OF_SHORT_READS
+$READ_ID $OFFSET_FROM_START_OF_NODE $START_COORD
+$READ_ID2 etc.
+
+The offset variables are distances from the edges of the nodes whereas the
+start and end coordinates are correspond to coordinates within the read
+sequence.
+
+• If short reads are tracked, for every node a block of read identifiers:
+NR $NODE_ID $NUMBER_OF_SHORT_READS
+$READ_ID $OFFSET_FROM_START_OF_NODE $START_COORD
+$READ_ID2 etc.
+
+
+
+
+5 Practical considerations / Frequently asked questions
+
+5.1 Choice of hash length k
+The hash length is the length of the k-mers being entered in the hash table.
+Firstly, you must observe three technical constraints:
+• it must be an odd number, to avoid palindromes. If you put in an even
+number, Velvet will just decrement it and proceed.
+• it must be below or equal to 31, because it is stored on 64 bits
+
+• it must be strictly inferior to read length, otherwise you simply will not
+observe any overlaps between reads, for obvious reasons.
+Now you still have quite a lot of possibilities. As is often the case, it’s a tradeoff
+between specificity and sensitivity. Longer kmers bring you more specificity
+(i.e. less spurious overlaps) but lowers coverage (cf. below). . . so there’s a sweet
+spot to be found with time and experience.
+
+We like to think in terms of ”k-mer coverage”, i.e. how many times has a
+k-mer been seen among the reads. The relation between k-mer coverage Ck and
+standard (nucleotide-wise) coverage C is Ck = C ^(L?k+1)/L where k is your
+hash length, and L you read length.
+
+Experience shows that this kmer coverage should be above 10 to start getting
+decent results. If Ck is above 20, you might be ”wasting” coverage. Experience
+also shows that empirical tests with different values for k are not that costly to
+run!
+
+
+5.2 Choice of a coverage cutoff
+
+Velvet was designed to be explicitly cautious when correcting the assembly, to
+lose as little information as possible. This consequently will leave some obvious
+errors lying behind after the Tour Bus algorithm (cf. 6) was run. To detect
+them, you can plot out the distribution of k-mer coverages (5.1), using plotting
+software (I use R).
+
+Using the test example without any cutoff, and the R instruction:
+(R) > data = read.table("stats.txt", header=TRUE)
+(R) > hist(data$short1_cov)
+. . . you obtain:
+
+<R Graph 1>
+
+
+However, if you weight the results with the node lengths (you need to install
+the plotrix package for R to do this):
+(R) > library(plotrix)
+(R) > weighted.hist(data$short1_cov, data$lgth, breaks=0:25)
+. . . you obtain:
+
+<R Graph 2>
+
+
+The comparison of these two plots should convince you that below 5x you
+find mainly short, low coverage nodes, which are likely to be errors.
+However beware that there is such a thing as an over-aggressive cutoff, which
+could create mis-assemblies, and destroy lots of useful data.
+If you have read-pair information, or long reads, it may be profitable to set a
+low coverage cutoff and to use the supplementary information resolve the more
+ambiguous cases.
+
+5.3 Determining the expected coverage
+
+From the previous weighted histogram it must be pretty clear that the expected
+coverage of contigs is near 19x.
+
+5.4 Visualising contigs and assemblies
+
+This section will be quite vague, as there are a number of solutions currently
+available, and presumably new ones under development. The following indications
+are just hints, as I have not done any exhaustive shopping nor benchmarking.
+
+Most assembly viewers require an assembly format, which come in a variety
+of shapes and colours: ACE, AMOS, CELERA, TIGR, etc. Velvet only ouputs
+AMOS .afg files, but these can easily be converted with open-source software
+(amos.sourceforge.net).
+
+
+
+6 For more information
+
+Publication: For more information on the theory behind Velvet, you can turn
+to:
+
+D.R. Zerbino and E. Birney. 2008. Velvet: algorithms for de novo
+short read assembly using de Bruijn graphs. Genome Research, 18:
+821-829
+
+Please use the above reference when citing Velvet.
+
+Webpage: For general information and FAQ, you can first take a look at
+
+www.ebi.ac.uk/~zerbino/velvet.
+
+Mailing list: For questions/requests/etc. you can subscribe to the users’
+mailing list: velvet-users@ebi.ac.uk.
+To do so, see listserver.ebi.ac.uk/mailman/listinfo/velvet-users .
+Contact emails: For specific questions/requests you can contact us at the
+following addresses:
+
+• Daniel Zerbino <zerbino@ebi.ac.uk>
+• Ewan Birney: <birney@ebi.ac.uk>
+
+Reporting bugs: We are very grateful to all the people who send us bugs.
+However, to speed up the process and avoid useless delays, please:
+
+1. ensure that you have the very last version of Velvet, to the last digit, as
+displayed on the website.
+
+2. attach to your e-mail the Log file from within the Velvet directory.
+
+3. if the program crashed and created a core dump file could you please:
+(a) destroy the core.* file
+(b) recompile Velvet with the instruction “make debug”
+(c) re-run Velvet and let it crash (therefore creating a new core file)
+(d) launch the GNU debugger with the instructions:
+> gdb ./velvetg core.*
+(e) within gdb, request a backtrace:
+(gdb) bt
+(f) send the listing with the entire gdb session.
+

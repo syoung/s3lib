@@ -1,0 +1,96 @@
+Notes-apps-biopipe.txt
+
+</entry>
+
+
+
+<entry [Mon Dec 18 13:59:42 EST 2006] USING biopipe>
+
+
+
+cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline/xml
+perl Xml2Db.pl -h 
+
+cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline/scripts
+perl PipelineManager - 
+>>>
+0 analysis found.
+Running test and setup..
+
+//////////// Analysis Test ////////////
+Fetching Jobs...
+Fetched 0 incomplete jobs
+Fetched 0 completed jobs
+Going to snooze for 3 seconds...
+Waking up and run again!
+Nothing left to run.
+
+///////////////Shutting Down Pipeline//////////////////////
+Removing Lock File...
+Done
+///////////////////////////////////////////////////////////
+<<<
+
+</entry>
+
+
+
+<entry [Mon Dec 18 13:58:33 EST 2006] INSTALL biopipe>
+
+
+
+1. GET biopipe AND PLACE IN apps DIRECTORY:
+
+    cd /Users/young/FUNNYBASE/apps/biopipe
+    
+    #### REQUIRED Bioperl Packages
+    bioperl-live bioperl-run-release-1-2-0 or later
+    bioperl-run  bioperl-run-release-1-2-0
+    bioperl-pipeline bioperl-run-release-1-2-0
+    
+    #### recommended:
+    bioperl-db
+    biosql-schema
+    
+    #### DOWNLOAD packages from CVS using the following commands:
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-live
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-run
+    cvs -d :pserver:cvs@cvs.open-bio.org:/home/repository/bioperl checkout -r bioperl-run-release-1-2-0 bioperl-pipeline      
+  
+    password is 'cvs'
+
+    More Info: http:://cvs.bioperl.org
+
+2. INSTALL biopipe
+
+    cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline
+    perl Makefile.PL
+    make
+
+    #### modify the following files to reflect your system specifics:
+    em /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline/t/BiopipeTestDB.conf        #### ADD MYSQL USER young AND PASSWORD
+    em /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline/Bio/Pipeline/PipeConf.pm    #### ADD MYSQL USER young AND PASSWORD
+
+    #### TEST AND INSTALL
+    
+    cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline
+    make test
+    sudo make install
+
+    #### CREATE Mysql pipeline database:
+    mysqladmin -u root -p create biopipe
+
+    #############################################################
+    #    OLD:
+    #    #### CREATE pipeline database tables:
+    #    cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline
+    #    mysql -u young -p biopipe < sql/schema.sql
+    #############################################################
+
+    #### CREATE pipeline database tables:
+    cd /Users/young/FUNNYBASE/apps/biopipe/bioperl-pipeline
+    mysql -u young -p annotate_pipeline < sql/schema.sql
+
+
+
+
