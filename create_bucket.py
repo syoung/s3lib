@@ -24,7 +24,11 @@ for directory in directories:
     print "currentpath: ", currentpath
         
     try:
-        conn.create_bucket(currentpath)
+        # if not conn.get_bucket(currentpath):
+        exists = conn.lookup(currentpath)
+        if exists is None:
+            print "Trying to create bucket: ", currentpath
+            conn.create_bucket(currentpath)
     except Exception:
         print "Failed to create bucket: ", currentpath
 
